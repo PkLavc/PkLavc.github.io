@@ -1,0 +1,50 @@
+*{
+    padding: 0;
+    margin:0;
+    box-sizing: border-box;
+}
+#breaker{
+    height: 50vh;
+    width: 200%;
+    background-color: #c70039;
+    opacity: 1;
+    animation: breakeranimate 2s linear;
+    display: none;
+    transition: all .4s ease;
+    border-radius: 25px;
+    
+    z-index: 10;
+    position: fixed;
+}
+@keyframes breakeranimate{
+   0%{ transform : translateX(100%)}
+   50%{ transform : translateX(-70%) }
+   100%{ transform : translateX(-170%) }
+}
+@-webkit-keyframes breakeranimate{
+    0%{ transform : translateX(100%) }
+    50%{ transform : translateX(-70%) }
+    100%{ transform : translateX(-170%) }
+}
+#breaker-two{
+    height: 50vh;
+    width: 200%;
+    background-color: #080808;
+    opacity: 1;
+    animation: breakeranimatetwo 2s linear;
+    display: none;
+    transition: all .4s ease;
+    z-index: 10;
+    border-radius: 25px;
+    position: fixed;
+}
+@keyframes breakeranimatetwo{
+   0%{ transform : translateX(100%) translateY(100%) }
+   50%{ transform : translateX(-70%) translateY(100%)}
+   100%{ transform : translateX(-170%) translateY(100%)}
+}
+@-webkit-keyframes breakeranimatetwo{
+    0%{ transform : translateX(100%)  translateY(100%)}
+    50%{ transform : translateX(-70%) translateY(100%)}
+    100%{ transform : translateX(-170%) translateY(100%)}
+}
