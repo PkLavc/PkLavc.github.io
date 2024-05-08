@@ -103,8 +103,38 @@
                 <!--about description-->
                    <span class="about-first-line">
                         The future's not set<br>
-                        I'm a <span class="color">Computer Engineering student</span> and...
-                        </span>
+                        I'm a <span class="color">Computer Engineering student</span> and
+                    <span class="dots">
+                        <span>.</span><span>.</span><span>.</span>
+                    </span>
+                </span>
+                
+                <style>
+                .dots span {
+                    animation: dots 1s steps(5, end) infinite;
+                }
+                
+                @keyframes dots {
+                    0%, 20% {
+                        color: rgba(0,0,0,0);
+                        text-shadow:
+                            .25em 0 0 rgba(0,0,0,0),
+                            .5em 0 0 rgba(0,0,0,0);}
+                    40% {
+                        color: white;
+                        text-shadow:
+                            .25em 0 0 rgba(0,0,0,0),
+                            .5em 0 0 rgba(0,0,0,0);}
+                    60% {
+                        text-shadow:
+                            .25em 0 0 white,
+                            .5em 0 0 rgba(0,0,0,0);}
+                    80%, 100% {
+                        text-shadow:
+                            .25em 0 0 white,
+                            .5em 0 0 white;}
+                }
+                </style>
                         <img width="90%" height="auto" src="https://github-readme-stats.vercel.app/api/top-langs/?username=PkLavc&layout=compact&hide_border=true&title_color=FFFFFF&text_color=FFFFFF&bg_color=0d1117" style="max-width: 100%; height: auto; flex-shrink: 0; margin-top: 10px;" />
                         <div class="cv">
                     <!--<a href="#"><button>Download <span class="colors">CV</span></button></a>-->
