@@ -1,0 +1,251 @@
+body {
+    font-family: 'Inter', sans-serif;
+    color: #E0E0E0;
+    line-height: 1.7;
+    font-size: 16px;
+}
+#about-content {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 50px;
+}
+.about-main {
+    flex: 1;
+}
+.about-header {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+    color: #ff6b6b;
+}
+.about-first-line {
+    font-size: 1.1rem;
+    line-height: 1.8;
+}
+.about-first-line strong {
+    font-weight: 600;
+    color: #ff6b6b;
+}
+.skills-section {
+    margin-top: 30px;
+}
+.skills-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 15px;
+    color: #ffffff;
+}
+.badge {
+    display: inline-block;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+    padding: 8px 15px;
+    margin: 5px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #E0E0E0;
+}
+.about-img {
+    flex-shrink: 0;
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 3px solid #ff6b6b;
+}
+.about-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.about-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 100px 20px;
+}
+.about-side-title {
+    flex: 0 0 100px;
+    position: relative;
+    height: 100%;
+    min-height: 500px;
+}
+.about-side-title h2 {
+    position: absolute;
+    top: 25px;
+    left: 50%;
+    transform: rotate(-90deg) translateX(-100%);
+    transform-origin: top left;
+    white-space: nowrap;
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #ff6b6b;
+    margin: 0;
+}
+.about-content-wrapper {
+    flex: 2;
+    margin-left: 120px;
+}
+.bio-text {
+    font-size: 1.2rem;
+    line-height: 1.8;
+    color: #ccc;
+    margin-bottom: 40px;
+}
+.highlight {
+    color: #ff0050;
+    font-weight: 600;
+}
+.skills-section h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: #ffffff;
+}
+.skills-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+.skills-grid span {
+    background: rgba(255, 255, 255, 0.08);
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #E0E0E0;
+}
+.about-profile-img {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+}
+.img-border {
+    padding: 15px;
+    border: 2px solid #ff0050;
+    border-radius: 50%;
+}
+.img-border img {
+    width: 250px;
+    height: 250px;
+    object-fit: cover;
+    border-radius: 50%;
+}
+#about {
+    display: block;
+}
+.contact-section {
+    margin-top: 40px;
+    text-align: center;
+}
+.contact-section h3 {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+    color: #ffffff;
+}
+.social-media-links {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+.social-media {
+    width: 35px;
+    height: auto;
+    transition: transform 0.3s ease;
+}
+.social-media:hover {
+    transform: scale(1.2);
+}
+.technologies-section {
+    margin-top: 40px;
+    text-align: center;
+}
+.technologies-section h3 {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+    color: #ffffff;
+}
+.technologies-section .contact {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 10px;
+}
+.contactpic {
+    height: 40px;
+    width: auto;
+    filter: grayscale(20%);
+    transition: filter 0.3s ease;
+}
+.contactpic:hover {
+    filter: grayscale(0%);
+}
+@media (max-width: 768px) {
+    .about-container {
+        flex-direction: column;
+        align-items: center;
+        padding: 60px 20px;
+        gap: 30px;
+    }
+
+    .about-side-title {
+        flex: none;
+        min-height: auto;
+        width: 100%;
+        text-align: center;
+    }
+
+    .about-side-title h2 {
+        position: static;
+        transform: none;
+        font-size: 2rem;
+        margin-bottom: 10px;
+    }
+
+    .about-profile-img {
+        order: -1;
+        margin-bottom: 20px;
+    }
+
+    .img-border img {
+        width: 180px;
+        height: 180px;
+    }
+
+    .about-content-wrapper {
+        margin-left: 0 !important;
+        text-align: center;
+        width: 100%;
+    }
+
+    .bio-text {
+        font-size: 1rem;
+        margin-bottom: 25px;
+        text-align: left;
+    }
+
+    .skills-grid {
+        justify-content: center;
+        gap: 8px;
+    }
+
+    .skills-section h3 {
+        text-align: center;
+        font-size: 1.3rem;
+    }
+
+    .skills-grid a img {
+        height: 35px;
+    }
+}
