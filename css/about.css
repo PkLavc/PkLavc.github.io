@@ -8,8 +8,8 @@ body {
     display: flex;
     flex-direction: row;
     align-items: center;
-    gap: 40px;
     max-width: 1200px;
+    gap: 40px;
     margin: 0 auto;
     padding: 50px;
 }
@@ -259,12 +259,12 @@ body {
     }
 
     .slider .slide {
-        width: 150px;
+        width: 75px;
         height: 60px;
     }
 
     .slider .slide-track {
-        width: calc(150px * 8);
+        width: calc(75px * 8);
         animation: scroll-mobile 15s linear infinite;
     }
 
@@ -275,15 +275,14 @@ body {
 
 @keyframes scroll-mobile {
     0% { transform: translateX(0); }
-    100% { transform: translateX(calc(-150px * 4)); }
+    100% { transform: translateX(calc(-75px * 4)); }
 }
 
-/* Container do Carrossel - Ajustado para não quebrar o layout */
 .brands-section {
     margin-top: 40px;
     padding-bottom: 20px;
-    width: 100%; /* Garante que não passe da largura do texto */
-    max-width: 600px; /* Limita a largura máxima para não ocupar a tela toda em monitores gigantes */
+    width: 100%;
+    max-width: 600px;
     overflow: hidden;
 }
 
@@ -297,25 +296,23 @@ body {
 .slider {
     height: 80px;
     width: 100%;
-    overflow: hidden; /* Corta o que estiver fora da div */
+    overflow: hidden;
     position: relative;
 }
 
-/* A trilha das logos */
 .slider .slide-track {
     display: flex;
-    /* Cálculo: (largura de cada slide * total de slides) */
     width: calc(150px * 8);
     animation: scroll 20s linear infinite;
 }
 
 .slider .slide {
-    width: 150px; /* Reduzi um pouco para caber melhor */
+    width: 150px;
     height: 80px;
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-shrink: 0; /* Impede que as logos esmaguem */
+    flex-shrink: 0;
 }
 
 .slider .slide img {
@@ -329,8 +326,7 @@ body {
     filter: grayscale(0%) brightness(1);
 }
 
-/* Animação Ajustada */
 @keyframes scroll {
     0% { transform: translateX(0); }
-    100% { transform: translateX(calc(-150px * 4)); } /* Move exatamente metade dos slides */
+    100% { transform: translateX(calc(-150px * 4)); }
 }
