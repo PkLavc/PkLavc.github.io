@@ -396,12 +396,15 @@ body{
     width: 200%;
     background-color: #c70039;
     opacity: 1;
-    animation: breakeranimate 2s linear;
+    animation: breakeranimate 1s linear;
     display: none;
     transition: all .4s ease;
     border-radius: 5px;
     z-index: 10;
     position: fixed;
+}
+#breaker-two{
+    animation: breakeranimatetwo 1s linear;
 }
 @keyframes breakeranimate{
    0%{ transform : translateX(-100%)}
@@ -1402,15 +1405,19 @@ For devices with smaller width like mobile phone
         display: none;
     }
     #breaker{
-        height: 50vh;
+        height: 100vh;
         width: 200%;
         background-color: #c70039;
         opacity: 1;
-        animation: breakeranimate 2s linear;
+        animation: breakeranimate 1s linear;
         display: none;
         transition: all .4s ease;
         z-index: 10;
         position: fixed;
+    }
+    #breaker-two{
+        height: 100vh;
+        animation: breakeranimatetwo 1s linear;
     }
     @keyframes breakeranimate{
        0%{ transform : translateX(-100%)}
