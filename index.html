@@ -94,11 +94,20 @@
         </script>
 
             <script>
-        // Fix para forçar renderização das partículas no carregamento
+                // Fix agressivo para forçar renderização das partículas
         window.addEventListener('load', function() {
+            // Múltiplos resizes em tempos diferentes
+            setTimeout(function() { window.dispatchEvent(new Event('resize')); }, 100);
+            setTimeout(function() { window.dispatchEvent(new Event('resize')); }, 500);
+            setTimeout(function() { window.dispatchEvent(new Event('resize')); }, 1000);
+            
+            // Força o pJSDom a atualizar o canvas diretamente
             setTimeout(function() {
-                window.dispatchEvent(new Event('resize'));
-            }, 100);
+                if (window.pJSDom && window.pJSDom.length > 0) {
+                    window.pJSDom[0].pJS.fn.vendors.densityAutoParticles();
+                    window.pJSDom[0].pJS.fn.particlesRefresh();
+                }
+            }, 1500);
         });
     </script>
     
