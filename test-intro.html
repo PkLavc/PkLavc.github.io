@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PkLavc - Intro Test</title>
+    <title>PkLavc - Intro GTA Style</title>
     <style>
         * {
             margin: 0;
@@ -12,21 +12,21 @@
         }
 
         body {
-            font-family: 'Arial', sans-serif;
-            background: #0a0a0a;
+            font-family: 'Arial Black', sans-serif;
+            background: #000;
             color: white;
             overflow-x: hidden;
         }
 
-        /* Seção Hero com efeito de intro */
+        /* Hero section que permite scroll */
         #hero-section {
             position: relative;
-            height: 200vh; /* Altura extra para permitir scroll */
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            height: 300vh; /* Altura tripla para permitir o efeito completo */
+            background: #000;
         }
 
-        /* Container fixo que fica no topo */
-        .hero-fixed-container {
+        /* Container fixo */
+        .hero-container {
             position: sticky;
             top: 0;
             height: 100vh;
@@ -34,7 +34,7 @@
             overflow: hidden;
         }
 
-        /* Imagem de fundo que vai subir com o scroll */
+        /* Imagem da personagem - início visível, depois sobe */
         .hero-image {
             position: absolute;
             top: 0;
@@ -43,45 +43,47 @@
             height: 100vh;
             background: url('images/Skyler.gif') center center / cover no-repeat;
             z-index: 1;
-            transition: transform 0.1s ease-out;
+            transition: transform 0.05s ease-out;
         }
 
-        /* Texto gigante transparente (stroke only) */
-        .hero-text-overlay {
+        /* Texto gigante que começa escondido e vai aparecendo */
+        .hero-text {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
             z-index: 2;
             pointer-events: none;
+            opacity: 0; /* Começa invisível */
+            transition: opacity 0.3s ease;
         }
 
-        .hero-title {
-            font-size: 20vw;
+        .title {
+            font-size: 22vw;
             font-weight: 900;
             text-transform: uppercase;
             letter-spacing: -0.05em;
-            line-height: 0.85;
+            line-height: 0.9;
+            text-align: center;
             
-            /* Texto vazado (apenas contorno) */
+            /* Texto vazado */
             color: transparent;
-            -webkit-text-stroke: 3px rgba(255, 255, 255, 0.8);
-            text-stroke: 3px rgba(255, 255, 255, 0.8);
+            -webkit-text-stroke: 4px rgba(255, 255, 255, 0.9);
+            text-stroke: 4px rgba(255, 255, 255, 0.9);
             
-            /* Sombra para dar profundidade */
             text-shadow: 
-                0 0 20px rgba(199, 0, 57, 0.3),
-                0 0 40px rgba(199, 0, 57, 0.2);
+                0 0 30px rgba(199, 0, 57, 0.4),
+                0 0 60px rgba(199, 0, 57, 0.2);
         }
 
-        .hero-subtitle {
-            font-size: 3vw;
+        .subtitle {
+            font-size: 4vw;
             font-weight: 300;
             text-align: center;
-            margin-top: 20px;
+            margin-top: 10px;
             color: transparent;
-            -webkit-text-stroke: 1px rgba(255, 255, 255, 0.6);
-            text-stroke: 1px rgba(255, 255, 255, 0.6);
+            -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.7);
+            text-stroke: 1.5px rgba(255, 255, 255, 0.7);
         }
 
         /* Indicador de scroll */
@@ -91,16 +93,15 @@
             left: 50%;
             transform: translateX(-50%);
             z-index: 3;
-            text-align: center;
             animation: bounce 2s infinite;
         }
 
         .scroll-indicator p {
-            font-size: 14px;
+            font-size: 12px;
             text-transform: uppercase;
             letter-spacing: 2px;
             margin-bottom: 10px;
-            opacity: 0.8;
+            opacity: 0.7;
         }
 
         .scroll-arrow {
@@ -108,8 +109,8 @@
             height: 50px;
             border: 2px solid rgba(255, 255, 255, 0.5);
             border-radius: 25px;
-            position: relative;
             margin: 0 auto;
+            position: relative;
         }
 
         .scroll-arrow::before {
@@ -135,18 +136,20 @@
             100% { top: 30px; opacity: 0; }
         }
 
-        /* Conteúdo após a intro */
+        /* Conteúdo após intro */
         #content-section {
-            position: relative;
             min-height: 100vh;
-            background: #0a0a0a;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
             padding: 100px 50px;
+            position: relative;
             z-index: 10;
         }
 
         .content-wrapper {
             max-width: 1200px;
             margin: 0 auto;
+            opacity: 0;
+            animation: fadeIn 1s ease forwards;
         }
 
         h2 {
@@ -162,104 +165,80 @@
             margin-bottom: 20px;
         }
 
-        /* Efeito de fade-in no conteúdo */
-        .fade-in {
-            opacity: 0;
-            transform: translateY(30px);
-            animation: fadeInUp 1s ease forwards;
-        }
-
-        @keyframes fadeInUp {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        @keyframes fadeIn {
+            to { opacity: 1; }
         }
 
         /* Responsivo */
         @media (max-width: 768px) {
-            .hero-title {
-                font-size: 25vw;
-                -webkit-text-stroke: 2px rgba(255, 255, 255, 0.8);
+            .title {
+                font-size: 28vw;
+                -webkit-text-stroke: 3px rgba(255, 255, 255, 0.9);
             }
-            
-            .hero-subtitle {
-                font-size: 5vw;
-                -webkit-text-stroke: 1px rgba(255, 255, 255, 0.6);
+            .subtitle {
+                font-size: 6vw;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Hero Section com Intro -->
     <section id="hero-section">
-        <div class="hero-fixed-container">
-            <!-- Imagem que vai subir -->
+        <div class="hero-container">
+            <!-- Imagem -->
             <div class="hero-image" id="heroImage"></div>
             
-            <!-- Texto gigante vazado (stroke only) -->
-            <div class="hero-text-overlay">
-                <div class="hero-title">PkLavc</div>
-                <div class="hero-subtitle">Software Engineer</div>
+            <!-- Texto que vai aparecer -->
+            <div class="hero-text" id="heroText">
+                <div class="title">PkLavc</div>
+                <div class="subtitle">Software Engineer</div>
             </div>
 
-            <!-- Indicador para scroll -->
-            <div class="scroll-indicator">
+            <!-- Indicador de scroll -->
+            <div class="scroll-indicator" id="scrollIndicator">
                 <p>Scroll Down</p>
                 <div class="scroll-arrow"></div>
             </div>
         </div>
     </section>
 
-    <!-- Conteúdo Principal -->
     <section id="content-section">
-        <div class="content-wrapper fade-in">
-            <h2>Welcome to My Portfolio</h2>
+        <div class="content-wrapper">
+            <h2>Bem-vindo</h2>
             <p>
-                This is the main content area that appears after the intro. 
-                The effect is inspired by GTA 6's reveal page, where the character image 
-                scrolls up and disappears "behind" the transparent title text.
+                Efeito inspirado no GTA 6: primeiro você vê apenas a imagem,
+                depois ao rolar, o texto gigante vai aparecendo, e a imagem
+                desaparece "por trás" das letras transparentes.
             </p>
             <p>
-                The large title "PkLavc" uses a stroke-only effect (transparent fill with outline),
-                creating a window through which you can see the background as it moves.
-            </p>
-            <p>
-                Continue scrolling to explore more content...
+                Continue explorando o conteúdo...
             </p>
         </div>
     </section>
 
     <script>
-        // Parallax effect para a imagem subir conforme o scroll
         window.addEventListener('scroll', function() {
             const scrolled = window.pageYOffset;
-            const heroImage = document.getElementById('heroImage');
             const heroSection = document.getElementById('hero-section');
-            
-            // Calcula o quanto scrollou dentro da hero section
+            const heroImage = document.getElementById('heroImage');
+            const heroText = document.getElementById('heroText');
+            const scrollIndicator = document.getElementById('scrollIndicator');
             const sectionHeight = heroSection.offsetHeight;
-            const scrollPercent = scrolled / sectionHeight;
             
-            // Move a imagem para cima conforme o scroll
-            // A imagem vai subir mais rápido que o scroll normal
-            if (scrolled < sectionHeight) {
-                heroImage.style.transform = `translateY(${scrolled * 0.8}px)`;
+            // Fase 1: 0-30% do scroll - texto começa a aparecer
+            if (scrolled < sectionHeight * 0.3) {
+                const fadeProgress = scrolled / (sectionHeight * 0.3);
+                heroText.style.opacity = fadeProgress;
+                scrollIndicator.style.opacity = 1 - fadeProgress;
             }
-        });
-
-        // Efeito de fade-in quando o conteúdo entra na tela
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.style.animationPlayState = 'running';
-                }
-            });
-        });
-
-        document.querySelectorAll('.fade-in').forEach(el => {
-            el.style.animationPlayState = 'paused';
-            observer.observe(el);
+            // Fase 2: 30-100% - texto visível, imagem sobe
+            else if (scrolled < sectionHeight) {
+                heroText.style.opacity = 1;
+                scrollIndicator.style.opacity = 0;
+                
+                // Move imagem para cima (efeito parallax)
+                const moveProgress = (scrolled - sectionHeight * 0.3) / (sectionHeight * 0.7);
+                heroImage.style.transform = `translateY(-${moveProgress * 100}vh)`;
+            }
         });
     </script>
 </body>
