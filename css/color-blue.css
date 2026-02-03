@@ -1,0 +1,68 @@
+:root {
+    --clr-primary: #00d1ff; 
+    --clr-primary-variant: #00a8cc;
+}
+/* Forçar cor em elementos com a classe .color (Nomes e Títulos) */
+.color, span.color, .about-header .color, .header-content h1 span {
+    color: var(--clr-primary) !important;
+}
+/* Barra de rolagem */
+::-webkit-scrollbar-thumb {
+    background: var(--clr-primary) !important;
+}
+/* Botões e elementos de ação */
+.cv a button, button, .btn {
+    background: var(--clr-primary) !important;
+    color: #000 !important;
+}
+
+/* Lordicon credit link styling */
+.lordicon-credit {
+    color: #555;
+    text-decoration: none;
+    transition: color 0.3s ease;
+    margin-left: 5px;
+}
+
+.lordicon-credit:hover {
+    color: var(--clr-primary, #00d1ff); /* Usa o Azul Tech no hover */
+}
+
+/* Minimal credits footer styling */
+.footer-minimal {
+    padding: 30px 0;
+    text-align: center;
+    border-top: 1px solid rgba(255,255,255,0.05);
+}
+.footer-minimal p {
+    font-size: 13px;
+    color: #666;
+}
+.credits-trigger {
+    cursor: pointer;
+    text-decoration: underline;
+    transition: color 0.3s;
+}
+.credits-trigger:hover {
+    color: var(--clr-primary);
+}
+.credits-hidden {
+    display: none; /* Escondido por padrão */
+    margin-top: 15px;
+    animation: fadeIn 0.5s ease;
+}
+.credits-grid {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+.credits-grid a {
+    font-size: 11px;
+    color: #444;
+    text-decoration: none;
+}
+.credits-grid a:hover {
+    color: var(--clr-primary);
+}
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }

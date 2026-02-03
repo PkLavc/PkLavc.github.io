@@ -1,0 +1,200 @@
+body {
+    font-family: 'Inter', sans-serif;
+    color: #E0E0E0;
+    line-height: 1.7;
+    font-size: 16px;
+}
+.projects-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 100px 20px;
+}
+.projects-side-title {
+    flex: 0 0 100px;
+    position: relative;
+    padding-top: 0;
+    margin-top: 0;
+}
+.projects-side-title h2 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--clr-primary);
+    white-space: nowrap;
+    position: absolute;
+    top: 0;
+    transform: rotate(-90deg) translateX(-100%);
+    transform-origin: top left;
+    margin: 0;
+}
+.projects-content-wrapper {
+    flex: 2;
+}
+.projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+}
+.project-card {
+    background: #101010;
+    border: 1px solid #1a1a1a;
+    border-radius: 8px;
+    padding: 20px;
+    transition: all 0.3s ease;
+}
+.project-card:hover {
+    border-color: var(--clr-primary);
+    transform: translateY(-5px);
+}
+.project-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+.project-category {
+    background: #181818;
+    color: var(--clr-primary);
+    font-family: 'Courier New', monospace;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+.project-tech {
+    color: #888;
+    font-size: 0.9rem;
+}
+.project-card h3 {
+    color: #ffffff;
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+}
+.project-card p {
+    color: #888;
+    font-size: 1rem;
+    line-height: 1.6;
+    margin-bottom: 15px;
+}
+.project-features {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 20px;
+}
+.project-features span {
+    background: rgba(255, 255, 255, 0.1);
+    color: #E0E0E0;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.project-link {
+    display: inline-block;
+    color: var(--clr-primary);
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s ease;
+}
+.project-link:hover {
+    color: #ffffff;
+}
+
+
+
+
+/* CORREÇÃO DO BOTÃO NO MOBILE */
+@media (max-width: 768px) {
+    .project-card .project-link {
+        display: block;
+        padding: 8px 0;
+        text-align: center;
+        border: 1px solid var(--clr-primary); /* Azul em vez de vermelho */
+        border-radius: 4px;
+        margin-top: 10px;
+        color: var(--clr-primary);
+        background: transparent;
+    }
+}
+.color {
+    color: var(--clr-primary);
+}
+#projects {
+    display: block;
+}
+
+@media (max-width: 768px) {
+    .projects-container {
+        flex-direction: column;
+        padding: 60px 20px;
+        gap: 0;
+    }
+
+    .projects-side-title {
+        flex: none;
+        width: 100%;
+        height: auto;
+        min-height: auto;
+        margin-bottom: 12px;
+        text-align: center;
+    }
+
+    .projects-side-title h2 {
+        position: static;
+        transform: none;
+        white-space: normal;
+        font-size: 1.4rem;
+        display: block;
+    }
+
+    .projects-content-wrapper {
+        width: 100%;
+    }
+
+    .projects-grid {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+
+    .project-card {
+        padding: 12px 8px;
+    }
+
+    .project-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+        margin-bottom: 10px;
+    }
+
+    .project-tech {
+        font-size: 0.7rem;
+    }
+
+    .project-card h3 {
+        font-size: 1.1rem;
+    }
+
+    .project-features {
+        gap: 2px;
+    }
+
+    .project-features span {
+        padding: 1px 6px;
+        font-size: 0.6rem;
+    }
+
+    .project-link {
+        display: block;
+        padding: 6px 0;
+        text-align: center;
+        border: 1px solid rgba(255, 0, 80, 0.3);
+        border-radius: 4px;
+        margin-top: 5px;
+    }
+}
