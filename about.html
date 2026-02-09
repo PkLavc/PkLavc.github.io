@@ -213,10 +213,28 @@
 
                         <div class="skills-section">
                             <h3><img height="20" alt="GIF" src="images/link.gif"/> Contact</h3>
-                            <div class="skills-grid">
-                                <a href="https://github.com/PkLavc" target="_blank"><img alt="GitHub" height="42" src="images/github.gif"/></a>
-                                <a href="https://www.linkedin.com/in/patrickajm/" target="_blank"><img alt="LinkedIn" height="42" src="images/linkedin.gif"/></a>
-                                <a href="mailto:patrickajm@gmail.com" target="_blank"><img alt="Email" height="42" src="images/mail.gif"/></a>
+                            <div class="contact-grid">
+                                <div class="contact-item">
+                                    <a href="https://github.com/PkLavc" target="_blank"><img alt="GitHub" height="42" src="images/github.gif"/></a>
+                                    <span class="contact-value" data-href="https://github.com/PkLavc">PkLavc</span>
+                                    <button class="copy-btn" data-copy="https://github.com/PkLavc" title="Copy to clipboard">
+                                        🗎 <span>copy</span>
+                                    </button>
+                                </div>
+                                <div class="contact-item">
+                                    <a href="https://www.linkedin.com/in/patrickajm/" target="_blank"><img alt="LinkedIn" height="42" src="images/linkedin.gif"/></a>
+                                    <span class="contact-value" data-href="https://www.linkedin.com/in/patrickajm/">patrickajm</span>
+                                    <button class="copy-btn" data-copy="https://www.linkedin.com/in/patrickajm/" title="Copy to clipboard">
+                                        🗎 <span>copy</span>
+                                    </button>
+                                </div>
+                                <div class="contact-item">
+                                    <a href="mailto:patrickajm@gmail.com" target="_blank"><img alt="Email" height="42" src="images/mail.gif"/></a>
+                                    <span class="contact-value" data-href="mailto:patrickajm@gmail.com">patrickajm@gmail.com</span>
+                                    <button class="copy-btn" data-copy="patrickajm@gmail.com" title="Copy to clipboard">
+                                        🗎 <span>copy</span>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -233,6 +251,42 @@
         <script src="js/particles.js"></script>
         <script src="js/particles.min.js"></script>
         <script src="js/index.js"></script>
+        
+        <script>
+            // Contact value and copy button functionality
+            document.querySelectorAll('.contact-value').forEach(span => {
+                span.addEventListener('click', function() {
+                    const href = this.getAttribute('data-href');
+                    if (href) {
+                        window.open(href, '_blank');
+                    }
+                });
+            });
+
+            // Copy to clipboard functionality
+            document.querySelectorAll('.copy-btn').forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const textToCopy = this.getAttribute('data-copy');
+                    const originalText = this.innerHTML;
+                    
+                    // Copy to clipboard
+                    navigator.clipboard.writeText(textToCopy).then(() => {
+                        // Visual feedback
+                        this.classList.add('copied');
+                        this.innerHTML = '✓ <span>copied</span>';
+                        
+                        // Reset after 2 seconds
+                        setTimeout(() => {
+                            this.classList.remove('copied');
+                            this.innerHTML = originalText;
+                        }, 2000);
+                    }).catch(err => {
+                        console.error('Failed to copy:', err);
+                    });
+                });
+            });
+        </script>
         <!--particles script-->
         <script>
       particlesJS("particles", {"particles":{"number":{"value":40,"density":{"enable":true,"value_area":800}},"color":{"value":"#ffffff"},"shape":{"type":"circle","stroke":{"width":0,"color":"#000000"},"polygon":{"nb_sides":5},"image":{"src":"img/github.svg","width":100,"height":100}},"opacity":{"value":0.5,"random":false,"anim":{"enable":false,"speed":1,"opacity_min":0.1,"sync":false}},"size":{"value":3,"random":true,"anim":{"enable":false,"speed":40,"size_min":0.1,"sync":false}},"line_linked":{"enable":true,"distance":150,"color":"#ffffff","opacity":0.4,"width":1},"move":{"enable":true,"speed":6,"direction":"none","random":false,"straight":false,"out_mode":"out","bounce":false,"attract":{"enable":false,"rotateX":600,"rotateY":1200}}},"interactivity":{"detect_on":"canvas","events":{"onhover":{"enable":true,"mode":"repulse"},"onclick":{"enable":true,"mode":"push"},"resize":true},"modes":{"grab":{"distance":400,"line_linked":{"opacity":1}},"bubble":{"distance":400,"size":40,"duration":2,"opacity":8,"speed":3},"repulse":{"distance":200,"duration":0.4},"push":{"particles_nb":4},"remove":{"particles_nb":2}}},"retina_detect":true});

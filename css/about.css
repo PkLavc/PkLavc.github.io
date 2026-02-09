@@ -474,3 +474,92 @@ body {
     0% { transform: translateX(0); }
     100% { transform: translateX(calc(-150px * 4)); }
 }
+
+/* Contact Section Styles */
+.contact-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    align-items: flex-start;
+}
+
+.contact-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.contact-item a {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    color: #E0E0E0;
+    transition: color 0.3s ease;
+}
+
+.contact-item a:hover {
+    color: var(--clr-primary);
+}
+
+.contact-item a img {
+    height: 42px;
+    display: block;
+}
+
+.contact-item span {
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.contact-value {
+    flex: 1;
+    color: var(--clr-primary);
+    font-weight: 500;
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+}
+
+.contact-value:hover {
+    opacity: 0.8;
+}
+
+.copy-btn {
+    background: none;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
+    padding: 6px 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    transition: all 0.3s ease;
+    color: #ffffff;
+    -webkit-text-fill-color: #ffffff;
+    font-size: 0.85rem;
+    font-weight: 500;
+    font-family: 'Inter', sans-serif;
+}
+
+.copy-btn,
+.copy-btn span {
+    color: #ffffff;
+    -webkit-text-fill-color: #ffffff;
+}
+
+.copy-btn:hover {
+    border-color: rgba(255, 255, 255, 0.5);
+}
+
+.copy-btn.copied {
+    border-color: var(--clr-primary);
+    background: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+    -webkit-text-fill-color: #ffffff;
+}
+
+.copy-btn.copied span {
+    color: #ffffff;
+    -webkit-text-fill-color: #ffffff;
+}
