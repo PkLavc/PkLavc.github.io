@@ -44,6 +44,9 @@ body {
     border-radius: 8px;
     padding: 20px;
     transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
 }
 .project-card:hover {
     border-color: var(--clr-primary);
@@ -54,6 +57,7 @@ body {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 15px;
+    gap: 15px;
 }
 .project-category {
     background: #181818;
@@ -67,6 +71,8 @@ body {
 .project-tech {
     color: #888;
     font-size: 0.9rem;
+    flex: 1;
+    text-align: right;
 }
 .project-card h3 {
     color: #ffffff;
@@ -84,6 +90,7 @@ body {
     flex-wrap: wrap;
     gap: 8px;
     margin-bottom: 20px;
+    margin-top: auto;
 }
 .project-features span {
     background: rgba(255, 255, 255, 0.1);
@@ -100,6 +107,7 @@ body {
     text-decoration: none;
     font-weight: 600;
     transition: color 0.3s ease;
+    margin-top: auto;
 }
 .project-link:hover {
     color: #ffffff;
