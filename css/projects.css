@@ -113,20 +113,63 @@ body {
     color: #ffffff;
 }
 
+.project-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: auto;
+    align-items: center;
+}
+
+.project-demo-link {
+    background: var(--clr-primary);
+    color: #000;
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border: 1px solid var(--clr-primary);
+}
+
+.project-demo-link:hover {
+    background: transparent;
+    color: var(--clr-primary);
+    transform: translateY(-2px);
+}
+
 
 
 
 /* CORREÇÃO DO BOTÃO NO MOBILE */
 @media (max-width: 768px) {
-    .project-card .project-link {
+    .project-actions {
+        flex-direction: column;
+        gap: 8px;
+        width: 100%;
+    }
+    
+    .project-link {
         display: block;
         padding: 8px 0;
         text-align: center;
-        border: 1px solid var(--clr-primary); /* Azul em vez de vermelho */
+        border: 1px solid var(--clr-primary);
         border-radius: 4px;
         margin-top: 10px;
         color: var(--clr-primary);
         background: transparent;
+        width: 100%;
+    }
+    
+    .project-demo-link {
+        display: block;
+        padding: 8px 0;
+        text-align: center;
+        border: 1px solid var(--clr-primary);
+        border-radius: 4px;
+        margin-top: 0;
+        color: #000;
+        background: var(--clr-primary);
+        width: 100%;
     }
 }
 .color {
