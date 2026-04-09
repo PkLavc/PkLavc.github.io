@@ -1,4 +1,7 @@
-# Portfolio Website - Patrick Araujo (PkLavc)
+# PkLavc - Solutions Architect & Technical Owner
+
+Official repository for my professional portfolio. 
+Focusing on high-reliability systems, SRE-aware automation, and complex API ecosystems.
 
 ## Overview
 
