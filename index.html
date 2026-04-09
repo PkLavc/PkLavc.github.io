@@ -14,6 +14,8 @@
     <meta property="og:url" content="https://pklavc.github.io/">
     <meta property="og:type" content="website">
     <meta property="og:image" content="https://pklavc.github.io/images/Lavc.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
     <meta property="og:site_name" content="Patrick Araujo Portfolio">
     <meta property="og:locale" content="en_US">
     
@@ -27,8 +29,8 @@
     <title>Patrick Araujo | Solutions & Integration Architect | Technical Owner</title>
     <link rel="canonical" href="https://pklavc.github.io/">
     <meta name="robots" content="index, follow">
-    <meta property="og:image:alt" content="Portrait of enterprise systems architect Patrick Araujo">
-    <meta name="twitter:image:alt" content="Portrait of enterprise systems architect Patrick Araujo">
+    <meta property="og:image:alt" content="Brand portrait of enterprise systems architect and automation expert Patrick Araujo">
+    <meta name="twitter:image:alt" content="Brand portrait of enterprise systems architect and automation expert Patrick Araujo">
     <link rel="alternate" href="https://pklavc.github.io/" hreflang="en">
     
     <!-- Geo Tags -->
@@ -43,11 +45,13 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.2.6/gsap.min.js" defer></script>
     </head>
     <body>
-        <!-- ProfilePage Schema -->
+        <!-- ProfilePage and LocalBusiness JSON-LD -->
         <script type="application/ld+json">
         {
             "@context": "https://schema.org",
-            "@type": "ProfilePage",
+            "@graph": [
+                {
+                    "@type": "ProfilePage",
             "@id": "https://pklavc.github.io/#profile",
             "name": "Patrick Araujo | Solutions & Integration Architect | Technical Owner",
             "description": "Solutions & Integration Architect and Technical Owner with deep experience delivering corporate production systems, enterprise systems architecture, API integration, SRE-aware automation, Node.js, Python, and scalable data pipelines.",
@@ -810,6 +814,7 @@
                     "Observability",
                     "Process Interoperability"
                 ],
+                "hasPortfolio": "https://pklavc.github.io/projects.html",
                 "jobTitle": "Solutions & Integration Architect | Technical Owner",
                 "skills": [
                     "Backend Architecture",
@@ -845,13 +850,8 @@
                     "dateModified": "2026-03-18"
                 }
             ]
-        }
-        </script>
-
-        <!-- LocalBusiness Schema for Miami/Florida -->
-        <script type="application/ld+json">
-        {
-            "@context": "https://schema.org",
+        },
+            {
             "@type": "LocalBusiness",
             "name": "Patrick Araujo - Solutions & Integration Architecture Services",
             "image": "https://pklavc.github.io/images/Lavc.png",
@@ -949,6 +949,8 @@
                     }
                 ]
             }
+        }
+        ]
         }
         </script>
 
