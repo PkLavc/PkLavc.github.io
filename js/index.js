@@ -1,4 +1,5 @@
 $(window).on("load",function(){
+  document.body.classList.add('ready');
   // Check if elements exist before animating
   if ($("#all").length) {
     gsap.to("#all",0,{display:"block"});
