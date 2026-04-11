@@ -327,7 +327,41 @@ For devices with smaller width like mobile phone
         font-size: 25px;
     }
     .contact{
-        display: none;
+        display: flex;
+        position: fixed;
+        top: 10px;
+        left: 0;
+        right: 0;
+        width: auto;
+        height: 34px;
+        padding: 0 10px;
+        z-index: 9998;
+    }
+    .techstack-carousel{
+        width: 100%;
+        max-height: 34px;
+        overflow: hidden;
+        mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
+        -webkit-mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
+    }
+    .techstack-track{
+        flex-direction: row;
+        gap: 8px;
+        width: max-content;
+        align-items: center;
+        animation: techstackScrollMobileX 20s linear infinite;
+    }
+    .contact img{
+        height: 22px;
+        margin: 0;
+    }
+    @keyframes techstackScrollMobileX {
+        from {
+            transform: translateX(0);
+        }
+        to {
+            transform: translateX(-50%);
+        }
     }
     .header-image{
         float: right;
@@ -338,19 +372,30 @@ For devices with smaller width like mobile phone
         width: 100%;
         left: 0;
         bottom: 0;
-        position: absolute;
-        padding: 10px;
+        position: fixed;
+        padding: 8px 10px calc(8px + env(safe-area-inset-bottom));
         height: auto;
         display: flex;
         flex-direction: row;
         align-items: center;
         justify-content: center;
+        z-index: 9998;
+        background: linear-gradient(to top, rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0));
+    }
+    .social-media-links .social-media,
+    .social-media-links .social-media-icon{
+        width: 46px;
+        height: 46px;
+        min-width: 46px;
+        min-height: 46px;
+        margin: 0 6px;
+        opacity: .85;
     }
     .header-content-box{
         padding-left: 0px;
         z-index: 2;
         text-align: center;
-        padding: 0 10px;
+        padding: 0 10px 88px;
     }
     #contact{
         display: none;
