@@ -323,8 +323,28 @@ For devices with smaller width like mobile phone
         color: whitesmoke;
         font-family: raleway;
         font-weight: 500;
-        letter-spacing: 2px;
-        font-size: 25px;
+        letter-spacing: 1px;
+        font-size: 20px;
+    }
+    .header-content .firstline{
+        font-size: clamp(44px, 12vw, 56px);
+        line-height: 1.02;
+        margin-bottom: 10px;
+    }
+    .header-content .secondline{
+        font-size: clamp(15px, 5.1vw, 21px);
+        line-height: 1.12;
+        padding-top: 8px;
+    }
+    .main-info{
+        font-size: inherit;
+        line-height: 1.12;
+        font-weight: 400;
+    }
+    .remote-text{
+        font-size: clamp(14px, 4.8vw, 20px);
+        line-height: 1.28;
+        margin-top: 8px;
     }
     .contact{
         display: flex;
@@ -357,10 +377,10 @@ For devices with smaller width like mobile phone
     }
     @keyframes techstackScrollMobileX {
         from {
-            transform: translateX(0);
+            transform: translateX(-50%);
         }
         to {
-            transform: translateX(-50%);
+            transform: translateX(0);
         }
     }
     .header-image{
