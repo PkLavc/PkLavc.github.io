@@ -142,8 +142,25 @@ body.ready .footer-minimal {
 @keyframes animateslash{ 0%{ opacity: 1; z-index: 2;} 100%{ opacity: 0; z-index: 0;} }
 
 .social-media-links{ height: 100vh; position: absolute; z-index: 2; padding: 60px; width: auto; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-.social-media{ color: white; width:  33.6px; height: auto; opacity: .6; margin: 8px; transition: all .4s ease; }
+.social-media{
+    color: white;
+    width: 60px;
+    height: 60px;
+    min-width: 60px;
+    min-height: 60px;
+    opacity: .6;
+    margin: 8px;
+    transition: all .4s ease;
+    display: inline-block;
+    box-sizing: border-box;
+    overflow: hidden;
+}
 .social-media:hover{ opacity: 1; transform: scale(1.1); }
+
+.social-media, lottie-player.social-media,
+.contactpic, lottie-player.contactpic {
+    display: inline-block;
+}
 
 .navigation-links{ display: flex; align-items: center; justify-content: center; flex-direction: column; font-family:poppins; }
 .navigation-links a{ padding:10px; text-decoration: none; color: white; font-size: 30px; opacity: .7; transition: all .4s ease; }
