@@ -178,10 +178,48 @@ body.ready .footer-minimal {
 .navigation-links a::before{ content: ""; position: absolute; top:50%; left: 50%; display: flex; justify-content: center; transform: translate(-50%,-50%); align-items: center; font-size: 5em; font-weight: 400; font-family: monoton; color:rgb(255, 255, 255,.1); z-index: 1; pointer-events: none; opacity: 0; letter-spacing: 100px; transition: all .4s ease; }
 .navigation-links a:hover::before{ content: attr(data-text); opacity: 1; letter-spacing: 10px; }
 
-.contact{ display: flex; position: absolute; width: 10%; right: 0; top: 0; height: 100%; align-items: center; justify-content: center; flex-direction: column; z-index: 3; }
+.contact{
+    display: flex;
+    position: absolute;
+    right: max(12px, 1.8vw);
+    top: 110px;
+    height: calc(100% - 130px);
+    width: 76px;
+    align-items: flex-start;
+    justify-content: center;
+    flex-direction: column;
+    z-index: 3;
+    pointer-events: none;
+}
 .contact a{ z-index: 3; }
-.contact img{ margin:10px; height:30px; opacity: .6; transition: all .4s ease; }
+.contact img{ margin:8px auto; height:32px; opacity: .72; transition: all .4s ease; }
 .contact img:hover{ opacity: 1; transform: scale(1.1); }
+
+.techstack-carousel {
+    width: 100%;
+    max-height: min(66vh, 460px);
+    overflow: hidden;
+    pointer-events: auto;
+    mask-image: linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%);
+}
+
+.techstack-track {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    animation: techstackScrollDown 22s linear infinite;
+    will-change: transform;
+}
+
+@keyframes techstackScrollDown {
+    from {
+        transform: translateY(-50%);
+    }
+    to {
+        transform: translateY(0);
+    }
+}
 
 /* keep scale animation globally available */
 @keyframes scale{ 0%{ transform: scale(.6);} 100%{ transform: scale(1);} }
