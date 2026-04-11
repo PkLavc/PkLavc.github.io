@@ -395,9 +395,16 @@ $(function(){
 
 function toggleCredits() {
     var x = document.getElementById("credits-list");
+    var trigger = document.getElementById("credits-trigger-btn");
     if (x.style.display === "block") {
         x.style.display = "none";
+        if (trigger) {
+            trigger.setAttribute("aria-expanded", "false");
+        }
     } else {
         x.style.display = "block";
+        if (trigger) {
+            trigger.setAttribute("aria-expanded", "true");
+        }
     }
 }
