@@ -4,6 +4,13 @@ body {
     line-height: 1.7;
     font-size: 16px;
 }
+
+#about {
+    display: block;
+    width: 100%;
+    overflow: hidden;
+}
+
 #about-content {
     display: flex;
     flex-direction: row;
@@ -32,6 +39,8 @@ body {
 }
 .skills-section {
     margin-top: 30px;
+    content-visibility: auto;
+    contain-intrinsic-size: 1px 420px;
 }
 .skills-title {
     font-size: 1.2rem;
@@ -115,6 +124,14 @@ body {
     margin-bottom: 20px;
     color: #ffffff;
 }
+
+.section-heading-icon {
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 8px;
+}
 .skills-grid {
     display: flex;
     flex-wrap: wrap;
@@ -133,6 +150,25 @@ body {
     display: flex;
     justify-content: center;
 }
+
+.cursor {
+    height: 50px;
+    width: 50px;
+    display: block;
+    border-radius: 50%;
+    border: 1px solid whitesmoke;
+    background: transparent;
+    pointer-events: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 10;
+    opacity: 0.6;
+    transform: translate(-25px, -25px);
+    transition: transform 0.12s ease, opacity 0.2s ease;
+    will-change: transform;
+}
+
 .img-border {
     padding: 15px;
     border: 2px solid var(--clr-primary);
@@ -436,6 +472,8 @@ body {
     width: 100%;
     max-width: 600px;
     overflow: hidden;
+    content-visibility: auto;
+    contain-intrinsic-size: 1px 180px;
 }
 
 .brands-section h2,
@@ -516,6 +554,11 @@ body {
     display: block;
 }
 
+.contact-item-icon {
+    width: 42px;
+    height: 42px;
+}
+
 .contact-item span {
     font-size: 1rem;
     font-weight: 500;
@@ -574,4 +617,10 @@ body {
 .copy-btn.copied span {
     color: #031018 !important;
     -webkit-text-fill-color: #031018 !important;
+}
+
+@media (pointer: coarse), (max-width: 768px) {
+    .cursor {
+        display: none;
+    }
 }

@@ -169,6 +169,7 @@ $(window).on('load', function() {
     gsap.to('#header', 0, { display: 'block' });
   }
   if ($('#navigation-content').length) {
+    $('#navigation-content').removeClass('is-open');
     gsap.to('#navigation-content', 0, { display: 'none' });
   }
 
@@ -186,53 +187,60 @@ $(function(){
   $(".color-panel").on("click",function(e) {
     e.preventDefault();
     $(".color-changer").toggleClass("color-changer-active");
+  });
+
+  $(".colors a").on("click",function(e) {
+    e.preventDefault();
+    var attr = $(this).attr("title");
+    console.log(attr);
+    $("head").append("<link rel=\"stylesheet\" href=\"css/"+attr+".css\">");
+  });
 });
-$(".colors a").on("click",function(e) {
-  e.preventDefault();
-  var attr = $(this).attr("title");
-  console.log(attr);
-  $("head").append("<link rel=\"stylesheet\" href=\"css/"+attr+".css\">");
-});
-});
+
 var isMenuOpen = false;
 
+function openNavigationMenu() {
+  $('#navigation-content').addClass('is-open');
+  gsap.to('#navigation-content', 0, { display: 'flex' });
+  gsap.to('#navigation-content', 0.24, { y: 0 });
+  isMenuOpen = true;
+}
+
+function closeNavigationMenu() {
+  gsap.to('#navigation-content', 0.24, {
+    y: '-100%',
+    onComplete: function() {
+      $('#navigation-content').removeClass('is-open');
+      gsap.to('#navigation-content', 0, { display: 'none' });
+    }
+  });
+  isMenuOpen = false;
+}
+
 $(function(){
-     $(".menubar").on("click",function(e){
-         e.preventDefault();
-         e.stopPropagation();
-         
-         if (!isMenuOpen) {
-             gsap.to("#navigation-content",0,{display:"flex"}); // Ensure it's display:flex before animating
-             gsap.to("#navigation-content",.6,{y:0});
-             isMenuOpen = true;
-         } else {
-             gsap.to("#navigation-content",.6,{y:"-100%", onComplete: function() { // Hide after animation completes
-                 gsap.to("#navigation-content",0,{display:"none"});
-             }});
-             isMenuOpen = false;
-         }
-     });
-     
-     // Close menu when clicking outside
-     $(document).on("click", function(e) {
-         if (isMenuOpen && !$(e.target).closest("#navigation-content, .menubar").length) {
-             gsap.to("#navigation-content",.6,{y:"-100%", onComplete: function() {
-                 gsap.to("#navigation-content",0,{display:"none"});
-             }});
-             isMenuOpen = false;
-         }
-     });
-     
-     // Close menu when clicking on navigation links
-     $("#navigation-content a").on("click", function() {
-         if (isMenuOpen) {
-             gsap.to("#navigation-content",.6,{y:"-100%", onComplete: function() {
-                 gsap.to("#navigation-content",0,{display:"none"});
-             }});
-             isMenuOpen = false;
-         }
-     });
-   });
+  $(".menubar").on("click",function(e){
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (!isMenuOpen) {
+      openNavigationMenu();
+    } else {
+      closeNavigationMenu();
+    }
+  });
+
+  $(document).on("click", function(e) {
+    if (isMenuOpen && !$(e.target).closest("#navigation-content, .menubar").length) {
+      closeNavigationMenu();
+    }
+  });
+
+  $("#navigation-content a").on("click", function() {
+    if (isMenuOpen) {
+      closeNavigationMenu();
+    }
+  });
+});
 
 $(function(){
     $("#about-link").on("click",function(){

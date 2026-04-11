@@ -38,13 +38,142 @@
     <meta name="twitter:image:alt" content="Brand portrait of enterprise systems architect and automation expert Patrick Araujo">
         <title>About Patrick Araujo | Solutions Architect (Technical Owner)</title>
     <link rel="icon" type="image/svg+xml" href="images/favicon.svg">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Monoton&family=Poppins:wght@500&family=Raleway:wght@300&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Monoton&family=Poppins:wght@500&family=Raleway:wght@300&display=swap"></noscript>
         <link rel="stylesheet" href="css/global.css">
-        <link rel="stylesheet" href="css/color-blue.css">
-    <link rel="stylesheet" href="css/index.css">
-         <link rel="stylesheet" href="css/about.css">
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.2.6/gsap.min.js" defer></script>
-        <script src="https://cdn.jsdelivr.net/npm/@lottiefiles/lottie-player@1.5.7/dist/lottie-player.js" defer></script>
+        <style>
+            body {
+                font-family: 'Inter', sans-serif;
+                line-height: 1.7;
+                font-size: 16px;
+            }
+
+            #about {
+                display: block;
+                width: 100%;
+                overflow: hidden;
+            }
+
+            .about-container {
+                display: flex;
+                justify-content: space-between;
+                align-items: flex-start;
+                gap: 40px;
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 100px 20px;
+            }
+
+            .about-side-title {
+                flex: 0 0 100px;
+                position: relative;
+                height: 100%;
+                min-height: 500px;
+            }
+
+            .about-side-title h1 {
+                position: absolute;
+                top: 25px;
+                left: 50%;
+                transform: rotate(-90deg) translateX(-100%);
+                transform-origin: top left;
+                white-space: nowrap;
+                font-size: 2.5rem;
+                font-weight: 700;
+                margin: 0;
+            }
+
+            .about-content-wrapper {
+                flex: 2;
+                margin-left: 120px;
+                display: flex;
+                flex-direction: column;
+                gap: 16px;
+            }
+
+            .bio-text {
+                font-size: 1.2rem;
+                line-height: 1.6;
+                margin: 0;
+            }
+
+            .highlight {
+                font-weight: 600;
+            }
+
+            .about-profile-img {
+                flex: 1;
+                display: flex;
+                justify-content: center;
+            }
+
+            .img-border {
+                padding: 15px;
+                border-radius: 50%;
+            }
+
+            .img-border img {
+                width: 250px;
+                height: 250px;
+                object-fit: cover;
+                border-radius: 50%;
+                display: block;
+            }
+
+            @media (max-width: 768px) {
+                .about-container {
+                    flex-direction: column;
+                    align-items: center;
+                    padding: 60px 20px;
+                    gap: 12px;
+                }
+
+                .about-side-title {
+                    flex: none;
+                    min-height: auto;
+                    width: 100%;
+                    text-align: center;
+                    margin-top: 0;
+                    margin-bottom: 8px;
+                }
+
+                .about-side-title h1 {
+                    position: static;
+                    transform: none;
+                    font-size: 1.6rem;
+                    white-space: normal;
+                    margin: 0 auto 12px;
+                    display: inline-block;
+                    text-align: center;
+                }
+
+                .about-profile-img {
+                    order: -1;
+                    margin-bottom: 6px;
+                }
+
+                .img-border img {
+                    width: 140px;
+                    height: 140px;
+                }
+
+                .about-content-wrapper {
+                    margin-left: 0;
+                    text-align: left;
+                    width: 100%;
+                    padding: 0 8px;
+                }
+
+                .bio-text {
+                    font-size: 0.85rem;
+                    margin-bottom: 10px;
+                    text-align: left;
+                }
+            }
+        </style>
+        <link rel="stylesheet" href="css/about.css">
     </head>
     <body>
         <!-- About Page Schema -->
@@ -938,11 +1067,6 @@
             }
         }
         </script>
-
-        <div id="breaker">
-        </div>
-        <div id="breaker-two">
-        </div>
         <div id="all">
             <div class="cursor"></div>
             <div id="navigation-content" role="navigation" aria-label="Primary navigation">
@@ -978,29 +1102,29 @@
     </p>
 
 <div class="brands-section">
-    <h2><lottie-player src="images/trust.json" background="transparent" speed="1" style="width:20px; height:20px; display:inline-block; vertical-align:middle; margin-right:8px;" loop autoplay title="Trusted by enterprise clients badge graphic"></lottie-player> Trusted By Enterprise Clients & Integration Partners</h2>
+    <h2><lottie-player src="images/trust.json" background="transparent" speed="1" class="section-heading-icon" loop autoplay title="Trusted by enterprise clients badge graphic"></lottie-player> Trusted By Enterprise Clients & Integration Partners</h2>
     <div class="slider">
         <div class="slide-track">
-            <div class="slide"><img src="images/companies/logo-loja-do-sapo.svg" alt="Loja do Sapo" loading="lazy" decoding="async" /></div>
-            <div class="slide"><img src="images/companies/logo-icaiu.svg" alt="Icaiu" loading="lazy" decoding="async" /></div>
-            <div class="slide"><img src="images/companies/logo-wide-market.svg" alt="Wide Market" loading="lazy" decoding="async" /></div>
-            <div class="slide"><img src="images/companies/logo-wr.svg" alt="WR" loading="lazy" decoding="async" /></div>
-            <div class="slide"><img src="images/companies/logo-loja-do-sapo.svg" alt="Loja do Sapo" loading="lazy" decoding="async" /></div>
-            <div class="slide"><img src="images/companies/logo-icaiu.svg" alt="Icaiu" loading="lazy" decoding="async" /></div>
-            <div class="slide"><img src="images/companies/logo-wide-market.svg" alt="Wide Market" loading="lazy" decoding="async" /></div>
-            <div class="slide"><img src="images/companies/logo-wr.svg" alt="WR" loading="lazy" decoding="async" /></div>
+            <div class="slide"><img src="images/companies/logo-loja-do-sapo.svg" alt="Loja do Sapo" width="4997" height="3465" loading="lazy" decoding="async" /></div>
+            <div class="slide"><img src="images/companies/logo-icaiu.svg" alt="Icaiu" width="360" height="118" loading="lazy" decoding="async" /></div>
+            <div class="slide"><img src="images/companies/logo-wide-market.svg" alt="Wide Market" width="524" height="417" loading="lazy" decoding="async" /></div>
+            <div class="slide"><img src="images/companies/logo-wr.svg" alt="WR" width="868" height="570" loading="lazy" decoding="async" /></div>
+            <div class="slide"><img src="images/companies/logo-loja-do-sapo.svg" alt="Loja do Sapo" width="4997" height="3465" loading="lazy" decoding="async" /></div>
+            <div class="slide"><img src="images/companies/logo-icaiu.svg" alt="Icaiu" width="360" height="118" loading="lazy" decoding="async" /></div>
+            <div class="slide"><img src="images/companies/logo-wide-market.svg" alt="Wide Market" width="524" height="417" loading="lazy" decoding="async" /></div>
+            <div class="slide"><img src="images/companies/logo-wr.svg" alt="WR" width="868" height="570" loading="lazy" decoding="async" /></div>
         </div>
     </div>
 </div>
 
 <div class="skills-section">
-    <h2><lottie-player src="images/skills.json" background="transparent" speed="1" style="width:20px; height:20px; display:inline-block; vertical-align:middle; margin-right:8px;" loop autoplay title="Professional experience badge for backend architecture and automation"></lottie-player> Professional Experience in Backend Architecture & Automation</h2>
+    <h2><lottie-player src="images/skills.json" background="transparent" speed="1" class="section-heading-icon" loop autoplay title="Professional experience badge for backend architecture and automation"></lottie-player> Professional Experience in Backend Architecture & Automation</h2>
     <div class="experience-content">
 
         <!-- Loja do Sapo - Solutions Architect -->
         <div class="experience-item no-border">
             <div class="experience-header">
-                <img src="images/companies/logo-loja-do-sapo.svg" alt="Loja do Sapo" loading="lazy" decoding="async" />
+                <img src="images/companies/logo-loja-do-sapo.svg" alt="Loja do Sapo" width="4997" height="3465" loading="lazy" decoding="async" />
                 <div class="experience-title-date">
                     <div class="experience-title">
                         <b>Solutions Architect (Technical Owner)</b> — Loja do Sapo
@@ -1060,7 +1184,7 @@
         <!-- iCaiu - Systems Integration Architect -->
         <div class="experience-item">
             <div class="experience-header">
-                <img src="images/companies/logo-icaiu.svg" alt="iCaiu" loading="lazy" decoding="async" />
+                <img src="images/companies/logo-icaiu.svg" alt="iCaiu" width="360" height="118" loading="lazy" decoding="async" />
                 <div class="experience-title-date">
                     <div class="experience-title">
                         <b>Systems Integration Architect</b> — iCaiu
@@ -1099,7 +1223,7 @@
         <!-- WR Auto Peças -->
         <div class="experience-item">
             <div class="experience-header">
-                <img src="images/companies/logo-wr.svg" alt="WR Auto Peças" loading="lazy" decoding="async" />
+                <img src="images/companies/logo-wr.svg" alt="WR Auto Peças" width="868" height="570" loading="lazy" decoding="async" />
                 <div class="experience-title-date">
                     <div class="experience-title">
                         <b>Operations & Tech Support Specialist</b> — WR Auto Peças
@@ -1123,7 +1247,7 @@
 
 
                         <div class="skills-section">
-    <h2><lottie-player src="images/Da_Vinci.json" background="transparent" speed="1" style="width:20px; height:20px; display:inline-block; vertical-align:middle; margin-right:8px;" loop autoplay title="Key skills badge for software architecture and data engineering"></lottie-player> Key Skills in Software Architecture & Data Engineering</h2>
+    <h2><lottie-player src="images/Da_Vinci.json" background="transparent" speed="1" class="section-heading-icon" loop autoplay title="Key skills badge for software architecture and data engineering"></lottie-player> Key Skills in Software Architecture & Data Engineering</h2>
     <div class="skills-grid">
         <span>Python</span>
         <span>JavaScript</span>
@@ -1148,7 +1272,7 @@
 </div>
 
                         <div class="skills-section">
-    <h2><lottie-player src="images/Globe.json" background="transparent" speed="1" style="width:20px; height:20px; display:inline-block; vertical-align:middle; margin-right:8px;" loop autoplay title="Global education and engineering experience icon"></lottie-player> Education & Engineering Foundations</h2>
+    <h2><lottie-player src="images/Globe.json" background="transparent" speed="1" class="section-heading-icon" loop autoplay title="Global education and engineering experience icon"></lottie-player> Education & Engineering Foundations</h2>
     <div class="education-content">
         <div class="education-item">
             <div class="education-header">
@@ -1170,24 +1294,24 @@
 
 
                         <div class="skills-section">
-                            <h2><lottie-player src="images/link.json" background="transparent" speed="1" style="width:20px; height:20px; display:inline-block; vertical-align:middle; margin-right:8px;" loop autoplay title="Professional contact icon for inquiries"></lottie-player> Contact & Professional Inquiries</h2>
+                            <h2><lottie-player src="images/link.json" background="transparent" speed="1" class="section-heading-icon" loop autoplay title="Professional contact icon for inquiries"></lottie-player> Contact & Professional Inquiries</h2>
                             <div class="contact-grid">
                                 <div class="contact-item">
-                                    <a href="https://github.com/PkLavc" target="_blank" rel="noopener noreferrer"><lottie-player src="images/github.json" background="transparent" speed="1" style="width:42px; height:42px;" loop autoplay title="Patrick Araujo - GitHub Portfolio and Open Source Projects"></lottie-player></a>
+                                    <a href="https://github.com/PkLavc" target="_blank" rel="noopener noreferrer"><lottie-player src="images/github.json" background="transparent" speed="1" class="contact-item-icon" loop autoplay title="Patrick Araujo - GitHub Portfolio and Open Source Projects"></lottie-player></a>
                                     <span class="contact-value" data-href="https://github.com/PkLavc">PkLavc</span>
                                     <button class="copy-btn" type="button" data-copy="https://github.com/PkLavc" title="Copy to clipboard" aria-label="Copy GitHub profile URL to clipboard">
                                         🗎 <span>copy</span>
                                     </button>
                                 </div>
                                 <div class="contact-item">
-                                    <a href="https://www.linkedin.com/in/patrickajm/" target="_blank" rel="noopener noreferrer"><lottie-player src="images/linkedin.json" background="transparent" speed="1" style="width:42px; height:42px;" loop autoplay title="Patrick Araujo - Professional LinkedIn Profile"></lottie-player></a>
+                                    <a href="https://www.linkedin.com/in/patrickajm/" target="_blank" rel="noopener noreferrer"><lottie-player src="images/linkedin.json" background="transparent" speed="1" class="contact-item-icon" loop autoplay title="Patrick Araujo - Professional LinkedIn Profile"></lottie-player></a>
                                     <span class="contact-value" data-href="https://www.linkedin.com/in/patrickajm/">patrickajm</span>
                                     <button class="copy-btn" type="button" data-copy="https://www.linkedin.com/in/patrickajm/" title="Copy to clipboard" aria-label="Copy LinkedIn profile URL to clipboard">
                                         🗎 <span>copy</span>
                                     </button>
                                 </div>
                                 <div class="contact-item">
-                                    <a href="mailto:patrickajm@gmail.com" target="_blank" rel="noopener noreferrer"><lottie-player src="images/mail.json" background="transparent" speed="1" style="width:42px; height:42px;" loop autoplay title="Contact Patrick Araujo via Email"></lottie-player></a>
+                                    <a href="mailto:patrickajm@gmail.com" target="_blank" rel="noopener noreferrer"><lottie-player src="images/mail.json" background="transparent" speed="1" class="contact-item-icon" loop autoplay title="Contact Patrick Araujo via Email"></lottie-player></a>
                                     <span class="contact-value" data-href="mailto:patrickajm@gmail.com">patrickajm@gmail.com</span>
                                     <button class="copy-btn" type="button" data-copy="patrickajm@gmail.com" title="Copy to clipboard" aria-label="Copy email address to clipboard">
                                         🗎 <span>copy</span>
@@ -1199,94 +1323,187 @@
 
                     <div class="about-profile-img">
                         <div class="img-border">
-                            <img src="images/profile.svg" alt="Patrick Araujo profile avatar for solutions architect and systems engineer">
+                            <img src="images/profile.svg" alt="Patrick Araujo profile avatar for solutions architect and systems engineer" width="250" height="250" decoding="async">
                         </div>
                     </div>
                 </div>
             </div>
         </div>
         </main>
-        <script src="js/jquery.min.js" defer></script>
-        <script src="js/particles.min.js"></script>
-        <script src="js/index.js" defer></script>
-        
         <script>
-            // Dynamic semester calculation
-            function updateSemester() {
-                const currentYear = new Date().getFullYear();
-                const currentMonth = new Date().getMonth() + 1; // 1-12
-                const currentDay = new Date().getDate();
-                
-                // Start date: February 2024 (1st semester)
-                const startDate = new Date(2024, 1, 1); // February 1, 2024
-                const currentDate = new Date();
-                
-                // Calculate months since start
-                const monthsSinceStart = (currentYear - startDate.getFullYear()) * 12 + (currentMonth - startDate.getMonth());
-                
-                // Calculate semester (assuming 6 months per year, 2 semesters)
-                // Semester 1: February - July, Semester 2: August - January
-                let semester;
-                
-                if (currentMonth >= 2 && currentMonth <= 7) {
-                    // First semester (February to July)
-                    semester = Math.ceil(monthsSinceStart / 6) * 2 - 1;
-                } else {
-                    // Second semester (August to January)
-                    semester = Math.ceil(monthsSinceStart / 6) * 2;
+            (function() {
+                function isTouchOrMobile() {
+                    return (
+                        'ontouchstart' in window ||
+                        navigator.maxTouchPoints > 0 ||
+                        navigator.msMaxTouchPoints > 0 ||
+                        window.innerWidth < 768
+                    );
                 }
-                
-                // Cap at 9th semester (final semester)
-                if (semester > 9) semester = 9;
-                
-                const semesterElement = document.getElementById('current-semester');
-                if (semesterElement) {
-                    semesterElement.textContent = semester + (semester === 1 ? 'st' : semester === 2 ? 'nd' : semester === 3 ? 'rd' : 'th') + ' Semester';
-                }
-            }
-            
-            // Update semester on page load
-            updateSemester();
 
-            // Contact value and copy button functionality
-            document.querySelectorAll('.contact-value').forEach(span => {
-                span.addEventListener('click', function() {
-                    const href = this.getAttribute('data-href');
-                    if (href) {
-                        window.open(href, '_blank');
+                function updateSemester() {
+                    const currentMonth = new Date().getMonth() + 1;
+                    const startDate = new Date(2024, 1, 1);
+                    const monthsSinceStart = (new Date().getFullYear() - startDate.getFullYear()) * 12 + (currentMonth - startDate.getMonth());
+                    let semester = currentMonth >= 2 && currentMonth <= 7
+                        ? Math.ceil(monthsSinceStart / 6) * 2 - 1
+                        : Math.ceil(monthsSinceStart / 6) * 2;
+
+                    if (semester > 9) {
+                        semester = 9;
                     }
-                });
-            });
 
-            // Copy to clipboard functionality
-            document.querySelectorAll('.copy-btn').forEach(button => {
-                button.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const textToCopy = this.getAttribute('data-copy');
-                    const originalText = this.innerHTML;
-                    
-                    // Copy to clipboard
-                    navigator.clipboard.writeText(textToCopy).then(() => {
-                        // Visual feedback
-                        this.classList.add('copied');
-                        this.innerHTML = '✓ <span>copied</span>';
-                        
-                        // Reset after 2 seconds
-                        setTimeout(() => {
-                            this.classList.remove('copied');
-                            this.innerHTML = originalText;
-                        }, 2000);
-                    }).catch(err => {
-                        console.error('Failed to copy:', err);
+                    const semesterElement = document.getElementById('current-semester');
+                    if (semesterElement) {
+                        semesterElement.textContent = semester + (semester === 1 ? 'st' : semester === 2 ? 'nd' : semester === 3 ? 'rd' : 'th') + ' Semester';
+                    }
+                }
+
+                function setupMenu() {
+                    const nav = document.getElementById('navigation-content');
+                    const menuButton = document.querySelector('.menubar');
+
+                    if (!nav || !menuButton) {
+                        return;
+                    }
+
+                    function closeMenu() {
+                        nav.classList.remove('is-open');
+                    }
+
+                    menuButton.addEventListener('click', function(event) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        nav.classList.toggle('is-open');
                     });
-                });
-            });
-        </script>
-        <!--particles script-->
-                <script>
-            if (typeof window.particlesJS === "function" && document.getElementById("particles")) {
-                    particlesJS("particles", {"particles":{"number":{"value":40,"density":{"enable":true,"value_area":800}},"color":{"value":"#ffffff"},"shape":{"type":"circle","stroke":{"width":0,"color":"#000000"},"polygon":{"nb_sides":5},"image":{"src":"images/github.svg","width":100,"height":100}},"opacity":{"value":0.5,"random":false,"anim":{"enable":false,"speed":1,"opacity_min":0.1,"sync":false}},"size":{"value":3,"random":true,"anim":{"enable":false,"speed":40,"size_min":0.1,"sync":false}},"line_linked":{"enable":true,"distance":150,"color":"#ffffff","opacity":0.4,"width":1},"move":{"enable":true,"speed":6,"direction":"none","random":false,"straight":false,"out_mode":"out","bounce":false,"attract":{"enable":false,"rotateX":600,"rotateY":1200}}},"interactivity":{"detect_on":"canvas","events":{"onhover":{"enable":true,"mode":"repulse"},"onclick":{"enable":true,"mode":"push"},"resize":true},"modes":{"grab":{"distance":400,"line_linked":{"opacity":1}},"bubble":{"distance":400,"size":40,"duration":2,"opacity":8,"speed":3},"repulse":{"distance":200,"duration":0.4},"push":{"particles_nb":4},"remove":{"particles_nb":2}}},"retina_detect":true});
-            }
+
+                    document.addEventListener('click', function(event) {
+                        if (nav.classList.contains('is-open') && !nav.contains(event.target) && !menuButton.contains(event.target)) {
+                            closeMenu();
+                        }
+                    });
+
+                    nav.querySelectorAll('a').forEach(function(link) {
+                        link.addEventListener('click', function(event) {
+                            if (link.id === 'about-link') {
+                                event.preventDefault();
+                            }
+                            closeMenu();
+                        });
+                    });
+                }
+
+                function setupCursor() {
+                    if (isTouchOrMobile()) {
+                        return;
+                    }
+
+                    const cursor = document.querySelector('.cursor');
+                    if (!cursor) {
+                        return;
+                    }
+
+                    function setCursorScale(scale, opacity) {
+                        cursor.dataset.scale = scale;
+                        cursor.style.opacity = opacity;
+                    }
+
+                    window.addEventListener('mousemove', function(event) {
+                        const scale = cursor.dataset.scale || '1';
+                        cursor.style.transform = 'translate(' + (event.clientX - 25) + 'px, ' + (event.clientY - 25) + 'px) scale(' + scale + ')';
+                    }, { passive: true });
+
+                    document.querySelectorAll('a, .menubar, .copy-btn, .contact-value, .credits-trigger').forEach(function(element) {
+                        element.addEventListener('mouseenter', function() {
+                            setCursorScale('1.4', '1');
+                        });
+                        element.addEventListener('mouseleave', function() {
+                            setCursorScale('1', '0.6');
+                        });
+                    });
+                }
+
+                function setupContacts() {
+                    document.querySelectorAll('.contact-value').forEach(function(span) {
+                        span.addEventListener('click', function() {
+                            const href = span.getAttribute('data-href');
+                            if (href) {
+                                window.open(href, '_blank', 'noopener,noreferrer');
+                            }
+                        });
+                    });
+
+                    document.querySelectorAll('.copy-btn').forEach(function(button) {
+                        button.addEventListener('click', function(event) {
+                            event.preventDefault();
+                            const textToCopy = button.getAttribute('data-copy');
+                            const originalText = button.innerHTML;
+
+                            navigator.clipboard.writeText(textToCopy).then(function() {
+                                button.classList.add('copied');
+                                button.innerHTML = '✓ <span>copied</span>';
+
+                                window.setTimeout(function() {
+                                    button.classList.remove('copied');
+                                    button.innerHTML = originalText;
+                                }, 2000);
+                            }).catch(function() {
+                                button.innerHTML = originalText;
+                            });
+                        });
+                    });
+                }
+
+                function loadDeferredScript(src) {
+                    if (document.querySelector('script[src="' + src + '"]')) {
+                        return;
+                    }
+
+                    const script = document.createElement('script');
+                    script.src = src;
+                    script.defer = true;
+                    document.head.appendChild(script);
+                }
+
+                function setupDeferredLottie() {
+                    if (!document.querySelector('lottie-player')) {
+                        return;
+                    }
+
+                    const load = function() {
+                        loadDeferredScript('https://cdn.jsdelivr.net/npm/@lottiefiles/lottie-player@1.5.7/dist/lottie-player.js');
+                    };
+
+                    if ('requestIdleCallback' in window) {
+                        window.requestIdleCallback(load, { timeout: 1500 });
+                    } else {
+                        window.setTimeout(load, 1200);
+                    }
+                }
+
+                window.toggleCredits = function() {
+                    const credits = document.getElementById('credits-list');
+                    const trigger = document.getElementById('credits-trigger-btn');
+
+                    if (!credits) {
+                        return;
+                    }
+
+                    const isOpen = credits.style.display === 'block';
+                    credits.style.display = isOpen ? 'none' : 'block';
+
+                    if (trigger) {
+                        trigger.setAttribute('aria-expanded', isOpen ? 'false' : 'true');
+                    }
+                };
+
+                document.body.classList.add('ready');
+                updateSemester();
+                setupMenu();
+                setupCursor();
+                setupContacts();
+                window.addEventListener('load', setupDeferredLottie, { once: true });
+            }());
                 </script>
 
 <footer class="footer-minimal">
@@ -1296,7 +1513,7 @@
             <span class="github-dev-badge">Member of <b>GitHub Developer Program</b></span> • 
             <button id="credits-trigger-btn" class="credits-trigger" type="button" onclick="toggleCredits()" aria-controls="credits-list" aria-expanded="false">Resources & Attributions</button>
         </p>
-        <div id="credits-list" class="credits-hidden" style="display: none;">
+        <div id="credits-list" class="credits-hidden">
             <div class="credits-grid">
                 <a href="https://lordicon.com/" target="_blank" rel="noopener noreferrer">Icons</a>
                 <a href="https://vincentgarreau.com/" target="_blank" rel="noopener noreferrer">VFX</a>
@@ -1305,7 +1522,7 @@
         </div>
     </div>
 </footer>
-<div class="visually-hidden" style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;">
+<div class="visually-hidden">
     <p>Enterprise systems architect focused on corporate production systems, systems architecture, API integration, automation workers, SRE, Node.js, Python, data pipelines, cloud-native backend engineering, observability and scalable process interoperability.</p>
 </div>
     
