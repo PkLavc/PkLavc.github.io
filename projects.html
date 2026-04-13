@@ -6,10 +6,10 @@
         <meta name="author" content="PkLavc" />
             
     <!-- SEO Enhanced Meta Tags -->
-    <meta name="description" content="Projects by Patrick Araujo (PkLavc) - Portfolio with backend projects, APIs, data pipelines, Python and JavaScript applications. Professional work for US market.">
+    <meta name="description" content="Backend engineering projects focused on automation, API integrations, ETL pipelines, and scalable operational systems built with Python, Node.js, SQL, and cloud services.">
     <!-- Open Graph Meta Tags -->
-    <meta property="og:title" content="Engineering Portfolio | Patrick Araujo | Automation & ERP Integration">
-    <meta property="og:description" content="Portfolio of engineering projects and automation results, including Zoho, Omie and SIGE ERP synchronization. Demonstrates scalable data pipelines, secure API integration, and production-grade process automation.">
+    <meta property="og:title" content="Backend Projects | Patrick Araujo | Automation & API Integrations">
+    <meta property="og:description" content="Portfolio of backend integration and automation work covering OAuth orchestration, ERP sync, ETL pipelines, and real-world operational reporting systems.">
     <meta property="og:url" content="https://pklavc.github.io/projects.html">
     <meta property="og:type" content="website">
     <meta property="og:image" content="https://pklavc.github.io/images/Lavc.webp">
@@ -20,18 +20,18 @@
     
     <!-- Twitter Card Meta Tags -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Engineering Portfolio | Patrick Araujo | Automation & ERP Integration">
-    <meta name="twitter:description" content="Engineering portfolio of Zoho, Omie and SIGE automation projects. Highlights scalable data pipelines, REST API integration and automated ERP synchronization.">
+    <meta name="twitter:title" content="Backend Projects | Patrick Araujo | Automation & API Integrations">
+    <meta name="twitter:description" content="Backend portfolio focused on automation, API integrations, ETL pipelines, and scalable reporting systems.">
     <meta name="twitter:image" content="https://pklavc.github.io/images/Lavc.webp">
-    <meta name="twitter:image:alt" content="Brand portrait of enterprise systems architect and automation leader Patrick Araujo">
+    <meta name="twitter:image:alt" content="Brand portrait of backend engineer and automation specialist Patrick Araujo">
     <meta name="twitter:site" content="@PkLavc">
     <meta name="twitter:creator" content="@PkLavc">
     <link rel="canonical" href="https://pklavc.github.io/projects.html">
     <link rel="alternate" href="https://pklavc.github.io/projects.html" hreflang="en">
     <meta name="robots" content="index, follow">
-    <meta property="og:image:alt" content="Brand portrait of enterprise systems architect and automation leader Patrick Araujo">
-    <meta name="twitter:image:alt" content="Brand portrait of enterprise systems architect and automation leader Patrick Araujo">
-        <title>Engineering Portfolio | Patrick Araujo | Automation & ERP Integration</title>
+    <meta property="og:image:alt" content="Brand portrait of backend engineer and automation specialist Patrick Araujo">
+    <meta name="twitter:image:alt" content="Brand portrait of backend engineer and automation specialist Patrick Araujo">
+        <title>Backend Projects | Patrick Araujo | Automation & API Integrations</title>
     <link rel="icon" type="image/svg+xml" href="images/favicon.svg">
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -44,402 +44,123 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.2.6/gsap.min.js" defer></script>
     </head>
     <body>
-        <!-- Project-Specific CreativeWork and LocalBusiness JSON-LD -->
+        <!-- Projects Schema -->
         <script type="application/ld+json">
         {
             "@context": "https://schema.org",
             "@graph": [
                 {
                     "@type": "CollectionPage",
-            "name": "Projects - Patrick Araujo | Software Engineer Portfolio",
-            "description": "Backend portfolio - Projects, APIs, automation and data engineering with Python, JavaScript and AWS. GitHub Developer Program Member with AWS Cloud Practitioner certification.",
-            "url": "https://pklavc.github.io/projects.html",
-            "image": "https://pklavc.github.io/images/Lavc.webp",
-            "author": {
-                "@type": "Person",
-                "name": "Patrick Araujo",
-                "url": "https://pklavc.github.io/",
-                "sameAs": [
-                    "https://github.com/PkLavc",
-                    "https://www.linkedin.com/in/patrickajm/"
-                ]
-            },
-            "hasPart": [
-                {
-                    "@type": "CreativeWork",
-                    "@id": "https://github.com/operacoesicaiu/worker-google-auth",
-                    "name": "Google Auth Worker",
-                    "description": "Orchestration entry point for API integration hub. Generates Google OAuth access tokens and triggers downstream workers via GitHub Actions.",
-                    "url": "https://github.com/operacoesicaiu/worker-google-auth",
-                    "image": "https://pklavc.github.io/images/Lavc.webp",
-                    "author": {
-                        "@type": "Person",
-                        "name": "Patrick Araujo"
-                    },
-                    "dateCreated": "2024-01-01",
-                    "keywords": "API Integration, OAuth, Google Auth, GitHub Actions, Automation",
-                    "programmingLanguage": "JavaScript",
-                    "license": "MIT",
-                    "interactionStatistic": {
-                        "@type": "InteractionCounter",
-                        "interactionType": "https://schema.org/WatchAction",
-                        "userInteractionCount": 0
-                    }
-                },
-                {
-                    "@type": "CreativeWork",
-                    "@id": "https://github.com/operacoesicaiu/worker-zoho-integration",
-                    "name": "Zoho Integration Worker",
-                    "description": "Retrieves records from Zoho Creator API and synchronizes mapped data to Google Sheets with secure handling.",
-                    "url": "https://github.com/operacoesicaiu/worker-zoho-integration",
-                    "image": "https://pklavc.github.io/images/Lavc.webp",
-                    "author": {
-                        "@type": "Person",
-                        "name": "Patrick Araujo"
-                    },
-                    "dateCreated": "2024-02-01",
-                    "keywords": "API Integration, Zoho Creator, Google Sheets, Data Synchronization",
-                    "programmingLanguage": "JavaScript",
-                    "license": "MIT",
-                    "interactionStatistic": {
-                        "@type": "InteractionCounter",
-                        "interactionType": "https://schema.org/WatchAction",
-                        "userInteractionCount": 0
-                    }
-                },
-                {
-                    "@type": "CreativeWork",
-                    "@id": "https://github.com/operacoesicaiu/worker-hablla-integration",
-                    "name": "Hablla Integration Worker",
-                    "description": "Fetches Hablla cards, attendance, and client data, processes and pushes to Google Sheets with duplicate removal.",
-                    "url": "https://github.com/operacoesicaiu/worker-hablla-integration",
-                    "image": "https://pklavc.github.io/images/Lavc.webp",
-                    "author": {
-                        "@type": "Person",
-                        "name": "Patrick Araujo"
-                    },
-                    "dateCreated": "2024-03-01",
-                    "keywords": "API Integration, Hablla API, Google Sheets, Data Processing",
-                    "programmingLanguage": "JavaScript",
-                    "license": "MIT",
-                    "interactionStatistic": {
-                        "@type": "InteractionCounter",
-                        "interactionType": "https://schema.org/WatchAction",
-                        "userInteractionCount": 0
-                    }
-                },
-                {
-                    "@type": "CreativeWork",
-                    "@id": "https://github.com/operacoesicaiu/worker-zenvia-integration",
-                    "name": "Zenvia Integration Worker",
-                    "description": "Consumes Zenvia call reporting API and writes filtered call records to Google Sheets.",
-                    "url": "https://github.com/operacoesicaiu/worker-zenvia-integration",
-                    "image": "https://pklavc.github.io/images/Lavc.webp",
-                    "author": {
-                        "@type": "Person",
-                        "name": "Patrick Araujo"
-                    },
-                    "dateCreated": "2024-04-01",
-                    "keywords": "API Integration, Zenvia Voice API, Google Sheets, Call Reporting",
-                    "programmingLanguage": "JavaScript",
-                    "license": "MIT",
-                    "interactionStatistic": {
-                        "@type": "InteractionCounter",
-                        "interactionType": "https://schema.org/WatchAction",
-                        "userInteractionCount": 0
-                    }
-                },
-                {
-                    "@type": "CreativeWork",
-                    "@id": "https://github.com/operacoesicaiu/worker-sige-auth",
-                    "name": "SIGE Integration Worker",
-                    "description": "Integrates SIGE ERP orders with Google Sheets, generating consolidated billing datasets.",
-                    "url": "https://github.com/operacoesicaiu/worker-sige-auth",
-                    "image": "https://pklavc.github.io/images/Lavc.webp",
-                    "author": {
-                        "@type": "Person",
-                        "name": "Patrick Araujo"
-                    },
-                    "dateCreated": "2024-05-01",
-                    "keywords": "API Integration, SIGE ERP, Google Sheets, Billing",
-                    "programmingLanguage": "JavaScript",
-                    "license": "MIT",
-                    "interactionStatistic": {
-                        "@type": "InteractionCounter",
-                        "interactionType": "https://schema.org/WatchAction",
-                        "userInteractionCount": 0
-                    }
-                },
-                {
-                    "@type": "CreativeWork",
-                    "@id": "https://github.com/lojadosapo/worker-omie-integration",
-                    "name": "Omie Integration Worker",
-                    "description": "Fetches sales orders and product data from Omie ERP API and synchronizes to Google Sheets.",
-                    "url": "https://github.com/lojadosapo/worker-omie-integration",
-                    "image": "https://pklavc.github.io/images/Lavc.webp",
-                    "author": {
-                        "@type": "Person",
-                        "name": "Patrick Araujo"
-                    },
-                    "dateCreated": "2024-06-01",
-                    "keywords": "API Integration, Omie ERP, Google Sheets, Sales Data",
-                    "programmingLanguage": "JavaScript",
-                    "license": "MIT",
-                    "interactionStatistic": {
-                        "@type": "InteractionCounter",
-                        "interactionType": "https://schema.org/WatchAction",
-                        "userInteractionCount": 0
-                    }
-                },
-                {
-                    "@type": "CreativeWork",
-                    "@id": "https://github.com/PkLavc/codepulse-monorepo",
-                    "name": "CodePulse Monorepo",
-                    "description": "A high-performance online IDE built as a standalone HTML application. Features a robust Node.js backend on Render and 85%+ QA coverage with Playwright E2E testing.",
-                    "url": "https://github.com/PkLavc/codepulse-monorepo",
-                    "image": "https://pklavc.github.io/images/Lavc.webp",
-                    "author": {
-                        "@type": "Person",
-                        "name": "Patrick Araujo"
-                    },
-                    "dateCreated": "2026-01-01",
-                    "keywords": "ETL Pipelines, Process Engineering, Data Infrastructure, Full-Stack Engineering, Vanilla JS, Fastify, Glot.io",
-                    "programmingLanguage": "JavaScript, HTML, CSS",
-                    "license": "MIT",
-                    "interactionStatistic": {
-                        "@type": "InteractionCounter",
-                        "interactionType": "https://schema.org/WatchAction",
-                        "userInteractionCount": 0
-                    }
-                },
-                {
-                    "@type": "CreativeWork",
-                    "@id": "https://github.com/PkLavc/os-resource-optimizer",
-                    "name": "OS Resource Optimizer",
-                    "description": "High-performance engine designed to optimize CPU scheduling and memory allocation. Demonstrates low-level resource management and algorithmic efficiency.",
-                    "url": "https://github.com/PkLavc/os-resource-optimizer",
-                    "image": "https://pklavc.github.io/images/Lavc.webp",
-                    "author": {
-                        "@type": "Person",
-                        "name": "Patrick Araujo"
-                    },
-                    "dateCreated": "2025-06-01",
-                    "keywords": "ETL Pipelines, Process Engineering, Data Infrastructure, Systems Engineering, C++, OS Internals, HPC",
-                    "programmingLanguage": "C++",
-                    "license": "MIT",
-                    "interactionStatistic": {
-                        "@type": "InteractionCounter",
-                        "interactionType": "https://schema.org/WatchAction",
-                        "userInteractionCount": 0
-                    }
-                },
-                {
-                    "@type": "CreativeWork",
-                    "@id": "https://github.com/PkLavc/saas-backend-platform",
-                    "name": "Multi-Tenant SaaS Platform",
-                    "description": "Enterprise-grade SaaS backend featuring robust data isolation (row-level tenancy), RBAC security, and background job processing with BullMQ.",
-                    "url": "https://github.com/PkLavc/saas-backend-platform",
-                    "image": "https://pklavc.github.io/images/Lavc.webp",
-                    "author": {
-                        "@type": "Person",
-                        "name": "Patrick Araujo"
-                    },
-                    "dateCreated": "2025-09-01",
-                    "keywords": "ETL Pipelines, Process Engineering, Data Infrastructure, Backend Architecture, TypeScript, NestJS, Postgres",
-                    "programmingLanguage": "TypeScript, JavaScript",
-                    "license": "MIT",
-                    "interactionStatistic": {
-                        "@type": "InteractionCounter",
-                        "interactionType": "https://schema.org/WatchAction",
-                        "userInteractionCount": 0
-                    }
-                },
-                {
-                    "@type": "CreativeWork",
-                    "@id": "https://github.com/PkLavc/cipher-gate",
-                    "name": "Cipher Gate Proxy",
-                    "description": "High-performance Zero-Trust proxy for data privacy. Implements AES-256 encryption, dynamic data masking (DDM), and automated PII detection.",
-                    "url": "https://github.com/PkLavc/cipher-gate",
-                    "image": "https://pklavc.github.io/images/Lavc.webp",
-                    "author": {
-                        "@type": "Person",
-                        "name": "Patrick Araujo"
-                    },
-                    "dateCreated": "2025-08-01",
-                    "keywords": "ETL Pipelines, Process Engineering, Data Infrastructure, Cybersecurity, Python, Cryptography, Zero-Trust",
-                    "programmingLanguage": "Python",
-                    "license": "MIT",
-                    "interactionStatistic": {
-                        "@type": "InteractionCounter",
-                        "interactionType": "https://schema.org/WatchAction",
-                        "userInteractionCount": 0
-                    }
-                },
-                {
-                    "@type": "CreativeWork",
-                    "@id": "https://github.com/PkLavc/event-driven-integration-service",
-                    "name": "Event-Driven Service",
-                    "description": "Reliable webhook processing engine for mission-critical data from Stripe and PayPal. Features HMAC security and distributed tracing.",
-                    "url": "https://github.com/PkLavc/event-driven-integration-service",
-                    "image": "https://pklavc.github.io/images/Lavc.webp",
-                    "author": {
-                        "@type": "Person",
-                        "name": "Patrick Araujo"
-                    },
-                    "dateCreated": "2025-07-01",
-                    "keywords": "ETL Pipelines, Process Engineering, Data Infrastructure, Distributed Systems, NestJS, BullMQ, OpenTelemetry",
-                    "programmingLanguage": "TypeScript, JavaScript",
-                    "license": "MIT",
-                    "interactionStatistic": {
-                        "@type": "InteractionCounter",
-                        "interactionType": "https://schema.org/WatchAction",
-                        "userInteractionCount": 0
-                    }
-                },
-                {
-                    "@type": "CreativeWork",
-                    "@id": "https://github.com/PkLavc/aegis-sentinel",
-                    "name": "Aegis Sentinel",
-                    "description": "Autonomous infrastructure recovery engine featuring predictive anomaly detection and self-healing capabilities for critical backend systems.",
-                    "url": "https://github.com/PkLavc/aegis-sentinel",
-                    "image": "https://pklavc.github.io/images/Lavc.webp",
-                    "author": {
-                        "@type": "Person",
-                        "name": "Patrick Araujo"
-                    },
-                    "dateCreated": "2025-10-01",
-                    "keywords": "ETL Pipelines, Process Engineering, Data Infrastructure, SRE, AI, Anomaly Detection",
-                    "programmingLanguage": "Python",
-                    "license": "MIT",
-                    "interactionStatistic": {
-                        "@type": "InteractionCounter",
-                        "interactionType": "https://schema.org/WatchAction",
-                        "userInteractionCount": 0
-                    }
-                },
-                {
-                    "@type": "CreativeWork",
-                    "@id": "https://github.com/PkLavc/cloud-deployment-showcase",
-                    "name": "Cloud Deployment Showcase",
-                    "description": "Production-ready infrastructure demonstrating container orchestration, Infrastructure as Code (IaC), and automated CI/CD pipelines.",
-                    "url": "https://pklavc.github.io/cloud-deployment-showcase",
-                    "image": "https://pklavc.github.io/images/Lavc.webp",
-                    "author": {
-                        "@type": "Person",
-                        "name": "Patrick Araujo"
-                    },
-                    "dateCreated": "2025-11-01",
-                    "keywords": "ETL Pipelines, Process Engineering, Data Infrastructure, DevOps, Docker, Nginx, GitHub Actions",
-                    "programmingLanguage": "Docker, YAML, Shell",
-                    "license": "MIT",
-                    "interactionStatistic": {
-                        "@type": "InteractionCounter",
-                        "interactionType": "https://schema.org/WatchAction",
-                        "userInteractionCount": 0
-                    }
-                }
-            ]
-        },
-            {
-                "@type": "LocalBusiness",
-                "name": "Patrick Araujo - Software Engineering Services",
-                "image": "https://pklavc.github.io/images/Lavc.webp",
-                "url": "https://pklavc.github.io/projects.html",
-                "telephone": "+1-305-XXX-XXXX",
-                "address": {
-                    "@type": "PostalAddress",
-                    "streetAddress": "Remote / Available for Miami-based projects",
-                    "addressLocality": "Miami",
-                    "addressRegion": "FL",
-                    "postalCode": "33101",
-                    "addressCountry": "US"
-                },
-                "geo": {
-                    "@type": "GeoCoordinates",
-                    "latitude": 25.7617,
-                    "longitude": -80.1918
-                },
-                "openingHoursSpecification": [
-                    {
-                        "@type": "OpeningHoursSpecification",
-                        "dayOfWeek": [
-                            "Monday",
-                            "Tuesday", 
-                            "Wednesday",
-                            "Thursday",
-                            "Friday"
-                        ],
-                        "opens": "09:00",
-                        "closes": "18:00"
-                    }
-                ],
-                "sameAs": [
-                    "https://github.com/PkLavc",
-                    "https://www.linkedin.com/in/patrickajm/",
-                    "https://twitter.com/PkLavc"
-                ],
-                "description": "Software Engineer & Data Architect specializing in Backend Systems, AI Engineering, and Intelligent Automation. Expert in Python, JavaScript, and high-scale Data Pipelines. Available for remote work and Miami/Florida-based projects.",
-                "priceRange": "$$$",
-                "serviceArea": {
-                    "@type": "GeoCircle",
-                    "geoMidpoint": {
-                        "@type": "GeoCoordinates",
-                        "latitude": 25.7617,
-                        "longitude": -80.1918
-                    },
-                    "geoRadius": "100000"
-                },
-                "availableService": [
-                    {
-                        "@type": "Service",
-                        "name": "Backend Development",
-                        "description": "Custom backend systems, APIs, and server-side applications"
-                    },
-                    {
-                        "@type": "Service", 
-                        "name": "Data Engineering",
-                        "description": "Data pipelines, ETL processes, and data infrastructure"
-                    },
-                    {
-                        "@type": "Service",
-                        "name": "AI Engineering",
-                        "description": "AI workflows, machine learning integration, and intelligent automation"
-                    },
-                    {
-                        "@type": "Service",
-                        "name": "Cloud Architecture",
-                        "description": "AWS/Azure cloud solutions and infrastructure design"
-                    }
-                ],
-                "hasOfferCatalog": {
-                    "@type": "OfferCatalog",
-                    "name": "Software Engineering Services",
-                    "itemListElement": [
+                    "@id": "https://pklavc.github.io/projects.html#projects",
+                    "url": "https://pklavc.github.io/projects.html",
+                    "name": "Backend Projects | Patrick Araujo",
+                    "description": "Portfolio of backend integration, automation, ETL, and ERP synchronization projects.",
+                    "hasPart": [
                         {
-                            "@type": "Offer",
-                            "itemOffered": {
-                                "@type": "Service",
-                                "name": "Backend Development"
-                            }
+                            "@type": "CreativeWork",
+                            "name": "Google Auth Worker",
+                            "url": "https://github.com/operacoesicaiu/worker-google-auth",
+                            "description": "OAuth orchestration layer for issuing Google access tokens and dispatching downstream integration jobs.",
+                            "programmingLanguage": "JavaScript"
                         },
                         {
-                            "@type": "Offer",
-                            "itemOffered": {
-                                "@type": "Service", 
-                                "name": "Data Engineering"
-                            }
+                            "@type": "CreativeWork",
+                            "name": "Zoho Integration Worker",
+                            "url": "https://github.com/operacoesicaiu/worker-zoho-integration",
+                            "description": "Data sync worker that extracts Zoho Creator records, normalizes payloads, and publishes structured reporting datasets.",
+                            "programmingLanguage": "JavaScript"
                         },
                         {
-                            "@type": "Offer",
-                            "itemOffered": {
-                                "@type": "Service",
-                                "name": "AI Engineering"
-                            }
+                            "@type": "CreativeWork",
+                            "name": "Hablla Integration Worker",
+                            "url": "https://github.com/operacoesicaiu/worker-hablla-integration",
+                            "description": "Operational data flow that aggregates, deduplicates, and exports Hablla records for centralized reporting.",
+                            "programmingLanguage": "JavaScript"
+                        },
+                        {
+                            "@type": "CreativeWork",
+                            "name": "Zenvia Integration Worker",
+                            "url": "https://github.com/operacoesicaiu/worker-zenvia-integration",
+                            "description": "Analytics ingestion worker that transforms Zenvia call reporting into dashboard-ready datasets.",
+                            "programmingLanguage": "JavaScript"
+                        },
+                        {
+                            "@type": "CreativeWork",
+                            "name": "SIGE Integration Worker",
+                            "url": "https://github.com/operacoesicaiu/worker-sige-auth",
+                            "description": "ERP synchronization workflow for transforming SIGE orders into consolidated billing datasets.",
+                            "programmingLanguage": "JavaScript"
+                        },
+                        {
+                            "@type": "CreativeWork",
+                            "name": "Omie Integration Worker",
+                            "url": "https://github.com/lojadosapo/worker-omie-integration",
+                            "description": "ERP integration workflow connecting Omie sales and product APIs to downstream reporting and operations.",
+                            "programmingLanguage": "JavaScript"
+                        },
+                        {
+                            "@type": "CreativeWork",
+                            "name": "CodePulse Monorepo",
+                            "url": "https://github.com/PkLavc/codepulse-monorepo",
+                            "description": "A high-performance online IDE built as a standalone HTML application. Features a robust Node.js backend on Render and 85%+ QA coverage with Playwright E2E testing.",
+                            "programmingLanguage": "JavaScript, HTML, CSS"
+                        },
+                        {
+                            "@type": "CreativeWork",
+                            "name": "OS Resource Optimizer",
+                            "url": "https://github.com/PkLavc/os-resource-optimizer",
+                            "description": "High-performance engine designed to optimize CPU scheduling and memory allocation. Demonstrates low-level resource management and algorithmic efficiency.",
+                            "programmingLanguage": "C++"
+                        },
+                        {
+                            "@type": "CreativeWork",
+                            "name": "Multi-Tenant SaaS Platform",
+                            "url": "https://github.com/PkLavc/saas-backend-platform",
+                            "description": "Enterprise-grade SaaS backend featuring robust data isolation (row-level tenancy), RBAC security, and background job processing with BullMQ.",
+                            "programmingLanguage": "TypeScript, JavaScript"
+                        },
+                        {
+                            "@type": "CreativeWork",
+                            "name": "Cipher Gate Proxy",
+                            "url": "https://github.com/PkLavc/cipher-gate",
+                            "description": "High-performance Zero-Trust proxy for data privacy. Implements AES-256 encryption, dynamic data masking (DDM), and automated PII detection.",
+                            "programmingLanguage": "Python"
+                        },
+                        {
+                            "@type": "CreativeWork",
+                            "name": "Event-Driven Service",
+                            "url": "https://github.com/PkLavc/event-driven-integration-service",
+                            "description": "Reliable webhook processing engine for mission-critical data from Stripe and PayPal. Features HMAC security and distributed tracing.",
+                            "programmingLanguage": "TypeScript, JavaScript"
+                        },
+                        {
+                            "@type": "CreativeWork",
+                            "name": "Aegis Sentinel",
+                            "url": "https://github.com/PkLavc/aegis-sentinel",
+                            "description": "Autonomous infrastructure recovery engine featuring predictive anomaly detection and self-healing capabilities for critical backend systems.",
+                            "programmingLanguage": "Python"
+                        },
+                        {
+                            "@type": "CreativeWork",
+                            "name": "Cloud Deployment Showcase",
+                            "url": "https://github.com/PkLavc/cloud-deployment-showcase",
+                            "description": "Production-ready infrastructure demonstrating container orchestration, Infrastructure as Code (IaC), and automated CI/CD pipelines.",
+                            "programmingLanguage": "Docker, YAML, Shell"
                         }
                     ]
+                },
+                {
+                    "@type": "Person",
+                    "@id": "https://pklavc.github.io/#person",
+                    "name": "Patrick Araujo",
+                    "url": "https://pklavc.github.io/",
+                    "jobTitle": "Backend Software Engineer | Automation, API Integrations & Scalable Systems",
+                    "sameAs": [
+                        "https://github.com/PkLavc",
+                        "https://www.linkedin.com/in/patrickajm/"
+                    ]
                 }
-            }
-        ]
+            ]
         }
         </script>
 
@@ -476,16 +197,16 @@
                         <div class="projects-grid">
                             <div class="project-card" role="article">
                                 <div class="project-header">
-                                    <span class="project-category">API Integration</span>
+                                    <span class="project-category">Integration Architecture</span>
                                     <span class="project-tech">JavaScript • GitHub Actions • OAuth</span>
                                 </div>
                                 <h2>Google Auth Worker</h2>
-                                <p>Orchestration entry point for API integration hub. Generates Google OAuth access tokens and triggers downstream workers via GitHub Actions.</p>
-                                <p class="project-caption">Secure orchestration for OAuth data flows and modular worker dispatch.</p>
+                                <p>Built the OAuth orchestration layer in JavaScript and GitHub Actions to issue Google access tokens and trigger downstream integration jobs.</p>
+                                <p class="project-caption">Centralized authentication and worker dispatch for production reporting pipelines.</p>
                                 <div class="project-features">
-                                    <span>Automation</span>
-                                    <span>OAuth</span>
-                                    <span>GitHub Actions</span>
+                                    <span>OAuth lifecycle</span>
+                                    <span>Job orchestration</span>
+                                    <span>API security</span>
                                 </div>
                                 <div class="project-actions">
                                     <a href="https://github.com/operacoesicaiu/worker-google-auth" target="_blank" rel="noopener noreferrer" class="project-link">View on GitHub</a>
@@ -494,16 +215,16 @@
 
                             <div class="project-card" role="article">
                                 <div class="project-header">
-                                    <span class="project-category">API Integration</span>
+                                    <span class="project-category">ETL Pipeline</span>
                                     <span class="project-tech">JavaScript • GitHub Actions • Google Sheets</span>
                                 </div>
                                 <h2>Zoho Integration Worker</h2>
-                                <p>Retrieves records from Zoho Creator API and synchronizes mapped data to Google Sheets with secure handling.</p>
-                                <p class="project-caption">A scalable data pipeline for Zoho Creator records and automated sheet synchronization.</p>
+                                <p>Designed a sync service that extracts Zoho Creator records, normalizes mapped fields, and publishes structured datasets to Google Sheets.</p>
+                                <p class="project-caption">Part of the ETL backbone behind reporting workflows that reduced processing time by ~40%.</p>
                                 <div class="project-features">
-                                    <span>Data Sync</span>
+                                    <span>Data normalization</span>
                                     <span>Zoho Creator</span>
-                                    <span>Automation</span>
+                                    <span>Reporting sync</span>
                                 </div>
                                 <div class="project-actions">
                                     <a href="https://github.com/operacoesicaiu/worker-zoho-integration" target="_blank" rel="noopener noreferrer" class="project-link">View on GitHub</a>
@@ -512,15 +233,16 @@
 
                             <div class="project-card" role="article">
                                 <div class="project-header">
-                                    <span class="project-category">API Integration</span>
+                                    <span class="project-category">Operational Data Flow</span>
                                     <span class="project-tech">JavaScript • GitHub Actions • Google Sheets</span>
                                 </div>
                                 <h2>Hablla Integration Worker</h2>
-                                <p>Fetches Hablla cards, attendance, and client data, processes and pushes to Google Sheets with duplicate removal.</p>
+                                <p>Implemented a transformation worker that aggregates Hablla cards, attendance, and client data, then deduplicates and exports clean operational datasets.</p>
+                                <p class="project-caption">Improved data reliability across multi-source service workflows and centralized reporting.</p>
                                 <div class="project-features">
-                                    <span>Data Processing</span>
+                                    <span>Deduplication</span>
                                     <span>Hablla API</span>
-                                    <span>Automation</span>
+                                    <span>Operational data</span>
                                 </div>
                                 <div class="project-actions">
                                     <a href="https://github.com/operacoesicaiu/worker-hablla-integration" target="_blank" rel="noopener noreferrer" class="project-link">View on GitHub</a>
@@ -529,15 +251,16 @@
 
                             <div class="project-card" role="article">
                                 <div class="project-header">
-                                    <span class="project-category">API Integration</span>
+                                    <span class="project-category">Analytics Ingestion</span>
                                     <span class="project-tech">JavaScript • GitHub Actions • Google Sheets</span>
                                 </div>
                                 <h2>Zenvia Integration Worker</h2>
-                                <p>Consumes Zenvia call reporting API and writes filtered call records to Google Sheets.</p>
+                                <p>Engineered an ingestion worker for Zenvia call reporting data, filtering voice events into analytics-ready datasets and dashboard feeds.</p>
+                                <p class="project-caption">Supports real-time monitoring and centralized operational reporting.</p>
                                 <div class="project-features">
-                                    <span>Call Reporting</span>
+                                    <span>Call analytics</span>
                                     <span>Zenvia API</span>
-                                    <span>Data Sync</span>
+                                    <span>Dashboard feeds</span>
                                 </div>
                                 <div class="project-actions">
                                     <a href="https://github.com/operacoesicaiu/worker-zenvia-integration" target="_blank" rel="noopener noreferrer" class="project-link">View on GitHub</a>
@@ -546,16 +269,16 @@
 
                             <div class="project-card" role="article">
                                 <div class="project-header">
-                                    <span class="project-category">API Integration</span>
+                                    <span class="project-category">ERP Synchronization</span>
                                     <span class="project-tech">JavaScript • GitHub Actions • Google Sheets</span>
                                 </div>
                                 <h2>SIGE Integration Worker</h2>
-                                <p>Integrates SIGE ERP orders with Google Sheets, generating consolidated billing datasets.</p>
-                                <p class="project-caption">Automated ERP synchronization for SIGE billing, order, and reporting workflows.</p>
+                                <p>Built synchronization logic that extracts SIGE ERP orders, transforms billing fields, and generates consolidated datasets for finance workflows.</p>
+                                <p class="project-caption">Replaced manual billing consolidation with repeatable backend automation.</p>
                                 <div class="project-features">
-                                    <span>Billing</span>
+                                    <span>Billing data</span>
                                     <span>SIGE ERP</span>
-                                    <span>Data Sync</span>
+                                    <span>Finance ops</span>
                                 </div>
                                 <div class="project-actions">
                                     <a href="https://github.com/operacoesicaiu/worker-sige-auth" target="_blank" rel="noopener noreferrer" class="project-link">View on GitHub</a>
@@ -564,16 +287,16 @@
 
                             <div class="project-card" role="article">
                                 <div class="project-header">
-                                    <span class="project-category">API Integration</span>
+                                    <span class="project-category">ERP Integration</span>
                                     <span class="project-tech">JavaScript • GitHub Actions • Google Sheets</span>
                                 </div>
                                 <h2>Omie Integration Worker</h2>
-                                <p>Fetches sales orders and product data from Omie ERP API and synchronizes to Google Sheets.</p>
-                                <p class="project-caption">Automated ERP synchronization linking Omie sales and logistics into a single workflow.</p>
+                                <p>Connected Omie sales orders and product APIs to downstream sheets and reporting flows, keeping ERP data available for logistics and finance operations.</p>
+                                <p class="project-caption">Integrated ERP data into automations spanning 6+ business systems.</p>
                                 <div class="project-features">
-                                    <span>Sales Data</span>
+                                    <span>Sales data</span>
                                     <span>Omie ERP</span>
-                                    <span>Automation</span>
+                                    <span>Cross-system sync</span>
                                 </div>
                                 <div class="project-actions">
                                     <a href="https://github.com/lojadosapo/worker-omie-integration" target="_blank" rel="noopener noreferrer" class="project-link">View on GitHub</a>
@@ -697,11 +420,13 @@
         <script src="js/index.js" defer></script>
 
 <div class="visually-hidden">
-    <p>Enterprise production systems portfolio with a focus on systems architecture, API integration, automation workers, Node.js, Python, data pipelines, backend engineering, observability and scalable deployment.</p>
+    <p>Backend project portfolio focused on automation, API integrations, ETL pipelines, ERP synchronization, reporting systems, Python, Node.js, SQL, and scalable operational workflows.</p>
 </div>
     
     </body>
     </html>
+
+
 
 
 
