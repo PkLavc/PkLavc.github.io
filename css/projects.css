@@ -47,6 +47,7 @@ body {
     transition: all 0.3s ease;
     display: flex;
     flex-direction: column;
+    gap: 12px;
     height: 100%;
 }
 .project-card:hover {
@@ -57,8 +58,9 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 15px;
+    margin-bottom: 0;
     gap: 15px;
+    min-height: 38px;
 }
 .project-category {
     background: #181818;
@@ -72,25 +74,65 @@ body {
 .project-tech {
     color: #888;
     font-size: 0.9rem;
-    flex: 1;
-    text-align: right;
+    width: 100%;
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: clip;
+}
+
+.project-tech-marquee {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    width: max-content;
+    animation: project-tech-marquee var(--marquee-duration, 14s) linear infinite;
+    will-change: transform;
+}
+
+.project-tech-item {
+    flex: none;
+    white-space: nowrap;
+}
+
+.project-tech-item:first-child {
+    margin-right: 0.5em;
+}
+
+@keyframes project-tech-marquee {
+    from {
+        transform: translateX(0);
+    }
+    to {
+        transform: translateX(calc(-1 * var(--marquee-item-width, 240px)));
+    }
 }
 .project-card h2 {
     color: #ffffff;
     font-size: 1.5rem;
-    margin-bottom: 10px;
+    margin-bottom: 0;
+    min-height: 3.1em;
+    line-height: 1.55;
 }
 .project-card p {
     color: #888;
     font-size: 1rem;
     line-height: 1.6;
-    margin-bottom: 15px;
+    margin-bottom: 0;
+}
+
+.project-description {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex-grow: 1;
+    min-height: 0;
 }
 
 .project-readmore-toggle-wrap {
     display: flex;
     justify-content: flex-end;
-    margin-bottom: 14px;
+    margin: 0;
 }
 
 .project-readmore-toggle {
@@ -302,8 +344,9 @@ body.readme-open {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
-    margin-bottom: 20px;
-    margin-top: auto;
+    margin: 0;
+    min-height: 64px;
+    align-content: flex-start;
 }
 .project-features span {
     background: rgba(255, 255, 255, 0.1);
@@ -320,7 +363,7 @@ body.readme-open {
     text-decoration: none;
     font-weight: 600;
     transition: color 0.3s ease;
-    margin-top: auto;
+    margin-top: 0;
 }
 .project-link:hover {
     color: #ffffff;
@@ -331,7 +374,14 @@ body.readme-open {
     justify-content: space-between;
     align-items: center;
     margin-top: auto;
+    padding-top: 10px;
     width: 100%;
+    min-height: 36px;
+}
+
+.project-card > .project-link {
+    margin-top: auto;
+    padding-top: 10px;
 }
 
 .project-demo-link {
@@ -350,7 +400,7 @@ body.readme-open {
 /* CORREÇÃO DO BOTÃO NO MOBILE */
 @media (max-width: 768px) {
     .project-readmore-toggle-wrap {
-        margin-bottom: 10px;
+        margin-top: 2px;
     }
 
     .project-readmore-toggle {
@@ -387,6 +437,7 @@ body.readme-open {
         flex-direction: column;
         gap: 8px;
         width: 100%;
+        padding-top: 8px;
     }
     
     .project-link {
@@ -462,20 +513,51 @@ body.readme-open {
     .project-header {
         flex-direction: column;
         align-items: flex-start;
+        justify-content: flex-start;
+        min-height: auto;
         gap: 5px;
         margin-bottom: 10px;
     }
 
     .project-tech {
         font-size: 0.7rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: clip;
+        max-width: 100%;
+    }
+
+    .project-tech-marquee {
+        animation: none !important;
+        display: inline;
+    }
+
+    .project-tech-item {
+        display: none;
+    }
+
+    .project-tech-item:first-child {
+        display: inline;
     }
 
     .project-card h2 {
         font-size: 1.1rem;
+        min-height: 0;
+        line-height: 1.4;
+    }
+
+    .project-description {
+        gap: 0;
+        flex-grow: 0;
     }
 
     .project-features {
         gap: 2px;
+        min-height: 0;
+    }
+
+    .project-actions {
+        min-height: 0;
     }
 
     .project-features span {
@@ -490,5 +572,15 @@ body.readme-open {
         border: 1px solid var(--clr-primary);
         border-radius: 4px;
         margin-top: 5px;
+    }
+}
+
+@media (min-width: 769px) {
+    .project-header {
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: flex-start;
+        gap: 8px;
+        min-height: 58px;
     }
 }
