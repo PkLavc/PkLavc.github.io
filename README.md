@@ -10,8 +10,8 @@ This repository contains a static portfolio website for Patrick Araujo, focused 
 The site includes three main pages:
 
 - `index.html` — homepage with profile, skills and contact links
-- `about.html` — detailed profile, professional history, clients and certifications
-- `projects.html` — portfolio showcase of backend and integration projects
+- `about/index.html` — detailed profile, professional history, clients and certifications
+- `projects/index.html` — portfolio showcase of backend and integration projects
 
 Additional files:
 
@@ -59,7 +59,7 @@ Additional files:
 - Includes a hidden `visually-hidden` SEO paragraph for technical keyword reinforcement
 - Contains multiple JSON-LD blocks to represent profile and page schema
 
-### `about.html`
+### `about/index.html`
 
 - Provides the candidate’s professional profile, certifications, and company affiliations
 - Uses detailed Open Graph and Twitter metadata
@@ -67,7 +67,7 @@ Additional files:
 - Maintains a hidden `h1` plus visible `h2` for SEO semantics without altering layout
 - Includes a hidden `visually-hidden` paragraph for architecture and enterprise keywords
 
-### `projects.html`
+### `projects/index.html`
 
 - Displays a portfolio of backend, API integration, automation, and data pipeline work
 - Uses `CollectionPage` JSON-LD with individual `CreativeWork` items defined in structured data
@@ -80,23 +80,19 @@ Additional files:
 ## File Structure
 
 ```text
-Downloads/
-├── about.html
+PkLavc.github.io/
 ├── index.html
-├── projects.html
+├── about/
+│   └── index.html
+├── projects/
+│   ├── index.html
+│   ├── google-auth-worker/
+│   ├── zoho-integration-worker/
+│   └── ...
 ├── robots.txt
 ├── sitemap.xml
 ├── css/
-│   ├── about.css
-│   ├── color-blue.css
-│   ├── global.css
-│   ├── index.css
-│   └── projects.css
 ├── js/
-│   ├── index.js
-│   ├── jquery.min.js
-│   ├── particles.js
-│   └── particles.min.js
 ├── images/
 ├── README.md
 └── LICENSE.txt
@@ -121,8 +117,8 @@ Downloads/
 Implemented JSON-LD schema types:
 
 - `ProfilePage` for `index.html`
-- `AboutPage` for `about.html`
-- `CollectionPage` for `projects.html`
+- `AboutPage` for `about/index.html`
+- `CollectionPage` for `projects/index.html`
 - `Person` profile metadata inside page schemas
 - `CreativeWork` items for featured projects
 
@@ -178,8 +174,8 @@ The design uses:
 ```mermaid
 flowchart TB
     A[index.html]
-    B[about.html]
-    C[projects.html]
+    B[about/index.html]
+    C[projects/index.html]
     A -->|profile| B
     A -->|portfolio| C
     A -->|shared assets| css/

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
     <head>
         <meta charset="UTF-8">
@@ -201,7 +201,7 @@
                     "sameAs": [
                         "https://github.com/PkLavc",
                         "https://www.linkedin.com/in/patrickajm/",
-                        "mailto:patrickajm@gmail.com"
+                        "mailto:lavcsystems@gmail.com"
                     ],
                     "worksFor": [
                         {
@@ -252,7 +252,7 @@
                 <div class="logo">
                 </div>
                                 <div class="navigation-links">
-                    <a href="/index.html" data-text="HOME" id="home-link" >HOME</a>
+                    <a href="/" data-text="HOME" id="home-link" >HOME</a>
                     <a href="#" data-text="ABOUT" id="about-link" >ABOUT</a>
                     <a href="/projects/" data-text="PROJECTS" id="projects-link" >PROJECTS</a>
                 </div>
@@ -540,9 +540,9 @@
                                     </button>
                                 </div>
                                 <div class="contact-item">
-                                    <a href="mailto:patrickajm@gmail.com" target="_blank" rel="noopener noreferrer"><lottie-player src="/images/mail.json" background="transparent" speed="1" class="contact-item-icon" loop autoplay title="Contact Patrick Araujo via Email"></lottie-player></a>
-                                    <span class="contact-value" data-href="mailto:patrickajm@gmail.com">patrickajm@gmail.com</span>
-                                    <button class="copy-btn" type="button" data-copy="patrickajm@gmail.com" title="Copy to clipboard" aria-label="Copy email address to clipboard">
+                                    <a href="mailto:lavcsystems@gmail.com" target="_blank" rel="noopener noreferrer"><lottie-player src="/images/mail.json" background="transparent" speed="1" class="contact-item-icon" loop autoplay title="Contact Patrick Araujo via Email"></lottie-player></a>
+                                    <span class="contact-value" data-href="mailto:lavcsystems@gmail.com">lavcsystems@gmail.com</span>
+                                    <button class="copy-btn" type="button" data-copy="lavcsystems@gmail.com" title="Copy to clipboard" aria-label="Copy email address to clipboard">
                                         <lottie-player src="/images/copy.json" background="transparent" speed="0.55" class="copy-btn-icon" loop autoplay aria-hidden="true"></lottie-player><span>copy</span>
                                     </button>
                                 </div>
@@ -718,6 +718,14 @@
                     }
                 }
 
+                function updateFooterYear() {
+                    const yearNode = document.getElementById('current-year');
+
+                    if (yearNode) {
+                        yearNode.textContent = String(new Date().getFullYear());
+                    }
+                }
+
                 window.toggleCredits = function() {
                     const credits = document.getElementById('credits-list');
                     const trigger = document.getElementById('credits-trigger-btn');
@@ -736,6 +744,7 @@
 
                 document.body.classList.add('ready');
                 updateSemester();
+                updateFooterYear();
                 setupMenu();
                 setupCursor();
                 setupContacts();
@@ -745,8 +754,14 @@
 
 <footer class="footer-minimal">
     <div class="footer-container">
+        <div class="footer-link-list" aria-label="Footer links">
+            <a class="footer-link-pill" href="https://github.com/PkLavc" target="_blank" rel="noopener noreferrer">GitHub</a>
+            <a class="footer-link-pill" href="https://www.linkedin.com/in/patrickajm/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+            <a class="footer-link-pill" href="mailto:lavcsystems@gmail.com">Email</a>
+            <a class="footer-link-pill footer-link-pill-accent" href="https://github.com/sponsors/PkLavc" target="_blank" rel="noopener noreferrer">Sponsor me</a>
+        </div>
         <p>
-            &copy; 2026 Patrick Araujo &bull; 
+            &copy; <span id="current-year"></span> Patrick Araujo &bull; 
             <span class="github-dev-badge">Member of <b>GitHub Developer Program</b></span> &bull; 
             <button id="credits-trigger-btn" class="credits-trigger" type="button" onclick="toggleCredits()" aria-controls="credits-list" aria-expanded="false">Resources & Attributions</button>
         </p>
@@ -764,6 +779,7 @@
     
     </body>
     </html>
+
 
 
 

@@ -1,0 +1,207 @@
+/* Shared presentation layer for stack and collection pages */
+
+:root {
+  --seo-bg-1: #06121f;
+  --seo-bg-2: #0b2237;
+  --seo-card: rgba(10, 25, 40, 0.72);
+  --seo-card-border: rgba(110, 190, 255, 0.28);
+  --seo-text: #d6e4ef;
+  --seo-muted: #a8c1d6;
+  --seo-heading: #f3f9ff;
+  --seo-accent: #68c7ff;
+  --seo-accent-2: #29e2b2;
+  --seo-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+}
+
+body.seo-layout {
+  min-height: 100vh;
+  color: var(--seo-text);
+  background:
+    radial-gradient(900px 500px at 12% -8%, rgba(41, 226, 178, 0.12), transparent 65%),
+    radial-gradient(780px 460px at 92% 8%, rgba(104, 199, 255, 0.2), transparent 60%),
+    linear-gradient(165deg, var(--seo-bg-1) 0%, var(--seo-bg-2) 60%, #081a2b 100%);
+}
+
+body.seo-layout::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.22;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+  background-size: 28px 28px;
+  mask-image: radial-gradient(circle at center, black 35%, transparent 85%);
+}
+
+main.seo-page,
+main.wrap {
+  position: relative;
+  z-index: 1;
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 72px 22px 80px;
+  animation: seo-fade-up 0.65s ease-out;
+}
+
+main.seo-page > h1,
+main.wrap > h1 {
+  margin: 0 0 26px;
+  font-size: clamp(2rem, 3.6vw, 3.4rem);
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  color: var(--seo-heading);
+  text-wrap: balance;
+}
+
+main.seo-page > h1 + p,
+main.wrap > h1 + p {
+  margin-top: 0;
+  font-size: 1.12rem;
+  color: #e5f2ff;
+}
+
+main.seo-page > h2,
+main.wrap > h2 {
+  margin: 38px 0 14px;
+  padding: 13px 16px;
+  border: 1px solid var(--seo-card-border);
+  border-radius: 14px;
+  background: linear-gradient(135deg, rgba(29, 57, 79, 0.75), rgba(16, 38, 57, 0.75));
+  color: var(--seo-heading);
+  font-size: clamp(1.15rem, 1.45vw, 1.48rem);
+  font-weight: 650;
+  box-shadow: var(--seo-shadow);
+}
+
+main.seo-page > h3,
+main.wrap > h3 {
+  margin: 24px 0 8px;
+  color: var(--seo-heading);
+}
+
+main.seo-page > p,
+main.wrap > p,
+main.seo-page > ul,
+main.wrap > ul,
+main.seo-page > ol,
+main.wrap > ol,
+main.seo-page > div,
+main.wrap > div,
+main.seo-page > article,
+main.wrap > article {
+  border: 1px solid rgba(133, 192, 235, 0.2);
+  background: var(--seo-card);
+  border-radius: 14px;
+  box-shadow: 0 14px 38px rgba(0, 0, 0, 0.28);
+  padding: 18px 18px;
+}
+
+main.seo-page > p,
+main.wrap > p {
+  margin: 10px 0 0;
+  color: var(--seo-text);
+  line-height: 1.8;
+}
+
+main.seo-page > ul,
+main.wrap > ul,
+main.seo-page > ol,
+main.wrap > ol {
+  margin: 10px 0 0;
+  padding-left: 28px;
+}
+
+main.seo-page li,
+main.wrap li {
+  margin: 7px 0;
+  color: var(--seo-text);
+}
+
+main.seo-page strong,
+main.wrap strong {
+  color: #f2fbff;
+}
+
+main.seo-page a,
+main.wrap a {
+  color: var(--seo-accent);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  transition: color 0.18s ease, text-shadow 0.18s ease;
+}
+
+main.seo-page a:hover,
+main.wrap a:hover {
+  color: var(--seo-accent-2);
+  text-shadow: 0 0 16px rgba(41, 226, 178, 0.45);
+}
+
+/* Keep card-based subgrids beautiful */
+.seo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 16px;
+  margin-top: 10px;
+}
+
+.seo-card {
+  border: 1px solid rgba(110, 190, 255, 0.26);
+  background: linear-gradient(150deg, rgba(19, 44, 67, 0.9), rgba(11, 26, 42, 0.9));
+  border-radius: 14px;
+  padding: 16px;
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.32);
+}
+
+.seo-card h3 {
+  margin: 0 0 8px;
+}
+
+.seo-card p {
+  margin: 0;
+  color: var(--seo-muted);
+}
+
+@keyframes seo-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Footer styling for seo-layout pages */
+body.seo-layout > footer {
+  position: relative;
+  z-index: 1;
+  margin-top: 60px;
+  background: transparent;
+  border-top: 1px solid rgba(110, 190, 255, 0.15);
+}
+
+@media (max-width: 840px) {
+  main.seo-page,
+  main.wrap {
+    padding: 58px 16px 68px;
+  }
+
+  main.seo-page > h2,
+  main.wrap > h2,
+  main.seo-page > p,
+  main.wrap > p,
+  main.seo-page > ul,
+  main.wrap > ul,
+  main.seo-page > ol,
+  main.wrap > ol,
+  main.seo-page > div,
+  main.wrap > div,
+  main.seo-page > article,
+  main.wrap > article {
+    border-radius: 12px;
+    padding: 14px 14px;
+  }
+}

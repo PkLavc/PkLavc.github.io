@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
     <head>
         <meta charset="UTF-8">
@@ -174,7 +174,7 @@
                 <div class="logo">
                 </div>
                                 <div class="navigation-links">
-                    <a href="/index.html" data-text="HOME" id="home-link" >HOME</a>
+                    <a href="/" data-text="HOME" id="home-link" >HOME</a>
                     <a href="/about/" data-text="ABOUT" id="about-link" >ABOUT</a>
                     <a href="#" data-text="PROJECTS" id="projects-link" >PROJECTS</a>
                 </div>
@@ -416,6 +416,27 @@
             </div>
         </div>
         </main>
+        <footer class="footer-minimal">
+            <div class="footer-container">
+                <div class="footer-link-list" aria-label="Footer links">
+                    <a class="footer-link-pill" href="https://github.com/PkLavc" target="_blank" rel="noopener noreferrer">GitHub</a>
+                    <a class="footer-link-pill" href="https://www.linkedin.com/in/patrickajm/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+                    <a class="footer-link-pill" href="mailto:lavcsystems@gmail.com">Email</a>
+                    <a class="footer-link-pill footer-link-pill-accent" href="https://github.com/sponsors/PkLavc" target="_blank" rel="noopener noreferrer">Sponsor me</a>
+                </div>
+                <p>
+                    &copy; <span data-current-year></span> Patrick Araujo &bull;
+                    <span class="github-dev-badge">Member of <b>GitHub Developer Program</b></span>
+                </p>
+            </div>
+        </footer>
+        <script>
+            (function() {
+                document.querySelectorAll('[data-current-year]').forEach(function(node) {
+                    node.textContent = String(new Date().getFullYear());
+                });
+            }());
+        </script>
         <script src="/js/jquery.min.js" defer></script>
         <script src="/js/index.js" defer></script>
         <script src="/js/projects-readmore.js" defer></script>
@@ -426,6 +447,7 @@
     
     </body>
     </html>
+
 
 
 
