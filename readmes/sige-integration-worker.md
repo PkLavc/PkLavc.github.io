@@ -1,4 +1,4 @@
-﻿# SIGE Integration Worker
+# SIGE Integration Worker
 
 A Node.js integration worker that synchronizes billed SIGE orders to Google Sheets, enriches records with ERP correlation logic, and calculates attribution fields for operational finance reporting.
 

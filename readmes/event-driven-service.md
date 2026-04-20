@@ -1,4 +1,4 @@
-﻿# Event-Driven Integration Service
+# Event-Driven Integration Service
 
 ## Technical Architecture
 

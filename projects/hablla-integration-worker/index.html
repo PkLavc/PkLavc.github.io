@@ -1,0 +1,353 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="PkLavc" />
+    <title>Hablla Integration Worker | JavaScript Project | Patrick Araujo</title>
+    
+    <!-- SEO Enhanced Meta Tags -->
+    <meta name="description" content="Hablla Integration Worker built with JavaScript. Transformation worker that aggregates Hablla cards, attendance, and client data, then deduplicates and exports cl...">
+    <meta name="keywords" content="Patrick Araujo, Backend Software Engineer, Hablla API, operational data flow, data deduplication, integration automation">
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="Hablla Integration Worker | JavaScript | Patrick Araujo">
+    <meta property="og:description" content="Hablla Integration Worker built with JavaScript. Transformation worker that aggregates Hablla cards, attendance, and client data, then deduplicates and exports cl...">
+    <meta property="og:url" content="https://pklavc.github.io/projects/hablla-integration-worker/index.html">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://pklavc.github.io/images/Lavc.webp">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:site_name" content="Patrick Araujo Portfolio">
+    <meta property="og:locale" content="en_US">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Hablla Integration Worker | JavaScript | Patrick Araujo">
+    <meta name="twitter:description" content="Hablla Integration Worker built with JavaScript. Transformation worker that aggregates Hablla cards, attendance, and client data, then deduplicates and exports cl...">
+    <meta name="twitter:image" content="https://pklavc.github.io/images/Lavc.webp">
+    <meta name="twitter:image:alt" content="Brand portrait of backend engineer and automation specialist Patrick Araujo">
+    <meta name="twitter:site" content="@PkLavc">
+    <meta name="twitter:creator" content="@PkLavc">
+    
+    <link rel="canonical" href="https://pklavc.github.io/projects/hablla-integration-worker/index.html">
+    <meta name="robots" content="index, follow">
+    <link rel="alternate" href="https://pklavc.github.io/projects/hablla-integration-worker/index.html" hreflang="en">
+    
+    <!-- JSON-LD Schema: Person -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Patrick Araujo",
+        "jobTitle": "Backend Software Engineer",
+        "url": "https://pklavc.github.io",
+        "image": "https://pklavc.github.io/images/Lavc.webp",
+        "sameAs": [
+            "https://github.com/PkLavc",
+            "https://linkedin.com/in/patrick-araujo"
+        ],
+        "description": "Specialist in backend automation, API integration, and scalable system architecture"
+    }
+    </script>
+    
+    <!-- JSON-LD Schema: Article -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": "Hablla Integration Worker | JavaScript",
+        "description": "Hablla Integration Worker built with JavaScript. Transformation worker that aggregates Hablla cards, attendance, and client data, then deduplicates and exports cl...",
+        "author": {
+            "@type": "Person",
+            "name": "Patrick Araujo"
+        },
+        "mainEntityOfPage": "https://pklavc.github.io/projects/hablla-integration-worker/index.html",
+        "url": "https://pklavc.github.io/projects/hablla-integration-worker/index.html",
+        "keywords": "Patrick Araujo, Backend Software Engineer, JavaScript, Hablla Integration Worker"
+    }
+    </script>
+    
+    <!-- JSON-LD Schema: BreadcrumbList -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "https://pklavc.github.io/"
+            },
+            {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Projects",
+                "item": "https://pklavc.github.io/projects.html"
+            },
+            {
+                "@type": "ListItem",
+                "position": 3,
+                "name": "Hablla Integration Worker",
+                "item": "https://pklavc.github.io/projects/hablla-integration-worker/"
+            }
+        ]
+    }
+    </script>
+    <link rel="icon" type="image/svg+xml" href="../../images/favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Monoton&family=Poppins:wght@500&family=Raleway:wght@300&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Monoton&family=Poppins:wght@500&family=Raleway:wght@300&display=swap"></noscript>
+    <link rel="stylesheet" href="../../css/global.css">
+    <link rel="stylesheet" href="../../css/projects.css">
+    <style>
+        .project-hero { padding: 60px 20px; text-align: center; background: linear-gradient(135deg, rgba(0,0,0,0.1), rgba(0,0,0,0.05)); }
+        .project-hero h1 { font-size: 2.5rem; margin: 20px 0; color: #fff; }
+        .project-category-badge { display: inline-block; background: rgba(100, 200, 255, 0.2); border: 1px solid rgba(100, 200, 255, 0.5); color: #64c8ff; padding: 8px 16px; border-radius: 20px; font-size: 0.9rem; margin-bottom: 20px; }
+        .tech-stack-section { padding: 40px 20px; background: rgba(255, 255, 255, 0.02); }
+        .tech-stack-section h2 { color: #fff; margin-bottom: 20px; font-size: 1.5rem; }
+        .tech-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 40px; }
+        .tech-tag { background: rgba(100, 200, 255, 0.1); border: 1px solid rgba(100, 200, 255, 0.3); color: #64c8ff; padding: 12px 16px; border-radius: 8px; text-align: center; font-size: 0.95rem; }
+        .problem-solution { padding: 40px 20px; max-width: 800px; margin: 0 auto; }
+        .problem-solution h2 { color: #fff; margin: 30px 0 20px 0; font-size: 1.3rem; }
+        .problem-solution p { color: #ccc; line-height: 1.8; margin-bottom: 20px; }
+        .impact-section { padding: 40px 20px; background: rgba(100, 200, 255, 0.05); text-align: center; }
+        .impact-section h2 { color: #fff; margin-bottom: 20px; font-size: 1.3rem; }
+        .impact-text { color: #64c8ff; font-size: 1.1rem; margin: 20px 0; font-weight: 500; }
+        .cta-section { padding: 60px 20px; text-align: center; }
+        .cta-button { display: inline-block; background: linear-gradient(135deg, #64c8ff, #00d4ff); color: #000; padding: 16px 40px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 1rem; transition: transform 0.3s, box-shadow 0.3s; border: none; cursor: pointer; }
+        .cta-button:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(100, 200, 255, 0.3); }
+        .breadcrumb-nav {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 12px 20px;
+            margin-bottom: 30px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .breadcrumb {
+            list-style: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0;
+            font-size: 0.95rem;
+            color: #A0A0A0;
+        }
+        .breadcrumb li {
+            display: flex;
+            align-items: center;
+        }
+        .breadcrumb li:not(:last-child)::after {
+            content: "→";
+            margin-left: 8px;
+            font-size: 0.8rem;
+            color: #666;
+        }
+        .breadcrumb a {
+            color: #4A9EFF;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        .breadcrumb a:hover {
+            color: #64c8ff;
+            text-decoration: underline;
+        }
+        .breadcrumb [aria-current="page"] {
+            color: #E0E0E0;
+            font-weight: 500;
+        }
+            .full-readme-section { padding: 50px 20px; background: rgba(255, 255, 255, 0.02); }
+        .full-readme-container { max-width: 1000px; margin: 0 auto; }
+        .full-readme-container .markdown-body { background: #0d1117; border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 10px; padding: 24px; }
+    </style>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@5.8.1/github-markdown-dark.min.css">
+</head>
+<body>
+    <div id="breaker"></div>
+    <div id="breaker-two"></div>
+    <div id="all">
+        <div id="navigation-content" role="navigation" aria-label="Primary navigation">
+            <div class="logo"></div>
+            <div class="navigation-links">
+                <a href="/" data-text="HOME">HOME</a>
+                <a href="/about.html" data-text="ABOUT">ABOUT</a>
+                <a href="/projects.html" data-text="PROJECTS">PROJECTS</a>
+            </div>
+        </div>
+        <div id="navigation-bar">
+            <div class="menubar">
+                <span class="first-span"></span>
+                <span class="second-span"></span>
+                <span class="third-span"></span>
+            </div>
+        </div>
+        
+        <main role="main">
+            <nav aria-label="Breadcrumb" class="breadcrumb-nav">
+                <ol class="breadcrumb">
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/projects.html">Projects</a></li>
+                    <li><span aria-current="page">Hablla Integration Worker</span></li>
+                </ol>
+            </nav>
+            <section class="project-hero">
+                <span class="project-category-badge">Operational Data Flow</span>
+                <h1>Hablla Integration Worker | JavaScript</h1>
+                <p style="color: #aaa; font-size: 1.1rem; margin-top: 15px;">Transformation worker that aggregates Hablla cards, attendance, and client data, then deduplicates and exports clean operational datasets</p>
+            </section>
+
+            <section class="full-readme-section" aria-label="Full README">
+                <div class="full-readme-container">
+                    <h2 style="color: #fff; margin-bottom: 20px;">Full Project Documentation</h2>
+                    <article class="markdown-body">
+<h1>Hablla Integration Worker</h1><p><a href="https://github.com/operacoesicaiu/worker-hablla-integration"><img src="https://img.shields.io/badge/Source-GitHub-black?logo=github" alt="Source Code"></a>
+<a href="https://pklavc.github.io/projects.html"><img src="https://img.shields.io/badge/Portfolio-Projects-0A66C2?logo=google-chrome&logoColor=white" alt="Portfolio"></a>
+<a href="https://github.com/PkLavc"><img src="https://img.shields.io/badge/Author-Patrick_Araujo-1f2937" alt="Author"></a></p>
+<p>A Node.js integration worker that synchronizes operational Hablla data into Google Sheets for analytics, attendance monitoring, and CRM-style customer base enrichment.</p>
+<h2>Overview</h2>
+<p>This worker is part of an event-driven integration chain. It receives Google OAuth tokens from the auth worker, authenticates with Hablla APIs, and executes three synchronized pipelines:</p>
+<ol>
+<li>Card synchronization (<code>Base Hablla Card</code>)</li>
+<li>Attendant performance summary (<code>Base Atendente</code>)</li>
+<li>Customer/person export (<code>Base Cliente</code>)</li>
+</ol>
+<p>The implementation includes deduplication, API throttling, data sanitization, and safe logging practices for public repository operations.</p>
+<h2>System Architecture</h2>
+<pre><code class="language-mermaid">graph TB
+		A[Google Auth Worker] --&gt;|repository_dispatch| B[Hablla Integration Worker]
+		B --&gt; C[Hablla API]
+		B --&gt; D[Google Sheets API]
+		C --&gt; E[Cards]
+		C --&gt; F[Service Summary]
+		C --&gt; G[Persons]
+		B --&gt; H[Data Sanitization]
+		H --&gt; D
+</code></pre>
+<h2>Core Features</h2>
+<ul>
+<li>Incremental card synchronization with <code>updated_after</code> filtering</li>
+<li>Security cleanup window (last 7 days) before appending fresh data</li>
+<li>Duplicate cleanup by unique card ID on <code>Base Hablla Card</code></li>
+<li>Attendant KPI ingestion (TME, TMA, CSAT, FCR)</li>
+<li>Customer/person export with normalized contact/tag/custom-field mapping</li>
+<li>Spreadsheet formula injection prevention via sanitize function</li>
+<li>Secure execution model with masked-sensitive logging behavior</li>
+<li>Rate-limiting between API calls to reduce provider throttling risk</li>
+</ul>
+<h2>Data Pipelines</h2>
+<h3>1. Base Hablla Card</h3>
+<p>The worker:</p>
+<ol>
+<li>Authenticates to Hablla</li>
+<li>Reads recent rows from <code>Base Hablla Card</code></li>
+<li>Deletes recent rolling-window rows (safety cleanup)</li>
+<li>Fetches paginated cards from Hablla</li>
+<li>Maps custom fields and card metadata</li>
+<li>Appends rows to Google Sheets</li>
+<li>Rebuilds data deduplicated by card ID</li>
+</ol>
+<h3>2. Base Atendente</h3>
+<p>The worker requests daily service summary metrics from Hablla and appends per-agent rows containing:</p>
+<ul>
+<li>service totals</li>
+<li>TME/TMA metrics</li>
+<li>connection metadata</li>
+<li>CSAT indicators</li>
+<li>FCR counters</li>
+</ul>
+<h3>3. Base Cliente</h3>
+<p>The worker fetches persons/clients by date window and exports:</p>
+<ul>
+<li>primary phone and WhatsApp indicator</li>
+<li>flattened email list</li>
+<li>sectors and tags</li>
+<li>fixed custom field IDs mapped to dedicated columns</li>
+<li>dynamic extra fields serialized into an &quot;other fields&quot; column</li>
+</ul>
+<h2>Security Controls</h2>
+<ul>
+<li><strong>Sanitization</strong>: Prefixes high-risk strings starting with <code>=</code>, <code>+</code>, <code>-</code>, <code>@</code></li>
+<li><strong>Public-safe logging</strong>: Avoids exposing sensitive payload details</li>
+<li><strong>Secrets-only auth</strong>: Credentials and tokens are environment-injected only</li>
+<li><strong>Least-privilege workflow model</strong>: Runs only required steps in GitHub Actions</li>
+</ul>
+<h2>Configuration</h2>
+<h3>Required Environment Variables</h3>
+<pre><code class="language-bash">GOOGLE_TOKEN=oauth_access_token_from_google_auth_worker
+HABLLA_EMAIL=your_hablla_email
+HABLLA_PASSWORD=your_hablla_password
+HABLLA_WORKSPACE_ID=workspace_identifier
+HABLLA_BOARD_ID=board_identifier
+SPREADSHEET_ID=target_google_spreadsheet_id
+</code></pre>
+<h3>GitHub Actions Trigger</h3>
+<p>This worker is triggered by:</p>
+<pre><code class="language-yaml">on:
+	repository_dispatch:
+		types: [google_token_ready]
+</code></pre>
+<h2>Reliability Notes</h2>
+<ul>
+<li>Uses controlled sleep intervals between Hablla requests</li>
+<li>Uses bounded pagination to avoid unbounded loops</li>
+<li>Handles missing optional tabs (<code>Base Cliente</code>) gracefully</li>
+<li>Wraps execution in controlled try/catch for operational stability</li>
+</ul>
+<h2>License</h2>
+<p>This project is licensed under the MIT License. See <a href="LICENSE">LICENSE</a>.</p>
+<h2>Author</h2>
+<p><strong>Patrick Araujo - Computer Engineer</strong><br><strong>GitHub</strong>: <a href="https://github.com/PkLavc">https://github.com/PkLavc</a><br><strong>Portfolio</strong>: <a href="https://pklavc.github.io/projects.html">https://pklavc.github.io/projects.html</a></p>
+<hr>
+<p><em>Hablla Integration Worker - Production-oriented data synchronization for operational analytics and customer intelligence pipelines.</em></p>
+<p><a href="https://github.com/sponsors/PkLavc"><img src="https://img.shields.io/badge/Sponsor%20me-%23ea4aaa?style=for-the-badge&logo=github-sponsors&logoColor=white" alt="GitHub Sponsors"></a></p>
+                    </article>
+                </div>
+            </section>
+            
+            <section class="tech-stack-section">
+                <div style="max-width: 1000px; margin: 0 auto;">
+                    <h2>Technology Stack</h2>
+                    <div class="tech-list">
+                        <div class="tech-tag">JavaScript</div>
+                        <div class="tech-tag">GitHub Actions</div>
+                        <div class="tech-tag">Google Sheets</div>
+                        <div class="tech-tag">Hablla API</div>
+                        <div class="tech-tag">Node.js</div>
+                    </div>
+                </div>
+            </section>
+
+            
+            <section class="cta-section">
+                <h2 style="color: #fff; margin-bottom: 30px;">View the Source Code</h2>
+                <a href="https://github.com/operacoesicaiu/worker-hablla-integration" target="_blank" rel="noopener noreferrer" class="cta-button">
+                    Open on GitHub
+                </a>
+            </section>
+
+        </main>
+        
+        <footer class="footer-minimal">
+            <div class="footer-container">
+                <p>
+                    &copy; 2026 Patrick Araujo &bull; 
+                    <span class="github-dev-badge">Member of <b>GitHub Developer Program</b></span>
+                </p>
+            </div>
+        </footer>
+    </div>
+    
+    <div class="visually-hidden">
+        <p>Backend Software Engineer focused on automation, API integrations, backend systems, Python, Node.js, SQL, ETL pipelines, AWS, and scalable operational platforms.</p>
+    </div>
+    
+    <script src="../../js/jquery.min.js" defer></script>
+    <script src="../../js/index.js" defer></script>
+</body>
+</html>
+
+
+

@@ -1,4 +1,4 @@
-﻿# Zenvia Integration Worker
+# Zenvia Integration Worker
 
 A Node.js worker service that synchronizes call data from Zenvia communication platform to Google Sheets for reporting and analysis.
 

@@ -1,4 +1,4 @@
-﻿# Multi-Tenant SaaS Backend Platform
+# Multi-Tenant SaaS Backend Platform
 
 [![NestJS](https://img.shields.io/badge/NestJS-10+-red.svg)](https://nestjs.com)
 [![Node.js Version](https://img.shields.io/badge/Node.js-18+-blue.svg)](https://nodejs.org)

@@ -1,4 +1,4 @@
-﻿# CipherGate Security Proxy
+# CipherGate Security Proxy
 
 [![Python Version](https://img.shields.io/badge/Python-3.11+-blue.svg)](https://python.org)
 [![Security](https://img.shields.io/badge/Security-Zero--Trust-red.svg)](https://github.com/PkLavc/cipher-gate)

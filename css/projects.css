@@ -159,187 +159,6 @@ body {
     opacity: 0.7;
     cursor: wait;
 }
-
-.readme-overlay {
-    position: fixed;
-    inset: 0;
-    z-index: 9999;
-    display: none;
-    padding: 2.2vh 2vw;
-    background: rgba(0, 0, 0, 0.62);
-    backdrop-filter: blur(2px);
-}
-
-.readme-overlay.is-open {
-    display: block;
-}
-
-.readme-modal {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    background: #0d0d0d;
-    border: 1px solid rgba(255, 255, 255, 0.16);
-    border-radius: 12px;
-    box-shadow: 0 14px 44px rgba(0, 0, 0, 0.45);
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-}
-
-.readme-modal-close {
-    position: absolute;
-    top: 10px;
-    right: 12px;
-    width: 34px;
-    height: 34px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 50%;
-    background: #151515;
-    color: #f2f2f2;
-    cursor: pointer;
-    font-weight: 700;
-    font-size: 0.82rem;
-    line-height: 1;
-}
-
-.readme-modal-close:hover,
-.readme-modal-close:focus-visible {
-    background: var(--clr-primary);
-    color: #070707;
-    outline: none;
-}
-
-.readme-modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 12px;
-    padding: 16px 54px 14px 18px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    background: #111111;
-}
-
-.readme-modal-title {
-    margin: 0;
-    color: #f5f5f5;
-    font-size: 1.02rem;
-    line-height: 1.3;
-}
-
-.readme-modal-link {
-    color: var(--clr-primary);
-    text-decoration: none;
-    font-size: 0.9rem;
-    white-space: nowrap;
-}
-
-.readme-modal-link:hover {
-    color: #ffffff;
-}
-
-.readme-modal-body {
-    flex: 1;
-    overflow: auto;
-    padding: 18px;
-    line-height: 1.6;
-}
-
-.readme-modal-body.markdown-body {
-    background: #0d1117;
-    color: #c9d1d9;
-}
-
-.readme-modal-body h1,
-.readme-modal-body h2,
-.readme-modal-body h3,
-.readme-modal-body h4,
-.readme-modal-body h5,
-.readme-modal-body h6 {
-    margin: 1.25em 0 0.6em;
-    line-height: 1.3;
-}
-
-.readme-modal-body p,
-.readme-modal-body li {
-    color: inherit;
-}
-
-.readme-modal-body hr {
-    border: none;
-    border-top: 1px solid rgba(255, 255, 255, 0.2);
-    margin: 1.2em 0;
-}
-
-.readme-modal-body code {
-    font-family: "Courier New", monospace;
-    background: #191919;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 4px;
-    padding: 0.12em 0.35em;
-    font-size: 0.9em;
-}
-
-.readme-modal-body pre {
-    background: #0a0a0a;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
-    padding: 12px;
-    overflow: auto;
-}
-
-.readme-modal-body pre code {
-    background: transparent;
-    border: 0;
-    padding: 0;
-}
-
-.readme-modal-body table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 14px 0;
-}
-
-.readme-modal-body table th,
-.readme-modal-body table td {
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    padding: 8px;
-    text-align: left;
-}
-
-.readme-modal-body blockquote {
-    margin: 1em 0;
-    padding: 0.5em 1em;
-    border-left: 3px solid var(--clr-primary);
-    background: rgba(255, 255, 255, 0.03);
-}
-
-.readme-modal-body img {
-    max-width: 100%;
-    height: auto;
-}
-
-.readme-modal-body .contains-task-list {
-    list-style: none;
-    padding-left: 0;
-}
-
-.readme-modal-body .task-list-item {
-    list-style: none;
-}
-
-.readme-modal-body .task-list-item input[type="checkbox"] {
-    margin-right: 8px;
-}
-
-.readme-modal-body svg {
-    max-width: 100%;
-    height: auto;
-}
-
-body.readme-open {
-    overflow: hidden;
-}
 .project-features {
     display: flex;
     flex-wrap: wrap;
@@ -408,29 +227,6 @@ body.readme-open {
         border-radius: 6px;
         font-size: 0.8rem;
         padding: 8px 12px;
-    }
-
-    .readme-overlay {
-        padding: 1.4vh 1.8vw;
-    }
-
-    .readme-modal {
-        border-radius: 10px;
-    }
-
-    .readme-modal-header {
-        flex-direction: column;
-        align-items: flex-start;
-        padding: 14px 46px 12px 14px;
-    }
-
-    .readme-modal-title {
-        font-size: 0.95rem;
-    }
-
-    .readme-modal-body {
-        padding: 12px;
-        font-size: 0.9rem;
     }
 
     .project-actions {
@@ -583,4 +379,23 @@ body.readme-open {
         gap: 8px;
         min-height: 58px;
     }
+}
+
+/* Project card h2 links styling */
+.project-card h2 a {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.3s ease, text-shadow 0.3s ease;
+    position: relative;
+}
+
+.project-card h2 a:hover {
+    color: #4A9EFF;
+    text-shadow: 0 0 10px rgba(74, 158, 255, 0.3);
+}
+
+.project-card h2 a:focus-visible {
+    outline: 2px solid #4A9EFF;
+    outline-offset: 2px;
+    border-radius: 2px;
 }

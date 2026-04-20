@@ -1,4 +1,4 @@
-﻿# Zoho Integration Worker
+# Zoho Integration Worker
 
 A Node.js worker service that synchronizes data from Zoho Creator applications to Google Sheets for business reporting and analysis.
 

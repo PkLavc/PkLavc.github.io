@@ -1,4 +1,4 @@
-﻿# Cloud Deployment Showcase
+# Cloud Deployment Showcase
 
 [![Build Status](https://img.shields.io/badge/Build-Passing-brightgreen.svg)](https://github.com/PkLavc/cloud-deployment-showcase/actions)
 [![Platform: Railway](https://img.shields.io/badge/Platform-Railway-blue.svg)](https://railway.app)

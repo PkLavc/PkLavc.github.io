@@ -1,0 +1,572 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="PkLavc" />
+    <title>Zoho Integration Worker | JavaScript Project | Patrick Araujo</title>
+    
+    <!-- SEO Enhanced Meta Tags -->
+    <meta name="description" content="Zoho Integration Worker built with JavaScript. Data sync worker that extracts Zoho Creator records, normalizes payloads, and publishes structured reporting datasets">
+    <meta name="keywords" content="Patrick Araujo, Backend Software Engineer, Zoho Creator, ETL Pipeline, data integration, reporting automation">
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="Zoho Integration Worker | JavaScript | Patrick Araujo">
+    <meta property="og:description" content="Zoho Integration Worker built with JavaScript. Data sync worker that extracts Zoho Creator records, normalizes payloads, and publishes structured reporting datasets">
+    <meta property="og:url" content="https://pklavc.github.io/projects/zoho-integration-worker/index.html">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://pklavc.github.io/images/Lavc.webp">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:site_name" content="Patrick Araujo Portfolio">
+    <meta property="og:locale" content="en_US">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Zoho Integration Worker | JavaScript | Patrick Araujo">
+    <meta name="twitter:description" content="Zoho Integration Worker built with JavaScript. Data sync worker that extracts Zoho Creator records, normalizes payloads, and publishes structured reporting datasets">
+    <meta name="twitter:image" content="https://pklavc.github.io/images/Lavc.webp">
+    <meta name="twitter:image:alt" content="Brand portrait of backend engineer and automation specialist Patrick Araujo">
+    <meta name="twitter:site" content="@PkLavc">
+    <meta name="twitter:creator" content="@PkLavc">
+    
+    <link rel="canonical" href="https://pklavc.github.io/projects/zoho-integration-worker/index.html">
+    <meta name="robots" content="index, follow">
+    <link rel="alternate" href="https://pklavc.github.io/projects/zoho-integration-worker/index.html" hreflang="en">
+    
+    <!-- JSON-LD Schema: Person -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Patrick Araujo",
+        "jobTitle": "Backend Software Engineer",
+        "url": "https://pklavc.github.io",
+        "image": "https://pklavc.github.io/images/Lavc.webp",
+        "sameAs": [
+            "https://github.com/PkLavc",
+            "https://linkedin.com/in/patrick-araujo"
+        ],
+        "description": "Specialist in backend automation, API integration, and scalable system architecture"
+    }
+    </script>
+    
+    <!-- JSON-LD Schema: Article -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": "Zoho Integration Worker | JavaScript",
+        "description": "Zoho Integration Worker built with JavaScript. Data sync worker that extracts Zoho Creator records, normalizes payloads, and publishes structured reporting datasets",
+        "author": {
+            "@type": "Person",
+            "name": "Patrick Araujo"
+        },
+        "mainEntityOfPage": "https://pklavc.github.io/projects/zoho-integration-worker/index.html",
+        "url": "https://pklavc.github.io/projects/zoho-integration-worker/index.html",
+        "keywords": "Patrick Araujo, Backend Software Engineer, JavaScript, Zoho Integration Worker"
+    }
+    </script>
+    
+    <!-- JSON-LD Schema: BreadcrumbList -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "https://pklavc.github.io/"
+            },
+            {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Projects",
+                "item": "https://pklavc.github.io/projects.html"
+            },
+            {
+                "@type": "ListItem",
+                "position": 3,
+                "name": "Zoho Integration Worker",
+                "item": "https://pklavc.github.io/projects/zoho-integration-worker/"
+            }
+        ]
+    }
+    </script>
+    <link rel="icon" type="image/svg+xml" href="../../images/favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Monoton&family=Poppins:wght@500&family=Raleway:wght@300&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Monoton&family=Poppins:wght@500&family=Raleway:wght@300&display=swap"></noscript>
+    <link rel="stylesheet" href="../../css/global.css">
+    <link rel="stylesheet" href="../../css/projects.css">
+    <style>
+        .project-hero {
+            padding: 60px 20px;
+            text-align: center;
+            background: linear-gradient(135deg, rgba(0,0,0,0.1), rgba(0,0,0,0.05));
+        }
+        .project-hero h1 {
+            font-size: 2.5rem;
+            margin: 20px 0;
+            color: #fff;
+        }
+        .project-category-badge {
+            display: inline-block;
+            background: rgba(100, 200, 255, 0.2);
+            border: 1px solid rgba(100, 200, 255, 0.5);
+            color: #64c8ff;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+        .tech-stack-section {
+            padding: 40px 20px;
+            background: rgba(255, 255, 255, 0.02);
+        }
+        .tech-stack-section h2 {
+            color: #fff;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+        .tech-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+        .tech-tag {
+            background: rgba(100, 200, 255, 0.1);
+            border: 1px solid rgba(100, 200, 255, 0.3);
+            color: #64c8ff;
+            padding: 12px 16px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 0.95rem;
+        }
+        .problem-solution {
+            padding: 40px 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .problem-solution h2 {
+            color: #fff;
+            margin: 30px 0 20px 0;
+            font-size: 1.3rem;
+        }
+        .problem-solution p {
+            color: #ccc;
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+        .impact-section {
+            padding: 40px 20px;
+            background: rgba(100, 200, 255, 0.05);
+            text-align: center;
+        }
+        .impact-section h2 {
+            color: #fff;
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+        }
+        .impact-text {
+            color: #64c8ff;
+            font-size: 1.1rem;
+            margin: 20px 0;
+            font-weight: 500;
+        }
+        .cta-section {
+            padding: 60px 20px;
+            text-align: center;
+        }
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #64c8ff, #00d4ff);
+            color: #000;
+            padding: 16px 40px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(100, 200, 255, 0.3);
+        }
+        .breadcrumb-nav {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 12px 20px;
+            margin-bottom: 30px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .breadcrumb {
+            list-style: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0;
+            font-size: 0.95rem;
+            color: #A0A0A0;
+        }
+        .breadcrumb li {
+            display: flex;
+            align-items: center;
+        }
+        .breadcrumb li:not(:last-child)::after {
+            content: "→";
+            margin-left: 8px;
+            font-size: 0.8rem;
+            color: #666;
+        }
+        .breadcrumb a {
+            color: #4A9EFF;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        .breadcrumb a:hover {
+            color: #64c8ff;
+            text-decoration: underline;
+        }
+        .breadcrumb [aria-current="page"] {
+            color: #E0E0E0;
+            font-weight: 500;
+        }
+            .full-readme-section { padding: 50px 20px; background: rgba(255, 255, 255, 0.02); }
+        .full-readme-container { max-width: 1000px; margin: 0 auto; }
+        .full-readme-container .markdown-body { background: #0d1117; border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 10px; padding: 24px; }
+    </style>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@5.8.1/github-markdown-dark.min.css">
+</head>
+<body>
+    <div id="breaker"></div>
+    <div id="breaker-two"></div>
+    <div id="all">
+        <div id="navigation-content" role="navigation" aria-label="Primary navigation">
+            <div class="logo"></div>
+            <div class="navigation-links">
+                <a href="/" data-text="HOME">HOME</a>
+                <a href="/about.html" data-text="ABOUT">ABOUT</a>
+                <a href="/projects.html" data-text="PROJECTS">PROJECTS</a>
+            </div>
+        </div>
+        <div id="navigation-bar">
+            <div class="menubar">
+                <span class="first-span"></span>
+                <span class="second-span"></span>
+                <span class="third-span"></span>
+            </div>
+        </div>
+        
+        <main role="main">
+            <nav aria-label="Breadcrumb" class="breadcrumb-nav">
+                <ol class="breadcrumb">
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/projects.html">Projects</a></li>
+                    <li><span aria-current="page">Zoho Integration Worker</span></li>
+                </ol>
+            </nav>
+            <section class="project-hero">
+                <span class="project-category-badge">ETL Pipeline</span>
+                <h1>Zoho Integration Worker | JavaScript</h1>
+                <p style="color: #aaa; font-size: 1.1rem; margin-top: 15px;">Data sync worker that extracts Zoho Creator records, normalizes payloads, and publishes structured reporting datasets</p>
+            </section>
+
+            <section class="full-readme-section" aria-label="Full README">
+                <div class="full-readme-container">
+                    <h2 style="color: #fff; margin-bottom: 20px;">Full Project Documentation</h2>
+                    <article class="markdown-body">
+<h1>Zoho Integration Worker</h1><p><a href="https://github.com/operacoesicaiu/worker-zoho-integration"><img src="https://img.shields.io/badge/Source-GitHub-black?logo=github" alt="Source Code"></a>
+<a href="https://pklavc.github.io/projects.html"><img src="https://img.shields.io/badge/Portfolio-Projects-0A66C2?logo=google-chrome&logoColor=white" alt="Portfolio"></a>
+<a href="https://github.com/PkLavc"><img src="https://img.shields.io/badge/Author-Patrick_Araujo-1f2937" alt="Author"></a></p>
+<p>A Node.js worker service that synchronizes data from Zoho Creator applications to Google Sheets for business reporting and analysis.</p>
+<h2>Overview</h2>
+<p>This worker provides automated data synchronization between Zoho Creator applications and Google Sheets, enabling seamless data flow for business operations and reporting needs.</p>
+<h2>System Architecture</h2>
+<pre><code class="language-mermaid">graph TB
+    A[Worker Google Auth] --&gt;|Dispatch Event| B[Worker Zoho Integration]
+    B --&gt; C[Zoho Creator API]
+    B --&gt; D[Google Sheets API]
+    C --&gt; E[Application Data]
+    C --&gt; F[Report Data]
+    D --&gt; G[Target Spreadsheet]
+    B --&gt; H[Data Processing Engine]
+    H --&gt; I[Field Mapping]
+    H --&gt; J[Date Filtering]
+    H --&gt; K[Batch Processing]
+    
+    L[GitHub Secrets] --&gt; B
+    M[Environment Variables] --&gt; B
+    N[Column Mapping JSON] --&gt; I
+</code></pre>
+<h2>Features</h2>
+<ul>
+<li><strong>Zoho Creator Integration</strong>: Fetches data from Zoho Creator applications and reports</li>
+<li><strong>Google Sheets Synchronization</strong>: Writes processed data to Google Sheets</li>
+<li><strong>Flexible Data Mapping</strong>: Supports custom field mapping via JSON configuration</li>
+<li><strong>Date-based Filtering</strong>: Filters records based on specific date criteria</li>
+<li><strong>Report Generation</strong>: Supports both standard and custom report synchronization</li>
+<li><strong>Secure Data Handling</strong>: All sensitive information is properly masked and secured</li>
+</ul>
+<h2>Technical Architecture</h2>
+<h3>Components</h3>
+<ul>
+<li><strong>Zoho API Client</strong>: Authenticates and fetches data from Zoho Creator</li>
+<li><strong>Google Sheets Integration</strong>: Writes processed data to Google Sheets</li>
+<li><strong>Data Processing Engine</strong>: Maps and transforms Zoho data for spreadsheet compatibility</li>
+<li><strong>Report Synchronization</strong>: Handles both standard and custom report data</li>
+<li><strong>Secure Logging</strong>: Logs all operations with sensitive data masking</li>
+</ul>
+<h3>Data Flow</h3>
+<ol>
+<li><strong>Authentication</strong>: Uses OAuth2 tokens from Google Auth Worker</li>
+<li><strong>Data Fetching</strong>: Retrieves records from Zoho Creator via API</li>
+<li><strong>Data Processing</strong>: Maps Zoho fields to spreadsheet columns using JSON configuration</li>
+<li><strong>Date Filtering</strong>: Filters records based on business requirements (e.g., yesterday&#39;s data)</li>
+<li><strong>Sheet Update</strong>: Appends or overwrites data in Google Sheets</li>
+<li><strong>Status Reporting</strong>: Reports execution status to monitoring system</li>
+</ol>
+<h2>Security Implementation</h2>
+<h3>Multi-Layer Security Architecture</h3>
+<pre><code class="language-mermaid">graph LR
+    A[GitHub Secrets] --&gt; B[Environment Variables]
+    B --&gt; C[OAuth Authentication]
+    C --&gt; D[API Communication]
+    D --&gt; E[Data Processing]
+    E --&gt; F[Google Sheets]
+    
+    G[Masking Functions] --&gt; H[Log Protection]
+    I[Sanitization] --&gt; J[Input Validation]
+    K[Formula Injection Prevention] --&gt; L[Spreadsheet Security]
+    M[Minimal Permissions] --&gt; N[Attack Surface Reduction]
+</code></pre>
+<h3>Security Features</h3>
+<ul>
+<li><strong>OAuth Security</strong>: Uses OAuth2 authentication for both Google and Zoho APIs</li>
+<li><strong>Token Security</strong>: OAuth tokens are received securely via repository dispatch</li>
+<li><strong>Data Masking</strong>: All sensitive information is masked in logs</li>
+<li><strong>Environment Variables</strong>: Credentials stored securely as environment variables</li>
+<li><strong>Minimal Permissions</strong>: GitHub Actions workflows use minimal required permissions</li>
+<li><strong>Explicit Secret Masking</strong>: All secrets are explicitly masked in GitHub Actions workflows using <code>::add-mask::</code></li>
+<li><strong>Secure Logging</strong>: Custom <code>secureLog</code> function ensures no sensitive data is exposed in logs</li>
+<li><strong>Spreadsheet Formula Injection Prevention</strong>: Custom <code>sanitize</code> function prevents malicious formulas from being injected into Google Sheets</li>
+</ul>
+<h2>Data Flow Security</h2>
+<pre><code class="language-mermaid">sequenceDiagram
+    participant Auth as Worker Google Auth
+    participant GH as GitHub Actions
+    participant Zoho as Zoho Creator API
+    participant Sheets as Google Sheets
+    participant Worker as Worker Zoho Integration
+    
+    Auth-&gt;&gt;GH: Dispatch Event (masked token)
+    GH-&gt;&gt;Worker: Trigger Workflow
+    Worker-&gt;&gt;Zoho: Secure Authentication
+    Zoho-&gt;&gt;Worker: Application Data
+    Worker-&gt;&gt;Sheets: Processed Data (sanitized)
+    Worker-&gt;&gt;Sheets: Report Data (sanitized)
+    Note over Worker,Sheets: All data is sanitized before writing
+</code></pre>
+<h2>Configuration</h2>
+<h3>Required Environment Variables</h3>
+<pre><code class="language-bash">GOOGLE_TOKEN=oauth_access_token_from_google_auth_worker
+ZOHO_CLIENT_ID=your_zoho_client_id
+ZOHO_CLIENT_SECRET=your_zoho_client_secret
+ZOHO_REFRESH_TOKEN=your_zoho_refresh_token
+ZOHO_ACCOUNT_OWNER=your_zoho_account_owner
+ZOHO_APP_LINK_NAME=your_zoho_app_link_name
+ZOHO_REPORT_LINK_NAME=your_zoho_report_link_name
+SPREADSHEET_ID=your_google_spreadsheet_id
+SHEET_NAME=your_google_sheet_name
+COLUMN_MAPPING=your_field_mapping_json
+</code></pre>
+<h3>GitHub Secrets</h3>
+<p>The following secrets must be configured in the GitHub repository:</p>
+<ul>
+<li><code>GOOGLE_TOKEN</code>: OAuth access token (provided by Google Auth Worker)</li>
+<li><code>ZOHO_CLIENT_ID</code>: Zoho OAuth client ID</li>
+<li><code>ZOHO_CLIENT_SECRET</code>: Zoho OAuth client secret</li>
+<li><code>ZOHO_REFRESH_TOKEN</code>: Zoho OAuth refresh token</li>
+<li><code>ZOHO_ACCOUNT_OWNER</code>: Zoho account owner identifier</li>
+<li><code>ZOHO_APP_LINK_NAME</code>: Zoho application link name</li>
+<li><code>ZOHO_REPORT_LINK_NAME</code>: Zoho report link name</li>
+<li><code>SPREADSHEET_ID</code>: Google Sheets spreadsheet ID</li>
+<li><code>SHEET_NAME</code>: Target sheet name within the spreadsheet</li>
+<li><code>COLUMN_MAPPING</code>: JSON configuration for field mapping</li>
+</ul>
+<h2>Usage</h2>
+<h3>Standard Data Synchronization</h3>
+<p>The main worker synchronizes data from Zoho Creator to Google Sheets:</p>
+<pre><code class="language-json">{
+  &quot;event_type&quot;: &quot;google_token_ready&quot;,
+  &quot;client_payload&quot;: {
+    &quot;token&quot;: &quot;oauth_access_token&quot;
+  }
+}
+</code></pre>
+<h3>Report Synchronization</h3>
+<p>The report worker handles custom report data synchronization:</p>
+<pre><code class="language-json">{
+  &quot;event_type&quot;: &quot;report_token_ready&quot;,
+  &quot;client_payload&quot;: {
+    &quot;token&quot;: &quot;oauth_access_token&quot;
+  }
+}
+</code></pre>
+<h3>Field Mapping Configuration</h3>
+<p>The <code>COLUMN_MAPPING</code> environment variable should contain a JSON object mapping Zoho fields to spreadsheet columns:</p>
+<pre><code class="language-json">{
+  &quot;column_a&quot;: &quot;zoho_field_1&quot;,
+  &quot;column_b&quot;: &quot;zoho_field_2&quot;,
+  &quot;column_c&quot;: &quot;zoho_field_3&quot;
+}
+</code></pre>
+<h3>Data Processing</h3>
+<p>The worker processes Zoho data with the following logic:</p>
+<ol>
+<li><strong>Authentication</strong>: Authenticates with Zoho using OAuth2</li>
+<li><strong>Data Fetching</strong>: Retrieves records from specified Zoho application and report</li>
+<li><strong>Date Filtering</strong>: Filters records based on business requirements</li>
+<li><strong>Field Mapping</strong>: Maps Zoho fields to spreadsheet columns</li>
+<li><strong>Data Transformation</strong>: Handles complex field types (lookups, multi-select, etc.)</li>
+<li><strong>Batch Processing</strong>: Sends data in batches to avoid API limits</li>
+</ol>
+<h2>Advanced Features</h2>
+<h3>Complex Field Handling</h3>
+<p>The worker supports various Zoho field types:</p>
+<ul>
+<li><strong>Lookup Fields</strong>: Automatically extracts display values</li>
+<li><strong>Multi-select Fields</strong>: Joins multiple values with commas</li>
+<li><strong>Date/Time Fields</strong>: Properly formatted for spreadsheet compatibility</li>
+<li><strong>Formula Fields</strong>: Handled as regular data fields</li>
+</ul>
+<h3>Report Synchronization</h3>
+<p>The report worker provides additional functionality:</p>
+<ul>
+<li><strong>Paginated Data</strong>: Handles large datasets with pagination</li>
+<li><strong>Custom Reports</strong>: Supports custom Zoho reports</li>
+<li><strong>Data Overwrite</strong>: Uses PUT method to overwrite existing data</li>
+<li><strong>Flexible Configuration</strong>: Separate configuration for report-specific settings</li>
+</ul>
+<h3>Optimization Features</h3>
+<ul>
+<li><strong>Batch Processing</strong>: Uses <code>append</code> for data insertion to minimize Google Sheets API quota consumption</li>
+<li><strong>Pagination Control</strong>: Implements smart pagination that breaks the loop if no new records are found</li>
+<li><strong>Rate Limiting</strong>: Includes delays to respect API rate limits</li>
+<li><strong>Efficient Date Filtering</strong>: Filters data at the API level to reduce data transfer</li>
+</ul>
+<h2>Monitoring &amp; Observability</h2>
+<ul>
+<li><strong>Execution Logs</strong>: Secure logging with masked sensitive data</li>
+<li><strong>Status Tracking</strong>: Integration with cloud-operations-monitor for uptime tracking</li>
+<li><strong>Error Reporting</strong>: Structured error handling with secure error messages</li>
+<li><strong>Performance Metrics</strong>: Built-in timing and pagination tracking</li>
+</ul>
+<h2>Troubleshooting</h2>
+<h3>Common Issues</h3>
+<ol>
+<li><strong>Authentication Errors</strong>: Verify OAuth credentials for both Google and Zoho</li>
+<li><strong>API Rate Limits</strong>: The worker includes delays to avoid rate limiting</li>
+<li><strong>Field Mapping</strong>: Ensure COLUMN_MAPPING JSON is properly formatted</li>
+<li><strong>Date Filtering</strong>: Verify date criteria match business requirements</li>
+<li><strong>Sheet Permissions</strong>: Verify Google Sheets API permissions</li>
+</ol>
+<h3>Logs</h3>
+<p>All execution logs are processed through secure logging functions that:</p>
+<ul>
+<li>Mask sensitive information</li>
+<li>Include timestamps and log levels</li>
+<li>Report to the monitoring system</li>
+</ul>
+<h2>Integration Points</h2>
+<ul>
+<li><strong>Google Auth Worker</strong>: Receives OAuth tokens</li>
+<li><strong>Zoho Creator API</strong>: Fetches application and report data</li>
+<li><strong>Google Sheets API</strong>: Writes processed data</li>
+<li><strong>Cloud Operations Monitor</strong>: Reports execution status</li>
+</ul>
+<h2>License</h2>
+<p>This project is licensed under the MIT License - see the <a href="LICENSE">LICENSE</a> file for details.</p>
+<h2>Security Compliance</h2>
+<p>This implementation follows security best practices:</p>
+<ul>
+<li>[OK] <strong>Zero Trust Architecture</strong>: No hardcoded secrets or credentials</li>
+<li>[OK] <strong>Defense in Depth</strong>: Multiple layers of security controls</li>
+<li>[OK] <strong>Principle of Least Privilege</strong>: Minimal permissions and short-lived tokens</li>
+<li>[OK] <strong>Secure by Design</strong>: Security built into the architecture from the ground up</li>
+<li>[OK] <strong>Public Repository Safe</strong>: No sensitive data exposed even in public repositories</li>
+<li>[OK] <strong>Input Validation</strong>: All external data is validated and sanitized</li>
+<li>[OK] <strong>Output Encoding</strong>: Prevents injection attacks in Google Sheets</li>
+<li>[OK] <strong>API Security</strong>: Secure communication with both Zoho and Google APIs</li>
+</ul>
+<h2>Contributing</h2>
+<ol>
+<li>Fork the repository</li>
+<li>Create a feature branch</li>
+<li>Make your changes</li>
+<li>Add tests for your changes</li>
+<li>Submit a pull request</li>
+</ol>
+<h2>Support</h2>
+<p>For support and questions, please contact the development team.</p>
+<h2>Author</h2>
+<p><strong>Patrick Araujo - Computer Engineer</strong><br><strong>GitHub</strong>: <a href="https://github.com/PkLavc">https://github.com/PkLavc</a></p>
+<p><strong>Portfolio</strong>: <a href="https://pklavc.github.io/projects.html">https://pklavc.github.io/projects.html</a></p>
+<hr>
+<p><em>Zoho Integration Worker - Secure ETL synchronization pipeline from Zoho Creator to Google Sheets.</em></p>
+<p><a href="https://github.com/sponsors/PkLavc"><img src="https://img.shields.io/badge/Sponsor%20me-%23ea4aaa?style=for-the-badge&logo=github-sponsors&logoColor=white" alt="GitHub Sponsors"></a></p>
+                    </article>
+                </div>
+            </section>
+            
+            <section class="tech-stack-section">
+                <div style="max-width: 1000px; margin: 0 auto;">
+                    <h2>Technology Stack</h2>
+                    <div class="tech-list">
+                        <div class="tech-tag">JavaScript</div>
+                        <div class="tech-tag">GitHub Actions</div>
+                        <div class="tech-tag">Google Sheets</div>
+                        <div class="tech-tag">Zoho Creator</div>
+                        <div class="tech-tag">Node.js</div>
+                    </div>
+                </div>
+            </section>
+
+            
+            <section class="cta-section">
+                <h2 style="color: #fff; margin-bottom: 30px;">View the Source Code</h2>
+                <a href="https://github.com/operacoesicaiu/worker-zoho-integration" target="_blank" rel="noopener noreferrer" class="cta-button">
+                    Open on GitHub
+                </a>
+            </section>
+
+        </main>
+        
+        <footer class="footer-minimal">
+            <div class="footer-container">
+                <p>
+                    &copy; 2026 Patrick Araujo &bull; 
+                    <span class="github-dev-badge">Member of <b>GitHub Developer Program</b></span>
+                </p>
+            </div>
+        </footer>
+    </div>
+    
+    <div class="visually-hidden">
+        <p>Backend Software Engineer focused on automation, API integrations, backend systems, Python, Node.js, SQL, ETL pipelines, AWS, and scalable operational platforms.</p>
+    </div>
+    
+    <script src="../../js/jquery.min.js" defer></script>
+    <script src="../../js/index.js" defer></script>
+</body>
+</html>
+
+
+

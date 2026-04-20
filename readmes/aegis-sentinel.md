@@ -1,4 +1,4 @@
-﻿# Aegis Sentinel
+# Aegis Sentinel
 
 [![Python Version](https://img.shields.io/badge/Python-3.11+-blue.svg)](https://python.org)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)

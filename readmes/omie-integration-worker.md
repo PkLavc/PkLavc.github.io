@@ -1,4 +1,4 @@
-﻿# Omie Integration Worker
+# Omie Integration Worker
 
 A Node.js ETL worker that extracts Omie sales order data and synchronizes normalized seller and product/service datasets into Google Sheets.
 

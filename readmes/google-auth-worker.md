@@ -1,4 +1,4 @@
-﻿# Google Auth Worker
+# Google Auth Worker
 
 A Node.js worker service responsible for generating and distributing Google OAuth tokens to other integration services.
 

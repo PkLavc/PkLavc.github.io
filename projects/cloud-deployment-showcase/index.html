@@ -1,0 +1,633 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="PkLavc" />
+    <title>Cloud Deployment Showcase | Docker Project | Patrick Araujo</title>
+    
+    <!-- SEO Enhanced Meta Tags -->
+    <meta name="description" content="Cloud Deployment Showcase built with Docker. Production-ready infrastructure demonstrating container orchestration, Infrastructure as Code, and automated CI/CD pi...">
+    <meta name="keywords" content="Patrick Araujo, Backend Software Engineer, DevOps, Docker, Kubernetes, CI/CD, Infrastructure as Code, cloud deployment">
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="Cloud Deployment Showcase | Docker | Patrick Araujo">
+    <meta property="og:description" content="Cloud Deployment Showcase built with Docker. Production-ready infrastructure demonstrating container orchestration, Infrastructure as Code, and automated CI/CD pi...">
+    <meta property="og:url" content="https://pklavc.github.io/projects/cloud-deployment-showcase/index.html">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://pklavc.github.io/images/Lavc.webp">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:site_name" content="Patrick Araujo Portfolio">
+    <meta property="og:locale" content="en_US">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Cloud Deployment Showcase | Docker | Patrick Araujo">
+    <meta name="twitter:description" content="Cloud Deployment Showcase built with Docker. Production-ready infrastructure demonstrating container orchestration, Infrastructure as Code, and automated CI/CD pi...">
+    <meta name="twitter:image" content="https://pklavc.github.io/images/Lavc.webp">
+    <meta name="twitter:image:alt" content="Brand portrait of backend engineer and automation specialist Patrick Araujo">
+    <meta name="twitter:site" content="@PkLavc">
+    <meta name="twitter:creator" content="@PkLavc">
+    
+    <link rel="canonical" href="https://pklavc.github.io/projects/cloud-deployment-showcase/index.html">
+    <meta name="robots" content="index, follow">
+    <link rel="alternate" href="https://pklavc.github.io/projects/cloud-deployment-showcase/index.html" hreflang="en">
+    
+    <!-- JSON-LD Schema: Person -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Patrick Araujo",
+        "jobTitle": "Backend Software Engineer",
+        "url": "https://pklavc.github.io",
+        "image": "https://pklavc.github.io/images/Lavc.webp",
+        "sameAs": [
+            "https://github.com/PkLavc",
+            "https://linkedin.com/in/patrick-araujo"
+        ],
+        "description": "Specialist in backend automation, API integration, and scalable system architecture"
+    }
+    </script>
+    
+    <!-- JSON-LD Schema: Article -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": "Cloud Deployment Showcase | Docker",
+        "description": "Cloud Deployment Showcase built with Docker. Production-ready infrastructure demonstrating container orchestration, Infrastructure as Code, and automated CI/CD pi...",
+        "author": {
+            "@type": "Person",
+            "name": "Patrick Araujo"
+        },
+        "mainEntityOfPage": "https://pklavc.github.io/projects/cloud-deployment-showcase/index.html",
+        "url": "https://pklavc.github.io/projects/cloud-deployment-showcase/index.html",
+        "keywords": "Patrick Araujo, Backend Software Engineer, Docker, Cloud Deployment Showcase"
+    }
+    </script>
+    
+    <!-- JSON-LD Schema: BreadcrumbList -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "https://pklavc.github.io/"
+            },
+            {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Projects",
+                "item": "https://pklavc.github.io/projects.html"
+            },
+            {
+                "@type": "ListItem",
+                "position": 3,
+                "name": "Cloud Deployment Showcase",
+                "item": "https://pklavc.github.io/projects/cloud-deployment-showcase/"
+            }
+        ]
+    }
+    </script>
+    <link rel="icon" type="image/svg+xml" href="../../images/favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Monoton&family=Poppins:wght@500&family=Raleway:wght@300&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Monoton&family=Poppins:wght@500&family=Raleway:wght@300&display=swap"></noscript>
+    <link rel="stylesheet" href="../../css/global.css">
+    <link rel="stylesheet" href="../../css/projects.css">
+    <style>
+        .project-hero { padding: 60px 20px; text-align: center; background: linear-gradient(135deg, rgba(0,0,0,0.1), rgba(0,0,0,0.05)); }
+        .project-hero h1 { font-size: 2.5rem; margin: 20px 0; color: #fff; }
+        .project-category-badge { display: inline-block; background: rgba(100, 200, 255, 0.2); border: 1px solid rgba(100, 200, 255, 0.5); color: #64c8ff; padding: 8px 16px; border-radius: 20px; font-size: 0.9rem; margin-bottom: 20px; }
+        .tech-stack-section { padding: 40px 20px; background: rgba(255, 255, 255, 0.02); }
+        .tech-stack-section h2 { color: #fff; margin-bottom: 20px; font-size: 1.5rem; }
+        .tech-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 40px; }
+        .tech-tag { background: rgba(100, 200, 255, 0.1); border: 1px solid rgba(100, 200, 255, 0.3); color: #64c8ff; padding: 12px 16px; border-radius: 8px; text-align: center; font-size: 0.95rem; }
+        .problem-solution { padding: 40px 20px; max-width: 800px; margin: 0 auto; }
+        .problem-solution h2 { color: #fff; margin: 30px 0 20px 0; font-size: 1.3rem; }
+        .problem-solution p { color: #ccc; line-height: 1.8; margin-bottom: 20px; }
+        .impact-section { padding: 40px 20px; background: rgba(100, 200, 255, 0.05); text-align: center; }
+        .impact-section h2 { color: #fff; margin-bottom: 20px; font-size: 1.3rem; }
+        .impact-text { color: #64c8ff; font-size: 1.1rem; margin: 20px 0; font-weight: 500; }
+        .cta-section { padding: 60px 20px; text-align: center; }
+        .cta-button { display: inline-block; background: linear-gradient(135deg, #64c8ff, #00d4ff); color: #000; padding: 16px 40px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 1rem; transition: transform 0.3s, box-shadow 0.3s; border: none; cursor: pointer; }
+        .cta-button:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(100, 200, 255, 0.3); }
+        .breadcrumb-nav {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 12px 20px;
+            margin-bottom: 30px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .breadcrumb {
+            list-style: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0;
+            font-size: 0.95rem;
+            color: #A0A0A0;
+        }
+        .breadcrumb li {
+            display: flex;
+            align-items: center;
+        }
+        .breadcrumb li:not(:last-child)::after {
+            content: "→";
+            margin-left: 8px;
+            font-size: 0.8rem;
+            color: #666;
+        }
+        .breadcrumb a {
+            color: #4A9EFF;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        .breadcrumb a:hover {
+            color: #64c8ff;
+            text-decoration: underline;
+        }
+        .breadcrumb [aria-current="page"] {
+            color: #E0E0E0;
+            font-weight: 500;
+        }
+            .full-readme-section { padding: 50px 20px; background: rgba(255, 255, 255, 0.02); }
+        .full-readme-container { max-width: 1000px; margin: 0 auto; }
+        .full-readme-container .markdown-body { background: #0d1117; border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 10px; padding: 24px; }
+    </style>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@5.8.1/github-markdown-dark.min.css">
+</head>
+<body>
+    <div id="breaker"></div>
+    <div id="breaker-two"></div>
+    <div id="all">
+        <div id="navigation-content" role="navigation" aria-label="Primary navigation">
+            <div class="logo"></div>
+            <div class="navigation-links">
+                <a href="/" data-text="HOME">HOME</a>
+                <a href="/about.html" data-text="ABOUT">ABOUT</a>
+                <a href="/projects.html" data-text="PROJECTS">PROJECTS</a>
+            </div>
+        </div>
+        <div id="navigation-bar">
+            <div class="menubar">
+                <span class="first-span"></span>
+                <span class="second-span"></span>
+                <span class="third-span"></span>
+            </div>
+        </div>
+        
+        <main role="main">
+            <nav aria-label="Breadcrumb" class="breadcrumb-nav">
+                <ol class="breadcrumb">
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/projects.html">Projects</a></li>
+                    <li><span aria-current="page">Cloud Deployment Showcase</span></li>
+                </ol>
+            </nav>
+            <section class="project-hero">
+                <span class="project-category-badge">DevOps</span>
+                <h1>Cloud Deployment Showcase | Docker</h1>
+                <p style="color: #aaa; font-size: 1.1rem; margin-top: 15px;">Production-ready infrastructure demonstrating container orchestration, Infrastructure as Code, and automated CI/CD pipelines</p>
+            </section>
+
+            <section class="full-readme-section" aria-label="Full README">
+                <div class="full-readme-container">
+                    <h2 style="color: #fff; margin-bottom: 20px;">Full Project Documentation</h2>
+                    <article class="markdown-body">
+<h1>Cloud Deployment Showcase</h1>
+<p><a href="https://github.com/PkLavc/cloud-deployment-showcase/actions"><img src="https://img.shields.io/badge/Build-Passing-brightgreen.svg" alt="Build Status"></a>
+<a href="https://railway.app"><img src="https://img.shields.io/badge/Platform-Railway-blue.svg" alt="Platform: Railway"></a>
+<a href="https://www.docker.com"><img src="https://img.shields.io/badge/Docker-Containerized-blue.svg" alt="Docker"></a>
+<a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-green.svg" alt="License: MIT"></a>
+<a href="https://www.hashicorp.com/resources/what-is-infrastructure-as-code"><img src="https://img.shields.io/badge/Infrastructure-IaC-blue.svg" alt="Infrastructure: IaC"></a></p>
+<h2>Project Overview</h2>
+<p>A comprehensive demonstration of production-ready cloud deployment patterns for modern web applications. This project showcases enterprise-grade deployment strategies including multi-cloud deployment, container orchestration, infrastructure as code, security best practices, monitoring, and CI/CD workflows.</p>
+<h2>Architecture</h2>
+<h3>Visual Infrastructure Map</h3>
+<pre><code class="language-mermaid">graph TD
+    A[Internet] --&gt;|HTTPS| B(Railway Load Balancer)
+    B --&gt; C[Nginx Reverse Proxy]
+    C --&gt; D[Node.js App :3001]
+    D --&gt; E[(PostgreSQL)]
+    D --&gt; F[(Redis Cache)]
+    D --&gt; G[Jaeger Tracing]
+    
+    style B fill:#f9f,stroke:#333,stroke-width:2px
+    style D fill:#bbf,stroke:#333,stroke-width:2px
+</code></pre>
+<h3>Engineering Impact &amp; National Interest</h3>
+<table>
+<thead>
+<tr>
+<th align="left">Component</th>
+<th align="left">Implementation</th>
+<th align="left">Industry Value</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>High Availability</strong></td>
+<td align="left">Horizontal Scaling + Auto-healing</td>
+<td align="left">Minimizes digital service downtime</td>
+</tr>
+<tr>
+<td align="left"><strong>Security Architecture</strong></td>
+<td align="left">Zero-Trust &amp; Nginx Hardening</td>
+<td align="left">Protects sensitive data against cyber threats</td>
+</tr>
+<tr>
+<td align="left"><strong>Observability</strong></td>
+<td align="left">Jaeger Distributed Tracing</td>
+<td align="left">Rapid incident response and performance optimization</td>
+</tr>
+<tr>
+<td align="left"><strong>Automation</strong></td>
+<td align="left">Full CI/CD via GitHub Actions</td>
+<td align="left">Accelerates software delivery lifecycle (SDLC)</td>
+</tr>
+</tbody></table>
+<h3>Components</h3>
+<ul>
+<li><strong>Railway Platform</strong>: Cloud hosting with automatic scaling and managed services</li>
+<li><strong>Nginx</strong>: Reverse proxy, load balancer, and security gateway</li>
+<li><strong>PostgreSQL</strong>: Managed database service with automatic backups</li>
+<li><strong>Redis</strong>: Managed cache and queue service for high performance</li>
+<li><strong>Jaeger</strong>: Distributed tracing and observability platform</li>
+<li><strong>Docker</strong>: Containerization for consistent deployment environments</li>
+</ul>
+<h2>Deployment Guide</h2>
+<h3>Prerequisites</h3>
+<ul>
+<li>Railway account (<a href="https://railway.app">https://railway.app</a>)</li>
+<li>GitHub repository</li>
+<li>Domain name (optional)</li>
+</ul>
+<h3>Step 1: Railway Setup</h3>
+<ol>
+<li><p><strong>Create Railway Project</strong></p>
+<pre><code class="language-bash"># Connect your GitHub repository
+git clone https://github.com/PkLavc/cloud-deployment-showcase.git
+cd cloud-deployment-showcase
+railway login
+railway init
+</code></pre>
+</li>
+<li><p><strong>Add Services</strong></p>
+<pre><code class="language-bash"># Add PostgreSQL
+railway add postgresql
+
+# Add Redis
+railway add redis
+
+# Add Jaeger (optional, for tracing)
+railway add jaeger
+</code></pre>
+</li>
+</ol>
+<h3>Step 2: Environment Variables</h3>
+<p>Set the following environment variables in Railway dashboard:</p>
+<pre><code class="language-env"># Database (auto-provided by Railway)
+DATABASE_URL=${{Postgres.DATABASE_URL}}
+
+# Redis (auto-provided by Railway)
+REDIS_URL=${{Redis.REDIS_URL}}
+
+# Webhook Secrets (generate secure random strings)
+STRIPE_WEBHOOK_SECRET=whsec_your_secure_stripe_secret
+PAYPAL_WEBHOOK_SECRET=your_secure_paypal_secret
+GITHUB_WEBHOOK_SECRET=your_secure_github_secret
+
+# OpenTelemetry
+OTEL_SERVICE_NAME=event-driven-integration-service
+JAEGER_ENDPOINT=${{Jaeger.JAEGER_ENDPOINT}}
+
+# Application
+NODE_ENV=production
+PORT=3001
+</code></pre>
+<h3>Step 3: Database Migration</h3>
+<pre><code class="language-bash"># Run migrations on Railway
+railway run npm run prisma:migrate
+
+# Generate Prisma client
+railway run npm run prisma:generate
+</code></pre>
+<h3>Step 4: Deploy</h3>
+<pre><code class="language-bash"># Deploy to Railway
+railway up
+</code></pre>
+<p>Railway will automatically build and deploy using the provided Dockerfile.</p>
+<h2>Configuration Files</h2>
+<h3>Dockerfile (Production Optimized)</h3>
+<pre><code class="language-dockerfile"># Build stage
+FROM node:18-alpine AS builder
+
+WORKDIR /app
+
+COPY package*.json ./
+RUN npm ci --only=production
+
+COPY . .
+RUN npm run build
+
+# Production stage
+FROM node:18-alpine AS production
+
+WORKDIR /app
+
+# Install dumb-init for proper signal handling
+RUN apk add --no-cache dumb-init
+
+# Copy built application
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/package*.json ./
+COPY --from=builder /app/prisma ./prisma
+
+# Create logs directory
+RUN mkdir -p logs
+
+# Switch to non-root user
+USER node
+
+EXPOSE 3001
+
+# Use dumb-init to handle signals properly
+ENTRYPOINT [&quot;dumb-init&quot;, &quot;--&quot;]
+CMD [&quot;npm&quot;, &quot;run&quot;, &quot;start:prod&quot;]
+</code></pre>
+<h3>Nginx Configuration</h3>
+<pre><code class="language-nginx">events {
+    worker_connections 1024;
+}
+
+http {
+    upstream app_backend {
+        server app:3001;
+    }
+
+    server {
+        listen 80;
+        server_name your-domain.com;
+
+        # Security headers
+        add_header X-Frame-Options &quot;SAMEORIGIN&quot; always;
+        add_header X-XSS-Protection &quot;1; mode=block&quot; always;
+        add_header X-Content-Type-Options &quot;nosniff&quot; always;
+        add_header Referrer-Policy &quot;no-referrer-when-downgrade&quot; always;
+        add_header Content-Security-Policy &quot;default-src &#39;self&#39; http: https: data: blob: &#39;unsafe-inline&#39;&quot; always;
+
+        # Health check endpoint
+        location /health {
+            proxy_pass http://app_backend;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+        }
+
+        # API endpoints
+        location / {
+            proxy_pass http://app_backend;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+
+            # Timeout settings
+            proxy_connect_timeout 60s;
+            proxy_send_timeout 60s;
+            proxy_read_timeout 60s;
+        }
+
+        # Logs
+        access_log /var/log/nginx/access.log;
+        error_log /var/log/nginx/error.log;
+    }
+}
+</code></pre>
+<h3>Railway Configuration</h3>
+<pre><code class="language-toml">[build]
+builder = &quot;dockerfile&quot;
+
+[deploy]
+healthcheckPath = &quot;/health&quot;
+healthcheckTimeout = 300
+restartPolicyType = &quot;ON_FAILURE&quot;
+restartPolicyMaxRetries = 10
+</code></pre>
+<h2>Security Measures</h2>
+<h3>Environment Variables</h3>
+<ul>
+<li>All secrets stored securely in Railway</li>
+<li>No hardcoded credentials in code</li>
+<li>Environment-specific configurations</li>
+</ul>
+<h3>Network Security</h3>
+<ul>
+<li>Railway&#39;s built-in firewall</li>
+<li>HTTPS enabled by default</li>
+<li>Private networking between services</li>
+</ul>
+<h3>Application Security</h3>
+<ul>
+<li>Input validation and sanitization</li>
+<li>HMAC signature verification for webhooks</li>
+<li>Rate limiting (Railway built-in)</li>
+<li>Security headers via Nginx</li>
+</ul>
+<h2>Monitoring &amp; Observability</h2>
+<h3>Health Checks</h3>
+<ul>
+<li>Public endpoint: <code>https://your-app.railway.app/health</code></li>
+<li>Checks database connectivity and memory usage</li>
+<li>Railway monitors and restarts unhealthy instances</li>
+</ul>
+<h3>Logs Access</h3>
+<pre><code class="language-bash"># View application logs
+railway logs
+
+# View specific service logs
+railway logs --service postgresql
+</code></pre>
+<h3>Tracing</h3>
+<ul>
+<li>Jaeger UI accessible via Railway dashboard</li>
+<li>Distributed tracing for request flows</li>
+<li>Performance monitoring and debugging</li>
+</ul>
+<h2>CI/CD Pipeline</h2>
+<h3>GitHub Actions Workflow</h3>
+<pre><code class="language-yaml">name: Deploy to Railway
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: &#39;18&#39;
+          cache: &#39;npm&#39;
+      - run: npm ci
+      - run: npm run build
+      - run: npm run test
+
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == &#39;refs/heads/main&#39;
+    steps:
+      - name: Deploy to Railway
+        uses: railwayapp/railway-deploy@v1
+        with:
+          railway-token: ${{ secrets.RAILWAY_TOKEN }}
+</code></pre>
+<h2>Cost Estimation</h2>
+<h3>Railway Pricing (Approximate)</h3>
+<ul>
+<li><strong>Application</strong>: $5/month (hobby plan)</li>
+<li><strong>PostgreSQL</strong>: $5/month</li>
+<li><strong>Redis</strong>: $3/month</li>
+<li><strong>Jaeger</strong>: Free tier</li>
+<li><strong>Bandwidth</strong>: Included in plans</li>
+</ul>
+<p><strong>Total Monthly Cost</strong>: ~$13/month</p>
+<h2>Scaling Strategy</h2>
+<h3>Vertical Scaling</h3>
+<ul>
+<li>Increase Railway plan for more CPU/memory</li>
+<li>Upgrade database instances</li>
+</ul>
+<h3>Horizontal Scaling</h3>
+<ul>
+<li>Railway handles automatic scaling</li>
+<li>Multiple app instances behind load balancer</li>
+</ul>
+<h3>Database Scaling</h3>
+<ul>
+<li>Connection pooling via Prisma</li>
+<li>Read replicas for high traffic</li>
+</ul>
+<h2>Troubleshooting</h2>
+<h3>Common Issues</h3>
+<p><strong>Database Connection Failed</strong></p>
+<pre><code class="language-bash"># Check Railway variables
+railway variables
+
+# Test connection
+railway run npm run prisma:studio
+</code></pre>
+<p><strong>Webhook Signature Invalid</strong></p>
+<ul>
+<li>Verify webhook secrets in Railway dashboard</li>
+<li>Check provider webhook configuration</li>
+</ul>
+<p><strong>Health Check Failing</strong></p>
+<pre><code class="language-bash"># Check logs
+railway logs
+
+# Manual health check
+curl https://your-app.railway.app/health
+</code></pre>
+<h2>Deployment Checklist</h2>
+<ul>
+<li><input disabled="" type="checkbox"> Railway project created</li>
+<li><input disabled="" type="checkbox"> Services added (PostgreSQL, Redis)</li>
+<li><input disabled="" type="checkbox"> Environment variables configured</li>
+<li><input disabled="" type="checkbox"> Database migrated</li>
+<li><input disabled="" type="checkbox"> Application deployed</li>
+<li><input disabled="" type="checkbox"> Health check passing</li>
+<li><input disabled="" type="checkbox"> Domain configured (optional)</li>
+<li><input disabled="" type="checkbox"> Webhook endpoints tested</li>
+<li><input disabled="" type="checkbox"> Monitoring set up</li>
+</ul>
+<h2>Alternatives Considered</h2>
+<h3>AWS EC2 + RDS</h3>
+<p><strong>Pros</strong>: More control, familiar AWS ecosystem
+<strong>Cons</strong>: More complex setup, higher maintenance</p>
+<h3>Render</h3>
+<p><strong>Pros</strong>: Simple deployment, managed services
+<strong>Cons</strong>: Limited customization, vendor lock-in</p>
+<h3>Railway (Chosen)</h3>
+<p><strong>Pros</strong>: Developer-friendly, automatic scaling, integrated services
+<strong>Cons</strong>: Less control than self-managed infrastructure</p>
+<h2>Learning Outcomes</h2>
+<p>This deployment showcases:</p>
+<ul>
+<li>Cloud platform deployment strategies</li>
+<li>Infrastructure as Code basics</li>
+<li>Security best practices for production</li>
+<li>Monitoring and observability setup</li>
+<li>CI/CD pipeline implementation</li>
+<li>Cost optimization for small applications</li>
+</ul>
+<h2>Author</h2>
+<p><strong>Patrick Araujo - Computer Engineer</strong> To view other projects and portfolio details, visit:
+<a href="https://pklavc.github.io/projects.html">https://pklavc.github.io/projects.html</a></p>
+<hr>
+<p><em>This showcase demonstrates practical cloud deployment skills for production applications.</em></p>
+<p><a href="https://github.com/sponsors/PkLavc"><img src="https://img.shields.io/badge/Sponsor%20me-%23ea4aaa?style=for-the-badge&logo=github-sponsors&logoColor=white" alt="GitHub Sponsors"></a></p>
+                    </article>
+                </div>
+            </section>
+            
+            <section class="tech-stack-section">
+                <div style="max-width: 1000px; margin: 0 auto;">
+                    <h2>Technology Stack</h2>
+                    <div class="tech-list">
+                        <div class="tech-tag">Docker</div>
+                        <div class="tech-tag">Kubernetes</div>
+                        <div class="tech-tag">GitHub Actions</div>
+                        <div class="tech-tag">Nginx</div>
+                        <div class="tech-tag">Infrastructure as Code</div>
+                    </div>
+                </div>
+            </section>
+
+            
+            <section class="cta-section">
+                <h2 style="color: #fff; margin-bottom: 30px;">View the Source Code</h2>
+                <a href="https://github.com/PkLavc/cloud-deployment-showcase" target="_blank" rel="noopener noreferrer" class="cta-button">
+                    Open on GitHub
+                </a>
+            </section>
+
+        </main>
+        
+        <footer class="footer-minimal">
+            <div class="footer-container">
+                <p>
+                    &copy; 2026 Patrick Araujo &bull; 
+                    <span class="github-dev-badge">Member of <b>GitHub Developer Program</b></span>
+                </p>
+            </div>
+        </footer>
+    </div>
+    
+    <div class="visually-hidden">
+        <p>Backend Software Engineer focused on automation, API integrations, backend systems, Python, Node.js, SQL, ETL pipelines, AWS, and scalable operational platforms.</p>
+    </div>
+    
+    <script src="../../js/jquery.min.js" defer></script>
+    <script src="../../js/index.js" defer></script>
+</body>
+</html>
+
+
+

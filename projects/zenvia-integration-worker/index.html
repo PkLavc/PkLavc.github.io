@@ -1,0 +1,383 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="PkLavc" />
+    <title>Zenvia Integration Worker | JavaScript Project | Patrick Araujo</title>
+    
+    <!-- SEO Enhanced Meta Tags -->
+    <meta name="description" content="Zenvia Integration Worker built with JavaScript. Ingestion worker for Zenvia call reporting data that filters voice events into analytics-ready datasets and dashb...">
+    <meta name="keywords" content="Patrick Araujo, Backend Software Engineer, Zenvia API, call analytics, ingestion worker, real-time monitoring">
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="Zenvia Integration Worker | JavaScript | Patrick Araujo">
+    <meta property="og:description" content="Zenvia Integration Worker built with JavaScript. Ingestion worker for Zenvia call reporting data that filters voice events into analytics-ready datasets and dashb...">
+    <meta property="og:url" content="https://pklavc.github.io/projects/zenvia-integration-worker/index.html">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://pklavc.github.io/images/Lavc.webp">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:site_name" content="Patrick Araujo Portfolio">
+    <meta property="og:locale" content="en_US">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Zenvia Integration Worker | JavaScript | Patrick Araujo">
+    <meta name="twitter:description" content="Zenvia Integration Worker built with JavaScript. Ingestion worker for Zenvia call reporting data that filters voice events into analytics-ready datasets and dashb...">
+    <meta name="twitter:image" content="https://pklavc.github.io/images/Lavc.webp">
+    <meta name="twitter:image:alt" content="Brand portrait of backend engineer and automation specialist Patrick Araujo">
+    <meta name="twitter:site" content="@PkLavc">
+    <meta name="twitter:creator" content="@PkLavc">
+    
+    <link rel="canonical" href="https://pklavc.github.io/projects/zenvia-integration-worker/index.html">
+    <meta name="robots" content="index, follow">
+    <link rel="alternate" href="https://pklavc.github.io/projects/zenvia-integration-worker/index.html" hreflang="en">
+    
+    <!-- JSON-LD Schema: Person -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Patrick Araujo",
+        "jobTitle": "Backend Software Engineer",
+        "url": "https://pklavc.github.io",
+        "image": "https://pklavc.github.io/images/Lavc.webp",
+        "sameAs": [
+            "https://github.com/PkLavc",
+            "https://linkedin.com/in/patrick-araujo"
+        ],
+        "description": "Specialist in backend automation, API integration, and scalable system architecture"
+    }
+    </script>
+    
+    <!-- JSON-LD Schema: Article -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": "Zenvia Integration Worker | JavaScript",
+        "description": "Zenvia Integration Worker built with JavaScript. Ingestion worker for Zenvia call reporting data that filters voice events into analytics-ready datasets and dashb...",
+        "author": {
+            "@type": "Person",
+            "name": "Patrick Araujo"
+        },
+        "mainEntityOfPage": "https://pklavc.github.io/projects/zenvia-integration-worker/index.html",
+        "url": "https://pklavc.github.io/projects/zenvia-integration-worker/index.html",
+        "keywords": "Patrick Araujo, Backend Software Engineer, JavaScript, Zenvia Integration Worker"
+    }
+    </script>
+    
+    <!-- JSON-LD Schema: BreadcrumbList -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "https://pklavc.github.io/"
+            },
+            {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Projects",
+                "item": "https://pklavc.github.io/projects.html"
+            },
+            {
+                "@type": "ListItem",
+                "position": 3,
+                "name": "Zenvia Integration Worker",
+                "item": "https://pklavc.github.io/projects/zenvia-integration-worker/"
+            }
+        ]
+    }
+    </script>
+    <link rel="icon" type="image/svg+xml" href="../../images/favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Monoton&family=Poppins:wght@500&family=Raleway:wght@300&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Monoton&family=Poppins:wght@500&family=Raleway:wght@300&display=swap"></noscript>
+    <link rel="stylesheet" href="../../css/global.css">
+    <link rel="stylesheet" href="../../css/projects.css">
+    <style>
+        .project-hero { padding: 60px 20px; text-align: center; background: linear-gradient(135deg, rgba(0,0,0,0.1), rgba(0,0,0,0.05)); }
+        .project-hero h1 { font-size: 2.5rem; margin: 20px 0; color: #fff; }
+        .project-category-badge { display: inline-block; background: rgba(100, 200, 255, 0.2); border: 1px solid rgba(100, 200, 255, 0.5); color: #64c8ff; padding: 8px 16px; border-radius: 20px; font-size: 0.9rem; margin-bottom: 20px; }
+        .tech-stack-section { padding: 40px 20px; background: rgba(255, 255, 255, 0.02); }
+        .tech-stack-section h2 { color: #fff; margin-bottom: 20px; font-size: 1.5rem; }
+        .tech-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 40px; }
+        .tech-tag { background: rgba(100, 200, 255, 0.1); border: 1px solid rgba(100, 200, 255, 0.3); color: #64c8ff; padding: 12px 16px; border-radius: 8px; text-align: center; font-size: 0.95rem; }
+        .problem-solution { padding: 40px 20px; max-width: 800px; margin: 0 auto; }
+        .problem-solution h2 { color: #fff; margin: 30px 0 20px 0; font-size: 1.3rem; }
+        .problem-solution p { color: #ccc; line-height: 1.8; margin-bottom: 20px; }
+        .impact-section { padding: 40px 20px; background: rgba(100, 200, 255, 0.05); text-align: center; }
+        .impact-section h2 { color: #fff; margin-bottom: 20px; font-size: 1.3rem; }
+        .impact-text { color: #64c8ff; font-size: 1.1rem; margin: 20px 0; font-weight: 500; }
+        .cta-section { padding: 60px 20px; text-align: center; }
+        .cta-button { display: inline-block; background: linear-gradient(135deg, #64c8ff, #00d4ff); color: #000; padding: 16px 40px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 1rem; transition: transform 0.3s, box-shadow 0.3s; border: none; cursor: pointer; }
+        .cta-button:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(100, 200, 255, 0.3); }
+        .breadcrumb-nav {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 12px 20px;
+            margin-bottom: 30px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .breadcrumb {
+            list-style: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0;
+            font-size: 0.95rem;
+            color: #A0A0A0;
+        }
+        .breadcrumb li {
+            display: flex;
+            align-items: center;
+        }
+        .breadcrumb li:not(:last-child)::after {
+            content: "→";
+            margin-left: 8px;
+            font-size: 0.8rem;
+            color: #666;
+        }
+        .breadcrumb a {
+            color: #4A9EFF;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        .breadcrumb a:hover {
+            color: #64c8ff;
+            text-decoration: underline;
+        }
+        .breadcrumb [aria-current="page"] {
+            color: #E0E0E0;
+            font-weight: 500;
+        }
+            .full-readme-section { padding: 50px 20px; background: rgba(255, 255, 255, 0.02); }
+        .full-readme-container { max-width: 1000px; margin: 0 auto; }
+        .full-readme-container .markdown-body { background: #0d1117; border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 10px; padding: 24px; }
+    </style>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@5.8.1/github-markdown-dark.min.css">
+</head>
+<body>
+    <div id="breaker"></div>
+    <div id="breaker-two"></div>
+    <div id="all">
+        <div id="navigation-content" role="navigation" aria-label="Primary navigation">
+            <div class="logo"></div>
+            <div class="navigation-links">
+                <a href="/" data-text="HOME">HOME</a>
+                <a href="/about.html" data-text="ABOUT">ABOUT</a>
+                <a href="/projects.html" data-text="PROJECTS">PROJECTS</a>
+            </div>
+        </div>
+        <div id="navigation-bar">
+            <div class="menubar">
+                <span class="first-span"></span>
+                <span class="second-span"></span>
+                <span class="third-span"></span>
+            </div>
+        </div>
+        
+        <main role="main">
+            <nav aria-label="Breadcrumb" class="breadcrumb-nav">
+                <ol class="breadcrumb">
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/projects.html">Projects</a></li>
+                    <li><span aria-current="page">Zenvia Integration Worker</span></li>
+                </ol>
+            </nav>
+            <section class="project-hero">
+                <span class="project-category-badge">Analytics Ingestion</span>
+                <h1>Zenvia Integration Worker | JavaScript</h1>
+                <p style="color: #aaa; font-size: 1.1rem; margin-top: 15px;">Ingestion worker for Zenvia call reporting data that filters voice events into analytics-ready datasets and dashboard feeds</p>
+            </section>
+
+            <section class="full-readme-section" aria-label="Full README">
+                <div class="full-readme-container">
+                    <h2 style="color: #fff; margin-bottom: 20px;">Full Project Documentation</h2>
+                    <article class="markdown-body">
+<h1>Zenvia Integration Worker</h1><p><a href="https://github.com/operacoesicaiu/worker-zenvia-integration"><img src="https://img.shields.io/badge/Source-GitHub-black?logo=github" alt="Source Code"></a>
+<a href="https://pklavc.github.io/projects.html"><img src="https://img.shields.io/badge/Portfolio-Projects-0A66C2?logo=google-chrome&logoColor=white" alt="Portfolio"></a>
+<a href="https://github.com/PkLavc"><img src="https://img.shields.io/badge/Author-Patrick_Araujo-1f2937" alt="Author"></a></p>
+<p>A Node.js worker service that synchronizes call data from Zenvia communication platform to Google Sheets for reporting and analysis.</p>
+<h2>Overview</h2>
+<p>This worker automatically fetches call records from Zenvia&#39;s API and synchronizes them to Google Sheets, providing a centralized view of communication data for business operations.</p>
+<h2>Features</h2>
+<ul>
+<li><strong>Call Data Synchronization</strong>: Automatically syncs call records from Zenvia to Google Sheets</li>
+<li><strong>Date Filtering</strong>: Filters records to include only yesterday&#39;s data</li>
+<li><strong>Queue Support</strong>: Supports both queue-specific and general call reports</li>
+<li><strong>Real-time Updates</strong>: Processes new data daily via automated workflows</li>
+<li><strong>Secure Data Handling</strong>: All sensitive information is properly masked and secured</li>
+</ul>
+<h2>Architecture</h2>
+<h3>Components</h3>
+<ul>
+<li><strong>Zenvia API Client</strong>: Fetches call data from Zenvia&#39;s communication platform</li>
+<li><strong>Google Sheets Integration</strong>: Writes processed data to Google Sheets</li>
+<li><strong>Data Processing</strong>: Filters and formats data for spreadsheet compatibility</li>
+<li><strong>Secure Logging</strong>: Logs all operations with sensitive data masking</li>
+</ul>
+<h3>Data Flow</h3>
+<ol>
+<li><strong>Authentication</strong>: Receives Google OAuth token from Google Auth Worker</li>
+<li><strong>Data Fetching</strong>: Retrieves call records from Zenvia API</li>
+<li><strong>Data Processing</strong>: Filters for yesterday&#39;s records and formats data</li>
+<li><strong>Sheet Update</strong>: Appends processed data to Google Sheets</li>
+<li><strong>Status Reporting</strong>: Reports execution status to monitoring system</li>
+</ol>
+<h2>Configuration</h2>
+<h3>Required Environment Variables</h3>
+<pre><code class="language-bash">GOOGLE_TOKEN=oauth_access_token_from_google_auth_worker
+ZENVIA_ACCESS_TOKEN=your_zenvia_api_access_token
+ZENVIA_QUEUE_ID=optional_queue_id_for_specific_queue_reports
+SPREADSHEET_ID=your_google_spreadsheet_id
+SHEET_NAME=your_google_sheet_name
+</code></pre>
+<h3>GitHub Secrets</h3>
+<p>The following secrets must be configured in the GitHub repository:</p>
+<ul>
+<li><code>GOOGLE_TOKEN</code>: OAuth access token (provided by Google Auth Worker)</li>
+<li><code>ZENVIA_ACCESS_TOKEN</code>: Zenvia API access token</li>
+<li><code>ZENVIA_QUEUE_ID</code>: Optional queue ID for specific queue reports</li>
+<li><code>SPREADSHEET_ID</code>: Google Sheets spreadsheet ID</li>
+<li><code>SHEET_NAME</code>: Target sheet name within the spreadsheet</li>
+</ul>
+<h2>Usage</h2>
+<h3>Triggering Synchronization</h3>
+<p>The worker is triggered automatically by repository dispatch events from the Google Auth Worker:</p>
+<pre><code class="language-json">{
+  &quot;event_type&quot;: &quot;google_token_ready&quot;,
+  &quot;client_payload&quot;: {
+    &quot;token&quot;: &quot;oauth_access_token&quot;
+  }
+}
+</code></pre>
+<h3>Data Processing</h3>
+<p>The worker processes call data with the following logic:</p>
+<ol>
+<li><strong>Date Filtering</strong>: Only includes records from yesterday</li>
+<li><strong>Queue Filtering</strong>: If <code>ZENVIA_QUEUE_ID</code> is provided, fetches queue-specific data</li>
+<li><strong>Data Mapping</strong>: Maps Zenvia fields to spreadsheet columns</li>
+<li><strong>Batch Processing</strong>: Sends data in batches of 5000 rows to avoid API limits</li>
+</ol>
+<h3>Data Fields</h3>
+<p>The following fields are synchronized to Google Sheets:</p>
+<ul>
+<li>Call ID</li>
+<li>Date/Time (formatted for Brazil timezone)</li>
+<li>Source/Destination numbers</li>
+<li>Agent information</li>
+<li>Call status and duration</li>
+<li>Recording availability</li>
+<li>Disconnection reasons</li>
+</ul>
+<h2>Security Features</h2>
+<ul>
+<li><strong>Token Security</strong>: OAuth tokens are received securely via repository dispatch</li>
+<li><strong>Data Masking</strong>: All sensitive information is masked in logs</li>
+<li><strong>Environment Variables</strong>: Credentials stored securely as environment variables</li>
+<li><strong>Minimal Permissions</strong>: GitHub Actions workflows use minimal required permissions</li>
+</ul>
+<h2>Monitoring</h2>
+<p>Execution status is reported to the central monitoring system:</p>
+<ul>
+<li>Success/failure status</li>
+<li>Number of records processed</li>
+<li>Execution timestamps</li>
+<li>Error details (with sensitive data masked)</li>
+</ul>
+<h2>Troubleshooting</h2>
+<h3>Common Issues</h3>
+<ol>
+<li><strong>Authentication Errors</strong>: Verify Google token and Zenvia access token</li>
+<li><strong>API Rate Limits</strong>: The worker includes delays to avoid rate limiting</li>
+<li><strong>Date Filtering</strong>: Ensure system timezone is correctly configured</li>
+<li><strong>Sheet Permissions</strong>: Verify Google Sheets API permissions</li>
+</ol>
+<h3>Logs</h3>
+<p>All execution logs are processed through secure logging functions that:</p>
+<ul>
+<li>Mask sensitive information</li>
+<li>Include timestamps and log levels</li>
+<li>Report to the monitoring system</li>
+</ul>
+<h2>Integration Points</h2>
+<ul>
+<li><strong>Google Auth Worker</strong>: Receives OAuth tokens</li>
+<li><strong>Zenvia API</strong>: Fetches call data</li>
+<li><strong>Google Sheets API</strong>: Writes processed data</li>
+<li><strong>Cloud Operations Monitor</strong>: Reports execution status</li>
+</ul>
+<h2>Contributing</h2>
+<ol>
+<li>Fork the repository</li>
+<li>Create a feature branch</li>
+<li>Make your changes</li>
+<li>Add tests for your changes</li>
+<li>Submit a pull request</li>
+</ol>
+<h2>License</h2>
+<p>This project is licensed under the MIT License - see the <a href="LICENSE">LICENSE</a> file for details.</p>
+<h2>Support</h2>
+<p>For support and questions, please contact the development team.</p>
+<h2>Author</h2>
+<p><strong>Patrick Araujo - Computer Engineer</strong><br><strong>GitHub</strong>: <a href="https://github.com/PkLavc">https://github.com/PkLavc</a><br><strong>Portfolio</strong>: <a href="https://pklavc.github.io/projects.html">https://pklavc.github.io/projects.html</a></p>
+<hr>
+<p><em>Zenvia Integration Worker - Automated call-data ingestion pipeline for communications analytics.</em></p>
+<p><a href="https://github.com/sponsors/PkLavc"><img src="https://img.shields.io/badge/Sponsor%20me-%23ea4aaa?style=for-the-badge&logo=github-sponsors&logoColor=white" alt="GitHub Sponsors"></a></p>
+                    </article>
+                </div>
+            </section>
+            
+            <section class="tech-stack-section">
+                <div style="max-width: 1000px; margin: 0 auto;">
+                    <h2>Technology Stack</h2>
+                    <div class="tech-list">
+                        <div class="tech-tag">JavaScript</div>
+                        <div class="tech-tag">GitHub Actions</div>
+                        <div class="tech-tag">Google Sheets</div>
+                        <div class="tech-tag">Zenvia API</div>
+                        <div class="tech-tag">Node.js</div>
+                    </div>
+                </div>
+            </section>
+
+            
+            <section class="cta-section">
+                <h2 style="color: #fff; margin-bottom: 30px;">View the Source Code</h2>
+                <a href="https://github.com/operacoesicaiu/worker-zenvia-integration" target="_blank" rel="noopener noreferrer" class="cta-button">
+                    Open on GitHub
+                </a>
+            </section>
+
+        </main>
+        
+        <footer class="footer-minimal">
+            <div class="footer-container">
+                <p>
+                    &copy; 2026 Patrick Araujo &bull; 
+                    <span class="github-dev-badge">Member of <b>GitHub Developer Program</b></span>
+                </p>
+            </div>
+        </footer>
+    </div>
+    
+    <div class="visually-hidden">
+        <p>Backend Software Engineer focused on automation, API integrations, backend systems, Python, Node.js, SQL, ETL pipelines, AWS, and scalable operational platforms.</p>
+    </div>
+    
+    <script src="../../js/jquery.min.js" defer></script>
+    <script src="../../js/index.js" defer></script>
+</body>
+</html>
+
+
+

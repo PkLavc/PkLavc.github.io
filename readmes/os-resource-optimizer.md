@@ -1,4 +1,4 @@
-﻿# OS Resource Optimizer
+# OS Resource Optimizer
 
 [![C++ Version](https://img.shields.io/badge/C%2B%2B-17+-blue.svg)](https://isocpp.org)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)

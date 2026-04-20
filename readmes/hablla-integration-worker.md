@@ -1,4 +1,4 @@
-﻿# Hablla Integration Worker
+# Hablla Integration Worker
 
 A Node.js integration worker that synchronizes operational Hablla data into Google Sheets for analytics, attendance monitoring, and CRM-style customer base enrichment.
 

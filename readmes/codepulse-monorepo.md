@@ -1,4 +1,4 @@
-﻿# CodePulse: High-Performance Code Execution Engine
+# CodePulse: High-Performance Code Execution Engine
 
 **A Professional Monorepo with Standalone HTML Frontend, Node.js Backend, E2E Tests & High QA Coverage**
 
