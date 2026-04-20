@@ -36,10 +36,244 @@
         })();
     </script>
     <link rel="icon" type="image/png" href="/images/Lavc.png">
-    <link rel="stylesheet" href="/css/global.css">
-    <link rel="stylesheet" href="/css/index.css">
-    <link rel="stylesheet" href="/css/404.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.2.6/gsap.min.js" defer></script>
+    <style>
+        :root {
+            --clr-primary: #00d1ff;
+            --bg: #101114;
+            --bg-elev: #171a20;
+            --text: #f3f7fb;
+            --text-muted: #c7d2df;
+            --line: rgba(0, 209, 255, 0.22);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html,
+        body {
+            min-height: 100%;
+        }
+
+        body {
+            font-family: "Inter", "Poppins", "Segoe UI", sans-serif;
+            background: radial-gradient(1200px 700px at 80% -10%, rgba(0, 209, 255, 0.12), transparent 60%), var(--bg);
+            color: var(--text);
+            overflow-x: hidden;
+        }
+
+        #all {
+            min-height: 100vh;
+            position: relative;
+        }
+
+        #navigation-content {
+            position: fixed;
+            inset: 0;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            background: rgba(5, 8, 12, 0.96);
+            transform: translateY(-100%);
+            transition: transform 0.24s ease;
+            pointer-events: none;
+        }
+
+        #navigation-content.is-open {
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+
+        .navigation-links {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            align-items: center;
+        }
+
+        .navigation-links a {
+            color: #e8f8ff;
+            text-decoration: none;
+            letter-spacing: 0.04em;
+            font-size: clamp(1.35rem, 2.3vw, 1.9rem);
+            opacity: 0.88;
+            transition: opacity 0.2s ease, color 0.2s ease;
+        }
+
+        .navigation-links a:hover {
+            opacity: 1;
+            color: var(--clr-primary);
+        }
+
+        #navigation-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 84px;
+            z-index: 1100;
+        }
+
+        .menubar {
+            position: absolute;
+            top: 24px;
+            right: 26px;
+            cursor: pointer;
+            padding: 8px;
+            opacity: 0.9;
+        }
+
+        .menubar span {
+            display: block;
+            width: 38px;
+            height: 2px;
+            margin: 8px 0;
+            border-radius: 2px;
+            background: transparent;
+            position: relative;
+        }
+
+        .menubar span::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            right: 0;
+            height: 100%;
+            background: var(--clr-primary);
+            border-radius: 2px;
+        }
+
+        .menubar .first-span::before { width: 52%; }
+        .menubar .second-span::before { width: 76%; }
+        .menubar .third-span::before { width: 100%; }
+
+        .menubar:hover .first-span::before,
+        .menubar:hover .second-span::before {
+            width: 100%;
+        }
+
+        .error-page-main {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 100px 20px 40px;
+        }
+
+        .error-page-card {
+            width: min(860px, 100%);
+            text-align: center;
+            padding: 40px 28px;
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01)), var(--bg-elev);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+        }
+
+        .error-page-code {
+            font-size: clamp(3.2rem, 8vw, 5.1rem);
+            line-height: 1;
+            color: var(--clr-primary);
+            margin-bottom: 10px;
+        }
+
+        .error-page-title {
+            font-size: clamp(1.6rem, 4.5vw, 2.5rem);
+            margin-bottom: 14px;
+        }
+
+        .error-page-description {
+            font-size: clamp(1rem, 2.5vw, 1.17rem);
+            color: var(--text-muted);
+            line-height: 1.7;
+            margin-bottom: 24px;
+        }
+
+        .error-page-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+            margin-bottom: 16px;
+        }
+
+        .error-page-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 9px;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 11px 18px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+        }
+
+        .error-page-link-primary {
+            background: var(--clr-primary);
+            color: #04202a;
+        }
+
+        .error-page-link-secondary {
+            border: 1px solid var(--clr-primary);
+            color: var(--clr-primary);
+            background: rgba(0, 209, 255, 0.08);
+        }
+
+        .error-page-link:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 22px rgba(0, 209, 255, 0.18);
+        }
+
+        .error-page-help {
+            color: #99a9bb;
+            font-size: 0.96rem;
+        }
+
+        .error-page-social {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin: 4px 0 18px;
+        }
+
+        .error-page-social-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 110px;
+            padding: 9px 12px;
+            border: 1px solid rgba(0, 209, 255, 0.45);
+            border-radius: 8px;
+            color: #cfefff;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.93rem;
+            background: rgba(0, 209, 255, 0.08);
+            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+        }
+
+        .error-page-social-link:hover {
+            transform: translateY(-1px);
+            border-color: #00d1ff;
+            box-shadow: 0 8px 20px rgba(0, 209, 255, 0.18);
+        }
+
+        @media (max-width: 600px) {
+            .error-page-card {
+                padding: 28px 18px;
+            }
+
+            .menubar {
+                right: 14px;
+                top: 15px;
+            }
+        }
+    </style>
 </head>
 <body>
     <div id="all">
@@ -65,13 +299,51 @@
                 <p class="error-page-description">The page you are looking for may have been removed, had its name changed, or is temporarily unavailable. Return to the portfolio to explore systems architecture, API integration, and intelligent automation solutions.</p>
                 <div class="error-page-actions">
                     <a href="/index.html" class="error-page-link error-page-link-primary">Back to Home</a>
+                    <a href="/about/" class="error-page-link error-page-link-secondary">About</a>
                     <a href="/projects/" class="error-page-link error-page-link-secondary">View Projects</a>
+                </div>
+                <div class="error-page-social" aria-label="Contact links">
+                    <a class="error-page-social-link" href="https://github.com/PkLavc" target="_blank" rel="noopener noreferrer">GitHub</a>
+                    <a class="error-page-social-link" href="https://www.linkedin.com/in/patrickajm/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+                    <a class="error-page-social-link" href="mailto:patrickajm@gmail.com">Email</a>
                 </div>
                 <p class="error-page-help">If you entered the URL manually, please check the spelling and try again.</p>
             </section>
         </main>
     </div>
-    <script src="/js/jquery.min.js" defer></script>
-    <script src="/js/index.js" defer></script>
+    <script>
+        (function() {
+            var nav = document.getElementById('navigation-content');
+            var menu = document.querySelector('.menubar');
+
+            if (!nav || !menu) {
+                return;
+            }
+
+            function closeMenu() {
+                nav.classList.remove('is-open');
+            }
+
+            menu.addEventListener('click', function(event) {
+                event.preventDefault();
+                event.stopPropagation();
+                nav.classList.toggle('is-open');
+            });
+
+            document.addEventListener('click', function(event) {
+                if (!nav.classList.contains('is-open')) {
+                    return;
+                }
+
+                if (!nav.contains(event.target) && !menu.contains(event.target)) {
+                    closeMenu();
+                }
+            });
+
+            nav.querySelectorAll('a').forEach(function(link) {
+                link.addEventListener('click', closeMenu);
+            });
+        })();
+    </script>
 </body>
 </html>
