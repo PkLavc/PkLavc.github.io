@@ -6,14 +6,16 @@
         <meta name="author" content="PkLavc" />
         <meta name="google-site-verification" content="6gMtjXC8QaMe105oQFC7f7_0FKxgBr8R65-kOtoSSfE" />
         <script>
-            if (window.location.hostname.toLowerCase() === "pklavc.github.io") {
-                window.location.replace("https://pklavc.com" + window.location.pathname + window.location.search + window.location.hash);
-            }
-        <script>
-            const host = window.location.hostname.toLowerCase();
-            if (host === "pklavc.github.io" || host === "www.pklavc.com") {
-                window.location.replace("https://pklavc.com" + window.location.pathname + window.location.search + window.location.hash);
-            }
+          const host = window.location.hostname.toLowerCase();
+        
+          if (host === "pklavc.github.io" || host === "www.pklavc.com") {
+            window.location.replace(
+              "https://pklavc.com" +
+              window.location.pathname +
+              window.location.search +
+              window.location.hash
+            );
+          }
         </script>
     <meta property="og:title" content="Patrick Araujo | Backend Software Engineer">
     <meta property="og:description" content="Backend Software Engineer building automation, API integrations, and scalable backend systems with Python, Node.js, SQL, AWS, and ETL workflows.">
