@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="PkLavc" />
+    <title>Multi-Tenant SaaS Platform | TypeScript Project | Patrick Araujo</title>
+    
+    <!-- SEO Enhanced Meta Tags -->
+    <meta name="description" content="Node.js backend architecture with TypeScript for multi-tenant APIs, RBAC security, and automation job processing at SaaS scale.">
+        <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="Multi-Tenant SaaS Platform | TypeScript | Patrick Araujo">
+    <meta property="og:description" content="Node.js backend architecture with TypeScript for multi-tenant APIs, RBAC security, and automation job processing at SaaS scale.">
+    <meta property="og:url" content="https://pklavc.github.io/projects/multi-tenant-saas-platform/">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://pklavc.github.io/images/Lavc.webp">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:site_name" content="Patrick Araujo Portfolio">
+    <meta property="og:locale" content="en_US">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Multi-Tenant SaaS Platform | TypeScript | Patrick Araujo">
+    <meta name="twitter:description" content="Node.js backend architecture with TypeScript for multi-tenant APIs, RBAC security, and automation job processing at SaaS scale.">
+    <meta name="twitter:image" content="https://pklavc.github.io/images/Lavc.webp">
+    <meta name="twitter:image:alt" content="Brand portrait of backend engineer and automation specialist Patrick Araujo">
+    <meta name="twitter:site" content="@PkLavc">
+    <meta name="twitter:creator" content="@PkLavc">
+    
+    <link rel="canonical" href="https://pklavc.github.io/projects/multi-tenant-saas-platform/">
+    <meta name="robots" content="index, follow">
+    <link rel="alternate" href="https://pklavc.github.io/projects/multi-tenant-saas-platform/" hreflang="en">
+    
+    <!-- JSON-LD Schema: Person -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Patrick Araujo",
+        "jobTitle": "Backend Software Engineer",
+        "url": "https://pklavc.github.io",
+        "image": "https://pklavc.github.io/images/Lavc.webp",
+        "sameAs": [
+            "https://github.com/PkLavc",
+            "https://www.linkedin.com/in/patrickajm/"
+        ],
+        "description": "Specialist in backend automation, API integration, and scalable system architecture"
+    }
+    </script>
+    
+    <!-- JSON-LD Schema: Article -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": "Multi-Tenant SaaS Platform | TypeScript",
+        "description": "Multi-Tenant SaaS Platform built with TypeScript. Enterprise-grade SaaS backend featuring robust data isolation, RBAC security, and scalable job processing",
+        "author": {
+            "@type": "Person",
+            "name": "Patrick Araujo"
+        },
+        "mainEntityOfPage": "https://pklavc.github.io/projects/multi-tenant-saas-platform/",
+        "url": "https://pklavc.github.io/projects/multi-tenant-saas-platform/",
+        "keywords": "Patrick Araujo, Backend Software Engineer, TypeScript, Multi-Tenant SaaS Platform"
+    }
+    </script>
+    
+    <!-- JSON-LD Schema: BreadcrumbList -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "https://pklavc.github.io/"
+            },
+            {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Projects",
+                "item": "https://pklavc.github.io/projects/"
+            },
+            {
+                "@type": "ListItem",
+                "position": 3,
+                "name": "Multi-Tenant SaaS Platform",
+                "item": "https://pklavc.github.io/projects/multi-tenant-saas-platform/"
+            }
+        ]
+    }
+    </script>
+    <link rel="icon" type="image/svg+xml" href="../../images/favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Monoton&family=Poppins:wght@500&family=Raleway:wght@300&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Monoton&family=Poppins:wght@500&family=Raleway:wght@300&display=swap"></noscript>
+    <link rel="stylesheet" href="../../css/global.css">
+    <link rel="stylesheet" href="../../css/projects.css">
+    <style>
+        .project-hero { padding: 60px 20px; text-align: center; background: linear-gradient(135deg, rgba(0,0,0,0.1), rgba(0,0,0,0.05)); }
+        .project-hero h1 { font-size: 2.5rem; margin: 20px 0; color: #fff; }
+        .project-category-badge { display: inline-block; background: rgba(100, 200, 255, 0.2); border: 1px solid rgba(100, 200, 255, 0.5); color: #64c8ff; padding: 8px 16px; border-radius: 20px; font-size: 0.9rem; margin-bottom: 20px; }
+        .tech-stack-section { padding: 40px 20px; background: rgba(255, 255, 255, 0.02); }
+        .tech-stack-section h2 { color: #fff; margin-bottom: 20px; font-size: 1.5rem; }
+        .tech-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 40px; }
+        .tech-tag { background: rgba(100, 200, 255, 0.1); border: 1px solid rgba(100, 200, 255, 0.3); color: #64c8ff; padding: 12px 16px; border-radius: 8px; text-align: center; font-size: 0.95rem; }
+        .problem-solution { padding: 40px 20px; max-width: 800px; margin: 0 auto; }
+        .problem-solution h2 { color: #fff; margin: 30px 0 20px 0; font-size: 1.3rem; }
+        .problem-solution p { color: #ccc; line-height: 1.8; margin-bottom: 20px; }
+        .impact-section { padding: 40px 20px; background: rgba(100, 200, 255, 0.05); text-align: center; }
+        .impact-section h2 { color: #fff; margin-bottom: 20px; font-size: 1.3rem; }
+        .impact-text { color: #64c8ff; font-size: 1.1rem; margin: 20px 0; font-weight: 500; }
+        .cta-section { padding: 60px 20px; text-align: center; }
+        .cta-button { display: inline-block; background: linear-gradient(135deg, #64c8ff, #00d4ff); color: #000; padding: 16px 40px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 1rem; transition: transform 0.3s, box-shadow 0.3s; border: none; cursor: pointer; }
+        .cta-button:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(100, 200, 255, 0.3); }
+        .breadcrumb-nav {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 12px 20px;
+            margin-bottom: 30px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .breadcrumb {
+            list-style: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0;
+            font-size: 0.95rem;
+            color: #A0A0A0;
+        }
+        .breadcrumb li {
+            display: flex;
+            align-items: center;
+        }
+        .breadcrumb li:not(:last-child)::after {
+            content: "/";
+            margin-left: 8px;
+            font-size: 0.8rem;
+            color: #666;
+        }
+        .breadcrumb a {
+            color: #4A9EFF;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        .breadcrumb a:hover {
+            color: #64c8ff;
+            text-decoration: underline;
+        }
+        .breadcrumb [aria-current="page"] {
+            color: #E0E0E0;
+            font-weight: 500;
+        }
+            .full-readme-section { padding: 50px 20px; background: rgba(255, 255, 255, 0.02); }
+        .full-readme-container { max-width: 1000px; margin: 0 auto; }
+        .full-readme-container .markdown-body { background: #0d1117; border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 10px; padding: 24px; }
+            .project-context-section { padding: 32px 20px; background: rgba(100, 200, 255, 0.06); }
+        .project-context-container { max-width: 1000px; margin: 0 auto; }
+        .project-context-section h2, .project-context-section h3, .related-projects-section h2 { color: #fff; }
+        .project-context-section p, .project-context-section li, .related-projects-section p, .related-projects-section li { color: #d0d0d0; line-height: 1.7; }
+        .project-context-section a, .related-projects-section a { color: #64c8ff; }
+        .related-projects-section { padding: 32px 20px; background: rgba(255, 255, 255, 0.03); }    </style>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@5.8.1/github-markdown-dark.min.css">
+</head>
+<body>
+    <div id="breaker"></div>
+    <div id="breaker-two"></div>
+    <div id="all">
+        <div id="navigation-content" role="navigation" aria-label="Primary navigation">
+            <div class="logo"></div>
+            <div class="navigation-links">
+                <a href="/" data-text="HOME">HOME</a>
+                <a href="/about/" data-text="ABOUT">ABOUT</a>
+                <a href="/projects/" data-text="PROJECTS">PROJECTS</a>
+            </div>
+        </div>
+        <div id="navigation-bar">
+            <div class="menubar">
+                <span class="first-span"></span>
+                <span class="second-span"></span>
+                <span class="third-span"></span>
+            </div>
+        </div>
+        
+        <main role="main">
+            <section class="project-hero">
+                <span class="project-category-badge">Backend Architecture</span>
+                <h1>Multi-Tenant SaaS Platform | TypeScript</h1>
+                <p style="color: #aaa; font-size: 1.1rem; margin-top: 15px;">Enterprise-grade SaaS backend featuring robust data isolation, RBAC security, and scalable job processing</p>
+            </section>
+
+            <section class="project-context-section" aria-label="Project SEO context"><div class="project-context-container"><h2>Problem Context, Stack, and System Type</h2><p>This project models a scalable backend platform with tenant isolation, RBAC, and queued jobs. It represents node.js backend architecture with API-centric design and automation workloads for SaaS operations.</p><h3>Technical Scope</h3><ul><li><strong>Stack:</strong> TypeScript, Node.js, NestJS, PostgreSQL, Redis, BullMQ</li><li><strong>System Type:</strong> backend api platform, automation system, multi-tenant architecture</li><li><strong>Keywords in context:</strong> node.js api, backend engineer, automation</li></ul><p>Related projects: <a href="/projects/event-driven-integration-service/">Event-Driven Integration Service</a> and <a href="/projects/codepulse-monorepo/">CodePulse Monorepo</a>.</p></div></section>
+            <section class="full-readme-section" aria-label="Full README">
+                <div class="full-readme-container">
+                    <h2 style="color: #fff; margin-bottom: 20px;">Full Project Documentation</h2>
+                    <article class="markdown-body">
+<h2>Multi-Tenant SaaS Backend Platform</h2>
+<p><a href="https://nestjs.com"><img src="https://img.shields.io/badge/NestJS-10+-red.svg" alt="NestJS"></a>
+<a href="https://nodejs.org"><img src="https://img.shields.io/badge/Node.js-18+-blue.svg" alt="Node.js Version"></a>
+<a href="https://www.postgresql.org"><img src="https://img.shields.io/badge/PostgreSQL-15+-blue.svg" alt="PostgreSQL"></a>
+<a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-green.svg" alt="License: MIT"></a>
+<a href="https://github.com/PkLavc/saas-backend-platform/actions"><img src="https://img.shields.io/badge/Build-Passing-brightgreen.svg" alt="Build Status"></a></p>
+<h2>Project Overview</h2>
+<p>A robust production-ready backend API built with NestJS, designed for enterprise-grade Software-as-a-Service applications.</p>
+<h2>Getting Started</h2>
+<p>Quick guide to set up and run the platform.</p>
+<h2>Architecture Overview</h2>
+<h3>Visual Request Lifecycle</h3>
+<pre><code class="language-mermaid">graph TD
+    A[Client Request] --&gt; B[Global Guards: JWT &amp; RBAC]
+    B --&gt; C[Global Interceptors: Logging/Transform]
+    C --&gt; D[Feature Module: Controller]
+    D --&gt; E[Service Layer: Business Logic]
+    E --&gt; F[Repository Layer: Prisma ORM]
+    F --&gt; G[(PostgreSQL: Row Level Isolation)]
+    
+    subgraph Async Operations
+        E --&gt; H[BullMQ / Redis]
+        H --&gt; I[Worker: Email/Billing]
+    end
+</code></pre>
+<h3>Engineering Impact &amp; National Interest</h3>
+<table>
+<thead>
+<tr>
+<th align="left">Component</th>
+<th align="left">Implementation</th>
+<th align="left">Industry Value</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>Data Isolation</strong></td>
+<td align="left">Row-Level Multi-tenancy</td>
+<td align="left">Essential for GDPR/CCPA compliance in SaaS</td>
+</tr>
+<tr>
+<td align="left"><strong>Security Architecture</strong></td>
+<td align="left">JWT + RBAC + Passport.js</td>
+<td align="left">Protects enterprise data against unauthorized access</td>
+</tr>
+<tr>
+<td align="left"><strong>Scalability</strong></td>
+<td align="left">Redis Queue + BullMQ Workers</td>
+<td align="left">Handles high-volume traffic without system degradation</td>
+</tr>
+<tr>
+<td align="left"><strong>Maintainability</strong></td>
+<td align="left">Clean Architecture &amp; NestJS DI</td>
+<td align="left">Reduces long-term technical debt and operational costs</td>
+</tr>
+</tbody></table>
+<h3>Core Architecture Patterns</h3>
+<ul>
+<li><strong>Clean Architecture</strong>: Clear separation between presentation, business, and data layers</li>
+<li><strong>Dependency Injection</strong>: NestJS DI system for testable, maintainable code</li>
+<li><strong>Module Organization</strong>: Feature-based modules for scalability</li>
+<li><strong>Repository Pattern</strong>: Abstracted data access through Prisma</li>
+<li><strong>DTO Validation</strong>: Comprehensive input validation and transformation</li>
+<li><strong>Error Handling</strong>: Centralized error handling with proper HTTP status codes</li>
+</ul>
+<h2>Tech Stack</h2>
+<ul>
+<li><strong>Language</strong>: TypeScript 5.0+</li>
+<li><strong>Runtime</strong>: Node.js 18+</li>
+<li><strong>Framework</strong>: NestJS 10+ (Enterprise-grade backend framework)</li>
+<li><strong>Database</strong>: PostgreSQL 15+ (ACID compliance, row-level security)</li>
+<li><strong>ORM</strong>: Prisma 5+ (Type-safe database access)</li>
+<li><strong>Authentication</strong>: JWT with Passport.js (Stateless authentication)</li>
+<li><strong>Authorization</strong>: Role-based access control (RBAC)</li>
+<li><strong>Queue System</strong>: Redis + BullMQ (Background job processing)</li>
+<li><strong>Validation</strong>: class-validator + class-transformer</li>
+<li><strong>Containerization</strong>: Docker 24+ with multi-stage builds</li>
+<li><strong>Testing</strong>: Jest 29+ with Supertest for E2E testing</li>
+<li><strong>Logging</strong>: Winston structured logging</li>
+</ul>
+<h2>Features</h2>
+<h3>Authentication &amp; Authorization</h3>
+<ul>
+<li>User registration and login</li>
+<li>JWT-based authentication</li>
+<li>Role-based access control (Admin/User)</li>
+<li>Password hashing with bcrypt</li>
+</ul>
+<h3>Multi-Tenancy</h3>
+<ul>
+<li>Organization-based data isolation</li>
+<li>Row-level multi-tenancy</li>
+<li>Users belong to organizations</li>
+</ul>
+<h3>CRUD Modules</h3>
+<ul>
+<li><strong>Users</strong>: Manage organization users</li>
+<li><strong>Organizations</strong>: Admin-only management</li>
+<li><strong>Projects</strong>: Organization-specific projects</li>
+<li><strong>Tasks</strong>: Project-specific tasks with assignment</li>
+</ul>
+<p>All modules include:</p>
+<ul>
+<li>Pagination</li>
+<li>Filtering</li>
+<li>Sorting</li>
+<li>Input validation</li>
+<li>Error handling</li>
+</ul>
+<h3>Background Processing</h3>
+<ul>
+<li>Asynchronous email sending simulation (logged to console)</li>
+<li>Job retries and failure handling (simplified)</li>
+<li>Logging</li>
+</ul>
+<h3>External Integration</h3>
+<ul>
+<li>Mocked Stripe payment processing</li>
+<li>Webhook endpoint for payment events</li>
+</ul>
+<h3>Testing</h3>
+<ul>
+<li>Unit tests for services</li>
+<li>Basic e2e test for authentication</li>
+</ul>
+<h2>Environment Variables</h2>
+<p>Create a <code>.env</code> file in the root directory:</p>
+<pre><code class="language-env"># Database
+DATABASE_URL=&quot;postgresql://username:password@localhost:5432/portfolio_saas?schema=public&quot;
+
+# JWT
+JWT_SECRET=&quot;your-secret-key&quot;
+JWT_EXPIRES_IN=&quot;1h&quot;
+
+# Redis
+REDIS_URL=&quot;redis://localhost:6379&quot;
+
+# Email (simulation)
+EMAIL_HOST=&quot;smtp.gmail.com&quot;
+EMAIL_PORT=587
+EMAIL_USER=&quot;your-email@gmail.com&quot;
+EMAIL_PASS=&quot;your-password&quot;
+
+# Payment (Stripe sandbox)
+STRIPE_SECRET_KEY=&quot;sk_test_...&quot;
+STRIPE_WEBHOOK_SECRET=&quot;whsec_...&quot;
+</code></pre>
+<h2>How to Run Locally</h2>
+<h3>Prerequisites</h3>
+<ul>
+<li>Node.js (v18+)</li>
+<li>PostgreSQL</li>
+<li>Redis</li>
+<li>Docker (optional)</li>
+</ul>
+<h3>Local Setup</h3>
+<ol>
+<li><p><strong>Clone the repository</strong></p>
+<pre><code class="language-bash">git clone &lt;repository-url&gt;
+cd portfolio-saas-backend
+</code></pre>
+</li>
+<li><p><strong>Install dependencies</strong></p>
+<pre><code class="language-bash">npm install
+</code></pre>
+</li>
+<li><p><strong>Set up database</strong></p>
+<pre><code class="language-bash"># Start PostgreSQL and Redis locally or via Docker
+docker run --name postgres -e POSTGRES_USER=username -e POSTGRES_PASSWORD=password -e POSTGRES_DB=portfolio_saas -p 5432:5432 -d postgres:15
+docker run --name redis -p 6379:6379 -d redis:7-alpine
+</code></pre>
+</li>
+<li><p><strong>Configure environment</strong></p>
+<pre><code class="language-bash">cp .env.example .env
+# Edit .env with your values
+</code></pre>
+</li>
+<li><p><strong>Run database migrations</strong></p>
+<pre><code class="language-bash">npm run prisma:migrate
+npm run prisma:generate
+</code></pre>
+</li>
+<li><p><strong>Start the application</strong></p>
+<pre><code class="language-bash">npm run start:dev
+</code></pre>
+</li>
+</ol>
+<p>The API will be available at <code>http://localhost:3000</code>.</p>
+<h3>Docker Setup</h3>
+<ol>
+<li><strong>Build and run with Docker Compose</strong><pre><code class="language-bash">docker-compose up --build
+</code></pre>
+</li>
+</ol>
+<p>This will start the app, PostgreSQL, and Redis.</p>
+<h2>API Documentation</h2>
+<h3>Authentication</h3>
+<h4>Register</h4>
+<pre><code class="language-http">POST /auth/register
+Content-Type: application/json
+
+{
+  &quot;email&quot;: &quot;user@example.com&quot;,
+  &quot;password&quot;: &quot;password123&quot;,
+  &quot;firstName&quot;: &quot;John&quot;,
+  &quot;lastName&quot;: &quot;Doe&quot;,
+  &quot;organizationId&quot;: &quot;org-id&quot;
+}
+</code></pre>
+<h4>Login</h4>
+<pre><code class="language-http">POST /auth/login
+Content-Type: application/json
+
+{
+  &quot;username&quot;: &quot;user@example.com&quot;,
+  &quot;password&quot;: &quot;password123&quot;
+}
+</code></pre>
+<p>Response:</p>
+<pre><code class="language-json">{
+  &quot;access_token&quot;: &quot;jwt-token-here&quot;
+}
+</code></pre>
+<h3>Organizations (Admin only)</h3>
+<h4>Create Organization</h4>
+<pre><code class="language-http">POST /organizations
+Authorization: Bearer &lt;token&gt;
+Content-Type: application/json
+
+{
+  &quot;name&quot;: &quot;My Company&quot;
+}
+</code></pre>
+<h4>List Organizations</h4>
+<pre><code class="language-http">GET /organizations?page=1&amp;limit=10&amp;name=search
+Authorization: Bearer &lt;token&gt;
+</code></pre>
+<h3>Projects</h3>
+<h4>Create Project</h4>
+<pre><code class="language-http">POST /projects
+Authorization: Bearer &lt;token&gt;
+Content-Type: application/json
+
+{
+  &quot;name&quot;: &quot;Website Redesign&quot;,
+  &quot;description&quot;: &quot;Redesign company website&quot;
+}
+</code></pre>
+<h4>List Projects</h4>
+<pre><code class="language-http">GET /projects?page=1&amp;limit=10&amp;name=search
+Authorization: Bearer &lt;token&gt;
+</code></pre>
+<h3>Tasks</h3>
+<h4>Create Task</h4>
+<pre><code class="language-http">POST /tasks
+Authorization: Bearer &lt;token&gt;
+Content-Type: application/json
+
+{
+  &quot;title&quot;: &quot;Design homepage&quot;,
+  &quot;description&quot;: &quot;Create new homepage design&quot;,
+  &quot;projectId&quot;: &quot;project-id&quot;
+}
+</code></pre>
+<h4>List Tasks</h4>
+<pre><code class="language-http">GET /tasks?page=1&amp;limit=10&amp;status=pending
+Authorization: Bearer &lt;token&gt;
+</code></pre>
+<h3>Payments</h3>
+<h4>Create Payment Intent</h4>
+<pre><code class="language-http">POST /payments/create-intent
+Content-Type: application/json
+
+{
+  &quot;amount&quot;: 1000,
+  &quot;currency&quot;: &quot;usd&quot;
+}
+</code></pre>
+<h4>Webhook</h4>
+<pre><code class="language-http">POST /payments/webhook
+Content-Type: application/json
+Stripe-Signature: &lt;signature&gt;
+
+{
+  &quot;type&quot;: &quot;payment_intent.succeeded&quot;,
+  &quot;data&quot;: { ... }
+}
+</code></pre>
+<h2>Design Decisions</h2>
+<h3>Multi-Tenancy</h3>
+<ul>
+<li><strong>Row-based multi-tenancy</strong>: Each table includes <code>organizationId</code> for data isolation</li>
+<li><strong>Pros</strong>: Simple, scalable, no schema duplication</li>
+<li><strong>Cons</strong>: Requires careful query filtering</li>
+</ul>
+<h3>Authentication</h3>
+<ul>
+<li><strong>JWT with Passport</strong>: Industry standard, stateless</li>
+<li><strong>Role-based</strong>: Simple ADMIN/USER roles</li>
+<li><strong>Password hashing</strong>: bcrypt for security</li>
+</ul>
+<h3>Background Jobs</h3>
+<ul>
+<li><strong>BullMQ with Redis</strong>: Reliable queue system</li>
+<li><strong>Email simulation</strong>: Logs instead of actual sending for demo</li>
+</ul>
+<h3>Payment Integration</h3>
+<ul>
+<li><strong>Mocked Stripe</strong>: Simulates real payment processing</li>
+<li><strong>Webhook handling</strong>: Basic event processing</li>
+</ul>
+<h3>Database</h3>
+<ul>
+<li><strong>PostgreSQL</strong>: Robust, ACID compliant</li>
+<li><strong>Prisma</strong>: Type-safe ORM, migrations, schema management</li>
+</ul>
+<h3>Architecture</h3>
+<ul>
+<li><strong>NestJS modules</strong>: Feature-based organization</li>
+<li><strong>Dependency injection</strong>: Testable, maintainable code</li>
+<li><strong>Validation</strong>: class-validator for input validation</li>
+</ul>
+<h3>Technical Note on Data Isolation</h3>
+<p>The platform implements a Shared Database, Shared Schema strategy. Data isolation is enforced at the service level through mandatory organizationId filters in every query. This approach balances cost-efficiency with the scalability required for high-growth startups.</p>
+<h2>Testing</h2>
+<pre><code class="language-bash"># Unit tests
+npm run test
+
+# E2E tests
+npm run test:e2e
+
+# Coverage
+npm run test:cov
+</code></pre>
+<h2>Deployment</h2>
+<p>This application is containerized with Docker and can be deployed to any cloud platform supporting Docker containers (AWS ECS, Google Cloud Run, Azure Container Instances, etc.).</p>
+<p>For production:</p>
+<ol>
+<li>Use environment-specific configs</li>
+<li>Set up proper database migrations</li>
+<li>Configure monitoring and logging</li>
+<li>Implement rate limiting</li>
+<li>Add API versioning</li>
+<li>Set up CI/CD pipeline</li>
+</ol>
+<h2>Contributing</h2>
+<ol>
+<li>Follow the existing code style</li>
+<li>Write tests for new features</li>
+<li>Update documentation</li>
+<li>Use meaningful commit messages</li>
+</ol>
+<h2>Author</h2>
+<p><strong>Patrick Araujo - Computer Engineer</strong> To view other projects and portfolio details, visit:
+<a href="https://pklavc.github.io/projects/">https://pklavc.github.io/projects/</a></p>
+<hr>
+<p><em>This project demonstrates advanced backend development capabilities for enterprise SaaS applications.</em></p>
+<p><a href="https://github.com/sponsors/PkLavc"><img src="https://img.shields.io/badge/Sponsor%20me-%23ea4aaa?style=for-the-badge&logo=github-sponsors&logoColor=white" alt="GitHub Sponsors"></a></p>
+                    </article>
+                </div>
+            </section>
+            
+            <section class="tech-stack-section">
+                <div style="max-width: 1000px; margin: 0 auto;">
+                    <h2>Technology Stack</h2>
+                    <div class="tech-list">
+                        <div class="tech-tag">TypeScript</div>
+                        <div class="tech-tag">NestJS</div>
+                        <div class="tech-tag">PostgreSQL</div>
+                        <div class="tech-tag">Redis</div>
+                        <div class="tech-tag">BullMQ</div>
+                    </div>
+                </div>
+            </section>
+
+            
+            
+            <section class="related-projects-section" aria-label="Related project links">
+  <div class="project-context-container">
+    <h2>Related Backend Projects and API Integrations</h2>
+    <p>Explore linked implementations across <a href="/collections/python-projects/">python backend automation</a>, <a href="/collections/javascript-projects/">node.js api workflows</a>, and <a href="/collections/api-integration-projects/">api integration system</a> clusters.</p>
+    <ul>
+      <li><a href="/projects/google-auth-worker/">Google Auth Worker</a> for authentication orchestration.</li>
+      <li><a href="/projects/event-driven-integration-service/">Event-Driven Integration Service</a> for webhook processing and event-driven architecture.</li>
+      <li><a href="/projects/zoho-integration-worker/">Zoho Integration Worker</a> for zoho deluge automation support workflows.</li>
+      <li><a href="/projects/cipher-gate-proxy/">Cipher Gate Proxy</a> for python backend security processing.</li>
+    </ul>
+  </div>
+</section>
+            <section class="cta-section">
+                <h2 style="color: #fff; margin-bottom: 30px;">View the Source Code</h2>
+                <a href="https://github.com/PkLavc/saas-backend-platform" target="_blank" rel="noopener noreferrer" class="cta-button">
+                    Open on GitHub
+                </a>
+            </section>
+
+        </main>
+        
+        <footer class="footer-minimal">
+            <div class="footer-container">
+                <div class="footer-link-list" aria-label="Footer links">
+                    <a class="footer-link-pill" href="https://github.com/PkLavc" target="_blank" rel="noopener noreferrer">GitHub</a>
+                    <a class="footer-link-pill" href="https://www.linkedin.com/in/patrickajm/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+                    <a class="footer-link-pill" href="mailto:lavcsystems@gmail.com">Email</a>
+                    <a class="footer-link-pill footer-link-pill-accent" href="https://github.com/sponsors/PkLavc" target="_blank" rel="noopener noreferrer">Sponsor me</a>
+                </div>
+                <p>
+                    &copy; <span data-current-year></span> Patrick Araujo &bull; 
+                    <span class="github-dev-badge">Member of <b>GitHub Developer Program</b></span>
+                </p>
+            </div>
+        </footer>
+    </div>
+    
+    <div class="visually-hidden">
+        <p>Backend Software Engineer focused on automation, API integrations, backend systems, Python, Node.js, SQL, ETL pipelines, AWS, and scalable operational platforms.</p>
+    </div>
+    
+    <script>
+        (function() {
+            document.querySelectorAll('[data-current-year]').forEach(function(node) {
+                node.textContent = String(new Date().getFullYear());
+            });
+        }());
+    </script>
+    <script src="../../js/jquery.min.js" defer></script>
+    <script src="../../js/index.js" defer></script>
+</body>
+</html>
+
+
+
+
