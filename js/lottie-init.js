@@ -28,7 +28,7 @@ function loadLottieIcon(containerId, animationData, link, title, size = 60) {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-  loadLottieIcon('linkedin-icon', LOTTIE_LINKEDIN, 'https://www.linkedin.com/in/patrickajm/', 'LinkedIn Profile');
-  loadLottieIcon('link-icon', LOTTIE_LINK, 'https://pklavc.github.io/', 'Personal Website');
+  loadLottieIcon('linkedin-icon', LOTTIE_LINKEDIN, 'https://www.linkedin.com/in/pklavc/', 'LinkedIn Profile');
+  loadLottieIcon('link-icon', LOTTIE_LINK, 'https://pklavc.com/', 'Personal Website');
   // Fallback for GitHub and Email: static SVG or placeholder
 });
