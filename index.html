@@ -6,15 +6,13 @@
         <meta name="author" content="PkLavc" />
         <meta name="google-site-verification" content="6gMtjXC8QaMe105oQFC7f7_0FKxgBr8R65-kOtoSSfE" />
         <script>
-          const host = window.location.hostname.toLowerCase();
+          const { hostname, pathname, search, hash } = window.location;
+          const host = hostname.toLowerCase();
         
-          if (host === "pklavc.github.io" || host === "www.pklavc.com") {
-            window.location.replace(
-              "https://pklavc.com" +
-              window.location.pathname +
-              window.location.search +
-              window.location.hash
-            );
+          const redirectHosts = ["pklavc.github.io", "www.pklavc.com"];
+        
+          if (redirectHosts.includes(host)) {
+            window.location.replace("https://pklavc.com" + pathname + search + hash);
           }
         </script>
     <meta property="og:title" content="Patrick Araujo | Backend Software Engineer">
