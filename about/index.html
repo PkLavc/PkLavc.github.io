@@ -40,14 +40,16 @@
     <link rel="icon" type="image/svg+xml" href="/images/favicon.svg">
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Monoton&family=Poppins:wght@500&family=Raleway:wght@300&display=swap" onload="this.onload=null;this.rel='stylesheet'">
-        <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Monoton&family=Poppins:wght@500&family=Raleway:wght@300&display=swap"></noscript>
+        <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Monoton&family=Poppins:wght@500&family=Raleway:wght@300&display=optional" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Monoton&family=Poppins:wght@500&family=Raleway:wght@300&display=optional"></noscript>
+        <link rel="preload" href="/css/global.css" as="style">
         <link rel="stylesheet" href="/css/global.css">
         <style>
             body {
-                font-family: 'Inter', sans-serif;
+                font-family: 'Inter', 'Segoe UI', Roboto, Arial, sans-serif;
                 line-height: 1.7;
                 font-size: 16px;
+                font-size-adjust: 0.52;
             }
 
             #about {
@@ -101,6 +103,29 @@
 
             .highlight {
                 font-weight: 600;
+            }
+
+            lottie-player {
+                display: inline-block;
+                vertical-align: middle;
+            }
+
+            .section-heading-icon {
+                width: 20px;
+                height: 20px;
+                display: inline-block;
+                vertical-align: middle;
+                margin-right: 8px;
+            }
+
+            .contact-item-icon {
+                width: 42px;
+                height: 42px;
+            }
+
+            .copy-btn-icon {
+                width: 16px;
+                height: 16px;
             }
 
             .about-profile-img {
@@ -173,7 +198,9 @@
                 }
             }
         </style>
-        <link rel="stylesheet" href="/css/about.css">
+        <link rel="preload" href="/css/about.css" as="style">
+        <link rel="stylesheet" href="/css/about.css" media="print" onload="this.media='all'">
+        <noscript><link rel="stylesheet" href="/css/about.css"></noscript>
     </head>
     <body>
         <!-- About Page Schema -->
@@ -707,15 +734,45 @@
                         return;
                     }
 
+                    let loaded = false;
                     const load = function() {
+                        if (loaded) {
+                            return;
+                        }
+
+                        loaded = true;
                         loadDeferredScript('https://cdn.jsdelivr.net/npm/@lottiefiles/lottie-player@1.5.7/dist/lottie-player.js');
                     };
 
-                    if ('requestIdleCallback' in window) {
-                        window.requestIdleCallback(load, { timeout: 1500 });
-                    } else {
-                        window.setTimeout(load, 1200);
+                    const scheduleIdleLoad = function() {
+                        if ('requestIdleCallback' in window) {
+                            window.requestIdleCallback(load, { timeout: 3500 });
+                        } else {
+                            window.setTimeout(load, 3000);
+                        }
+                    };
+
+                    if ('IntersectionObserver' in window) {
+                        const observer = new IntersectionObserver(function(entries) {
+                            if (entries.some(function(entry) { return entry.isIntersecting; })) {
+                                observer.disconnect();
+                                load();
+                            }
+                        }, { rootMargin: '200px 0px' });
+
+                        document.querySelectorAll('lottie-player').forEach(function(node) {
+                            observer.observe(node);
+                        });
+
+                        ['scroll', 'pointerdown', 'keydown', 'touchstart'].forEach(function(eventName) {
+                            window.addEventListener(eventName, load, { once: true, passive: true });
+                        });
+
+                        scheduleIdleLoad();
+                        return;
                     }
+
+                    scheduleIdleLoad();
                 }
 
                 function updateFooterYear() {
