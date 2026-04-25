@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Patrick Araujo">
+    <title>OAuth Token Management in Backend Workers: Secure Credential Flow for API Integrations</title>
+    <meta name="description" content="How to design secure OAuth token acquisition, distribution, and refresh in Node.js backend workers that feed downstream API integration services.">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://pklavc.com/blog/oauth-token-management/">
+    <link rel="alternate" href="https://pklavc.com/blog/oauth-token-management/" hreflang="en">
+    <meta property="og:title" content="OAuth Token Management in Backend Workers: Secure Credential Flow for API Integrations">
+    <meta property="og:description" content="A practical guide to OAuth token lifecycle management in Node.js workers, covering acquisition, secure distribution, and refresh strategies for production systems.">
+    <meta property="og:url" content="https://pklavc.com/blog/oauth-token-management/">
+    <meta property="og:type" content="article">
+    <meta property="article:published_time" content="2026-04-24">
+    <meta property="article:modified_time" content="2026-04-24">
+    <meta property="article:author" content="Patrick Araujo">
+    <meta property="article:section" content="API Integration Engineering">
+    <meta property="article:tag" content="oauth">
+    <meta property="article:tag" content="token management">
+    <meta property="article:tag" content="api security">
+    <meta property="article:tag" content="node.js integration worker">
+    <meta property="og:image" content="https://pklavc.com/images/Lavc.webp">
+    <meta property="og:site_name" content="Patrick Araujo Portfolio">
+    <meta property="og:locale" content="en_US">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="OAuth Token Management in Backend Workers: Secure Credential Flow for API Integrations">
+    <meta name="twitter:description" content="How to structure OAuth credential acquisition and distribution in Node.js backend workers for integration reliability.">
+    <meta name="twitter:image" content="https://pklavc.com/images/Lavc.webp">
+    <meta name="twitter:site" content="@PkLavc">
+    <meta name="twitter:creator" content="@PkLavc">
+    <link rel="icon" type="image/svg+xml" href="/images/favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Monoton&family=Poppins:wght@500;600;700&family=Raleway:wght@300&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Monoton&family=Poppins:wght@500;600;700&family=Raleway:wght@300&display=swap"></noscript>
+    <link rel="stylesheet" href="/css/global.css">
+    <link rel="stylesheet" href="/css/blog.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.2.6/gsap.min.js" defer></script>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@graph": [
+            {
+                "@type": "BlogPosting",
+                "headline": "OAuth Token Management in Backend Workers: Secure Credential Flow for API Integrations",
+                "description": "How to design OAuth token acquisition, refresh, and secure distribution in Node.js workers for downstream API integration reliability.",
+                "datePublished": "2026-04-24",
+                "dateModified": "2026-04-24",
+                "author": {
+                    "@type": "Person",
+                    "name": "Patrick Araujo"
+                },
+                "publisher": {
+                    "@type": "Person",
+                    "name": "Patrick Araujo"
+                },
+                "mainEntityOfPage": "https://pklavc.com/blog/oauth-token-management/",
+                "url": "https://pklavc.com/blog/oauth-token-management/",
+                "keywords": [
+                    "oauth token management",
+                    "node.js integration worker",
+                    "api credential security",
+                    "token refresh strategy"
+                ]
+            },
+            {
+                "@type": "BreadcrumbList",
+                "itemListElement": [
+                    {
+                        "@type": "ListItem",
+                        "position": 1,
+                        "name": "Home",
+                        "item": "https://pklavc.com/"
+                    },
+                    {
+                        "@type": "ListItem",
+                        "position": 2,
+                        "name": "Blog",
+                        "item": "https://pklavc.com/blog/"
+                    },
+                    {
+                        "@type": "ListItem",
+                        "position": 3,
+                        "name": "OAuth Token Management",
+                        "item": "https://pklavc.com/blog/oauth-token-management/"
+                    }
+                ]
+            }
+        ]
+    }
+    </script>
+</head>
+<body class="blog-layout seo-layout">
+    <div id="breaker"></div>
+    <div id="breaker-two"></div>
+    <div id="all">
+        <div class="cursor"></div>
+        <div id="navigation-content" role="navigation" aria-label="Primary navigation">
+            <div class="logo"></div>
+            <div class="navigation-links">
+                <a href="/" data-text="HOME" id="home-link">HOME</a>
+                <a href="/about/" data-text="ABOUT" id="about-link">ABOUT</a>
+                <a href="/projects/" data-text="PROJECTS" id="projects-link">PROJECTS</a>
+                <a href="/blog/" data-text="BLOG" id="blog-link">BLOG</a>
+            </div>
+        </div>
+        <div id="navigation-bar">
+            <div class="menubar">
+                <span class="first-span"></span>
+                <span class="second-span"></span>
+                <span class="third-span"></span>
+            </div>
+        </div>
+
+        <main class="blog-shell" role="main">
+            <div class="blog-columns">
+                <div>
+                    <article class="blog-post-hero">
+                        <div class="blog-breadcrumb" aria-label="Breadcrumb">
+                            <a href="/">Home</a>
+                            <span>/</span>
+                            <a href="/blog/">Blog</a>
+                            <span>/</span>
+                            <span aria-current="page">OAuth Token Management</span>
+                        </div>
+                        <span class="blog-kicker">API Security</span>
+                        <h1>OAuth Token Management in Backend Workers: Secure Credential Flow for API Integrations</h1>
+                        <p>Authentication failures don't look like security incidents at first. They look like integration downtime. Tokens expire, refresh flows break silently, and downstream workers start returning errors that trace back to a credential problem three steps earlier.</p>
+                        <div class="blog-post-meta">
+                            <span>Published Apr 24, 2026</span>
+                            <span>7 min read</span>
+                            <span>API Security</span>
+                        </div>
+                    </article>
+
+                    <article class="blog-article">
+                        <h2>Why credential management belongs at the infrastructure layer</h2>
+                        <p>Integration workers that manage their own tokens inline have a structural problem: they mix authentication state with business logic. When the token expires mid-execution, the worker has to decide whether to retry, refresh, or fail, and that decision is usually inconsistent across workers. A cleaner design separates credential acquisition into a dedicated service that other workers consume.</p>
+                        <p>That is the design behind <a href="/projects/google-auth-worker/">Google Auth Worker</a>, which handles OAuth token generation and distributes credentials to downstream integration services rather than letting each worker manage its own authentication lifecycle independently.</p>
+
+                        <h2>The OAuth lifecycle has three distinct problems</h2>
+                        <p>Token management in production covers more than the initial handshake. The three areas that require explicit design are:</p>
+                        <ul>
+                            <li><strong>Acquisition</strong> — service account flows, authorization code exchange, and client credential grants each have different requirements and failure modes.</li>
+                            <li><strong>Distribution</strong> — how other services receive valid tokens without directly holding credentials. Secure distribution may use short-lived tokens, scoped access, or a token relay pattern.</li>
+                            <li><strong>Refresh and rotation</strong> — access tokens expire. The system needs to detect expiry before the call fails rather than after. Background refresh with overlap windows is safer than reactive refresh on 401 responses.</li>
+                        </ul>
+
+                        <div class="blog-callout">
+                            A worker that refreshes on failure rather than before expiry will produce cascading retries across all consumers during a refresh window. Proactive rotation prevents this entirely.
+                        </div>
+
+                        <h2>Scoped credential distribution reduces blast radius</h2>
+                        <p>When multiple integration workers consume a shared token, the failure surface is the size of that token's permission scope. Narrowing what each consumer can do with a credential limits what an expired or leaked token can affect. In practice this means issuing scoped tokens per consumer role when the provider supports it, and never sharing long-lived master credentials directly between services.</p>
+
+                        <h2>Token storage requires the same care as the credential itself</h2>
+                        <p>Tokens in plaintext environment variables, log output, or unencrypted caches are credentials exposed. Production token storage should use environment secrets or a secret management service, avoid logging token values even at debug level, and use short expiry windows with automatic rotation rather than long-lived static tokens when the provider allows it.</p>
+
+                        <h2>Auth failures require explicit retry policy</h2>
+                        <p>Authentication errors are not all equivalent. A network timeout during token acquisition is a candidate for retry. An invalid scope or revoked credential is not. Workers should distinguish between transient auth failures worth retrying and permanent auth failures worth escalating. Silent retry on a revoked token wastes queue capacity and delays incident detection.</p>
+                        <p>This connects to the broader retry discipline described in <a href="/blog/event-driven-api-integrations/">Event-Driven API Integrations</a> — the same controlled retry model applies to credential flows.</p>
+
+                        <h2>Auth workers as infrastructure dependencies</h2>
+                        <p>When a dedicated auth worker feeds multiple integration workers, it becomes an upstream dependency with its own availability and reliability requirements. That means monitoring token generation latency, alerting on consecutive acquisition failures, and designing consumers to fail gracefully when the auth service is temporarily unavailable rather than entering undefined retry loops.</p>
+                        <p>The <a href="/collections/api-integration-projects/">API Integration Projects</a> collection shows how this credential model supports multiple downstream workers including <a href="/projects/zoho-integration-worker/">Zoho Integration Worker</a>, <a href="/projects/sige-integration-worker/">SIGE Integration Worker</a>, and <a href="/projects/omie-integration-worker/">Omie Integration Worker</a>.</p>
+                    </article>
+
+                    <section aria-labelledby="oauth-related-title">
+                        <h2 id="oauth-related-title">Related reading</h2>
+                        <div class="blog-related-grid">
+                            <article class="blog-related-card">
+                                <h3><a href="/projects/google-auth-worker/">Google Auth Worker</a></h3>
+                                <p>Node.js worker that generates and distributes Google OAuth tokens to downstream integration services.</p>
+                            </article>
+                            <article class="blog-related-card">
+                                <h3><a href="/blog/event-driven-api-integrations/">Event-Driven API Integrations</a></h3>
+                                <p>Retry policies, idempotency, and traceability patterns for integration services.</p>
+                            </article>
+                            <article class="blog-related-card">
+                                <h3><a href="/collections/api-integration-projects/">API Integration Projects</a></h3>
+                                <p>Cluster of integration workers that depend on shared credential management patterns.</p>
+                            </article>
+                        </div>
+                    </section>
+                </div>
+
+                <aside class="blog-article-grid">
+                    <section class="blog-sidebar-card">
+                        <h2>Core takeaways</h2>
+                        <ul>
+                            <li>Separate credential management from business logic.</li>
+                            <li>Refresh tokens proactively, not reactively on failure.</li>
+                            <li>Scope credentials per consumer role.</li>
+                            <li>Treat auth workers as infrastructure with reliability requirements.</li>
+                        </ul>
+                    </section>
+                    <section class="blog-sidebar-card">
+                        <h2>Continue exploring</h2>
+                        <ul>
+                            <li><a href="/projects/google-auth-worker/">Google Auth Worker</a></li>
+                            <li><a href="/projects/hablla-integration-worker/">Hablla Integration Worker</a></li>
+                            <li><a href="/stacks/api-integration-engineer/">API Integration Engineer</a></li>
+                            <li><a href="/about/">About Patrick Araujo</a></li>
+                        </ul>
+                    </section>
+                </aside>
+            </div>
+        </main>
+    </div>
+    <footer class="footer-minimal">
+        <div class="footer-container">
+            <div class="footer-link-list" aria-label="Footer links">
+                <a class="footer-link-pill" href="https://github.com/PkLavc" target="_blank" rel="noopener noreferrer">GitHub</a>
+                <a class="footer-link-pill" href="https://www.linkedin.com/in/pklavc/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+                <a class="footer-link-pill" href="mailto:contact@pklavc.com">Email</a>
+                <a class="footer-link-pill footer-link-pill-accent" href="https://github.com/sponsors/PkLavc" target="_blank" rel="noopener noreferrer">Sponsor me</a>
+            </div>
+            <p>
+                &copy; <span data-current-year></span> Patrick Araujo &bull;
+                <span class="github-dev-badge">Member of <b>GitHub Developer Program</b></span>
+            </p>
+        </div>
+    </footer>
+    <script>
+        (function() {
+            document.querySelectorAll('[data-current-year]').forEach(function(node) {
+                node.textContent = String(new Date().getFullYear());
+            });
+        }());
+    </script>
+    <script src="/js/jquery.min.js" defer></script>
+    <script src="/js/index.js" defer></script>
+</body>
+</html>

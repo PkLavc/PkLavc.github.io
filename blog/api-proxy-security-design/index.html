@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Patrick Araujo">
+    <title>Zero-Trust API Proxy Design: AES-256 Encryption and PII Detection in Python</title>
+    <meta name="description" content="How to build a zero-trust API proxy layer with AES-256 encryption, dynamic field masking, and automated PII detection in Python backend services.">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://pklavc.com/blog/api-proxy-security-design/">
+    <link rel="alternate" href="https://pklavc.com/blog/api-proxy-security-design/" hreflang="en">
+    <meta property="og:title" content="Zero-Trust API Proxy Design: AES-256 Encryption and PII Detection in Python">
+    <meta property="og:description" content="A practical guide to zero-trust API proxy architecture: field-level encryption, automated PII detection, and data privacy controls in Python.">
+    <meta property="og:url" content="https://pklavc.com/blog/api-proxy-security-design/">
+    <meta property="og:type" content="article">
+    <meta property="article:published_time" content="2026-04-24">
+    <meta property="article:modified_time" content="2026-04-24">
+    <meta property="article:author" content="Patrick Araujo">
+    <meta property="article:section" content="API Security Engineering">
+    <meta property="article:tag" content="zero-trust">
+    <meta property="article:tag" content="aes-256 encryption">
+    <meta property="article:tag" content="api proxy">
+    <meta property="article:tag" content="pii detection">
+    <meta property="og:image" content="https://pklavc.com/images/Lavc.webp">
+    <meta property="og:site_name" content="Patrick Araujo Portfolio">
+    <meta property="og:locale" content="en_US">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Zero-Trust API Proxy Design: AES-256 Encryption and PII Detection in Python">
+    <meta name="twitter:description" content="Field-level encryption, automated PII detection, and zero-trust data privacy controls for Python API proxy layers.">
+    <meta name="twitter:image" content="https://pklavc.com/images/Lavc.webp">
+    <meta name="twitter:site" content="@PkLavc">
+    <meta name="twitter:creator" content="@PkLavc">
+    <link rel="icon" type="image/svg+xml" href="/images/favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Monoton&family=Poppins:wght@500;600;700&family=Raleway:wght@300&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Monoton&family=Poppins:wght@500;600;700&family=Raleway:wght@300&display=swap"></noscript>
+    <link rel="stylesheet" href="/css/global.css">
+    <link rel="stylesheet" href="/css/blog.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.2.6/gsap.min.js" defer></script>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@graph": [
+            {
+                "@type": "BlogPosting",
+                "headline": "Zero-Trust API Proxy Design: AES-256 Encryption and PII Detection in Python",
+                "description": "How to build a zero-trust API proxy with AES-256 encryption, dynamic field masking, and automated PII detection in Python backend services.",
+                "datePublished": "2026-04-24",
+                "dateModified": "2026-04-24",
+                "author": {
+                    "@type": "Person",
+                    "name": "Patrick Araujo"
+                },
+                "publisher": {
+                    "@type": "Person",
+                    "name": "Patrick Araujo"
+                },
+                "mainEntityOfPage": "https://pklavc.com/blog/api-proxy-security-design/",
+                "url": "https://pklavc.com/blog/api-proxy-security-design/",
+                "keywords": [
+                    "zero-trust api proxy",
+                    "aes-256 encryption",
+                    "pii detection python",
+                    "api data privacy"
+                ]
+            },
+            {
+                "@type": "BreadcrumbList",
+                "itemListElement": [
+                    {
+                        "@type": "ListItem",
+                        "position": 1,
+                        "name": "Home",
+                        "item": "https://pklavc.com/"
+                    },
+                    {
+                        "@type": "ListItem",
+                        "position": 2,
+                        "name": "Blog",
+                        "item": "https://pklavc.com/blog/"
+                    },
+                    {
+                        "@type": "ListItem",
+                        "position": 3,
+                        "name": "Zero-Trust API Proxy Design",
+                        "item": "https://pklavc.com/blog/api-proxy-security-design/"
+                    }
+                ]
+            }
+        ]
+    }
+    </script>
+</head>
+<body class="blog-layout seo-layout">
+    <div id="breaker"></div>
+    <div id="breaker-two"></div>
+    <div id="all">
+        <div class="cursor"></div>
+        <div id="navigation-content" role="navigation" aria-label="Primary navigation">
+            <div class="logo"></div>
+            <div class="navigation-links">
+                <a href="/" data-text="HOME" id="home-link">HOME</a>
+                <a href="/about/" data-text="ABOUT" id="about-link">ABOUT</a>
+                <a href="/projects/" data-text="PROJECTS" id="projects-link">PROJECTS</a>
+                <a href="/blog/" data-text="BLOG" id="blog-link">BLOG</a>
+            </div>
+        </div>
+        <div id="navigation-bar">
+            <div class="menubar">
+                <span class="first-span"></span>
+                <span class="second-span"></span>
+                <span class="third-span"></span>
+            </div>
+        </div>
+
+        <main class="blog-shell" role="main">
+            <div class="blog-columns">
+                <div>
+                    <article class="blog-post-hero">
+                        <div class="blog-breadcrumb" aria-label="Breadcrumb">
+                            <a href="/">Home</a>
+                            <span>/</span>
+                            <a href="/blog/">Blog</a>
+                            <span>/</span>
+                            <span aria-current="page">Zero-Trust API Proxy Design</span>
+                        </div>
+                        <span class="blog-kicker">API Security</span>
+                        <h1>Zero-Trust API Proxy Design: AES-256 Encryption and PII Detection in Python</h1>
+                        <p>API proxies sitting between services and the open internet are a natural enforcement point for data privacy controls. The question is whether that enforcement is deliberate or incidental. A zero-trust design assumes nothing about the trustworthiness of traffic passing through and enforces encryption and inspection at every layer regardless of internal origin.</p>
+                        <div class="blog-post-meta">
+                            <span>Published Apr 24, 2026</span>
+                            <span>8 min read</span>
+                            <span>API Security</span>
+                        </div>
+                    </article>
+
+                    <article class="blog-article">
+                        <h2>What zero-trust means at the proxy layer</h2>
+                        <p>Zero-trust is not a product or framework. It is a posture: no traffic is trusted by default, and access is verified continuously rather than once at the perimeter. At the API proxy layer this means that even internal service-to-service traffic passes through the same inspection and enforcement rules as external requests. The proxy does not relax controls because the source is internal.</p>
+                        <p><a href="/projects/cipher-gate-proxy/">Cipher Gate Proxy</a> implements this posture with AES-256 field encryption, dynamic masking, and automated PII detection on all traffic traversing the proxy, treating data privacy as a structural property rather than an optional filter.</p>
+
+                        <h2>Field-level encryption vs. transport encryption</h2>
+                        <p>TLS at the transport layer protects data in motion but leaves data exposed in logs, queues, databases, and any system that intercepts the decrypted payload. Field-level encryption keeps sensitive values encrypted even after decryption at the transport layer, so a log entry or message queue record contains the encrypted field value rather than the plain text.</p>
+                        <p>AES-256 in GCM mode provides authenticated encryption: it encrypts the value and produces an authentication tag that detects tampering. This makes it suitable for high-value fields such as credential tokens, identity values, and financial data that must remain encrypted at rest and in transit.</p>
+
+                        <div class="blog-callout">
+                            Transport encryption and field-level encryption solve different problems. Transport protects the channel. Field encryption protects the data after the channel terminates. Both are necessary in a zero-trust posture.
+                        </div>
+
+                        <h2>Automated PII detection before data moves</h2>
+                        <p>Proxies that route data between systems are in a unique position to intercept PII before it reaches storage or downstream consumers. Automated PII detection at the proxy layer can identify common patterns — email addresses, phone numbers, document identifiers — and apply masking or encryption before the data is forwarded, without requiring changes in upstream or downstream services.</p>
+                        <p>This detection layer is most valuable at integration boundaries where the content of incoming payloads is partially unpredictable and cannot be fully pre-declared in a schema.</p>
+
+                        <h2>Dynamic masking and the principle of least exposure</h2>
+                        <p>Not every consumer of an API response needs the full field value. Dynamic masking returns a masked or truncated representation to consumers that do not require the complete data. A downstream service displaying a user profile might receive a masked email while a service processing billing receives the full value. This reduces exposure surface without requiring separate APIs or data models.</p>
+
+                        <h2>Immutability and audit trails for encrypted flows</h2>
+                        <p>Zero-trust proxies that transform data need immutable audit records: what was encrypted, when, with what scope, and which consumers accessed what. Without this audit trail, an incident investigation cannot determine whether a privacy breach occurred at the proxy layer or downstream. Every encryption and masking decision should produce a log entry that does not contain the sensitive value itself.</p>
+                        <p>This connects to the monitoring and observability patterns explored in <a href="/blog/infrastructure-anomaly-detection/">Infrastructure Anomaly Detection</a>, where structured logging enables post-incident analysis without exposing data in the process.</p>
+
+                        <h2>Where proxy security enforcement fits in the stack</h2>
+                        <p>A proxy security layer is not a substitute for application-level validation or network segmentation. It is a consistent enforcement point that applies data privacy controls uniformly. The <a href="/stacks/python-engineer/">Python Engineer stack</a> describes how these proxy capabilities connect to the broader security and integration architecture across the project portfolio.</p>
+                    </article>
+
+                    <section aria-labelledby="proxy-related-title">
+                        <h2 id="proxy-related-title">Related reading</h2>
+                        <div class="blog-related-grid">
+                            <article class="blog-related-card">
+                                <h3><a href="/projects/cipher-gate-proxy/">Cipher Gate Proxy</a></h3>
+                                <p>Python proxy implementing AES-256 encryption, dynamic masking, and PII detection in zero-trust flows.</p>
+                            </article>
+                            <article class="blog-related-card">
+                                <h3><a href="/blog/infrastructure-anomaly-detection/">Infrastructure Anomaly Detection</a></h3>
+                                <p>Monitoring and self-healing patterns that complement security enforcement at the infrastructure layer.</p>
+                            </article>
+                            <article class="blog-related-card">
+                                <h3><a href="/collections/python-projects/">Python Projects</a></h3>
+                                <p>Python backend projects covering security, automation, and infrastructure resilience.</p>
+                            </article>
+                        </div>
+                    </section>
+                </div>
+
+                <aside class="blog-article-grid">
+                    <section class="blog-sidebar-card">
+                        <h2>Core takeaways</h2>
+                        <ul>
+                            <li>Zero-trust applies equally to internal traffic.</li>
+                            <li>Field-level encryption survives transport decryption.</li>
+                            <li>PII detection at integration boundaries prevents downstream exposure.</li>
+                            <li>Audit trails must never contain the values being protected.</li>
+                        </ul>
+                    </section>
+                    <section class="blog-sidebar-card">
+                        <h2>Continue exploring</h2>
+                        <ul>
+                            <li><a href="/projects/cipher-gate-proxy/">Cipher Gate Proxy</a></li>
+                            <li><a href="/projects/aegis-sentinel/">Aegis Sentinel</a></li>
+                            <li><a href="/stacks/python-engineer/">Python Engineer Stack</a></li>
+                            <li><a href="/about/">About Patrick Araujo</a></li>
+                        </ul>
+                    </section>
+                </aside>
+            </div>
+        </main>
+    </div>
+    <footer class="footer-minimal">
+        <div class="footer-container">
+            <div class="footer-link-list" aria-label="Footer links">
+                <a class="footer-link-pill" href="https://github.com/PkLavc" target="_blank" rel="noopener noreferrer">GitHub</a>
+                <a class="footer-link-pill" href="https://www.linkedin.com/in/pklavc/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+                <a class="footer-link-pill" href="mailto:contact@pklavc.com">Email</a>
+                <a class="footer-link-pill footer-link-pill-accent" href="https://github.com/sponsors/PkLavc" target="_blank" rel="noopener noreferrer">Sponsor me</a>
+            </div>
+            <p>
+                &copy; <span data-current-year></span> Patrick Araujo &bull;
+                <span class="github-dev-badge">Member of <b>GitHub Developer Program</b></span>
+            </p>
+        </div>
+    </footer>
+    <script>
+        (function() {
+            document.querySelectorAll('[data-current-year]').forEach(function(node) {
+                node.textContent = String(new Date().getFullYear());
+            });
+        }());
+    </script>
+    <script src="/js/jquery.min.js" defer></script>
+    <script src="/js/index.js" defer></script>
+</body>
+</html>

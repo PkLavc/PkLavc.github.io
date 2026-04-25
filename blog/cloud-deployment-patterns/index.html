@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Patrick Araujo">
+    <title>Cloud Deployment Patterns: Container Orchestration, CI/CD, and Infrastructure as Code</title>
+    <meta name="description" content="How to design production-ready cloud deployments with Docker container orchestration, CI/CD pipelines, and Infrastructure as Code for scalable API backend systems.">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://pklavc.com/blog/cloud-deployment-patterns/">
+    <link rel="alternate" href="https://pklavc.com/blog/cloud-deployment-patterns/" hreflang="en">
+    <meta property="og:title" content="Cloud Deployment Patterns: Container Orchestration, CI/CD, and Infrastructure as Code">
+    <meta property="og:description" content="Practical patterns for production cloud deployments: Docker container orchestration, CI/CD automation pipelines, and Infrastructure as Code for scalable API backends.">
+    <meta property="og:url" content="https://pklavc.com/blog/cloud-deployment-patterns/">
+    <meta property="og:type" content="article">
+    <meta property="article:published_time" content="2026-04-24">
+    <meta property="article:modified_time" content="2026-04-24">
+    <meta property="article:author" content="Patrick Araujo">
+    <meta property="article:section" content="Cloud Engineering">
+    <meta property="article:tag" content="docker">
+    <meta property="article:tag" content="ci/cd pipeline">
+    <meta property="article:tag" content="infrastructure as code">
+    <meta property="article:tag" content="container orchestration">
+    <meta property="og:image" content="https://pklavc.com/images/Lavc.webp">
+    <meta property="og:site_name" content="Patrick Araujo Portfolio">
+    <meta property="og:locale" content="en_US">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Cloud Deployment Patterns: Container Orchestration, CI/CD, and Infrastructure as Code">
+    <meta name="twitter:description" content="Production cloud deployment design: Docker orchestration, CI/CD automation, and Infrastructure as Code for scalable API backends.">
+    <meta name="twitter:image" content="https://pklavc.com/images/Lavc.webp">
+    <meta name="twitter:site" content="@PkLavc">
+    <meta name="twitter:creator" content="@PkLavc">
+    <link rel="icon" type="image/svg+xml" href="/images/favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Monoton&family=Poppins:wght@500;600;700&family=Raleway:wght@300&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Monoton&family=Poppins:wght@500;600;700&family=Raleway:wght@300&display=swap"></noscript>
+    <link rel="stylesheet" href="/css/global.css">
+    <link rel="stylesheet" href="/css/blog.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.2.6/gsap.min.js" defer></script>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@graph": [
+            {
+                "@type": "BlogPosting",
+                "headline": "Cloud Deployment Patterns: Container Orchestration, CI/CD, and Infrastructure as Code",
+                "description": "How to design production-ready cloud deployments with Docker container orchestration, CI/CD automation, and Infrastructure as Code for scalable API backends.",
+                "datePublished": "2026-04-24",
+                "dateModified": "2026-04-24",
+                "author": {
+                    "@type": "Person",
+                    "name": "Patrick Araujo"
+                },
+                "publisher": {
+                    "@type": "Person",
+                    "name": "Patrick Araujo"
+                },
+                "mainEntityOfPage": "https://pklavc.com/blog/cloud-deployment-patterns/",
+                "url": "https://pklavc.com/blog/cloud-deployment-patterns/",
+                "keywords": [
+                    "cloud deployment patterns",
+                    "docker container orchestration",
+                    "ci/cd pipeline automation",
+                    "infrastructure as code"
+                ]
+            },
+            {
+                "@type": "BreadcrumbList",
+                "itemListElement": [
+                    {
+                        "@type": "ListItem",
+                        "position": 1,
+                        "name": "Home",
+                        "item": "https://pklavc.com/"
+                    },
+                    {
+                        "@type": "ListItem",
+                        "position": 2,
+                        "name": "Blog",
+                        "item": "https://pklavc.com/blog/"
+                    },
+                    {
+                        "@type": "ListItem",
+                        "position": 3,
+                        "name": "Cloud Deployment Patterns",
+                        "item": "https://pklavc.com/blog/cloud-deployment-patterns/"
+                    }
+                ]
+            }
+        ]
+    }
+    </script>
+</head>
+<body class="blog-layout seo-layout">
+    <div id="breaker"></div>
+    <div id="breaker-two"></div>
+    <div id="all">
+        <div class="cursor"></div>
+        <div id="navigation-content" role="navigation" aria-label="Primary navigation">
+            <div class="logo"></div>
+            <div class="navigation-links">
+                <a href="/" data-text="HOME" id="home-link">HOME</a>
+                <a href="/about/" data-text="ABOUT" id="about-link">ABOUT</a>
+                <a href="/projects/" data-text="PROJECTS" id="projects-link">PROJECTS</a>
+                <a href="/blog/" data-text="BLOG" id="blog-link">BLOG</a>
+            </div>
+        </div>
+        <div id="navigation-bar">
+            <div class="menubar">
+                <span class="first-span"></span>
+                <span class="second-span"></span>
+                <span class="third-span"></span>
+            </div>
+        </div>
+
+        <main class="blog-shell" role="main">
+            <div class="blog-columns">
+                <div>
+                    <article class="blog-post-hero">
+                        <div class="blog-breadcrumb" aria-label="Breadcrumb">
+                            <a href="/">Home</a>
+                            <span>/</span>
+                            <a href="/blog/">Blog</a>
+                            <span>/</span>
+                            <span aria-current="page">Cloud Deployment Patterns</span>
+                        </div>
+                        <span class="blog-kicker">Cloud Engineering</span>
+                        <h1>Cloud Deployment Patterns: Container Orchestration, CI/CD, and Infrastructure as Code</h1>
+                        <p>A backend system that works locally but has no defined deployment path is not production-ready. The deployment infrastructure — how the system is packaged, promoted, and scaled — is as much a part of the design as the application code. Treating infrastructure as an afterthought produces environments that drift, deployments that require manual steps, and incidents that trace back to configuration differences between environments.</p>
+                        <div class="blog-post-meta">
+                            <span>Published Apr 24, 2026</span>
+                            <span>8 min read</span>
+                            <span>Cloud Engineering</span>
+                        </div>
+                    </article>
+
+                    <article class="blog-article">
+                        <h2>Container images as deployment units</h2>
+                        <p>Docker containers package an application with its runtime dependencies into a portable, immutable unit. The same image that runs in a local development environment runs in staging and production. Environment-specific configuration is injected at runtime through environment variables or mounted secrets, not baked into the image.</p>
+                        <p>This immutability is the foundation of reproducible deployments: if a deployment fails, rolling back to the previous image is deterministic. The <a href="/projects/cloud-deployment-showcase/">Cloud Deployment Showcase</a> demonstrates this pattern with container images that can be promoted through environments without modification.</p>
+
+                        <h2>CI/CD as an automated promotion gate</h2>
+                        <p>A CI/CD pipeline is not a convenience — it is an enforcement mechanism. Code that fails tests does not reach staging. Images that pass staging quality gates are promoted to production. The pipeline removes the human decision point that creates inconsistency.</p>
+                        <p>Effective CI/CD for container-based APIs includes:</p>
+                        <ul>
+                            <li><strong>Image build verification</strong> — the build fails early if dependencies cannot be resolved or the image cannot be constructed.</li>
+                            <li><strong>Automated test execution</strong> — unit and integration tests run against the built container, not against a local source tree.</li>
+                            <li><strong>Image scanning</strong> — vulnerability scanning on the built image before promotion prevents shipping known CVEs to production.</li>
+                            <li><strong>Environment promotion gates</strong> — health checks confirm successful deployment before traffic is shifted to the new version.</li>
+                        </ul>
+
+                        <div class="blog-callout">
+                            A CI pipeline that builds but does not test the image is not a quality gate. It is a build log. The test stage must run against the artifact that will be deployed, not the source code alone.
+                        </div>
+
+                        <h2>Infrastructure as Code prevents environment drift</h2>
+                        <p>Cloud infrastructure defined in code is versioned, reviewable, and repeatable. Infrastructure defined by clicking through cloud consoles is none of those things. Environment drift — when staging and production diverge in configuration — is one of the most common sources of production incidents that do not reproduce in testing.</p>
+                        <p>Infrastructure as Code tools apply the same change management discipline to infrastructure that version control applies to application code. A change to a security group rule, a database parameter, or a load balancer configuration goes through review before it reaches production, just as application code changes do.</p>
+
+                        <h2>Health checks and rollback strategies</h2>
+                        <p>Deployment is not complete when the container starts. It is complete when the application passes health checks that confirm it is serving requests correctly. Health check design matters: a check that only tests that the process is running misses application-level failures. A liveness probe that returns 200 while the database connection pool is exhausted gives false confidence.</p>
+                        <p>Rollback strategy should be defined before deployment, not after an incident. Blue-green deployments keep the previous version available for immediate cutover. Rolling deployments allow gradual traffic shift with automatic rollback if error rates exceed a threshold during the rollout window.</p>
+
+                        <h2>Scaling and resource allocation in orchestrated deployments</h2>
+                        <p>Container orchestration enables horizontal scaling, but scaling correctly requires knowing what resource constraints the application actually has. Memory limits that are too low cause OOM kills. CPU limits that are too low cause throttling. Establishing accurate resource profiles through load testing before setting production limits prevents both over-provisioning and under-provisioning.</p>
+                        <p>This connects to the performance visibility work in <a href="/blog/infrastructure-anomaly-detection/">Infrastructure Anomaly Detection</a> — resource metrics collected during automated recovery workflows directly inform the resource allocation decisions made during deployment configuration.</p>
+                    </article>
+
+                    <section aria-labelledby="cloud-related-title">
+                        <h2 id="cloud-related-title">Related reading</h2>
+                        <div class="blog-related-grid">
+                            <article class="blog-related-card">
+                                <h3><a href="/projects/cloud-deployment-showcase/">Cloud Deployment Showcase</a></h3>
+                                <p>Production-ready infrastructure with Docker orchestration, CI/CD automation, and Infrastructure as Code.</p>
+                            </article>
+                            <article class="blog-related-card">
+                                <h3><a href="/blog/infrastructure-anomaly-detection/">Infrastructure Anomaly Detection</a></h3>
+                                <p>Runtime monitoring and self-healing patterns that complement deployment pipeline design.</p>
+                            </article>
+                            <article class="blog-related-card">
+                                <h3><a href="/blog/multi-tenant-saas-architecture/">Multi-Tenant SaaS Architecture</a></h3>
+                                <p>Deployment and scaling considerations for multi-tenant backend systems.</p>
+                            </article>
+                        </div>
+                    </section>
+                </div>
+
+                <aside class="blog-article-grid">
+                    <section class="blog-sidebar-card">
+                        <h2>Core takeaways</h2>
+                        <ul>
+                            <li>Container images are immutable deployment units — config is injected at runtime.</li>
+                            <li>CI pipelines must test the built artifact, not just the source.</li>
+                            <li>Infrastructure as Code prevents environment drift.</li>
+                            <li>Define rollback strategy before deployment, not during incident response.</li>
+                        </ul>
+                    </section>
+                    <section class="blog-sidebar-card">
+                        <h2>Continue exploring</h2>
+                        <ul>
+                            <li><a href="/projects/cloud-deployment-showcase/">Cloud Deployment Showcase</a></li>
+                            <li><a href="/projects/multi-tenant-saas-platform/">Multi-Tenant SaaS Platform</a></li>
+                            <li><a href="/stacks/nodejs-backend/">Node.js Backend Stack</a></li>
+                            <li><a href="/about/">About Patrick Araujo</a></li>
+                        </ul>
+                    </section>
+                </aside>
+            </div>
+        </main>
+    </div>
+    <footer class="footer-minimal">
+        <div class="footer-container">
+            <div class="footer-link-list" aria-label="Footer links">
+                <a class="footer-link-pill" href="https://github.com/PkLavc" target="_blank" rel="noopener noreferrer">GitHub</a>
+                <a class="footer-link-pill" href="https://www.linkedin.com/in/pklavc/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+                <a class="footer-link-pill" href="mailto:contact@pklavc.com">Email</a>
+                <a class="footer-link-pill footer-link-pill-accent" href="https://github.com/sponsors/PkLavc" target="_blank" rel="noopener noreferrer">Sponsor me</a>
+            </div>
+            <p>
+                &copy; <span data-current-year></span> Patrick Araujo &bull;
+                <span class="github-dev-badge">Member of <b>GitHub Developer Program</b></span>
+            </p>
+        </div>
+    </footer>
+    <script>
+        (function() {
+            document.querySelectorAll('[data-current-year]').forEach(function(node) {
+                node.textContent = String(new Date().getFullYear());
+            });
+        }());
+    </script>
+    <script src="/js/jquery.min.js" defer></script>
+    <script src="/js/index.js" defer></script>
+</body>
+</html>
