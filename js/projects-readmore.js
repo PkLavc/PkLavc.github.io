@@ -1,15 +1,12 @@
 (function () {
 
+    const desktopMedia = window.matchMedia("(min-width: 769px)");
+
     function initProjectTechTicker() {
         const techNodes = document.querySelectorAll(".project-tech");
 
-        function isDesktop() {
-            return window.matchMedia("(min-width: 769px)").matches;
-        }
-
         function prepareNode(node) {
-            // Only prepare marquee for desktop
-            if (!isDesktop()) {
+            if (!desktopMedia.matches) {
                 return;
             }
 
@@ -17,7 +14,8 @@
                 return;
             }
 
-            const rawText = node.textContent.trim();
+            const rawText = node.dataset.techText || node.textContent.trim();
+            node.dataset.techText = rawText;
             node.textContent = "";
 
             const marquee = document.createElement("div");
@@ -38,53 +36,28 @@
         }
 
         function removeMarquee(node) {
-            const marquee = node.querySelector(".project-tech-marquee");
-            if (marquee) {
-                const text = marquee.textContent;
-                node.textContent = text;
+            if (node.dataset.techText) {
+                node.textContent = node.dataset.techText;
             }
         }
 
-        function updateNode(node) {
-            const marquee = node.querySelector(".project-tech-marquee");
-            const firstItem = marquee ? marquee.querySelector(".project-tech-item") : null;
-            if (!marquee || !firstItem) {
-                return;
-            }
-
-            const itemWidth = Math.max(40, Math.ceil(firstItem.scrollWidth));
-            const pxPerSecond = 30;
-            const duration = Math.max(8, itemWidth / pxPerSecond);
-
-            node.style.setProperty("--marquee-item-width", itemWidth + "px");
-            node.style.setProperty("--marquee-duration", duration.toFixed(2) + "s");
+        function syncNodes() {
+            techNodes.forEach(function (node) {
+                if (desktopMedia.matches) {
+                    prepareNode(node);
+                } else {
+                    removeMarquee(node);
+                }
+            });
         }
 
-        techNodes.forEach(function (node) {
-            if (isDesktop()) {
-                prepareNode(node);
-                updateNode(node);
-            } else {
-                removeMarquee(node);
-            }
-        });
+        syncNodes();
 
-        let resizeTimeout = null;
-        window.addEventListener("resize", function () {
-            if (resizeTimeout) {
-                window.clearTimeout(resizeTimeout);
-            }
-            resizeTimeout = window.setTimeout(function () {
-                techNodes.forEach(function (node) {
-                    if (isDesktop()) {
-                        prepareNode(node);
-                        updateNode(node);
-                    } else {
-                        removeMarquee(node);
-                    }
-                });
-            }, 150);
-        });
+        if (typeof desktopMedia.addEventListener === "function") {
+            desktopMedia.addEventListener("change", syncNodes);
+        } else if (typeof desktopMedia.addListener === "function") {
+            desktopMedia.addListener(syncNodes);
+        }
     }
 
     function createReadMoreForCard(card, index) {

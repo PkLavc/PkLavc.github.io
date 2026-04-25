@@ -82,11 +82,11 @@ body {
 }
 
 .project-tech-marquee {
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    gap: 0;
-    width: max-content;
-    animation: project-tech-marquee var(--marquee-duration, 14s) linear infinite;
+    gap: 0.75em;
+    min-width: max-content;
+    animation: project-tech-marquee 14s linear infinite;
     will-change: transform;
 }
 
@@ -95,16 +95,12 @@ body {
     white-space: nowrap;
 }
 
-.project-tech-item:first-child {
-    margin-right: 0.5em;
-}
-
 @keyframes project-tech-marquee {
     from {
         transform: translateX(0);
     }
     to {
-        transform: translateX(calc(-1 * var(--marquee-item-width, 240px)));
+        transform: translateX(calc(-50% - 0.375em));
     }
 }
 .project-card h2 {
