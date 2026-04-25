@@ -4,11 +4,8 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="author" content="PkLavc" />
+        <meta name="description" content="Backend Software Engineer portfolio focused on automation, API integrations, and scalable backend systems with Python, Node.js, SQL, AWS, and ETL workflows." />
         <meta name="google-site-verification" content="6gMtjXC8QaMe105oQFC7f7_0FKxgBr8R65-kOtoSSfE" />
-        <script>
-            if (window.location.hostname.toLowerCase() === "pklavc.github.io") {
-                window.location.replace("https://pklavc.com" + window.location.pathname + window.location.search + window.location.hash);
-            }
         <script>
             const host = window.location.hostname.toLowerCase();
             if (host === "pklavc.github.io" || host === "www.pklavc.com") {
@@ -45,10 +42,16 @@
     <meta name="geo.position" content="0;0">
     <meta name="ICBM" content="0, 0">
     <link rel="icon" type="image/svg+xml" href="images/favicon.svg">
+    <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Monoton&family=Poppins:wght@500&family=Raleway:wght@300&display=swap" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Monoton&family=Poppins:wght@500&family=Raleway:wght@300&display=swap"></noscript>
+    <link rel="preload" href="css/global.css" as="style">
+    <link rel="preload" href="css/index.css" as="style">
     <link rel="stylesheet" href="css/global.css">
 <link rel="stylesheet" href="css/index.css">
         <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.2.6/gsap.min.js" defer></script>
@@ -133,9 +136,9 @@
                 <div class="social-media-links">
                     <a href="https://github.com/PkLavc" target="_blank" rel="noopener noreferrer"><lottie-player src="images/github.json" background="transparent" speed="1" loop autoplay class="social-media social-media-icon" title="Patrick Araujo - GitHub Portfolio and Open Source Projects"></lottie-player></a>
                     <a href="https://www.linkedin.com/in/pklavc/" target="_blank" rel="noopener noreferrer"><lottie-player src="images/linkedin.json" background="transparent" speed="1" loop autoplay class="social-media social-media-icon" title="LinkedIn Profile"></lottie-player></a>
-                    <a href="mailto:contact@pklavc.com" target="_blank" rel="noopener noreferrer"><lottie-player src="images/mail.json" background="transparent" speed="1" loop autoplay class="social-media social-media-icon" title="Contact via Email"></lottie-player></a>
+                    <a href="#contact-email" class="email-link" data-email-user="contact" data-email-domain="pklavc.com" aria-label="Send email to Patrick Araujo"><lottie-player src="images/mail.json" background="transparent" speed="1" loop autoplay class="social-media social-media-icon" title="Contact via Email"></lottie-player></a>
                 </div>
-                <div class="header-content" aria-label="Professional profile header">
+                <header class="header-content">
                     <div class="header-content-box">
                         <h1 class="firstline"><span class="color">Patrick Araujo</span></h1>
                         <div class="secondline">
@@ -144,23 +147,25 @@
             Designing Python, Node.js, and SQL systems that automate operations, connect business-critical platforms, and support 8K-12K daily transactions.
         </div>
     </div>
-    <div class="contact" aria-label="Technical skills and technologies">
+    <section class="contact" aria-labelledby="techstack-title">
+        <h2 id="techstack-title" class="visually-hidden">Technical skills and technologies</h2>
+        <p class="visually-hidden">Python, Node.js, SQL, JavaScript, REST APIs, AWS, Docker, Django, TypeScript, GitHub, React, Java, C Sharp, and C Plus Plus.</p>
         <div class="techstack-carousel" aria-hidden="true">
             <div class="techstack-track">
-                <img src="images/techstack/python-icon.svg" alt="Python icon" class="contactpic" aria-label="Python">
-                <img src="images/techstack/js-icon.svg" alt="Node.js icon" class="contactpic" aria-label="Node.js">
-                <img src="images/techstack/mysql-icon.svg" alt="SQL icon" class="contactpic" aria-label="SQL">
-                <img src="images/techstack/js-icon.svg" alt="JavaScript icon" class="contactpic" aria-label="JavaScript">
-                <img src="images/techstack/restapi-icon.svg" alt="REST API icon" class="contactpic" aria-label="REST APIs">
-                <img src="images/techstack/aws-icon.svg" alt="AWS icon" class="contactpic" aria-label="Amazon Web Services">
-                <img src="images/techstack/docker-icon.svg" alt="Docker icon" class="contactpic" aria-label="Docker">
-                <img src="images/techstack/django-icon.svg" alt="Django icon" class="contactpic" aria-label="Django">
-                <img src="images/techstack/ts-icon.svg" alt="TypeScript icon" class="contactpic" aria-label="TypeScript">
-                <img src="images/techstack/github-icon.svg" alt="GitHub icon" class="contactpic" aria-label="GitHub">
-                <img src="images/techstack/react-icon.svg" alt="React icon" class="contactpic" aria-label="React">
-                <img src="images/techstack/java-icon.svg" alt="Java icon" class="contactpic" aria-label="Java">
-                <img src="images/techstack/csharp-icon.svg" alt="C Sharp icon" class="contactpic" aria-label="C Sharp">
-                <img src="images/techstack/cpp-icon.svg" alt="C Plus Plus icon" class="contactpic" aria-label="C Plus Plus">
+                <img src="images/techstack/python-icon.svg" alt="Python icon" class="contactpic">
+                <img src="images/techstack/js-icon.svg" alt="Node.js icon" class="contactpic">
+                <img src="images/techstack/mysql-icon.svg" alt="SQL icon" class="contactpic">
+                <img src="images/techstack/js-icon.svg" alt="JavaScript icon" class="contactpic">
+                <img src="images/techstack/restapi-icon.svg" alt="REST API icon" class="contactpic">
+                <img src="images/techstack/aws-icon.svg" alt="AWS icon" class="contactpic">
+                <img src="images/techstack/docker-icon.svg" alt="Docker icon" class="contactpic">
+                <img src="images/techstack/django-icon.svg" alt="Django icon" class="contactpic">
+                <img src="images/techstack/ts-icon.svg" alt="TypeScript icon" class="contactpic">
+                <img src="images/techstack/github-icon.svg" alt="GitHub icon" class="contactpic">
+                <img src="images/techstack/react-icon.svg" alt="React icon" class="contactpic">
+                <img src="images/techstack/java-icon.svg" alt="Java icon" class="contactpic">
+                <img src="images/techstack/csharp-icon.svg" alt="C Sharp icon" class="contactpic">
+                <img src="images/techstack/cpp-icon.svg" alt="C Plus Plus icon" class="contactpic">
                 <img src="images/techstack/python-icon.svg" alt="" class="contactpic" aria-hidden="true">
                 <img src="images/techstack/js-icon.svg" alt="" class="contactpic" aria-hidden="true">
                 <img src="images/techstack/mysql-icon.svg" alt="" class="contactpic" aria-hidden="true">
@@ -177,9 +182,9 @@
                 <img src="images/techstack/cpp-icon.svg" alt="" class="contactpic" aria-hidden="true">
             </div>
         </div>
-    </div>
+    </section>
 </div>
-                </div>
+                </header>
                             </div>
         </div>
         <script src="js/jquery.min.js" defer></script>

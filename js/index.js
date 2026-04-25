@@ -195,6 +195,18 @@ $(function(){
     console.log(attr);
     $("head").append("<link rel=\"stylesheet\" href=\"css/"+attr+".css\">");
   });
+
+  $(".email-link").on("click", function(e) {
+    var user = $(this).data("email-user");
+    var domain = $(this).data("email-domain");
+
+    if (!user || !domain) {
+      return;
+    }
+
+    e.preventDefault();
+    window.location.href = "mailto:" + user + "@" + domain;
+  });
 });
 
 var isMenuOpen = false;
