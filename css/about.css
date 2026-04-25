@@ -106,6 +106,7 @@ body {
     display: flex;
     flex-direction: column;
     gap: 16px;
+    min-width: 0;
 }
 .bio-text {
     font-size: 1.2rem;
@@ -146,7 +147,8 @@ body {
     color: #E0E0E0;
 }
 .about-profile-img {
-    flex: 1;
+    flex: 0 0 280px;
+    min-width: 280px;
     display: flex;
     justify-content: center;
 }
@@ -287,6 +289,8 @@ body {
     .about-profile-img {
         order: -1;
         margin-bottom: 6px;
+        flex: none;
+        min-width: 0;
     }
 
     .img-border img {

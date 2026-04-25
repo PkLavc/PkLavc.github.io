@@ -93,6 +93,7 @@
                 display: flex;
                 flex-direction: column;
                 gap: 16px;
+                min-width: 0;
             }
 
             .bio-text {
@@ -129,7 +130,8 @@
             }
 
             .about-profile-img {
-                flex: 1;
+                flex: 0 0 280px;
+                min-width: 280px;
                 display: flex;
                 justify-content: center;
             }
@@ -177,6 +179,8 @@
                 .about-profile-img {
                     order: -1;
                     margin-bottom: 6px;
+                    flex: none;
+                    min-width: 0;
                 }
 
                 .img-border img {
@@ -199,8 +203,7 @@
             }
         </style>
         <link rel="preload" href="/css/about.css" as="style">
-        <link rel="stylesheet" href="/css/about.css" media="print" onload="this.media='all'">
-        <noscript><link rel="stylesheet" href="/css/about.css"></noscript>
+        <link rel="stylesheet" href="/css/about.css">
     </head>
     <body>
         <!-- About Page Schema -->
@@ -579,7 +582,7 @@
 
                     <div class="about-profile-img">
                         <div class="img-border">
-                            <img src="/images/profile.svg" alt="Patrick Araujo profile avatar for backend software engineer and integration specialist" width="250" height="250" decoding="async">
+                            <img src="/images/profile.svg" alt="Patrick Araujo profile avatar for backend software engineer and integration specialist" width="250" height="250" loading="eager" fetchpriority="high" decoding="async">
                         </div>
                     </div>
                 </div>
@@ -744,35 +747,11 @@
                         loadDeferredScript('https://cdn.jsdelivr.net/npm/@lottiefiles/lottie-player@1.5.7/dist/lottie-player.js');
                     };
 
-                    const scheduleIdleLoad = function() {
-                        if ('requestIdleCallback' in window) {
-                            window.requestIdleCallback(load, { timeout: 3500 });
-                        } else {
-                            window.setTimeout(load, 3000);
-                        }
-                    };
+                    ['scroll', 'pointerdown', 'keydown', 'touchstart'].forEach(function(eventName) {
+                        window.addEventListener(eventName, load, { once: true, passive: true });
+                    });
 
-                    if ('IntersectionObserver' in window) {
-                        const observer = new IntersectionObserver(function(entries) {
-                            if (entries.some(function(entry) { return entry.isIntersecting; })) {
-                                observer.disconnect();
-                                load();
-                            }
-                        }, { rootMargin: '200px 0px' });
-
-                        document.querySelectorAll('lottie-player').forEach(function(node) {
-                            observer.observe(node);
-                        });
-
-                        ['scroll', 'pointerdown', 'keydown', 'touchstart'].forEach(function(eventName) {
-                            window.addEventListener(eventName, load, { once: true, passive: true });
-                        });
-
-                        scheduleIdleLoad();
-                        return;
-                    }
-
-                    scheduleIdleLoad();
+                    window.setTimeout(load, 12000);
                 }
 
                 function updateFooterYear() {
@@ -802,6 +781,7 @@
                 document.body.classList.add('ready');
                 updateSemester();
                 updateFooterYear();
+                document.addEventListener('DOMContentLoaded', updateFooterYear, { once: true });
                 setupMenu();
                 setupCursor();
                 setupContacts();
