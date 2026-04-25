@@ -288,6 +288,33 @@ function closeNavigationMenu() {
   isMenuOpen = false;
 }
 
+function ensureBlogNavigationLink() {
+  var navLists = document.querySelectorAll('.navigation-links');
+
+  navLists.forEach(function(navList) {
+    if (navList.querySelector('#blog-link') || navList.querySelector('a[href="/blog/"]')) {
+      return;
+    }
+
+    var projectsLink = navList.querySelector('#projects-link');
+    var blogLink = document.createElement('a');
+
+    blogLink.href = '/blog/';
+    blogLink.id = 'blog-link';
+    blogLink.setAttribute('data-text', 'BLOG');
+    blogLink.textContent = 'BLOG';
+
+    if (projectsLink && projectsLink.nextSibling) {
+      navList.insertBefore(blogLink, projectsLink.nextSibling);
+      return;
+    }
+
+    navList.appendChild(blogLink);
+  });
+}
+
+ensureBlogNavigationLink();
+
 $(function(){
   $(".menubar").on("click",function(e){
     e.preventDefault();

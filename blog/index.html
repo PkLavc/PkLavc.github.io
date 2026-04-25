@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Patrick Araujo">
+    <title>Backend Engineering Blog | Automation, APIs, SaaS Architecture</title>
+    <meta name="description" content="Backend engineering blog covering automation architecture, API integrations, SaaS backend design, event-driven systems, and practical system design notes by Patrick Araujo.">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://pklavc.com/blog/">
+    <link rel="alternate" href="https://pklavc.com/blog/" hreflang="en">
+    <meta property="og:title" content="Backend Engineering Blog | Patrick Araujo">
+    <meta property="og:description" content="Technical writing about backend automation, API integrations, SaaS platform architecture, and scalable systems.">
+    <meta property="og:url" content="https://pklavc.com/blog/">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://pklavc.com/images/Lavc.webp">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:site_name" content="Patrick Araujo Portfolio">
+    <meta property="og:locale" content="en_US">
+    <meta property="og:image:alt" content="Brand portrait of backend engineer and automation specialist Patrick Araujo">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Backend Engineering Blog | Patrick Araujo">
+    <meta name="twitter:description" content="Technical writing on automation workflows, API integration engineering, SaaS backend patterns, and scalable systems.">
+    <meta name="twitter:image" content="https://pklavc.com/images/Lavc.webp">
+    <meta name="twitter:image:alt" content="Brand portrait of backend engineer and automation specialist Patrick Araujo">
+    <meta name="twitter:site" content="@PkLavc">
+    <meta name="twitter:creator" content="@PkLavc">
+    <link rel="icon" type="image/svg+xml" href="/images/favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Monoton&family=Poppins:wght@500;600;700&family=Raleway:wght@300&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Monoton&family=Poppins:wght@500;600;700&family=Raleway:wght@300&display=swap"></noscript>
+    <link rel="stylesheet" href="/css/global.css">
+    <link rel="stylesheet" href="/css/blog.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.2.6/gsap.min.js" defer></script>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@graph": [
+            {
+                "@type": "Blog",
+                "@id": "https://pklavc.com/blog/#blog",
+                "url": "https://pklavc.com/blog/",
+                "name": "Patrick Araujo Backend Engineering Blog",
+                "description": "Technical writing about backend engineering, automation workflows, API integrations, and scalable system architecture.",
+                "publisher": {
+                    "@id": "https://pklavc.com/#person"
+                },
+                "blogPost": [
+                    {
+                        "@type": "BlogPosting",
+                        "headline": "Backend Automation Systems: How to Reduce Manual Operations Without Breaking Reliability",
+                        "url": "https://pklavc.com/blog/backend-automation-systems/"
+                    },
+                    {
+                        "@type": "BlogPosting",
+                        "headline": "Multi-Tenant SaaS Architecture: Patterns for Secure and Scalable APIs",
+                        "url": "https://pklavc.com/blog/multi-tenant-saas-architecture/"
+                    },
+                    {
+                        "@type": "BlogPosting",
+                        "headline": "Event-Driven API Integrations: Designing for Retries, Idempotency, and Traceability",
+                        "url": "https://pklavc.com/blog/event-driven-api-integrations/"
+                    }
+                ]
+            },
+            {
+                "@type": "Person",
+                "@id": "https://pklavc.com/#person",
+                "name": "Patrick Araujo",
+                "url": "https://pklavc.com/",
+                "jobTitle": "Backend Software Engineer | Automation, API Integrations & Scalable Systems",
+                "sameAs": [
+                    "https://github.com/PkLavc",
+                    "https://www.linkedin.com/in/pklavc/"
+                ]
+            },
+            {
+                "@type": "BreadcrumbList",
+                "itemListElement": [
+                    {
+                        "@type": "ListItem",
+                        "position": 1,
+                        "name": "Home",
+                        "item": "https://pklavc.com/"
+                    },
+                    {
+                        "@type": "ListItem",
+                        "position": 2,
+                        "name": "Blog",
+                        "item": "https://pklavc.com/blog/"
+                    }
+                ]
+            }
+        ]
+    }
+    </script>
+</head>
+<body class="blog-layout seo-layout">
+    <div id="breaker"></div>
+    <div id="breaker-two"></div>
+    <div id="all">
+        <div class="cursor"></div>
+        <div id="navigation-content" role="navigation" aria-label="Primary navigation">
+            <div class="logo"></div>
+            <div class="navigation-links">
+                <a href="/" data-text="HOME" id="home-link">HOME</a>
+                <a href="/about/" data-text="ABOUT" id="about-link">ABOUT</a>
+                <a href="/projects/" data-text="PROJECTS" id="projects-link">PROJECTS</a>
+                <a href="#" data-text="BLOG" id="blog-link">BLOG</a>
+            </div>
+        </div>
+        <div id="navigation-bar">
+            <div class="menubar">
+                <span class="first-span"></span>
+                <span class="second-span"></span>
+                <span class="third-span"></span>
+            </div>
+        </div>
+
+        <section class="contact blog-contact" aria-labelledby="blog-techstack-title">
+            <h2 id="blog-techstack-title" class="visually-hidden">Backend technologies featured in the blog</h2>
+            <div class="techstack-carousel" aria-hidden="true">
+                <div class="techstack-track">
+                    <img src="/images/techstack/python-icon.svg" alt="Python icon" class="contactpic">
+                    <img src="/images/techstack/ts-icon.svg" alt="TypeScript icon" class="contactpic">
+                    <img src="/images/techstack/js-icon.svg" alt="JavaScript icon" class="contactpic">
+                    <img src="/images/techstack/restapi-icon.svg" alt="REST API icon" class="contactpic">
+                    <img src="/images/techstack/mysql-icon.svg" alt="SQL icon" class="contactpic">
+                    <img src="/images/techstack/docker-icon.svg" alt="Docker icon" class="contactpic">
+                    <img src="/images/techstack/aws-icon.svg" alt="AWS icon" class="contactpic">
+                    <img src="/images/techstack/github-icon.svg" alt="GitHub icon" class="contactpic">
+                    <img src="/images/techstack/python-icon.svg" alt="" class="contactpic" aria-hidden="true">
+                    <img src="/images/techstack/ts-icon.svg" alt="" class="contactpic" aria-hidden="true">
+                    <img src="/images/techstack/js-icon.svg" alt="" class="contactpic" aria-hidden="true">
+                    <img src="/images/techstack/restapi-icon.svg" alt="" class="contactpic" aria-hidden="true">
+                    <img src="/images/techstack/mysql-icon.svg" alt="" class="contactpic" aria-hidden="true">
+                    <img src="/images/techstack/docker-icon.svg" alt="" class="contactpic" aria-hidden="true">
+                    <img src="/images/techstack/aws-icon.svg" alt="" class="contactpic" aria-hidden="true">
+                    <img src="/images/techstack/github-icon.svg" alt="" class="contactpic" aria-hidden="true">
+                </div>
+            </div>
+        </section>
+
+        <main class="blog-shell" role="main">
+            <section class="blog-hero" aria-label="Blog introduction">
+                <article class="blog-hero-panel">
+                    <span class="blog-kicker">Engineering Notes</span>
+                    <h1>Backend writing for real engineering work.</h1>
+                    <p>Use this blog as a practical reading layer for automation architecture, API integration engineering, SaaS backend design, and operational reliability patterns connected to real portfolio implementations.</p>
+                    <div class="blog-hero-metrics" aria-label="Blog coverage metrics">
+                        <div class="blog-metric">
+                            <strong>3</strong>
+                            <span>pillar posts live at launch</span>
+                        </div>
+                        <div class="blog-metric">
+                            <strong>4</strong>
+                            <span>core SEO topics reinforced</span>
+                        </div>
+                        <div class="blog-metric">
+                            <strong>100%</strong>
+                            <span>internal linking to portfolio assets</span>
+                        </div>
+                    </div>
+                </article>
+
+                <aside class="blog-highlight-panel" aria-label="Editorial focus">
+                    <div>
+                        <h2>What this blog is targeting</h2>
+                        <ul class="blog-highlight-list">
+                            <li><span>Automation</span> Articles around workflow orchestration, reporting pipelines, and process reliability.</li>
+                            <li><span>APIs</span> Coverage for authentication, integration boundaries, retries, mapping, and observability.</li>
+                            <li><span>SaaS</span> Writing about multi-tenancy, RBAC, queueing, and scalable backend design.</li>
+                        </ul>
+                    </div>
+                </aside>
+            </section>
+
+            <section class="blog-section" aria-labelledby="blog-posts-title">
+                <h2 id="blog-posts-title">Featured posts</h2>
+                <p>The index page works like the project listing: each post gets a concise summary, strong internal links, descriptive anchors, and enough topical breadth to support search discovery without diluting the site pattern.</p>
+                <div class="blog-grid">
+                    <article class="blog-card" role="article">
+                        <div class="blog-card-meta">
+                            <span>Automation Architecture</span>
+                            <span>8 min read</span>
+                        </div>
+                        <h3><a href="/blog/backend-automation-systems/">Backend Automation Systems: How to Reduce Manual Operations Without Breaking Reliability</a></h3>
+                        <p>A practical guide to replacing repetitive operational work with backend jobs, queue-based execution, auditability, and controlled failure handling.</p>
+                        <div class="blog-tag-row">
+                            <span>workflow orchestration</span>
+                            <span>reporting pipelines</span>
+                            <span>backend automation</span>
+                        </div>
+                        <a class="blog-link" href="/blog/backend-automation-systems/">Read article</a>
+                    </article>
+
+                    <article class="blog-card" role="article">
+                        <div class="blog-card-meta">
+                            <span>SaaS Backend</span>
+                            <span>9 min read</span>
+                        </div>
+                        <h3><a href="/blog/multi-tenant-saas-architecture/">Multi-Tenant SaaS Architecture: Patterns for Secure and Scalable APIs</a></h3>
+                        <p>An architecture-focused breakdown of row-level isolation, RBAC, background jobs, and operational safeguards in modern SaaS backends.</p>
+                        <div class="blog-tag-row">
+                            <span>multi-tenancy</span>
+                            <span>RBAC</span>
+                            <span>NestJS and Postgres</span>
+                        </div>
+                        <a class="blog-link" href="/blog/multi-tenant-saas-architecture/">Read article</a>
+                    </article>
+
+                    <article class="blog-card" role="article">
+                        <div class="blog-card-meta">
+                            <span>Integration Engineering</span>
+                            <span>10 min read</span>
+                        </div>
+                        <h3><a href="/blog/event-driven-api-integrations/">Event-Driven API Integrations: Designing for Retries, Idempotency, and Traceability</a></h3>
+                        <p>How to design integration services that survive duplicated events, provider instability, webhook replay, and partial downstream failures.</p>
+                        <div class="blog-tag-row">
+                            <span>webhooks</span>
+                            <span>idempotency</span>
+                            <span>distributed tracing</span>
+                        </div>
+                        <a class="blog-link" href="/blog/event-driven-api-integrations/">Read article</a>
+                    </article>
+                </div>
+            </section>
+
+            <section class="blog-cta-stack" aria-label="Blog call to action">
+                <article class="blog-cta">
+                    <div>
+                        <h2>Pick Projects</h2>
+                        <p>Go straight to implementation pages with architecture and delivery context.</p>
+                    </div>
+                    <a class="blog-button" href="/projects/">Browse projects</a>
+                </article>
+                <article class="blog-cta">
+                    <div>
+                        <h2>Pick Collections</h2>
+                        <p>Browse grouped domains by problem space and solution type.</p>
+                    </div>
+                    <a class="blog-button" href="/collections/">Browse collections</a>
+                </article>
+                <article class="blog-cta">
+                    <div>
+                        <h2>Pick Stacks</h2>
+                        <p>Explore specialization tracks organized by technology and engineering focus.</p>
+                    </div>
+                    <a class="blog-button" href="/stacks/">Browse stacks</a>
+                </article>
+                <article class="blog-cta">
+                    <div>
+                        <h2>Pick About</h2>
+                        <p>See the professional background and context behind the work in this site.</p>
+                    </div>
+                    <a class="blog-button" href="/about/">Browse about</a>
+                </article>
+            </section>
+        </main>
+    </div>
+
+    <footer class="footer-minimal">
+        <div class="footer-container">
+            <div class="footer-link-list" aria-label="Footer links">
+                <a class="footer-link-pill" href="https://github.com/PkLavc" target="_blank" rel="noopener noreferrer">GitHub</a>
+                <a class="footer-link-pill" href="https://www.linkedin.com/in/pklavc/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+                <a class="footer-link-pill" href="mailto:contact@pklavc.com">Email</a>
+                <a class="footer-link-pill footer-link-pill-accent" href="https://github.com/sponsors/PkLavc" target="_blank" rel="noopener noreferrer">Sponsor me</a>
+            </div>
+            <p>
+                &copy; <span data-current-year></span> Patrick Araujo &bull;
+                <span class="github-dev-badge">Member of <b>GitHub Developer Program</b></span>
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        (function() {
+            document.querySelectorAll('[data-current-year]').forEach(function(node) {
+                node.textContent = String(new Date().getFullYear());
+            });
+        }());
+    </script>
+    <script src="/js/jquery.min.js" defer></script>
+    <script src="/js/index.js" defer></script>
+
+    <div class="visually-hidden">
+        <p>Backend engineering blog about automation systems, api integrations, node.js backend architecture, python workflows, event-driven systems, and SaaS platform design.</p>
+    </div>
+</body>
+</html>
