@@ -1,3 +1,34 @@
+if (typeof window.gsap === 'undefined') {
+  window.gsap = {
+    to: function(target, duration, props) {
+      var settings = props || {};
+      var elements = [];
+
+      if (typeof target === 'string') {
+        elements = Array.prototype.slice.call(document.querySelectorAll(target));
+      } else if (target && target.nodeType === 1) {
+        elements = [target];
+      } else if (target && typeof target.length === 'number') {
+        elements = Array.prototype.slice.call(target);
+      }
+
+      elements.forEach(function(element) {
+        if (Object.prototype.hasOwnProperty.call(settings, 'display')) {
+          element.style.display = settings.display;
+        }
+
+        if (Object.prototype.hasOwnProperty.call(settings, 'y')) {
+          element.style.transform = settings.y === 0 ? 'translateY(0)' : 'translateY(' + settings.y + ')';
+        }
+      });
+
+      if (typeof settings.onComplete === 'function') {
+        settings.onComplete();
+      }
+    }
+  };
+}
+
 function isTouchOrMobile() {
   return (
     'ontouchstart' in window ||
@@ -160,6 +191,33 @@ function applyParticlesFallback() {
   }, 2000);
 }
 
+function stabilizeMarkdownBadges() {
+  var badgeImages = document.querySelectorAll('.markdown-body img');
+
+  badgeImages.forEach(function(image) {
+    image.decoding = 'async';
+
+    if (image.src.indexOf('img.shields.io') !== -1) {
+      image.loading = 'lazy';
+      image.setAttribute('fetchpriority', 'low');
+    }
+
+    function syncIntrinsicSize() {
+      if (image.naturalWidth > 0 && image.naturalHeight > 0) {
+        image.width = image.naturalWidth;
+        image.height = image.naturalHeight;
+      }
+    }
+
+    if (image.complete) {
+      syncIntrinsicSize();
+      return;
+    }
+
+    image.addEventListener('load', syncIntrinsicSize, { once: true });
+  });
+}
+
 $(window).on('load', function() {
   document.body.classList.add('ready');
   if ($('#all').length) {
@@ -175,6 +233,7 @@ $(window).on('load', function() {
 
   initParticles();
   applyParticlesFallback();
+  stabilizeMarkdownBadges();
 
   window.addEventListener('resize', function() {
     if (window.pJSDom && window.pJSDom.length > 0) {
