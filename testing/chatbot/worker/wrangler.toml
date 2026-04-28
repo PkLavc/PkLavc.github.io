@@ -1,0 +1,54 @@
+name = "pklavc-chat-api"
+main = "src/index.ts"
+compatibility_date = "2026-04-28"
+
+workers_dev = false
+
+routes = [
+  { pattern = "api.pklavc.com/*", zone_name = "pklavc.com" }
+]
+
+[vars]
+APP_NAME = "PKLAVC Chat API"
+ENVIRONMENT = "production"
+
+API_BASE_URL = "https://api.pklavc.com"
+FRONTEND_URL = "https://pklavc.com"
+
+ALLOWED_ORIGINS = "https://pklavc.com,https://www.pklavc.com,http://localhost:5500,http://127.0.0.1:5500"
+
+DEFAULT_CHAT_MODEL = "openai/gpt-oss-20b:free"
+DEFAULT_EMBED_MODEL = "text-embedding-3-small"
+
+CLASSIFY_MODEL = "llama-3.1-8b-instant"
+SUMMARY_MODEL = "llama-3.1-8b-instant"
+CHAT_MODEL = "llama-3.1-8b-instant"
+
+PROMPT_VERSION = "v1.0.0"
+
+JWT_EXP_HOURS = "24"
+RATE_LIMIT_PER_MINUTE = "30"
+
+RESPONSE_CACHE_TTL = "180"
+EMBEDDING_CACHE_TTL = "86400"
+
+MAX_CONTEXT_CHARS = "4000"
+PII_MASKING = "true"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "pklavc-chat-db"
+database_id = "5ab5a061-306f-4f28-9c14-91948fae8d60"
+
+[[kv_namespaces]]
+binding = "CACHE"
+id = "761bed2527d64c3d801ae93a553ed96d"
+
+[[kv_namespaces]]
+binding = "SESSIONS"
+id = "1e9dac0c38ed4b83bd4d20a1c1571681"
+
+[observability]
+enabled = true
+
+compatibility_flags = ["nodejs_compat"]

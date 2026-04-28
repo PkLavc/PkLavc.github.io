@@ -1,0 +1,29 @@
+{
+  "name": "pklavc-chat-worker",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "lint": "eslint src --ext .ts",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "validate:json": "node ../scripts/validate-json.mjs",
+    "embeddings:offline": "node ../scripts/generate-embeddings.mjs",
+    "embeddings:kv": "node ../scripts/sync-embeddings-cache.mjs",
+    "sync:docs": "node ../scripts/sync-documents.mjs",
+    "etl:analytics": "node ../scripts/etl-analytics.mjs",
+    "docs:auto": "node ../scripts/generate-docs.mjs",
+    "health:check": "node ../scripts/health-check.mjs"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20260415.0",
+    "@typescript-eslint/eslint-plugin": "^8.31.0",
+    "@typescript-eslint/parser": "^8.31.0",
+    "eslint": "^9.25.1",
+    "typescript": "^5.8.3",
+    "vitest": "^3.1.1",
+    "wrangler": "^3.102.0"
+  }
+}

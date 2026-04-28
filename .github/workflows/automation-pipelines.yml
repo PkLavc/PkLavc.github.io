@@ -1,0 +1,73 @@
+name: Automation Pipelines
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 */6 * * *"
+
+jobs:
+  docs-and-embeddings:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: testing/chatbot/worker
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install
+        run: npm install
+
+      - name: Sync documents
+        run: npm run sync:docs
+
+      - name: Generate embeddings offline
+        run: npm run embeddings:offline
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          OPENROUTER_EMBED_MODEL: text-embedding-3-small
+
+      - name: Prepare embeddings KV seed
+        run: npm run embeddings:kv
+
+      - name: ETL analytics batch
+        run: npm run etl:analytics
+
+      - name: Generate docs snapshot
+        run: npm run docs:auto
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: chatbot-automation-artifacts
+          path: testing/chatbot/artifacts/
+
+  health-check:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: testing/chatbot/worker
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install
+        run: npm install
+
+      - name: Run health checks
+        run: npm run health:check
+        env:
+          HEALTH_FRONTEND_URL: https://pklavc.com/testing/
+          HEALTH_API_URL: https://api.pklavc.com/health

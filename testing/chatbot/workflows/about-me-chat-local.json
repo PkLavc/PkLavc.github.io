@@ -1,0 +1,129 @@
+{
+  "name": "About Me Chat - Local",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "about-me-chat",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "Webhook_Chat_In",
+      "name": "Webhook Chat In",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        220,
+        280
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const body = $json.body || {};\nconst userMessage = String(body.message || '').trim();\nconst profile = `Patrick Araujo is a backend software engineer focused on automation, API integrations, and scalable systems. Core domains: backend automation, event-driven architecture, multi-tenant SaaS, OAuth token management, infrastructure observability. Tech: Node.js, TypeScript, JavaScript, Python, Docker, GitHub Actions.`;\n\nif (!userMessage) {\n  return [{\n    json: {\n      error: 'Missing field: message'\n    }\n  }];\n}\n\nconst prompt = `You are Patrick Araujo's assistant bot.\nUse only this profile context:\n${profile}\n\nUser question: ${userMessage}\n\nRules:\n- Answer in the same language as the user.\n- Be concise and factual.\n- If information is unknown, say that it is not available in the profile context.`;\n\nreturn [{\n  json: {\n    prompt,\n    userMessage\n  }\n}];"
+      },
+      "id": "Code_Build_Prompt",
+      "name": "Code Build Prompt",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        500,
+        280
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://ollama:11434/api/generate",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"llama3.1:8b\",\n  \"prompt\": \"{{$json.prompt}}\",\n  \"stream\": false\n}",
+        "options": {}
+      },
+      "id": "HTTP_Ollama",
+      "name": "HTTP Ollama",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        760,
+        280
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const reply = $json.response || 'No response generated.';\nreturn [{ json: { reply } }];"
+      },
+      "id": "Code_Format_Response",
+      "name": "Code Format Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1010,
+        280
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"ok\": true,\n  \"reply\": \"{{$json.reply}}\"\n}",
+        "options": {}
+      },
+      "id": "Respond_To_Webhook",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.2,
+      "position": [
+        1250,
+        280
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook Chat In": {
+      "main": [
+        [
+          {
+            "node": "Code Build Prompt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code Build Prompt": {
+      "main": [
+        [
+          {
+            "node": "HTTP Ollama",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Ollama": {
+      "main": [
+        [
+          {
+            "node": "Code Format Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code Format Response": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

@@ -1,0 +1,73 @@
+name: About Me Bot
+
+on:
+  issue_comment:
+    types: [created]
+
+permissions:
+  issues: write
+  pull-requests: write
+
+jobs:
+  respond:
+    if: contains(github.event.comment.body, '/aboutme')
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build and comment response
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const body = context.payload.comment.body || '';
+            const question = body.replace('/aboutme', '').trim().toLowerCase();
+
+            const answers = [
+              {
+                match: ['backend', 'api', 'integracao', 'integration'],
+                text: 'Patrick trabalha com backend engineering, automacao e API integrations, com foco em resiliencia, retries e arquitetura orientada a eventos.'
+              },
+              {
+                match: ['saas', 'multi-tenant', 'multitenant'],
+                text: 'A experiencia inclui arquitetura multi-tenant SaaS com isolamento de dados, RBAC e workers assincronos para integracoes.'
+              },
+              {
+                match: ['python', 'node', 'typescript', 'javascript'],
+                text: 'Stack principal: Node.js, TypeScript, JavaScript e Python, com Docker e GitHub Actions para entrega e operacao.'
+              },
+              {
+                match: ['observabilidade', 'monitor', 'grafana', 'logs'],
+                text: 'Pratica observabilidade com metricas, logs, tracing e monitoramento operacional para sistemas de integracao.'
+              }
+            ];
+
+            let selected = 'Patrick Araujo e engenheiro backend focado em automacao, integracoes de APIs e sistemas escalaveis. Para detalhes, veja https://pklavc.com/about/ e https://pklavc.com/projects/.';
+
+            for (const item of answers) {
+              if (item.match.some((token) => question.includes(token))) {
+                selected = item.text;
+                break;
+              }
+            }
+
+            const response = [
+              'AboutMe Bot (GitHub Actions, sem chave externa):',
+              '',
+              selected,
+              '',
+              'Comandos:',
+              '- /aboutme',
+              '- /aboutme backend',
+              '- /aboutme saas',
+              '- /aboutme stack',
+              '- /aboutme observabilidade'
+            ].join('\n');
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: response
+            });

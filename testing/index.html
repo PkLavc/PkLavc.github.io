@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Patrick Araujo">
+    <title>Testing Lab | Patrick Araujo</title>
+    <meta name="description" content="Minimal testing lab page with navigation toggle and footer for local chatbot experiments.">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://pklavc.com/testing/">
+    <link rel="icon" type="image/svg+xml" href="/images/favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Monoton&family=Poppins:wght@500;600;700&family=Raleway:wght@300&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Monoton&family=Poppins:wght@500;600;700&family=Raleway:wght@300&display=swap"></noscript>
+    <link rel="stylesheet" href="/css/global.css">
+    <link rel="stylesheet" href="/css/blog.css">
+    <style>
+        .testing-shell {
+            min-height: calc(100vh - 180px);
+            width: min(1180px, 94%);
+            margin: 82px auto 36px;
+        }
+
+        .lab-grid {
+            display: grid;
+            grid-template-columns: 340px 1fr;
+            gap: 20px;
+        }
+
+        .lab-card {
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            background: linear-gradient(150deg, rgba(8, 12, 22, 0.9), rgba(12, 26, 40, 0.7));
+            padding: 18px;
+        }
+
+        .lab-card h2,
+        .lab-card h3 {
+            margin: 0 0 12px;
+            font-family: 'Poppins', sans-serif;
+            letter-spacing: 0.02em;
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-bottom: 10px;
+        }
+
+        .field label {
+            font-size: 0.76rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: rgba(214, 226, 255, 0.8);
+        }
+
+        .field input,
+        .field textarea {
+            width: 100%;
+            border: 1px solid rgba(188, 214, 255, 0.24);
+            border-radius: 10px;
+            background: rgba(4, 8, 16, 0.8);
+            color: #e9f2ff;
+            padding: 11px 12px;
+            font-size: 0.93rem;
+            outline: none;
+        }
+
+        .field textarea {
+            min-height: 96px;
+            resize: vertical;
+        }
+
+        .button-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .button-row button,
+        .button-row label {
+            border: 1px solid rgba(184, 217, 255, 0.34);
+            border-radius: 999px;
+            background: rgba(22, 40, 63, 0.72);
+            color: #e6f4ff;
+            font-size: 0.82rem;
+            padding: 8px 14px;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .button-row button:hover,
+        .button-row label:hover {
+            background: rgba(36, 70, 102, 0.95);
+        }
+
+        .toggle {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.82rem;
+            color: #d7e9ff;
+        }
+
+        .status-text {
+            margin-top: 8px;
+            min-height: 20px;
+            font-size: 0.84rem;
+            color: #d3e6ff;
+        }
+
+        .chat-log {
+            border: 1px solid rgba(190, 221, 255, 0.2);
+            border-radius: 12px;
+            background: rgba(4, 7, 13, 0.88);
+            min-height: 420px;
+            max-height: 58vh;
+            overflow: auto;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .chat-card {
+            border-radius: 10px;
+            padding: 10px 12px;
+            border: 1px solid rgba(198, 226, 255, 0.18);
+            background: rgba(20, 32, 48, 0.56);
+        }
+
+        .chat-card strong {
+            font-size: 0.74rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            opacity: 0.9;
+        }
+
+        .chat-card p {
+            margin: 5px 0 0;
+            white-space: pre-wrap;
+            line-height: 1.45;
+        }
+
+        .chat-card-user {
+            border-color: rgba(102, 194, 255, 0.33);
+            background: rgba(17, 44, 72, 0.62);
+        }
+
+        .chat-card-assistant {
+            border-color: rgba(158, 246, 185, 0.28);
+            background: rgba(10, 34, 25, 0.57);
+        }
+
+        .admin-box {
+            margin-top: 14px;
+            border: 1px solid rgba(201, 224, 255, 0.2);
+            border-radius: 12px;
+            padding: 12px;
+            background: rgba(5, 9, 18, 0.75);
+        }
+
+        .admin-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .admin-grid div {
+            border: 1px solid rgba(191, 223, 255, 0.2);
+            border-radius: 10px;
+            padding: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            background: rgba(19, 36, 59, 0.44);
+        }
+
+        .admin-grid span {
+            font-size: 1rem;
+            font-weight: 700;
+        }
+
+        .event-list {
+            margin: 10px 0 0;
+            padding-left: 18px;
+            line-height: 1.5;
+        }
+
+        @media (max-width: 980px) {
+            .lab-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body class="blog-layout seo-layout">
+    <div id="breaker"></div>
+    <div id="breaker-two"></div>
+    <div id="all">
+        <div class="cursor"></div>
+
+        <div id="navigation-content" role="navigation" aria-label="Primary navigation">
+            <div class="logo"></div>
+            <div class="navigation-links">
+                <a href="/" data-text="HOME" id="home-link">HOME</a>
+                <a href="/about/" data-text="ABOUT" id="about-link">ABOUT</a>
+                <a href="/projects/" data-text="PROJECTS" id="projects-link">PROJECTS</a>
+                <a href="/blog/" data-text="BLOG" id="blog-link">BLOG</a>
+            </div>
+        </div>
+
+        <div id="navigation-bar">
+            <div class="menubar" aria-label="Toggle navigation" role="button" tabindex="0">
+                <span class="first-span"></span>
+                <span class="second-span"></span>
+                <span class="third-span"></span>
+            </div>
+        </div>
+
+        <main class="testing-shell" role="main" aria-label="Testing canvas">
+            <section class="lab-grid">
+                <aside class="lab-card" aria-label="Control panel">
+                    <h2>Chatbot Control</h2>
+
+                    <div class="field">
+                        <label for="api-base">API Base URL</label>
+                        <input id="api-base" type="text" value="https://api.pklavc.com" autocomplete="off">
+                    </div>
+
+                    <h3>Authentication</h3>
+                    <div class="field">
+                        <label for="auth-user">Username</label>
+                        <input id="auth-user" type="text" autocomplete="username">
+                    </div>
+                    <div class="field">
+                        <label for="auth-pass">Password</label>
+                        <input id="auth-pass" type="password" autocomplete="current-password">
+                    </div>
+                    <div class="button-row">
+                        <button id="login-btn" type="button">Login</button>
+                        <button id="admin-btn" type="button" style="display:none;">Load Admin Analytics</button>
+                    </div>
+                    <p id="auth-status" class="status-text"></p>
+
+                    <h3>RAG Documents</h3>
+                    <div class="field">
+                        <label for="pdf-upload">Upload PDF</label>
+                        <input id="pdf-upload" type="file" accept="application/pdf">
+                    </div>
+                    <div class="button-row">
+                        <button id="upload-btn" type="button">Index PDF</button>
+                    </div>
+                    <p id="upload-status" class="status-text"></p>
+
+                    <h3>Realtime Modes</h3>
+                    <div class="button-row">
+                        <label class="toggle"><input id="stream-toggle" type="checkbox" checked> Streaming</label>
+                        <label class="toggle"><input id="voice-toggle" type="checkbox"> Voice Output</label>
+                    </div>
+                </aside>
+
+                <section class="lab-card" aria-label="Chat workspace">
+                    <h2>Testing Chat Lab</h2>
+                    <div id="chat-log" class="chat-log" aria-live="polite"></div>
+
+                    <div class="field" style="margin-top:12px;">
+                        <label for="chat-input">Message</label>
+                        <textarea id="chat-input" placeholder="Ask about Patrick, projects, or uploaded documents..."></textarea>
+                    </div>
+                    <div class="button-row">
+                        <button id="send-btn" type="button">Send</button>
+                        <button id="voice-input-btn" type="button">Voice Input</button>
+                        <button id="reset-btn" type="button">Reset Memory</button>
+                    </div>
+
+                    <div id="analytics-box" class="admin-box" aria-label="Admin analytics panel">
+                        Admin panel ready. Click "Load Admin Analytics" after admin login.
+                    </div>
+                </section>
+            </section>
+        </main>
+    </div>
+
+    <footer class="footer-minimal">
+        <div class="footer-container">
+            <div class="footer-link-list" aria-label="Footer links">
+                <a class="footer-link-pill" href="https://github.com/PkLavc" target="_blank" rel="noopener noreferrer">GitHub</a>
+                <a class="footer-link-pill" href="https://www.linkedin.com/in/pklavc/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+                <a class="footer-link-pill" href="mailto:contact@pklavc.com">Email</a>
+                <a class="footer-link-pill footer-link-pill-accent" href="https://github.com/sponsors/PkLavc" target="_blank" rel="noopener noreferrer">Sponsor me</a>
+            </div>
+            <p>
+                &copy; <span data-current-year></span> Patrick Araujo &bull;
+                <span class="github-dev-badge">Member of <b>GitHub Developer Program</b></span>
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        (function() {
+            document.querySelectorAll('[data-current-year]').forEach(function(node) {
+                node.textContent = String(new Date().getFullYear());
+            });
+        }());
+    </script>
+    <script src="/js/jquery.min.js" defer></script>
+    <script src="/js/index.js" defer></script>
+    <script src="/js/testing-chat.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,45 @@
+name: Chatbot CI
+
+on:
+  pull_request:
+    paths:
+      - testing/chatbot/**
+      - .github/workflows/chatbot-ci.yml
+  push:
+    branches: [main]
+    paths:
+      - testing/chatbot/**
+      - .github/workflows/chatbot-ci.yml
+
+jobs:
+  build-lint-test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: testing/chatbot/worker
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: testing/chatbot/worker/package.json
+
+      - name: Install
+        run: npm install
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Tests
+        run: npm run test
+
+      - name: Validate JSON
+        run: npm run validate:json
