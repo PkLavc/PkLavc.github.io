@@ -208,13 +208,13 @@
                             <div class="meta-item"><strong>Primary Runtime</strong>Cloudflare Worker (TypeScript)</div>
                             <div class="meta-item"><strong>Data Layer</strong>D1 + KV (`DB`, `CACHE`, `SESSIONS`)</div>
                             <div class="meta-item"><strong>RAG Sources</strong>`manual-rag.ts` + cached pklavc.com pages</div>
-                            <div class="meta-item"><strong>Frontend</strong>Global floating widget + dedicated assistant page</div>
+                            <div class="meta-item"><strong>Frontend</strong>Global floating widget + project demo page</div>
                             <div class="meta-item"><strong>Voice</strong>Web Speech API with female voice preference</div>
                             <div class="meta-item"><strong>Reliability</strong>Provider fallback and response caching</div>
                         </div>
 
                         <h3>System Architecture</h3>
-                        <p>Skyler separates responsibilities clearly. The frontend handles interaction and voice. The Worker orchestrates memory, RAG, and provider calls. The model handles generative response when local context is not enough.</p>
+                        <p>Skyler separates responsibilities clearly. The frontend handles interaction and voice. The Worker orchestrates memory, intent-aware RAG, and provider calls. The model handles direct answers for off-topic prompts and portfolio-guided answers when portfolio intent is detected.</p>
 
                         <div class="flowchart" aria-label="Skyler high level architecture flowchart">
                             <div class="flow-lane">
@@ -227,7 +227,7 @@
                             <div class="flow-lane">
                                 <span class="flow-step">Greeting Check</span>
                                 <span class="flow-arrow">-&gt;</span>
-                                <span class="flow-step">Manual RAG Match</span>
+                                <span class="flow-step">Portfolio Intent + RAG Gate</span>
                                 <span class="flow-arrow">-&gt;</span>
                                 <span class="flow-step">Prompt Builder</span>
                             </div>
@@ -252,14 +252,14 @@
                             <div class="flow-lane">
                                 <span class="flow-step">If not greeting</span>
                                 <span class="flow-arrow">-&gt;</span>
-                                <span class="flow-step">Manual RAG keyword hit?</span>
+                                <span class="flow-step">Portfolio question?</span>
                                 <span class="flow-arrow">yes</span>
-                                <span class="flow-step">Return manual context reply</span>
+                                <span class="flow-step">Merge manual RAG + cached site context</span>
                             </div>
                             <div class="flow-lane">
-                                <span class="flow-step">If no local hit</span>
+                                <span class="flow-step">If not a portfolio request</span>
                                 <span class="flow-arrow">-&gt;</span>
-                                <span class="flow-step">Call LLM</span>
+                                <span class="flow-step">Call LLM directly</span>
                                 <span class="flow-arrow">fail?</span>
                                 <span class="flow-step">Use provider fallback</span>
                             </div>
@@ -267,8 +267,8 @@
 
                         <h3>Frontend Experience</h3>
                         <ul>
-                            <li>Floating icon launcher on site pages (except root and /skyler-assistant/) using <code>/images/icon_skyler.webp</code></li>
-                            <li>Dedicated standalone page at <a href="/skyler-assistant/">/skyler-assistant/</a></li>
+                            <li>Floating icon launcher on site pages using <code>/images/icon_skyler.webp</code></li>
+                            <li>Dedicated interactive demo at <a href="/projects/skyler-assistant/demo/">/projects/skyler-assistant/demo/</a></li>
                             <li>Enter sends message, Shift+Enter adds line break</li>
                             <li>Optional streaming output and voice output toggle</li>
                             <li>Guest/public usage without mandatory login</li>
@@ -284,25 +284,26 @@
                         </ul>
 
                         <h3>RAG Coverage</h3>
-                        <p>Manual RAG includes identity, role focus, stack, links, companies, impact metrics, and current public credential context. It is intentionally source-controlled for predictable behavior and low cost.</p>
+                        <p>Manual RAG includes identity, role focus, stack, links, companies, impact metrics, and current credential context. It is merged with cached public site pages only when the user is asking about portfolio topics, which keeps off-topic answers direct and reduces unwanted grounding.</p>
                         <ul>
                             <li>Identity and positioning (backend, integrations, architecture)</li>
                             <li>Project and blog discoverability guidance</li>
                             <li>Contact and profile references (GitHub, LinkedIn, email)</li>
-                            <li>Known credentials from public pages</li>
+                            <li>Known credentials, companies, and projects from internal context plus public pages</li>
+                            <li>Plain-text response rules for course, company, and project answers</li>
                         </ul>
 
                         <h3>Reliability and Fallback Strategy</h3>
                         <ul>
                             <li>Primary provider execution path with retry attempts</li>
                             <li>Automatic fallback provider when primary fails</li>
-                            <li>Local greeting/manual context path to reduce unnecessary model calls</li>
+                            <li>Local greeting path plus intent-aware RAG to reduce unnecessary model calls</li>
                             <li>Response caching to minimize repeated token spend</li>
                         </ul>
 
                         <h3>Main Paths</h3>
                         <ul>
-                            <li><strong>Live assistant:</strong> <a href="/skyler-assistant/">/skyler-assistant/</a></li>
+                            <li><strong>Live assistant demo:</strong> <a href="/projects/skyler-assistant/demo/">/projects/skyler-assistant/demo/</a></li>
                             <li><strong>Global widget example page:</strong> <a href="/about/">/about/</a></li>
                             <li><strong>Projects listing:</strong> <a href="/projects/">/projects/</a></li>
                             <li><strong>Worker source:</strong> <code>src/chatbot/worker/src/index.ts</code></li>
@@ -313,7 +314,7 @@
             </section>
 
             <section class="cta-section" aria-label="Open assistant">
-                <a class="cta-button" href="/skyler-assistant/">Open Skyler Assistant</a>
+                <a class="cta-button" href="/projects/skyler-assistant/demo/">Open Skyler Assistant Demo</a>
             </section>
         </main>
     </div>

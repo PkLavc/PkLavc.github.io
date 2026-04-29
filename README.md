@@ -112,17 +112,19 @@ flowchart LR
 - Global widget loader: `js/index.js` (auto-injects widget assets)
 - Frontend widget script: `js/skyler-widget.js`
 - Frontend widget styling: `css/skyler-widget.css`
-- Dedicated assistant page: `skyler-assistant/index.html`
+- Dedicated assistant demo page: `projects/skyler-assistant/demo/index.html`
 - Worker API logic: `src/chatbot/worker/src/index.ts`
 - Manual RAG knowledge: `src/chatbot/worker/src/manual-rag.ts`
 
 ### Skyler Behavior (Current)
 
-- Global floating widget across site pages (except root `/` and `/skyler-assistant/`)
+- Global floating widget across site pages
 - Lightweight orchestration on Worker
 - Local fast greeting for simple greetings (`olá`, `hello`, etc.)
-- Manual RAG usage for known profile topics
-- LLM call when needed
+- Intent-aware portfolio RAG only for portfolio topics
+- Cached site context merged with internal profile context for companies, projects, and credentials
+- Direct LLM answer for off-topic prompts
+- Plain-text response rules for course, company, and project answers
 - Provider fallback when API fails
 
 ## Tech Stack

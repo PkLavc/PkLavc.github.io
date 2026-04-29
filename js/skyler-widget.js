@@ -9,7 +9,7 @@
 
   function shouldRunWidget() {
     var path = window.location.pathname || "/";
-    return !/^\/skyler-assistant\/?$/i.test(path);
+    return !/^\/(skyler-assistant|projects\/skyler-assistant\/demo)\/?$/i.test(path);
   }
 
   function ensureMarkup() {

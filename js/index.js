@@ -486,7 +486,7 @@ function toggleCredits() {
 
 function loadSkylerWidgetAssets() {
   var path = window.location.pathname || '/';
-  if (/^\/skyler-assistant\/?$/i.test(path)) {
+  if (/^\/(skyler-assistant|projects\/skyler-assistant\/demo)\/?$/i.test(path)) {
     return;
   }
 
