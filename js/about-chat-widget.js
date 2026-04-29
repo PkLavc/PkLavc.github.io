@@ -270,7 +270,7 @@
     bindEvents();
     autoResizeInput();
     appendMessage("assistant", "Hi, I am Skyler. Ask about Patrick's experience, projects, stack, or architecture work.");
-    setStatus(state.voiceEnabled ? "Voice mode enabled." : "Voice mode available.");
+    setStatus(state.voiceEnabled ? "Voice mode enabled." : "");
 
     if ("speechSynthesis" in window) {
       window.speechSynthesis.getVoices();
