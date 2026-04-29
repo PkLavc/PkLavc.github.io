@@ -44,7 +44,7 @@
   function appendMessage(role, text) {
     var card = document.createElement("article");
     card.className = "chat-card chat-card-" + role;
-    var who = role === "assistant" ? "Bot" : "You";
+    var who = role === "assistant" ? "Skylet" : "You";
     card.innerHTML = "<strong>" + who + "</strong><p></p>";
     card.querySelector("p").textContent = text;
     els.chatLog.appendChild(card);
