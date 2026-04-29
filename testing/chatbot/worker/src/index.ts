@@ -168,9 +168,14 @@ export default {
       }
 
       if (url.pathname === "/chat" && request.method === "POST") {
-        const rate = await enforceChatDailyRateLimit(request, env, traceId);
+        const rate = await rateLimitChat(request, env, traceId);
         if (!rate.ok) {
           return withCors(json({ error: "rate_limited" }, 429), env, origin);
+        }
+
+        const user = await requireAuth(request, env);
+        if (!user.ok) {
+          return withCors(json({ error: user.error }, 401), env, origin);
         }
 
         let payload: ChatPayload;
@@ -179,8 +184,7 @@ export default {
         } catch {
           return withCors(json({ error: "invalid_json" }, 400), env, origin);
         }
-        const user = await resolveChatUser(request, env);
-        const response = await handleChat(payload, user, env, traceId, false, traceparent);
+        const response = await handleChat(payload, user.user, env, traceId, false, traceparent);
         ctx.waitUntil(logSpan(env, {
           trace_id: traceId,
           span: "chat_http",
@@ -531,29 +535,6 @@ async function requireAuth(request: Request, env: Env): Promise<{ ok: true; user
   }
 
   return { ok: true, user };
-}
-
-async function resolveChatUser(request: Request, env: Env): Promise<AuthUser> {
-  const auth = request.headers.get("Authorization") || "";
-  if (auth.startsWith("Bearer ")) {
-    const authenticated = await requireAuth(request, env);
-    if (authenticated.ok) {
-      return authenticated.user;
-    }
-  }
-
-  const ip = request.headers.get("CF-Connecting-IP") || "unknown";
-  const ipHash = (await cacheHash(ip)).slice(0, 16);
-  const guestUsername = `guest-${ipHash}`;
-  const guestPasswordHash = await sha256(`guest:${ipHash}`);
-
-  await ensureUser(env, guestUsername, guestPasswordHash, "user");
-  const guestUser = await findUserByUsername(env, guestUsername);
-  if (guestUser) {
-    return guestUser;
-  }
-
-  throw new Error("guest_user_unavailable");
 }
 
 async function ensureUser(env: Env, username: string, passwordHash: string, role: string) {
@@ -940,34 +921,44 @@ function validateJsonResponse(text: string, requiredKeys: string[], schema: Reco
   }
 }
 
-async function enforceChatDailyRateLimit(request: Request, env: Env, traceId: string) {
-  const ip = request.headers.get("CF-Connecting-IP") || "unknown";
+async function rateLimitChat(request: Request, env: Env, traceId: string) {
+  const rawIp = request.headers.get("CF-Connecting-IP") || "unknown";
+  const ipHash = await cacheHash(rawIp);
   const date = new Date().toISOString().slice(0, 10);
-  const ipKey = `rate:${date}:${ip}`;
-  const uniqueCounterKey = `rate:${date}:__unique_count`;
   const ttlSeconds = 86400;
-  const uniqueIpLimit = 10;
-  const perIpDailyLimit = 50;
+
+  const perIpDailyLimit = 300;
+  const uniqueIpDailySoftLimit = 200;
+  const softPerIpDailyLimit = 120;
+
+  const ipKey = `rate:${date}:${ipHash}`;
+  const uniqueCounterKey = `rate:${date}:__unique_count`;
+  const modeKey = `rate:${date}:mode:${ipHash}`;
 
   try {
     const currentRaw = await env.CACHE.get(ipKey);
     const current = Number(currentRaw || "0");
+    const mode = await env.CACHE.get(modeKey);
+    const inSoftMode = mode === "soft";
+    const effectivePerIpLimit = inSoftMode ? softPerIpDailyLimit : perIpDailyLimit;
 
     if (!currentRaw) {
       const uniqueRaw = await env.CACHE.get(uniqueCounterKey);
       const uniqueCount = Number(uniqueRaw || "0");
 
-      if (uniqueCount >= uniqueIpLimit) {
+      if (uniqueCount >= uniqueIpDailySoftLimit) {
+        await env.CACHE.put(modeKey, "soft", { expirationTtl: ttlSeconds });
+        await env.CACHE.put(ipKey, "1", { expirationTtl: ttlSeconds });
         console.log(JSON.stringify({
           level: "warn",
-          event: "chat_rate_limit_unique_ip",
-          ip,
+          event: "chat_rate_limit_soft_mode_new_ip",
+          ip_hash: ipHash,
           date,
           unique_count: uniqueCount,
-          unique_limit: uniqueIpLimit,
+          unique_soft_limit: uniqueIpDailySoftLimit,
           trace_id: traceId,
         }));
-        return { ok: false };
+        return { ok: true };
       }
 
       await env.CACHE.put(uniqueCounterKey, String(uniqueCount + 1), { expirationTtl: ttlSeconds });
@@ -975,14 +966,15 @@ async function enforceChatDailyRateLimit(request: Request, env: Env, traceId: st
       return { ok: true };
     }
 
-    if (current >= perIpDailyLimit) {
+    if (current >= effectivePerIpLimit) {
       console.log(JSON.stringify({
         level: "warn",
         event: "chat_rate_limit_per_ip",
-        ip,
+        ip_hash: ipHash,
         date,
         current,
-        per_ip_limit: perIpDailyLimit,
+        per_ip_limit: effectivePerIpLimit,
+        soft_mode: inSoftMode,
         trace_id: traceId,
       }));
       return { ok: false };
@@ -992,7 +984,7 @@ async function enforceChatDailyRateLimit(request: Request, env: Env, traceId: st
     return { ok: true };
   } catch (error) {
     const message = error instanceof Error ? error.message : "cache_rate_limit_error";
-    console.log(JSON.stringify({ level: "warn", event: "chat_rate_limit_fail_open", message, trace_id: traceId }));
+    console.error(JSON.stringify({ level: "warn", event: "chat_rate_limit_fail_open", message, trace_id: traceId }));
     return { ok: true };
   }
 }
