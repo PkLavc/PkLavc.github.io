@@ -1,4 +1,4 @@
-function isTouchOrMobile() {
+﻿function isTouchOrMobile() {
   return (
     'ontouchstart' in window ||
     navigator.maxTouchPoints > 0 ||
@@ -482,4 +482,33 @@ function toggleCredits() {
             trigger.setAttribute("aria-expanded", "true");
         }
     }
+}
+
+function loadSkylerWidgetAssets() {
+  var path = window.location.pathname || '/';
+  if (/^\/skyler-assistant\/?$/i.test(path)) {
+    return;
+  }
+
+  if (!document.getElementById('skyler-widget-style')) {
+    var link = document.createElement('link');
+    link.id = 'skyler-widget-style';
+    link.rel = 'stylesheet';
+    link.href = '/css/skyler-widget.css';
+    document.head.appendChild(link);
+  }
+
+  if (!document.getElementById('skyler-widget-script')) {
+    var script = document.createElement('script');
+    script.id = 'skyler-widget-script';
+    script.src = '/js/skyler-widget.js';
+    script.defer = true;
+    document.body.appendChild(script);
+  }
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', loadSkylerWidgetAssets, { once: true });
+} else {
+  loadSkylerWidgetAssets();
 }

@@ -1,4 +1,4 @@
-.breaker-two{
+﻿.breaker-two{
     display: none;
 }
 
@@ -902,7 +902,7 @@ For devices with smaller width like mobile phone
                 opacity: .8;
                 margin: 12px;
                 cursor: pointer;
-                border: none;
+                border: none !important;
                 border-radius: 8px;
                 transition: all .4s ease;
             }
@@ -1374,7 +1374,7 @@ for tabs and large phones
                 opacity: .8;
                 margin: 20px;
                 cursor: pointer;
-                border: none;
+                border: none !important;
                 border-radius: 8px;
                 transition: all .4s ease;
             }
@@ -1700,9 +1700,72 @@ for tabs and large phones
         opacity: .8;
         margin: 20px;
         cursor: pointer;
-        border: none;
+        border: none !important;
         border-radius: 8px;
         transition: all .4s ease;
     }
 }
 
+
+/* ── Skyler inline button – index.html (desktop) ────────────────────── */
+@media (min-width: 551px) {
+    .page-index .contact {
+        right: calc(4% - 20px);
+        top: 100px;
+        bottom: 112px;
+        height: auto;
+        width: 76px;
+        align-items: center;
+        justify-content: center;
+    }
+
+    #index-skyler-btn {
+        position: absolute;
+        right: calc(4% - 20px);
+        bottom: 26px;
+        top: auto;
+        width: 76px;
+        z-index: 3;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background: none !important;
+        border: none !important;
+        cursor: pointer;
+        padding: 6px 0;
+        opacity: 0.72;
+        transition: opacity 0.3s ease, transform 0.3s ease;
+        appearance: none;
+        -webkit-appearance: none;
+        box-shadow: none !important;
+        outline: none !important;
+    }
+
+    #index-skyler-btn:hover {
+        opacity: 1;
+        transform: translateY(-2px);
+    }
+
+    #index-skyler-btn img {
+        width: 58px;
+        height: 58px;
+        display: block;
+        margin: 0 auto;
+    }
+
+    /* Hide global floating launcher on desktop root - inline button used instead */
+    .page-index .about-chat-launcher {
+        display: none !important;
+    }
+}
+@media (max-width: 550px) {
+    /* Hide inline desktop button on mobile */
+    #index-skyler-btn {
+        display: none !important;
+    }
+
+    /* Move floating launcher above the social-media icon bar on root page */
+    .page-index .about-chat-launcher {
+        bottom: 76px;
+    }
+}

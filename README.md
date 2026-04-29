@@ -66,14 +66,14 @@ Production worker entrypoint:
 
 ### Skyler Button Image
 
-Skyler launcher icon used in the About page chat widget:
+Skyler launcher icon used in the global floating chat widget:
 
 ![Skyler Launcher](images/icon_skyler.webp)
 
 ### Skyler Badges
 
 ![Skyler Voice](https://img.shields.io/badge/Voice-Female%20Preferred-7e57c2)
-![Skyler Frontend](https://img.shields.io/badge/Frontend-about--chat--widget.js-0ea5e9)
+![Skyler Frontend](https://img.shields.io/badge/Frontend-skyler--widget.js-0ea5e9)
 ![Skyler Manual RAG](https://img.shields.io/badge/Manual%20RAG-manual--rag.ts-22c55e)
 ![Skyler API](https://img.shields.io/badge/API-api.pklavc.com-ef4444)
 
@@ -109,14 +109,16 @@ flowchart LR
 
 ### Skyler Components
 
-- Frontend widget script: `js/about-chat-widget.js`
-- Frontend widget markup: `about/index.html`
-- Frontend widget styling: `css/about.css`
+- Global widget loader: `js/index.js` (auto-injects widget assets)
+- Frontend widget script: `js/skyler-widget.js`
+- Frontend widget styling: `css/skyler-widget.css`
+- Dedicated assistant page: `skyler-assistant/index.html`
 - Worker API logic: `src/chatbot/worker/src/index.ts`
 - Manual RAG knowledge: `src/chatbot/worker/src/manual-rag.ts`
 
 ### Skyler Behavior (Current)
 
+- Global floating widget across site pages (except root `/` and `/skyler-assistant/`)
 - Lightweight orchestration on Worker
 - Local fast greeting for simple greetings (`olá`, `hello`, etc.)
 - Manual RAG usage for known profile topics
