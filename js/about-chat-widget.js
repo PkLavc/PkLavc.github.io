@@ -59,7 +59,6 @@
       return;
     }
 
-    els.launcher.classList.add("is-hidden");
     els.widget.classList.add("is-open");
     els.widget.setAttribute("aria-hidden", "false");
     els.launcher.setAttribute("aria-expanded", "true");
@@ -73,7 +72,6 @@
       return;
     }
 
-    els.launcher.classList.remove("is-hidden");
     els.widget.classList.remove("is-open");
     els.widget.setAttribute("aria-hidden", "true");
     els.launcher.setAttribute("aria-expanded", "false");

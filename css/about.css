@@ -242,35 +242,24 @@ body {
     z-index: 10050;
     display: inline-flex;
     align-items: center;
-    gap: 10px;
-    border: 1px solid rgba(111, 210, 255, 0.28);
-    border-radius: 999px;
-    background: linear-gradient(135deg, rgba(18, 29, 45, 0.96), rgba(20, 40, 74, 0.96));
-    color: #f3fbff;
-    padding: 14px 18px;
-    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.28);
+    justify-content: center;
+    border: none !important;
+    border-radius: 0 !important;
+    background: none !important;
+    box-shadow: none !important;
     cursor: pointer;
-    font: inherit;
+    padding: 0 !important;
+    outline: none;
+}
+
+.about-chat-launcher img {
+    width: 108px;
+    height: 108px;
+    display: block;
 }
 
 .about-chat-launcher:hover {
-    transform: translateY(-2px);
-}
-
-.about-chat-launcher.is-hidden {
-    display: none;
-}
-
-.about-chat-launcher-mark {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(115, 224, 255, 0.18);
-    font-weight: 700;
-    letter-spacing: 0.04em;
+    transform: translateY(-2px) scale(1.05);
 }
 
 .about-chat-widget {
@@ -291,6 +280,7 @@ body {
 
 .about-chat-widget.is-open {
     display: flex;
+    bottom: 24px;
 }
 
 .about-chat-header {
@@ -344,10 +334,12 @@ body {
 .about-chat-log {
     flex: 1;
     padding: 16px;
+    padding-right: 10px;
     display: flex;
     flex-direction: column;
     gap: 10px;
     overflow: auto;
+    scrollbar-gutter: stable;
 }
 
 .about-chat-message {
@@ -400,6 +392,28 @@ body {
     color: #eef7ff;
     padding: 12px 14px;
     font: inherit;
+    scrollbar-gutter: stable;
+}
+
+.about-chat-log::-webkit-scrollbar,
+.about-chat-input::-webkit-scrollbar {
+    width: 8px;
+}
+
+.about-chat-log::-webkit-scrollbar-track,
+.about-chat-input::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.about-chat-log::-webkit-scrollbar-thumb,
+.about-chat-input::-webkit-scrollbar-thumb {
+    background: rgba(141, 176, 232, 0.55);
+    border-radius: 999px;
+}
+
+.about-chat-log::-webkit-scrollbar-thumb:hover,
+.about-chat-input::-webkit-scrollbar-thumb:hover {
+    background: rgba(160, 194, 247, 0.78);
 }
 
 .about-chat-send {
@@ -418,7 +432,11 @@ body {
     .about-chat-launcher {
         right: 16px;
         bottom: 16px;
-        padding: 12px 14px;
+    }
+
+    .about-chat-launcher img {
+        width: 94px;
+        height: 94px;
     }
 
     .about-chat-widget {
@@ -427,6 +445,10 @@ body {
         bottom: 78px;
         width: auto;
         height: min(72vh, 620px);
+    }
+
+    .about-chat-widget.is-open {
+        bottom: 12px;
     }
 }
 #custom-solutions {
