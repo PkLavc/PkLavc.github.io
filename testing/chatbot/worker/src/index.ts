@@ -25,6 +25,7 @@ export interface Env {
   GROQ_MODEL?: string;
   OPENROUTER_MODEL?: string;
   OPENROUTER_EMBED_MODEL?: string;
+  EXTERNAL_RAG_URL?: string;
   LANGFUSE_BASE_URL?: string;
   LANGFUSE_PUBLIC_KEY?: string;
   LANGFUSE_SECRET_KEY?: string;
@@ -48,6 +49,8 @@ type AuthUser = {
 
 const encoder = new TextEncoder();
 const MAX_MEMORY_ITEMS = 8;
+const EXTERNAL_RAG_DEFAULT_URL = "https://pklavc.com/portfolio-rag.txt";
+const EXTERNAL_RAG_CACHE_TTL_SECONDS = 3600;
 const INTERNAL_PORTFOLIO_CONTEXT = [
   "Name: Patrick Araujo.",
   "Role focus: Backend Software Engineer and API Integration Engineer.",
@@ -315,7 +318,9 @@ async function handleChat(payload: ChatPayload, user: AuthUser, env: Env, traceI
   await storeMessage(env, conversationId, "user", sanitized);
 
   const memory = pruneMemory(await fetchMemory(env, conversationId, MAX_MEMORY_ITEMS), Number(env.MAX_CONTEXT_CHARS || "4000"));
-  const rag = await retrieveRagContext(env, user.id, sanitized, 4);
+  const externalRag = await getExternalRagContext(env, traceId);
+  const semanticRag = await retrieveRagContext(env, user.id, sanitized, 3);
+  const rag = [externalRag, ...semanticRag];
   const basePrompt = await buildPrompt(env, memory, rag, sanitized, task);
   const prompt = payload.expect_json
     ? `${basePrompt}\n\nReturn strict JSON only. No markdown, no prose.`
@@ -395,7 +400,9 @@ async function handleChatStream(payload: ChatPayload, user: AuthUser, env: Env, 
 
   const task = payload.task || "chat";
   const memory = pruneMemory(await fetchMemory(env, conversationId, MAX_MEMORY_ITEMS), Number(env.MAX_CONTEXT_CHARS || "4000"));
-  const rag = await retrieveRagContext(env, user.id, sanitized, 4);
+  const externalRag = await getExternalRagContext(env, traceId);
+  const semanticRag = await retrieveRagContext(env, user.id, sanitized, 3);
+  const rag = [externalRag, ...semanticRag];
   const basePrompt = await buildPrompt(env, memory, rag, sanitized, task);
   const prompt = payload.expect_json
     ? `${basePrompt}\n\nReturn strict JSON only. No markdown, no prose.`
@@ -646,7 +653,6 @@ async function buildPrompt(
 
   const memoryBlock = memory.map((item) => `${item.role}: ${item.content}`).join("\n");
   const ragBlock = rag.length ? rag.join("\n---\n") : "No RAG docs found.";
-  const internalBlock = INTERNAL_PORTFOLIO_CONTEXT.join("\n");
 
   return [
     promptTemplate,
@@ -661,15 +667,48 @@ async function buildPrompt(
     "Conversation memory:",
     memoryBlock || "No previous conversation.",
     "",
-    "Internal portfolio context:",
-    internalBlock,
-    "",
     "RAG context:",
     ragBlock,
     "",
     "User question:",
     question,
   ].join("\n");
+}
+
+async function getExternalRagContext(env: Env, traceId: string): Promise<string> {
+  const sourceUrl = env.EXTERNAL_RAG_URL || EXTERNAL_RAG_DEFAULT_URL;
+  const cacheKey = `ext_rag:${sourceUrl}`;
+
+  try {
+    const cached = await env.CACHE.get(cacheKey);
+    if (cached) {
+      return cached;
+    }
+
+    const response = await fetch(sourceUrl, {
+      headers: { Accept: "text/plain" },
+    });
+    if (!response.ok) {
+      throw new Error(`external_rag_http_${response.status}`);
+    }
+
+    const raw = await response.text();
+    const normalized = String(raw || "")
+      .replace(/[^\x09\x0A\x0D\x20-\x7E]/g, " ")
+      .trim()
+      .slice(0, 12000);
+
+    if (!normalized) {
+      throw new Error("external_rag_empty");
+    }
+
+    await env.CACHE.put(cacheKey, normalized, { expirationTtl: EXTERNAL_RAG_CACHE_TTL_SECONDS });
+    return normalized;
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "external_rag_fetch_error";
+    console.log(JSON.stringify({ level: "warn", event: "external_rag_fallback", message, trace_id: traceId }));
+    return INTERNAL_PORTFOLIO_CONTEXT.join("\n");
+  }
 }
 
 async function retrieveRagContext(env: Env, userId: number, question: string, limit: number): Promise<string[]> {
