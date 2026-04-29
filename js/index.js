@@ -1,38 +1,3 @@
-var gsap = window.gsap;
-
-if (typeof gsap === 'undefined') {
-  gsap = {
-    to: function(target, duration, props) {
-      var settings = props || {};
-      var elements = [];
-
-      if (typeof target === 'string') {
-        elements = Array.prototype.slice.call(document.querySelectorAll(target));
-      } else if (target && target.nodeType === 1) {
-        elements = [target];
-      } else if (target && typeof target.length === 'number') {
-        elements = Array.prototype.slice.call(target);
-      }
-
-      elements.forEach(function(element) {
-        if (Object.prototype.hasOwnProperty.call(settings, 'display')) {
-          element.style.display = settings.display;
-        }
-
-        if (Object.prototype.hasOwnProperty.call(settings, 'y')) {
-          element.style.transform = settings.y === 0 ? 'translateY(0)' : 'translateY(' + settings.y + ')';
-        }
-      });
-
-      if (typeof settings.onComplete === 'function') {
-        settings.onComplete();
-      }
-    }
-  };
-
-  window.gsap = gsap;
-}
-
 function isTouchOrMobile() {
   return (
     'ontouchstart' in window ||
@@ -506,9 +471,6 @@ $(function(){
 function toggleCredits() {
     var x = document.getElementById("credits-list");
     var trigger = document.getElementById("credits-trigger-btn");
-  if (!x) {
-    return;
-  }
     if (x.style.display === "block") {
         x.style.display = "none";
         if (trigger) {

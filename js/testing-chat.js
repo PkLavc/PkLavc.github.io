@@ -225,59 +225,32 @@
   }
 
   function bindEvents() {
-    if (!document.getElementById("send-btn") || !document.getElementById("chat-input")) {
-      return;
+    if (els.sendBtn) {
+      els.sendBtn.addEventListener("click", sendChat);
     }
 
-    document.addEventListener("click", function (event) {
-      var target = event.target;
-      if (!(target instanceof Element)) {
-        return;
-      }
+    if (els.resetBtn) {
+      els.resetBtn.addEventListener("click", resetChat);
+    }
 
-      var sendButton = target.closest("#send-btn");
-      if (sendButton) {
-        event.preventDefault();
-        sendChat();
-        return;
-      }
+    if (els.voiceInputBtn) {
+      els.voiceInputBtn.addEventListener("click", readVoiceInput);
+    }
 
-      var resetButton = target.closest("#reset-btn");
-      if (resetButton) {
-        event.preventDefault();
-        resetChat();
-        return;
-      }
+    if (els.voiceToggle) {
+      els.voiceToggle.addEventListener("change", function () {
+        state.voiceEnabled = !!els.voiceToggle.checked;
+      });
+    }
 
-      var voiceButton = target.closest("#voice-input-btn");
-      if (voiceButton) {
-        event.preventDefault();
-        readVoiceInput();
-      }
-    });
-
-    document.addEventListener("change", function (event) {
-      var target = event.target;
-      if (!(target instanceof Element)) {
-        return;
-      }
-
-      if (target.id === "voice-toggle") {
-        state.voiceEnabled = !!target.checked;
-      }
-    });
-
-    document.addEventListener("keydown", function (event) {
-      var target = event.target;
-      if (!(target instanceof Element)) {
-        return;
-      }
-
-      if (target.id === "chat-input" && event.key === "Enter" && !event.shiftKey) {
-        event.preventDefault();
-        sendChat();
-      }
-    });
+    if (els.chatInput) {
+      els.chatInput.addEventListener("keydown", function (event) {
+        if (event.key === "Enter" && !event.shiftKey) {
+          event.preventDefault();
+          sendChat();
+        }
+      });
+    }
   }
 
   function init() {
