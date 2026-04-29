@@ -8,8 +8,6 @@
   var els = {
     apiBaseInput: document.getElementById("api-base"),
     authStatus: document.getElementById("auth-status"),
-    uploadInput: document.getElementById("pdf-upload"),
-    uploadBtn: document.getElementById("upload-btn"),
     uploadStatus: document.getElementById("upload-status"),
     chatInput: document.getElementById("chat-input"),
     sendBtn: document.getElementById("send-btn"),
@@ -52,11 +50,6 @@
     els.chatLog.appendChild(card);
     els.chatLog.scrollTop = els.chatLog.scrollHeight;
     return card;
-  }
-
-  async function uploadPdf() {
-    els.uploadStatus.textContent = "Upload is disabled in public portfolio mode.";
-    return;
   }
 
   function readVoiceInput() {
@@ -207,7 +200,6 @@
   }
 
   function bindEvents() {
-    els.uploadBtn.addEventListener("click", uploadPdf);
     els.sendBtn.addEventListener("click", sendChat);
     els.resetBtn.addEventListener("click", resetChat);
     els.voiceInputBtn.addEventListener("click", readVoiceInput);
@@ -235,6 +227,10 @@
 
     if (els.analyticsBox) {
       els.analyticsBox.textContent = "Public chat mode is active. Rate limiting protects API costs and abuse.";
+    }
+
+    if (els.uploadStatus) {
+      els.uploadStatus.textContent = "Internal portfolio context is enabled (no external document upload required).";
     }
 
     appendMessage("assistant", "Ready. Public chat mode is active.");

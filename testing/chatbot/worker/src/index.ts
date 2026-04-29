@@ -48,6 +48,15 @@ type AuthUser = {
 
 const encoder = new TextEncoder();
 const MAX_MEMORY_ITEMS = 8;
+const INTERNAL_PORTFOLIO_CONTEXT = [
+  "Name: Patrick Araujo.",
+  "Role focus: Backend Software Engineer and API Integration Engineer.",
+  "Core domains: automation systems, API integrations, ETL/data pipelines, scalable backend architecture.",
+  "Platform style: cloud-first and serverless patterns, worker orchestration, integration workflows.",
+  "Portfolio themes: monorepo backend architecture, multi-tenant SaaS, event-driven integrations, deployment patterns.",
+  "Public website scope: personal portfolio with projects, stacks, blog technical articles, and architecture-focused content.",
+  "Communication preference: concise, technical, implementation-oriented responses with practical tradeoffs.",
+];
 
 export default {
   async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
@@ -637,6 +646,7 @@ async function buildPrompt(
 
   const memoryBlock = memory.map((item) => `${item.role}: ${item.content}`).join("\n");
   const ragBlock = rag.length ? rag.join("\n---\n") : "No RAG docs found.";
+  const internalBlock = INTERNAL_PORTFOLIO_CONTEXT.join("\n");
 
   return [
     promptTemplate,
@@ -650,6 +660,9 @@ async function buildPrompt(
     "",
     "Conversation memory:",
     memoryBlock || "No previous conversation.",
+    "",
+    "Internal portfolio context:",
+    internalBlock,
     "",
     "RAG context:",
     ragBlock,
