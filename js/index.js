@@ -1,5 +1,7 @@
-if (typeof window.gsap === 'undefined') {
-  window.gsap = {
+var gsap = window.gsap;
+
+if (typeof gsap === 'undefined') {
+  gsap = {
     to: function(target, duration, props) {
       var settings = props || {};
       var elements = [];
@@ -27,6 +29,8 @@ if (typeof window.gsap === 'undefined') {
       }
     }
   };
+
+  window.gsap = gsap;
 }
 
 function isTouchOrMobile() {
@@ -502,6 +506,9 @@ $(function(){
 function toggleCredits() {
     var x = document.getElementById("credits-list");
     var trigger = document.getElementById("credits-trigger-btn");
+  if (!x) {
+    return;
+  }
     if (x.style.display === "block") {
         x.style.display = "none";
         if (trigger) {

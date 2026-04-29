@@ -42,6 +42,10 @@
   }
 
   function appendMessage(role, text) {
+    if (!els.chatLog) {
+      return null;
+    }
+
     var card = document.createElement("article");
     card.className = "chat-card chat-card-" + role;
     var who = role === "assistant" ? "Skylet" : "You";
@@ -56,6 +60,10 @@
     var Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!Recognition) {
       alert("Speech recognition is not available in this browser.");
+      return;
+    }
+
+    if (!els.chatInput) {
       return;
     }
 
@@ -126,17 +134,21 @@
 
       state.conversationId = data.conversation_id;
       saveSession();
-      assistantCard.querySelector("p").textContent = data.reply;
+      if (assistantCard) {
+        assistantCard.querySelector("p").textContent = data.reply;
+      }
       speakIfEnabled(data.reply);
     } catch (err) {
-      assistantCard.querySelector("p").textContent = "Chat failed.";
+      if (assistantCard) {
+        assistantCard.querySelector("p").textContent = "Chat failed.";
+      }
       console.error(err);
     }
   }
 
   async function sendStream(text) {
     var assistantCard = appendMessage("assistant", "");
-    var bubble = assistantCard.querySelector("p");
+    var bubble = assistantCard ? assistantCard.querySelector("p") : null;
 
     try {
       var res = await fetch(state.apiBase + "/chat/stream", {
@@ -179,8 +191,12 @@
           var payload = JSON.parse(line.slice(5).trim());
           if (payload.token) {
             finalText += payload.token;
-            bubble.textContent = finalText;
-            els.chatLog.scrollTop = els.chatLog.scrollHeight;
+            if (bubble) {
+              bubble.textContent = finalText;
+            }
+            if (els.chatLog) {
+              els.chatLog.scrollTop = els.chatLog.scrollHeight;
+            }
           }
 
           if (payload.conversation_id) {
@@ -192,7 +208,9 @@
 
       speakIfEnabled(finalText);
     } catch (err) {
-      bubble.textContent = "Streaming error.";
+      if (bubble) {
+        bubble.textContent = "Streaming error.";
+      }
       console.error(err);
     }
   }
@@ -200,11 +218,17 @@
   function resetChat() {
     state.conversationId = "";
     saveSession();
-    els.chatLog.innerHTML = "";
+    if (els.chatLog) {
+      els.chatLog.innerHTML = "";
+    }
     appendMessage("assistant", "Conversation memory reset.");
   }
 
   function bindEvents() {
+    if (!document.getElementById("send-btn") || !document.getElementById("chat-input")) {
+      return;
+    }
+
     document.addEventListener("click", function (event) {
       var target = event.target;
       if (!(target instanceof Element)) {
@@ -279,5 +303,9 @@
     appendMessage("assistant", "Ready. Public chat mode is active.");
   }
 
-  init();
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init, { once: true });
+  } else {
+    init();
+  }
 })();

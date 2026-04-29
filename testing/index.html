@@ -280,15 +280,16 @@
         </div>
     </footer>
 
-    <script>
+    <script data-cfasync="false">
         (function() {
             document.querySelectorAll('[data-current-year]').forEach(function(node) {
                 node.textContent = String(new Date().getFullYear());
             });
         }());
     </script>
-    <script src="/js/jquery.min.js" defer></script>
-    <script src="/js/index.js" defer></script>
-    <script src="/js/testing-chat.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer data-cfasync="false"></script>
+    <script src="/js/jquery.min.js" defer data-cfasync="false"></script>
+    <script src="/js/index.js" defer data-cfasync="false"></script>
+    <script src="/js/testing-chat.js" defer data-cfasync="false"></script>
 </body>
 </html>
