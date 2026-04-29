@@ -59,6 +59,7 @@
       return;
     }
 
+    els.launcher.classList.add("is-hidden");
     els.widget.classList.add("is-open");
     els.widget.setAttribute("aria-hidden", "false");
     els.launcher.setAttribute("aria-expanded", "true");
@@ -72,9 +73,20 @@
       return;
     }
 
+    els.launcher.classList.remove("is-hidden");
     els.widget.classList.remove("is-open");
     els.widget.setAttribute("aria-hidden", "true");
     els.launcher.setAttribute("aria-expanded", "false");
+  }
+
+  function autoResizeInput() {
+    if (!els.input) {
+      return;
+    }
+
+    els.input.style.height = "44px";
+    var nextHeight = Math.min(els.input.scrollHeight, 180);
+    els.input.style.height = nextHeight + "px";
   }
 
   function setStatus(text) {
@@ -162,8 +174,9 @@
     }
 
     els.input.value = "";
+    autoResizeInput();
     appendMessage("user", text);
-    setStatus("Skylet is thinking...");
+    setStatus("Skyler is thinking...");
     var thinking = appendMessage("assistant", "Thinking...");
 
     try {
@@ -189,7 +202,7 @@
       if (thinking) {
         thinking.textContent = data.reply || "No response.";
       }
-      setStatus("Skylet is ready.");
+      setStatus("Skyler is ready.");
       speakIfEnabled(data.reply || "");
     } catch (err) {
       if (thinking) {
@@ -236,11 +249,8 @@
     }
 
     if (els.input) {
-      els.input.addEventListener("keydown", function (event) {
-        if (event.key === "Enter" && !event.shiftKey) {
-          event.preventDefault();
-          sendChat();
-        }
+      els.input.addEventListener("input", function () {
+        autoResizeInput();
       });
     }
 
@@ -260,7 +270,8 @@
     loadSession();
     updateVoiceToggle();
     bindEvents();
-    appendMessage("assistant", "Hi, I am Skylet. Ask about Patrick's experience, projects, stack, or architecture work.");
+    autoResizeInput();
+    appendMessage("assistant", "Hi, I am Skyler. Ask about Patrick's experience, projects, stack, or architecture work.");
     setStatus(state.voiceEnabled ? "Voice mode enabled." : "Voice mode available.");
 
     if ("speechSynthesis" in window) {

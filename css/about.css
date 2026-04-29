@@ -239,13 +239,13 @@ body {
     position: fixed;
     right: 24px;
     bottom: 24px;
-    z-index: 1200;
+    z-index: 10050;
     display: inline-flex;
     align-items: center;
     gap: 10px;
     border: 1px solid rgba(111, 210, 255, 0.28);
     border-radius: 999px;
-    background: linear-gradient(135deg, rgba(18, 29, 45, 0.96), rgba(16, 58, 65, 0.96));
+    background: linear-gradient(135deg, rgba(18, 29, 45, 0.96), rgba(20, 40, 74, 0.96));
     color: #f3fbff;
     padding: 14px 18px;
     box-shadow: 0 18px 40px rgba(0, 0, 0, 0.28);
@@ -255,6 +255,10 @@ body {
 
 .about-chat-launcher:hover {
     transform: translateY(-2px);
+}
+
+.about-chat-launcher.is-hidden {
+    display: none;
 }
 
 .about-chat-launcher-mark {
@@ -273,7 +277,7 @@ body {
     position: fixed;
     right: 24px;
     bottom: 92px;
-    z-index: 1200;
+    z-index: 10050;
     width: min(390px, calc(100vw - 24px));
     height: min(620px, calc(100vh - 120px));
     display: none;
@@ -363,9 +367,9 @@ body {
 }
 
 .about-chat-message.assistant {
-    background: rgba(27, 48, 37, 0.62);
-    border: 1px solid rgba(144, 245, 194, 0.16);
-    color: #ebf9f1;
+    background: rgba(33, 53, 84, 0.62);
+    border: 1px solid rgba(140, 188, 255, 0.2);
+    color: #edf4ff;
 }
 
 .about-chat-status {
@@ -378,13 +382,18 @@ body {
     padding: 14px 16px 16px;
     border-top: 1px solid rgba(255, 255, 255, 0.08);
     background: rgba(255, 255, 255, 0.02);
+    display: flex;
+    align-items: flex-end;
+    gap: 10px;
 }
 
 .about-chat-input {
-    width: 100%;
-    min-height: 88px;
+    flex: 1;
+    min-height: 44px;
+    height: 44px;
     max-height: 180px;
-    resize: vertical;
+    resize: none;
+    overflow-y: auto;
     border: 1px solid rgba(181, 219, 255, 0.16);
     border-radius: 14px;
     background: rgba(4, 10, 16, 0.9);
@@ -393,27 +402,15 @@ body {
     font: inherit;
 }
 
-.about-chat-form-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    margin-top: 12px;
-}
-
-.about-chat-form-hint {
-    font-size: 0.76rem;
-    color: rgba(208, 227, 245, 0.62);
-}
-
 .about-chat-send {
     border: 0;
     border-radius: 999px;
-    background: linear-gradient(135deg, #75dcff, #79f4cb);
+    background: linear-gradient(135deg, #75dcff, #8aabff);
     color: #04121c;
     font: inherit;
     font-weight: 700;
-    padding: 10px 16px;
+    padding: 11px 16px;
+    white-space: nowrap;
     cursor: pointer;
 }
 

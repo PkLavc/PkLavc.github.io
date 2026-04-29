@@ -53,8 +53,8 @@ const SITE_RAG_CACHE_KEY = "site_rag_cache:v1";
 const SITE_RAG_META_KEY = "site_rag_cache_meta:v1";
 const SITE_RAG_CACHE_TTL_SECONDS = 3600;
 const SITE_RAG_SOURCE_PATHS = ["/", "/about/", "/projects/", "/blog/"];
-const AGENT_NAME = "Skylet";
-const AGENT_PROFILE = "Skylet is a female AI assistant.";
+const AGENT_NAME = "Skyler";
+const AGENT_PROFILE = "Skyler is a female AI assistant.";
 const INTERNAL_PORTFOLIO_CONTEXT = [
   "Name: Patrick Araujo.",
   "Role focus: Backend Software Engineer and API Integration Engineer.",
@@ -666,7 +666,7 @@ async function buildPrompt(
     .first<{ version: string; prompt_template: string }>();
 
   const promptTemplate = activePrompt?.prompt_template ||
-    "You are Skylet. Provide concise technical answers based on portfolio RAG context.";
+    "You are Skyler. Provide concise technical answers based on portfolio RAG context.";
 
   const memoryBlock = memory.map((item) => `${item.role}: ${item.content}`).join("\n");
   const ragBlock = rag.length ? rag.join("\n---\n") : "No RAG docs found.";
