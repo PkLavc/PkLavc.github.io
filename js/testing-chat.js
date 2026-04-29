@@ -85,17 +85,22 @@
   }
 
   async function sendChat() {
-    state.apiBase = (els.apiBaseInput.value || "").trim().replace(/\/$/, "");
+    var apiBaseNode = document.getElementById("api-base");
+    state.apiBase = ((apiBaseNode && apiBaseNode.value) || "").trim().replace(/\/$/, "");
 
-    var text = (els.chatInput.value || "").trim();
+    var chatInputNode = document.getElementById("chat-input");
+    var text = ((chatInputNode && chatInputNode.value) || "").trim();
     if (!text) {
       return;
     }
 
-    els.chatInput.value = "";
+    if (chatInputNode) {
+      chatInputNode.value = "";
+    }
     appendMessage("user", text);
 
-    if (els.streamToggle.checked) {
+    var streamNode = document.getElementById("stream-toggle");
+    if (streamNode && streamNode.checked) {
       await sendStream(text);
       return;
     }
@@ -200,15 +205,51 @@
   }
 
   function bindEvents() {
-    els.sendBtn.addEventListener("click", sendChat);
-    els.resetBtn.addEventListener("click", resetChat);
-    els.voiceInputBtn.addEventListener("click", readVoiceInput);
-    els.voiceToggle.addEventListener("change", function () {
-      state.voiceEnabled = !!els.voiceToggle.checked;
+    document.addEventListener("click", function (event) {
+      var target = event.target;
+      if (!(target instanceof Element)) {
+        return;
+      }
+
+      var sendButton = target.closest("#send-btn");
+      if (sendButton) {
+        event.preventDefault();
+        sendChat();
+        return;
+      }
+
+      var resetButton = target.closest("#reset-btn");
+      if (resetButton) {
+        event.preventDefault();
+        resetChat();
+        return;
+      }
+
+      var voiceButton = target.closest("#voice-input-btn");
+      if (voiceButton) {
+        event.preventDefault();
+        readVoiceInput();
+      }
     });
 
-    els.chatInput.addEventListener("keydown", function (event) {
-      if (event.key === "Enter" && !event.shiftKey) {
+    document.addEventListener("change", function (event) {
+      var target = event.target;
+      if (!(target instanceof Element)) {
+        return;
+      }
+
+      if (target.id === "voice-toggle") {
+        state.voiceEnabled = !!target.checked;
+      }
+    });
+
+    document.addEventListener("keydown", function (event) {
+      var target = event.target;
+      if (!(target instanceof Element)) {
+        return;
+      }
+
+      if (target.id === "chat-input" && event.key === "Enter" && !event.shiftKey) {
         event.preventDefault();
         sendChat();
       }
@@ -217,7 +258,9 @@
 
   function init() {
     loadSession();
-    els.apiBaseInput.value = state.apiBase;
+    if (els.apiBaseInput) {
+      els.apiBaseInput.value = state.apiBase;
+    }
     bindEvents();
 
     if (els.authStatus) {
