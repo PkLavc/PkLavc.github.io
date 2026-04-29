@@ -1,7 +1,7 @@
 export interface Env {
   DB: D1Database;
-  SESSION_KV: KVNamespace;
-  RATE_KV: KVNamespace;
+  SESSIONS: KVNamespace;
+  CACHE: KVNamespace;
   UPLOADS?: R2Bucket;
   APP_NAME: string;
   ALLOWED_ORIGINS: string;
@@ -63,8 +63,8 @@ export default {
     // Guard: fail fast with a clear 503 if Cloudflare KV bindings are misconfigured.
     // This can happen when wrangler.toml binding names don't match the Env interface.
     const bindings = env as unknown as Record<string, unknown>;
-    if (!bindings["RATE_KV"] || !bindings["SESSION_KV"]) {
-      console.log(JSON.stringify({ level: "error", message: "kv_bindings_missing", rate_kv: !!bindings["RATE_KV"], session_kv: !!bindings["SESSION_KV"], trace_id: traceId }));
+    if (!bindings["CACHE"] || !bindings["SESSIONS"]) {
+      console.log(JSON.stringify({ level: "error", message: "kv_bindings_missing", cache: !!bindings["CACHE"], sessions: !!bindings["SESSIONS"], trace_id: traceId }));
       return withCors(json({ error: "service_unavailable", reason: "kv_not_bound", trace_id: traceId }, 503), env, origin);
     }
 
@@ -103,7 +103,7 @@ export default {
 
         await logEvent(env, user.id, "login", { username: user.username, trace_id: traceId });
         try {
-          await env.SESSION_KV.put(`session:${token}`, JSON.stringify({ uid: user.id, role: user.role }), {
+          await env.SESSIONS.put(`session:${token}`, JSON.stringify({ uid: user.id, role: user.role }), {
             expirationTtl: Number(env.JWT_EXP_HOURS || "24") * 3600,
           });
         } catch {
@@ -294,7 +294,7 @@ async function handleChat(payload: ChatPayload, user: AuthUser, env: Env, traceI
 
   const task = payload.task || "chat";
   const cacheKey = await cacheHash(`u:${user.id}|task:${task}|msg:${sanitized}`);
-  const cached = await env.SESSION_KV.get(`response:${cacheKey}`);
+  const cached = await env.SESSIONS.get(`response:${cacheKey}`);
   if (cached) {
     const parsed = JSON.parse(cached) as Record<string, unknown>;
     return {
@@ -368,7 +368,7 @@ async function handleChat(payload: ChatPayload, user: AuthUser, env: Env, traceI
     trace_id: traceId,
   };
 
-  await env.SESSION_KV.put(`response:${cacheKey}`, JSON.stringify(responsePayload), {
+  await env.SESSIONS.put(`response:${cacheKey}`, JSON.stringify(responsePayload), {
     expirationTtl: Number(env.RESPONSE_CACHE_TTL || "180"),
   });
 
@@ -523,7 +523,7 @@ async function requireAuth(request: Request, env: Env): Promise<{ ok: true; user
     return { ok: false, error: "invalid_token" };
   }
 
-  const inSession = await env.SESSION_KV.get(`session:${token}`);
+  const inSession = await env.SESSIONS.get(`session:${token}`);
   if (!inSession) {
     return { ok: false, error: "session_expired" };
   }
@@ -763,7 +763,7 @@ async function callOpenRouter(prompt: string, env: Env, stream: boolean, model: 
 async function getEmbedding(text: string, env: Env): Promise<number[]> {
   const cleaned = sanitizeInput(text).slice(0, 2500);
   const key = await cacheHash(`emb:${cleaned}`);
-  const cached = await env.SESSION_KV.get(`embedding:${key}`);
+  const cached = await env.SESSIONS.get(`embedding:${key}`);
   if (cached) {
     return JSON.parse(cached) as number[];
   }
@@ -785,7 +785,7 @@ async function getEmbedding(text: string, env: Env): Promise<number[]> {
       const data = await response.json<any>();
       const vector = data?.data?.[0]?.embedding;
       if (Array.isArray(vector) && vector.length > 0) {
-        await env.SESSION_KV.put(`embedding:${key}`, JSON.stringify(vector), {
+        await env.SESSIONS.put(`embedding:${key}`, JSON.stringify(vector), {
           expirationTtl: Number(env.EMBEDDING_CACHE_TTL || "86400"),
         });
         return vector;
@@ -794,7 +794,7 @@ async function getEmbedding(text: string, env: Env): Promise<number[]> {
   }
 
   const fallback = deterministicEmbedding(cleaned, 128);
-  await env.SESSION_KV.put(`embedding:${key}`, JSON.stringify(fallback), {
+  await env.SESSIONS.put(`embedding:${key}`, JSON.stringify(fallback), {
     expirationTtl: Number(env.EMBEDDING_CACHE_TTL || "86400"),
   });
   return fallback;
@@ -928,13 +928,13 @@ async function enforceRateLimit(request: Request, env: Env) {
   const key = `rl:${ip}:${identity}:${minute}`;
   const limit = Number(env.RATE_LIMIT_PER_MINUTE || "30");
 
-  const currentRaw = await env.RATE_KV.get(key);
+  const currentRaw = await env.CACHE.get(key);
   const current = Number(currentRaw || "0");
   if (current >= limit) {
     return { ok: false, retryAfter: 60 };
   }
 
-  await env.RATE_KV.put(key, String(current + 1), { expirationTtl: 70 });
+  await env.CACHE.put(key, String(current + 1), { expirationTtl: 70 });
   return { ok: true, retryAfter: 0 };
 }
 
