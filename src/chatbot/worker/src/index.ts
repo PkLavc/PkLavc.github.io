@@ -881,7 +881,7 @@ async function getCachedSiteRagContext(env: Env, traceId: string): Promise<strin
   try {
     const cached = await env.CACHE.get(SITE_RAG_CACHE_KEY);
     if (cached) {
-      return cached;
+      return [cached, INTERNAL_PORTFOLIO_CONTEXT.join("\n")].join("\n\n---\n\n");
     }
   } catch (error) {
     const message = error instanceof Error ? error.message : "site_rag_cache_read_error";
@@ -894,7 +894,7 @@ async function getCachedSiteRagContext(env: Env, traceId: string): Promise<strin
   try {
     const refreshed = await env.CACHE.get(SITE_RAG_CACHE_KEY);
     if (refreshed) {
-      return refreshed;
+      return [refreshed, INTERNAL_PORTFOLIO_CONTEXT.join("\n")].join("\n\n---\n\n");
     }
   } catch (error) {
     const message = error instanceof Error ? error.message : "site_rag_cache_post_refresh_read_error";
