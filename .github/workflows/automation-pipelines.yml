@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: testing/chatbot/worker
+        working-directory: src/chatbot/worker
 
     steps:
       - name: Checkout
@@ -46,13 +46,13 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: chatbot-automation-artifacts
-          path: testing/chatbot/artifacts/
+          path: src/chatbot/artifacts/
 
   health-check:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: testing/chatbot/worker
+        working-directory: src/chatbot/worker
 
     steps:
       - name: Checkout

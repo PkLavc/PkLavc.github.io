@@ -3,12 +3,12 @@ name: Chatbot CI
 on:
   pull_request:
     paths:
-      - testing/chatbot/**
+      - src/chatbot/**
       - .github/workflows/chatbot-ci.yml
   push:
     branches: [main]
     paths:
-      - testing/chatbot/**
+      - src/chatbot/**
       - .github/workflows/chatbot-ci.yml
 
 jobs:
@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: testing/chatbot/worker
+        working-directory: src/chatbot/worker
 
     steps:
       - name: Checkout
@@ -27,7 +27,7 @@ jobs:
         with:
           node-version: 20
           cache: npm
-          cache-dependency-path: testing/chatbot/worker/package.json
+          cache-dependency-path: src/chatbot/worker/package.json
 
       - name: Install
         run: npm install
