@@ -88,8 +88,35 @@
 
     var utter = new SpeechSynthesisUtterance(text);
     utter.lang = navigator.language || "en-US";
+    utter.voice = pickPreferredFemaleVoice(utter.lang);
+    utter.pitch = 1.12;
+    utter.rate = 0.98;
     window.speechSynthesis.cancel();
     window.speechSynthesis.speak(utter);
+  }
+
+  function pickPreferredFemaleVoice(language) {
+    if (!("speechSynthesis" in window)) {
+      return null;
+    }
+
+    var voices = window.speechSynthesis.getVoices() || [];
+    if (!voices.length) {
+      return null;
+    }
+
+    var femaleHints = /female|woman|samantha|victoria|ava|allison|jenny|aria|sara|sonia|karen|moira|tessa|zira|zira desktop|hazel|susan/i;
+    var preferred = voices.find(function (voice) {
+      return femaleHints.test(voice.name) && (!language || voice.lang.indexOf(language.slice(0, 2)) === 0);
+    });
+
+    if (preferred) {
+      return preferred;
+    }
+
+    return voices.find(function (voice) {
+      return femaleHints.test(voice.name);
+    }) || null;
   }
 
   async function sendChat() {

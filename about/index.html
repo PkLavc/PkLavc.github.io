@@ -589,6 +589,31 @@
             </div>
         </div>
         </main>
+        <button id="about-chat-launcher" class="about-chat-launcher" type="button" aria-controls="about-chat-widget" aria-expanded="false">
+            <span class="about-chat-launcher-mark">S</span>
+            <span>Chat with Skylet</span>
+        </button>
+        <section id="about-chat-widget" class="about-chat-widget" aria-label="Skylet chat widget" aria-hidden="true">
+            <header class="about-chat-header">
+                <div class="about-chat-title">
+                    <strong>Skylet</strong>
+                    <span>Portfolio assistant</span>
+                </div>
+                <div class="about-chat-actions">
+                    <button id="about-chat-voice-toggle" class="about-chat-action-btn" type="button" aria-pressed="false">Voice off</button>
+                    <button id="about-chat-close" class="about-chat-action-btn" type="button" aria-label="Close chat">Close</button>
+                </div>
+            </header>
+            <div id="about-chat-log" class="about-chat-log" aria-live="polite"></div>
+            <div id="about-chat-status" class="about-chat-status">Skylet can answer based on portfolio and site context.</div>
+            <form id="about-chat-form" class="about-chat-form">
+                <textarea id="about-chat-input" class="about-chat-input" placeholder="Ask about projects, experience, architecture, or backend work..."></textarea>
+                <div class="about-chat-form-row">
+                    <span class="about-chat-form-hint">Enter sends. Shift+Enter makes a new line.</span>
+                    <button id="about-chat-send" class="about-chat-send" type="submit">Send</button>
+                </div>
+            </form>
+        </section>
         <script>
             (function() {
                 function isTouchOrMobile() {
@@ -813,6 +838,7 @@
 <div class="visually-hidden">
     <p>Backend Software Engineer focused on automation, API integrations, backend systems, Python, Node.js, SQL, ETL pipelines, AWS, and scalable operational platforms.</p>
 </div>
+    <script src="/js/about-chat-widget.js" defer></script>
     
     </body>
     </html>
