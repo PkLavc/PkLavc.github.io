@@ -8,12 +8,19 @@ const chatbotRoot = path.resolve(__dirname, "..");
 const architecture = path.resolve(chatbotRoot, "docs", "architecture-overview.md");
 const out = path.resolve(chatbotRoot, "artifacts", "architecture.generated.md");
 
+const source = fs.existsSync(architecture)
+  ? fs.readFileSync(architecture, "utf8")
+  : [
+    "# Architecture Overview",
+    "",
+    "Source file missing: docs/architecture-overview.md.",
+    "Create this file to include a full architecture summary in generated artifacts.",
+  ].join("\n");
+
 if (!fs.existsSync(architecture)) {
-  console.error("architecture-overview.md not found");
-  process.exit(1);
+  console.warn("architecture-overview.md not found, using fallback content");
 }
 
-const source = fs.readFileSync(architecture, "utf8");
 const generated = [
   "# Generated Architecture Snapshot",
   "",

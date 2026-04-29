@@ -13,7 +13,7 @@ export const MANUAL_RAG_CONTEXT = [
   "Measured impact: 8K-12K daily transactions, ~3 hours/day saved per analyst, ~40% faster processing, ~35-40% faster APIs.",
   "Companies: Loja do Sapo, iCaiu, WR Auto Pecas.",
   "Current public credential: Member of GitHub Developer Program.",
-  "Certificates: no explicit full certification list publicly detailed in portfolio files.",
+  "Education and credentials context is available on About page content and structured SEO metadata.",
 ];
 
 export const MANUAL_RAG_SECTIONS: Array<{ key: string; keywords: string[]; content: string[] }> = [
@@ -63,10 +63,11 @@ export const MANUAL_RAG_SECTIONS: Array<{ key: string; keywords: string[]; conte
   },
   {
     key: "certificates",
-    keywords: ["certificate", "certificates", "certificado", "certificados", "credential", "credentials"],
+    keywords: ["certificate", "certificates", "certificado", "certificados", "credential", "credentials", "course", "courses", "curso", "cursos", "education", "educacao", "educação", "formacao", "formação"],
     content: [
       "Publicly highlighted credential: Member of GitHub Developer Program.",
-      "A full explicit certifications list is not currently detailed in public portfolio files.",
+      "Education and impact context is available on the About page, including structured SEO data used by the assistant context layer.",
+      "Reference page: https://pklavc.com/about/",
     ],
   },
 ];
