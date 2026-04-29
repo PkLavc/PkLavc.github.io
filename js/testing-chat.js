@@ -1,18 +1,12 @@
 (function () {
   var state = {
     apiBase: "https://api.pklavc.com",
-    token: "",
-    role: "",
-    username: "",
     conversationId: "",
     voiceEnabled: false,
   };
 
   var els = {
     apiBaseInput: document.getElementById("api-base"),
-    authUser: document.getElementById("auth-user"),
-    authPass: document.getElementById("auth-pass"),
-    loginBtn: document.getElementById("login-btn"),
     authStatus: document.getElementById("auth-status"),
     uploadInput: document.getElementById("pdf-upload"),
     uploadBtn: document.getElementById("upload-btn"),
@@ -24,16 +18,12 @@
     voiceInputBtn: document.getElementById("voice-input-btn"),
     resetBtn: document.getElementById("reset-btn"),
     chatLog: document.getElementById("chat-log"),
-    adminBtn: document.getElementById("admin-btn"),
     analyticsBox: document.getElementById("analytics-box"),
   };
 
   function saveSession() {
     localStorage.setItem("testingChatSession", JSON.stringify({
       apiBase: state.apiBase,
-      token: state.token,
-      role: state.role,
-      username: state.username,
       conversationId: state.conversationId,
     }));
   }
@@ -47,18 +37,10 @@
     try {
       var parsed = JSON.parse(raw);
       state.apiBase = parsed.apiBase || state.apiBase;
-      state.token = parsed.token || "";
-      state.role = parsed.role || "";
-      state.username = parsed.username || "";
       state.conversationId = parsed.conversationId || "";
     } catch (err) {
       console.warn("Invalid session cache", err);
     }
-  }
-
-  function setAuthStatus(text, ok) {
-    els.authStatus.textContent = text;
-    els.authStatus.style.color = ok ? "#7df5a6" : "#ffc6b3";
   }
 
   function appendMessage(role, text) {
@@ -72,79 +54,9 @@
     return card;
   }
 
-  async function login() {
-    state.apiBase = (els.apiBaseInput.value || "").trim().replace(/\/$/, "");
-
-    var payload = {
-      username: (els.authUser.value || "").trim(),
-      password: els.authPass.value || "",
-    };
-
-    if (!payload.username || !payload.password) {
-      setAuthStatus("Username and password are required.", false);
-      return;
-    }
-
-    try {
-      var res = await fetch(state.apiBase + "/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-
-      if (!res.ok) {
-        throw new Error("Login failed");
-      }
-
-      var data = await res.json();
-      state.token = data.token;
-      state.role = data.role;
-      state.username = data.username;
-      saveSession();
-      setAuthStatus("Logged as " + state.username + " (" + state.role + ")", true);
-      els.adminBtn.style.display = state.role === "admin" ? "inline-flex" : "none";
-    } catch (err) {
-      setAuthStatus("Authentication error.", false);
-      console.error(err);
-    }
-  }
-
   async function uploadPdf() {
-    if (!state.token) {
-      els.uploadStatus.textContent = "Login first.";
-      return;
-    }
-
-    if (!els.uploadInput.files.length) {
-      els.uploadStatus.textContent = "Select a PDF file.";
-      return;
-    }
-
-    var file = els.uploadInput.files[0];
-    var formData = new FormData();
-    formData.append("file", file);
-
-    els.uploadStatus.textContent = "Uploading...";
-
-    try {
-      var res = await fetch(state.apiBase + "/upload/pdf", {
-        method: "POST",
-        headers: {
-          Authorization: "Bearer " + state.token,
-        },
-        body: formData,
-      });
-
-      var data = await res.json();
-      if (!res.ok) {
-        throw new Error(data.detail || "Upload failed");
-      }
-
-      els.uploadStatus.textContent = "Indexed " + data.chunks + " chunks from " + data.file_name;
-    } catch (err) {
-      els.uploadStatus.textContent = "Upload failed.";
-      console.error(err);
-    }
+    els.uploadStatus.textContent = "Upload is disabled in public portfolio mode.";
+    return;
   }
 
   function readVoiceInput() {
@@ -180,10 +92,7 @@
   }
 
   async function sendChat() {
-    if (!state.token) {
-      appendMessage("assistant", "Please authenticate first.");
-      return;
-    }
+    state.apiBase = (els.apiBaseInput.value || "").trim().replace(/\/$/, "");
 
     var text = (els.chatInput.value || "").trim();
     if (!text) {
@@ -204,7 +113,6 @@
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: "Bearer " + state.token,
         },
         body: JSON.stringify({
           message: text,
@@ -237,7 +145,6 @@
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: "Bearer " + state.token,
         },
         body: JSON.stringify({
           message: text,
@@ -292,46 +199,6 @@
     }
   }
 
-  async function loadAnalytics() {
-    if (!state.token || state.role !== "admin") {
-      return;
-    }
-
-    try {
-      var res = await fetch(state.apiBase + "/admin/analytics", {
-        headers: {
-          Authorization: "Bearer " + state.token,
-        },
-      });
-      var data = await res.json();
-      if (!res.ok) {
-        throw new Error(data.detail || "Analytics error");
-      }
-
-      var html = [
-        "<div class='admin-grid'>",
-        "<div><strong>Users</strong><span>" + data.users + "</span></div>",
-        "<div><strong>Conversations</strong><span>" + data.conversations + "</span></div>",
-        "<div><strong>Messages</strong><span>" + data.messages + "</span></div>",
-        "<div><strong>Documents</strong><span>" + data.documents + "</span></div>",
-        "</div>",
-      ];
-
-      if (data.events_last_7_days && data.events_last_7_days.length) {
-        html.push("<ul class='event-list'>");
-        data.events_last_7_days.forEach(function (item) {
-          html.push("<li><b>" + item.event + "</b>: " + item.total + "</li>");
-        });
-        html.push("</ul>");
-      }
-
-      els.analyticsBox.innerHTML = html.join("");
-    } catch (err) {
-      els.analyticsBox.textContent = "Could not load analytics.";
-      console.error(err);
-    }
-  }
-
   function resetChat() {
     state.conversationId = "";
     saveSession();
@@ -340,7 +207,6 @@
   }
 
   function bindEvents() {
-    els.loginBtn.addEventListener("click", login);
     els.uploadBtn.addEventListener("click", uploadPdf);
     els.sendBtn.addEventListener("click", sendChat);
     els.resetBtn.addEventListener("click", resetChat);
@@ -348,7 +214,6 @@
     els.voiceToggle.addEventListener("change", function () {
       state.voiceEnabled = !!els.voiceToggle.checked;
     });
-    els.adminBtn.addEventListener("click", loadAnalytics);
 
     els.chatInput.addEventListener("keydown", function (event) {
       if (event.key === "Enter" && !event.shiftKey) {
@@ -363,12 +228,16 @@
     els.apiBaseInput.value = state.apiBase;
     bindEvents();
 
-    if (state.token && state.username) {
-      setAuthStatus("Session restored for " + state.username + " (" + state.role + ")", true);
-      els.adminBtn.style.display = state.role === "admin" ? "inline-flex" : "none";
+    if (els.authStatus) {
+      els.authStatus.textContent = "Public mode enabled. Authentication is not required for chat.";
+      els.authStatus.style.color = "#7df5a6";
     }
 
-    appendMessage("assistant", "Ready. Authenticate, upload PDFs, and start chatting with RAG + memory.");
+    if (els.analyticsBox) {
+      els.analyticsBox.textContent = "Public chat mode is active. Rate limiting protects API costs and abuse.";
+    }
+
+    appendMessage("assistant", "Ready. Public chat mode is active.");
   }
 
   init();

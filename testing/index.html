@@ -231,30 +231,17 @@
                         <input id="api-base" type="text" value="https://api.pklavc.com" autocomplete="off">
                     </div>
 
-                    <h3>Authentication</h3>
-                    <div class="field">
-                        <label for="auth-user">Username</label>
-                        <input id="auth-user" type="text" autocomplete="username">
-                    </div>
-                    <div class="field">
-                        <label for="auth-pass">Password</label>
-                        <input id="auth-pass" type="password" autocomplete="current-password">
-                    </div>
-                    <div class="button-row">
-                        <button id="login-btn" type="button">Login</button>
-                        <button id="admin-btn" type="button" style="display:none;">Load Admin Analytics</button>
-                    </div>
-                    <p id="auth-status" class="status-text"></p>
+                    <p id="auth-status" class="status-text">Public mode enabled. Authentication is not required for chat.</p>
 
                     <h3>RAG Documents</h3>
                     <div class="field">
                         <label for="pdf-upload">Upload PDF</label>
-                        <input id="pdf-upload" type="file" accept="application/pdf">
+                        <input id="pdf-upload" type="file" accept="application/pdf" disabled>
                     </div>
                     <div class="button-row">
-                        <button id="upload-btn" type="button">Index PDF</button>
+                        <button id="upload-btn" type="button" disabled>Index PDF</button>
                     </div>
-                    <p id="upload-status" class="status-text"></p>
+                    <p id="upload-status" class="status-text">Upload is disabled in public portfolio mode.</p>
 
                     <h3>Realtime Modes</h3>
                     <div class="button-row">
@@ -277,8 +264,8 @@
                         <button id="reset-btn" type="button">Reset Memory</button>
                     </div>
 
-                    <div id="analytics-box" class="admin-box" aria-label="Admin analytics panel">
-                        Admin panel ready. Click "Load Admin Analytics" after admin login.
+                    <div id="analytics-box" class="admin-box" aria-label="Public chat info panel">
+                        Public chat mode is active. Rate limiting protects API costs and abuse.
                     </div>
                 </section>
             </section>

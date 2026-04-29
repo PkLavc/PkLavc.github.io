@@ -173,18 +173,14 @@ export default {
           return withCors(json({ error: "rate_limited" }, 429), env, origin);
         }
 
-        const user = await requireAuth(request, env);
-        if (!user.ok) {
-          return withCors(json({ error: user.error }, 401), env, origin);
-        }
-
         let payload: ChatPayload;
         try {
           payload = await request.json<ChatPayload>();
         } catch {
           return withCors(json({ error: "invalid_json" }, 400), env, origin);
         }
-        const response = await handleChat(payload, user.user, env, traceId, false, traceparent);
+        const user = await resolveChatUser(request, env);
+        const response = await handleChat(payload, user, env, traceId, false, traceparent);
         ctx.waitUntil(logSpan(env, {
           trace_id: traceId,
           span: "chat_http",
@@ -196,9 +192,9 @@ export default {
       }
 
       if (url.pathname === "/chat/stream" && request.method === "POST") {
-        const user = await requireAuth(request, env);
-        if (!user.ok) {
-          return withCors(json({ error: user.error }, 401), env, origin);
+        const rate = await rateLimitChat(request, env, traceId);
+        if (!rate.ok) {
+          return withCors(json({ error: "rate_limited" }, 429), env, origin);
         }
 
         let payload: ChatPayload;
@@ -207,7 +203,8 @@ export default {
         } catch {
           return withCors(json({ error: "invalid_json" }, 400), env, origin);
         }
-        const streamResponse = await handleChatStream(payload, user.user, env, traceId, traceparent);
+        const user = await resolveChatUser(request, env);
+        const streamResponse = await handleChatStream(payload, user, env, traceId, traceparent);
         ctx.waitUntil(logSpan(env, {
           trace_id: traceId,
           span: "chat_stream_http",
@@ -535,6 +532,29 @@ async function requireAuth(request: Request, env: Env): Promise<{ ok: true; user
   }
 
   return { ok: true, user };
+}
+
+async function resolveChatUser(request: Request, env: Env): Promise<AuthUser> {
+  const auth = request.headers.get("Authorization") || "";
+  if (auth.startsWith("Bearer ")) {
+    const authenticated = await requireAuth(request, env);
+    if (authenticated.ok) {
+      return authenticated.user;
+    }
+  }
+
+  const ip = request.headers.get("CF-Connecting-IP") || "unknown";
+  const ipHash = (await cacheHash(ip)).slice(0, 16);
+  const guestUsername = `guest-${ipHash}`;
+  const guestPasswordHash = await sha256(`guest:${ipHash}`);
+
+  await ensureUser(env, guestUsername, guestPasswordHash, "user");
+  const guestUser = await findUserByUsername(env, guestUsername);
+  if (guestUser) {
+    return guestUser;
+  }
+
+  throw new Error("guest_user_unavailable");
 }
 
 async function ensureUser(env: Env, username: string, passwordHash: string, role: string) {
