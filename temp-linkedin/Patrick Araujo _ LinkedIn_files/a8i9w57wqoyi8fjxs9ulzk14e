@@ -1,2 +1,0 @@
-
-//# sourceMappingURL=register-metadata.map
