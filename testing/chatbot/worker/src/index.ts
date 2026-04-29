@@ -60,6 +60,14 @@ export default {
       return new Response(null, { headers: corsHeaders(env, origin) });
     }
 
+    // Guard: fail fast with a clear 503 if Cloudflare KV bindings are misconfigured.
+    // This can happen when wrangler.toml binding names don't match the Env interface.
+    const bindings = env as unknown as Record<string, unknown>;
+    if (!bindings["RATE_KV"] || !bindings["SESSION_KV"]) {
+      console.log(JSON.stringify({ level: "error", message: "kv_bindings_missing", rate_kv: !!bindings["RATE_KV"], session_kv: !!bindings["SESSION_KV"], trace_id: traceId }));
+      return withCors(json({ error: "service_unavailable", reason: "kv_not_bound", trace_id: traceId }, 503), env, origin);
+    }
+
     try {
       const spanStart = Date.now();
       const rate = await enforceRateLimit(request, env);
@@ -72,7 +80,12 @@ export default {
       }
 
       if (url.pathname === "/auth/login" && request.method === "POST") {
-        const body = await request.json<{ username: string; password: string }>();
+        let body: { username: string; password: string } = { username: "", password: "" };
+        try {
+          body = await request.json();
+        } catch {
+          return withCors(json({ error: "invalid_json" }, 400), env, origin);
+        }
         const user = await loginUser(env, body.username, body.password);
         if (!user) {
           return withCors(json({ error: "invalid_credentials" }, 401), env, origin);
@@ -89,9 +102,13 @@ export default {
         );
 
         await logEvent(env, user.id, "login", { username: user.username, trace_id: traceId });
-        await env.SESSION_KV.put(`session:${token}`, JSON.stringify({ uid: user.id, role: user.role }), {
-          expirationTtl: Number(env.JWT_EXP_HOURS || "24") * 3600,
-        });
+        try {
+          await env.SESSION_KV.put(`session:${token}`, JSON.stringify({ uid: user.id, role: user.role }), {
+            expirationTtl: Number(env.JWT_EXP_HOURS || "24") * 3600,
+          });
+        } catch {
+          console.log(JSON.stringify({ level: "warn", message: "session_kv_put_failed", trace_id: traceId }));
+        }
         return withCors(json({ token, username: user.username, role: user.role }), env, origin);
       }
 
@@ -160,7 +177,12 @@ export default {
           return withCors(json({ error: user.error }, 401), env, origin);
         }
 
-        const payload = await request.json<ChatPayload>();
+        let payload: ChatPayload;
+        try {
+          payload = await request.json<ChatPayload>();
+        } catch {
+          return withCors(json({ error: "invalid_json" }, 400), env, origin);
+        }
         const response = await handleChat(payload, user.user, env, traceId, false, traceparent);
         ctx.waitUntil(logSpan(env, {
           trace_id: traceId,
@@ -178,7 +200,12 @@ export default {
           return withCors(json({ error: user.error }, 401), env, origin);
         }
 
-        const payload = await request.json<ChatPayload>();
+        let payload: ChatPayload;
+        try {
+          payload = await request.json<ChatPayload>();
+        } catch {
+          return withCors(json({ error: "invalid_json" }, 400), env, origin);
+        }
         const streamResponse = await handleChatStream(payload, user.user, env, traceId, traceparent);
         ctx.waitUntil(logSpan(env, {
           trace_id: traceId,
@@ -249,8 +276,9 @@ export default {
 
       return withCors(json({ error: "not_found" }, 404), env, origin);
     } catch (error) {
-      const message = error instanceof Error ? error.message : "unexpected_error";
-      console.log(JSON.stringify({ level: "error", message, trace_id: traceId }));
+      const message = error instanceof Error ? error.message : String(error ?? "unexpected_error");
+      const stack = error instanceof Error ? (error.stack || "").slice(0, 400) : "";
+      console.log(JSON.stringify({ level: "error", message, stack, trace_id: traceId }));
       return withCors(json({ error: "internal_error", trace_id: traceId }, 500), env, origin);
     }
   },
@@ -911,11 +939,15 @@ async function enforceRateLimit(request: Request, env: Env) {
 }
 
 async function logEvent(env: Env, userId: number | null, eventType: string, payload: Record<string, unknown>) {
-  await env.DB.prepare(
-    "INSERT INTO analytics_events (user_id, event_type, event_payload, created_at) VALUES (?, ?, ?, ?)",
-  )
-    .bind(userId, eventType, JSON.stringify(payload), new Date().toISOString())
-    .run();
+  try {
+    await env.DB.prepare(
+      "INSERT INTO analytics_events (user_id, event_type, event_payload, created_at) VALUES (?, ?, ?, ?)",
+    )
+      .bind(userId, eventType, JSON.stringify(payload), new Date().toISOString())
+      .run();
+  } catch {
+    // analytics failures must never crash the request path
+  }
 }
 
 async function scalar(env: Env, sql: string): Promise<number> {
@@ -1076,7 +1108,7 @@ async function verifyJwt(token: string, secret: string): Promise<Record<string, 
     ["verify"],
   );
 
-  const ok = await crypto.subtle.verify("HMAC", key, fromBase64Url(sigB64), encoder.encode(data));
+  const ok = await crypto.subtle.verify("HMAC", key, fromBase64Url(sigB64).buffer as ArrayBuffer, encoder.encode(data).buffer as ArrayBuffer);
   if (!ok) {
     return null;
   }
