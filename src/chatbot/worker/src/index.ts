@@ -1,3 +1,5 @@
+import { MANUAL_RAG_CONTEXT, MANUAL_RAG_SECTIONS } from "./manual-rag";
+
 export interface Env {
   DB: D1Database;
   SESSIONS: KVNamespace;
@@ -63,6 +65,7 @@ const INTERNAL_PORTFOLIO_CONTEXT = [
   "Portfolio themes: monorepo backend architecture, multi-tenant SaaS, event-driven integrations, deployment patterns.",
   "Public website scope: personal portfolio with projects, stacks, blog technical articles, and architecture-focused content.",
   "Communication preference: concise, technical, implementation-oriented responses with practical tradeoffs.",
+  ...MANUAL_RAG_CONTEXT,
 ];
 
 export default {
@@ -320,6 +323,35 @@ async function handleChat(payload: ChatPayload, user: AuthUser, env: Env, traceI
   }
 
   const task = payload.task || "chat";
+
+  const localDecision = resolveLocalReply(sanitized, task);
+  if (localDecision) {
+    const conversationId = await ensureConversation(env, user.id, payload.conversation_id);
+    await storeMessage(env, conversationId, "user", sanitized);
+    await storeMessage(env, conversationId, "assistant", localDecision.reply);
+
+    const responsePayload = {
+      ok: true,
+      conversation_id: conversationId,
+      reply: localDecision.reply,
+      provider: "local",
+      fallback_used: false,
+      prompt_version: env.PROMPT_VERSION,
+      json_validation: null,
+      trace_id: traceId,
+      local_reason: localDecision.reason,
+    };
+
+    await logEvent(env, user.id, "chat_local", {
+      stream: isStreaming,
+      local_reason: localDecision.reason,
+      latency_ms: Date.now() - startedAt,
+      trace_id: traceId,
+    });
+
+    return responsePayload;
+  }
+
   const cacheKey = await cacheHash(`u:${user.id}|task:${task}|msg:${sanitized}`);
   const cached = await env.SESSIONS.get(`response:${cacheKey}`);
   if (cached) {
@@ -416,6 +448,34 @@ async function handleChatStream(payload: ChatPayload, user: AuthUser, env: Env, 
   await storeMessage(env, conversationId, "user", sanitized);
 
   const task = payload.task || "chat";
+  const localDecision = resolveLocalReply(sanitized, task);
+  if (localDecision) {
+    await storeMessage(env, conversationId, "assistant", localDecision.reply);
+
+    await logEvent(env, user.id, "chat_local", {
+      stream: true,
+      local_reason: localDecision.reason,
+      latency_ms: Date.now() - startedAt,
+      trace_id: traceId,
+    });
+
+    const localStream = new ReadableStream({
+      start(controller) {
+        controller.enqueue(encoder.encode(`data: ${JSON.stringify({ token: localDecision.reply })}\n\n`));
+        controller.enqueue(encoder.encode(`data: ${JSON.stringify({ done: true, conversation_id: conversationId })}\n\n`));
+        controller.close();
+      },
+    });
+
+    return new Response(localStream, {
+      headers: {
+        "Content-Type": "text/event-stream",
+        "Cache-Control": "no-cache",
+        Connection: "keep-alive",
+      },
+    });
+  }
+
   const memory = pruneMemory(await fetchMemory(env, conversationId, MAX_MEMORY_ITEMS), Number(env.MAX_CONTEXT_CHARS || "4000"));
   const externalRag = await getCachedSiteRagContext(env, traceId);
   const semanticRag = await retrieveRagContext(env, user.id, sanitized, 3);
@@ -677,6 +737,8 @@ async function buildPrompt(
     "Behavior: objective and technical responses only.",
     "Behavior: avoid unnecessary long explanations.",
     "Behavior: prioritize precision and context grounding.",
+    "Behavior: reply in the same language as the user's latest message whenever possible.",
+    "Behavior: if greeting only, respond with a short greeting and ask what to explore about Patrick.",
     "RAG policy: prioritize cached site context from pklavc.com as primary source.",
     "RAG policy: then use internal dynamic RAG documents when available.",
     "RAG policy: never invent information outside provided context.",
@@ -1063,6 +1125,86 @@ function runGuardrails(text: string): { ok: true } | { ok: false; reason: string
     return { ok: false, reason: "prompt_injection_detected" };
   }
   return { ok: true };
+}
+
+function resolveLocalReply(text: string, task: string): { reply: string; reason: string } | null {
+  if (task !== "chat") {
+    return null;
+  }
+
+  const clean = sanitizeInput(text).toLowerCase();
+  if (!clean) {
+    return null;
+  }
+
+  const lang = detectLanguage(clean);
+
+  if (isGreetingOnly(clean)) {
+    return {
+      reply: greetingReply(lang),
+      reason: "greeting",
+    };
+  }
+
+  const section = selectManualRagSection(clean);
+  if (section) {
+    return {
+      reply: formatManualSectionReply(section.content, lang),
+      reason: `manual_rag:${section.key}`,
+    };
+  }
+
+  return null;
+}
+
+function detectLanguage(text: string): "pt" | "en" | "es" {
+  if (/\b(ola|olá|voce|você|sobre|projeto|projetos|experiencia|experiência|contato|certificado|trabalho)\b/i.test(text)) {
+    return "pt";
+  }
+
+  if (/\b(hola|gracias|proyecto|experiencia|contacto|certificado|trabajo)\b/i.test(text)) {
+    return "es";
+  }
+
+  return "en";
+}
+
+function isGreetingOnly(text: string): boolean {
+  const compact = text.replace(/[!?.,]/g, " ").replace(/\s+/g, " ").trim();
+  return /^(oi|ola|olá|hello|hi|hey|hola|bom dia|boa tarde|boa noite)$/.test(compact);
+}
+
+function greetingReply(lang: "pt" | "en" | "es"): string {
+  if (lang === "pt") {
+    return "Olá. O que você gostaria de saber hoje sobre o Patrick?";
+  }
+  if (lang === "es") {
+    return "Hola. ¿Qué te gustaría saber hoy sobre Patrick?";
+  }
+  return "Hello. What would you like to know today about Patrick?";
+}
+
+function selectManualRagSection(text: string): { key: string; keywords: string[]; content: string[] } | null {
+  for (const section of MANUAL_RAG_SECTIONS) {
+    if (section.keywords.some((keyword) => text.includes(keyword.toLowerCase()))) {
+      return section;
+    }
+  }
+  return null;
+}
+
+function formatManualSectionReply(content: string[], lang: "pt" | "en" | "es"): string {
+  if (!content.length) {
+    return greetingReply(lang);
+  }
+
+  if (lang === "pt") {
+    return ["Aqui está um resumo rápido:", ...content].join("\n");
+  }
+  if (lang === "es") {
+    return ["Aquí tienes un resumen rápido:", ...content].join("\n");
+  }
+  return ["Here is a quick summary:", ...content].join("\n");
 }
 
 function validateJsonResponse(text: string, requiredKeys: string[], schema: Record<string, string> | null) {

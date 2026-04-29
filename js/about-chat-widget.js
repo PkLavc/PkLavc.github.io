@@ -250,6 +250,13 @@
       els.input.addEventListener("input", function () {
         autoResizeInput();
       });
+
+      els.input.addEventListener("keydown", function (event) {
+        if (event.key === "Enter" && !event.shiftKey) {
+          event.preventDefault();
+          sendChat();
+        }
+      });
     }
 
     document.addEventListener("keydown", function (event) {

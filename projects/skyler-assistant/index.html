@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="PkLavc" />
+    <title>Skyler Assistant | AI Portfolio Assistant | Patrick Araujo</title>
+
+    <meta name="description" content="Skyler Assistant project: public portfolio AI assistant with lightweight Cloudflare Worker orchestration, manual RAG, multilingual greeting, and provider fallback.">
+    <meta property="og:title" content="Skyler Assistant | AI Portfolio Assistant | Patrick Araujo">
+    <meta property="og:description" content="Public assistant for portfolio context, project discovery, technical stack guidance, and career information.">
+    <meta property="og:url" content="https://pklavc.com/projects/skyler-assistant/">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://pklavc.com/images/Lavc.webp">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Skyler Assistant | AI Portfolio Assistant | Patrick Araujo">
+    <meta name="twitter:description" content="Read more about Skyler architecture, RAG strategy, and runtime flow.">
+    <meta name="twitter:image" content="https://pklavc.com/images/Lavc.webp">
+    <link rel="canonical" href="https://pklavc.com/projects/skyler-assistant/">
+    <meta name="robots" content="index, follow">
+
+    <link rel="icon" type="image/svg+xml" href="../../images/favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Monoton&family=Poppins:wght@500&family=Raleway:wght@300&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Monoton&family=Poppins:wght@500&family=Raleway:wght@300&display=swap"></noscript>
+    <link rel="stylesheet" href="../../css/global.css">
+    <link rel="stylesheet" href="../../css/projects.css">
+    <link rel="preload" as="style" href="../../css/github-markdown-local.css">
+    <link rel="stylesheet" href="../../css/github-markdown-local.css" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="../../css/github-markdown-local.css"></noscript>
+
+    <style>
+        .project-hero {
+            padding: 60px 20px;
+            text-align: center;
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.12), rgba(0, 0, 0, 0.05));
+        }
+        .project-hero h1 {
+            font-size: 2.5rem;
+            margin: 20px 0;
+            color: #fff;
+        }
+        .project-category-badge {
+            display: inline-block;
+            background: rgba(100, 200, 255, 0.2);
+            border: 1px solid rgba(100, 200, 255, 0.5);
+            color: #64c8ff;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+        .full-readme-section {
+            padding: 50px 20px;
+            background: rgba(255, 255, 255, 0.02);
+        }
+        .full-readme-container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        .full-readme-container .markdown-body {
+            background: #0d1117;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 10px;
+            padding: 24px;
+        }
+        .skyler-hero-block {
+            display: grid;
+            grid-template-columns: 120px 1fr;
+            gap: 18px;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.02);
+        }
+        .skyler-avatar {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            border: 1px solid rgba(120, 191, 255, 0.6);
+            object-fit: cover;
+            background: rgba(0, 0, 0, 0.3);
+        }
+        .meta-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 10px;
+            margin: 16px 0 24px;
+        }
+        .meta-item {
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 10px;
+            padding: 10px 12px;
+            background: rgba(255, 255, 255, 0.02);
+        }
+        .meta-item strong {
+            display: block;
+            color: #fff;
+            margin-bottom: 4px;
+            font-size: 0.9rem;
+        }
+        .flowchart {
+            margin: 14px 0 24px;
+            padding: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            background: rgba(7, 12, 20, 0.8);
+        }
+        .flow-lane {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 8px;
+            margin: 6px 0;
+        }
+        .flow-step {
+            border: 1px solid rgba(101, 189, 255, 0.4);
+            border-radius: 8px;
+            padding: 8px 10px;
+            background: rgba(101, 189, 255, 0.08);
+            color: #dff1ff;
+            font-size: 0.9rem;
+        }
+        .flow-arrow {
+            color: #7ebeff;
+            font-weight: 700;
+            font-size: 1rem;
+            padding: 0 2px;
+        }
+        .section-spacer {
+            margin-top: 26px;
+        }
+        @media (max-width: 720px) {
+            .skyler-hero-block {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            .skyler-avatar {
+                margin: 0 auto;
+            }
+        }
+        .cta-section {
+            padding: 40px 20px 60px;
+            text-align: center;
+        }
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #64c8ff, #00d4ff);
+            color: #000;
+            padding: 14px 34px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(100, 200, 255, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div id="breaker"></div>
+    <div id="breaker-two"></div>
+    <div id="all">
+        <div id="navigation-content" role="navigation" aria-label="Primary navigation">
+            <div class="logo"></div>
+            <div class="navigation-links">
+                <a href="/" data-text="HOME">HOME</a>
+                <a href="/about/" data-text="ABOUT">ABOUT</a>
+                <a href="/projects/" data-text="PROJECTS">PROJECTS</a>
+            </div>
+        </div>
+        <div id="navigation-bar">
+            <div class="menubar">
+                <span class="first-span"></span>
+                <span class="second-span"></span>
+                <span class="third-span"></span>
+            </div>
+        </div>
+
+        <main role="main">
+            <section class="project-hero">
+                <span class="project-category-badge">AI Assistant</span>
+                <h1>Skyler Assistant</h1>
+                <p style="color: #aaa; font-size: 1.1rem; margin-top: 15px;">Public portfolio assistant with lightweight orchestration, manual RAG, and provider fallback.</p>
+            </section>
+
+            <section class="full-readme-section" aria-label="Skyler documentation">
+                <div class="full-readme-container">
+                    <h2 style="color:#fff; margin-bottom:20px;">Project Read More</h2>
+                    <article class="markdown-body">
+                        <h2>Skyler Assistant</h2>
+                        <p><img src="https://img.shields.io/badge/Runtime-Cloudflare%20Worker-f38020" alt="Runtime"> <img src="https://img.shields.io/badge/RAG-Manual%20%2B%20Site%20Cache-22c55e" alt="RAG"> <img src="https://img.shields.io/badge/UI-Public%20Chat-0ea5e9" alt="UI"> <img src="https://img.shields.io/badge/Fallback-Groq%20to%20OpenRouter-7c3aed" alt="Fallback"></p>
+
+                        <div class="skyler-hero-block">
+                            <img class="skyler-avatar" src="/images/icon_skyler.webp" alt="Skyler assistant icon">
+                            <div>
+                                <p><strong>Skyler</strong> is the public portfolio assistant for Patrick Araujo, focused on project context, technical stack, professional experience, and contact guidance.</p>
+                                <p>The assistant is designed for predictable orchestration: simple greeting local reply, manual RAG usage, and LLM calls only when needed.</p>
+                            </div>
+                        </div>
+
+                        <div class="meta-grid">
+                            <div class="meta-item"><strong>Primary Runtime</strong>Cloudflare Worker (TypeScript)</div>
+                            <div class="meta-item"><strong>Data Layer</strong>D1 + KV (`DB`, `CACHE`, `SESSIONS`)</div>
+                            <div class="meta-item"><strong>RAG Sources</strong>`manual-rag.ts` + cached pklavc.com pages</div>
+                            <div class="meta-item"><strong>Frontend</strong>About floating widget + dedicated assistant page</div>
+                            <div class="meta-item"><strong>Voice</strong>Web Speech API with female voice preference</div>
+                            <div class="meta-item"><strong>Reliability</strong>Provider fallback and response caching</div>
+                        </div>
+
+                        <h3>System Architecture</h3>
+                        <p>Skyler separates responsibilities clearly. The frontend handles interaction and voice. The Worker orchestrates memory, RAG, and provider calls. The model handles generative response when local context is not enough.</p>
+
+                        <div class="flowchart" aria-label="Skyler high level architecture flowchart">
+                            <div class="flow-lane">
+                                <span class="flow-step">User (Web UI)</span>
+                                <span class="flow-arrow">-&gt;</span>
+                                <span class="flow-step">/chat API</span>
+                                <span class="flow-arrow">-&gt;</span>
+                                <span class="flow-step">Worker Orchestrator</span>
+                            </div>
+                            <div class="flow-lane">
+                                <span class="flow-step">Greeting Check</span>
+                                <span class="flow-arrow">-&gt;</span>
+                                <span class="flow-step">Manual RAG Match</span>
+                                <span class="flow-arrow">-&gt;</span>
+                                <span class="flow-step">Prompt Builder</span>
+                            </div>
+                            <div class="flow-lane">
+                                <span class="flow-step">Groq Provider</span>
+                                <span class="flow-arrow">or</span>
+                                <span class="flow-step">OpenRouter Fallback</span>
+                                <span class="flow-arrow">-&gt;</span>
+                                <span class="flow-step">Response + Storage</span>
+                            </div>
+                        </div>
+
+                        <h3>Runtime Decision Flow</h3>
+                        <div class="flowchart" aria-label="Skyler runtime decision flowchart">
+                            <div class="flow-lane">
+                                <span class="flow-step">Input arrives</span>
+                                <span class="flow-arrow">-&gt;</span>
+                                <span class="flow-step">Simple greeting?</span>
+                                <span class="flow-arrow">yes</span>
+                                <span class="flow-step">Fast local greeting reply</span>
+                            </div>
+                            <div class="flow-lane">
+                                <span class="flow-step">If not greeting</span>
+                                <span class="flow-arrow">-&gt;</span>
+                                <span class="flow-step">Manual RAG keyword hit?</span>
+                                <span class="flow-arrow">yes</span>
+                                <span class="flow-step">Return manual context reply</span>
+                            </div>
+                            <div class="flow-lane">
+                                <span class="flow-step">If no local hit</span>
+                                <span class="flow-arrow">-&gt;</span>
+                                <span class="flow-step">Call LLM</span>
+                                <span class="flow-arrow">fail?</span>
+                                <span class="flow-step">Use provider fallback</span>
+                            </div>
+                        </div>
+
+                        <h3>Frontend Experience</h3>
+                        <ul>
+                            <li>Floating icon launcher on About page using <code>/images/icon_skyler.webp</code></li>
+                            <li>Dedicated standalone page at <a href="/skyler-assistant/">/skyler-assistant/</a></li>
+                            <li>Enter sends message, Shift+Enter adds line break</li>
+                            <li>Optional streaming output and voice output toggle</li>
+                            <li>Guest/public usage without mandatory login</li>
+                        </ul>
+
+                        <h3 class="section-spacer">Worker and Data Details</h3>
+                        <ul>
+                            <li><strong>Entry:</strong> <code>src/chatbot/worker/src/index.ts</code></li>
+                            <li><strong>Manual RAG:</strong> <code>src/chatbot/worker/src/manual-rag.ts</code></li>
+                            <li><strong>KV cache:</strong> response cache, embedding cache, site context cache</li>
+                            <li><strong>D1:</strong> users, conversations, messages, analytics events, prompt versions</li>
+                            <li><strong>Bindings:</strong> <code>DB</code>, <code>CACHE</code>, <code>SESSIONS</code></li>
+                        </ul>
+
+                        <h3>RAG Coverage</h3>
+                        <p>Manual RAG includes identity, role focus, stack, links, companies, impact metrics, and current public credential context. It is intentionally source-controlled for predictable behavior and low cost.</p>
+                        <ul>
+                            <li>Identity and positioning (backend, integrations, architecture)</li>
+                            <li>Project and blog discoverability guidance</li>
+                            <li>Contact and profile references (GitHub, LinkedIn, email)</li>
+                            <li>Known credentials from public pages</li>
+                        </ul>
+
+                        <h3>Reliability and Fallback Strategy</h3>
+                        <ul>
+                            <li>Primary provider execution path with retry attempts</li>
+                            <li>Automatic fallback provider when primary fails</li>
+                            <li>Local greeting/manual context path to reduce unnecessary model calls</li>
+                            <li>Response caching to minimize repeated token spend</li>
+                        </ul>
+
+                        <h3>Main Paths</h3>
+                        <ul>
+                            <li><strong>Live assistant:</strong> <a href="/skyler-assistant/">/skyler-assistant/</a></li>
+                            <li><strong>About widget:</strong> <a href="/about/">/about/</a></li>
+                            <li><strong>Projects listing:</strong> <a href="/projects/">/projects/</a></li>
+                            <li><strong>Worker source:</strong> <code>src/chatbot/worker/src/index.ts</code></li>
+                            <li><strong>Manual RAG:</strong> <code>src/chatbot/worker/src/manual-rag.ts</code></li>
+                        </ul>
+                    </article>
+                </div>
+            </section>
+
+            <section class="cta-section" aria-label="Open assistant">
+                <a class="cta-button" href="/skyler-assistant/">Open Skyler Assistant</a>
+            </section>
+        </main>
+    </div>
+
+    <footer class="footer-minimal">
+        <div class="footer-container">
+            <div class="footer-link-list" aria-label="Footer links">
+                <a class="footer-link-pill" href="https://github.com/PkLavc" target="_blank" rel="noopener noreferrer">GitHub</a>
+                <a class="footer-link-pill" href="https://www.linkedin.com/in/pklavc/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+                <a class="footer-link-pill" href="mailto:contact@pklavc.com">Email</a>
+            </div>
+            <p>&copy; <span data-current-year></span> Patrick Araujo</p>
+        </div>
+    </footer>
+
+    <script>
+        (function() {
+            document.querySelectorAll('[data-current-year]').forEach(function(node) {
+                node.textContent = String(new Date().getFullYear());
+            });
+        }());
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.2.6/gsap.min.js" defer></script>
+    <script src="../../js/jquery.min.js" defer></script>
+    <script src="../../js/index.js" defer></script>
+</body>
+</html>
