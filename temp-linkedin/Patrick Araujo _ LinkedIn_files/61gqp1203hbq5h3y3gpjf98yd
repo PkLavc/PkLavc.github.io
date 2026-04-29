@@ -1,0 +1,1 @@
+(()=>{var e=document.querySelectorAll("a");if(e)for(var t=function(){var t=e[r].getAttribute("data-third-party-tracking-urls");if(t){var a=JSON.parse(t);e[r].addEventListener("click",(function(){for(var e=0;e<a.length;e+=1){var t=a[e],r=new XMLHttpRequest;t=t.replace("LI_TIMESTAMP",Date.now()),r.open("GET",t,!0),r.send(null)}}))}},r=0;r<e.length;r+=1)t()})();

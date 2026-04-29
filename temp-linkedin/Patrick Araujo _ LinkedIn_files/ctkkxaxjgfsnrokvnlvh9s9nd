@@ -1,0 +1,1 @@
+(()=>{var t=document.getElementById("ads-container").dataset,e=t.creative,n=t.account,a=t.contentType;window.addEventListener("load",(function(){var t={type:"AD_LOAD",contentType:a,creative:e,account:n};window.parent.postMessage(JSON.stringify(t),window.location.origin)}))})();
