@@ -766,7 +766,7 @@ function inferTopic(text: string): string | null {
   if (/\b(blog|article|artigo|post)\b/.test(clean)) {
     return "blog";
   }
-  if (/\b(experience|experiencia|experiência|career|work|trabalho)\b/.test(clean)) {
+  if (/\b(experience|experiencia|experiência|career|work|trabalho|trabalhou|trabalha|empresa|empresas|company|companies|onde trabalha)\b/.test(clean)) {
     return "experience";
   }
   if (/\b(contact|contato|email|linkedin|github)\b/.test(clean)) {
@@ -776,7 +776,7 @@ function inferTopic(text: string): string | null {
 }
 
 function isPortfolioIntent(text: string): boolean {
-  return /\b(patrick|pklavc|portfolio|portfólio|about|sobre|projects|projetos|blog|stacks|collections|github\.com\/pklavc|linkedin\.com\/in\/pklavc|contact@pklavc\.com|google auth worker|zoho|hablla|zenvia|sige|omie|codepulse|cipher gate|aegis sentinel|cloud deployment showcase|multi-tenant saas platform|loja do sapo|icaiu|wr auto pecas)\b/.test(text);
+  return /\b(patrick|pklavc|portfolio|portfólio|about|sobre|projects|projetos|blog|stacks|collections|github\.com\/pklavc|linkedin\.com\/in\/pklavc|contact@pklavc\.com|google auth worker|zoho|hablla|zenvia|sige|omie|codepulse|cipher gate|aegis sentinel|cloud deployment showcase|multi-tenant saas platform|loja do sapo|icaiu|wr auto pecas|empresa|empresas|company|companies|trabalhou|trabalha|onde trabalha|experience|experiência|career)\b/.test(text);
 }
 
 function isLikelyMathPi(text: string): boolean {
@@ -831,6 +831,12 @@ async function buildPrompt(
     "Priority rule: if the user corrects topic, immediately switch topic and discard previous assumptions.",
     "Do not force Patrick/profile context unless the user explicitly asks about Patrick or portfolio topics.",
     "If user asks a non-portfolio topic (e.g., mathematical pi), answer that topic directly and briefly.",
+    "Formatting rule: never use markdown tables, pipe tables, or columnar table formatting.",
+    "Formatting rule: respond in plain text paragraphs; when listing items, use simple lines without table syntax.",
+    "Source rule: do not mention raw source labels like 'extraido do linkedin' or 'extracted from LinkedIn' unless user explicitly asks for the source.",
+    "When user asks about courses, provide only course/certification names in plain text.",
+    "When user asks about companies/work history, answer directly with known companies and role context.",
+    "When user asks about projects, cite projects and describe them in plain text, not tables.",
   ];
 
   if (signals.topicHint) {
