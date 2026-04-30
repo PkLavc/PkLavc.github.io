@@ -1,179 +1,237 @@
-# PKLAVC Portfolio
+# PkLavc - Solutions Architect & Technical Owner
 
-Official repository for Patrick Araujo's portfolio website and Skyler chat assistant.
-
-## Quick Status
-
-![Site](https://img.shields.io/badge/Site-pklavc.com-1f6feb)
-![Skyler](https://img.shields.io/badge/Skyler-Active-00bcd4)
-![Worker](https://img.shields.io/badge/Cloudflare%20Worker-src%2Fchatbot%2Fworker-ff8800)
-![RAG](https://img.shields.io/badge/RAG-Manual%20%2B%20Site%20Cache-4caf50)
+Official repository for my professional portfolio. 
+Focusing on high-reliability systems, SRE-aware automation, and complex API ecosystems.
 
 ## Overview
 
-This repository contains:
+This repository contains a static portfolio website for Patrick Araujo, focused on solutions architecture, systems engineering, API integration, automation, and data pipelines. The website is built using HTML, CSS and JavaScript and includes modern SEO improvements, structured data, and social sharing metadata.
 
-- Static portfolio pages (home, about, blog, projects, collections, stacks)
-- Shared frontend assets (CSS, JS, images)
-- A production chatbot backend in `src/chatbot/worker` (Cloudflare Worker)
-- Automation workflows for CI/CD and maintenance
+The site includes three main pages:
 
-## Current Structure
+- `index.html` — homepage with profile, skills and contact links
+- `about/index.html` — detailed profile, professional history, clients and certifications
+- `projects/index.html` — portfolio showcase of backend and integration projects
+
+Additional files:
+
+- `robots.txt` — indexation policy
+- `sitemap.xml` — crawlable site map
+- `css/` — stylesheet collection
+- `js/` — frontend script assets
+- `images/` — visual and icon assets
+
+---
+
+## Technology Stack
+
+### Core Web Technologies
+
+- **HTML5** — semantic page structure
+- **CSS3** — responsive layout, color theme, and visual styling
+- **JavaScript** — dynamic interactions, page behavior, and animations
+
+### Libraries and frameworks
+
+- **GSAP** — animation library loaded from CDN for motion effects
+- **particles.js** — particle background animation engine
+- **jQuery** — legacy DOM helper for existing page scripts
+
+### SEO and Metadata
+
+- **Open Graph** tags for rich social sharing
+- **Twitter Card** metadata for Twitter previews
+- **Canonical links** to avoid duplicate content issues
+- **Schema.org JSON-LD** profile and page structured data
+- **robots** index/follow instructions
+- **Sitemap** configuration for search engines
+
+---
+
+## Page Structure and Purpose
+
+### `index.html`
+
+- Serves as the main landing page for a solutions and integration architect
+- Contains a visible `<h1>` with the name, followed by descriptive `<h2>` content
+- Implements particle background animation using `particles.js`
+- Uses social media icons with descriptive `alt` text
+- Includes a hidden `visually-hidden` SEO paragraph for technical keyword reinforcement
+- Contains multiple JSON-LD blocks to represent profile and page schema
+
+### `about/index.html`
+
+- Provides the candidate’s professional profile, certifications, and company affiliations
+- Uses detailed Open Graph and Twitter metadata
+- Includes client logos and project references with proper `alt` descriptions
+- Maintains a hidden `h1` plus visible `h2` for SEO semantics without altering layout
+- Includes a hidden `visually-hidden` paragraph for architecture and enterprise keywords
+
+### `projects/index.html`
+
+- Displays a portfolio of backend, API integration, automation, and data pipeline work
+- Uses `CollectionPage` JSON-LD with individual `CreativeWork` items defined in structured data
+- Includes Open Graph and Twitter metadata tuned for project discovery
+- Contains a hidden `h1` and visible `h2` heading for SEO semantics without visual change
+- Includes a hidden semantic footer paragraph for robots
+
+---
+
+## File Structure
 
 ```text
 PkLavc.github.io/
 ├── index.html
 ├── about/
-├── blog/
-├── collections/
+│   └── index.html
 ├── projects/
-├── stacks/
+│   ├── index.html
+│   ├── google-auth-worker/
+│   ├── zoho-integration-worker/
+│   └── ...
+├── robots.txt
+├── sitemap.xml
 ├── css/
 ├── js/
 ├── images/
-├── src/
-│   └── chatbot/
-│       ├── scripts/
-│       ├── worker/
-│       │   ├── src/
-│       │   │   ├── index.ts
-│       │   │   └── manual-rag.ts
-│       │   ├── migrations/
-│       │   ├── test/
-│       │   ├── package.json
-│       │   └── wrangler.toml
-│       ├── workflows/
-│       └── docs/
-├── robots.txt
-├── sitemap.xml
 ├── README.md
 └── LICENSE.txt
 ```
 
-## Important Path Update
+---
 
-The chatbot path is now professionalized and centralized under `src/chatbot`.
+## SEO Architecture
 
-- Old path: `testing/chatbot/...`
-- Current path: `src/chatbot/...`
+### Metadata and social sharing
 
-Production worker entrypoint:
+- `meta name="description"` — supports search engine snippets
+- `meta property="og:title"` — controls Facebook and LinkedIn shared title
+- `meta property="og:description"` — supports enterprise and systems architecture messaging
+- `meta property="og:image"` — profile image for social cards
+- `meta name="twitter:card"` — summary_large_image for rich Twitter previews
+- `meta property="og:image:alt"` and `meta name="twitter:image:alt"` — accessible image descriptions
+- `canonical` — resolves the preferred URL
 
-- `src/chatbot/worker/wrangler.toml`
-- `main = "src/index.ts"` (inside the Worker folder)
+### Structured Data
 
-## Skyler Assistant
+Implemented JSON-LD schema types:
 
-### Skyler Button Image
+- `ProfilePage` for `index.html`
+- `AboutPage` for `about/index.html`
+- `CollectionPage` for `projects/index.html`
+- `Person` profile metadata inside page schemas
+- `CreativeWork` items for featured projects
 
-Skyler launcher icon used in the global floating chat widget:
+### Robots and Sitemap
 
-![Skyler Launcher](images/icon_skyler.webp)
+- `robots.txt` currently allows indexing for all crawlers and points to the sitemap
+- `sitemap.xml` includes all published pages with `lastmod`, `changefreq`, and `priority`
 
-### Skyler Badges
+---
 
-![Skyler Voice](https://img.shields.io/badge/Voice-Female%20Preferred-7e57c2)
-![Skyler Frontend](https://img.shields.io/badge/Frontend-skyler--widget.js-0ea5e9)
-![Skyler Manual RAG](https://img.shields.io/badge/Manual%20RAG-manual--rag.ts-22c55e)
-![Skyler API](https://img.shields.io/badge/API-api.pklavc.com-ef4444)
+## Accessibility and Semantic Enhancements
 
-### Skyler Runtime Flow
+- `alt` attributes applied to all `<img>` tags with descriptive phrases
+- `aria-label` used on key profile and contact elements
+- hidden `div.visually-hidden` paragraphs added for technical semantics using clipping instead of `display:none`
+- visible page headings preserved while adding hidden `h1` for SEO semantics on secondary pages
+
+---
+
+## Performance and Script Loading
+
+### Script loading strategy
+
+- `jquery.min.js` loaded with `defer` to avoid render-blocking
+- `particles.min.js` intentionally loaded without `defer` for inline `particlesJS(...)` initialization compatibility
+- `index.js` loaded with `defer`
+- `gsap.min.js` loaded from CDN with `defer`
+
+### Observations
+
+- The particle background depends on `particles.min.js`, so correct load order is essential
+- Hidden SEO text is added without affecting visible layout
+- The site uses client-side animations and progressive enhancement
+
+---
+
+## Visual / Interaction Design
+
+The design uses:
+
+- a dark theme with blue accent colors from `color-blue.css`
+- particle animation in the hero section
+- social media icon links for GitHub, LinkedIn, and email
+- skill badges and technology icons in the core profile panel
+- slide carousels and logo grids on the about page
+
+---
+
+## Mermaid Diagrams
+
+### Site structure
 
 ```mermaid
-flowchart TD
-    U[User message] --> G{Simple greeting?}
-    G -- Yes --> L[Local fast reply in user language]
-    G -- No --> M{Manual RAG keyword match?}
-    M -- Yes --> R[Manual RAG response]
-    M -- No --> P[Build prompt with memory + site context + manual context]
-    P --> A[Call LLM provider]
-    A --> F{Provider failed?}
-    F -- No --> O[Assistant response]
-    F -- Yes --> B[Fallback provider]
-    B --> O
+flowchart TB
+    A[index.html]
+    B[about/index.html]
+    C[projects/index.html]
+    A -->|profile| B
+    A -->|portfolio| C
+    A -->|shared assets| css/
+    A -->|shared assets| js/
+    A -->|meta data| robots.txt
+    A -->|meta data| sitemap.xml
 ```
 
-### Skyler Frontend Interaction Flow
+### SEO data flow
 
 ```mermaid
 flowchart LR
-    I[Skyler icon button] --> W[Open/Close chat widget]
-    W --> T[Type message]
-    T --> E[Enter sends | Shift+Enter newline]
-    E --> C[POST /chat]
-    C --> R[Render response]
-    R --> V{Voice mode on?}
-    V -- Yes --> S[Speech synthesis]
-    V -- No --> N[Text only]
+    SearchEngine[Search Engine]
+    Page[HTML Pages]
+    Meta[Open Graph + Twitter]
+    JSONLD[Structured Data]
+    Robots[robots.txt / sitemap.xml]
+    Alt[Alt Text]
+    Hidden[Hidden Keyword Block]
+
+    Page --> Meta
+    Page --> JSONLD
+    Page --> Alt
+    Page --> Hidden
+    Page --> Robots
+    SearchEngine --> Page
+    SearchEngine --> Robots
 ```
 
-### Skyler Components
+---
 
-- Global widget loader: `js/index.js` (auto-injects widget assets)
-- Frontend widget script: `js/skyler-widget.js`
-- Frontend widget styling: `css/skyler-widget.css`
-- Dedicated assistant demo page: `projects/skyler-assistant/demo/index.html`
-- Worker API logic: `src/chatbot/worker/src/index.ts`
-- Manual RAG knowledge: `src/chatbot/worker/src/manual-rag.ts`
+## References and Resources
 
-### Skyler Behavior (Current)
+### Technology references
 
-- Global floating widget across site pages
-- Lightweight orchestration on Worker
-- Local fast greeting for simple greetings (`olá`, `hello`, etc.)
-- Intent-aware portfolio RAG only for portfolio topics
-- Cached site context merged with internal profile context for companies, projects, and credentials
-- Direct LLM answer for off-topic prompts
-- Plain-text response rules for course, company, and project answers
-- Provider fallback when API fails
+- [HTML5](https://developer.mozilla.org/docs/Web/Guide/HTML/HTML5)
+- [CSS3](https://developer.mozilla.org/docs/Web/CSS)
+- [JavaScript](https://developer.mozilla.org/docs/Web/JavaScript)
+- [GSAP](https://greensock.com/gsap/)
+- [particles.js](https://vincentgarreau.com/particles.js/)
+- [jQuery](https://jquery.com/)
+- [Schema.org JSON-LD](https://schema.org/docs/gs.html)
+- [Open Graph protocol](https://ogp.me/)
+- [Twitter Cards](https://developer.twitter.com/en/docs/twitter-for-websites/cards/overview/abouts-cards)
 
-## Tech Stack
+### SEO best practices used
 
-### Frontend
+- remove obsolete `meta keywords`
+- include `canonical` links
+- use `robots` and `sitemap`
+- apply accessible image descriptions
+- add structured data for profile and project pages
+- use page-specific social metadata descriptions
 
-- HTML5, CSS3, JavaScript
-- GSAP
-- particles.js
-- jQuery (legacy compatibility)
+---
 
-### Backend Chat
+## Notes
 
-- Cloudflare Worker (TypeScript)
-- D1 (chat records, prompts, analytics)
-- KV (`CACHE`, `SESSIONS`)
-- Groq + OpenRouter provider strategy
-
-## SEO and Metadata
-
-Implemented across core pages:
-
-- Open Graph and Twitter metadata
-- Canonical URLs
-- Schema.org JSON-LD blocks
-- robots/sitemap support
-
-## Operational Notes
-
-- Chatbot CI/CD workflows already point to `src/chatbot/...`
-- Worker deploy uses `src/chatbot/worker`
-- Manual RAG is source-controlled for predictable context grounding
-
-## Useful Commands
-
-From `src/chatbot/worker`:
-
-```bash
-npm install
-npm run lint
-npm run typecheck
-npm run test
-npm run deploy -- --dry-run
-```
-
-## References
-
-- Site: https://pklavc.com
-- About: https://pklavc.com/about/
-- Projects: https://pklavc.com/projects/
-- Blog: https://pklavc.com/blog/
-- GitHub: https://github.com/PkLavc
+This README is designed to document the current portfolio site state and provide a full technical overview. If you want, I can also create a smaller `README` for GitHub deployment or a project-specific `README` for developers.
