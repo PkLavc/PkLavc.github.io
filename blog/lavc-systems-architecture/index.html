@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Patrick Araujo">
+    <title>Building Lavc Systems: Architecture of a Local Multi-Agent AI Platform</title>
+    <meta name="description" content="A deep dive into the engineering decisions behind Lavc Systems: FastAPI backend, React/Vite frontend, Ollama local LLM, LangGraph multi-agent orchestration, ChromaDB RAG, HybridMemory, and real-time WebSocket observability.">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://pklavc.com/blog/lavc-systems-architecture/">
+    <link rel="alternate" href="https://pklavc.com/blog/lavc-systems-architecture/" hreflang="en">
+    <meta property="og:title" content="Building Lavc Systems: Architecture of a Local Multi-Agent AI Platform">
+    <meta property="og:description" content="How FastAPI, LangGraph, Ollama, ChromaDB, and React come together to run a complete multi-agent AI orchestration system entirely on local infrastructure.">
+    <meta property="og:url" content="https://pklavc.com/blog/lavc-systems-architecture/">
+    <meta property="og:type" content="article">
+    <meta property="article:published_time" content="2026-05-12">
+    <meta property="article:modified_time" content="2026-05-12">
+    <meta property="article:author" content="Patrick Araujo">
+    <meta property="article:section" content="Backend Engineering">
+    <meta property="article:tag" content="multi-agent systems">
+    <meta property="article:tag" content="local llm">
+    <meta property="article:tag" content="langgraph">
+    <meta property="article:tag" content="fastapi">
+    <meta property="article:tag" content="chromadb">
+    <meta property="og:image" content="https://pklavc.com/images/Lavc.webp">
+    <meta property="og:site_name" content="Patrick Araujo Portfolio">
+    <meta property="og:locale" content="en_US">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Building Lavc Systems: Architecture of a Local Multi-Agent AI Platform">
+    <meta name="twitter:description" content="Engineering decisions behind a local multi-agent platform: FastAPI, LangGraph, Ollama, ChromaDB, HybridMemory, and real-time WebSocket events.">
+    <meta name="twitter:image" content="https://pklavc.com/images/Lavc.webp">
+    <meta name="twitter:site" content="@PkLavc">
+    <meta name="twitter:creator" content="@PkLavc">
+    <link rel="icon" type="image/svg+xml" href="https://pklavc.com/images/favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Monoton&family=Poppins:wght@500;600;700&family=Raleway:wght@300&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Monoton&family=Poppins:wght@500;600;700&family=Raleway:wght@300&display=swap"></noscript>
+    <link rel="stylesheet" href="/css/global.css?v=20260511">
+    <link rel="stylesheet" href="/css/blog.css?v=20260511">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.2.6/gsap.min.js" defer></script>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@graph": [
+            {
+                "@type": "BlogPosting",
+                "headline": "Building Lavc Systems: Architecture of a Local Multi-Agent AI Platform",
+                "description": "A deep dive into the engineering decisions behind Lavc Systems: FastAPI, LangGraph multi-agent orchestration, Ollama local LLM, ChromaDB RAG, HybridMemory, APScheduler, and real-time WebSocket observability.",
+                "datePublished": "2026-05-12",
+                "dateModified": "2026-05-12",
+                "author": {
+                    "@type": "Person",
+                    "name": "Patrick Araujo"
+                },
+                "publisher": {
+                    "@type": "Person",
+                    "name": "Patrick Araujo"
+                },
+                "mainEntityOfPage": "https://pklavc.com/blog/lavc-systems-architecture/",
+                "url": "https://pklavc.com/blog/lavc-systems-architecture/",
+                "keywords": [
+                    "multi-agent AI system",
+                    "LangGraph orchestration",
+                    "local LLM Ollama",
+                    "FastAPI backend",
+                    "ChromaDB RAG",
+                    "HybridMemory",
+                    "AI platform architecture"
+                ]
+            },
+            {
+                "@type": "BreadcrumbList",
+                "itemListElement": [
+                    {
+                        "@type": "ListItem",
+                        "position": 1,
+                        "name": "Home",
+                        "item": "https://pklavc.com/"
+                    },
+                    {
+                        "@type": "ListItem",
+                        "position": 2,
+                        "name": "Blog",
+                        "item": "https://pklavc.com/blog/"
+                    },
+                    {
+                        "@type": "ListItem",
+                        "position": 3,
+                        "name": "Building Lavc Systems",
+                        "item": "https://pklavc.com/blog/lavc-systems-architecture/"
+                    }
+                ]
+            }
+        ]
+    }
+    </script>
+</head>
+<body class="blog-layout seo-layout">
+    <div id="breaker"></div>
+    <div id="breaker-two"></div>
+    <div id="all">
+        <div class="cursor"></div>
+        <div id="navigation-content" role="navigation" aria-label="Primary navigation">
+            <div class="logo"></div>
+            <div class="navigation-links">
+                <a href="/" data-text="HOME" id="home-link">HOME</a>
+                <a href="/about/" data-text="ABOUT" id="about-link">ABOUT</a>
+                <a href="/projects/" data-text="PROJECTS" id="projects-link">PROJECTS</a>
+                <a href="/blog/" data-text="BLOG" id="blog-link">BLOG</a>
+            </div>
+        </div>
+        <div id="navigation-bar">
+            <div class="menubar">
+                <span class="first-span"></span>
+                <span class="second-span"></span>
+                <span class="third-span"></span>
+            </div>
+        </div>
+
+        <main class="blog-shell" role="main">
+            <div class="blog-columns">
+                <div>
+                    <article class="blog-post-hero">
+                        <div class="blog-breadcrumb" aria-label="Breadcrumb">
+                            <a href="/">Home</a>
+                            <span>/</span>
+                            <a href="/blog/">Blog</a>
+                            <span>/</span>
+                            <span aria-current="page">Building Lavc Systems</span>
+                        </div>
+                        <span class="blog-kicker">AI Platform Engineering</span>
+                        <h1>Building Lavc Systems: Architecture of a Local Multi-Agent AI Platform</h1>
+                        <p>Most AI tooling today assumes a cloud endpoint. Lavc Systems starts from a different premise: the entire execution stack — LLM, agents, memory, RAG, scheduler, and observability — runs on the developer's own machine. This post breaks down the engineering decisions that make that possible and the trade-offs each technology choice carries.</p>
+                        <div class="blog-post-meta">
+                            <span>Published May 12, 2026</span>
+                            <span>14 min read</span>
+                            <span>AI Platform Engineering</span>
+                        </div>
+                    </article>
+
+                    <article class="blog-article">
+                        <h2>Why local-first matters for agent systems</h2>
+                        <p>Running an AI agent system in the cloud works well when you need to serve external users at scale. It works poorly when the data you need to reason over is internal, sensitive, or only valuable in aggregate on your own infrastructure. A company's task history, internal documents, API credentials, and operational logs should not leave the building just to run an AI query over them.</p>
+                        <p>Lavc Systems was designed around this constraint. The system must be capable of reasoning over proprietary data, executing tasks, and maintaining memory across sessions — without any of that material touching a third-party server. Every technology choice in the stack flows from this principle.</p>
+                        <p>The consequence is a tighter architecture than a cloud platform requires. You cannot assume infinite horizontal scaling. You must be deliberate about what stays in memory, what goes to disk, and what gets indexed in a vector database. Local-first AI infrastructure is not a simplified version of cloud AI — it is a different engineering discipline.</p>
+
+                        <h2>FastAPI as the backbone: why not Node.js</h2>
+                        <p>The backend runs on <strong>FastAPI</strong> with Python 3.14 and Uvicorn. The choice of Python over Node.js here is not primarily about performance — it is about ecosystem proximity. The libraries that matter most for agent systems — LangGraph, ChromaDB, HuggingFace, APScheduler, SQLAlchemy — are all Python-native. Building a Node.js backend and calling into Python services adds a process boundary that complicates state management and debugging without adding meaningful value.</p>
+                        <p>FastAPI's async support maps naturally onto the execution model of an agent system where many operations are I/O-bound: waiting for a model response, reading from ChromaDB, querying SQLite. The modular router structure lets each domain — tasks, agents, documents, scheduler, objectives, observability — own its own endpoints without coupling into a monolithic handler file.</p>
+
+                        <div class="blog-callout">
+                            FastAPI's router pattern is the backend equivalent of a well-scoped module boundary: each router handles one domain, imports what it needs, and does not touch what it does not own. At the scale of a local platform, this discipline prevents the inevitable "single handler that does everything" failure mode.
+                        </div>
+
+                        <h2>Ollama: the local LLM runtime</h2>
+                        <p><strong>Ollama</strong> handles model serving locally, exposing a compatible API that the backend calls exactly as it would call a cloud provider. The default model is <code>qwen2.5-coder:7b</code>, chosen for its strong code reasoning and reasonable resource footprint on developer hardware. The architecture does not bind to this model — switching to a different Ollama-supported model is a configuration change, not a code change.</p>
+                        <p>The important engineering decision here is what Ollama solves at the system level: it removes the network dependency from the inference path. When an agent is mid-task and needs to call the model, the round-trip is local. This makes latency predictable, removes the risk of rate limiting during intensive execution, and eliminates the surface area where internal data could be exposed to an external provider.</p>
+                        <p>The cost is hardware. A 7B-parameter model running on CPU is slower than a cloud API call. On a machine with a capable GPU, the difference narrows significantly. The system's design accounts for this by batching LLM calls at the orchestration layer rather than making redundant calls at each agent step.</p>
+
+                        <h2>LangGraph: orchestration as a state machine</h2>
+                        <p><strong>LangGraph</strong> is the orchestration layer. Rather than writing imperative agent loops in Python, LangGraph models the multi-agent workflow as a directed graph where nodes are agent steps and edges are conditional transitions. This has several practical consequences for a system like Lavc Systems.</p>
+                        <p>First, the coordinator agent's decisions become explicit graph transitions rather than control flow in a function body. When the coordinator decides to delegate to the programmer agent, that delegation is a named edge in the graph, not a call buried inside a conditional block. This makes the execution trace readable and debuggable — the Agent Graph screen in the UI renders this live, showing which nodes are active, which have completed, and what events have been emitted.</p>
+                        <p>Second, LangGraph's state management is composable. Each agent step receives the current graph state, modifies its relevant slice, and passes updated state to the next node. This means the context available to each agent is explicit and type-checked, not an ambient object threaded through a call stack. For an audit trail that surfaces to users as an operational trace, explicit state transitions are significantly easier to summarise than implicit shared state.</p>
+
+                        <div class="blog-callout">
+                            The operational trace users see — intent detected, context consulted, tool or action used, next step — is not generated by asking the model to summarise its own reasoning. It is derived from the actual graph state transitions logged during execution. This makes it auditable and accurate rather than a model-generated approximation.
+                        </div>
+
+                        <h2>ChromaDB and the RAG architecture</h2>
+                        <p><strong>ChromaDB</strong> is the vector database backing the RAG layer. The design choice to use ChromaDB over alternatives like Qdrant or Weaviate comes down to operational simplicity: ChromaDB runs in-process and stores its data on local disk with no separate service to manage. For a local-first system where operational overhead is a primary constraint, this matters.</p>
+                        <p>RAG in Lavc Systems serves two purposes that are worth distinguishing. The first is document retrieval: when an agent needs to reason over internal documents — uploaded PDFs, policy files, technical references — it queries ChromaDB with an embedding of the current task context and retrieves the top-k semantically relevant chunks. The second purpose is artefact feedback: results generated by agents during task execution can be uploaded back into ChromaDB, making the output of one task available as context for future tasks.</p>
+                        <p>Embeddings are generated using <strong>HuggingFace's sentence-transformers</strong> library, again running locally. The embedding model runs once at startup and stays resident in memory for the session. This removes the need to call an embedding API for every document chunk query, which would reintroduce the latency and privacy concerns that justified local infrastructure in the first place.</p>
+
+                        <h2>HybridMemory: two stores with one interface</h2>
+                        <p>Agent memory in Lavc Systems uses a <strong>HybridMemory</strong> abstraction that unifies two different storage backends: SQLite for structured records and ChromaDB for semantic retrieval.</p>
+                        <p>The split is deliberate. Structured records — task history, user interactions, specific facts about the system state — belong in SQLite because they need to be queried deterministically. "What tasks did the programmer agent complete this week" is a SQL query, not a semantic search. But "what context is most relevant to this task" is a semantic question, and that belongs in ChromaDB.</p>
+                        <p>HybridMemory lets the agent layer use a single interface and routes the query to the appropriate store based on the query type. This prevents the common failure mode where teams choose one storage paradigm and then contort all queries to fit it: forcing semantic lookups into SQL LIKE searches, or shoehorning structured filters into vector similarity scores.</p>
+
+                        <h2>APScheduler and the autonomous goal layer</h2>
+                        <p><strong>APScheduler</strong> handles recurring jobs — tasks that need to run on a schedule rather than on user demand. This is more consequential than it sounds for an agent system. A significant fraction of operational value comes not from interactive AI conversations but from tasks that run reliably in the background: daily report generation, data aggregation, document reindexing, system health checks.</p>
+                        <p>Above APScheduler sits the GoalEngine, which manages higher-order objectives. Goals are not scheduled jobs — they are multi-task missions with associated urgency, importance, and deadline factors that generate a <code>priority_score</code>. A goal like "prepare the weekly executive report" might decompose into several tasks: pull recent documents, summarise risks and opportunities, generate a Markdown report, and create follow-up tasks in the Kanban.</p>
+                        <p>The relationship between the scheduler, the goal engine, and the Kanban is the operational spine of the system. The Kanban tracks execution state. The scheduler fires recurrence. The goal engine provides the higher-level intent that shapes which tasks get created and in what sequence.</p>
+
+                        <h2>React, Vite, and Zustand on the frontend</h2>
+                        <p>The frontend is a <strong>React 18</strong> application built with <strong>Vite</strong> and styled with <strong>Tailwind CSS</strong>. State management uses <strong>Zustand</strong>. These are conventional choices for a TypeScript-first React app, and the interest is less in why each was chosen and more in how they fit the real-time requirements of an agent monitoring interface.</p>
+                        <p>The Agent Graph screen is the most technically demanding part of the frontend. It renders the live multi-agent workflow — nodes, edges, active states, event counts, and timeline — and updates in real time as the backend pushes WebSocket events. This requires a Zustand store that can receive partial updates from the WebSocket handler and trigger selective re-renders without re-rendering the entire graph on each event.</p>
+                        <p>The Kanban board has a different requirement: optimistic updates. When a user drags a task card to a new column, the UI must reflect that change immediately, before the PATCH request to <code>/api/tasks/{id}/move</code> has completed. If the request fails, the card must roll back. This pattern — optimistic mutation with failure rollback — is managed in the Zustand task store rather than inside the component, keeping the component layer free of coordination logic.</p>
+
+                        <h2>WebSocket as the real-time event bus</h2>
+                        <p>The <code>/ws</code> endpoint carries all real-time events from the backend to the frontend: task status changes, agent step completions, log entries, system health updates, and scheduler job results. Using a single WebSocket connection rather than polling multiple endpoints reduces server load and gives the UI a consistent event model regardless of which module generated the event.</p>
+                        <p>The backend manages the WebSocket connection in <code>ws.py</code>, which keeps the connection management logic separate from the router modules. Each router emits events by calling into a shared event emitter; the WebSocket handler subscribes to that emitter and forwards events to connected clients. This means adding a new event type — say, a new agent action in a future module — requires only emitting the event from the new router, with no changes to the WebSocket transport layer.</p>
+
+                        <h2>Security: users, audit, and the local vault</h2>
+                        <p>A platform that stores API credentials, executes tasks autonomously, and connects to external tools needs a coherent security model even when running locally. Lavc Systems includes user and company management with scoped access, an audit log that records who did what and when, and a local credential vault for storing API keys and secrets used by tools and plugins.</p>
+                        <p>The vault is intentionally not a cloud secrets manager. Storing credentials locally in a vault that the agent layer can read at runtime keeps the secrets off any external service while still enabling the automation that requires them. The trade-off is that local vault security is only as strong as the machine it runs on — which is an acceptable boundary for a system explicitly designed for on-premise operation.</p>
+
+                        <h2>Skyler: the same assistant, a different execution environment</h2>
+                        <p>Skyler appears in two places in the Lavc portfolio. The public version — <a href="/projects/skyler-assistant/">Skyler Assistant</a> — runs on Cloudflare Workers with manual RAG, provider fallback, and a lightweight orchestration model designed for public portfolio visitors. It answers questions about Patrick's work, stack, and experience. It does not have access to private data. It does not execute tasks. It is a read-only conversational interface over a fixed knowledge base.</p>
+                        <p>Skyler inside Lavc Systems is a different implementation in the same conceptual role. She runs inside the FastAPI backend, has access to the SQLite database, can query ChromaDB, can create tasks, read uploaded files, write credentials to the local vault, and generate an operational trace of her own responses. The trace is not model-generated prose about what the model thought — it is a structured log of the actual state transitions executed during the response: intent detected, context source consulted, action taken, next recommended step.</p>
+                        <p>The architectural lesson across both versions is that the quality of an AI assistant is not primarily determined by the model. It is determined by what data the assistant can reach, what actions it is permitted to take, and how transparent its reasoning is to the people relying on it. The public Skyler is useful because it has the right knowledge base and clear answer rules. The system Skyler is more capable because she has access to the full operational context of the platform she lives in.</p>
+
+                        <div class="blog-callout">
+                            Upgrading an AI assistant is not a model upgrade problem. It is an access and context problem. The same assistant design becomes more valuable as you expand what it can observe and what it is permitted to act on — while keeping the trace of that action readable to humans.
+                        </div>
+
+                        <h2>Observability as a design constraint</h2>
+                        <p>Agent systems fail in ways that are difficult to debug without structured observability. A task that produces a wrong result may have failed at the coordinator's planning step, the analyst's document retrieval step, the programmer's generation step, or the reviewer's validation step — and without trace data, the only signal is the output was wrong.</p>
+                        <p>Lavc Systems treats observability as a first-class concern from the start. The observability module records traces, metrics, and execution events for every agent action. The Control screen exposes these as a dashboard. The task detail page shows the full execution log for a specific task, including which agents ran, what tools they called, what context they consulted, and how long each step took.</p>
+                        <p>This is not primarily for debugging — it is for trust. An agent system that executes autonomously and produces results without any window into how it got there is difficult to rely on for consequential work. Observability is the mechanism by which the system earns the confidence to run unsupervised on increasingly important tasks.</p>
+                    </article>
+
+                    <section aria-labelledby="lavc-related-title">
+                        <h2 id="lavc-related-title">Related reading</h2>
+                        <div class="blog-related-grid">
+                            <article class="blog-related-card">
+                                <h3><a href="/projects/skyler-assistant/">Skyler Assistant</a></h3>
+                                <p>The public portfolio version of Skyler — a Cloudflare Worker with manual RAG, provider fallback, and voice support. The lighter sibling of the enterprise assistant embedded in Lavc Systems.</p>
+                            </article>
+                            <article class="blog-related-card">
+                                <h3><a href="/blog/backend-automation-systems/">Backend Automation Systems</a></h3>
+                                <p>How to replace manual operational work with queue-based execution, reliable job scheduling, and controlled failure handling — the same patterns that drive the Lavc Systems task engine.</p>
+                            </article>
+                            <article class="blog-related-card">
+                                <h3><a href="/blog/infrastructure-anomaly-detection/">Infrastructure Anomaly Detection</a></h3>
+                                <p>Predictive anomaly detection and self-healing backends in Python — directly relevant to the observability and autonomous recovery goals in Lavc Systems.</p>
+                            </article>
+                        </div>
+                    </section>
+                </div>
+
+                <aside class="blog-article-grid">
+                    <section class="blog-sidebar-card">
+                        <h2>Core stack</h2>
+                        <ul>
+                            <li>FastAPI + Python 3.14 backend with modular routers.</li>
+                            <li>React 18 + TypeScript + Tailwind CSS + Vite frontend.</li>
+                            <li>Ollama for local LLM inference (qwen2.5-coder:7b default).</li>
+                            <li>LangGraph for multi-agent workflow as state machine.</li>
+                            <li>ChromaDB + HuggingFace embeddings for local RAG.</li>
+                            <li>HybridMemory: SQLite (structured) + ChromaDB (semantic).</li>
+                            <li>APScheduler + GoalEngine for autonomous task planning.</li>
+                            <li>WebSocket for real-time event delivery to the UI.</li>
+                        </ul>
+                    </section>
+                    <section class="blog-sidebar-card">
+                        <h2>Continue exploring</h2>
+                        <ul>
+                            <li><a href="/projects/lavc-systems/">Lavc Systems project page</a></li>
+                            <li><a href="/projects/skyler-assistant/">Skyler Assistant (public version)</a></li>
+                            <li><a href="/blog/backend-automation-systems/">Backend Automation Systems</a></li>
+                            <li><a href="/blog/multi-tenant-saas-architecture/">Multi-Tenant SaaS Architecture</a></li>
+                            <li><a href="/about/">About Patrick Araujo</a></li>
+                        </ul>
+                    </section>
+                </aside>
+            </div>
+        </main>
+    </div>
+    <footer class="footer-minimal">
+        <div class="footer-container">
+            <div class="footer-link-list" aria-label="Footer links">
+                <a class="footer-link-pill" href="https://github.com/PkLavc" target="_blank" rel="noopener noreferrer">GitHub</a>
+                <a class="footer-link-pill" href="https://www.linkedin.com/in/pklavc/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+                <a class="footer-link-pill" href="mailto:contact@pklavc.com">Email</a>
+                <a class="footer-link-pill footer-link-pill-accent" href="https://github.com/sponsors/PkLavc" target="_blank" rel="noopener noreferrer">Sponsor me</a>
+            </div>
+            <p>
+                &copy; <span data-current-year></span> Patrick Araujo &bull;
+                <span class="github-dev-badge">Member of <b>GitHub Developer Program</b></span>
+            </p>
+        </div>
+    </footer>
+    <script>
+        (function() {
+            document.querySelectorAll('[data-current-year]').forEach(function(node) {
+                node.textContent = String(new Date().getFullYear());
+            });
+        }());
+    </script>
+    <script src="/js/jquery.min.js?v=20260511" defer></script>
+    <script src="/js/index.js?v=20260511" defer></script>
+</body>
+</html>
