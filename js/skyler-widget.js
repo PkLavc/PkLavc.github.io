@@ -216,8 +216,20 @@
     });
 
     if (buttons.length) {
+      // When a parent section page is present, collapse individual sub-page buttons
+      var sectionParents = ["https://pklavc.com/projects/", "https://pklavc.com/blog/"];
+      var activeParents = sectionParents.filter(function (p) {
+        return buttons.some(function (b) { return (b.endsWith("/") ? b : b + "/") === p; });
+      });
+      var displayButtons = activeParents.length ? buttons.filter(function (href) {
+        var norm = href.endsWith("/") ? href : href + "/";
+        for (var i = 0; i < activeParents.length; i++) {
+          if (norm !== activeParents[i] && norm.startsWith(activeParents[i])) return false;
+        }
+        return true;
+      }) : buttons;
       html += '<div class="skyler-action-btns">';
-      buttons.forEach(function (href) {
+      displayButtons.forEach(function (href) {
         var isExternal = !href.startsWith("mailto:") && !href.includes("pklavc.com");
         var label = getLinkLabel(href);
         html +=

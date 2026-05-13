@@ -119,6 +119,12 @@
     cursor: text;
 }
 
+#about-chat-widget .about-chat-message,
+#about-chat-widget .about-chat-message * {
+    user-select: text !important;
+    -webkit-user-select: text !important;
+}
+
 .about-chat-message.user {
     margin-left: auto;
     background: rgba(45, 103, 171, 0.34);
@@ -301,6 +307,11 @@
     cursor: pointer;
     transition: background 0.18s, border-color 0.18s, color 0.18s;
     user-select: none !important;
+}
+
+#about-chat-widget .skyler-action-btn {
+    user-select: none !important;
+    -webkit-user-select: none !important;
 }
 
 .skyler-action-btn:hover {

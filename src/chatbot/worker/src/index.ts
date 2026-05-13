@@ -1298,7 +1298,7 @@ function resolveLocalReply(text: string, task: string): { reply: string; reason:
   return null;
 }
 function detectLanguage(text: string): "pt" | "en" | "es" {
-  if (/\b(ola|olá|voce|você|vc|sobre|projeto|projetos|experiencia|experiência|contato|certificado|certificados|certificacao|certificação|trabalho|trabalhos|emprego|empregos|nao|não|sim|empresa|empresas|carreira|cargo|cargos|curso|cursos|fale|fala|como|qual|quais|quem|meu|minha|meus|minhas|seus|suas|tem|tenho|lista|listar|artigo|artigos|publicacao|publicação|portfolio|portfólio|historico|histórico|trajetoria|trajetória|atuacao|atuação|disponivel|disponível|contratar|mensagem|redes|midia|mídia|desenvolvedor|engenheiro|criou|construiu|desenvolveu)\b/i.test(text)) {
+  if (/\b(ola|olá|voce|você|vc|sobre|projeto|projetos|experiencia|experiência|contato|certificado|certificados|certificacao|certificação|trabalho|trabalhos|emprego|empregos|nao|não|sim|empresa|empresas|carreira|cargo|cargos|curso|cursos|fale|fala|como|qual|quais|quem|meu|minha|meus|minhas|seus|suas|tem|tenho|lista|listar|artigo|artigos|publicacao|publicação|postagem|postagens|portfolio|portfólio|historico|histórico|trajetoria|trajetória|atuacao|atuação|disponivel|disponível|contratar|mensagem|redes|midia|mídia|desenvolvedor|engenheiro|criou|construiu|desenvolveu)\b/i.test(text)) {
     return "pt";
   }
 
