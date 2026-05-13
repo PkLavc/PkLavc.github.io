@@ -54,7 +54,7 @@ const MAX_MEMORY_ITEMS = 8;
 const SITE_RAG_CACHE_KEY = "site_rag_cache:v1";
 const SITE_RAG_META_KEY = "site_rag_cache_meta:v1";
 const SITE_RAG_CACHE_TTL_SECONDS = 3600;
-const SITE_RAG_SOURCE_PATHS = ["/", "/about/", "/projects/", "/blog/"];
+const SITE_RAG_SOURCE_PATHS = ["/", "/about/", "/projects/", "/projects/lavc-systems/", "/blog/"];
 const AGENT_NAME = "Skyler";
 const AGENT_PROFILE = "Skyler is a female AI assistant.";
 const INTERNAL_PORTFOLIO_CONTEXT = [
@@ -857,7 +857,7 @@ async function buildPrompt(
     "Behavior: objective and technical responses only.",
     "Behavior: avoid unnecessary long explanations.",
     "Behavior: prioritize precision and context grounding.",
-    "Behavior: reply in the same language as the user's latest message whenever possible.",
+    "CRITICAL LANGUAGE RULE: ALWAYS reply in the exact same language as the user's current message. If the user writes in Portuguese (pt-BR), reply entirely in Portuguese. If in English, reply in English. This rule overrides all other formatting preferences.",
     "Behavior: if greeting only, respond with a short greeting and ask what to explore about Patrick.",
     "RAG policy: prioritize cached site context from pklavc.com as primary source.",
     "RAG policy: then use internal dynamic RAG documents when available.",
@@ -1280,11 +1280,17 @@ function resolveLocalReply(text: string, task: string): { reply: string; reason:
     };
   }
 
+  // If the query names a specific project, integration worker, or blog topic,
+  // skip deterministic local reply and let the LLM answer with full RAG context.
+  if (isSpecificNamedEntityQuery(clean)) {
+    return null;
+  }
+
   // Resolve known RAG sections deterministically to avoid LLM hallucination.
   const section = selectManualRagSection(clean);
   if (section) {
     return {
-      reply: formatManualSectionReply(section.content, lang),
+      reply: formatManualSectionReply(section, lang),
       reason: `manual_rag:${section.key}`,
     };
   }
@@ -1292,11 +1298,11 @@ function resolveLocalReply(text: string, task: string): { reply: string; reason:
   return null;
 }
 function detectLanguage(text: string): "pt" | "en" | "es" {
-  if (/\b(ola|olá|voce|você|sobre|projeto|projetos|experiencia|experiência|contato|certificado|trabalho|nao|não)\b/i.test(text)) {
+  if (/\b(ola|olá|voce|você|vc|sobre|projeto|projetos|experiencia|experiência|contato|certificado|certificados|certificacao|certificação|trabalho|trabalhos|emprego|empregos|nao|não|sim|empresa|empresas|carreira|cargo|cargos|curso|cursos|fale|fala|como|qual|quais|quem|meu|minha|meus|minhas|seus|suas|tem|tenho|lista|listar|artigo|artigos|publicacao|publicação|portfolio|portfólio|historico|histórico|trajetoria|trajetória|atuacao|atuação|disponivel|disponível|contratar|mensagem|redes|midia|mídia|desenvolvedor|engenheiro|criou|construiu|desenvolveu)\b/i.test(text)) {
     return "pt";
   }
 
-  if (/\b(hola|gracias|proyecto|experiencia|contacto|certificado|trabajo)\b/i.test(text)) {
+  if (/\b(hola|gracias|proyecto|proyectos|experiencia|contacto|certificado|trabajo|trabajos|empresa|carrera|cargo|curso|cursos|quién|qué|cómo|disponible|contratar|mensaje|redes)\b/i.test(text)) {
     return "es";
   }
 
@@ -1318,6 +1324,12 @@ function greetingReply(lang: "pt" | "en" | "es"): string {
   return "Hello. What would you like to know today about Patrick?";
 }
 
+function isSpecificNamedEntityQuery(text: string): boolean {
+  // Matches specific project names, integration worker names, or blog-related specifics.
+  // These queries need the LLM + full RAG context for accurate answers.
+  return /\b(lavc|skyler|codepulse|code ?pulse|cipher|aegis|sentinel|zenvia|hablla|sige|omie|zoho|google auth|os resource|multi.?tenant|event.?driven|cloud deployment|gta|aaa|oauth|etl|monorepo|anomaly|pipeline)\b/.test(text);
+}
+
 function isSpecificProjectRequest(text: string): boolean {
   return /\b(auth worker|google auth worker|zoho|hablla|zenvia|sige|omie|codepulse|cipher gate|aegis sentinel|cloud deployment showcase|multi-tenant saas platform)\b/.test(text);
 }
@@ -1331,7 +1343,10 @@ function selectManualRagSection(text: string): { key: string; keywords: string[]
   return null;
 }
 
-function formatManualSectionReply(content: string[], lang: "pt" | "en" | "es"): string {
+function formatManualSectionReply(section: { content: string[]; contentPt?: string[]; contentEs?: string[] }, lang: "pt" | "en" | "es"): string {
+  const content = (lang === "pt" && section.contentPt) ? section.contentPt
+    : (lang === "es" && section.contentEs) ? section.contentEs
+    : section.content;
   if (!content.length) {
     return greetingReply(lang);
   }
