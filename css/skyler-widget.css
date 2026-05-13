@@ -31,7 +31,7 @@
     bottom: 92px;
     z-index: 9999;
     width: min(390px, calc(100vw - 24px));
-    height: min(620px, calc(100vh - 120px));
+    height: min(calc(100vh - 100px), 90vh);
     display: none;
     flex-direction: column;
     border: 1px solid rgba(110, 212, 255, 0.2);
@@ -98,6 +98,8 @@
     flex: 1;
     padding: 16px;
     padding-right: 10px;
+    user-select: text !important;
+    -webkit-user-select: text !important;
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -112,6 +114,9 @@
     line-height: 1.5;
     font-size: 0.95rem;
     white-space: pre-wrap;
+    user-select: text !important;
+    -webkit-user-select: text !important;
+    cursor: text;
 }
 
 .about-chat-message.user {
@@ -215,7 +220,7 @@
         left: 12px;
         bottom: 78px;
         width: auto;
-        height: min(72vh, 620px);
+        height: min(calc(100vh - 80px), 94vh);
     }
 
     .about-chat-widget.is-open {
@@ -260,3 +265,83 @@
 #about-chat-widget .about-chat-action-btn {
     box-shadow: none !important;
 }
+
+/* ── Inline links inside messages ───────────────────────────── */
+.skyler-inline-link {
+    color: #7ecfff;
+    text-decoration: underline;
+    word-break: break-all;
+    cursor: pointer;
+}
+
+.skyler-inline-link:hover {
+    color: #aaddff;
+}
+
+/* ── Action buttons below assistant messages ─────────────────── */
+.skyler-action-btns {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 10px;
+    white-space: normal;
+}
+
+.skyler-action-btn {
+    display: inline-flex;
+    align-items: center;
+    background: rgba(100, 200, 255, 0.1);
+    border: 1px solid rgba(100, 200, 255, 0.28);
+    border-radius: 6px;
+    color: #86d8ff;
+    font-size: 0.82rem;
+    font-weight: 600;
+    padding: 5px 12px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.18s, border-color 0.18s, color 0.18s;
+    user-select: none !important;
+}
+
+.skyler-action-btn:hover {
+    background: rgba(100, 200, 255, 0.22);
+    border-color: rgba(100, 200, 255, 0.5);
+    color: #c0edff;
+}
+
+/* Markdown formatting inside chat messages */
+.about-chat-message strong { font-weight: 700; }
+.about-chat-message em { font-style: italic; }
+.about-chat-message del { text-decoration: line-through; opacity: 0.75; }
+.about-chat-message .skyler-heading {
+    display: block;
+    font-weight: 700;
+    margin-bottom: 3px;
+}
+.about-chat-message code.skyler-code {
+    background: rgba(255,255,255,0.12);
+    border-radius: 3px;
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 0.85em;
+    padding: 1px 5px;
+}
+.about-chat-message pre.skyler-pre {
+    background: rgba(0,0,0,0.35);
+    border-radius: 6px;
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 0.82em;
+    margin: 8px 0;
+    overflow-x: auto;
+    padding: 10px 12px;
+    white-space: pre;
+}
+.about-chat-message pre.skyler-pre code { background: none; padding: 0; }
+.about-chat-message ul.skyler-ul,
+.about-chat-message ol.skyler-ol {
+    margin: 6px 0 6px 18px;
+    padding: 0;
+}
+.about-chat-message ul.skyler-ul { list-style-type: disc; }
+.about-chat-message ol.skyler-ol { list-style-type: decimal; }
+.about-chat-message ul.skyler-ul li,
+.about-chat-message ol.skyler-ol li { margin-bottom: 3px; }

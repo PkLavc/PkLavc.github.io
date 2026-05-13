@@ -90,14 +90,163 @@
     }
   }
 
-  function appendMessage(role, text) {
+  function escapeHtml(s) {
+    return String(s)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  var LINK_LABELS = {
+    "mailto:contact@pklavc.com": "Send Email",
+    "https://www.linkedin.com/in/pklavc/": "Open LinkedIn",
+    "https://github.com/PkLavc": "View GitHub",
+    "https://github.com/PkLavc/": "View GitHub",
+    "https://github.com/sponsors/PkLavc": "Sponsor Patrick",
+    "https://pklavc.com/": "Open Portfolio",
+    "https://pklavc.com/projects/": "Browse Projects",
+    "https://pklavc.com/blog/": "Read Blog",
+    "https://pklavc.com/about/": "About Patrick",
+    "https://pklavc.com/projects/lavc-systems/": "View Lavc Systems",
+    "https://pklavc.com/projects/skyler-assistant/": "View Skyler Assistant",
+    "https://pklavc.com/projects/skyler-assistant/demo/": "Open Skyler Demo",
+    "https://pklavc.com/projects/codepulse-monorepo/": "View CodePulse",
+    "https://pklavc.com/projects/google-auth-worker/": "View Google Auth Worker",
+    "https://pklavc.com/projects/zoho-integration-worker/": "View Zoho Worker",
+    "https://pklavc.com/projects/hablla-integration-worker/": "View Hablla Worker",
+    "https://pklavc.com/projects/zenvia-integration-worker/": "View Zenvia Worker",
+    "https://pklavc.com/projects/sige-integration-worker/": "View SIGE Worker",
+    "https://pklavc.com/projects/omie-integration-worker/": "View Omie Worker",
+    "https://pklavc.com/projects/multi-tenant-saas-platform/": "View SaaS Platform",
+    "https://pklavc.com/projects/cipher-gate-proxy/": "View Cipher Gate",
+    "https://pklavc.com/projects/event-driven-integration-service/": "View Event-Driven Service",
+    "https://pklavc.com/projects/aegis-sentinel/": "View Aegis Sentinel",
+    "https://pklavc.com/projects/cloud-deployment-showcase/": "View Cloud Deployment",
+    "https://pklavc.com/projects/os-resource-optimizer/": "View OS Optimizer",
+    "https://github.com/PkLavc/codepulse-monorepo": "View on GitHub",
+    "https://github.com/PkLavc/codepulse-monorepo/": "View on GitHub",
+  };
+
+  function getLinkLabel(href) {
+    if (LINK_LABELS[href]) return LINK_LABELS[href];
+    var alt = href.endsWith("/") ? href.slice(0, -1) : href + "/";
+    if (LINK_LABELS[alt]) return LINK_LABELS[alt];
+    if (href.startsWith("mailto:")) return "Send Email";
+    if (href.includes("linkedin.com")) return "Open LinkedIn";
+    if (href.includes("github.com/PkLavc") || href.includes("github.com/pklavc")) return "View GitHub";
+    if (href.includes("pklavc.com/projects/")) return "View Project";
+    if (href.includes("pklavc.com/blog/")) return "Read Post";
+    if (href.includes("pklavc.com")) return "Visit Page";
+    return "Visit Link";
+  }
+
+  function parseMarkdown(md) {
+    var out = md;
+    // 1. Fenced code blocks
+    out = out.replace(/```(?:\w*)\n?([\s\S]*?)```/g, function (_, code) {
+      return '<pre class="skyler-pre"><code>' + code.replace(/^[\n]+|[\n]+$/g, "") + "</code></pre>";
+    });
+    // 2. Inline code
+    out = out.replace(/`([^`\n]+)`/g, '<code class="skyler-code">$1</code>');
+    // 3. Headers → bold block
+    out = out.replace(/^#{1,6}\s+(.+)$/gm, '<strong class="skyler-heading">$1</strong>');
+    // 4. Bold
+    out = out.replace(/\*\*([^*\n]+?)\*\*/g, '<strong>$1</strong>');
+    out = out.replace(/__([^_\n]+?)__/g, '<strong>$1</strong>');
+    // 5. Italic
+    out = out.replace(/\*([^*\n]+?)\*/g, '<em>$1</em>');
+    out = out.replace(/_([^_\n]+?)_/g, '<em>$1</em>');
+    // 6. Strikethrough
+    out = out.replace(/~~([^~\n]+?)~~/g, '<del>$1</del>');
+    // 7. Unordered lists
+    out = out.replace(/((?:^[*\-+] .+$\n?)+)/gm, function (block) {
+      var items = block.trim().split("\n").map(function (line) {
+        return "<li>" + line.replace(/^[*\-+] /, "") + "</li>";
+      });
+      return '<ul class="skyler-ul">' + items.join("") + "</ul>";
+    });
+    // 8. Ordered lists
+    out = out.replace(/((?:^\d+\.\s+.+$\n?)+)/gm, function (block) {
+      var items = block.trim().split("\n").map(function (line) {
+        return "<li>" + line.replace(/^\d+\.\s+/, "") + "</li>";
+      });
+      return '<ol class="skyler-ol">' + items.join("") + "</ol>";
+    });
+    // 9. Newlines to <br>
+    out = out.replace(/\n/g, "<br>");
+    return out;
+  }
+
+  function renderMessageContent(text) {
+    var seenHrefs = Object.create(null);
+    var buttons = [];
+
+    function trackHref(href) {
+      var key = href.endsWith("/") ? href : href + "/";
+      if (seenHrefs[key] || seenHrefs[href]) return false;
+      seenHrefs[key] = seenHrefs[href] = true;
+      return true;
+    }
+
+    // Escape HTML first so user-supplied text cannot inject markup
+    var html = escapeHtml(text);
+
+    // Parse markdown formatting
+    html = parseMarkdown(html);
+
+    // Replace email addresses
+    html = html.replace(/([a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,})/g, function (email) {
+      var href = "mailto:" + email;
+      if (trackHref(href)) buttons.push(href);
+      return '<a href="' + href + '" class="skyler-inline-link">' + email + "</a>";
+    });
+
+    // Replace https URLs (strip trailing punctuation)
+    html = html.replace(/(https?:\/\/[^\s<>"']+)/g, function (raw) {
+      var clean = raw.replace(/[.,;:!?'")\]]+$/, "");
+      var tail = raw.slice(clean.length);
+      if (trackHref(clean)) buttons.push(clean);
+      return (
+        '<a href="' + clean + '" class="skyler-inline-link" target="_blank" rel="noopener noreferrer">' +
+        clean +
+        "</a>" +
+        (tail ? escapeHtml(tail) : "")
+      );
+    });
+
+    if (buttons.length) {
+      html += '<div class="skyler-action-btns">';
+      buttons.forEach(function (href) {
+        var isExternal = !href.startsWith("mailto:") && !href.includes("pklavc.com");
+        var label = getLinkLabel(href);
+        html +=
+          '<a href="' +
+          href +
+          '" class="skyler-action-btn"' +
+          (isExternal ? ' target="_blank" rel="noopener noreferrer"' : "") +
+          ">" +
+          escapeHtml(label) +
+          "</a>";
+      });
+      html += "</div>";
+    }
+
+    return html;
+  }
+
+  function appendMessage(role, text, rawText) {
     if (!els.log) {
       return null;
     }
 
     var node = document.createElement("article");
     node.className = "about-chat-message " + role;
-    node.textContent = text;
+    if (rawText) {
+      node.textContent = text;
+    } else {
+      node.innerHTML = renderMessageContent(text);
+    }
     els.log.appendChild(node);
     els.log.scrollTop = els.log.scrollHeight;
     return node;
@@ -222,9 +371,9 @@
 
     els.input.value = "";
     autoResizeInput();
-    appendMessage("user", text);
+    appendMessage("user", text, true);
     setStatus("Skyler is thinking...");
-    var thinking = appendMessage("assistant", "Thinking...");
+    var thinking = appendMessage("assistant", "Thinking...", true);
 
     try {
       var res = await fetch(state.apiBase + "/chat", {
@@ -247,7 +396,7 @@
       state.conversationId = data.conversation_id || state.conversationId;
       saveSession();
       if (thinking) {
-        thinking.textContent = data.reply || "No response.";
+        thinking.innerHTML = renderMessageContent(data.reply || "No response.");
       }
       setStatus("Skyler is ready.");
       speakIfEnabled(data.reply || "");

@@ -835,7 +835,9 @@ async function buildPrompt(
     "Formatting rule: respond in plain text paragraphs; when listing items, use simple lines without table syntax.",
     "Source rule: do not mention raw source labels like 'extraido do linkedin' or 'extracted from LinkedIn' unless user explicitly asks for the source.",
     "When user asks about courses, provide only course/certification names in plain text.",
-    "When user asks about companies/work history, answer directly with known companies and role context.",
+    "EMPLOYMENT RULE: Patrick has worked at exactly 3 companies: (1) Loja do Sapo — e-commerce, Solutions Architect; (2) iCaiu — tech/operations, Systems Integration Architect; (3) WR Auto Pecas — auto parts, early career. These are the ONLY employers. List nothing else as work history.",
+    "EMPLOYMENT RULE: Google, AWS, Datadog, and Coursera are ONLY certification/training providers. Patrick has NEVER worked at Google, AWS, or Datadog as an employee. Never list them as jobs or work history.",
+    "EMPLOYMENT RULE: 'PkLavc' and 'pklavc.com' are Patrick's personal portfolio handle and website, NOT a company he works at or founded. There is no company called 'Plavc'. Patrick does not hold a CEO title.",
     "When user asks about projects, cite projects and describe them in plain text, not tables.",
   ];
 
@@ -1278,8 +1280,15 @@ function resolveLocalReply(text: string, task: string): { reply: string; reason:
     };
   }
 
-  // Keep local logic intentionally minimal.
-  // All non-greeting queries go to LLM, with RAG used only as contextual grounding when relevant.
+  // Resolve known RAG sections deterministically to avoid LLM hallucination.
+  const section = selectManualRagSection(clean);
+  if (section) {
+    return {
+      reply: formatManualSectionReply(section.content, lang),
+      reason: `manual_rag:${section.key}`,
+    };
+  }
+
   return null;
 }
 function detectLanguage(text: string): "pt" | "en" | "es" {
