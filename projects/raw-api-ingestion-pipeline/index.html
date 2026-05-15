@@ -16,18 +16,18 @@
     <meta property="og:description" content="Node.js data ingestion architecture for capturing raw API payloads from Hablla, Zoho Creator, Zenvia, and SIGE into Supabase raw_* SQL tables.">
     <meta property="og:url" content="https://pklavc.com/projects/raw-api-ingestion-pipeline/">
     <meta property="og:type" content="website">
-    <meta property="og:image" content="https://pklavc.com/images/Lavc.webp">
-    <meta property="og:image:width" content="1200">
-    <meta property="og:image:height" content="630">
+    <meta property="og:image" content="https://pklavc.com/projects/raw-api-ingestion-pipeline/assets/lavc-ai-operation-dashboard.webp">
+    <meta property="og:image:width" content="1280">
+    <meta property="og:image:height" content="548">
     <meta property="og:site_name" content="Patrick Araujo Portfolio">
     <meta property="og:locale" content="en_US">
-    <meta property="og:image:alt" content="Brand portrait of backend engineer and automation specialist Patrick Araujo">
+    <meta property="og:image:alt" content="Operational data ingestion dashboard for scheduled API workers and Supabase raw SQL pipelines">
 
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Raw API Ingestion Pipeline | Supabase Raw API Ingestion Pipeline">
     <meta name="twitter:description" content="GitHub Actions and Node.js workers ingest raw API payloads into Supabase SQL tables for reprocessable analytics.">
-    <meta name="twitter:image" content="https://pklavc.com/images/Lavc.webp">
-    <meta name="twitter:image:alt" content="Brand portrait of backend engineer and automation specialist Patrick Araujo">
+    <meta name="twitter:image" content="https://pklavc.com/projects/raw-api-ingestion-pipeline/assets/lavc-ai-operation-dashboard.webp">
+    <meta name="twitter:image:alt" content="Operational data ingestion dashboard for scheduled API workers and Supabase raw SQL pipelines">
     <meta name="twitter:site" content="@PkLavc">
     <meta name="twitter:creator" content="@PkLavc">
 
@@ -41,6 +41,7 @@
                 "headline": "Raw API Ingestion Pipeline",
                 "description": "Node.js 20 data ingestion project that collects raw payloads from Hablla, Zoho Creator, Zenvia Voice, and SIGE ERP APIs, then stores them in Supabase raw_* SQL tables with idempotent external IDs and scheduled GitHub Actions workflows.",
                 "url": "https://pklavc.com/projects/raw-api-ingestion-pipeline/",
+                "image": "https://pklavc.com/projects/raw-api-ingestion-pipeline/assets/lavc-ai-operation-dashboard.webp",
                 "programmingLanguage": "JavaScript",
                 "runtimePlatform": "Node.js 20, GitHub Actions",
                 "keywords": [
@@ -235,6 +236,49 @@
             transform: translateY(-2px);
             box-shadow: 0 10px 30px rgba(100, 200, 255, 0.3);
         }
+        .project-visual-section {
+            padding: 36px 20px;
+            background: rgba(255, 255, 255, 0.02);
+        }
+        .project-visual-container {
+            max-width: 1040px;
+            margin: 0 auto;
+        }
+        .project-visual-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 16px;
+        }
+        .project-visual-grid-secondary {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 16px;
+        }
+        .project-visual-card {
+            margin: 0;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 10px;
+            overflow: hidden;
+            background: #0d1117;
+        }
+        .project-visual-card img {
+            display: block;
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+        }
+        .project-visual-card figcaption {
+            padding: 12px 14px;
+            color: #bfcbd3;
+            line-height: 1.6;
+            font-size: 0.92rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        @media (max-width: 860px) {
+            .project-visual-grid-secondary {
+                grid-template-columns: 1fr;
+            }
+        }
     </style>
 </head>
 <body>
@@ -262,6 +306,27 @@
                 <span class="project-category-badge">Data Engineering</span>
                 <h1>Raw API Ingestion Pipeline</h1>
                 <p>Node.js workers scheduled by GitHub Actions collect raw operational data from Hablla, Zoho Creator, Zenvia Voice, and SIGE ERP APIs, then persist reprocessable payloads into Supabase SQL raw tables.</p>
+            </section>
+
+            <section class="project-visual-section" aria-label="Raw API ingestion operational visuals">
+                <div class="project-visual-container">
+                    <div class="project-visual-grid">
+                        <figure class="project-visual-card">
+                            <img src="assets/lavc-ai-operation-dashboard.webp" width="1280" height="548" alt="Operational dashboard view for scheduled API ingestion workers and Supabase raw data monitoring" loading="eager" decoding="async">
+                            <figcaption>Operational view for scheduled API collection, raw table status, and data freshness checks across ingestion jobs.</figcaption>
+                        </figure>
+                        <div class="project-visual-grid-secondary">
+                            <figure class="project-visual-card">
+                                <img src="assets/lavc-ai-agent-orchestration-graph.webp" width="1280" height="550" alt="Orchestration graph showing API ingestion workers connected to downstream raw storage and analytics layers" loading="lazy" decoding="async">
+                                <figcaption>Worker orchestration map connecting source APIs, raw storage, and downstream SQL analytics.</figcaption>
+                            </figure>
+                            <figure class="project-visual-card">
+                                <img src="assets/lavc-ai-system-control-metrics.webp" width="1280" height="546" alt="System control metrics panel for API ingestion jobs, reliability signals, and execution health" loading="lazy" decoding="async">
+                                <figcaption>Control metrics highlight execution health, replay safety, and operational reliability signals.</figcaption>
+                            </figure>
+                        </div>
+                    </div>
+                </div>
             </section>
 
             <section class="project-context-section" aria-label="Project SEO context">

@@ -13,9 +13,10 @@
     <meta property="og:description" content="Node.js backend engineering project for code execution APIs, CI workflows, and automation quality controls in a high-performance monorepo.">
     <meta property="og:url" content="https://pklavc.com/projects/codepulse-monorepo/">
     <meta property="og:type" content="website">
-    <meta property="og:image" content="https://pklavc.com/images/Lavc.webp">
-    <meta property="og:image:width" content="1200">
-    <meta property="og:image:height" content="630">
+    <meta property="og:image" content="https://pklavc.com/projects/codepulse-monorepo/assets/codepulse-online-compiler-ide.webp">
+    <meta property="og:image:width" content="1280">
+    <meta property="og:image:height" content="720">
+    <meta property="og:image:alt" content="CodePulse online compiler IDE interface with code editor and execution workspace">
     <meta property="og:site_name" content="Patrick Araujo Portfolio">
     <meta property="og:locale" content="en_US">
     
@@ -23,8 +24,8 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="CodePulse Monorepo | Vanilla JavaScript | Patrick Araujo">
     <meta name="twitter:description" content="Node.js backend engineering project for code execution APIs, CI workflows, and automation quality controls in a high-performance monorepo.">
-    <meta name="twitter:image" content="https://pklavc.com/images/Lavc.webp">
-    <meta name="twitter:image:alt" content="Brand portrait of backend engineer and automation specialist Patrick Araujo">
+    <meta name="twitter:image" content="https://pklavc.com/projects/codepulse-monorepo/assets/codepulse-online-compiler-ide.webp">
+    <meta name="twitter:image:alt" content="CodePulse online compiler IDE interface with code editor and execution workspace">
     <meta name="twitter:site" content="@PkLavc">
     <meta name="twitter:creator" content="@PkLavc">
     
@@ -56,6 +57,7 @@
         "@type": "Article",
         "headline": "CodePulse Monorepo | Vanilla JavaScript",
         "description": "CodePulse Monorepo built with Vanilla JavaScript. High-performance online IDE built as a standalone HTML application with robust Node.js backend and 85%+ QA coverage",
+        "image": "https://pklavc.com/projects/codepulse-monorepo/assets/codepulse-online-compiler-ide.webp",
         "author": {
             "@type": "Person",
             "name": "Patrick Araujo"
@@ -166,7 +168,30 @@
         .project-context-section h2, .project-context-section h3, .related-projects-section h2 { color: #fff; }
         .project-context-section p, .project-context-section li, .related-projects-section p, .related-projects-section li { color: #d0d0d0; line-height: 1.7; }
         .project-context-section a, .related-projects-section a { color: #64c8ff; }
-        .related-projects-section { padding: 32px 20px; background: rgba(255, 255, 255, 0.03); }    </style>
+        .related-projects-section { padding: 32px 20px; background: rgba(255, 255, 255, 0.03); }
+        .project-visual-section { padding: 34px 20px; background: rgba(255, 255, 255, 0.02); }
+        .project-visual-container { max-width: 1000px; margin: 0 auto; }
+        .project-visual-frame {
+            margin: 0;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 10px;
+            overflow: hidden;
+            background: #0d1117;
+        }
+        .project-visual-frame img {
+            display: block;
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+        }
+        .project-visual-frame figcaption {
+            padding: 12px 14px;
+            color: #bfcbd3;
+            line-height: 1.6;
+            font-size: 0.95rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+    </style>
     <link rel="preload" as="style" href="../../css/github-markdown-local.css?v=20260511">
     <link rel="stylesheet" href="../../css/github-markdown-local.css?v=20260511" media="print" onload="this.media='all'">
     <noscript><link rel="stylesheet" href="../../css/github-markdown-local.css?v=20260511"></noscript>
@@ -196,6 +221,15 @@
                 <span class="project-category-badge">Full-Stack Engineering</span>
                 <h1>CodePulse Monorepo | Vanilla JavaScript</h1>
                 <p style="color: #aaa; font-size: 1.1rem; margin-top: 15px;">High-performance online IDE built as a standalone HTML application with robust Node.js backend and 85%+ QA coverage</p>
+            </section>
+
+            <section class="project-visual-section" aria-label="CodePulse interface screenshot">
+                <div class="project-visual-container">
+                    <figure class="project-visual-frame">
+                        <img src="assets/codepulse-online-compiler-ide.webp" width="1280" height="720" alt="CodePulse online compiler IDE interface showing the code editor, language execution controls, and output workspace" loading="eager" decoding="async">
+                        <figcaption>CodePulse packages a browser IDE experience with a Node.js execution API, making the frontend, backend, and QA workflow visible as one monorepo product surface.</figcaption>
+                    </figure>
+                </div>
             </section>
 
             <section class="project-context-section" aria-label="Project SEO context"><div class="project-context-container"><h2>Problem Context, Stack, and System Type</h2><p>This project demonstrates node.js backend engineering patterns in a monorepo setup with execution APIs and quality automation workflows, including test coverage and CI behavior.</p><h3>Technical Scope</h3><ul><li><strong>Stack:</strong> JavaScript, Node.js, Fastify, Playwright, CI workflows</li><li><strong>System Type:</strong> node.js api backend, automation system, delivery pipeline</li><li><strong>Keywords in context:</strong> javascript developer, node.js backend, automation</li></ul><p>Related backend projects: <a href="/projects/multi-tenant-saas-platform/">Multi-Tenant SaaS Platform</a> and <a href="/projects/event-driven-integration-service/">Event-Driven Integration Service</a>.</p></div></section>
@@ -633,7 +667,3 @@ VITE_APP_NAME=CodePulse
     <script src="../../js/index.js?v=20260511" defer></script>
 </body>
 </html>
-
-
-
-
