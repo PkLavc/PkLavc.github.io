@@ -11,11 +11,15 @@
     <meta property="og:description" content="Local platform for AI agent orchestration, RAG, hybrid memory, autonomous goals, and Kanban-driven task management — running fully on your machine with Ollama.">
     <meta property="og:url" content="https://pklavc.com/projects/lavc-systems/">
     <meta property="og:type" content="website">
-    <meta property="og:image" content="https://pklavc.com/images/Lavc.webp">
+    <meta property="og:image" content="https://pklavc.com/projects/lavc-systems/assets/lavc-ai-operation-dashboard.webp">
+    <meta property="og:image:width" content="1280">
+    <meta property="og:image:height" content="548">
+    <meta property="og:image:alt" content="Lavc Systems local AI platform operation dashboard with agent orchestration and system controls">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Lavc Systems | Local AI Orchestration Platform | Patrick Araujo">
     <meta name="twitter:description" content="Read more about the Lavc Systems architecture: multi-agent LangGraph, ChromaDB RAG, HybridMemory, Kanban, and real-time WebSocket events.">
-    <meta name="twitter:image" content="https://pklavc.com/images/Lavc.webp">
+    <meta name="twitter:image" content="https://pklavc.com/projects/lavc-systems/assets/lavc-ai-operation-dashboard.webp">
+    <meta name="twitter:image:alt" content="Lavc Systems local AI platform operation dashboard with agent orchestration and system controls">
     <link rel="canonical" href="https://pklavc.com/projects/lavc-systems/">
     <meta name="robots" content="index, follow">
 
@@ -137,6 +141,49 @@
         .stack-table tr:hover td {
             background: rgba(255,255,255,0.02);
         }
+        .project-visual-section {
+            padding: 36px 20px;
+            background: rgba(255, 255, 255, 0.02);
+        }
+        .project-visual-container {
+            max-width: 1040px;
+            margin: 0 auto;
+        }
+        .project-visual-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 16px;
+        }
+        .project-visual-grid-secondary {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 16px;
+        }
+        .project-visual-card {
+            margin: 0;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 10px;
+            overflow: hidden;
+            background: #0d1117;
+        }
+        .project-visual-card img {
+            display: block;
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+        }
+        .project-visual-card figcaption {
+            padding: 12px 14px;
+            color: #bfcbd3;
+            line-height: 1.6;
+            font-size: 0.92rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        @media (max-width: 860px) {
+            .project-visual-grid-secondary {
+                grid-template-columns: 1fr;
+            }
+        }
         .cta-section {
             padding: 40px 20px 60px;
             text-align: center;
@@ -180,8 +227,32 @@
         <main role="main">
             <section class="project-hero">
                 <span class="project-category-badge">AI Platform</span>
-                <h1>Lavc Systems</h1>
+                <div class="project-hero-title">
+                    <img src="/images/lavc.webp" alt="" class="project-hero-logo" width="76" height="76" loading="eager" decoding="async">
+                    <h1>Lavc Systems</h1>
+                </div>
                 <p style="color: #aaa; font-size: 1.1rem; margin-top: 15px;">Local multi-agent AI orchestration platform with RAG, Kanban task management, autonomous goals, and real-time observability.</p>
+            </section>
+
+            <section class="project-visual-section" aria-label="Lavc Systems interface visuals">
+                <div class="project-visual-container">
+                    <div class="project-visual-grid">
+                        <figure class="project-visual-card">
+                            <img src="assets/lavc-ai-operation-dashboard.webp" width="1280" height="548" alt="Lavc Systems operation dashboard showing local AI agents, task status, and observability signals" loading="eager" decoding="async">
+                            <figcaption>Operation dashboard for local AI agents, autonomous tasks, system status, and real-time observability.</figcaption>
+                        </figure>
+                        <div class="project-visual-grid-secondary">
+                            <figure class="project-visual-card">
+                                <img src="assets/lavc-ai-agent-orchestration-graph.webp" width="1280" height="550" alt="Lavc Systems agent orchestration graph with multi-agent workflow nodes and execution paths" loading="lazy" decoding="async">
+                                <figcaption>Agent orchestration graph showing how coordinator, specialist agents, memory, and tools move through a workflow.</figcaption>
+                            </figure>
+                            <figure class="project-visual-card">
+                                <img src="assets/lavc-ai-system-control-metrics.webp" width="1280" height="546" alt="Lavc Systems control metrics panel for local LLM runtime, memory, scheduler, and execution health" loading="lazy" decoding="async">
+                                <figcaption>Control metrics make local LLM runtime, scheduler health, memory usage, and execution signals visible.</figcaption>
+                            </figure>
+                        </div>
+                    </div>
+                </div>
             </section>
 
             <section class="full-readme-section" aria-label="Lavc Systems documentation">
