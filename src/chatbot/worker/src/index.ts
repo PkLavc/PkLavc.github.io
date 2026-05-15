@@ -51,10 +51,10 @@ type AuthUser = {
 
 const encoder = new TextEncoder();
 const MAX_MEMORY_ITEMS = 8;
-const SITE_RAG_CACHE_KEY = "site_rag_cache:v1";
-const SITE_RAG_META_KEY = "site_rag_cache_meta:v1";
+const SITE_RAG_CACHE_KEY = "site_rag_cache:v2";
+const SITE_RAG_META_KEY = "site_rag_cache_meta:v2";
 const SITE_RAG_CACHE_TTL_SECONDS = 3600;
-const SITE_RAG_SOURCE_PATHS = ["/", "/about/", "/projects/", "/projects/lavc-systems/", "/blog/"];
+const SITE_RAG_SOURCE_PATHS = ["/", "/about/", "/projects/", "/projects/lavc-systems/", "/projects/raw-api-ingestion-pipeline/", "/blog/", "/blog/raw-api-ingestion-supabase-sql/"];
 const AGENT_NAME = "Skyler";
 const AGENT_PROFILE = "Skyler is a female AI assistant.";
 const INTERNAL_PORTFOLIO_CONTEXT = [
@@ -1327,11 +1327,11 @@ function greetingReply(lang: "pt" | "en" | "es"): string {
 function isSpecificNamedEntityQuery(text: string): boolean {
   // Matches specific project names, integration worker names, or blog-related specifics.
   // These queries need the LLM + full RAG context for accurate answers.
-  return /\b(lavc|skyler|codepulse|code ?pulse|cipher|aegis|sentinel|zenvia|hablla|sige|omie|zoho|google auth|os resource|multi.?tenant|event.?driven|cloud deployment|gta|aaa|oauth|etl|monorepo|anomaly|pipeline)\b/.test(text);
+  return /\b(lavc|skyler|raw api|raw data|supabase|codepulse|code ?pulse|cipher|aegis|sentinel|zenvia|hablla|sige|omie|zoho|google auth|os resource|multi.?tenant|event.?driven|cloud deployment|gta|aaa|oauth|etl|monorepo|anomaly|pipeline)\b/.test(text);
 }
 
 function isSpecificProjectRequest(text: string): boolean {
-  return /\b(auth worker|google auth worker|zoho|hablla|zenvia|sige|omie|codepulse|cipher gate|aegis sentinel|cloud deployment showcase|multi-tenant saas platform)\b/.test(text);
+  return /\b(raw api ingestion|auth worker|google auth worker|zoho|hablla|zenvia|sige|omie|codepulse|cipher gate|aegis sentinel|cloud deployment showcase|multi-tenant saas platform)\b/.test(text);
 }
 
 function selectManualRagSection(text: string): { key: string; keywords: string[]; content: string[] } | null {

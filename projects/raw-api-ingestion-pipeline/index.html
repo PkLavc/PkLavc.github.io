@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="PkLavc" />
+    <title>Raw API Ingestion Pipeline | Supabase SQL Architecture | Patrick Araujo</title>
+
+    <meta name="description" content="A Node.js raw API ingestion pipeline using GitHub Actions, Supabase, SQL raw tables, idempotent external IDs, and scheduled workers for Hablla, Zoho Creator, Zenvia Voice, and SIGE ERP APIs.">
+    <meta name="keywords" content="Raw API Ingestion Pipeline, raw API ingestion, Supabase SQL architecture, Node.js data pipeline, GitHub Actions ETL, Hablla API, Zoho Creator API, Zenvia Voice API, SIGE ERP API, raw tables, data engineering, API integration architecture">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://pklavc.com/projects/raw-api-ingestion-pipeline/">
+    <link rel="alternate" href="https://pklavc.com/projects/raw-api-ingestion-pipeline/" hreflang="en">
+
+    <meta property="og:title" content="Raw API Ingestion Pipeline | Patrick Araujo">
+    <meta property="og:description" content="Node.js data ingestion architecture for capturing raw API payloads from Hablla, Zoho Creator, Zenvia, and SIGE into Supabase raw_* SQL tables.">
+    <meta property="og:url" content="https://pklavc.com/projects/raw-api-ingestion-pipeline/">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://pklavc.com/images/Lavc.webp">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:site_name" content="Patrick Araujo Portfolio">
+    <meta property="og:locale" content="en_US">
+    <meta property="og:image:alt" content="Brand portrait of backend engineer and automation specialist Patrick Araujo">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Raw API Ingestion Pipeline | Supabase Raw API Ingestion Pipeline">
+    <meta name="twitter:description" content="GitHub Actions and Node.js workers ingest raw API payloads into Supabase SQL tables for reprocessable analytics.">
+    <meta name="twitter:image" content="https://pklavc.com/images/Lavc.webp">
+    <meta name="twitter:image:alt" content="Brand portrait of backend engineer and automation specialist Patrick Araujo">
+    <meta name="twitter:site" content="@PkLavc">
+    <meta name="twitter:creator" content="@PkLavc">
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@graph": [
+            {
+                "@type": "SoftwareSourceCode",
+                "name": "Raw API Ingestion Pipeline",
+                "headline": "Raw API Ingestion Pipeline",
+                "description": "Node.js 20 data ingestion project that collects raw payloads from Hablla, Zoho Creator, Zenvia Voice, and SIGE ERP APIs, then stores them in Supabase raw_* SQL tables with idempotent external IDs and scheduled GitHub Actions workflows.",
+                "url": "https://pklavc.com/projects/raw-api-ingestion-pipeline/",
+                "programmingLanguage": "JavaScript",
+                "runtimePlatform": "Node.js 20, GitHub Actions",
+                "keywords": [
+                    "raw api ingestion",
+                    "supabase sql architecture",
+                    "github actions etl",
+                    "hablla api integration",
+                    "zoho creator api integration",
+                    "zenvia voice api integration",
+                    "sige erp api integration",
+                    "raw tables",
+                    "idempotent data pipeline"
+                ],
+                "author": {
+                    "@type": "Person",
+                    "name": "Patrick Araujo",
+                    "url": "https://pklavc.com/"
+                }
+            },
+            {
+                "@type": "BreadcrumbList",
+                "itemListElement": [
+                    {
+                        "@type": "ListItem",
+                        "position": 1,
+                        "name": "Home",
+                        "item": "https://pklavc.com/"
+                    },
+                    {
+                        "@type": "ListItem",
+                        "position": 2,
+                        "name": "Projects",
+                        "item": "https://pklavc.com/projects/"
+                    },
+                    {
+                        "@type": "ListItem",
+                        "position": 3,
+                        "name": "Raw API Ingestion Pipeline",
+                        "item": "https://pklavc.com/projects/raw-api-ingestion-pipeline/"
+                    }
+                ]
+            }
+        ]
+    }
+    </script>
+
+    <link rel="icon" type="image/svg+xml" href="https://pklavc.com/images/favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Monoton&family=Poppins:wght@500&family=Raleway:wght@300&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Monoton&family=Poppins:wght@500&family=Raleway:wght@300&display=swap"></noscript>
+    <link rel="stylesheet" href="../../css/global.css?v=20260511">
+    <link rel="stylesheet" href="../../css/projects.css?v=20260511">
+    <link rel="preload" as="style" href="../../css/github-markdown-local.css?v=20260511">
+    <link rel="stylesheet" href="../../css/github-markdown-local.css?v=20260511" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="../../css/github-markdown-local.css?v=20260511"></noscript>
+
+    <style>
+        .project-hero {
+            padding: 64px 20px;
+            text-align: center;
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.12), rgba(0, 0, 0, 0.04));
+        }
+        .project-hero h1 {
+            font-size: clamp(2rem, 5vw, 3rem);
+            margin: 18px 0;
+            color: #fff;
+            line-height: 1.08;
+        }
+        .project-hero p {
+            color: #aaa;
+            font-size: 1.08rem;
+            max-width: 850px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+        .project-category-badge {
+            display: inline-block;
+            background: rgba(100, 200, 255, 0.2);
+            border: 1px solid rgba(100, 200, 255, 0.5);
+            color: #64c8ff;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin-bottom: 16px;
+        }
+        .project-context-section,
+        .system-map-section,
+        .full-readme-section,
+        .tech-stack-section {
+            padding: 42px 20px;
+        }
+        .project-context-section {
+            background: rgba(100, 200, 255, 0.06);
+        }
+        .project-context-container,
+        .full-readme-container {
+            max-width: 1040px;
+            margin: 0 auto;
+        }
+        .project-context-section h2,
+        .project-context-section h3,
+        .system-map-section h2,
+        .tech-stack-section h2 {
+            color: #fff;
+            margin-bottom: 16px;
+        }
+        .project-context-section p,
+        .project-context-section li {
+            color: #d0d0d0;
+            line-height: 1.8;
+        }
+        .project-context-section a,
+        .system-map-section a {
+            color: #64c8ff;
+        }
+        .meta-grid,
+        .integration-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 14px;
+            margin: 20px 0;
+        }
+        .meta-item,
+        .integration-item {
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 8px;
+            padding: 14px;
+            background: rgba(255, 255, 255, 0.03);
+            color: #cfcfcf;
+            line-height: 1.65;
+        }
+        .meta-item strong,
+        .integration-item strong {
+            display: block;
+            color: #fff;
+            margin-bottom: 6px;
+        }
+        .architecture-flow {
+            margin-top: 20px;
+            padding: 18px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 10px;
+            background: #0d1117;
+            color: #d7e6ee;
+            overflow-x: auto;
+        }
+        .architecture-flow code {
+            white-space: pre;
+            font-family: Consolas, Monaco, "Courier New", monospace;
+            color: #d7e6ee;
+        }
+        .full-readme-section {
+            background: rgba(255, 255, 255, 0.02);
+        }
+        .full-readme-container .markdown-body {
+            background: #0d1117;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 10px;
+            padding: 24px;
+        }
+        .tech-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+        }
+        .tech-tag {
+            background: rgba(100, 200, 255, 0.1);
+            border: 1px solid rgba(100, 200, 255, 0.3);
+            color: #64c8ff;
+            padding: 12px 16px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 0.95rem;
+        }
+        .cta-section {
+            padding: 58px 20px;
+            text-align: center;
+        }
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #64c8ff, #00d4ff);
+            color: #000;
+            padding: 16px 40px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(100, 200, 255, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div id="breaker"></div>
+    <div id="breaker-two"></div>
+    <div id="all">
+        <div id="navigation-content" role="navigation" aria-label="Primary navigation">
+            <div class="logo"></div>
+            <div class="navigation-links">
+                <a href="/" data-text="HOME">HOME</a>
+                <a href="/about/" data-text="ABOUT">ABOUT</a>
+                <a href="/projects/" data-text="PROJECTS">PROJECTS</a>
+            </div>
+        </div>
+        <div id="navigation-bar">
+            <div class="menubar">
+                <span class="first-span"></span>
+                <span class="second-span"></span>
+                <span class="third-span"></span>
+            </div>
+        </div>
+
+        <main role="main">
+            <section class="project-hero">
+                <span class="project-category-badge">Data Engineering</span>
+                <h1>Raw API Ingestion Pipeline</h1>
+                <p>Node.js workers scheduled by GitHub Actions collect raw operational data from Hablla, Zoho Creator, Zenvia Voice, and SIGE ERP APIs, then persist reprocessable payloads into Supabase SQL raw tables.</p>
+            </section>
+
+            <section class="project-context-section" aria-label="Project SEO context">
+                <div class="project-context-container">
+                    <h2>Problem Context, APIs, SQL Storage, and Architecture</h2>
+                    <p>Raw API Ingestion Pipeline solves a data engineering problem that appears in many operational environments: third-party APIs are the source of truth, but analytics and reporting need a reliable raw layer that can be replayed, audited, and modeled later. The project keeps ingestion separate from business modeling so API payloads remain available even when SQL transformations, BI dashboards, and operational rules change.</p>
+                    <div class="meta-grid">
+                        <div class="meta-item"><strong>Runtime</strong>Node.js 20 workers executed locally or by GitHub Actions.</div>
+                        <div class="meta-item"><strong>Storage</strong>Supabase/PostgreSQL raw_* tables with raw payload retention.</div>
+                        <div class="meta-item"><strong>APIs</strong>Hablla persons/cards/services, Zoho Creator leads/scheduling, Zenvia Voice, SIGE ERP billing.</div>
+                        <div class="meta-item"><strong>Reliability</strong>Idempotent external_id values, replayable windows, workflow_dispatch, sanitized logs.</div>
+                    </div>
+                    <h3>Technical Scope</h3>
+                    <ul>
+                        <li><strong>Stack:</strong> JavaScript, Node.js 20, GitHub Actions, Supabase, PostgreSQL, SQL, REST APIs, OAuth, cron scheduling.</li>
+                        <li><strong>System Type:</strong> raw data ingestion pipeline, API integration system, analytics staging layer, backend automation workflow.</li>
+                        <li><strong>SEO context:</strong> Supabase SQL architecture, raw JSON payload storage, ETL pipeline design, API data extraction, idempotent ingestion, CRM and ERP API integration.</li>
+                    </ul>
+                    <p>Related work: <a href="/projects/zoho-integration-worker/">Zoho Integration Worker</a>, <a href="/projects/hablla-integration-worker/">Hablla Integration Worker</a>, <a href="/projects/zenvia-integration-worker/">Zenvia Integration Worker</a>, and <a href="/projects/sige-integration-worker/">SIGE Integration Worker</a>.</p>
+                </div>
+            </section>
+
+            <section class="system-map-section" aria-label="Raw API Ingestion Pipeline system architecture">
+                <div class="project-context-container">
+                    <h2>Architecture at a Glance</h2>
+                    <div class="architecture-flow" aria-label="Architecture flow">
+<code>GitHub Actions / Local Runner
+  -> Node.js ingestion workers
+  -> Hablla API | Zoho Creator API | Zenvia Voice API | SIGE ERP API
+  -> Supabase PostgreSQL raw_* tables
+  -> SQL-derived layers, analytics, BI, and operational reporting</code>
+                    </div>
+                    <div class="integration-grid">
+                        <div class="integration-item"><strong>Hablla Clients</strong>Persons endpoint to raw_contact_hablla with client-{id} external IDs.</div>
+                        <div class="integration-item"><strong>Hablla Cards</strong>Cards endpoint to raw_events_hablla with replayable day windows.</div>
+                        <div class="integration-item"><strong>Hablla Attendants</strong>Daily services summary to raw_cs_avaliacao_atendimento to avoid period aggregation errors.</div>
+                        <div class="integration-item"><strong>Zenvia Calls</strong>Voice call reports to raw_contact_telefonia for operational telephony analytics.</div>
+                        <div class="integration-item"><strong>SIGE Faturamento</strong>Billed orders to raw_events_faturado with pedido-{Codigo} external IDs.</div>
+                        <div class="integration-item"><strong>Zoho Leads</strong>Creator lead records to raw_contact_site with full and recent sync modes.</div>
+                        <div class="integration-item"><strong>Zoho Scheduling</strong>Scheduling records to raw_events_agendamento with month and recent windows.</div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="full-readme-section" aria-label="Full project documentation">
+                <div class="full-readme-container">
+                    <h2 style="color:#fff; margin-bottom:20px;">Project Documentation</h2>
+                    <article class="markdown-body">
+                        <h2>Raw API Ingestion Pipeline</h2>
+                        <p><img src="https://img.shields.io/badge/Node-20-339933?logo=node.js&amp;logoColor=white" alt="Node 20"> <img src="https://img.shields.io/badge/Runtime-GitHub_Actions-2088FF?logo=github-actions&amp;logoColor=white" alt="GitHub Actions"> <img src="https://img.shields.io/badge/Storage-Supabase-3ECF8E?logo=supabase&amp;logoColor=white" alt="Supabase"></p>
+                        <p>Raw API Ingestion Pipeline is a raw ingestion project for external operational APIs. It runs scheduled API calls, keeps transformation intentionally thin at the ingestion boundary, and stores the original API response inside Supabase raw tables for later SQL modeling, analytics, and BI layers.</p>
+
+                        <h2>Objective</h2>
+                        <p>The main goal is to decouple API collection from analytical modeling. Instead of writing directly to a dashboard-ready table or spreadsheet, each worker stores the raw payload with an idempotent identifier, a destination table, and enough metadata to support reprocessing.</p>
+                        <ul>
+                            <li>Collect third-party API data on a schedule.</li>
+                            <li>Persist reliable raw records in Supabase/PostgreSQL.</li>
+                            <li>Keep historical payloads reprocessable without another external API call.</li>
+                            <li>Let SQL, BI, and operational models evolve outside the ingestion layer.</li>
+                        </ul>
+
+                        <h2>Architectural Principles</h2>
+                        <ul>
+                            <li>The saved <code>payload</code> remains raw.</li>
+                            <li>The ingestion envelope can vary: <code>external_id</code>, destination table, collection window, logs, and scheduling.</li>
+                            <li>The raw table mirrors the source API. It is not the business model.</li>
+                            <li>Logs expose operational metadata, not secrets or full sensitive payloads.</li>
+                        </ul>
+
+                        <h2>Why GitHub Actions and Supabase</h2>
+                        <p>For lightweight ingestion, GitHub Actions plus Supabase removes the need for a permanent worker or VM. Scheduled workflows provide auditability, manual replay with <code>workflow_dispatch</code>, centralized GitHub Secrets, and simple cost control while Supabase acts as a durable SQL storage layer for raw records.</p>
+
+                        <h2>SQL and Raw Data Strategy</h2>
+                        <p>The important SQL design decision is to store raw API outputs first and derive normalized models later. Tables such as <code>raw_contact_hablla</code>, <code>raw_events_hablla</code>, <code>raw_contact_telefonia</code>, <code>raw_events_faturado</code>, <code>raw_contact_site</code>, and <code>raw_events_agendamento</code> can support downstream SQL views, materialized tables, joins, and BI-friendly datasets without losing the original provider shape.</p>
+                        <p>The <code>external_id</code> field makes repeated collection windows safe: the same five, seven, fifteen, or monthly period can be replayed without duplicating rows when upsert logic is applied consistently.</p>
+
+                        <h2>Current Integrations</h2>
+                        <ul>
+                            <li><strong>Hablla Clients:</strong> persons endpoint to <code>raw_contact_hablla</code>, using <code>client-{id}</code>.</li>
+                            <li><strong>Hablla Cards:</strong> cards endpoint to <code>raw_events_hablla</code>, with a default recent window.</li>
+                            <li><strong>Hablla Attendants:</strong> services summary to <code>raw_cs_avaliacao_atendimento</code>, collected day by day.</li>
+                            <li><strong>Zenvia Calls:</strong> voice call reports to <code>raw_contact_telefonia</code>, generally suited to daily close-of-day runs.</li>
+                            <li><strong>SIGE Faturamento:</strong> billed orders to <code>raw_events_faturado</code>, using <code>pedido-{Codigo}</code>.</li>
+                            <li><strong>Zoho Leads Full and Recent:</strong> Creator lead reports to <code>raw_contact_site</code>.</li>
+                            <li><strong>Zoho Scheduling Full and Recent:</strong> scheduling reports to <code>raw_events_agendamento</code>.</li>
+                        </ul>
+
+                        <h2>Scheduling Model</h2>
+                        <p>The project mixes frequent short windows with less frequent larger windows. Hablla clients/cards and recent Zoho jobs run several times per day. Zenvia, SIGE, Hablla attendants, and full Zoho loads run daily. This reduces API pressure, keeps fresh operational data available, and lowers the risk of workflow overlap.</p>
+
+                        <h2>Security and Logs</h2>
+                        <p>Because workflows can expose public run metadata, error logs are sanitized. The project avoids logging tokens, secrets, complete raw payloads, and full provider error responses. Logs focus on status codes, summarized messages, and operational context that can be debugged without leaking credentials.</p>
+
+                        <h2>Migration From Google Sheets</h2>
+                        <p>The older pattern synchronized API data directly into Google Sheets after early mapping and filtering. Raw API Ingestion Pipeline moves the storage boundary earlier: raw API payloads are captured in Supabase first, then SQL modeling and analytics happen downstream. This improves auditability, replayability, and resilience against changing business rules.</p>
+
+                    </article>
+                </div>
+            </section>
+
+            <section class="tech-stack-section">
+                <div class="project-context-container">
+                    <h2>Technology Stack</h2>
+                    <div class="tech-list">
+                        <div class="tech-tag">Node.js 20</div>
+                        <div class="tech-tag">JavaScript</div>
+                        <div class="tech-tag">GitHub Actions</div>
+                        <div class="tech-tag">Supabase</div>
+                        <div class="tech-tag">PostgreSQL / SQL</div>
+                        <div class="tech-tag">REST APIs</div>
+                        <div class="tech-tag">OAuth</div>
+                        <div class="tech-tag">Cron Workflows</div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="cta-section">
+                <h2 style="color:#fff; margin-bottom:28px;">View the Source Code</h2>
+                <a href="https://github.com/operacoesicaiu/icaiu-data" target="_blank" rel="noopener noreferrer" class="cta-button">View on GitHub</a>
+            </section>
+        </main>
+
+        <footer class="footer-minimal">
+            <div class="footer-container">
+                <div class="footer-link-list" aria-label="Footer links">
+                    <a class="footer-link-pill" href="https://github.com/PkLavc" target="_blank" rel="noopener noreferrer">GitHub</a>
+                    <a class="footer-link-pill" href="https://www.linkedin.com/in/pklavc/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+                    <a class="footer-link-pill" href="mailto:contact@pklavc.com">Email</a>
+                    <a class="footer-link-pill footer-link-pill-accent" href="https://github.com/sponsors/PkLavc" target="_blank" rel="noopener noreferrer">Sponsor me</a>
+                </div>
+                <p>
+                    &copy; <span data-current-year></span> Patrick Araujo &bull;
+                    <span class="github-dev-badge">Member of <b>GitHub Developer Program</b></span>
+                </p>
+            </div>
+        </footer>
+    </div>
+
+    <div class="visually-hidden">
+        <p>Raw API Ingestion Pipeline is a Node.js and GitHub Actions raw API ingestion pipeline for Supabase SQL architecture, Hablla API, Zoho Creator API, Zenvia Voice API, SIGE ERP API, raw data storage, ETL pipeline design, idempotent external IDs, and backend automation.</p>
+    </div>
+
+    <script>
+        (function() {
+            document.querySelectorAll('[data-current-year]').forEach(function(node) {
+                node.textContent = String(new Date().getFullYear());
+            });
+        }());
+    </script>
+    <script src="../../js/jquery.min.js?v=20260511" defer></script>
+    <script src="../../js/index.js?v=20260511" defer></script>
+</body>
+</html>

@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Patrick Araujo">
+    <title>Raw API Ingestion with GitHub Actions, Supabase, and SQL</title>
+    <meta name="description" content="A practical architecture article on Raw API Ingestion Pipeline, covering raw API ingestion, GitHub Actions scheduling, Supabase SQL raw tables, idempotent external IDs, and downstream analytics modeling.">
+    <meta name="keywords" content="Raw API Ingestion Pipeline, raw API ingestion, Supabase SQL, GitHub Actions ETL, Node.js API integration, Hablla API, Zoho Creator API, Zenvia Voice API, SIGE ERP API, raw tables, data architecture">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://pklavc.com/blog/raw-api-ingestion-supabase-sql/">
+    <link rel="alternate" href="https://pklavc.com/blog/raw-api-ingestion-supabase-sql/" hreflang="en">
+
+    <meta property="og:title" content="Raw API Ingestion with GitHub Actions, Supabase, and SQL">
+    <meta property="og:description" content="Architecture notes for a Node.js ingestion system that stores raw third-party API payloads in Supabase SQL tables for replayable analytics.">
+    <meta property="og:url" content="https://pklavc.com/blog/raw-api-ingestion-supabase-sql/">
+    <meta property="og:type" content="article">
+    <meta property="article:published_time" content="2026-05-15">
+    <meta property="article:modified_time" content="2026-05-15">
+    <meta property="article:author" content="Patrick Araujo">
+    <meta property="article:section" content="Data Engineering">
+    <meta property="article:tag" content="raw api ingestion">
+    <meta property="article:tag" content="supabase sql">
+    <meta property="article:tag" content="github actions etl">
+    <meta property="article:tag" content="api integration architecture">
+    <meta property="og:image" content="https://pklavc.com/images/Lavc.webp">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:site_name" content="Patrick Araujo Portfolio">
+    <meta property="og:locale" content="en_US">
+    <meta property="og:image:alt" content="Brand portrait of backend engineer and automation specialist Patrick Araujo">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Raw API Ingestion Architecture">
+    <meta name="twitter:description" content="GitHub Actions, Node.js workers, Supabase SQL raw tables, and API ingestion design for replayable analytics.">
+    <meta name="twitter:image" content="https://pklavc.com/images/Lavc.webp">
+    <meta name="twitter:image:alt" content="Brand portrait of backend engineer and automation specialist Patrick Araujo">
+    <meta name="twitter:site" content="@PkLavc">
+    <meta name="twitter:creator" content="@PkLavc">
+
+    <link rel="icon" type="image/svg+xml" href="https://pklavc.com/images/favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Monoton&family=Poppins:wght@500;600;700&family=Raleway:wght@300&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Monoton&family=Poppins:wght@500;600;700&family=Raleway:wght@300&display=swap"></noscript>
+    <link rel="stylesheet" href="/css/global.css?v=20260511">
+    <link rel="stylesheet" href="/css/blog.css?v=20260511">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.2.6/gsap.min.js" defer></script>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@graph": [
+            {
+                "@type": "BlogPosting",
+                "headline": "Raw API Ingestion with GitHub Actions, Supabase, and SQL",
+                "description": "A practical architecture article on Raw API Ingestion Pipeline, covering raw API ingestion, GitHub Actions scheduling, Supabase SQL raw tables, idempotent external IDs, and downstream analytics modeling.",
+                "datePublished": "2026-05-15",
+                "dateModified": "2026-05-15",
+                "author": {
+                    "@type": "Person",
+                    "name": "Patrick Araujo"
+                },
+                "publisher": {
+                    "@type": "Person",
+                    "name": "Patrick Araujo"
+                },
+                "mainEntityOfPage": "https://pklavc.com/blog/raw-api-ingestion-supabase-sql/",
+                "url": "https://pklavc.com/blog/raw-api-ingestion-supabase-sql/",
+                "keywords": [
+                    "raw api ingestion",
+                    "supabase sql architecture",
+                    "github actions etl",
+                    "node.js api integration",
+                    "hablla api",
+                    "zoho creator api",
+                    "zenvia voice api",
+                    "sige erp api",
+                    "idempotent data pipelines"
+                ]
+            },
+            {
+                "@type": "BreadcrumbList",
+                "itemListElement": [
+                    {
+                        "@type": "ListItem",
+                        "position": 1,
+                        "name": "Home",
+                        "item": "https://pklavc.com/"
+                    },
+                    {
+                        "@type": "ListItem",
+                        "position": 2,
+                        "name": "Blog",
+                        "item": "https://pklavc.com/blog/"
+                    },
+                    {
+                        "@type": "ListItem",
+                        "position": 3,
+                        "name": "Raw API Ingestion",
+                        "item": "https://pklavc.com/blog/raw-api-ingestion-supabase-sql/"
+                    }
+                ]
+            }
+        ]
+    }
+    </script>
+</head>
+<body class="blog-layout seo-layout">
+    <div id="breaker"></div>
+    <div id="breaker-two"></div>
+    <div id="all">
+        <div class="cursor"></div>
+        <div id="navigation-content" role="navigation" aria-label="Primary navigation">
+            <div class="logo"></div>
+            <div class="navigation-links">
+                <a href="/" data-text="HOME" id="home-link">HOME</a>
+                <a href="/about/" data-text="ABOUT" id="about-link">ABOUT</a>
+                <a href="/projects/" data-text="PROJECTS" id="projects-link">PROJECTS</a>
+                <a href="/blog/" data-text="BLOG" id="blog-link">BLOG</a>
+            </div>
+        </div>
+        <div id="navigation-bar">
+            <div class="menubar">
+                <span class="first-span"></span>
+                <span class="second-span"></span>
+                <span class="third-span"></span>
+            </div>
+        </div>
+
+        <main class="blog-shell" role="main">
+            <div class="blog-columns">
+                <div>
+                    <article class="blog-post-hero">
+                        <div class="blog-breadcrumb" aria-label="Breadcrumb">
+                            <a href="/">Home</a>
+                            <span>/</span>
+                            <a href="/blog/">Blog</a>
+                            <span>/</span>
+                            <span aria-current="page">Raw API Ingestion</span>
+                        </div>
+                        <span class="blog-kicker">Data Engineering</span>
+                        <h1>Raw API Ingestion with GitHub Actions, Supabase, and SQL</h1>
+                        <p>Raw ingestion architecture is a small design choice with large consequences. Raw API Ingestion Pipeline keeps third-party API payloads intact in Supabase raw tables, then lets SQL-derived layers, BI models, and operational dashboards evolve without forcing another expensive API collection.</p>
+                        <div class="blog-post-meta">
+                            <span>Published May 15, 2026</span>
+                            <span>10 min read</span>
+                            <span>API Data Architecture</span>
+                        </div>
+                    </article>
+
+                    <article class="blog-article">
+                        <h2>The ingestion boundary matters</h2>
+                        <p>Many API integration projects start by mapping provider data directly into a report shape. That feels efficient at first, but it couples collection to the current business question. When the dashboard changes, the API shape changes, or a new SQL model is needed, the system may have to pull old data again from the provider.</p>
+                        <p><a href="/projects/raw-api-ingestion-pipeline/">Raw API Ingestion Pipeline</a> takes the opposite approach. Workers collect raw payloads from Hablla, Zoho Creator, Zenvia Voice, and SIGE ERP APIs, then store them in Supabase/PostgreSQL raw tables. The ingestion layer only wraps the payload with operational metadata such as <code>external_id</code>, destination table, run window, and timestamps.</p>
+
+                        <div class="blog-callout">
+                            A raw table should preserve evidence. It is not the final business model; it is the replayable source that lets future SQL models stay honest.
+                        </div>
+
+                        <h2>Why raw_* SQL tables are useful</h2>
+                        <p>Supabase makes PostgreSQL available as an operational storage layer, so each integration can land in a predictable SQL namespace. Tables like <code>raw_contact_hablla</code>, <code>raw_events_hablla</code>, <code>raw_contact_telefonia</code>, <code>raw_events_faturado</code>, <code>raw_contact_site</code>, and <code>raw_events_agendamento</code> are intentionally source-oriented.</p>
+                        <p>This gives the system three advantages. First, old payloads can be reprocessed into new reporting tables. Second, SQL joins and enrichments can be tested without asking the external API for the same data again. Third, schema drift becomes visible in the raw layer instead of being silently flattened by early mapping logic.</p>
+
+                        <h2>Idempotent external IDs make replay safe</h2>
+                        <p>Scheduled ingestion nearly always repeats windows. A worker may fetch the last five days of SIGE orders, the last seven days of Hablla cards, the current and previous month of Zoho scheduling records, or a recent window of Zenvia calls. Repetition is healthy because it catches late updates, but only if writes are idempotent.</p>
+                        <p>Raw API Ingestion Pipeline uses stable source-derived identifiers such as <code>client-{id}</code>, <code>card-{id}</code>, <code>pedido-{Codigo}</code>, <code>lead-{ID}</code>, and <code>agendamento-{ID}</code>. With upsert semantics, the same window can run again without duplicating rows. That is the difference between a replayable ingestion system and a growing pile of duplicate records.</p>
+
+                        <h2>GitHub Actions is enough for lightweight data collection</h2>
+                        <p>A permanent server is not always the right tradeoff. For this workload, GitHub Actions provides scheduled execution, manual replays through <code>workflow_dispatch</code>, centralized secrets, and run logs without maintaining a VM, container platform, or always-on worker.</p>
+                        <p>The schedule design is practical: small, recent windows run more often, while larger or heavier syncs run daily. This lowers provider rate-limit pressure and reduces the chance of workflow overlap. It also keeps the operational model easy to audit because each source has its own workflow and run history.</p>
+
+                        <h2>API-specific collection choices</h2>
+                        <p>Raw ingestion does not mean all sources are treated identically. Hablla attendants are collected day by day because summary endpoints can aggregate by period. Zoho has full and recent jobs so the system can refresh recent records frequently without rerunning heavy windows all day. Zenvia call data often makes more sense as a daily close-of-day collection. SIGE billing data is also collected day by day for predictable ERP windows.</p>
+                        <p>Those choices are architecture decisions, not implementation trivia. The worker should respect the semantics of each API while still producing a consistent raw storage envelope.</p>
+
+                        <h2>Downstream SQL stays separate from ingestion</h2>
+                        <p>The most valuable SQL work usually happens after raw storage: joins between Hablla cards and persons, derivation of contact timelines, billing views from SIGE, lead attribution from Zoho, or operational telephony metrics from Zenvia. Keeping those transformations downstream means each SQL model can be versioned, tested, and replaced without weakening collection reliability.</p>
+                        <p>This also makes the project a natural continuation of the older integration-worker pattern shown in <a href="/blog/integration-worker-etl-pipelines/">ETL Pipelines in API Integration Workers</a>. The difference is that Raw API Ingestion Pipeline moves the durable storage boundary from Google Sheets to Supabase raw tables.</p>
+
+                        <h2>Security: useful logs without leaking payloads</h2>
+                        <p>Public or semi-public workflow logs should never contain tokens, full API responses, complete error bodies, or raw payload dumps. Raw API Ingestion Pipeline keeps logs operational: status code, summarized error message, provider context, and run outcome. That is enough to diagnose most failures without exposing sensitive customer or credential data.</p>
+
+                        <h2>Why the architecture scales cleanly</h2>
+                        <p>Adding another integration follows a repeatable path: create a worker, define the destination raw table, choose the collection window, preserve the raw payload, define a stable external ID, add secrets, create a workflow, and sanitize logs. The architecture scales because each source has local complexity, but the storage contract remains consistent.</p>
+                    </article>
+
+                    <section aria-labelledby="raw-ingestion-related-title">
+                        <h2 id="raw-ingestion-related-title">Related reading</h2>
+                        <div class="blog-related-grid">
+                            <article class="blog-related-card">
+                                <h3><a href="/projects/raw-api-ingestion-pipeline/">Raw API Ingestion Pipeline Project</a></h3>
+                                <p>Full project page with integration list, scheduling model, raw table strategy, and Supabase SQL context.</p>
+                            </article>
+                            <article class="blog-related-card">
+                                <h3><a href="/blog/integration-worker-etl-pipelines/">ETL Pipelines in API Integration Workers</a></h3>
+                                <p>Extraction, normalization, and sync patterns across CRM and ERP integration workers.</p>
+                            </article>
+                            <article class="blog-related-card">
+                                <h3><a href="/stacks/api-integration-engineer/">API Integration Engineer Stack</a></h3>
+                                <p>Technical stack context for backend automation, APIs, SQL, and integration architecture.</p>
+                            </article>
+                        </div>
+                    </section>
+                </div>
+
+                <aside class="blog-article-grid">
+                    <section class="blog-sidebar-card">
+                        <h2>Core takeaways</h2>
+                        <ul>
+                            <li>Store raw API payloads before modeling business data.</li>
+                            <li>Use stable external IDs so scheduled windows can replay safely.</li>
+                            <li>Keep GitHub Actions workflows small, auditable, and source-specific.</li>
+                            <li>Move SQL joins, enrichment, and BI modeling downstream from ingestion.</li>
+                        </ul>
+                    </section>
+                    <section class="blog-sidebar-card">
+                        <h2>APIs covered</h2>
+                        <ul>
+                            <li>Hablla persons, cards, and services summary</li>
+                            <li>Zoho Creator leads and scheduling reports</li>
+                            <li>Zenvia Voice call reports</li>
+                            <li>SIGE ERP billed orders</li>
+                        </ul>
+                    </section>
+                    <section class="blog-sidebar-card">
+                        <h2>Continue exploring</h2>
+                        <ul>
+                            <li><a href="/projects/raw-api-ingestion-pipeline/">Raw API Ingestion Pipeline</a></li>
+                            <li><a href="/collections/api-integration-projects/">API Integration Projects</a></li>
+                            <li><a href="/collections/automation-projects/">Automation Projects</a></li>
+                        </ul>
+                    </section>
+                </aside>
+            </div>
+        </main>
+    </div>
+
+    <footer class="footer-minimal">
+        <div class="footer-container">
+            <div class="footer-link-list" aria-label="Footer links">
+                <a class="footer-link-pill" href="https://github.com/PkLavc" target="_blank" rel="noopener noreferrer">GitHub</a>
+                <a class="footer-link-pill" href="https://www.linkedin.com/in/pklavc/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+                <a class="footer-link-pill" href="mailto:contact@pklavc.com">Email</a>
+                <a class="footer-link-pill footer-link-pill-accent" href="https://github.com/sponsors/PkLavc" target="_blank" rel="noopener noreferrer">Sponsor me</a>
+            </div>
+            <p>
+                &copy; <span data-current-year></span> Patrick Araujo &bull;
+                <span class="github-dev-badge">Member of <b>GitHub Developer Program</b></span>
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        (function() {
+            document.querySelectorAll('[data-current-year]').forEach(function(node) {
+                node.textContent = String(new Date().getFullYear());
+            });
+        }());
+    </script>
+    <script src="/js/jquery.min.js?v=20260511" defer></script>
+    <script src="/js/index.js?v=20260511" defer></script>
+
+    <div class="visually-hidden">
+        <p>Raw API Ingestion Pipeline article about raw API ingestion, Node.js workers, GitHub Actions ETL, Supabase SQL raw tables, PostgreSQL architecture, Hablla API, Zoho Creator API, Zenvia Voice API, SIGE ERP API, idempotent external IDs, replayable data pipelines, and downstream analytics modeling.</p>
+    </div>
+</body>
+</html>
