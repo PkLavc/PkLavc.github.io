@@ -24,7 +24,7 @@
     launcher.setAttribute("aria-controls", "about-chat-widget");
     launcher.setAttribute("aria-expanded", "false");
     launcher.setAttribute("aria-label", "Open or close Skyler chat");
-    launcher.innerHTML = '<img src="/images/icon_skyler.webp" alt="Skyler chat icon" width="56" height="56" loading="eager" decoding="async">';
+    launcher.innerHTML = '<img src="/images/icon_skyler.webp?v=4b80b918a0" alt="Skyler chat icon" width="56" height="56" loading="eager" decoding="async">';
 
     var widget = document.createElement("section");
     widget.id = "about-chat-widget";

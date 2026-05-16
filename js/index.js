@@ -30,7 +30,7 @@ function getParticlesConfig() {
           nb_sides: 5
         },
         image: {
-          src: 'images/github.svg',
+          src: '/images/techstack/github-icon.svg?v=7b8e3a8d79',
           width: 100,
           height: 100
         }
@@ -494,14 +494,14 @@ function loadSkylerWidgetAssets() {
     var link = document.createElement('link');
     link.id = 'skyler-widget-style';
     link.rel = 'stylesheet';
-    link.href = '/css/skyler-widget.css';
+    link.href = '/css/skyler-widget.css?v=fb1586a89d';
     document.head.appendChild(link);
   }
 
   if (!document.getElementById('skyler-widget-script')) {
     var script = document.createElement('script');
     script.id = 'skyler-widget-script';
-    script.src = '/js/skyler-widget.js';
+    script.src = '/js/skyler-widget.js?v=63ed60db72';
     script.defer = true;
     document.body.appendChild(script);
   }

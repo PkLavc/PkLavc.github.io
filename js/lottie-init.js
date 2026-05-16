@@ -1,6 +1,6 @@
 // lottie-init.js
 // Lottie-web initialization for all social/contact icons, CLS-free, after DOMContentLoaded
-import { LOTTIE_LINKEDIN, LOTTIE_LINK } from './lottie-icons.js';
+import { LOTTIE_LINKEDIN, LOTTIE_LINK } from './lottie-icons.js?v=a032547218';
 
 function loadLottieIcon(containerId, animationData, link, title, size = 60) {
   const container = document.getElementById(containerId);
