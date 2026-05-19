@@ -255,11 +255,12 @@
 <p>CodePulse is a professional-grade monorepo showcasing software engineering excellence with:</p>
 <ul>
 <li><strong>Frontend</strong>: Standalone HTML application with CSS/JavaScript (IDE-like interface)</li>
-<li><strong>Backend</strong>: Node.js with Fastify &amp; TypeScript (API service)</li>
-<li><strong>Code Execution</strong>: Glot.io integration for secure multi-language code execution</li>
+<li><strong>Backend</strong>: Cloudflare Workers with TypeScript (Edge computing service)</li>
+<li><strong>Code Execution</strong>: Arquitetura híbrida baseada 100% na infraestrutura da Cloudflare onde JavaScript é executado nativamente na borda através de Workers e demais linguagens utilizam simulação determinística de IA via Cloudflare Workers AI com temperatura zerada</li>
+<li><strong>AI Assistant</strong>: Editor inteligente com assistente de IA integrado que analisa o código do usuário para ajustar automaticamente problemas de indentação, erros de sintaxe e typos em variáveis</li>
 <li><strong>Testing</strong>: Vitest (unit), Playwright (e2e), comprehensive test infrastructure</li>
 <li><strong>CI/CD</strong>: GitHub Actions with automated testing, linting, and deployments</li>
-<li><strong>Deployment</strong>: GitHub Pages (Frontend) + Render (Backend)</li>
+<li><strong>Deployment</strong>: GitHub Pages (Frontend) + Cloudflare Workers (Backend)</li>
 </ul>
 <h3>Engineering Excellence &amp; Professional Showcase</h3>
 <table>
@@ -287,18 +288,18 @@
 </tr>
 <tr>
 <td align="left"><strong>Cloud Native</strong></td>
-<td align="left">Render + Dedicated Node.js Service</td>
-<td align="left">Showcases cost-efficient and resilient deployment</td>
+<td align="left">Cloudflare Workers + Workers AI</td>
+<td align="left">Showcases modern serverless edge computing and AI integration</td>
 </tr>
 </tbody></table>
 <h2>Deployment &amp; Integration</h2>
 <h3>Deployment Configuration</h3>
-<h4>Backend (Render)</h4>
+<h4>Backend (Cloudflare Workers)</h4>
 <ul>
 <li>Automatic deployment via GitHub Actions</li>
-<li>Dedicated Node.js Service with Fastify</li>
-<li>Environment variables managed in Render dashboard</li>
-<li>API URL: <code>https://codepulse-monorepo-backend.onrender.com</code></li>
+<li>JavaScript execution natively at the Edge via Workers</li>
+<li>Deterministic AI simulation for Python, Java, C++ via Cloudflare Workers AI with zero temperature</li>
+<li>Edge-first architecture for minimal latency</li>
 </ul>
 <h4>Frontend (GitHub Pages)</h4>
 <ul>
