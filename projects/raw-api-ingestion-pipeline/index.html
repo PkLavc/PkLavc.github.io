@@ -4,16 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="author" content="PkLavc" />
-    <title>Raw API Ingestion Pipeline | Supabase SQL Architecture | Patrick Araujo</title>
+    <title>API Integration Pipeline | Hablla, Zoho, SIGE &amp; Zenvia | Patrick Araujo</title>
 
-    <meta name="description" content="A Node.js raw API ingestion pipeline using GitHub Actions, Supabase, SQL raw tables, idempotent external IDs, and scheduled workers for Hablla, Zoho Creator, Zenvia Voice, and SIGE ERP APIs.">
-    <meta name="keywords" content="Raw API Ingestion Pipeline, raw API ingestion, Supabase SQL architecture, Node.js data pipeline, GitHub Actions ETL, Hablla API, Zoho Creator API, Zenvia Voice API, SIGE ERP API, raw tables, data engineering, API integration architecture">
+    <meta name="description" content="A Node.js API integration pipeline using GitHub Actions and Supabase SQL to collect payloads from Hablla, Zoho Creator, Zenvia Voice, and SIGE ERP — with scheduled workers, idempotent IDs, and replayable analytics.">
+    <meta name="keywords" content="API Integration Pipeline, Hablla API integration, Zoho Creator API, SIGE ERP API, Zenvia Voice API, Node.js API pipeline, GitHub Actions ETL, Supabase SQL, data engineering, API integration architecture">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://pklavc.com/projects/raw-api-ingestion-pipeline/">
     <link rel="alternate" href="https://pklavc.com/projects/raw-api-ingestion-pipeline/" hreflang="en">
 
-    <meta property="og:title" content="Raw API Ingestion Pipeline | Patrick Araujo">
-    <meta property="og:description" content="Node.js data ingestion architecture for capturing raw API payloads from Hablla, Zoho Creator, Zenvia, and SIGE into Supabase raw_* SQL tables.">
+    <meta property="og:title" content="API Integration Pipeline | Patrick Araujo">
+    <meta property="og:description" content="Node.js integration pipeline for collecting Hablla, Zoho Creator, Zenvia Voice, and SIGE ERP API payloads into Supabase SQL tables for analytics and operational reporting.">
     <meta property="og:url" content="https://pklavc.com/projects/raw-api-ingestion-pipeline/">
     <meta property="og:type" content="website">
     <meta property="og:image" content="https://pklavc.com/images/lavc.webp?v=5e84850f26">
@@ -24,8 +24,8 @@
     <meta property="og:image:alt" content="Brand portrait of backend engineer and automation specialist Patrick Araujo">
 
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Raw API Ingestion Pipeline | Supabase Raw API Ingestion Pipeline">
-    <meta name="twitter:description" content="GitHub Actions and Node.js workers ingest raw API payloads into Supabase SQL tables for reprocessable analytics.">
+    <meta name="twitter:title" content="API Integration Pipeline | Hablla, Zoho, SIGE &amp; Zenvia APIs">
+    <meta name="twitter:description" content="GitHub Actions and Node.js workers collect Hablla, Zoho Creator, SIGE, and Zenvia API payloads into Supabase SQL for replayable analytics.">
     <meta name="twitter:image" content="https://pklavc.com/images/lavc.webp?v=5e84850f26">
     <meta name="twitter:image:alt" content="Brand portrait of backend engineer and automation specialist Patrick Araujo">
     <meta name="twitter:site" content="@PkLavc">
@@ -37,22 +37,21 @@
         "@graph": [
             {
                 "@type": "SoftwareSourceCode",
-                "name": "Raw API Ingestion Pipeline",
-                "headline": "Raw API Ingestion Pipeline",
-                "description": "Node.js 20 data ingestion project that collects raw payloads from Hablla, Zoho Creator, Zenvia Voice, and SIGE ERP APIs, then stores them in Supabase raw_* SQL tables with idempotent external IDs and scheduled GitHub Actions workflows.",
+                "name": "API Integration Pipeline",
+                "headline": "API Integration Pipeline",
+                "description": "Node.js 20 integration pipeline that collects payloads from Hablla, Zoho Creator, Zenvia Voice, and SIGE ERP APIs, then stores them in Supabase SQL tables with idempotent external IDs and scheduled GitHub Actions workflows.",
                 "url": "https://pklavc.com/projects/raw-api-ingestion-pipeline/",
                 "image": "https://pklavc.com/images/lavc.webp?v=5e84850f26",
                 "programmingLanguage": "JavaScript",
                 "runtimePlatform": "Node.js 20, GitHub Actions",
                 "keywords": [
-                    "raw api ingestion",
-                    "supabase sql architecture",
-                    "github actions etl",
+                    "api integration pipeline",
                     "hablla api integration",
                     "zoho creator api integration",
                     "zenvia voice api integration",
                     "sige erp api integration",
-                    "raw tables",
+                    "supabase sql architecture",
+                    "github actions etl",
                     "idempotent data pipeline"
                 ],
                 "author": {
@@ -79,7 +78,7 @@
                     {
                         "@type": "ListItem",
                         "position": 3,
-                        "name": "Raw API Ingestion Pipeline",
+                        "name": "API Integration Pipeline",
                         "item": "https://pklavc.com/projects/raw-api-ingestion-pipeline/"
                     }
                 ]
@@ -261,14 +260,14 @@
         <main role="main">
             <section class="project-hero">
                 <span class="project-category-badge">Data Engineering</span>
-                <h1>Raw API Ingestion Pipeline</h1>
-                <p>Node.js workers scheduled by GitHub Actions collect raw operational data from Hablla, Zoho Creator, Zenvia Voice, and SIGE ERP APIs, then persist reprocessable payloads into Supabase SQL raw tables.</p>
+                <h1>API Integration Pipeline</h1>
+                <p>Node.js workers scheduled by GitHub Actions collect operational data from Hablla, Zoho Creator, Zenvia Voice, and SIGE ERP APIs, then persist structured payloads into Supabase SQL tables for analytics and reporting.</p>
             </section>
 
             <section class="project-context-section" aria-label="Project SEO context">
                 <div class="project-context-container">
-                    <h2>Problem Context, APIs, SQL Storage, and Architecture</h2>
-                    <p>Raw API Ingestion Pipeline solves a data engineering problem that appears in many operational environments: third-party APIs are the source of truth, but analytics and reporting need a reliable raw layer that can be replayed, audited, and modeled later. The project keeps ingestion separate from business modeling so API payloads remain available even when SQL transformations, BI dashboards, and operational rules change.</p>
+                    <h2>API Context, Integrations, SQL Storage, and Architecture</h2>
+                    <p>API Integration Pipeline solves a data engineering problem that appears in many operational environments: third-party APIs are the source of truth, but analytics and reporting need a reliable raw layer that can be replayed, audited, and modeled later. The project keeps ingestion separate from business modeling so API payloads remain available even when SQL transformations, BI dashboards, and operational rules change.</p>
                     <div class="meta-grid">
                         <div class="meta-item"><strong>Runtime</strong>Node.js 20 workers executed locally or by GitHub Actions.</div>
                         <div class="meta-item"><strong>Storage</strong>Supabase/PostgreSQL raw_* tables with raw payload retention.</div>
@@ -311,9 +310,9 @@
                 <div class="full-readme-container">
                     <h2 style="color:#fff; margin-bottom:20px;">Project Documentation</h2>
                     <article class="markdown-body">
-                        <h2>Raw API Ingestion Pipeline</h2>
+                        <h2>API Integration Pipeline</h2>
                         <p><img src="https://img.shields.io/badge/Node-20-339933?logo=node.js&amp;logoColor=white" alt="Node 20"> <img src="https://img.shields.io/badge/Runtime-GitHub_Actions-2088FF?logo=github-actions&amp;logoColor=white" alt="GitHub Actions"> <img src="https://img.shields.io/badge/Storage-Supabase-3ECF8E?logo=supabase&amp;logoColor=white" alt="Supabase"></p>
-                        <p>Raw API Ingestion Pipeline is a raw ingestion project for external operational APIs. It runs scheduled API calls, keeps transformation intentionally thin at the ingestion boundary, and stores the original API response inside Supabase raw tables for later SQL modeling, analytics, and BI layers.</p>
+                        <p>API Integration Pipeline collects operational data from Hablla, Zoho Creator, Zenvia Voice, and SIGE ERP APIs. It runs scheduled API calls, keeps transformation intentionally thin at the ingestion boundary, and stores payloads in Supabase SQL tables for later modeling, analytics, and BI layers.</p>
 
                         <h2>Objective</h2>
                         <p>The main goal is to decouple API collection from analytical modeling. Instead of writing directly to a dashboard-ready table or spreadsheet, each worker stores the raw payload with an idempotent identifier, a destination table, and enough metadata to support reprocessing.</p>
@@ -402,7 +401,7 @@
     </div>
 
     <div class="visually-hidden">
-        <p>Raw API Ingestion Pipeline is a Node.js and GitHub Actions raw API ingestion pipeline for Supabase SQL architecture, Hablla API, Zoho Creator API, Zenvia Voice API, SIGE ERP API, raw data storage, ETL pipeline design, idempotent external IDs, and backend automation.</p>
+        <p>API Integration Pipeline is a Node.js and GitHub Actions integration pipeline for Hablla API, Zoho Creator API, Zenvia Voice API, SIGE ERP API, Supabase SQL storage, ETL pipeline design, idempotent external IDs, and backend automation.</p>
     </div>
 
     <script>
