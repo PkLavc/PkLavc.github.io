@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Patrick Araujo">
+    <title>Multi-AI Workflows: Orchestrating Multiple Agents in Real Engineering</title>
+    <meta name="description" content="How to orchestrate multiple AI agents in production workflows — combining Claude Code, Codex, Cursor, and specialized agents with MCP, RAG, and automation pipelines for real engineering tasks.">
+    <meta name="keywords" content="multi-AI workflows, AI agent orchestration, multiple agents, Claude Code, Codex, Cursor, Windsurf, MCP, RAG, automation pipelines, agentic workflows, context engineering">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://pklavc.com/blog/multi-ai-workflows/">
+    <link rel="alternate" href="https://pklavc.com/blog/multi-ai-workflows/" hreflang="en">
+
+    <meta property="og:title" content="Multi-AI Workflows: Orchestrating Multiple Agents in Real Engineering">
+    <meta property="og:description" content="Patterns for combining multiple AI agents in production — orchestration, context sharing, and automation pipelines that actually work.">
+    <meta property="og:url" content="https://pklavc.com/blog/multi-ai-workflows/">
+    <meta property="og:type" content="article">
+    <meta property="article:published_time" content="2026-05-28">
+    <meta property="article:modified_time" content="2026-05-28">
+    <meta property="article:author" content="Patrick Araujo">
+    <meta property="article:section" content="AI Engineering">
+    <meta property="article:tag" content="multi-AI workflows">
+    <meta property="article:tag" content="agent orchestration">
+    <meta property="article:tag" content="automation pipelines">
+    <meta property="article:tag" content="MCP">
+    <meta property="og:image" content="https://pklavc.com/images/lavc.webp?v=5e84850f26">
+    <meta property="og:image:width" content="1024">
+    <meta property="og:image:height" content="1024">
+    <meta property="og:site_name" content="Patrick Araujo">
+    <meta property="og:locale" content="en_US">
+    <meta property="og:image:alt" content="Brand portrait of backend engineer and automation specialist Patrick Araujo">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Multi-AI Workflows: Orchestrating Agents in Engineering">
+    <meta name="twitter:description" content="Production patterns for combining multiple AI agents — orchestration, RAG, MCP, and real automation pipelines.">
+    <meta name="twitter:image" content="https://pklavc.com/images/lavc.webp?v=5e84850f26">
+    <meta name="twitter:image:alt" content="Brand portrait of backend engineer and automation specialist Patrick Araujo">
+    <meta name="twitter:site" content="@PkLavc">
+    <meta name="twitter:creator" content="@PkLavc">
+
+    <link rel="icon" type="image/svg+xml" href="https://pklavc.com/images/favicon.svg?v=d15fe4e492">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Monoton&family=Poppins:wght@500;600;700&family=Raleway:wght@300&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Monoton&family=Poppins:wght@500;600;700&family=Raleway:wght@300&display=swap"></noscript>
+    <link rel="stylesheet" href="/css/global.css?v=7723a9ffa6">
+    <link rel="stylesheet" href="/css/blog.css?v=2cb5a61680">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.2.6/gsap.min.js" defer></script>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@graph": [
+            {
+                "@type": "BlogPosting",
+                "headline": "Multi-AI Workflows: Orchestrating Multiple Agents in Real Engineering",
+                "description": "How to orchestrate multiple AI agents in production workflows — combining Claude Code, Codex, Cursor, and specialized agents with MCP, RAG, and automation pipelines for real engineering tasks.",
+                "image": "https://pklavc.com/images/lavc.webp?v=5e84850f26",
+                "datePublished": "2026-05-28",
+                "dateModified": "2026-05-28",
+                "author": {
+                    "@type": "Person",
+                    "name": "Patrick Araujo"
+                },
+                "publisher": {
+                    "@type": "Person",
+                    "name": "Patrick Araujo"
+                },
+                "mainEntityOfPage": "https://pklavc.com/blog/multi-ai-workflows/",
+                "url": "https://pklavc.com/blog/multi-ai-workflows/",
+                "keywords": [
+                    "multi-ai workflows",
+                    "agent orchestration",
+                    "claude code",
+                    "codex",
+                    "cursor",
+                    "windsurf",
+                    "mcp",
+                    "rag",
+                    "automation pipelines",
+                    "context engineering"
+                ]
+            },
+            {
+                "@type": "BreadcrumbList",
+                "itemListElement": [
+                    {
+                        "@type": "ListItem",
+                        "position": 1,
+                        "name": "Home",
+                        "item": "https://pklavc.com/"
+                    },
+                    {
+                        "@type": "ListItem",
+                        "position": 2,
+                        "name": "Blog",
+                        "item": "https://pklavc.com/blog/"
+                    },
+                    {
+                        "@type": "ListItem",
+                        "position": 3,
+                        "name": "Multi-AI Workflows",
+                        "item": "https://pklavc.com/blog/multi-ai-workflows/"
+                    }
+                ]
+            }
+        ]
+    }
+    </script>
+</head>
+<body class="blog-layout seo-layout">
+    <div id="breaker"></div>
+    <div id="breaker-two"></div>
+    <div id="all">
+        <div class="cursor"></div>
+        <div id="navigation-content" role="navigation" aria-label="Primary navigation">
+            <div class="logo"></div>
+            <div class="navigation-links">
+                <a href="/" data-text="HOME" id="home-link">HOME</a>
+                <a href="/about/" data-text="ABOUT" id="about-link">ABOUT</a>
+                <a href="/projects/" data-text="PROJECTS" id="projects-link">PROJECTS</a>
+                <a href="/blog/" data-text="BLOG" id="blog-link">BLOG</a>
+            </div>
+        </div>
+        <div id="navigation-bar">
+            <div class="menubar">
+                <span class="first-span"></span>
+                <span class="second-span"></span>
+                <span class="third-span"></span>
+            </div>
+        </div>
+
+        <main class="blog-shell" role="main">
+            <div class="blog-columns">
+                <div>
+                    <article class="blog-post-hero">
+                        <div class="blog-breadcrumb" aria-label="Breadcrumb">
+                            <a href="/">Home</a>
+                            <span>/</span>
+                            <a href="/blog/">Blog</a>
+                            <span>/</span>
+                            <span aria-current="page">Multi-AI Workflows</span>
+                        </div>
+                        <span class="blog-kicker">AI Engineering</span>
+                        <h1>Multi-AI Workflows: Orchestrating Multiple Agents in Real Engineering</h1>
+                        <p>Production engineering increasingly involves multiple AI agents working in coordination — one for code generation, another for review, another for testing, another for documentation. This post covers practical patterns for orchestrating multi-agent workflows that actually work.</p>
+                        <div class="blog-post-meta">
+                            <span>Published May 28, 2026</span>
+                            <span>11 min read</span>
+                            <span>AI Engineering</span>
+                        </div>
+                    </article>
+
+                    <article class="blog-article">
+                        <h2>Why single-agent workflows hit limits</h2>
+                        <p>A single AI agent — even a powerful one — faces context window limits, specialization tradeoffs, and verification blind spots. An agent that generates code cannot reliably review its own output. An agent optimized for implementation may miss security implications. An agent working in one language may not catch cross-system integration issues.</p>
+                        <p>Multi-agent workflows address this by assigning different agents to different roles: one generates, another reviews, another tests, another documents. Each agent operates within its specialization, and the workflow coordinates their outputs into a coherent result.</p>
+
+                        <div class="blog-callout">
+                            Multi-agent workflows are not about running more AI — they are about applying the same separation of concerns that makes human teams effective to AI-assisted development.
+                        </div>
+
+                        <h2>Real workflow patterns</h2>
+                        <p>The most practical multi-AI workflows follow established engineering patterns. Code generation followed by automated review: Codex generates a PR, then a review agent analyzes it for security issues, style violations, and architectural drift. Implementation followed by test generation: Claude Code implements a feature, then a separate agent generates test cases that verify the implementation against the spec.</p>
+                        <p>Documentation workflows: an agent reads code changes and generates documentation updates, then a review agent verifies consistency between code and docs. Refactoring workflows: one agent identifies candidates for refactoring based on complexity metrics, another executes the refactoring, and a third verifies behavior preservation through test execution.</p>
+
+                        <h2>MCP as the orchestration layer</h2>
+                        <p>Model Context Protocol enables multi-agent workflows by providing shared access to tools and data. Multiple agents can connect to the same MCP servers — the same GitHub access, the same database introspection, the same documentation search. This shared context layer means agents can coordinate without custom integration code between them.</p>
+                        <p>In practice, an orchestration workflow might use GitHub Actions as the trigger: a PR is opened by Codex, which triggers a review agent connected via MCP to the repository, which posts comments, which triggers the original agent to address feedback. The MCP protocol provides the shared tooling; the CI system provides the coordination.</p>
+
+                        <h2>RAG in multi-agent systems</h2>
+                        <p>Retrieval-Augmented Generation becomes more powerful in multi-agent contexts. A RAG system that indexes your codebase, documentation, and architectural decisions can serve multiple agents simultaneously. The implementation agent retrieves relevant patterns. The review agent retrieves security guidelines. The documentation agent retrieves existing docs to maintain consistency.</p>
+                        <p>The key is that RAG provides dynamic context that adapts to each agent's current task. Instead of front-loading all possible context, each agent queries for what it needs when it needs it. This keeps context windows focused and relevant.</p>
+
+                        <h2>Automation pipelines with multiple AIs</h2>
+                        <p>Real automation pipelines combine AI agents with traditional tooling. A CI pipeline might: trigger on PR creation, run a linter (traditional), run a security scanner (traditional), trigger an AI review agent for architectural feedback, trigger a test coverage agent that identifies untested paths, and summarize all findings into a single PR comment.</p>
+                        <p>The power is in composition. AI agents handle tasks that require understanding (review, documentation, test generation) while traditional tools handle tasks that require determinism (linting, building, deployment). The pipeline orchestrates both.</p>
+
+                        <h2>Context sharing between agents</h2>
+                        <p>The hardest problem in multi-agent workflows is context sharing. Agent A produces output that Agent B needs to understand. Without careful context engineering, Agent B operates without awareness of Agent A's decisions, constraints, and tradeoffs.</p>
+                        <p>Solutions include: structured intermediate artifacts (specs, PRs, comments) that serve as context for downstream agents, shared MCP servers that provide consistent views of the system state, and explicit handoff prompts that summarize what the previous agent did and why.</p>
+
+                        <h2>When multi-agent is overkill</h2>
+                        <p>Not every task needs multiple agents. A well-scoped bug fix with clear acceptance criteria is often best handled by a single agent like Claude Code working in a verify-iterate loop. Multi-agent workflows add coordination overhead. They are worth that overhead for complex tasks with multiple concerns: security-sensitive features, cross-system integrations, large refactoring efforts, or tasks that benefit from adversarial review.</p>
+                        <p>The guideline is: if a human team would assign the task to one developer, a single agent is probably sufficient. If a human team would involve multiple reviewers, a security specialist, or a documentation writer, multi-agent workflows replicate that team structure.</p>
+                    </article>
+
+                    <section aria-labelledby="multi-ai-related-title">
+                        <h2 id="multi-ai-related-title">Related reading</h2>
+                        <div class="blog-related-grid">
+                            <article class="blog-related-card">
+                                <h3><a href="/blog/model-context-protocol-mcp/">MCP — Model Context Protocol</a></h3>
+                                <p>The protocol that enables shared tooling across multiple AI agents.</p>
+                            </article>
+                            <article class="blog-related-card">
+                                <h3><a href="/blog/autonomous-coding-agents/">Autonomous Coding Agents: Claude Code, Codex, and Cursor</a></h3>
+                                <p>Individual agent capabilities that combine into multi-agent workflows.</p>
+                            </article>
+                            <article class="blog-related-card">
+                                <h3><a href="/blog/ai-native-engineering/">AI-Native Engineering: Building for Agent Participation</a></h3>
+                                <p>Engineering systems designed to support multi-agent collaboration natively.</p>
+                            </article>
+                        </div>
+                    </section>
+                </div>
+
+                <aside class="blog-article-grid">
+                    <section class="blog-sidebar-card">
+                        <h2>Core takeaways</h2>
+                        <ul>
+                            <li>Multi-agent workflows apply separation of concerns to AI-assisted development.</li>
+                            <li>MCP provides the shared tooling layer for agent coordination.</li>
+                            <li>RAG enables dynamic context for specialized agents.</li>
+                            <li>Combine AI agents with traditional tools in CI pipelines.</li>
+                        </ul>
+                    </section>
+                    <section class="blog-sidebar-card">
+                        <h2>Workflow patterns</h2>
+                        <ul>
+                            <li>Generate → Review → Iterate</li>
+                            <li>Implement → Test → Verify</li>
+                            <li>Code → Document → Validate</li>
+                            <li>Identify → Refactor → Confirm</li>
+                        </ul>
+                    </section>
+                    <section class="blog-sidebar-card">
+                        <h2>Continue exploring</h2>
+                        <ul>
+                            <li><a href="/blog/model-context-protocol-mcp/">Model Context Protocol</a></li>
+                            <li><a href="/blog/autonomous-coding-agents/">Autonomous Coding Agents</a></li>
+                            <li><a href="/blog/ai-code-governance-security/">AI Code Governance</a></li>
+                        </ul>
+                    </section>
+                </aside>
+            </div>
+        </main>
+    </div>
+
+    <footer class="footer-minimal">
+        <div class="footer-container">
+            <div class="footer-link-list" aria-label="Footer links">
+                <a class="footer-link-pill" href="https://github.com/PkLavc" target="_blank" rel="noopener noreferrer">GitHub</a>
+                <a class="footer-link-pill" href="https://www.linkedin.com/in/pklavc/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+                <a class="footer-link-pill" href="mailto:contact@pklavc.com">Email</a>
+                <a class="footer-link-pill footer-link-pill-accent" href="https://github.com/sponsors/PkLavc" target="_blank" rel="noopener noreferrer">Sponsor me</a>
+            </div>
+            <p>
+                &copy; <span data-current-year></span> Patrick Araujo &bull;
+                <span class="github-dev-badge">Member of <b>GitHub Developer Program</b></span>
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        (function() {
+            document.querySelectorAll('[data-current-year]').forEach(function(node) {
+                node.textContent = String(new Date().getFullYear());
+            });
+        }());
+    </script>
+    <script src="/js/jquery.min.js?v=d482871a5e" defer></script>
+    <script src="/js/index.js?v=c51113b4d7" defer></script>
+
+    <div class="visually-hidden">
+        <p>Multi-AI workflows article covering agent orchestration, multiple AI agents in production, Claude Code, Codex, Cursor, Windsurf coordination, MCP shared tooling, RAG dynamic context, automation pipelines, CI integration, context sharing between agents, and separation of concerns in AI-assisted engineering.</p>
+    </div>
+</body>
+</html>
