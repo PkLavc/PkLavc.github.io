@@ -129,14 +129,9 @@ body.blog-layout::before {
     margin-bottom: 8px;
 }
 
-.blog-highlight-list li {
-    padding: 14px 0;
-    line-height: 1.7;
-}
-
 .blog-highlight-list li span {
     margin-right: 8px;
-    margin-bottom: 6px;
+    margin-bottom: 4px;
 }
 
 .blog-highlight-panel h2,
@@ -216,7 +211,7 @@ body.blog-layout::before {
 
 .blog-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
     gap: 22px;
 }
 
@@ -440,10 +435,6 @@ body.blog-layout::before {
         grid-template-columns: 1fr;
     }
 
-    .blog-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-
     .contact.blog-contact {
         display: none;
     }
@@ -454,10 +445,6 @@ body.blog-layout::before {
 }
 
 @media (max-width: 768px) {
-    .blog-grid {
-        grid-template-columns: 1fr;
-    }
-
     .blog-shell {
         padding: 92px 16px 60px;
     }
