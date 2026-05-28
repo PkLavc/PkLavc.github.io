@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Patrick Araujo">
+    <title>Spec-Driven Development: Writing Specifications That Machines and Humans Can Execute</title>
+    <meta name="description" content="How spec-driven development bridges human intent and AI agent execution — structured specifications as the interface between engineers and autonomous coding tools like Claude Code, Codex, and Cursor.">
+    <meta name="keywords" content="spec-driven development, AI specifications, agent execution, structured specs, context engineering, Claude Code specs, Codex tasks, Cursor rules, engineering specifications, automation">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://pklavc.com/blog/spec-driven-development/">
+    <link rel="alternate" href="https://pklavc.com/blog/spec-driven-development/" hreflang="en">
+
+    <meta property="og:title" content="Spec-Driven Development: Writing Specifications That Machines and Humans Can Execute">
+    <meta property="og:description" content="Structured specifications as the interface between engineers and AI agents — how to write specs that produce reliable, reviewable agent output.">
+    <meta property="og:url" content="https://pklavc.com/blog/spec-driven-development/">
+    <meta property="og:type" content="article">
+    <meta property="article:published_time" content="2026-05-28">
+    <meta property="article:modified_time" content="2026-05-28">
+    <meta property="article:author" content="Patrick Araujo">
+    <meta property="article:section" content="AI Engineering">
+    <meta property="article:tag" content="spec-driven development">
+    <meta property="article:tag" content="context engineering">
+    <meta property="article:tag" content="AI specifications">
+    <meta property="article:tag" content="agent execution">
+    <meta property="og:image" content="https://pklavc.com/images/lavc.webp?v=5e84850f26">
+    <meta property="og:image:width" content="1024">
+    <meta property="og:image:height" content="1024">
+    <meta property="og:site_name" content="Patrick Araujo">
+    <meta property="og:locale" content="en_US">
+    <meta property="og:image:alt" content="Brand portrait of backend engineer and automation specialist Patrick Araujo">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Spec-Driven Development: Specs for Machines and Humans">
+    <meta name="twitter:description" content="How structured specifications become the interface between human intent and AI agent execution in modern engineering.">
+    <meta name="twitter:image" content="https://pklavc.com/images/lavc.webp?v=5e84850f26">
+    <meta name="twitter:image:alt" content="Brand portrait of backend engineer and automation specialist Patrick Araujo">
+    <meta name="twitter:site" content="@PkLavc">
+    <meta name="twitter:creator" content="@PkLavc">
+
+    <link rel="icon" type="image/svg+xml" href="https://pklavc.com/images/favicon.svg?v=d15fe4e492">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Monoton&family=Poppins:wght@500;600;700&family=Raleway:wght@300&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Monoton&family=Poppins:wght@500;600;700&family=Raleway:wght@300&display=swap"></noscript>
+    <link rel="stylesheet" href="/css/global.css?v=7723a9ffa6">
+    <link rel="stylesheet" href="/css/blog.css?v=2cb5a61680">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.2.6/gsap.min.js" defer></script>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@graph": [
+            {
+                "@type": "BlogPosting",
+                "headline": "Spec-Driven Development: Writing Specifications That Machines and Humans Can Execute",
+                "description": "How spec-driven development bridges human intent and AI agent execution — structured specifications as the interface between engineers and autonomous coding tools.",
+                "image": "https://pklavc.com/images/lavc.webp?v=5e84850f26",
+                "datePublished": "2026-05-28",
+                "dateModified": "2026-05-28",
+                "author": {
+                    "@type": "Person",
+                    "name": "Patrick Araujo"
+                },
+                "publisher": {
+                    "@type": "Person",
+                    "name": "Patrick Araujo"
+                },
+                "mainEntityOfPage": "https://pklavc.com/blog/spec-driven-development/",
+                "url": "https://pklavc.com/blog/spec-driven-development/",
+                "keywords": [
+                    "spec-driven development",
+                    "ai specifications",
+                    "agent execution",
+                    "context engineering",
+                    "structured specs",
+                    "claude code",
+                    "codex",
+                    "cursor rules",
+                    "automation"
+                ]
+            },
+            {
+                "@type": "BreadcrumbList",
+                "itemListElement": [
+                    {
+                        "@type": "ListItem",
+                        "position": 1,
+                        "name": "Home",
+                        "item": "https://pklavc.com/"
+                    },
+                    {
+                        "@type": "ListItem",
+                        "position": 2,
+                        "name": "Blog",
+                        "item": "https://pklavc.com/blog/"
+                    },
+                    {
+                        "@type": "ListItem",
+                        "position": 3,
+                        "name": "Spec-Driven Development",
+                        "item": "https://pklavc.com/blog/spec-driven-development/"
+                    }
+                ]
+            }
+        ]
+    }
+    </script>
+</head>
+<body class="blog-layout seo-layout">
+    <div id="breaker"></div>
+    <div id="breaker-two"></div>
+    <div id="all">
+        <div class="cursor"></div>
+        <div id="navigation-content" role="navigation" aria-label="Primary navigation">
+            <div class="logo"></div>
+            <div class="navigation-links">
+                <a href="/" data-text="HOME" id="home-link">HOME</a>
+                <a href="/about/" data-text="ABOUT" id="about-link">ABOUT</a>
+                <a href="/projects/" data-text="PROJECTS" id="projects-link">PROJECTS</a>
+                <a href="/blog/" data-text="BLOG" id="blog-link">BLOG</a>
+            </div>
+        </div>
+        <div id="navigation-bar">
+            <div class="menubar">
+                <span class="first-span"></span>
+                <span class="second-span"></span>
+                <span class="third-span"></span>
+            </div>
+        </div>
+
+        <main class="blog-shell" role="main">
+            <div class="blog-columns">
+                <div>
+                    <article class="blog-post-hero">
+                        <div class="blog-breadcrumb" aria-label="Breadcrumb">
+                            <a href="/">Home</a>
+                            <span>/</span>
+                            <a href="/blog/">Blog</a>
+                            <span>/</span>
+                            <span aria-current="page">Spec-Driven Development</span>
+                        </div>
+                        <span class="blog-kicker">AI Engineering</span>
+                        <h1>Spec-Driven Development: Writing Specifications That Machines and Humans Can Execute</h1>
+                        <p>When AI agents execute code, the quality of their output is bounded by the quality of their input. Spec-driven development treats structured specifications as the primary interface between human intent and machine execution — and it changes how engineering teams work with autonomous tools.</p>
+                        <div class="blog-post-meta">
+                            <span>Published May 28, 2026</span>
+                            <span>10 min read</span>
+                            <span>AI Engineering</span>
+                        </div>
+                    </article>
+
+                    <article class="blog-article">
+                        <h2>Why specs matter more with AI agents</h2>
+                        <p>In traditional development, a vague ticket can still produce good code because the developer fills gaps with context, asks questions, and makes judgment calls. AI agents cannot do this reliably. They execute literally against what they are given. A vague prompt produces vague code. A precise specification produces precise implementation.</p>
+                        <p>Spec-driven development inverts the work: instead of spending time writing code and debugging, engineers spend time writing clear specifications and reviewing output. The specification becomes the artifact that captures intent, constraints, acceptance criteria, and architectural boundaries.</p>
+
+                        <div class="blog-callout">
+                            A specification is not documentation after the fact. It is the engineering artifact that drives execution — whether by a human developer or an autonomous agent.
+                        </div>
+
+                        <h2>What a machine-executable spec looks like</h2>
+                        <p>A useful spec for AI agents includes: the problem statement with clear boundaries, acceptance criteria that can be verified programmatically, architectural constraints the implementation must respect, references to existing patterns in the codebase, and explicit non-goals that prevent scope creep.</p>
+                        <p>This is not a new idea — it is what good engineering specs always looked like. The difference is that with AI agents, the spec is not just a communication tool for humans. It is the literal input that determines what gets built. Ambiguity in the spec becomes ambiguity in the output.</p>
+
+                        <h2>Specs as context engineering</h2>
+                        <p>Context engineering — curating what an AI agent sees — is fundamentally a specification problem. Cursor rules files specify coding conventions. Claude Code's CLAUDE.md files specify project context. Codex's setup steps specify environment expectations. These are all specs, just distributed across different mechanisms.</p>
+                        <p>Spec-driven development consolidates this into a deliberate practice: before asking an agent to implement something, write the spec that defines success. Include relevant files, patterns, constraints, and verification criteria. The spec is the context.</p>
+
+                        <h2>The spec-implement-verify loop</h2>
+                        <p>With autonomous agents, the workflow becomes: write spec, delegate to agent, review output against spec, iterate. This loop is faster than writing code manually for well-specified tasks, but slower for tasks where the spec itself is unclear.</p>
+                        <p>The key insight is that spec writing is engineering work. It requires understanding the system, anticipating edge cases, defining boundaries, and making architectural decisions. The agent handles the mechanical translation from spec to implementation — the engineer handles the harder problem of defining what "correct" means.</p>
+
+                        <h2>Specs for different agent tools</h2>
+                        <p>Different tools consume specs differently. Claude Code works well with inline markdown specs in the conversation. Codex expects task descriptions that define scope and acceptance criteria upfront. Cursor's agent mode benefits from rules files that define persistent conventions plus per-task instructions in the chat.</p>
+                        <p>The common pattern is: global specs (conventions, architecture, patterns) live in configuration files that persist across tasks. Task-specific specs (what to build now, what constraints apply) are provided per-invocation. Both layers matter for consistent output.</p>
+
+                        <h2>When specs fail</h2>
+                        <p>Specs fail when they are incomplete, contradictory, or disconnected from the codebase reality. An agent given a spec that says "follow existing patterns" but not shown those patterns will invent its own. A spec that defines behavior but not integration points will produce isolated code that does not fit the system.</p>
+                        <p>The fix is not more words — it is more precision. Reference specific files, name specific functions, point to specific tests. The best specs are short, concrete, and verifiable. They tell the agent what success looks like in terms the agent can check against.</p>
+
+                        <h2>Spec-driven development scales teams</h2>
+                        <p>When specs are the interface, engineering becomes more parallelizable. Senior engineers write specs. Agents (and junior engineers) implement them. Review focuses on whether the implementation matches the spec and whether the spec was correct. This is not about replacing engineers — it is about separating the cognitive work of design from the mechanical work of translation.</p>
+                    </article>
+
+                    <section aria-labelledby="spec-related-title">
+                        <h2 id="spec-related-title">Related reading</h2>
+                        <div class="blog-related-grid">
+                            <article class="blog-related-card">
+                                <h3><a href="/blog/autonomous-coding-agents/">Autonomous Coding Agents: Claude Code, Codex, and Cursor</a></h3>
+                                <p>How autonomous agents consume specs and execute multi-step plans.</p>
+                            </article>
+                            <article class="blog-related-card">
+                                <h3><a href="/blog/ai-native-engineering/">AI-Native Engineering: Building Systems That Assume AI Participation</a></h3>
+                                <p>Engineering practices designed for human-agent collaboration from the start.</p>
+                            </article>
+                            <article class="blog-related-card">
+                                <h3><a href="/blog/model-context-protocol-mcp/">MCP — Model Context Protocol</a></h3>
+                                <p>How MCP enables specs to reference live data and tools instead of static context.</p>
+                            </article>
+                        </div>
+                    </section>
+                </div>
+
+                <aside class="blog-article-grid">
+                    <section class="blog-sidebar-card">
+                        <h2>Core takeaways</h2>
+                        <ul>
+                            <li>Specs are the interface between human intent and agent execution.</li>
+                            <li>Spec quality directly determines agent output quality.</li>
+                            <li>Context engineering is specification by another name.</li>
+                            <li>The spec-implement-verify loop replaces write-debug-refactor.</li>
+                        </ul>
+                    </section>
+                    <section class="blog-sidebar-card">
+                        <h2>Spec mechanisms</h2>
+                        <ul>
+                            <li>CLAUDE.md — Claude Code project context</li>
+                            <li>Cursor rules — persistent conventions</li>
+                            <li>Codex setup steps — environment specs</li>
+                            <li>Task prompts — per-invocation specs</li>
+                        </ul>
+                    </section>
+                    <section class="blog-sidebar-card">
+                        <h2>Continue exploring</h2>
+                        <ul>
+                            <li><a href="/blog/autonomous-coding-agents/">Autonomous Coding Agents</a></li>
+                            <li><a href="/blog/vibe-coding-vs-real-engineering/">Vibe Coding vs Real Engineering</a></li>
+                            <li><a href="/blog/multi-ai-workflows/">Multi-AI Workflows</a></li>
+                        </ul>
+                    </section>
+                </aside>
+            </div>
+        </main>
+    </div>
+
+    <footer class="footer-minimal">
+        <div class="footer-container">
+            <div class="footer-link-list" aria-label="Footer links">
+                <a class="footer-link-pill" href="https://github.com/PkLavc" target="_blank" rel="noopener noreferrer">GitHub</a>
+                <a class="footer-link-pill" href="https://www.linkedin.com/in/pklavc/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+                <a class="footer-link-pill" href="mailto:contact@pklavc.com">Email</a>
+                <a class="footer-link-pill footer-link-pill-accent" href="https://github.com/sponsors/PkLavc" target="_blank" rel="noopener noreferrer">Sponsor me</a>
+            </div>
+            <p>
+                &copy; <span data-current-year></span> Patrick Araujo &bull;
+                <span class="github-dev-badge">Member of <b>GitHub Developer Program</b></span>
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        (function() {
+            document.querySelectorAll('[data-current-year]').forEach(function(node) {
+                node.textContent = String(new Date().getFullYear());
+            });
+        }());
+    </script>
+    <script src="/js/jquery.min.js?v=d482871a5e" defer></script>
+    <script src="/js/index.js?v=c51113b4d7" defer></script>
+
+    <div class="visually-hidden">
+        <p>Spec-driven development article covering structured specifications for AI agents, context engineering, machine-executable specs, Claude Code CLAUDE.md, Cursor rules, Codex task definitions, spec-implement-verify loop, and engineering practices for autonomous coding tools.</p>
+    </div>
+</body>
+</html>
