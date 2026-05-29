@@ -503,83 +503,86 @@ function toggleCredits() {
     }
 }
 
-function initBlogHeroReveal() {
-  var hero = document.querySelector('.blog-hero');
+function initSpaceReveals() {
+  var revealSections = document.querySelectorAll('.space-reveal');
 
-  if (!hero || !window.matchMedia) {
+  if (!revealSections.length || !window.matchMedia) {
     return;
   }
 
-  var desktopQuery = window.matchMedia('(min-width: 1081px) and (hover: hover) and (pointer: fine)');
+  var desktopQuery = window.matchMedia('(min-width: 1025px) and (hover: hover) and (pointer: fine)');
   var reducedMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-  var frame = 0;
-  var lastPointerEvent = null;
 
   function isRevealEnabled() {
     return desktopQuery.matches && !reducedMotionQuery.matches;
   }
 
-  function setRevealPosition(event) {
-    var rect = hero.getBoundingClientRect();
-    var x = event.clientX - rect.left;
-    var y = event.clientY - rect.top;
+  revealSections.forEach(function(section) {
+    var frame = 0;
+    var lastPointerEvent = null;
 
-    hero.style.setProperty('--blog-reveal-x', x + 'px');
-    hero.style.setProperty('--blog-reveal-y', y + 'px');
-  }
+    function setRevealPosition(event) {
+      var rect = section.getBoundingClientRect();
+      var x = event.clientX - rect.left;
+      var y = event.clientY - rect.top;
 
-  function scheduleRevealPosition(event) {
-    lastPointerEvent = event;
-
-    if (frame) {
-      return;
+      section.style.setProperty('--space-reveal-x', x + 'px');
+      section.style.setProperty('--space-reveal-y', y + 'px');
     }
 
-    frame = window.requestAnimationFrame(function() {
-      frame = 0;
+    function scheduleRevealPosition(event) {
+      lastPointerEvent = event;
 
-      if (lastPointerEvent) {
-        setRevealPosition(lastPointerEvent);
+      if (frame) {
+        return;
       }
-    });
-  }
 
-  function handlePointerEnter(event) {
-    if (!isRevealEnabled() || event.pointerType === 'touch') {
-      return;
+      frame = window.requestAnimationFrame(function() {
+        frame = 0;
+
+        if (lastPointerEvent) {
+          setRevealPosition(lastPointerEvent);
+        }
+      });
     }
 
-    hero.classList.add('is-revealing');
-    scheduleRevealPosition(event);
-  }
+    function handlePointerEnter(event) {
+      if (!isRevealEnabled() || event.pointerType === 'touch') {
+        return;
+      }
 
-  function handlePointerMove(event) {
-    if (!isRevealEnabled() || event.pointerType === 'touch') {
-      return;
+      section.classList.add('is-revealing');
+      scheduleRevealPosition(event);
     }
 
-    scheduleRevealPosition(event);
-  }
+    function handlePointerMove(event) {
+      if (!isRevealEnabled() || event.pointerType === 'touch') {
+        return;
+      }
 
-  function handlePointerLeave() {
-    hero.classList.remove('is-revealing');
-    lastPointerEvent = null;
-  }
-
-  function syncRevealState() {
-    if (!isRevealEnabled()) {
-      handlePointerLeave();
+      scheduleRevealPosition(event);
     }
-  }
 
-  hero.addEventListener('pointerenter', handlePointerEnter);
-  hero.addEventListener('pointermove', handlePointerMove);
-  hero.addEventListener('pointerleave', handlePointerLeave);
+    function handlePointerLeave() {
+      section.classList.remove('is-revealing');
+      lastPointerEvent = null;
+    }
 
-  if (typeof desktopQuery.addEventListener === 'function') {
-    desktopQuery.addEventListener('change', syncRevealState);
-    reducedMotionQuery.addEventListener('change', syncRevealState);
-  }
+    function syncRevealState() {
+      if (!isRevealEnabled()) {
+        handlePointerLeave();
+      }
+    }
+
+    section.addEventListener('pointerenter', handlePointerEnter);
+    section.addEventListener('pointermove', handlePointerMove);
+    section.addEventListener('pointerleave', handlePointerLeave);
+
+    if (typeof desktopQuery.addEventListener === 'function') {
+      desktopQuery.addEventListener('change', syncRevealState);
+      reducedMotionQuery.addEventListener('change', syncRevealState);
+    }
+  });
 }
 
 function loadSkylerWidgetAssets() {
@@ -606,9 +609,9 @@ function loadSkylerWidgetAssets() {
 }
 
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initBlogHeroReveal, { once: true });
+  document.addEventListener('DOMContentLoaded', initSpaceReveals, { once: true });
   document.addEventListener('DOMContentLoaded', loadSkylerWidgetAssets, { once: true });
 } else {
-  initBlogHeroReveal();
+  initSpaceReveals();
   loadSkylerWidgetAssets();
 }

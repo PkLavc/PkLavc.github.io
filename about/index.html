@@ -202,8 +202,10 @@
                 }
             }
         </style>
-        <link rel="preload" href="/css/about.css?v=9401a3687f" as="style">
-        <link rel="stylesheet" href="/css/about.css?v=9401a3687f">
+        <link rel="preload" href="/css/about.css?v=2c46ff4edc" as="style">
+        <link rel="stylesheet" href="/css/about.css?v=2c46ff4edc">
+        <link rel="preload" href="/css/space-reveal.css?v=601db46cac" as="style">
+        <link rel="stylesheet" href="/css/space-reveal.css?v=601db46cac">
     </head>
     <body>
         <!-- About Page Schema -->
@@ -537,11 +539,11 @@
 
                         <div class="skills-section">
     <h2><lottie-player src="/images/Globe.json?v=3e19ffd5b8" background="transparent" speed="1" class="section-heading-icon" loop autoplay title="Engineering operating model icon"></lottie-player> Engineering Operating Model</h2>
-    <div class="education-content">
-        <div class="education-reveal-layer" aria-hidden="true">
-            <div class="education-reveal-scene">
-                <div class="education-reveal-horizon"></div>
-                <div class="education-reveal-copy">
+    <div class="education-content space-reveal">
+        <div class="education-reveal-layer space-reveal-layer" aria-hidden="true">
+            <div class="education-reveal-scene space-reveal-scene">
+                <div class="education-reveal-horizon space-reveal-horizon"></div>
+                <div class="education-reveal-copy space-reveal-copy">
                     <span>Signal layer</span>
                     <strong>Systems stay readable when their signals stay visible.</strong>
                 </div>
@@ -802,83 +804,86 @@
                     });
                 }
 
-                function setupEducationReveal() {
-                    const section = document.querySelector('.education-content');
+                function setupSpaceReveals() {
+                    const sections = document.querySelectorAll('.space-reveal');
 
-                    if (!section || !window.matchMedia) {
+                    if (!sections.length || !window.matchMedia) {
                         return;
                     }
 
                     const desktopQuery = window.matchMedia('(min-width: 1025px) and (hover: hover) and (pointer: fine)');
                     const reducedMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-                    let frame = 0;
-                    let lastPointerEvent = null;
 
                     function isRevealEnabled() {
                         return desktopQuery.matches && !reducedMotionQuery.matches;
                     }
 
-                    function setRevealPosition(event) {
-                        const rect = section.getBoundingClientRect();
-                        const x = event.clientX - rect.left;
-                        const y = event.clientY - rect.top;
+                    sections.forEach(function(section) {
+                        let frame = 0;
+                        let lastPointerEvent = null;
 
-                        section.style.setProperty('--education-reveal-x', x + 'px');
-                        section.style.setProperty('--education-reveal-y', y + 'px');
-                    }
+                        function setRevealPosition(event) {
+                            const rect = section.getBoundingClientRect();
+                            const x = event.clientX - rect.left;
+                            const y = event.clientY - rect.top;
 
-                    function scheduleRevealPosition(event) {
-                        lastPointerEvent = event;
-
-                        if (frame) {
-                            return;
+                            section.style.setProperty('--space-reveal-x', x + 'px');
+                            section.style.setProperty('--space-reveal-y', y + 'px');
                         }
 
-                        frame = window.requestAnimationFrame(function() {
-                            frame = 0;
+                        function scheduleRevealPosition(event) {
+                            lastPointerEvent = event;
 
-                            if (lastPointerEvent) {
-                                setRevealPosition(lastPointerEvent);
+                            if (frame) {
+                                return;
                             }
-                        });
-                    }
 
-                    function handlePointerEnter(event) {
-                        if (!isRevealEnabled() || event.pointerType === 'touch') {
-                            return;
+                            frame = window.requestAnimationFrame(function() {
+                                frame = 0;
+
+                                if (lastPointerEvent) {
+                                    setRevealPosition(lastPointerEvent);
+                                }
+                            });
                         }
 
-                        section.classList.add('is-revealing');
-                        scheduleRevealPosition(event);
-                    }
+                        function handlePointerEnter(event) {
+                            if (!isRevealEnabled() || event.pointerType === 'touch') {
+                                return;
+                            }
 
-                    function handlePointerMove(event) {
-                        if (!isRevealEnabled() || event.pointerType === 'touch') {
-                            return;
+                            section.classList.add('is-revealing');
+                            scheduleRevealPosition(event);
                         }
 
-                        scheduleRevealPosition(event);
-                    }
+                        function handlePointerMove(event) {
+                            if (!isRevealEnabled() || event.pointerType === 'touch') {
+                                return;
+                            }
 
-                    function handlePointerLeave() {
-                        section.classList.remove('is-revealing');
-                        lastPointerEvent = null;
-                    }
-
-                    function syncRevealState() {
-                        if (!isRevealEnabled()) {
-                            handlePointerLeave();
+                            scheduleRevealPosition(event);
                         }
-                    }
 
-                    section.addEventListener('pointerenter', handlePointerEnter);
-                    section.addEventListener('pointermove', handlePointerMove);
-                    section.addEventListener('pointerleave', handlePointerLeave);
+                        function handlePointerLeave() {
+                            section.classList.remove('is-revealing');
+                            lastPointerEvent = null;
+                        }
 
-                    if (typeof desktopQuery.addEventListener === 'function') {
-                        desktopQuery.addEventListener('change', syncRevealState);
-                        reducedMotionQuery.addEventListener('change', syncRevealState);
-                    }
+                        function syncRevealState() {
+                            if (!isRevealEnabled()) {
+                                handlePointerLeave();
+                            }
+                        }
+
+                        section.addEventListener('pointerenter', handlePointerEnter);
+                        section.addEventListener('pointermove', handlePointerMove);
+                        section.addEventListener('pointerleave', handlePointerLeave);
+
+                        if (typeof desktopQuery.addEventListener === 'function') {
+                            desktopQuery.addEventListener('change', syncRevealState);
+                            reducedMotionQuery.addEventListener('change', syncRevealState);
+                        }
+                    });
                 }
 
                 function loadDeferredScript(src) {
@@ -945,7 +950,7 @@
                 setupMenu();
                 setupCursor();
                 setupContacts();
-                setupEducationReveal();
+                setupSpaceReveals();
                 window.addEventListener('load', setupDeferredLottie, { once: true });
             }());
                 </script>
@@ -977,4 +982,3 @@
 </div>
     </body>
     </html>
-
