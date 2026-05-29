@@ -9,7 +9,7 @@
 
   function shouldRunWidget() {
     var path = window.location.pathname || "/";
-    return !/^\/(skyler-assistant|projects\/skyler-assistant\/demo)\/?$/i.test(path);
+    return !/^\/skyler-assistant\/?$/i.test(path);
   }
 
   function ensureMarkup() {
@@ -110,7 +110,7 @@
     "https://pklavc.com/about/": "About Patrick",
     "https://pklavc.com/projects/lavc-systems/": "View Lavc Systems",
     "https://pklavc.com/projects/skyler-assistant/": "View Skyler Assistant",
-    "https://pklavc.com/projects/skyler-assistant/demo/": "Open Skyler Demo",
+    "https://pklavc.com/skyler-assistant/": "Open Skyler Assistant",
     "https://pklavc.com/projects/codepulse-monorepo/": "View CodePulse",
     "https://pklavc.com/projects/google-auth-worker/": "View Google Auth Worker",
     "https://pklavc.com/projects/zoho-integration-worker/": "View Zoho Worker",

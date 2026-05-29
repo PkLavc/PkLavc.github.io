@@ -587,7 +587,7 @@ function initSpaceReveals() {
 
 function loadSkylerWidgetAssets() {
   var path = window.location.pathname || '/';
-  if (/^\/(skyler-assistant|projects\/skyler-assistant\/demo)\/?$/i.test(path)) {
+  if (/^\/skyler-assistant\/?$/i.test(path)) {
     return;
   }
 
@@ -602,7 +602,7 @@ function loadSkylerWidgetAssets() {
   if (!document.getElementById('skyler-widget-script')) {
     var script = document.createElement('script');
     script.id = 'skyler-widget-script';
-    script.src = '/js/skyler-widget.js?v=63ed60db72';
+    script.src = '/js/skyler-widget.js?v=2efd98d1b1';
     script.defer = true;
     document.body.appendChild(script);
   }

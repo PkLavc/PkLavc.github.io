@@ -40,7 +40,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Monoton&family=Poppins:wght@500;600;700&family=Raleway:wght@300&display=swap" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Monoton&family=Poppins:wght@500;600;700&family=Raleway:wght@300&display=swap"></noscript>
-    <link rel="stylesheet" href="/css/global.css?v=7723a9ffa6">
+    <link rel="stylesheet" href="/css/global.css?v=28e69a7db2">
     <link rel="stylesheet" href="/css/blog.css?v=1df68fe171">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.2.6/gsap.min.js" defer></script>
     <script type="application/ld+json">
@@ -216,7 +216,7 @@
                         <p>The vault is intentionally not a cloud secrets manager. Storing credentials locally in a vault that the agent layer can read at runtime keeps the secrets off any external service while still enabling the automation that requires them. The trade-off is that local vault security is only as strong as the machine it runs on — which is an acceptable boundary for a system explicitly designed for on-premise operation.</p>
 
                         <h2>Skyler: the same assistant, a different execution environment</h2>
-                        <p>Skyler appears in two places in the Lavc portfolio. The public version — <a href="/projects/skyler-assistant/">Skyler Assistant</a> — runs on Cloudflare Workers with manual RAG, provider fallback, and a lightweight orchestration model designed for public portfolio visitors. It answers questions about Patrick's work, stack, and experience. It does not have access to private data. It does not execute tasks. It is a read-only conversational interface over a fixed knowledge base.</p>
+                        <p>Skyler appears in two places in the Lavc portfolio. The public version — <a href="/skyler-assistant/">Skyler Assistant</a> — runs on Cloudflare Workers with manual RAG, provider fallback, and a lightweight orchestration model designed for public portfolio visitors. It answers questions about Patrick's work, stack, and experience. It does not have access to private data. It does not execute tasks. It is a read-only conversational interface over a fixed knowledge base.</p>
                         <p>Skyler inside Lavc Systems is a different implementation in the same conceptual role. She runs inside the FastAPI backend, has access to the SQLite database, can query ChromaDB, can create tasks, read uploaded files, write credentials to the local vault, and generate an operational trace of her own responses. The trace is not model-generated prose about what the model thought — it is a structured log of the actual state transitions executed during the response: intent detected, context source consulted, action taken, next recommended step.</p>
                         <p>The architectural lesson across both versions is that the quality of an AI assistant is not primarily determined by the model. It is determined by what data the assistant can reach, what actions it is permitted to take, and how transparent its reasoning is to the people relying on it. The public Skyler is useful because it has the right knowledge base and clear answer rules. The system Skyler is more capable because she has access to the full operational context of the platform she lives in.</p>
 
@@ -267,7 +267,7 @@
                         <h2>Continue exploring</h2>
                         <ul>
                             <li><a href="/projects/lavc-systems/">Lavc Systems project page</a></li>
-                            <li><a href="/projects/skyler-assistant/">Skyler Assistant (public version)</a></li>
+                            <li><a href="/skyler-assistant/">Skyler Assistant (public version)</a></li>
                             <li><a href="/blog/backend-automation-systems/">Backend Automation Systems</a></li>
                             <li><a href="/blog/multi-tenant-saas-architecture/">Multi-Tenant SaaS Architecture</a></li>
                             <li><a href="/about/">About Patrick Araujo</a></li>
@@ -299,6 +299,6 @@
         }());
     </script>
     <script src="/js/jquery.min.js?v=d482871a5e" defer></script>
-    <script src="/js/index.js?v=c51113b4d7" defer></script>
+    <script src="/js/index.js?v=0fe2f1fd57" defer></script>
 </body>
 </html>

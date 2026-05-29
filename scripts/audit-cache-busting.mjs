@@ -19,7 +19,7 @@ const ASSET_EXTENSIONS = new Set([
   ".webp",
 ]);
 const CONTENT_EXTENSIONS = new Set([".css", ".html", ".js"]);
-const SITE_DIRECTORIES = new Set(["about", "blog", "collections", "css", "js", "projects", "stacks"]);
+const SITE_DIRECTORIES = new Set(["about", "blog", "collections", "css", "js", "projects", "skyler-assistant", "stacks"]);
 const ROOT_CONTENT_FILES = new Set(["404.html", "index.html"]);
 const ASSET_PATTERN =
   /(["'])([^"'\\<>]*?\.(?:avif|css|gif|ico|jpe?g|js|json|mjs|png|svg|webmanifest|webp)(?:\?[^"'\\<>]*)?(?:#[^"'\\<>]*)?)\1/gi;
