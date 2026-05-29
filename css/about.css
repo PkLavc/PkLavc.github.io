@@ -866,6 +866,10 @@ body {
     gap: 16px;
 }
 
+.education-reveal-layer {
+    display: none;
+}
+
 .education-item {
     padding: 18px 20px;
     border: 1px solid rgba(0, 191, 255, 0.18);
@@ -908,6 +912,134 @@ body {
 .education-institution {
     color: #c7d3d8;
     line-height: 1.6;
+}
+
+@media (min-width: 1025px) and (hover: hover) and (pointer: fine) {
+    .education-content {
+        --education-reveal-x: 50%;
+        --education-reveal-y: 50%;
+        --education-reveal-radius: 0px;
+        position: relative;
+        isolation: isolate;
+        overflow: hidden;
+        border-radius: 12px;
+    }
+
+    .education-item {
+        position: relative;
+        z-index: 1;
+    }
+
+    .education-reveal-layer {
+        position: absolute;
+        inset: 0;
+        z-index: 3;
+        display: block;
+        pointer-events: none;
+        opacity: 0;
+        clip-path: circle(var(--education-reveal-radius) at var(--education-reveal-x) var(--education-reveal-y));
+        transition: clip-path 0.24s ease, opacity 0.24s ease;
+        background:
+            radial-gradient(circle at var(--education-reveal-x) var(--education-reveal-y), rgba(0, 209, 255, 0.38), transparent 34%),
+            radial-gradient(circle at calc(var(--education-reveal-x) - 90px) calc(var(--education-reveal-y) + 70px), rgba(255, 42, 170, 0.24), transparent 30%),
+            repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.12) 0 1px, transparent 1px 42px),
+            repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.08) 0 1px, transparent 1px 34px),
+            linear-gradient(135deg, #06131b 0%, #080b14 54%, #150a1d 100%);
+    }
+
+    .education-reveal-layer::before,
+    .education-reveal-layer::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+    }
+
+    .education-reveal-layer::before {
+        z-index: 0;
+        opacity: 0.48;
+        background:
+            linear-gradient(116deg, transparent 0 18%, rgba(0, 209, 255, 0.2) 18.4% 18.9%, transparent 19.3% 52%, rgba(255, 255, 255, 0.12) 52.4% 52.9%, transparent 53.3%),
+            linear-gradient(28deg, transparent 0 38%, rgba(255, 42, 170, 0.18) 38.4% 39%, transparent 39.5%);
+    }
+
+    .education-reveal-layer::after {
+        z-index: 1;
+        opacity: 0.32;
+        background:
+            radial-gradient(circle, rgba(255, 255, 255, 0.78) 0 1px, transparent 1.7px) 0 0 / 40px 40px,
+            radial-gradient(circle, rgba(0, 209, 255, 0.72) 0 1px, transparent 1.8px) 18px 12px / 58px 58px;
+    }
+
+    .education-reveal-scene {
+        position: relative;
+        z-index: 2;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 220px;
+        align-items: center;
+        gap: 22px;
+        min-height: 100%;
+        padding: 24px;
+        color: #f4fbff;
+    }
+
+    .education-reveal-copy span {
+        display: inline-flex;
+        margin-bottom: 10px;
+        padding: 6px 10px;
+        border: 1px solid rgba(255, 255, 255, 0.22);
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.08);
+        color: #d9f8ff;
+        font-size: 0.68rem;
+        font-weight: 700;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+    }
+
+    .education-reveal-copy strong {
+        display: block;
+        max-width: 14ch;
+        color: #ffffff;
+        font-family: Poppins, Inter, sans-serif;
+        font-size: clamp(1.8rem, 3vw, 3rem);
+        line-height: 1.04;
+    }
+
+    .education-reveal-map {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+        padding: 14px;
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        border-radius: 10px;
+        background: rgba(2, 6, 10, 0.34);
+    }
+
+    .education-reveal-map span {
+        min-height: 58px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.06);
+        color: #ffffff;
+        font-size: 0.68rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-align: center;
+        text-transform: uppercase;
+    }
+
+    .education-content.is-revealing {
+        --education-reveal-radius: 150px;
+    }
+
+    .education-content.is-revealing .education-reveal-layer {
+        opacity: 1;
+    }
 }
 
 @media (max-width: 768px) {
