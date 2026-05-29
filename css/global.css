@@ -126,8 +126,12 @@ body.seo-layout .footer-minimal {
 }
 
 #navigation-content{
+    inset: 0;
     height: 100vh;
-    width: 100%;
+    height: 100dvh;
+    min-height: 100vh;
+    min-height: 100svh;
+    width: 100vw;
     position:fixed;
     z-index: 9998;
     background-color:#020202;
@@ -139,6 +143,9 @@ body.seo-layout .footer-minimal {
     will-change: transform;
     visibility: hidden;
     pointer-events: none;
+    overflow: hidden;
+    overscroll-behavior: contain;
+    touch-action: none;
     transition: transform 0.24s ease, visibility 0s linear 0.24s;
 }
 
@@ -148,6 +155,11 @@ body.seo-layout .footer-minimal {
     pointer-events: auto;
     transition: transform 0.24s ease;
     z-index: 10001;
+}
+
+body.navigation-open {
+    overflow: hidden !important;
+    overscroll-behavior: none;
 }
 
 #navigation-bar{ position: fixed; height: 100px; width: 100%; z-index: 9999; padding: 10px; background:transparent; overflow: hidden; }
@@ -163,7 +175,7 @@ body.seo-layout .footer-minimal {
 .close-first , .close-second{ height: 2px; width: 35px; background-color: whitesmoke; display: block; margin: 4px; cursor: pointer; padding: 1px; border-radius: 20px; }
 .close-first { transform: rotate(45deg); }
 .close-second{ transform: rotate(-45deg); }
-.navigation-close{ position: absolute; top: 6%; right:4%; padding: 10px; cursor: pointer; transition: all.3s ease; opacity: .8; }
+.navigation-close{ position: absolute; top: max(22px, env(safe-area-inset-top)); right:max(18px, calc(4% + env(safe-area-inset-right))); padding: 10px; cursor: pointer; transition: all.3s ease; opacity: .8; border: 0 !important; background: transparent !important; color: transparent !important; z-index: 2; }
 .navigation-close:hover{ opacity: 1; transform: rotate(90deg); }
 .logo img{ height: 80px; position: absolute; top: 3%; left: 2.5%; opacity: .8; z-index: 2; cursor: pointer; transition: all .4s ease; }
 .logo img:hover{ opacity: 1; transform: rotate(-45deg); }

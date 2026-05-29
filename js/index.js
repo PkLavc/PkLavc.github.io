@@ -259,15 +259,58 @@ $(function(){
 });
 
 var isMenuOpen = false;
+var navigationScrollY = 0;
+
+function lockNavigationScroll() {
+  navigationScrollY = window.pageYOffset || document.documentElement.scrollTop || 0;
+  document.body.classList.add('navigation-open');
+  document.body.style.position = 'fixed';
+  document.body.style.top = '-' + navigationScrollY + 'px';
+  document.body.style.left = '0';
+  document.body.style.right = '0';
+  document.body.style.width = '100%';
+}
+
+function unlockNavigationScroll() {
+  var top = document.body.style.top;
+  document.body.classList.remove('navigation-open');
+  document.body.style.position = '';
+  document.body.style.top = '';
+  document.body.style.left = '';
+  document.body.style.right = '';
+  document.body.style.width = '';
+
+  var restoredY = top ? Math.abs(parseInt(top, 10)) : navigationScrollY;
+  if (restoredY) {
+    window.scrollTo(0, restoredY);
+  }
+}
+
+function ensureNavigationCloseButton() {
+  var nav = document.getElementById('navigation-content');
+  if (!nav || nav.querySelector('.navigation-close')) {
+    return;
+  }
+
+  var closeButton = document.createElement('button');
+  closeButton.className = 'navigation-close';
+  closeButton.type = 'button';
+  closeButton.setAttribute('aria-label', 'Close navigation menu');
+  closeButton.innerHTML = '<span class="close-first"></span><span class="close-second"></span>';
+  nav.insertBefore(closeButton, nav.firstChild);
+}
 
 function openNavigationMenu() {
+  ensureNavigationCloseButton();
   $('#navigation-content').addClass('is-open');
   setElementDisplay('#navigation-content', 'flex');
   animateElementY('#navigation-content', 0.24, 0);
+  lockNavigationScroll();
   isMenuOpen = true;
 }
 
 function closeNavigationMenu() {
+  unlockNavigationScroll();
   animateElementY('#navigation-content', 0.24, '-100%', function() {
     $('#navigation-content').removeClass('is-open');
     setElementDisplay('#navigation-content', 'none');
@@ -301,6 +344,7 @@ function ensureBlogNavigationLink() {
 }
 
 ensureBlogNavigationLink();
+ensureNavigationCloseButton();
 
 $(function(){
   $(".menubar").on("click",function(e){
@@ -322,6 +366,18 @@ $(function(){
 
   $("#navigation-content a").on("click", function() {
     if (isMenuOpen) {
+      closeNavigationMenu();
+    }
+  });
+
+  $("#navigation-content").on("click", ".navigation-close", function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    closeNavigationMenu();
+  });
+
+  $(document).on("keydown", function(e) {
+    if (isMenuOpen && e.key === "Escape") {
       closeNavigationMenu();
     }
   });
