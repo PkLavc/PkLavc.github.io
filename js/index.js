@@ -503,6 +503,85 @@ function toggleCredits() {
     }
 }
 
+function initBlogHeroReveal() {
+  var hero = document.querySelector('.blog-hero');
+
+  if (!hero || !window.matchMedia) {
+    return;
+  }
+
+  var desktopQuery = window.matchMedia('(min-width: 1081px) and (hover: hover) and (pointer: fine)');
+  var reducedMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+  var frame = 0;
+  var lastPointerEvent = null;
+
+  function isRevealEnabled() {
+    return desktopQuery.matches && !reducedMotionQuery.matches;
+  }
+
+  function setRevealPosition(event) {
+    var rect = hero.getBoundingClientRect();
+    var x = event.clientX - rect.left;
+    var y = event.clientY - rect.top;
+
+    hero.style.setProperty('--blog-reveal-x', x + 'px');
+    hero.style.setProperty('--blog-reveal-y', y + 'px');
+  }
+
+  function scheduleRevealPosition(event) {
+    lastPointerEvent = event;
+
+    if (frame) {
+      return;
+    }
+
+    frame = window.requestAnimationFrame(function() {
+      frame = 0;
+
+      if (lastPointerEvent) {
+        setRevealPosition(lastPointerEvent);
+      }
+    });
+  }
+
+  function handlePointerEnter(event) {
+    if (!isRevealEnabled() || event.pointerType === 'touch') {
+      return;
+    }
+
+    hero.classList.add('is-revealing');
+    scheduleRevealPosition(event);
+  }
+
+  function handlePointerMove(event) {
+    if (!isRevealEnabled() || event.pointerType === 'touch') {
+      return;
+    }
+
+    scheduleRevealPosition(event);
+  }
+
+  function handlePointerLeave() {
+    hero.classList.remove('is-revealing');
+    lastPointerEvent = null;
+  }
+
+  function syncRevealState() {
+    if (!isRevealEnabled()) {
+      handlePointerLeave();
+    }
+  }
+
+  hero.addEventListener('pointerenter', handlePointerEnter);
+  hero.addEventListener('pointermove', handlePointerMove);
+  hero.addEventListener('pointerleave', handlePointerLeave);
+
+  if (typeof desktopQuery.addEventListener === 'function') {
+    desktopQuery.addEventListener('change', syncRevealState);
+    reducedMotionQuery.addEventListener('change', syncRevealState);
+  }
+}
+
 function loadSkylerWidgetAssets() {
   var path = window.location.pathname || '/';
   if (/^\/(skyler-assistant|projects\/skyler-assistant\/demo)\/?$/i.test(path)) {
@@ -527,7 +606,9 @@ function loadSkylerWidgetAssets() {
 }
 
 if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initBlogHeroReveal, { once: true });
   document.addEventListener('DOMContentLoaded', loadSkylerWidgetAssets, { once: true });
 } else {
+  initBlogHeroReveal();
   loadSkylerWidgetAssets();
 }

@@ -722,3 +722,189 @@ body.blog-layout::before {
         margin: 8px 0;
     }
 }
+
+@media (min-width: 1081px) and (hover: hover) and (pointer: fine) {
+    .blog-hero {
+        --blog-reveal-x: 50%;
+        --blog-reveal-y: 50%;
+        --blog-reveal-radius: 0px;
+        position: relative;
+        isolation: isolate;
+        overflow: hidden;
+        border-radius: 10px;
+    }
+
+    .blog-hero::before {
+        content: "";
+        position: absolute;
+        inset: -1px;
+        z-index: 0;
+        pointer-events: none;
+        opacity: 0.2;
+        background:
+            radial-gradient(circle at 18% 18%, rgba(0, 209, 255, 0.2), transparent 32%),
+            radial-gradient(circle at 78% 76%, rgba(255, 42, 170, 0.13), transparent 36%),
+            linear-gradient(135deg, rgba(8, 13, 20, 0.95), rgba(18, 9, 24, 0.92));
+    }
+
+    .blog-hero-reveal-layer {
+        position: absolute;
+        inset: 0;
+        z-index: 3;
+        pointer-events: none;
+        opacity: 0;
+        clip-path: circle(var(--blog-reveal-radius) at var(--blog-reveal-x) var(--blog-reveal-y));
+        transition: clip-path 0.26s ease, opacity 0.26s ease;
+        background:
+            radial-gradient(circle at var(--blog-reveal-x) var(--blog-reveal-y), rgba(0, 209, 255, 0.42), transparent 30%),
+            radial-gradient(circle at calc(var(--blog-reveal-x) + 120px) calc(var(--blog-reveal-y) - 90px), rgba(255, 42, 170, 0.3), transparent 28%),
+            repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.14) 0 1px, transparent 1px 54px),
+            repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.1) 0 1px, transparent 1px 38px),
+            linear-gradient(135deg, #06131b 0%, #0a0e18 48%, #1a0d24 100%);
+    }
+
+    .blog-hero-reveal-layer::before,
+    .blog-hero-reveal-layer::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+    }
+
+    .blog-hero-reveal-layer::before {
+        z-index: 0;
+        opacity: 0.55;
+        background:
+            linear-gradient(115deg, transparent 0 12%, rgba(255, 255, 255, 0.16) 12.4% 12.8%, transparent 13.2% 35%, rgba(0, 209, 255, 0.18) 35.4% 35.9%, transparent 36.3%),
+            linear-gradient(25deg, transparent 0 44%, rgba(255, 42, 170, 0.2) 44.4% 45%, transparent 45.5% 100%);
+    }
+
+    .blog-hero-reveal-layer::after {
+        z-index: 1;
+        opacity: 0.28;
+        background:
+            radial-gradient(circle, rgba(255, 255, 255, 0.86) 0 1px, transparent 1.7px) 0 0 / 46px 46px,
+            radial-gradient(circle, rgba(0, 209, 255, 0.78) 0 1px, transparent 1.8px) 23px 14px / 68px 68px;
+    }
+
+    .blog-hero-reveal-scene {
+        position: relative;
+        z-index: 2;
+        display: grid;
+        grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr);
+        align-items: center;
+        gap: 32px;
+        min-height: 100%;
+        padding: 38px;
+        color: #f7fcff;
+    }
+
+    .blog-hero-reveal-copy {
+        max-width: 660px;
+    }
+
+    .blog-hero-reveal-copy span {
+        display: inline-flex;
+        margin-bottom: 14px;
+        padding: 8px 13px;
+        border: 1px solid rgba(255, 255, 255, 0.22);
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.08);
+        color: #d9f8ff;
+        font-size: 0.78rem;
+        font-weight: 700;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+    }
+
+    .blog-hero-reveal-copy strong {
+        display: block;
+        max-width: 11ch;
+        color: #ffffff;
+        font-family: Poppins, Inter, sans-serif;
+        font-size: clamp(2.6rem, 5vw, 5rem);
+        line-height: 0.98;
+    }
+
+    .blog-hero-reveal-copy p {
+        max-width: 48ch;
+        margin-top: 18px;
+        color: rgba(240, 251, 255, 0.78);
+        font-size: 1rem;
+        line-height: 1.7;
+    }
+
+    .blog-hero-reveal-map {
+        position: relative;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+        padding: 28px;
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        border-radius: 10px;
+        background: rgba(2, 6, 10, 0.38);
+        box-shadow: inset 0 0 0 1px rgba(0, 209, 255, 0.12);
+    }
+
+    .blog-hero-reveal-map::before {
+        content: "";
+        position: absolute;
+        inset: 50% 8%;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, rgba(0, 209, 255, 0.75), transparent);
+    }
+
+    .blog-hero-reveal-map::after {
+        content: "";
+        position: absolute;
+        top: 8%;
+        bottom: 8%;
+        left: 50%;
+        width: 1px;
+        background: linear-gradient(180deg, transparent, rgba(255, 42, 170, 0.6), transparent);
+    }
+
+    .blog-hero-reveal-map span {
+        min-height: 92px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.06);
+        color: #ffffff;
+        font-size: 0.82rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-align: center;
+        text-transform: uppercase;
+    }
+
+    .blog-hero.is-revealing {
+        --blog-reveal-radius: 260px;
+    }
+
+    .blog-hero.is-revealing .blog-hero-reveal-layer {
+        opacity: 1;
+    }
+
+    .blog-hero-panel,
+    .blog-highlight-panel {
+        position: relative;
+        z-index: 1;
+        overflow: hidden;
+    }
+
+    .blog-hero-panel > *,
+    .blog-highlight-panel > * {
+        position: relative;
+        z-index: 1;
+    }
+}
+
+@media (max-width: 1080px), (hover: none), (pointer: coarse), (prefers-reduced-motion: reduce) {
+    .blog-hero-reveal-layer {
+        display: none;
+    }
+}
