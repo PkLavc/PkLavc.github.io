@@ -254,8 +254,24 @@ body.navigation-open {
 .navigation-links{ display: flex; align-items: center; justify-content: center; flex-direction: column; font-family: 'Poppins', 'Inter', 'Segoe UI', Arial, sans-serif; }
 .navigation-links a{ padding:10px; text-decoration: none; color: white; font-size: 30px; font-family: 'Poppins', 'Inter', 'Segoe UI', Arial, sans-serif; font-weight: 600; opacity: .7; transition: all .4s ease; }
 .navigation-links a:hover{ opacity: 1; }
-.navigation-links a::before{ content: ""; position: absolute; top:50%; left: 50%; display: flex; justify-content: center; transform: translate(-50%,-50%); align-items: center; font-size: 5em; font-weight: 400; font-family: 'Monoton', 'Poppins', 'Inter', 'Segoe UI', Arial, sans-serif; color:rgb(255, 255, 255,.1); z-index: 1; pointer-events: none; opacity: 0; letter-spacing: 100px; transition: all .4s ease; }
-.navigation-links a:hover::before{ content: attr(data-text); opacity: 1; letter-spacing: 10px; }
+.navigation-links a::before{ content: ""; position: absolute; top:50%; left: 50%; display: flex; justify-content: center; transform: translate(-50%,-50%); align-items: center; font-size: clamp(4.4rem, 12vw, 8rem); font-weight: 700; font-family: 'Inter', 'Poppins', 'Segoe UI', Arial, sans-serif; color: transparent; -webkit-text-stroke: 1px rgba(0, 209, 255, 0.18); text-shadow: 0 0 34px rgba(0, 209, 255, 0.12); z-index: 1; pointer-events: none; opacity: 0; letter-spacing: 0.28em; transition: opacity .4s ease, letter-spacing .4s ease, text-shadow .4s ease; }
+.navigation-links a:hover::before{ content: attr(data-text); opacity: 1; letter-spacing: 0.08em; }
+.navigation-links a.is-navigation-enhanced::before,
+.navigation-links a.is-navigation-enhanced:hover::before{ content: none; display: none; }
+.navigation-link-text{ position: relative; z-index: 2; }
+.navigation-menu-letter-miami{ color: #ff2aaa; text-shadow: 0 0 14px rgba(255, 42, 170, .42), 0 0 24px rgba(0, 209, 255, .16); }
+.navigation-hover-text{ position: fixed; top: 50%; left: 50%; display: flex; justify-content: center; align-items: center; transform: translate(-50%,-50%); font-size: clamp(4.4rem, 12vw, 8rem); font-weight: 700; font-family: 'Inter', 'Poppins', 'Segoe UI', Arial, sans-serif; color: transparent; -webkit-text-stroke: 1px rgba(0, 209, 255, 0.18); text-shadow: 0 0 34px rgba(0, 209, 255, 0.12); z-index: 1; pointer-events: none; opacity: 0; letter-spacing: 0.28em; transition: opacity .4s ease, letter-spacing .4s ease, text-shadow .4s ease; }
+.navigation-hover-text .navigation-menu-letter-miami{ color: transparent; -webkit-text-stroke: 1px rgba(255, 42, 170, .5); text-shadow: 0 0 18px rgba(255, 42, 170, .44), 0 0 34px rgba(255, 42, 170, .18); }
+.navigation-links a:hover .navigation-hover-text{ opacity: 1; letter-spacing: 0.08em; }
+
+@media (max-width: 768px), (hover: none), (pointer: coarse) {
+    .navigation-links a::before,
+    .navigation-links a:hover::before,
+    .navigation-hover-text {
+        content: none;
+        display: none;
+    }
+}
 
 .contact{
     display: flex;

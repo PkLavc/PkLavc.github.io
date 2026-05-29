@@ -343,7 +343,62 @@ function ensureBlogNavigationLink() {
   });
 }
 
+function createNavigationLabelFragment(label) {
+  var fragment = document.createDocumentFragment();
+
+  Array.prototype.forEach.call(label, function(character) {
+    var span = document.createElement('span');
+    span.textContent = character;
+
+    if (/[mia]/i.test(character)) {
+      span.className = 'navigation-menu-letter-miami';
+    }
+
+    fragment.appendChild(span);
+  });
+
+  return fragment;
+}
+
+function getNavigationLinkLabel(link) {
+  var storedLabel = link.getAttribute('data-nav-label');
+  var visibleText = link.querySelector('.navigation-link-text');
+  var dataText = link.getAttribute('data-text');
+
+  return (storedLabel || dataText || (visibleText && visibleText.textContent) || link.textContent || '').trim();
+}
+
+function enhanceNavigationMenuLetters() {
+  var links = document.querySelectorAll('.navigation-links a');
+
+  links.forEach(function(link) {
+    var label = getNavigationLinkLabel(link);
+
+    if (!label) {
+      return;
+    }
+
+    var visibleLabel = document.createElement('span');
+    var hoverLabel = document.createElement('span');
+
+    visibleLabel.className = 'navigation-link-text';
+    visibleLabel.appendChild(createNavigationLabelFragment(label));
+
+    hoverLabel.className = 'navigation-hover-text';
+    hoverLabel.setAttribute('aria-hidden', 'true');
+    hoverLabel.appendChild(createNavigationLabelFragment(label));
+
+    link.textContent = '';
+    link.setAttribute('data-text', label);
+    link.setAttribute('data-nav-label', label);
+    link.classList.add('is-navigation-enhanced');
+    link.appendChild(visibleLabel);
+    link.appendChild(hoverLabel);
+  });
+}
+
 ensureBlogNavigationLink();
+enhanceNavigationMenuLetters();
 ensureNavigationCloseButton();
 
 $(function(){
