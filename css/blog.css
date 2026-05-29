@@ -211,15 +211,16 @@ body.blog-layout::before {
 
 .blog-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 22px;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
 }
 
 .blog-card {
-    padding: 24px;
+    padding: 20px;
     display: flex;
     flex-direction: column;
-    gap: 14px;
+    gap: 12px;
+    height: 100%;
     transition: transform 0.28s ease, border-color 0.28s ease;
 }
 
@@ -232,8 +233,41 @@ body.blog-layout::before {
 .blog-card h3,
 .blog-related-card h3 {
     color: #ffffff;
-    font-size: 1.42rem;
-    line-height: 1.3;
+    font-size: 1.5rem;
+    line-height: 1.42;
+}
+
+.blog-card h3 {
+    margin: 0;
+    min-height: 4.26em;
+    max-height: 4.26em;
+    overflow: hidden;
+}
+
+.blog-card h3 a {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+}
+
+.blog-title-wrap {
+    display: flex;
+    align-items: flex-start;
+    min-height: 4.26em;
+    padding: 0;
+}
+
+.blog-title-wrap h3 {
+    flex: 1;
+}
+
+.blog-card > p {
+    flex: 1 1 auto;
+    margin: 0;
+    min-height: 0;
+    font-size: 1rem;
+    line-height: 1.6;
 }
 
 .blog-card-meta,
@@ -243,10 +277,20 @@ body.blog-layout::before {
     gap: 8px;
 }
 
+.blog-card-meta {
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-items: flex-start;
+    min-height: 84px;
+    align-content: flex-start;
+}
+
 .blog-tag-row {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
+    min-height: 74px;
+    align-content: flex-start;
 }
 
 .blog-tag-row span {
@@ -261,7 +305,8 @@ body.blog-layout::before {
 }
 
 .blog-link {
-    margin-top: auto;
+    margin-top: 0;
+    padding-top: 10px;
     display: inline-flex;
     align-items: center;
     gap: 10px;
@@ -642,6 +687,28 @@ body.blog-layout::before {
     .blog-card h3,
     .blog-related-card h3 {
         font-size: 1.2rem;
+    }
+
+    .blog-card h3,
+    .blog-title-wrap,
+    .blog-card-meta,
+    .blog-tag-row {
+        min-height: 0;
+    }
+
+    .blog-card h3 {
+        max-height: none;
+    }
+
+    .blog-card h3 a {
+        display: inline;
+        overflow: visible;
+        -webkit-line-clamp: unset;
+        -webkit-box-orient: initial;
+    }
+
+    .blog-card > p {
+        flex: 0 1 auto;
     }
 
     .blog-post-meta,
