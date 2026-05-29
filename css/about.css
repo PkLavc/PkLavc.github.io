@@ -940,11 +940,10 @@ body {
         clip-path: circle(var(--education-reveal-radius) at var(--education-reveal-x) var(--education-reveal-y));
         transition: clip-path 0.24s ease, opacity 0.24s ease;
         background:
-            radial-gradient(circle at var(--education-reveal-x) var(--education-reveal-y), rgba(0, 209, 255, 0.38), transparent 34%),
-            radial-gradient(circle at calc(var(--education-reveal-x) - 90px) calc(var(--education-reveal-y) + 70px), rgba(255, 42, 170, 0.24), transparent 30%),
-            repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.12) 0 1px, transparent 1px 42px),
-            repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.08) 0 1px, transparent 1px 34px),
-            linear-gradient(135deg, #06131b 0%, #080b14 54%, #150a1d 100%);
+            radial-gradient(circle at var(--education-reveal-x) var(--education-reveal-y), rgba(0, 209, 255, 0.18), transparent 28%),
+            radial-gradient(circle at 72% 22%, rgba(255, 42, 170, 0.18), transparent 34%),
+            radial-gradient(circle at 22% 78%, rgba(232, 251, 255, 0.1), transparent 32%),
+            linear-gradient(180deg, #03050c 0%, #070b15 48%, #120717 100%);
     }
 
     .education-reveal-layer::before,
@@ -957,30 +956,76 @@ body {
 
     .education-reveal-layer::before {
         z-index: 0;
-        opacity: 0.48;
+        opacity: 0.78;
         background:
-            linear-gradient(116deg, transparent 0 18%, rgba(0, 209, 255, 0.2) 18.4% 18.9%, transparent 19.3% 52%, rgba(255, 255, 255, 0.12) 52.4% 52.9%, transparent 53.3%),
-            linear-gradient(28deg, transparent 0 38%, rgba(255, 42, 170, 0.18) 38.4% 39%, transparent 39.5%);
+            radial-gradient(circle at 9% 18%, rgba(232, 251, 255, 0.9) 0 1px, transparent 1.7px),
+            radial-gradient(circle at 17% 68%, rgba(0, 209, 255, 0.9) 0 1.3px, transparent 2px),
+            radial-gradient(circle at 28% 34%, rgba(255, 42, 170, 0.78) 0 1.1px, transparent 1.9px),
+            radial-gradient(circle at 39% 78%, rgba(232, 251, 255, 0.78) 0 0.9px, transparent 1.5px),
+            radial-gradient(circle at 47% 14%, rgba(0, 209, 255, 0.82) 0 1.2px, transparent 2px),
+            radial-gradient(circle at 58% 46%, rgba(232, 251, 255, 0.88) 0 1px, transparent 1.8px),
+            radial-gradient(circle at 69% 76%, rgba(255, 42, 170, 0.72) 0 1.2px, transparent 1.9px),
+            radial-gradient(circle at 77% 26%, rgba(0, 209, 255, 0.92) 0 1.4px, transparent 2.1px),
+            radial-gradient(circle at 88% 62%, rgba(232, 251, 255, 0.82) 0 1px, transparent 1.6px),
+            radial-gradient(circle at 95% 38%, rgba(255, 42, 170, 0.78) 0 0.9px, transparent 1.5px);
+        background-repeat: no-repeat;
+        animation: educationStarsFloat 16s ease-in-out infinite alternate;
     }
 
     .education-reveal-layer::after {
         z-index: 1;
-        opacity: 0.32;
+        opacity: 0.64;
         background:
-            radial-gradient(circle, rgba(255, 255, 255, 0.78) 0 1px, transparent 1.7px) 0 0 / 40px 40px,
-            radial-gradient(circle, rgba(0, 209, 255, 0.72) 0 1px, transparent 1.8px) 18px 12px / 58px 58px;
+            radial-gradient(circle at 13% 44%, rgba(232, 251, 255, 0.58) 0 0.7px, transparent 1.3px),
+            radial-gradient(circle at 23% 12%, rgba(0, 209, 255, 0.54) 0 0.8px, transparent 1.4px),
+            radial-gradient(circle at 33% 56%, rgba(255, 42, 170, 0.5) 0 0.7px, transparent 1.3px),
+            radial-gradient(circle at 44% 28%, rgba(232, 251, 255, 0.55) 0 0.7px, transparent 1.4px),
+            radial-gradient(circle at 54% 86%, rgba(0, 209, 255, 0.48) 0 0.8px, transparent 1.5px),
+            radial-gradient(circle at 64% 18%, rgba(232, 251, 255, 0.54) 0 0.7px, transparent 1.3px),
+            radial-gradient(circle at 73% 54%, rgba(255, 42, 170, 0.46) 0 0.8px, transparent 1.4px),
+            radial-gradient(circle at 84% 82%, rgba(0, 209, 255, 0.52) 0 0.7px, transparent 1.3px),
+            radial-gradient(circle at 92% 16%, rgba(232, 251, 255, 0.56) 0 0.7px, transparent 1.4px),
+            radial-gradient(circle at 50% 56%, rgba(0, 209, 255, 0.22), transparent 22%),
+            radial-gradient(circle at 50% 58%, rgba(255, 42, 170, 0.13), transparent 30%);
+        background-repeat: no-repeat;
+        animation: educationStarsTwinkle 5.5s ease-in-out infinite;
     }
 
     .education-reveal-scene {
         position: relative;
         z-index: 2;
-        display: grid;
-        grid-template-columns: minmax(0, 1fr) 220px;
+        display: flex;
         align-items: center;
-        gap: 22px;
+        justify-content: center;
         min-height: 100%;
-        padding: 24px;
+        padding: 26px;
         color: #f4fbff;
+        text-align: center;
+    }
+
+    .education-reveal-horizon {
+        position: absolute;
+        left: -8%;
+        right: -8%;
+        top: 55%;
+        height: 56px;
+        transform: translateY(-50%);
+        pointer-events: none;
+        background:
+            radial-gradient(ellipse at center, rgba(0, 209, 255, 0.32), transparent 58%),
+            linear-gradient(90deg, transparent 0%, rgba(0, 209, 255, 0.22) 18%, rgba(232, 251, 255, 0.72) 50%, rgba(255, 42, 170, 0.22) 82%, transparent 100%);
+        clip-path: polygon(0 48%, 10% 42%, 22% 53%, 34% 44%, 46% 51%, 58% 43%, 70% 52%, 82% 45%, 100% 50%, 100% 58%, 82% 54%, 70% 60%, 58% 51%, 46% 60%, 34% 52%, 22% 61%, 10% 50%, 0 56%);
+        filter: drop-shadow(0 0 14px rgba(0, 209, 255, 0.42));
+        opacity: 0.9;
+        background-size: 130% 100%, 130% 100%;
+        animation: educationHorizonWave 7s ease-in-out infinite alternate;
+    }
+
+    .education-reveal-copy {
+        position: relative;
+        z-index: 2;
+        max-width: 360px;
+        transform: translateY(-4px);
     }
 
     .education-reveal-copy span {
@@ -989,12 +1034,13 @@ body {
         padding: 6px 10px;
         border: 1px solid rgba(255, 255, 255, 0.22);
         border-radius: 999px;
-        background: rgba(255, 255, 255, 0.08);
+        background: rgba(3, 8, 16, 0.58);
         color: #d9f8ff;
         font-size: 0.68rem;
         font-weight: 700;
         letter-spacing: 0.14em;
         text-transform: uppercase;
+        box-shadow: 0 0 18px rgba(0, 209, 255, 0.14);
     }
 
     .education-reveal-copy strong {
@@ -1004,33 +1050,7 @@ body {
         font-family: Poppins, Inter, sans-serif;
         font-size: clamp(1.8rem, 3vw, 3rem);
         line-height: 1.04;
-    }
-
-    .education-reveal-map {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 8px;
-        padding: 14px;
-        border: 1px solid rgba(255, 255, 255, 0.16);
-        border-radius: 10px;
-        background: rgba(2, 6, 10, 0.34);
-    }
-
-    .education-reveal-map span {
-        min-height: 58px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 8px;
-        border: 1px solid rgba(255, 255, 255, 0.14);
-        border-radius: 8px;
-        background: rgba(255, 255, 255, 0.06);
-        color: #ffffff;
-        font-size: 0.68rem;
-        font-weight: 700;
-        letter-spacing: 0.08em;
-        text-align: center;
-        text-transform: uppercase;
+        text-shadow: 0 0 24px rgba(0, 209, 255, 0.28);
     }
 
     .education-content.is-revealing {
@@ -1039,6 +1059,52 @@ body {
 
     .education-content.is-revealing .education-reveal-layer {
         opacity: 1;
+    }
+
+    @keyframes educationStarsFloat {
+        0% {
+            transform: translate3d(-3px, 2px, 0) scale(1);
+        }
+
+        50% {
+            transform: translate3d(5px, -4px, 0) scale(1.015);
+        }
+
+        100% {
+            transform: translate3d(-2px, 4px, 0) scale(1.006);
+        }
+    }
+
+    @keyframes educationStarsTwinkle {
+        0%, 100% {
+            opacity: 0.42;
+            transform: translate3d(2px, -2px, 0);
+        }
+
+        48% {
+            opacity: 0.76;
+            transform: translate3d(-3px, 2px, 0);
+        }
+    }
+
+    @keyframes educationHorizonWave {
+        0% {
+            transform: translate3d(-2%, -50%, 0) scaleY(0.9);
+            background-position: 0% 50%, 0% 50%;
+            clip-path: polygon(0 49%, 10% 43%, 22% 52%, 34% 45%, 46% 52%, 58% 43%, 70% 51%, 82% 46%, 100% 50%, 100% 58%, 82% 55%, 70% 60%, 58% 52%, 46% 60%, 34% 53%, 22% 61%, 10% 51%, 0 57%);
+        }
+
+        50% {
+            transform: translate3d(1.5%, -50%, 0) scaleY(1.08);
+            background-position: 52% 50%, 42% 50%;
+            clip-path: polygon(0 52%, 10% 45%, 22% 55%, 34% 42%, 46% 50%, 58% 46%, 70% 54%, 82% 43%, 100% 51%, 100% 59%, 82% 53%, 70% 62%, 58% 54%, 46% 58%, 34% 51%, 22% 63%, 10% 53%, 0 59%);
+        }
+
+        100% {
+            transform: translate3d(-1%, -50%, 0) scaleY(0.96);
+            background-position: 100% 50%, 86% 50%;
+            clip-path: polygon(0 47%, 10% 41%, 22% 54%, 34% 46%, 46% 53%, 58% 42%, 70% 52%, 82% 47%, 100% 49%, 100% 57%, 82% 56%, 70% 59%, 58% 51%, 46% 61%, 34% 54%, 22% 60%, 10% 50%, 0 55%);
+        }
     }
 }
 
