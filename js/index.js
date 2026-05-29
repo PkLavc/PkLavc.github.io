@@ -162,12 +162,6 @@ function initParticles() {
     return;
   }
 
-  particlesContainer.style.background = [
-    'radial-gradient(circle at 52% 44%, rgba(0, 209, 255, 0.12), transparent 28%)',
-    'radial-gradient(circle at 72% 68%, rgba(255, 42, 170, 0.08), transparent 30%)',
-    'linear-gradient(135deg, #06080f 0%, #090b14 58%, #120717 100%)'
-  ].join(', ');
-
   particlesJS('particles', getParticlesConfig());
 
   setTimeout(function() {
@@ -190,7 +184,6 @@ function applyParticlesFallback() {
     var canvas = particlesContainer.querySelector('canvas');
     if (!canvas || canvas.style.display === 'none') {
       header.classList.add('particles-fallback');
-      particlesContainer.style.background = 'linear-gradient(135deg, #050711 0%, #12071f 100%)';
     }
   }, 2000);
 }

@@ -98,8 +98,32 @@ body.seo-layout .footer-minimal {
 }
 
 /* Header / Navigation (shared across pages) */
-#header{ background:#171717; height: 100vh; width: 100%; overflow: hidden; animation: scale 1.5s ease; position:relative; display: block; }
-#particles{ position: absolute; top: 0; left: 0; height: 100%; width: 100vw; background-size: cover; background-position: 50% 50%; display: block; }
+#header{
+    background:
+        radial-gradient(circle at 52% 44%, rgba(0, 209, 255, 0.12), transparent 28%),
+        radial-gradient(circle at 72% 68%, rgba(255, 42, 170, 0.08), transparent 30%),
+        linear-gradient(135deg, #06080f 0%, #090b14 58%, #120717 100%);
+    height: 100vh;
+    width: 100%;
+    overflow: hidden;
+    position:relative;
+    display: block;
+}
+
+#particles{
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100vw;
+    background:
+        radial-gradient(circle at 52% 44%, rgba(0, 209, 255, 0.12), transparent 28%),
+        radial-gradient(circle at 72% 68%, rgba(255, 42, 170, 0.08), transparent 30%),
+        linear-gradient(135deg, #06080f 0%, #090b14 58%, #120717 100%);
+    background-size: cover;
+    background-position: 50% 50%;
+    display: block;
+}
 
 #navigation-content{
     height: 100vh;
@@ -154,6 +178,45 @@ body.seo-layout .footer-minimal {
 .txt-rotate { text-shadow: 0 0 10px rgba(0,0,0,1); font-weight: 700; background: rgba(0, 0, 0, 0.7); padding: 2px 8px; border-radius: 4px; }
 .slash{ animation-name: animateslash; animation-duration: .8s; animation-iteration-count: infinite; animation-play-state: running; }
 @keyframes animateslash{ 0%{ opacity: 1; z-index: 2;} 100%{ opacity: 0; z-index: 0;} }
+
+.page-index .header-content .firstline,
+.page-index .header-content .secondline,
+.page-index .remote-text,
+.page-index .social-media-links a,
+.page-index .contactpic,
+.page-index #index-skyler-btn img {
+    --intro-end-opacity: 1;
+    animation: foregroundIntro 0.95s cubic-bezier(0.22, 1, 0.36, 1) both;
+    transform-origin: center;
+}
+
+.page-index .header-content .secondline { animation-delay: 0.06s; }
+.page-index .remote-text { --intro-end-opacity: 0.9; animation-delay: 0.12s; }
+.page-index .social-media-links a { animation-delay: 0.18s; }
+.page-index .contactpic { --intro-end-opacity: 0.72; animation-delay: 0.2s; }
+.page-index #index-skyler-btn img { animation-delay: 0.24s; }
+
+@keyframes foregroundIntro {
+    from {
+        opacity: 0;
+        transform: scale(0.94);
+    }
+    to {
+        opacity: var(--intro-end-opacity, 1);
+        transform: scale(1);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .page-index .header-content .firstline,
+    .page-index .header-content .secondline,
+    .page-index .remote-text,
+    .page-index .social-media-links a,
+    .page-index .contactpic,
+    .page-index #index-skyler-btn img {
+        animation: none;
+    }
+}
 
 .social-media-links{ height: 100vh; position: absolute; z-index: 2; padding: 60px; width: auto; display: flex; flex-direction: column; align-items: center; justify-content: center; }
 .social-media{
@@ -391,7 +454,10 @@ body.seo-layout .footer-minimal {
 
 /* Particles Fallback Styles */
 .particles-fallback {
-    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%) !important;
+    background:
+        radial-gradient(circle at 52% 44%, rgba(0, 209, 255, 0.12), transparent 28%),
+        radial-gradient(circle at 72% 68%, rgba(255, 42, 170, 0.08), transparent 30%),
+        linear-gradient(135deg, #06080f 0%, #090b14 58%, #120717 100%) !important;
 }
 
 .particles-container {
