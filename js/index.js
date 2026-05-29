@@ -1,4 +1,4 @@
-﻿function isTouchOrMobile() {
+function isTouchOrMobile() {
   return (
     'ontouchstart' in window ||
     navigator.maxTouchPoints > 0 ||
@@ -7,18 +7,48 @@
   );
 }
 
+function isGsapAvailable() {
+  return typeof window.gsap !== 'undefined' && typeof window.gsap.to === 'function';
+}
+
+function setElementDisplay(selector, displayValue) {
+  if (isGsapAvailable()) {
+    window.gsap.to(selector, 0, { display: displayValue });
+    return;
+  }
+
+  $(selector).css('display', displayValue);
+}
+
+function animateElementY(selector, duration, yValue, onComplete) {
+  if (isGsapAvailable()) {
+    window.gsap.to(selector, duration, {
+      y: yValue,
+      onComplete: onComplete
+    });
+    return;
+  }
+
+  $(selector).css('transform', yValue === 0 ? 'translateY(0)' : 'translateY(' + yValue + ')');
+
+  if (typeof onComplete === 'function') {
+    onComplete();
+  }
+}
+
 function getParticlesConfig() {
+  var mobilePointer = isTouchOrMobile();
   var config = {
     particles: {
       number: {
-        value: 50,
+        value: 56,
         density: {
           enable: true,
-          value_area: 800
+          value_area: 900
         }
       },
       color: {
-        value: '#ffffff'
+        value: ['#00d1ff', '#ff2aaa', '#e8fbff']
       },
       shape: {
         type: 'circle',
@@ -28,45 +58,40 @@ function getParticlesConfig() {
         },
         polygon: {
           nb_sides: 5
-        },
-        image: {
-          src: '/images/techstack/github-icon.svg?v=7b8e3a8d79',
-          width: 100,
-          height: 100
         }
       },
       opacity: {
-        value: 0.5,
-        random: false,
+        value: 0.48,
+        random: true,
         anim: {
           enable: false,
-          speed: 1,
-          opacity_min: 0.1,
+          speed: 0.8,
+          opacity_min: 0.18,
           sync: false
         }
       },
       size: {
-        value: 3,
+        value: 2.6,
         random: true,
         anim: {
           enable: false,
-          speed: 40,
-          size_min: 0.1,
+          speed: 10,
+          size_min: 0.4,
           sync: false
         }
       },
       line_linked: {
         enable: true,
         distance: 150,
-        color: '#ffffff',
-        opacity: 0.4,
+        color: '#00d1ff',
+        opacity: 0.34,
         width: 1
       },
       move: {
         enable: true,
-        speed: 6,
+        speed: 1.9,
         direction: 'none',
-        random: false,
+        random: true,
         straight: false,
         out_mode: 'out',
         bounce: false,
@@ -81,35 +106,35 @@ function getParticlesConfig() {
       detect_on: 'canvas',
       events: {
         onhover: {
-          enable: true,
-          mode: 'repulse'
+          enable: !mobilePointer,
+          mode: 'grab'
         },
         onclick: {
-          enable: true,
+          enable: false,
           mode: 'push'
         },
         resize: true
       },
       modes: {
         grab: {
-          distance: 400,
+          distance: 170,
           line_linked: {
-            opacity: 1
+            opacity: 0.72
           }
         },
         bubble: {
-          distance: 400,
-          size: 40,
+          distance: 240,
+          size: 18,
           duration: 2,
-          opacity: 8,
-          speed: 3
+          opacity: 0.65,
+          speed: 2
         },
         repulse: {
-          distance: 200,
-          duration: 0.4
+          distance: 140,
+          duration: 0.35
         },
         push: {
-          particles_nb: 4
+          particles_nb: 2
         },
         remove: {
           particles_nb: 2
@@ -119,19 +144,29 @@ function getParticlesConfig() {
     retina_detect: true
   };
 
-  if (window.innerWidth < 768 || isTouchOrMobile()) {
-    config.particles.number.value = Math.min(40, Math.round(config.particles.number.value * 0.4));
-    config.interactivity.events.onhover.enable = false;
-    config.interactivity.events.onclick.enable = false;
+  if (mobilePointer) {
+    config.particles.number.value = 24;
+    config.particles.number.density.value_area = 900;
+    config.particles.line_linked.distance = 115;
+    config.particles.line_linked.opacity = 0.22;
+    config.particles.move.speed = 0.85;
   }
 
   return config;
 }
 
 function initParticles() {
-  if (typeof particlesJS === 'undefined' || !document.getElementById('particles')) {
+  var particlesContainer = document.getElementById('particles');
+
+  if (typeof particlesJS === 'undefined' || !particlesContainer) {
     return;
   }
+
+  particlesContainer.style.background = [
+    'radial-gradient(circle at 52% 44%, rgba(0, 209, 255, 0.12), transparent 28%)',
+    'radial-gradient(circle at 72% 68%, rgba(255, 42, 170, 0.08), transparent 30%)',
+    'linear-gradient(135deg, #06080f 0%, #090b14 58%, #120717 100%)'
+  ].join(', ');
 
   particlesJS('particles', getParticlesConfig());
 
@@ -155,7 +190,7 @@ function applyParticlesFallback() {
     var canvas = particlesContainer.querySelector('canvas');
     if (!canvas || canvas.style.display === 'none') {
       header.classList.add('particles-fallback');
-      particlesContainer.style.background = 'linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)';
+      particlesContainer.style.background = 'linear-gradient(135deg, #050711 0%, #12071f 100%)';
     }
   }, 2000);
 }
@@ -190,26 +225,19 @@ function stabilizeMarkdownBadges() {
 $(window).on('load', function() {
   document.body.classList.add('ready');
   if ($('#all').length) {
-    gsap.to('#all', 0, { display: 'block' });
+    setElementDisplay('#all', 'block');
   }
   if ($('#header').length) {
-    gsap.to('#header', 0, { display: 'block' });
+    setElementDisplay('#header', 'block');
   }
   if ($('#navigation-content').length) {
     $('#navigation-content').removeClass('is-open');
-    gsap.to('#navigation-content', 0, { display: 'none' });
+    setElementDisplay('#navigation-content', 'none');
   }
 
   initParticles();
   applyParticlesFallback();
   stabilizeMarkdownBadges();
-
-  window.addEventListener('resize', function() {
-    if (window.pJSDom && window.pJSDom.length > 0) {
-      window.pJSDom[0].pJS.fn.vendors.densityAutoParticles();
-      window.pJSDom[0].pJS.fn.particlesRefresh();
-    }
-  });
 });
 $(function(){
   $(".color-panel").on("click",function(e) {
@@ -241,18 +269,15 @@ var isMenuOpen = false;
 
 function openNavigationMenu() {
   $('#navigation-content').addClass('is-open');
-  gsap.to('#navigation-content', 0, { display: 'flex' });
-  gsap.to('#navigation-content', 0.24, { y: 0 });
+  setElementDisplay('#navigation-content', 'flex');
+  animateElementY('#navigation-content', 0.24, 0);
   isMenuOpen = true;
 }
 
 function closeNavigationMenu() {
-  gsap.to('#navigation-content', 0.24, {
-    y: '-100%',
-    onComplete: function() {
-      $('#navigation-content').removeClass('is-open');
-      gsap.to('#navigation-content', 0, { display: 'none' });
-    }
+  animateElementY('#navigation-content', 0.24, '-100%', function() {
+    $('#navigation-content').removeClass('is-open');
+    setElementDisplay('#navigation-content', 'none');
   });
   isMenuOpen = false;
 }
@@ -430,6 +455,7 @@ $(function(){
 $(function(){
   var mobilePointer = isTouchOrMobile();
   var $cursor = $('.cursor');
+  var canAnimateCursor = !mobilePointer && $cursor.length && isGsapAvailable();
 
   function cursormover(e){
     if (mobilePointer) {
@@ -460,7 +486,7 @@ $(function(){
     });
   }
 
-  if (!mobilePointer) {
+  if (canAnimateCursor) {
     $(window).on('mousemove', cursormover);
     $('.menubar').hover(cursorhover, cursor);
     $('a').hover(cursorhover, cursor);
