@@ -31,6 +31,7 @@
     widget.className = "about-chat-widget";
     widget.setAttribute("aria-label", "Skyler chat widget");
     widget.setAttribute("aria-hidden", "true");
+    widget.inert = true;
     widget.innerHTML = [
       '<header class="about-chat-header">',
       '  <div class="about-chat-title">',
@@ -269,6 +270,7 @@
       return;
     }
 
+    els.widget.inert = false;
     els.widget.classList.add("is-open");
     els.widget.setAttribute("aria-hidden", "false");
     els.launcher.setAttribute("aria-expanded", "true");
@@ -294,8 +296,17 @@
       return;
     }
 
+    if (els.widget.contains(document.activeElement)) {
+      try {
+        els.launcher.focus({ preventScroll: true });
+      } catch (err) {
+        els.launcher.focus();
+      }
+    }
+
     els.widget.classList.remove("is-open");
     els.widget.setAttribute("aria-hidden", "true");
+    els.widget.inert = true;
     els.launcher.setAttribute("aria-expanded", "false");
   }
 
@@ -502,6 +513,9 @@
 
     loadSession();
     updateVoiceToggle();
+    if (!els.widget.classList.contains("is-open")) {
+      els.widget.inert = true;
+    }
     bindEvents();
     autoResizeInput();
 
