@@ -231,8 +231,8 @@
                 }
             }
         </style>
-        <link rel="preload" href="/css/about.css?v=a89311bbc7" as="style">
-        <link rel="stylesheet" href="/css/about.css?v=a89311bbc7">
+        <link rel="preload" href="/css/about.css?v=9c5943ca3e" as="style">
+        <link rel="stylesheet" href="/css/about.css?v=9c5943ca3e">
         <link rel="preload" href="/css/space-reveal.css?v=601db46cac" as="style">
         <link rel="stylesheet" href="/css/space-reveal.css?v=601db46cac">
     </head>
@@ -552,6 +552,10 @@
         </article>
 
     </div>
+    <button class="experience-carousel-return" type="button" hidden aria-label="Return to first experience card">
+        <span>Return</span>
+        <span aria-hidden="true">&#x21BD;</span>
+    </button>
 </div>
 
 
@@ -945,6 +949,221 @@
                     });
                 }
 
+                function setupExperienceCarousel() {
+                    const section = document.querySelector('.professional-experience-section');
+
+                    if (!section) {
+                        return;
+                    }
+
+                    const track = section.querySelector('.experience-content');
+                    const returnButton = section.querySelector('.experience-carousel-return');
+
+                    if (!track || !returnButton) {
+                        return;
+                    }
+
+                    const reducedMotionQuery = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
+                    let suppressCardClick = false;
+
+                    function getCards() {
+                        return Array.from(track.querySelectorAll('.experience-company'));
+                    }
+
+                    function updateReturnPlacement(cards) {
+                        const lastCard = cards[cards.length - 1];
+
+                        if (!lastCard) {
+                            return;
+                        }
+
+                        const sectionRect = section.getBoundingClientRect();
+                        const cardRect = lastCard.getBoundingClientRect();
+                        const top = cardRect.bottom - sectionRect.top + 2;
+                        const left = cardRect.left - sectionRect.left;
+
+                        returnButton.style.setProperty('--experience-return-top', Math.round(top) + 'px');
+                        returnButton.style.setProperty('--experience-return-left', Math.round(left) + 'px');
+                    }
+
+                    function getScrollBehavior() {
+                        return reducedMotionQuery && reducedMotionQuery.matches ? 'auto' : 'smooth';
+                    }
+
+                    function getMaxScrollLeft() {
+                        return Math.max(0, track.scrollWidth - track.clientWidth);
+                    }
+
+                    function getTargetLeft(card) {
+                        const targetLeft = card.offsetLeft - ((track.clientWidth - card.offsetWidth) / 2);
+
+                        return Math.max(0, Math.min(targetLeft, getMaxScrollLeft()));
+                    }
+
+                    function scrollToCard(card, behavior) {
+                        track.scrollTo({
+                            left: getTargetLeft(card),
+                            behavior: behavior || getScrollBehavior()
+                        });
+                    }
+
+                    function getClosestIndex(cards) {
+                        const trackCenter = track.scrollLeft + (track.clientWidth / 2);
+                        let closestIndex = 0;
+                        let closestDistance = Infinity;
+
+                        cards.forEach(function(card, index) {
+                            const cardCenter = card.offsetLeft + (card.offsetWidth / 2);
+                            const distance = Math.abs(trackCenter - cardCenter);
+
+                            if (distance < closestDistance) {
+                                closestDistance = distance;
+                                closestIndex = index;
+                            }
+                        });
+
+                        return closestIndex;
+                    }
+
+                    function updateReturnButton() {
+                        const cards = getCards();
+                        const maxScrollLeft = track.scrollWidth - track.clientWidth;
+
+                        if (cards.length < 2 || maxScrollLeft <= 0) {
+                            returnButton.hidden = true;
+                            section.classList.remove('is-experience-end');
+                            return;
+                        }
+
+                        const closestIndex = getClosestIndex(cards);
+                        const isAtScrollEnd = track.scrollLeft + track.clientWidth >= track.scrollWidth - 4;
+                        const isAtLastCard = closestIndex === cards.length - 1 || isAtScrollEnd;
+
+                        if (isAtLastCard) {
+                            updateReturnPlacement(cards);
+                        }
+
+                        returnButton.hidden = !isAtLastCard;
+                        section.classList.toggle('is-experience-end', isAtLastCard);
+                    }
+
+                    let scrollFrame = 0;
+                    let resizeTimer = 0;
+                    let dragState = null;
+
+                    track.addEventListener('scroll', function() {
+                        if (scrollFrame) {
+                            return;
+                        }
+
+                        scrollFrame = window.requestAnimationFrame(function() {
+                            scrollFrame = 0;
+                            updateReturnButton();
+                        });
+                    }, { passive: true });
+
+                    track.addEventListener('click', function(event) {
+                        if (getMaxScrollLeft() <= 0) {
+                            return;
+                        }
+
+                        if (suppressCardClick) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                            return;
+                        }
+
+                        if (event.target.closest('button, a, input, textarea, select, label')) {
+                            return;
+                        }
+
+                        const card = event.target.closest('.experience-company');
+
+                        if (card && track.contains(card)) {
+                            scrollToCard(card);
+                        }
+                    });
+
+                    track.addEventListener('pointerdown', function(event) {
+                        if (getMaxScrollLeft() <= 0) {
+                            return;
+                        }
+
+                        if (event.pointerType === 'touch' || event.button !== 0) {
+                            return;
+                        }
+
+                        if (event.target.closest('button, a, input, textarea, select, label')) {
+                            return;
+                        }
+
+                        dragState = {
+                            pointerId: event.pointerId,
+                            startX: event.clientX,
+                            scrollLeft: track.scrollLeft,
+                            moved: false
+                        };
+
+                        section.classList.add('is-experience-dragging');
+                        track.setPointerCapture(event.pointerId);
+                    });
+
+                    track.addEventListener('pointermove', function(event) {
+                        if (!dragState || dragState.pointerId !== event.pointerId) {
+                            return;
+                        }
+
+                        const deltaX = event.clientX - dragState.startX;
+
+                        if (Math.abs(deltaX) > 4) {
+                            dragState.moved = true;
+                        }
+
+                        track.scrollLeft = dragState.scrollLeft - deltaX;
+
+                        if (dragState.moved) {
+                            event.preventDefault();
+                        }
+                    });
+
+                    function endDrag() {
+                        if (!dragState) {
+                            return;
+                        }
+
+                        const moved = dragState.moved;
+
+                        dragState = null;
+                        section.classList.remove('is-experience-dragging');
+
+                        if (moved) {
+                            suppressCardClick = true;
+                            window.setTimeout(function() {
+                                suppressCardClick = false;
+                            }, 0);
+                            updateReturnButton();
+                        }
+                    }
+
+                    track.addEventListener('pointerup', endDrag);
+                    track.addEventListener('pointercancel', endDrag);
+                    track.addEventListener('lostpointercapture', endDrag);
+
+                    returnButton.addEventListener('click', function() {
+                        track.scrollTo({
+                            left: 0,
+                            behavior: getScrollBehavior()
+                        });
+                    });
+
+                    window.addEventListener('resize', function() {
+                        window.clearTimeout(resizeTimer);
+                        resizeTimer = window.setTimeout(updateReturnButton, 120);
+                    }, { passive: true });
+
+                    updateReturnButton();
+                }
+
                 function setupOperatingModelCarousel() {
                     const section = document.querySelector('.operating-model-section');
 
@@ -1157,6 +1376,7 @@
                 setupContacts();
                 setupSpaceReveals();
                 setupExperienceRoleToggles();
+                setupExperienceCarousel();
                 setupOperatingModelCarousel();
                 window.addEventListener('load', setupDeferredLottie, { once: true });
             }());
