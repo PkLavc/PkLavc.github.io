@@ -861,6 +861,52 @@ body {
     }
 }
 
+.operating-model-section {
+    position: relative;
+}
+
+.operating-model-section .education-content {
+    --space-reveal-border-radius: 18px;
+    position: relative;
+}
+
+.operating-model-section .education-item {
+    position: relative;
+    overflow: hidden;
+    border-color: rgba(0, 209, 255, 0.2);
+    border-radius: 16px;
+    background:
+        radial-gradient(circle at 0% 50%, rgba(255, 42, 170, 0.16), transparent 34%),
+        radial-gradient(circle at 100% 12%, rgba(0, 209, 255, 0.14), transparent 36%),
+        linear-gradient(135deg, rgba(7, 12, 22, 0.96), rgba(16, 12, 26, 0.94));
+}
+
+.operating-model-section .education-item::before {
+    content: "";
+    position: absolute;
+    top: 16px;
+    bottom: 16px;
+    left: 0;
+    width: 2px;
+    background: linear-gradient(180deg, transparent, rgba(0, 209, 255, 0.92), rgba(255, 42, 170, 0.8), transparent);
+    box-shadow: 0 0 18px rgba(0, 209, 255, 0.4), 0 0 28px rgba(255, 42, 170, 0.22);
+}
+
+.operating-model-section .education-item::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, rgba(0, 209, 255, 0.08), transparent 34%, rgba(255, 42, 170, 0.06));
+    opacity: 0.72;
+    pointer-events: none;
+}
+
+.operating-model-section .education-header,
+.operating-model-section .education-institution {
+    position: relative;
+    z-index: 1;
+}
+
 .education-content {
     display: grid;
     gap: 16px;
@@ -911,6 +957,57 @@ body {
 }
 
 @media (max-width: 768px) {
+    .operating-model-section {
+        margin-inline: -8px;
+    }
+
+    .operating-model-section h2 {
+        margin-inline: 8px;
+    }
+
+    .operating-model-section .education-content {
+        display: flex;
+        gap: 14px;
+        margin-inline: -12px;
+        padding: 12px 46px 20px;
+        overflow-x: auto;
+        overflow-y: hidden;
+        scroll-snap-type: x mandatory;
+        scroll-padding-inline: 46px;
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
+        border: 0;
+        border-radius: 0;
+        background: transparent;
+    }
+
+    .operating-model-section .education-content::-webkit-scrollbar {
+        display: none;
+    }
+
+    .operating-model-section .education-item {
+        flex: 0 0 min(78vw, 330px);
+        min-height: 238px;
+        scroll-snap-align: center;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        padding: 20px;
+        border-radius: 18px;
+        box-shadow: 0 16px 34px rgba(0, 0, 0, 0.28), inset 0 0 22px rgba(0, 209, 255, 0.05);
+    }
+
+    .operating-model-section .education-item::before {
+        left: 14px;
+        top: 18px;
+        bottom: 18px;
+    }
+
+    .operating-model-section .education-title-date,
+    .operating-model-section .education-institution {
+        padding-left: 12px;
+    }
+
     .education-item {
         padding: 14px 16px;
     }

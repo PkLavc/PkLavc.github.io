@@ -202,8 +202,8 @@
                 }
             }
         </style>
-        <link rel="preload" href="/css/about.css?v=2c46ff4edc" as="style">
-        <link rel="stylesheet" href="/css/about.css?v=2c46ff4edc">
+        <link rel="preload" href="/css/about.css?v=23867f6d05" as="style">
+        <link rel="stylesheet" href="/css/about.css?v=23867f6d05">
         <link rel="preload" href="/css/space-reveal.css?v=601db46cac" as="style">
         <link rel="stylesheet" href="/css/space-reveal.css?v=601db46cac">
     </head>
@@ -509,35 +509,7 @@
 </div>
 
 
-                        <div class="skills-section">
-    <h2><lottie-player src="/images/Da_Vinci.json?v=5aa1ea8644" background="transparent" speed="1" class="section-heading-icon" loop autoplay title="Key skills badge for software architecture and data engineering"></lottie-player> Core Backend Skills & Tech Stack</h2>
-    <div class="skills-grid">
-        <span>Python</span>
-        <span>Node.js</span>
-        <span>SQL</span>
-        <span>JavaScript</span>
-        <span>PostgreSQL</span>
-        <span>REST APIs</span>
-        <span>GitHub Actions</span>
-        <span>AWS</span>
-        <span>Google Cloud</span>
-        <span>Zoho</span>
-        <span>Deluge</span>
-        <span>Systems Integration</span>
-        <span>Data Modeling</span>
-        <span>Backend Architecture</span>
-        <span>ETL Pipelines</span>
-        <span>Process Automation</span>
-        <span>Async Processing</span>
-        <span>Caching</span>
-        <span>System Design</span>
-        <span>Operational Dashboards</span>
-        <span>Rules Engines</span>
-        <span>Integration Governance</span>
-    </div>
-</div>
-
-                        <div class="skills-section">
+                        <div class="skills-section operating-model-section">
     <h2><lottie-player src="/images/Globe.json?v=3e19ffd5b8" background="transparent" speed="1" class="section-heading-icon" loop autoplay title="Engineering operating model icon"></lottie-player> Engineering Operating Model</h2>
     <div class="education-content space-reveal">
         <div class="education-reveal-layer space-reveal-layer" aria-hidden="true">
@@ -609,6 +581,34 @@
                 I use AI agents to accelerate exploration, scaffolding, and validation while keeping architecture, security, and production behavior under human review.
             </div>
         </div>
+    </div>
+</div>
+
+                        <div class="skills-section core-skills-section">
+    <h2><lottie-player src="/images/Da_Vinci.json?v=5aa1ea8644" background="transparent" speed="1" class="section-heading-icon" loop autoplay title="Key skills badge for software architecture and data engineering"></lottie-player> Core Backend Skills & Tech Stack</h2>
+    <div class="skills-grid">
+        <span>Python</span>
+        <span>Node.js</span>
+        <span>SQL</span>
+        <span>JavaScript</span>
+        <span>PostgreSQL</span>
+        <span>REST APIs</span>
+        <span>GitHub Actions</span>
+        <span>AWS</span>
+        <span>Google Cloud</span>
+        <span>Zoho</span>
+        <span>Deluge</span>
+        <span>Systems Integration</span>
+        <span>Data Modeling</span>
+        <span>Backend Architecture</span>
+        <span>ETL Pipelines</span>
+        <span>Process Automation</span>
+        <span>Async Processing</span>
+        <span>Caching</span>
+        <span>System Design</span>
+        <span>Operational Dashboards</span>
+        <span>Rules Engines</span>
+        <span>Integration Governance</span>
     </div>
 </div>
 
@@ -886,6 +886,152 @@
                     });
                 }
 
+                function setupOperatingModelCarousel() {
+                    const section = document.querySelector('.operating-model-section');
+
+                    if (!section) {
+                        return;
+                    }
+
+                    const track = section.querySelector('.education-content');
+                    const mobileQuery = window.matchMedia ? window.matchMedia('(max-width: 768px)') : null;
+
+                    if (!track || !mobileQuery) {
+                        return;
+                    }
+
+                    function getOriginalItems() {
+                        return Array.from(track.querySelectorAll('.education-item:not([data-operating-clone])'));
+                    }
+
+                    function getCarouselItems() {
+                        return Array.from(track.querySelectorAll('.education-item'));
+                    }
+
+                    function scrollToCard(items, index, behavior) {
+                        const item = items[index];
+
+                        if (!item) {
+                            return;
+                        }
+
+                        const targetLeft = item.offsetLeft - ((track.clientWidth - item.offsetWidth) / 2);
+
+                        track.scrollTo({
+                            left: targetLeft,
+                            behavior: behavior || 'auto'
+                        });
+                    }
+
+                    function getClosestIndex(items) {
+                        const trackCenter = track.scrollLeft + (track.clientWidth / 2);
+                        let closestIndex = 0;
+                        let closestDistance = Infinity;
+
+                        items.forEach(function(item, index) {
+                            const itemCenter = item.offsetLeft + (item.offsetWidth / 2);
+                            const distance = Math.abs(trackCenter - itemCenter);
+
+                            if (distance < closestDistance) {
+                                closestDistance = distance;
+                                closestIndex = index;
+                            }
+                        });
+
+                        return closestIndex;
+                    }
+
+                    function removeClones() {
+                        track.querySelectorAll('[data-operating-clone]').forEach(function(clone) {
+                            clone.remove();
+                        });
+
+                        track.scrollLeft = 0;
+                    }
+
+                    function addClones() {
+                        const originals = getOriginalItems();
+
+                        if (originals.length < 2 || track.querySelector('[data-operating-clone]')) {
+                            return;
+                        }
+
+                        const firstClone = originals[0].cloneNode(true);
+                        const lastClone = originals[originals.length - 1].cloneNode(true);
+
+                        firstClone.setAttribute('data-operating-clone', 'end');
+                        firstClone.setAttribute('aria-hidden', 'true');
+                        lastClone.setAttribute('data-operating-clone', 'start');
+                        lastClone.setAttribute('aria-hidden', 'true');
+
+                        track.insertBefore(lastClone, originals[0]);
+                        track.appendChild(firstClone);
+
+                        window.requestAnimationFrame(function() {
+                            scrollToCard(getCarouselItems(), 1, 'auto');
+                        });
+                    }
+
+                    function wrapIfNeeded() {
+                        if (!mobileQuery.matches) {
+                            return;
+                        }
+
+                        const originals = getOriginalItems();
+                        const items = getCarouselItems();
+
+                        if (originals.length < 2 || items.length < originals.length + 2) {
+                            return;
+                        }
+
+                        const index = getClosestIndex(items);
+
+                        if (index === 0) {
+                            scrollToCard(items, originals.length, 'auto');
+                        } else if (index === items.length - 1) {
+                            scrollToCard(items, 1, 'auto');
+                        }
+                    }
+
+                    let scrollFrame = 0;
+                    let wrapTimer = 0;
+
+                    track.addEventListener('scroll', function() {
+                        if (scrollFrame) {
+                            return;
+                        }
+
+                        scrollFrame = window.requestAnimationFrame(function() {
+                            scrollFrame = 0;
+                            window.clearTimeout(wrapTimer);
+                            wrapTimer = window.setTimeout(wrapIfNeeded, 90);
+                        });
+                    }, { passive: true });
+
+                    function syncCarouselMode() {
+                        if (mobileQuery.matches) {
+                            addClones();
+                            window.setTimeout(wrapIfNeeded, 120);
+                            return;
+                        }
+
+                        removeClones();
+                    }
+
+                    if (typeof mobileQuery.addEventListener === 'function') {
+                        mobileQuery.addEventListener('change', syncCarouselMode);
+                    } else if (typeof mobileQuery.addListener === 'function') {
+                        mobileQuery.addListener(syncCarouselMode);
+                    }
+
+                    window.addEventListener('resize', function() {
+                        window.clearTimeout(wrapTimer);
+                        wrapTimer = window.setTimeout(syncCarouselMode, 120);
+                    }, { passive: true });
+
+                    syncCarouselMode();
+                }
+
                 function loadDeferredScript(src) {
                     if (document.querySelector('script[src="' + src + '"]')) {
                         return;
@@ -951,6 +1097,7 @@
                 setupCursor();
                 setupContacts();
                 setupSpaceReveals();
+                setupOperatingModelCarousel();
                 window.addEventListener('load', setupDeferredLottie, { once: true });
             }());
                 </script>
