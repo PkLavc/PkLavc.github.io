@@ -272,9 +272,21 @@
     els.widget.classList.add("is-open");
     els.widget.setAttribute("aria-hidden", "false");
     els.launcher.setAttribute("aria-expanded", "true");
-    if (els.input) {
-      els.input.focus();
+    if (els.input && !isMobileViewport()) {
+      try {
+        els.input.focus({ preventScroll: true });
+      } catch (err) {
+        els.input.focus();
+      }
     }
+  }
+
+  function isMobileViewport() {
+    if (window.matchMedia) {
+      return window.matchMedia("(max-width: 768px), (hover: none), (pointer: coarse)").matches;
+    }
+
+    return window.innerWidth < 768;
   }
 
   function closeWidget() {

@@ -42,9 +42,9 @@
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Monoton&family=Poppins:wght@500&family=Raleway:wght@300&display=optional" onload="this.onload=null;this.rel='stylesheet'">
         <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Monoton&family=Poppins:wght@500&family=Raleway:wght@300&display=optional"></noscript>
-        <link rel="preload" href="/css/global.css?v=d04801ea7d" as="style">
-        <link rel="stylesheet" href="/css/global.css?v=d04801ea7d">
-        <link rel="stylesheet" href="/css/skyler-widget.css?v=fb1586a89d">
+        <link rel="preload" href="/css/global.css?v=dc3abcb148" as="style">
+        <link rel="stylesheet" href="/css/global.css?v=dc3abcb148">
+        <link id="skyler-widget-style" rel="stylesheet" href="/css/skyler-widget.css?v=fb1586a89d">
         <style>
             body {
                 font-family: 'Inter', 'Segoe UI', Roboto, Arial, sans-serif;
@@ -947,7 +947,7 @@
                 updateSemester();
                 updateFooterYear();
                 document.addEventListener('DOMContentLoaded', updateFooterYear, { once: true });
-                setupMenu();
+                // Navigation is handled by the shared /js/index.js script.
                 setupCursor();
                 setupContacts();
                 setupSpaceReveals();
@@ -955,7 +955,9 @@
             }());
                 </script>
 
-        <script src="/js/skyler-widget.js?v=2efd98d1b1" defer></script>
+        <script src="/js/jquery.min.js?v=d482871a5e" defer></script>
+        <script src="/js/index.js?v=a8dd285e25" defer></script>
+        <script id="skyler-widget-script" src="/js/skyler-widget.js?v=76aaa4704e" defer></script>
 <footer class="footer-minimal">
     <div class="footer-container">
         <div class="footer-link-list" aria-label="Footer links">

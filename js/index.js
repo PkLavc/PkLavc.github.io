@@ -440,6 +440,10 @@ $(function(){
 
 $(function(){
     $("#about-link").on("click",function(){
+      if (!isGsapAvailable()) {
+        return;
+      }
+
       if ($("#navigation-content").length) {
         gsap.to("#navigation-content",0,{display:"none"});
         gsap.to("#navigation-content",0,{y:'-100%'});
@@ -463,6 +467,10 @@ $(function(){
     })
     
     $("#contact-link").on("click",function(){
+      if (!isGsapAvailable()) {
+        return;
+      }
+
       if ($("#navigation-content").length) {
         gsap.to("#navigation-content",0,{display:"none"});
         gsap.to("#navigation-content",0,{y:'-100%'});
@@ -486,6 +494,10 @@ $(function(){
     })
     
     $("#portfolio-link").on("click",function(){
+      if (!isGsapAvailable()) {
+        return;
+      }
+
       if ($("#navigation-content").length) {
         gsap.to("#navigation-content",0,{display:"none"});
         gsap.to("#navigation-content",0,{y:'-100%'});
@@ -509,6 +521,10 @@ $(function(){
     })
     
     $("#projects-link").on("click",function(){
+      if (!isGsapAvailable()) {
+        return;
+      }
+
       if ($("#navigation-content").length) {
         gsap.to("#navigation-content",0,{display:"none"});
         gsap.to("#navigation-content",0,{y:'-100%'});
@@ -532,6 +548,10 @@ $(function(){
     })
     
     $("#home-link").on("click",function(){
+      if (!isGsapAvailable()) {
+        return;
+      }
+
       if ($("#navigation-content").length) {
         gsap.to("#navigation-content",0,{display:"none"});
         gsap.to("#navigation-content",0,{y:'-100%'});
@@ -713,7 +733,7 @@ function loadSkylerWidgetAssets() {
   if (!document.getElementById('skyler-widget-script')) {
     var script = document.createElement('script');
     script.id = 'skyler-widget-script';
-    script.src = '/js/skyler-widget.js?v=2efd98d1b1';
+    script.src = '/js/skyler-widget.js?v=76aaa4704e';
     script.defer = true;
     document.body.appendChild(script);
   }
