@@ -1,3 +1,75 @@
+var viewportHeightFrame = 0;
+var lastViewportHeight = 0;
+
+function getCurrentViewportHeight() {
+  if (window.visualViewport && window.visualViewport.height) {
+    return Math.ceil(window.visualViewport.height);
+  }
+
+  return Math.ceil(window.innerHeight || document.documentElement.clientHeight || 0);
+}
+
+function syncParticlesCanvasSize() {
+  var particleInstance = window.pJSDom && window.pJSDom[0];
+
+  if (
+    !particleInstance ||
+    !particleInstance.pJS ||
+    !particleInstance.pJS.fn ||
+    typeof particleInstance.pJS.fn.canvasSize !== 'function'
+  ) {
+    return;
+  }
+
+  particleInstance.pJS.fn.canvasSize();
+
+  if (
+    particleInstance.pJS.fn.vendors &&
+    typeof particleInstance.pJS.fn.vendors.densityAutoParticles === 'function'
+  ) {
+    particleInstance.pJS.fn.vendors.densityAutoParticles();
+  }
+}
+
+function setDynamicViewportHeight() {
+  var viewportHeight = getCurrentViewportHeight();
+
+  if (!viewportHeight || viewportHeight === lastViewportHeight) {
+    return false;
+  }
+
+  lastViewportHeight = viewportHeight;
+  document.documentElement.style.setProperty('--app-viewport-height', viewportHeight + 'px');
+  return true;
+}
+
+function scheduleDynamicViewportHeightSync() {
+  if (viewportHeightFrame) {
+    return;
+  }
+
+  viewportHeightFrame = window.requestAnimationFrame(function() {
+    viewportHeightFrame = 0;
+
+    if (setDynamicViewportHeight()) {
+      syncParticlesCanvasSize();
+    }
+  });
+}
+
+function initDynamicViewportHeight() {
+  setDynamicViewportHeight();
+  window.addEventListener('resize', scheduleDynamicViewportHeightSync, { passive: true });
+  window.addEventListener('orientationchange', scheduleDynamicViewportHeightSync, { passive: true });
+
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', scheduleDynamicViewportHeightSync, { passive: true });
+    window.visualViewport.addEventListener('scroll', scheduleDynamicViewportHeightSync, { passive: true });
+  }
+}
+
+initDynamicViewportHeight();
+
 function isTouchOrMobile() {
   return (
     'ontouchstart' in window ||
@@ -163,6 +235,7 @@ function initParticles() {
   }
 
   particlesJS('particles', getParticlesConfig());
+  scheduleDynamicViewportHeightSync();
 
   setTimeout(function() {
     if (window.pJSDom && window.pJSDom.length > 0) {

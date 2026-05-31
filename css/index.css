@@ -427,6 +427,8 @@ For devices with smaller width like mobile phone
 @media only screen and (max-width: 550px){
     .header-content{
         height: 100vh;
+        height: var(--app-viewport-height);
+        min-height: var(--app-viewport-height);
         width: 100%;
         float: left;
         display: flex;
@@ -539,6 +541,7 @@ For devices with smaller width like mobile phone
     }
     #breaker{
         height: 100vh;
+        height: var(--app-viewport-height);
         width: 200%;
         background-color: #c70039;
         opacity: 1;
@@ -550,6 +553,7 @@ For devices with smaller width like mobile phone
     }
     #breaker-two{
         height: 100vh;
+        height: var(--app-viewport-height);
         animation: breakeranimatetwo 1s linear;
     }
     @keyframes breakeranimate{
@@ -959,6 +963,8 @@ for tabs and large phones
 @media all and (max-width: 1025px) and (min-width: 551px){
     .header-content{
         height: 100vh;
+        height: var(--app-viewport-height);
+        min-height: var(--app-viewport-height);
         width: 100%;
         float: left;
         display: flex;

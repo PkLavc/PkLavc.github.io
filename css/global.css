@@ -4,6 +4,13 @@
     /* default theme variables (can be overridden by theme files like color-blue.css) */
     --clr-primary: #00d1ff;
     --clr-primary-variant: #00a8cc;
+    --app-viewport-height: 100vh;
+}
+
+@supports (height: 100dvh) {
+    :root {
+        --app-viewport-height: 100dvh;
+    }
 }
 
 /* Reset */
@@ -46,6 +53,7 @@ input[type=number] {
 html{ background: #101010; }
 html, body {
     min-height: 100%;
+    min-height: var(--app-viewport-height);
 }
 
 body{
@@ -53,6 +61,7 @@ body{
     flex-direction: column;
     user-select: none;
     min-height: 100vh;
+    min-height: var(--app-viewport-height);
     overflow-x: hidden;
     width: 100%;
     background: #171717;
@@ -64,6 +73,11 @@ body{
 }
 
 #all { display: block !important; flex: 1; }
+
+body.page-index,
+body.page-index #all {
+    min-height: var(--app-viewport-height);
+}
 
 .footer-minimal {
     margin-top: auto;
@@ -104,6 +118,9 @@ body.seo-layout .footer-minimal {
         radial-gradient(circle at 72% 68%, rgba(255, 42, 170, 0.08), transparent 30%),
         linear-gradient(135deg, #06080f 0%, #090b14 58%, #120717 100%);
     height: 100vh;
+    height: var(--app-viewport-height);
+    min-height: 100vh;
+    min-height: var(--app-viewport-height);
     width: 100%;
     overflow: hidden;
     position:relative;
@@ -115,7 +132,8 @@ body.seo-layout .footer-minimal {
     top: 0;
     left: 0;
     height: 100%;
-    width: 100vw;
+    min-height: var(--app-viewport-height);
+    width: 100%;
     background:
         radial-gradient(circle at 52% 44%, rgba(0, 209, 255, 0.12), transparent 28%),
         radial-gradient(circle at 72% 68%, rgba(255, 42, 170, 0.08), transparent 30%),
@@ -129,8 +147,10 @@ body.seo-layout .footer-minimal {
     inset: 0;
     height: 100vh;
     height: 100dvh;
+    height: var(--app-viewport-height);
     min-height: 100vh;
     min-height: 100svh;
+    min-height: var(--app-viewport-height);
     width: 100vw;
     position:fixed;
     z-index: 9998;
@@ -182,7 +202,7 @@ body.navigation-open {
 #navigation-bar img{ height: 80px; position: absolute; top: 15%; left: 2.5%; opacity: .8; transition: all .4s ease; }
 #navigation-bar img:hover{ opacity: 1; transform:rotate(-45deg); }
 
-.header-content{ height: 100vh; width: 100%; display: flex; position: absolute; align-items: center; justify-content: center; color: whitesmoke; font-family: raleway; font-weight: 400; letter-spacing: 1px; flex-direction: column; font-size: 50px; z-index: 1; }
+.header-content{ height: 100vh; height: var(--app-viewport-height); min-height: var(--app-viewport-height); width: 100%; display: flex; position: absolute; align-items: center; justify-content: center; color: whitesmoke; font-family: raleway; font-weight: 400; letter-spacing: 1px; flex-direction: column; font-size: 50px; z-index: 1; }
 .header-content-box{ z-index: 2; text-align: center; height: auto; width: auto; padding: 0 60px; margin-bottom: 40px; }
 .header-content .firstline{ z-index: 2; font-weight:700; font-family: poppins; font-size: 65px; }
 .header-content .secondline{ z-index: 2; font-size: 30px; padding-top:20px ; font-weight:500; color: rgb(255, 255, 255,.8); }
@@ -230,7 +250,7 @@ body.navigation-open {
     }
 }
 
-.social-media-links{ height: 100vh; position: absolute; z-index: 2; padding: 60px; width: auto; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.social-media-links{ height: 100vh; height: var(--app-viewport-height); position: absolute; z-index: 2; padding: 60px; width: auto; display: flex; flex-direction: column; align-items: center; justify-content: center; }
 .social-media{
     color: white;
     width: 60px;
@@ -510,6 +530,7 @@ body.navigation-open {
     left: 0;
     width: 100%;
     height: 100%;
+    min-height: var(--app-viewport-height);
     z-index: 1;
 }
 
