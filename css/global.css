@@ -211,6 +211,75 @@ body.navigation-open {
 .slash{ animation-name: animateslash; animation-duration: .8s; animation-iteration-count: infinite; animation-play-state: running; }
 @keyframes animateslash{ 0%{ opacity: 1; z-index: 2;} 100%{ opacity: 0; z-index: 0;} }
 
+.identity-shift-heading {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.18em;
+}
+
+.identity-shift-word {
+    display: inline-block;
+    min-width: 7ch;
+    text-align: left;
+    transform-origin: center;
+    transition: opacity 0.18s ease, transform 0.18s ease, filter 0.18s ease;
+    will-change: opacity, transform, filter;
+}
+
+.identity-shift-word.is-heading-switching {
+    opacity: 0;
+    transform: translateY(-0.18em) skewX(-8deg);
+    filter: blur(4px);
+}
+
+.binary-shift-heading {
+    display: inline-block;
+    min-width: min(100%, 28ch);
+}
+
+.binary-heading-char {
+    display: inline-block;
+    min-width: 0.58ch;
+    text-align: center;
+    transform-origin: center;
+    transition: color 0.16s ease, filter 0.16s ease, opacity 0.16s ease;
+    will-change: filter, opacity;
+}
+
+.binary-heading-char.is-binary-switching {
+    opacity: 0.45;
+    filter: blur(2px);
+}
+
+.binary-heading-char.is-binary-active {
+    font-family: "Courier New", monospace;
+    color: #ff2aaa;
+    text-shadow: 0 0 10px rgba(255, 42, 170, 0.38), 0 0 16px rgba(0, 209, 255, 0.18);
+    animation: binaryTitlePulse 0.9s ease both;
+}
+
+@keyframes binaryTitlePulse {
+    0%, 100% {
+        filter: none;
+        transform: translateY(0);
+    }
+    38% {
+        filter: brightness(1.45);
+        transform: translateY(-0.04em);
+    }
+    62% {
+        filter: brightness(0.82);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .identity-shift-word,
+    .binary-heading-char {
+        transition: none;
+        animation: none;
+    }
+}
+
 .page-index .header-content .firstline,
 .page-index .header-content .secondline,
 .page-index .remote-text,
