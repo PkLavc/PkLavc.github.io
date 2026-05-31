@@ -141,7 +141,7 @@ body {
 }
 .skills-grid {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
     gap: 14px;
 }
 
@@ -185,6 +185,13 @@ body {
 
 .skill-cluster:hover::after {
     opacity: 1;
+}
+
+.skill-cluster-secondary {
+    border-color: rgba(255, 42, 170, 0.16);
+    background:
+        linear-gradient(135deg, rgba(0, 209, 255, 0.035), rgba(255, 42, 170, 0.035)),
+        rgba(12, 12, 12, 0.68);
 }
 
 .skill-cluster b {
@@ -267,6 +274,30 @@ body {
 
 .skill-icon-github {
     --skill-icon-url: url("/images/techstack/github-icon.svg?v=7b8e3a8d79");
+}
+
+.skill-icon-java {
+    --skill-icon-url: url("/images/techstack/java-icon.svg?v=3f7d9ff23e");
+}
+
+.skill-icon-php {
+    --skill-icon-url: url("/images/techstack/php-icon.svg?v=cd1beaa0dd");
+}
+
+.skill-icon-react {
+    --skill-icon-url: url("/images/techstack/react-icon.svg?v=ef70909a97");
+}
+
+.skill-icon-c {
+    --skill-icon-url: url("/images/techstack/c-icon.svg?v=fde4284070");
+}
+
+.skill-icon-cpp {
+    --skill-icon-url: url("/images/techstack/cpp-icon.svg?v=0c10b6a4d2");
+}
+
+.skill-icon-csharp {
+    --skill-icon-url: url("/images/techstack/csharp-icon.svg?v=3e8102b629");
 }
 .about-profile-img {
     flex: 0 0 280px;
