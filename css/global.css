@@ -532,16 +532,27 @@ body.navigation-open {
 .credits-grid {
     display: flex;
     justify-content: center;
+    align-items: center;
     gap: 15px;
     flex-wrap: wrap;
+    font-size: 11px;
+    color: #a7b1b7;
 }
 
 .credits-grid a,
-.credits-detail-trigger {
+.credits-detail-trigger,
+.credits-detail-text {
     font-size: 11px;
     color: #a7b1b7 !important;
     -webkit-text-fill-color: #a7b1b7 !important;
     text-decoration: none;
+}
+
+.credits-detail-text {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    line-height: 1.3;
 }
 
 .credits-detail-trigger {
@@ -553,7 +564,8 @@ body.navigation-open {
 }
 
 .credits-grid a:hover,
-.credits-detail-trigger:hover {
+.credits-detail-trigger:hover,
+.credits-detail-text a:hover {
     color: var(--clr-primary) !important;
     -webkit-text-fill-color: var(--clr-primary) !important;
 }

@@ -717,9 +717,9 @@ function setupCreditDetails() {
       var type = button.getAttribute('data-credit-detail');
 
       if (type === 'vfx') {
-        button.outerHTML = 'Particles by <a href="https://github.com/VincentGarreau/particles.js" target="_blank" rel="noopener noreferrer">Vincent Garreau</a>';
+        button.outerHTML = '<span class="credits-detail-text">Particles by <a href="https://github.com/VincentGarreau/particles.js" target="_blank" rel="noopener noreferrer">Vincent Garreau</a></span>';
       } else if (type === 'icons') {
-        button.outerHTML = 'Icons animados by <a href="https://lordicon.com/" target="_blank" rel="noopener noreferrer">Lordicon</a>';
+        button.outerHTML = '<span class="credits-detail-text">Icons animados by <a href="https://lordicon.com/" target="_blank" rel="noopener noreferrer">Lordicon</a></span>';
       }
     }, { once: true });
   });
