@@ -67,7 +67,7 @@
       '  <div class="about-chat-input-wrap">',
       '    <textarea id="about-chat-input" class="about-chat-input" placeholder="Type your message here..."></textarea>',
       '  </div>',
-      '  <button id="about-chat-send" class="about-chat-send" type="submit">Send</button>',
+      '  <button id="about-chat-send" class="about-chat-send" type="submit" aria-label="Send message" title="Send message"><svg class="about-chat-send-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h8"></path><path d="m12 5 7 7-7 7"></path></svg></button>',
       '</form>'
     ].join("");
 

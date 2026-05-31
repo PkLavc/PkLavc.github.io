@@ -553,13 +553,27 @@
         }
 
         body.skyler-page .skyler-send-btn {
-            min-width: 86px;
+            width: 54px;
+            min-width: 54px;
             min-height: 54px;
-            padding: 0 18px;
+            padding: 0;
             border-color: transparent !important;
             background: linear-gradient(135deg, var(--skyler-cyan), var(--skyler-pink)) !important;
             color: #050510 !important;
             font-weight: 800;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        body.skyler-page .skyler-send-icon {
+            width: 22px;
+            height: 22px;
+            stroke: currentColor;
+            stroke-width: 2.6;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            fill: none;
         }
 
         body.skyler-page .skyler-send-btn:disabled,
@@ -898,7 +912,7 @@
                             <label class="visually-hidden" for="chat-input">Message</label>
                             <textarea id="chat-input" placeholder="Ask about projects, companies, courses, architecture, or backend work..."></textarea>
                         </div>
-                        <button id="send-btn" class="skyler-send-btn" type="submit" aria-label="Send message">Send</button>
+                        <button id="send-btn" class="skyler-send-btn" type="submit" aria-label="Send message" title="Send message"><svg class="skyler-send-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h8"></path><path d="m12 5 7 7-7 7"></path></svg></button>
                     </form>
                 </section>
             </section>
@@ -928,7 +942,7 @@
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
     <script src="/js/jquery.min.js?v=d482871a5e" defer></script>
-    <script src="/js/index.js?v=427bc765ee" defer></script>
+    <script src="/js/index.js?v=c15aff58c2" defer></script>
     <script src="/js/testing-chat.js?v=c13a10ce56" defer></script>
 </body>
 </html>
