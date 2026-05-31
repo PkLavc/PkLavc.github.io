@@ -198,9 +198,12 @@ body {
     text-transform: uppercase;
 }
 
-.skills-grid span {
+.skill-pill {
     position: relative;
     z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
     background: rgba(255, 255, 255, 0.06);
     padding: 7px 10px;
     border-radius: 4px;
@@ -208,6 +211,62 @@ body {
     border: 1px solid rgba(255, 255, 255, 0.1);
     color: #E0E0E0;
     line-height: 1.15;
+}
+
+.skill-pill em {
+    font-style: normal;
+}
+
+.skill-icon {
+    --skill-icon-url: none;
+    flex: 0 0 16px;
+    width: 16px;
+    height: 16px;
+    background: var(--clr-primary);
+    -webkit-mask-image: var(--skill-icon-url);
+    mask-image: var(--skill-icon-url);
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    mask-position: center;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+}
+
+.skill-icon-python {
+    --skill-icon-url: url("/images/techstack/python-icon.svg?v=7e7266b29c");
+}
+
+.skill-icon-js {
+    --skill-icon-url: url("/images/techstack/js-icon.svg?v=fb8c820909");
+}
+
+.skill-icon-aws {
+    --skill-icon-url: url("/images/techstack/aws-icon.svg?v=86c4203d82");
+}
+
+.skill-icon-html5 {
+    --skill-icon-url: url("/images/techstack/html5-icon.svg?v=dfd65fdd7e");
+}
+
+.skill-icon-css3 {
+    --skill-icon-url: url("/images/techstack/css3-icon.svg?v=9a97b95e32");
+}
+
+.skill-icon-docker {
+    --skill-icon-url: url("/images/techstack/docker-icon.svg?v=fe4ce38462");
+}
+
+.skill-icon-sql {
+    --skill-icon-url: url("/images/techstack/mysql-icon.svg?v=ef168c99f5");
+}
+
+.skill-icon-rest {
+    --skill-icon-url: url("/images/techstack/restapi-icon.svg?v=18e66675ff");
+}
+
+.skill-icon-github {
+    --skill-icon-url: url("/images/techstack/github-icon.svg?v=7b8e3a8d79");
 }
 .about-profile-img {
     flex: 0 0 280px;

@@ -41,10 +41,10 @@ function getParticlesConfig() {
   var config = {
     particles: {
       number: {
-        value: 56,
+        value: 72,
         density: {
           enable: true,
-          value_area: 900
+          value_area: 860
         }
       },
       color: {
