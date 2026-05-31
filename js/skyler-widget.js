@@ -12,6 +12,24 @@
     return !/^\/skyler-assistant\/?$/i.test(path);
   }
 
+  function getVoiceToggleMarkup(isEnabled) {
+    return [
+      '<span class="about-chat-action-icon about-chat-voice-icon" aria-hidden="true">',
+      '  <span class="about-chat-voice-slash"></span>',
+      '</span>',
+      '<span class="about-chat-action-label">',
+      isEnabled ? "Voice on" : "Voice off",
+      '</span>'
+    ].join("");
+  }
+
+  function getCloseButtonMarkup() {
+    return [
+      '<span class="about-chat-close-icon" aria-hidden="true"></span>',
+      '<span class="about-chat-action-label">Close chat</span>'
+    ].join("");
+  }
+
   function ensureMarkup() {
     if (document.getElementById("about-chat-launcher") && document.getElementById("about-chat-widget")) {
       return;
@@ -39,8 +57,8 @@
       '    <span>Portfolio assistant</span>',
       '  </div>',
       '  <div class="about-chat-actions">',
-      '    <button id="about-chat-voice-toggle" class="about-chat-action-btn" type="button" aria-pressed="false">Voice off</button>',
-      '    <button id="about-chat-close" class="about-chat-action-btn" type="button" aria-label="Close chat">Close</button>',
+      '    <button id="about-chat-voice-toggle" class="about-chat-action-btn about-chat-voice-toggle" type="button" aria-pressed="false" aria-label="Voice off" title="Voice off">' + getVoiceToggleMarkup(false) + '</button>',
+      '    <button id="about-chat-close" class="about-chat-action-btn about-chat-close-btn" type="button" aria-label="Close chat" title="Close chat">' + getCloseButtonMarkup() + '</button>',
       '  </div>',
       '</header>',
       '<div id="about-chat-log" class="about-chat-log" aria-live="polite"></div>',
@@ -67,6 +85,72 @@
     els.form = document.getElementById("about-chat-form");
     els.input = document.getElementById("about-chat-input");
     els.send = document.getElementById("about-chat-send");
+  }
+
+  function randomBetween(min, max) {
+    return min + Math.random() * (max - min);
+  }
+
+  function syncChatBackdrop() {
+    if (!els.log) {
+      return;
+    }
+
+    var backdrop = els.log.querySelector(".about-chat-backdrop");
+    if (backdrop) {
+      backdrop.style.transform = "translateY(" + els.log.scrollTop + "px)";
+    }
+  }
+
+  function ensureChatBackdrop() {
+    if (!els.log || els.log.querySelector(".about-chat-backdrop")) {
+      return;
+    }
+
+    var colors = [
+      "rgba(0, 209, 255, 0.86)",
+      "rgba(255, 42, 170, 0.74)",
+      "rgba(232, 251, 255, 0.72)"
+    ];
+    var isCompact = window.matchMedia && window.matchMedia("(max-width: 768px)").matches;
+    var count = isCompact ? 24 : 36;
+    var backdrop = document.createElement("div");
+
+    backdrop.className = "about-chat-backdrop";
+    backdrop.setAttribute("aria-hidden", "true");
+
+    for (var i = 0; i < count; i++) {
+      var item = document.createElement("span");
+      var isArrow = i % 5 === 0 || Math.random() > 0.84;
+      var driftX = randomBetween(-18, 18);
+      var driftY = randomBetween(-16, 16);
+
+      item.className = "about-chat-backdrop-item " + (isArrow ? "is-arrow" : "is-dot");
+      if (isArrow) {
+        item.textContent = "\u27a3";
+      }
+
+      item.style.setProperty("--x", randomBetween(4, 94).toFixed(2) + "%");
+      item.style.setProperty("--y", randomBetween(5, 92).toFixed(2) + "%");
+      item.style.setProperty("--size", (isArrow ? randomBetween(22, 34) : randomBetween(2, 4.6)).toFixed(1) + "px");
+      item.style.setProperty("--alpha", (isArrow ? randomBetween(0.15, 0.28) : randomBetween(0.26, 0.52)).toFixed(2));
+      item.style.setProperty("--duration", randomBetween(9, 19).toFixed(2) + "s");
+      item.style.setProperty("--delay", "-" + randomBetween(0, 19).toFixed(2) + "s");
+      item.style.setProperty("--drift-x", driftX.toFixed(1) + "px");
+      item.style.setProperty("--drift-y", driftY.toFixed(1) + "px");
+      item.style.setProperty("--drift-x-alt", (-driftX * 0.45).toFixed(1) + "px");
+      item.style.setProperty("--drift-y-alt", (driftY * 0.62).toFixed(1) + "px");
+      item.style.setProperty("--particle-color", colors[Math.floor(Math.random() * colors.length)]);
+      backdrop.appendChild(item);
+    }
+
+    els.log.insertBefore(backdrop, els.log.firstChild);
+    syncChatBackdrop();
+
+    if (!els.log.dataset.skylerBackdropBound) {
+      els.log.dataset.skylerBackdropBound = "true";
+      els.log.addEventListener("scroll", syncChatBackdrop, { passive: true });
+    }
   }
 
   function saveSession() {
@@ -262,6 +346,7 @@
     }
     els.log.appendChild(node);
     els.log.scrollTop = els.log.scrollHeight;
+    syncChatBackdrop();
     return node;
   }
 
@@ -333,7 +418,23 @@
 
     els.voiceToggle.classList.toggle("is-active", state.voiceEnabled);
     els.voiceToggle.setAttribute("aria-pressed", state.voiceEnabled ? "true" : "false");
-    els.voiceToggle.textContent = state.voiceEnabled ? "Voice on" : "Voice off";
+    els.voiceToggle.setAttribute("aria-label", state.voiceEnabled ? "Voice on" : "Voice off");
+    els.voiceToggle.setAttribute("title", state.voiceEnabled ? "Voice on" : "Voice off");
+    els.voiceToggle.innerHTML = getVoiceToggleMarkup(state.voiceEnabled);
+  }
+
+  function updateCloseButton() {
+    if (!els.closeBtn) {
+      return;
+    }
+
+    els.closeBtn.classList.add("about-chat-close-btn");
+    els.closeBtn.setAttribute("aria-label", "Close chat");
+    els.closeBtn.setAttribute("title", "Close chat");
+
+    if (!els.closeBtn.querySelector(".about-chat-close-icon")) {
+      els.closeBtn.innerHTML = getCloseButtonMarkup();
+    }
   }
 
   function pickPreferredFemaleVoice(language) {
@@ -433,7 +534,7 @@
       if (thinking) {
         thinking.innerHTML = renderMessageContent(data.reply || "No response.");
       }
-      setStatus("Skyler is ready.");
+      setStatus("");
       speakIfEnabled(data.reply || "");
     } catch (err) {
       if (thinking) {
@@ -513,13 +614,15 @@
 
     loadSession();
     updateVoiceToggle();
+    updateCloseButton();
+    ensureChatBackdrop();
     if (!els.widget.classList.contains("is-open")) {
       els.widget.inert = true;
     }
     bindEvents();
     autoResizeInput();
 
-    if (els.log && !els.log.children.length) {
+    if (els.log && !els.log.querySelector(".about-chat-message")) {
       appendMessage("assistant", "Hi, I am Skyler. Ask about Patrick's experience, projects, stack, or architecture work.");
     }
 

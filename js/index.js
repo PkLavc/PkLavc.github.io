@@ -940,14 +940,14 @@ function loadSkylerWidgetAssets() {
     var link = document.createElement('link');
     link.id = 'skyler-widget-style';
     link.rel = 'stylesheet';
-    link.href = '/css/skyler-widget.css?v=fb1586a89d';
+    link.href = '/css/skyler-widget.css?v=b3be345f62';
     document.head.appendChild(link);
   }
 
   if (!document.getElementById('skyler-widget-script')) {
     var script = document.createElement('script');
     script.id = 'skyler-widget-script';
-    script.src = '/js/skyler-widget.js?v=820b960e9a';
+    script.src = '/js/skyler-widget.js?v=57213c6d7c';
     script.defer = true;
     document.body.appendChild(script);
   }
