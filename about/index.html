@@ -42,8 +42,8 @@
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Monoton&family=Poppins:wght@500&family=Raleway:wght@300&display=optional" onload="this.onload=null;this.rel='stylesheet'">
         <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Monoton&family=Poppins:wght@500&family=Raleway:wght@300&display=optional"></noscript>
-        <link rel="preload" href="/css/global.css?v=0feb296d99" as="style">
-        <link rel="stylesheet" href="/css/global.css?v=0feb296d99">
+        <link rel="preload" href="/css/global.css?v=7df14dc092" as="style">
+        <link rel="stylesheet" href="/css/global.css?v=7df14dc092">
         <link id="skyler-widget-style" rel="stylesheet" href="/css/skyler-widget.css?v=fb1586a89d">
         <style>
             body {
@@ -231,8 +231,8 @@
                 }
             }
         </style>
-        <link rel="preload" href="/css/about.css?v=9c5943ca3e" as="style">
-        <link rel="stylesheet" href="/css/about.css?v=9c5943ca3e">
+        <link rel="preload" href="/css/about.css?v=93a634243f" as="style">
+        <link rel="stylesheet" href="/css/about.css?v=93a634243f">
         <link rel="preload" href="/css/space-reveal.css?v=601db46cac" as="style">
         <link rel="stylesheet" href="/css/space-reveal.css?v=601db46cac">
     </head>
@@ -559,7 +559,7 @@
 </div>
 
 
-                        <div class="skills-section operating-model-section">
+<div class="skills-section operating-model-section">
     <h2><lottie-player src="/images/Globe.json?v=3e19ffd5b8" background="transparent" speed="1" class="section-heading-icon" loop autoplay title="Engineering operating model icon"></lottie-player> Engineering Operating Model</h2>
     <div class="education-content space-reveal">
         <div class="education-reveal-layer space-reveal-layer" aria-hidden="true">
@@ -636,29 +636,41 @@
 
                         <div class="skills-section core-skills-section">
     <h2><lottie-player src="/images/Da_Vinci.json?v=5aa1ea8644" background="transparent" speed="1" class="section-heading-icon" loop autoplay title="Key skills badge for software architecture and data engineering"></lottie-player> Core Backend Skills & Tech Stack</h2>
-    <div class="skills-grid">
-        <span>Python</span>
-        <span>Node.js</span>
-        <span>SQL</span>
-        <span>JavaScript</span>
-        <span>PostgreSQL</span>
-        <span>REST APIs</span>
-        <span>GitHub Actions</span>
-        <span>AWS</span>
-        <span>Google Cloud</span>
-        <span>Zoho</span>
-        <span>Deluge</span>
-        <span>Systems Integration</span>
-        <span>Data Modeling</span>
-        <span>Backend Architecture</span>
-        <span>ETL Pipelines</span>
-        <span>Process Automation</span>
-        <span>Async Processing</span>
-        <span>Caching</span>
-        <span>System Design</span>
-        <span>Operational Dashboards</span>
-        <span>Rules Engines</span>
-        <span>Integration Governance</span>
+    <div class="skills-grid" aria-label="Core backend skills grouped by operating area">
+        <div class="skill-cluster">
+            <b>Languages</b>
+            <span>Python</span>
+            <span>Node.js</span>
+            <span>JavaScript</span>
+            <span>SQL</span>
+        </div>
+        <div class="skill-cluster">
+            <b>Data & Cloud</b>
+            <span>PostgreSQL</span>
+            <span>AWS</span>
+            <span>Google Cloud</span>
+            <span>ETL Pipelines</span>
+            <span>Data Modeling</span>
+        </div>
+        <div class="skill-cluster">
+            <b>Integrations</b>
+            <span>REST APIs</span>
+            <span>GitHub Actions</span>
+            <span>Zoho</span>
+            <span>Deluge</span>
+            <span>Systems Integration</span>
+            <span>Process Automation</span>
+        </div>
+        <div class="skill-cluster">
+            <b>Architecture</b>
+            <span>Backend Architecture</span>
+            <span>Async Processing</span>
+            <span>Caching</span>
+            <span>System Design</span>
+            <span>Operational Dashboards</span>
+            <span>Rules Engines</span>
+            <span>Integration Governance</span>
+        </div>
     </div>
 </div>
 
@@ -979,11 +991,34 @@
 
                         const sectionRect = section.getBoundingClientRect();
                         const cardRect = lastCard.getBoundingClientRect();
-                        const top = cardRect.bottom - sectionRect.top + 2;
-                        const left = cardRect.left - sectionRect.left;
+                        const top = cardRect.bottom - sectionRect.top + 7;
+                        const left = cardRect.right - sectionRect.left - returnButton.offsetWidth;
 
                         returnButton.style.setProperty('--experience-return-top', Math.round(top) + 'px');
-                        returnButton.style.setProperty('--experience-return-left', Math.round(left) + 'px');
+                        returnButton.style.setProperty('--experience-return-left', Math.round(Math.max(0, left)) + 'px');
+                    }
+
+                    function updateVisibleTrackHeight(cards) {
+                        if (getMaxScrollLeft() <= 0) {
+                            track.style.removeProperty('--experience-track-height');
+                            return;
+                        }
+
+                        const trackRect = track.getBoundingClientRect();
+                        let visibleMaxHeight = 0;
+
+                        cards.forEach(function(card) {
+                            const cardRect = card.getBoundingClientRect();
+                            const visibleWidth = Math.min(cardRect.right, trackRect.right) - Math.max(cardRect.left, trackRect.left);
+
+                            if (visibleWidth > 8) {
+                                visibleMaxHeight = Math.max(visibleMaxHeight, card.offsetHeight);
+                            }
+                        });
+
+                        if (visibleMaxHeight > 0) {
+                            track.style.setProperty('--experience-track-height', visibleMaxHeight + 'px');
+                        }
                     }
 
                     function getScrollBehavior() {
@@ -1031,19 +1066,24 @@
 
                         if (cards.length < 2 || maxScrollLeft <= 0) {
                             returnButton.hidden = true;
+                            track.style.removeProperty('--experience-track-height');
                             section.classList.remove('is-experience-end');
                             return;
                         }
+
+                        updateVisibleTrackHeight(cards);
 
                         const closestIndex = getClosestIndex(cards);
                         const isAtScrollEnd = track.scrollLeft + track.clientWidth >= track.scrollWidth - 4;
                         const isAtLastCard = closestIndex === cards.length - 1 || isAtScrollEnd;
 
                         if (isAtLastCard) {
+                            returnButton.hidden = false;
                             updateReturnPlacement(cards);
+                        } else {
+                            returnButton.hidden = true;
                         }
 
-                        returnButton.hidden = !isAtLastCard;
                         section.classList.toggle('is-experience-end', isAtLastCard);
                     }
 
@@ -1383,7 +1423,7 @@
                 </script>
 
         <script src="/js/jquery.min.js?v=d482871a5e" defer></script>
-        <script src="/js/index.js?v=fab52f3a03" defer></script>
+        <script src="/js/index.js?v=959ced1fe9" defer></script>
         <script id="skyler-widget-script" src="/js/skyler-widget.js?v=820b960e9a" defer></script>
 <footer class="footer-minimal">
     <div class="footer-container">
@@ -1394,14 +1434,12 @@
             <a class="footer-link-pill footer-link-pill-accent" href="https://github.com/sponsors/PkLavc" target="_blank" rel="noopener noreferrer">Sponsor me</a>
         </div>
         <p>
-            &copy; <span id="current-year"></span> Patrick Araujo &bull; 
-            <span class="github-dev-badge">Member of <b>GitHub Developer Program</b></span> &bull; 
-            <button id="credits-trigger-btn" class="credits-trigger" type="button" onclick="toggleCredits()" aria-controls="credits-list" aria-expanded="false">Resources & Attributions</button>
+            &copy; <span id="current-year"></span> Patrick Araujo &bull; <button id="credits-trigger-btn" class="credits-trigger" type="button" onclick="toggleCredits()" aria-controls="credits-list" aria-expanded="false">Resources & Attributions</button>
         </p>
         <div id="credits-list" class="credits-hidden">
             <div class="credits-grid">
-                <a href="https://lordicon.com/" target="_blank" rel="noopener noreferrer">Icons</a>
-                <a href="https://vincentgarreau.com/" target="_blank" rel="noopener noreferrer">VFX</a>
+                <button class="credits-detail-trigger" type="button" data-credit-detail="icons">Icons</button>
+                <button class="credits-detail-trigger" type="button" data-credit-detail="vfx">VFX</button>
 </div>
         </div>
     </div>

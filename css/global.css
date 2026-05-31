@@ -326,6 +326,10 @@ body.navigation-open {
 /* small helpers */
 .color{ color: var(--clr-primary); transition: all .4s ease; }
 
+.cursor {
+    display: none !important;
+}
+
 .cv a button, button, .btn {
     background: var(--clr-primary) !important;
     color: #000 !important;
@@ -443,14 +447,26 @@ body.navigation-open {
     flex-wrap: wrap;
 }
 
-.credits-grid a {
+.credits-grid a,
+.credits-detail-trigger {
     font-size: 11px;
-    color: #a7b1b7;
+    color: #a7b1b7 !important;
+    -webkit-text-fill-color: #a7b1b7 !important;
     text-decoration: none;
 }
 
-.credits-grid a:hover {
-    color: var(--clr-primary);
+.credits-detail-trigger {
+    padding: 0;
+    border: 0 !important;
+    background: transparent !important;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.credits-grid a:hover,
+.credits-detail-trigger:hover {
+    color: var(--clr-primary) !important;
+    -webkit-text-fill-color: var(--clr-primary) !important;
 }
 
 @media screen and (max-width: 480px) {

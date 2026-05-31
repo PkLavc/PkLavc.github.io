@@ -103,7 +103,7 @@ function getParticlesConfig() {
       }
     },
     interactivity: {
-      detect_on: 'canvas',
+      detect_on: 'window',
       events: {
         onhover: {
           enable: !mobilePointer,
@@ -117,9 +117,9 @@ function getParticlesConfig() {
       },
       modes: {
         grab: {
-          distance: 170,
+          distance: 210,
           line_linked: {
-            opacity: 0.72
+            opacity: 0.9
           }
         },
         bubble: {
@@ -145,11 +145,11 @@ function getParticlesConfig() {
   };
 
   if (mobilePointer) {
-    config.particles.number.value = 24;
-    config.particles.number.density.value_area = 900;
-    config.particles.line_linked.distance = 115;
-    config.particles.line_linked.opacity = 0.22;
-    config.particles.move.speed = 0.85;
+    config.particles.number.value = 58;
+    config.particles.number.density.value_area = 420;
+    config.particles.line_linked.distance = 128;
+    config.particles.line_linked.opacity = 0.28;
+    config.particles.move.speed = 1.05;
   }
 
   return config;
@@ -579,7 +579,7 @@ $(function(){
 $(function(){
   var mobilePointer = isTouchOrMobile();
   var $cursor = $('.cursor');
-  var canAnimateCursor = !mobilePointer && $cursor.length && isGsapAvailable();
+  var canAnimateCursor = false;
 
   function cursormover(e){
     if (mobilePointer) {
@@ -632,6 +632,30 @@ function toggleCredits() {
             trigger.setAttribute("aria-expanded", "true");
         }
     }
+}
+
+function setupCreditDetails() {
+  var creditButtons = document.querySelectorAll('[data-credit-detail]');
+
+  creditButtons.forEach(function(button) {
+    button.addEventListener('click', function(event) {
+      event.preventDefault();
+
+      var type = button.getAttribute('data-credit-detail');
+
+      if (type === 'vfx') {
+        button.outerHTML = 'Particles by <a href="https://github.com/VincentGarreau/particles.js" target="_blank" rel="noopener noreferrer">Vincent Garreau</a>';
+      } else if (type === 'icons') {
+        button.outerHTML = 'Icons animados by <a href="https://lordicon.com/" target="_blank" rel="noopener noreferrer">Lordicon</a>';
+      }
+    }, { once: true });
+  });
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', setupCreditDetails, { once: true });
+} else {
+  setupCreditDetails();
 }
 
 function initSpaceReveals() {
