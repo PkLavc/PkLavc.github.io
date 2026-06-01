@@ -6,8 +6,8 @@
     <meta name="author" content="PkLavc" />
     <title>API Integration Pipeline | Hablla, Zoho, SIGE e Zenvia | Patrick Araujo</title>
 
-    <meta name="description" content="Um pipeline de integração Node.js API usando GitHub Actions e Supabase SQL para coletar cargas úteis de Hablla, Zoho Creator, Zenvia Voice e SIGE ERP — com trabalhadores programados, idempotentes IDs e análises reproduzíveis.">
-    <meta name="keywords" content="API Integration Pipeline, Hablla integração de API, Zoho Creator API, SIGE ERP API, Zenvia Pipeline de voz API, Node.js API, GitHub Actions ETL, Supabase SQL, engenharia de dados, arquitetura de integração de API">
+    <meta name="description" content="Um pipeline de integração de APIs em Node.js usando GitHub Actions e Supabase SQL para coletar payloads de Hablla, Zoho Creator, Zenvia Voice e SIGE ERP — com workers programados, idempotentes IDs e análises reproduzíveis.">
+    <meta name="keywords" content="API Integration Pipeline, Hablla integração de APIs, Zoho Creator API, SIGE API de ERP, Zenvia Pipeline de voz API, APIs em Node.js, GitHub Actions ETL, Supabase SQL, engenharia de dados, arquitetura de integração de APIs">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://pklavc.com/pt/projetos/raw-api-ingestion-pipeline/">
     <link rel="alternate" href="https://pklavc.com/projects/raw-api-ingestion-pipeline/" hreflang="en">
@@ -18,7 +18,7 @@
 
 
 <meta property="og:title" content="API Integration Pipeline | Patrick Araujo">
-    <meta property="og:description" content="Pipeline de integração Node.js para coletar cargas úteis de Hablla, Zoho Creator, Zenvia Voice e SIGE ERP API em tabelas Supabase SQL para análises e relatórios operacionais.">
+    <meta property="og:description" content="Pipeline de integração Node.js para coletar payloads de Hablla, Zoho Creator, Zenvia Voice e SIGE API de ERP em tabelas do Supabase SQL para análises e relatórios operacionais.">
     <meta property="og:url" content="https://pklavc.com/pt/projetos/raw-api-ingestion-pipeline/">
     <meta property="og:type" content="website">
     <meta property="og:image" content="https://pklavc.com/images/lavc.webp?v=5e84850f26">
@@ -29,8 +29,8 @@
     <meta property="og:image:alt" content="Retrato da marca do engenheiro de backend e especialista em automação Patrick Araujo">
 
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="API Integration Pipeline | Hablla, Zoho, SIGE e Zenvia APIs">
-    <meta name="twitter:description" content="Os trabalhadores GitHub Actions e Node.js coletam cargas úteis Hablla, Zoho Creator, SIGE e Zenvia API em Supabase SQL para análises reproduzíveis.">
+    <meta name="twitter:title" content="API Integration Pipeline | Hablla, Zoho, SIGE e API de Zenvias">
+    <meta name="twitter:description" content="Os workers GitHub Actions e Node.js coletam payloads Hablla, Zoho Creator, SIGE e API de Zenvia em Supabase SQL para análises reproduzíveis.">
     <meta name="twitter:image" content="https://pklavc.com/images/lavc.webp?v=5e84850f26">
     <meta name="twitter:image:alt" content="Retrato da marca do engenheiro de backend e especialista em automação Patrick Araujo">
     <meta name="twitter:site" content="@PkLavc">
@@ -44,7 +44,7 @@
                 "@type": "SoftwareSourceCode",
                 "name": "API Integration Pipeline",
                 "headline": "API Integration Pipeline",
-                "description": "Node.js 20 integration pipeline that collects payloads from Hablla, Zoho Creator, Zenvia Voice, and SIGE ERP APIs, then stores them in Supabase SQL tables with idempotent external IDs and scheduled GitHub Actions workflows.",
+                "description": "Node.js 20 integration pipeline that collects payloads from Hablla, Zoho Creator, Zenvia Voice, and SIGE APIs de ERP, then stores them in Supabase SQL tables with idempotent external IDs and scheduled GitHub Actions workflows.",
                 "url": "https://pklavc.com/pt/projetos/raw-api-ingestion-pipeline/",
                 "image": "https://pklavc.com/images/lavc.webp?v=5e84850f26",
                 "programmingLanguage": "JavaScript",
@@ -97,32 +97,28 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Monoton&amp;family=Poppins:wght@500&amp;family=Raleway:wght@300&amp;display=swap" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Monoton&amp;family=Poppins:wght@500&amp;family=Raleway:wght@300&amp;display=swap"></noscript>
-    <link rel="stylesheet" href="/css/global.css?v=55251d9722">
+    <link rel="stylesheet" href="/css/global.css?v=d71c8efb77">
     <link rel="stylesheet" href="/css/projects.css?v=84c54fcc24">
     <link rel="preload" as="style" href="/css/github-markdown-local.css?v=01d37f05ee">
     <link rel="stylesheet" href="/css/github-markdown-local.css?v=01d37f05ee" media="print" onload="this.media='all'">
     <noscript><link rel="stylesheet" href="/css/github-markdown-local.css?v=01d37f05ee"></noscript>
 
-    <style>
-        .project-hero {
+    <style>.project-hero {
             padding: 64px 20px;
             text-align: center;
             background: linear-gradient(135deg, rgba(0, 0, 0, 0.12), rgba(0, 0, 0, 0.04));
-        }
-        .project-hero h1 {
+        }.project-hero h1 {
             font-size: clamp(2rem, 5vw, 3rem);
             margin: 18px 0;
             color: #fff;
             line-height: 1.08;
-        }
-        .project-hero p {
+        }.project-hero p {
             color: #aaa;
             font-size: 1.08rem;
             max-width: 850px;
             margin: 0 auto;
             line-height: 1.8;
-        }
-        .project-category-badge {
+        }.project-category-badge {
             display: inline-block;
             background: rgba(100, 200, 255, 0.2);
             border: 1px solid rgba(100, 200, 255, 0.5);
@@ -131,60 +127,38 @@
             border-radius: 20px;
             font-size: 0.9rem;
             margin-bottom: 16px;
-        }
-        .project-context-section,
-        .system-map-section,
-        .full-readme-section,
-        .tech-stack-section {
+        }.project-context-section,.system-map-section,.full-readme-section,.tech-stack-section {
             padding: 42px 20px;
-        }
-        .project-context-section {
+        }.project-context-section {
             background: rgba(100, 200, 255, 0.06);
-        }
-        .project-context-container,
-        .full-readme-container {
+        }.project-context-container,.full-readme-container {
             max-width: 1040px;
             margin: 0 auto;
-        }
-        .project-context-section h2,
-        .project-context-section h3,
-        .system-map-section h2,
-        .tech-stack-section h2 {
+        }.project-context-section h2,.project-context-section h3,.system-map-section h2,.tech-stack-section h2 {
             color: #fff;
             margin-bottom: 16px;
-        }
-        .project-context-section p,
-        .project-context-section li {
+        }.project-context-section p,.project-context-section li {
             color: #d0d0d0;
             line-height: 1.8;
-        }
-        .project-context-section a,
-        .system-map-section a {
+        }.project-context-section a,.system-map-section a {
             color: #64c8ff;
-        }
-        .meta-grid,
-        .integration-grid {
+        }.meta-grid,.integration-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
             gap: 14px;
             margin: 20px 0;
-        }
-        .meta-item,
-        .integration-item {
+        }.meta-item,.integration-item {
             border: 1px solid rgba(255, 255, 255, 0.12);
             border-radius: 8px;
             padding: 14px;
             background: rgba(255, 255, 255, 0.03);
             color: #cfcfcf;
             line-height: 1.65;
-        }
-        .meta-item strong,
-        .integration-item strong {
+        }.meta-item strong,.integration-item strong {
             display: block;
             color: #fff;
             margin-bottom: 6px;
-        }
-        .architecture-flow {
+        }.architecture-flow {
             margin-top: 20px;
             padding: 18px;
             border: 1px solid rgba(255, 255, 255, 0.12);
@@ -192,27 +166,22 @@
             background: #0d1117;
             color: #d7e6ee;
             overflow-x: auto;
-        }
-        .architecture-flow code {
+        }.architecture-flow code {
             white-space: pre;
             font-family: Consolas, Monaco, "Courier New", monospace;
             color: #d7e6ee;
-        }
-        .full-readme-section {
+        }.full-readme-section {
             background: rgba(255, 255, 255, 0.02);
-        }
-        .full-readme-container .markdown-body {
+        }.full-readme-container.markdown-body {
             background: #0d1117;
             border: 1px solid rgba(255, 255, 255, 0.12);
             border-radius: 10px;
             padding: 24px;
-        }
-        .tech-list {
+        }.tech-list {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
             gap: 15px;
-        }
-        .tech-tag {
+        }.tech-tag {
             background: rgba(100, 200, 255, 0.1);
             border: 1px solid rgba(100, 200, 255, 0.3);
             color: #64c8ff;
@@ -220,12 +189,10 @@
             border-radius: 8px;
             text-align: center;
             font-size: 0.95rem;
-        }
-        .cta-section {
+        }.cta-section {
             padding: 58px 20px;
             text-align: center;
-        }
-        .cta-button {
+        }.cta-button {
             display: inline-block;
             background: linear-gradient(135deg, #64c8ff, #00d4ff);
             color: #000;
@@ -235,8 +202,7 @@
             font-weight: 600;
             font-size: 1rem;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        .cta-button:hover {
+        }.cta-button:hover {
             transform: translateY(-2px);
             box-shadow: 0 10px 30px rgba(100, 200, 255, 0.3);
         }
@@ -266,42 +232,42 @@
             <section class="project-hero">
                 <span class="project-category-badge">Engenharia de Dados</span>
                 <h1>API Integration Pipeline</h1>
-                <p>Node.js trabalhadores programados por GitHub Actions coletam dados operacionais de Hablla, Zoho Creator, Zenvia Voice e SIGE ERP APIs e, em seguida, persistem cargas úteis estruturadas em tabelas Supabase SQL para análises e relatórios.</p>
+                <p>workers Node.js programados por GitHub Actions coletam dados operacionais de Hablla, Zoho Creator, Zenvia Voice e SIGE APIs de ERP e, em seguida, persistem payloads estruturados em tabelas do Supabase SQL para análises e relatórios.</p>
             </section>
 
             <section class="project-context-section" aria-label="Contexto de SEO do projeto">
                 <div class="project-context-container">
-                    <h2>API Contexto, Integrações, SQL Armazenamento e Arquitetura</h2>
+                    <h2>Contexto de APIs, integrações, armazenamento SQL e arquitetura</h2>
                     <p>API Integration Pipeline resolve um problema de engenharia de dados que aparece em muitos ambientes operacionais: APIs de terceiros são a fonte da verdade, mas análises e relatórios precisam de uma camada bruta confiável que possa ser reproduzida, auditada e modelada posteriormente. O projeto mantém a ingestão separada da modelagem de negócios para que as payloads de API permaneçam disponíveis mesmo quando as transformações SQL, os painéis de BI e as regras operacionais mudam.</p>
                     <div class="meta-grid">
-                        <div class="meta-item"><strong>Tempo de execução</strong>Node.js 20 trabalhadores executados localmente ou por GitHub Actions.</div>
-                        <div class="meta-item"><strong>Armazenamento</strong>Supabase/PostgreSQL tabelas raw_* com retenção de carga útil bruta.</div>
+                        <div class="meta-item"><strong>Tempo de execução</strong>Node.js 20 workers executados localmente ou por GitHub Actions.</div>
+                        <div class="meta-item"><strong>Armazenamento</strong>Supabase/PostgreSQL tabelas raw_* com retenção de payload bruta.</div>
                         <div class="meta-item"><strong>APIs</strong>Hablla pessoas/cartões/serviços, Zoho Leads/agendamento de criadores, Zenvia Voice, SIGE ERP cobrança.</div>
                         <div class="meta-item"><strong>Confiabilidade</strong>Valores idempotentes de external_id, janelas reproduzíveis, workflow_dispatch, logs higienizados.</div>
                     </div>
                     <h3>Escopo Técnico</h3>
                     <ul>
-                        <li><strong>Pilha:</strong> JavaScript, Node.js 20, GitHub Actions, Supabase, PostgreSQL, SQL, REST APIs, OAuth, agendamento cron.</li>
-                        <li><strong>Tipo de sistema:</strong> pipeline de ingestão de dados brutos, sistema de integração API, camada de teste de análise, fluxo de trabalho de automação de backend.</li>
-                        <li><strong>Contexto SEO:</strong> Arquitetura Supabase SQL, armazenamento de carga útil JSON bruto, design de pipeline ETL, extração de dados API, ingestão idempotente, CRM e integração ERP API.</li>
+                        <li><strong>Stack:</strong> JavaScript, Node.js 20, GitHub Actions, Supabase, PostgreSQL, SQL, REST APIs, OAuth, agendamento cron.</li>
+                        <li><strong>Tipo de sistema:</strong> pipeline de ingestão de dados brutos, sistema de integração de APIs, camada de teste de análise, fluxo de trabalho de automação de backend.</li>
+                        <li><strong>Contexto SEO:</strong> Arquitetura Supabase SQL, armazenamento de payload JSON bruto, design de pipeline ETL, extração de dados via API, ingestão idempotente e integração de CRM/ERP via API.</li>
                     </ul>
-                    <p>Trabalho relacionado: <a href="/pt/projetos/zoho-integration-worker/">Zoho Integration Worker</a>, <a href="/pt/projetos/hablla-integration-worker/">Hablla Integration Worker</a>, <a href="/pt/projetos/zenvia-integration-worker/">Zenvia Integration Worker</a>e <a href="/pt/projetos/sige-integration-worker/">SIGE Integration Worker</a>.</p>
+                    <p>Trabalho relacionado: <a href="/pt/projetos/zoho-integration-worker/">Zoho Integration Worker</a>, <a href="/pt/projetos/hablla-integration-worker/">Hablla Integration Worker</a>, <a href="/pt/projetos/zenvia-integration-worker/">Zenvia Integration Worker</a> e <a href="/pt/projetos/sige-integration-worker/">SIGE Integration Worker</a>.</p>
                 </div>
             </section>
 
-            <section class="system-map-section" aria-label="Arquitetura do sistema de pipeline de ingestão bruta API">
+            <section class="system-map-section" aria-label="Arquitetura do sistema de pipeline de ingestão bruta de APIs">
                 <div class="project-context-container">
                     <h2>Visão geral da arquitetura</h2>
                     <div class="architecture-flow" aria-label="Fluxo de arquitetura">
 <code>GitHub Actions / Local Runner
   -> Node.js ingestion workers
-  -> Hablla API | Zoho Creator API | Zenvia Voice API | SIGE ERP API
+  -> Hablla API | Zoho Creator API | Zenvia Voice API | SIGE API de ERP
   -> Supabase PostgreSQL raw_* tables
   -> SQL-derived layers, analytics, BI, and operational reporting</code>
                     </div>
                     <div class="integration-grid">
                         <div class="integration-item"><strong>Hablla Clientes</strong>Endpoint de pessoas para raw_contact_hablla com IDs externos client-{id}.</div>
-                        <div class="integration-item"><strong>Hablla Cartões</strong>Ponto final dos cartões para raw_events_hablla com janelas de dia reproduzíveis.</div>
+                        <div class="integration-item"><strong>Hablla Cartões</strong>Endpoint dos cartões para raw_events_hablla com janelas de dia reproduzíveis.</div>
                         <div class="integration-item"><strong>Hablla Atendentes</strong>Resumo diário dos serviços para raw_cs_avaliacao_atendimento para evitar erros de agregação de períodos.</div>
                         <div class="integration-item"><strong>Zenvia Chamadas</strong>Relatórios de chamadas de voz para raw_contact_telefonia para análise operacional de telefonia.</div>
                         <div class="integration-item"><strong>SIGE Faturamento</strong>Pedidos faturados para raw_events_faturado com IDs externos pedido-{Codigo}.</div>
@@ -316,15 +282,15 @@
                     <h2 style="color:#fff; margin-bottom:20px;">Documentação do Projeto</h2>
                     <article class="markdown-body">
                         <h2>API Integration Pipeline</h2>
-                        <p><img src="https://img.shields.io/badge/Node-20-339933?logo=node.js&amp;logoColor=white" alt="Nó 20"> <img src="https://img.shields.io/badge/Runtime-GitHub_Actions-2088FF?logo=github-actions&amp;logoColor=white" alt="GitHub Actions"> <img src="https://img.shields.io/badge/Storage-Supabase-3ECF8E?logo=supabase&amp;logoColor=white" alt="Supabase"></p>
-                        <p>API Integration Pipeline coleta dados operacionais de Hablla, Zoho Creator, Zenvia Voice e SIGE ERP APIs. Ele executa chamadas de API programadas, mantém a transformação intencionalmente reduzida no limite de ingestão e armazena cargas úteis em tabelas Supabase SQL para modelagem, análise e camadas de BI posteriores.</p>
+                        <p><img src="https://img.shields.io/badge/Node-20-339933?logo=Node.js&amp;logoColor=white" alt="Nó 20"> <img src="https://img.shields.io/badge/Runtime-GitHub_Actions-2088FF?logo=github-actions&amp;logoColor=white" alt="GitHub Actions"> <img src="https://img.shields.io/badge/Storage-Supabase-3ECF8E?logo=supabase&amp;logoColor=white" alt="Supabase"></p>
+                        <p>API Integration Pipeline coleta dados operacionais de Hablla, Zoho Creator, Zenvia Voice e SIGE APIs de ERP. Ele executa chamadas de API programadas, mantém a transformação intencionalmente reduzida no limite de ingestão e armazeno payloads em tabelas do Supabase SQL para modelagem, análise e camadas de BI posteriores.</p>
 
                         <h2>Objetivo</h2>
-                        <p>O objetivo principal é dissociar a coleção API da modelagem analítica. Em vez de gravar diretamente em uma tabela ou planilha pronta para painel, cada trabalhador armazena a carga bruta com um identificador idempotente, uma tabela de destino e metadados suficientes para suportar o reprocessamento.</p>
+                        <p>O objetivo principal é dissociar a coleta via API da modelagem analítica. Em vez de gravar diretamente em uma tabela ou planilha pronta para painel, cada worker armazena a carga bruta com um identificador idempotente, uma tabela de destino e metadados suficientes para suportar o reprocessamento.</p>
                         <ul>
                             <li>Colete dados API de terceiros de acordo com uma programação.</li>
                             <li>Persista registros brutos confiáveis em Supabase/PostgreSQL.</li>
-                            <li>Mantenha as cargas históricas reprocessáveis sem outra chamada API externa.</li>
+                            <li>Mantenha as cargas históricas reprocessáveis sem outra chamada à API externa.</li>
                             <li>Deixe SQL, BI e modelos operacionais evoluirem fora da camada de ingestão.</li>
                         </ul>
 
@@ -337,16 +303,16 @@
                         </ul>
 
                         <h2>Por que GitHub Actions e Supabase</h2>
-                        <p>Para ingestão leve, GitHub Actions mais Supabase elimina a necessidade de um trabalhador permanente ou VM. Fluxos de trabalho agendados fornecem auditabilidade, reprodução manual com <code>workflow_dispatch</code>, segredos GitHub centralizados e controle de custos simples, enquanto Supabase atua como uma camada de armazenamento SQL durável para registros brutos.</p>
+                        <p>Para ingestão leve, GitHub Actions mais Supabase elimina a necessidade de um worker permanente ou VM. Fluxos de trabalho agendados fornecem auditabilidade, reprodução manual com <code>workflow_dispatch</code>, segredos GitHub centralizados e controle de custos simples, enquanto Supabase atua como uma camada de armazenamento SQL durável para registros brutos.</p>
 
                         <h2>SQL e estratégia de dados brutos</h2>
-                        <p>A importante decisão de projeto SQL é armazenar primeiro as saídas brutas API e derivar modelos normalizados posteriormente. Tabelas como <code>raw_contact_hablla</code>, <code>raw_events_hablla</code>, <code>raw_contact_telefonia</code>, <code>raw_events_faturado</code>, <code>raw_contact_site</code>e <code>raw_events_agendamento</code> pode oferecer suporte a visualizações SQL downstream, tabelas materializadas, junções e conjuntos de dados compatíveis com BI sem perder o formato original do provedor.</p>
+                        <p>A importante decisão de projeto SQL é armazenar primeiro as saídas brutas de APIs e derivar modelos normalizados posteriormente. Tabelas como <code>raw_contact_hablla</code>, <code>raw_events_hablla</code>, <code>raw_contact_telefonia</code>, <code>raw_events_faturado</code>, <code>raw_contact_site</code>e <code>raw_events_agendamento</code> pode oferecer suporte a visualizações SQL downstream, tabelas materializadas, junções e conjuntos de dados compatíveis com BI sem perder o formato original do provedor.</p>
                         <p>O <code>external_id</code> O campo torna seguras as janelas de coleta repetidas: o mesmo período de cinco, sete, quinze ou mensal pode ser reproduzido sem duplicar linhas quando a lógica de upsert é aplicada de forma consistente.</p>
 
                         <h2>Integrações atuais</h2>
                         <ul>
-                            <li><strong>Hablla Clientes:</strong> pessoas ponto final para <code>raw_contact_hablla</code>, usando <code>client-{id}</code>.</li>
-                            <li><strong>Hablla Cartões:</strong> ponto final dos cartões para <code>raw_events_hablla</code>, com uma janela recente padrão.</li>
+                            <li><strong>Hablla Clientes:</strong> pessoas endpoint para <code>raw_contact_hablla</code>, usando <code>client-{id}</code>.</li>
+                            <li><strong>Hablla Cartões:</strong> endpoint dos cartões para <code>raw_events_hablla</code>, com uma janela recente padrão.</li>
                             <li><strong>Hablla Atendentes:</strong> resumo de serviços para <code>raw_cs_avaliacao_atendimento</code>, coletados dia a dia.</li>
                             <li><strong>Zenvia Chamadas:</strong> relatórios de chamadas de voz para <code>raw_contact_telefonia</code>, geralmente adequado para execuções diárias no final do dia.</li>
                             <li><strong>SIGE Faturamento:</strong> pedidos faturados para <code>raw_events_faturado</code>, usando <code>pedido-{Codigo}</code>.</li>
@@ -355,13 +321,13 @@
                         </ul>
 
                         <h2>Modelo de agendamento</h2>
-                        <p>O projeto mistura janelas curtas frequentes com janelas maiores menos frequentes. Hablla clientes/cartões e trabalhos recentes Zoho são executados várias vezes por dia. Zenvia, SIGE, Hablla atendentes e cargas completas Zoho são executadas diariamente. Isso reduz a pressão API, mantém disponíveis dados operacionais atualizados e reduz o risco de sobreposição de fluxo de trabalho.</p>
+                        <p>O projeto mistura janelas curtas frequentes com janelas maiores menos frequentes. Hablla clientes/cartões e trabalhos recentes Zoho são executados várias vezes por dia. Zenvia, SIGE, Hablla atendentes e cargas completas Zoho são executadas diariamente. Isso reduz a pressão sobre a API, mantém disponíveis dados operacionais atualizados e reduz o risco de sobreposição de fluxo de trabalho.</p>
 
                         <h2>Segurança e registros</h2>
                         <p>Como os fluxos de trabalho podem expor metadados de execução pública, os logs de erros são limpos. O projeto evita registrar tokens, segredos, cargas brutas completas e respostas completas a erros do provedor. Os logs concentram-se em códigos de status, mensagens resumidas e contexto operacional que podem ser depurados sem vazamento de credenciais.</p>
 
                         <h2>Migração do Google Sheets</h2>
-                        <p>O padrão mais antigo sincronizava dados API diretamente no Google Sheets após mapeamento e filtragem iniciais. O pipeline de ingestão API bruto move o limite de armazenamento mais cedo: as cargas úteis API brutas são capturadas em Supabase primeiro e, em seguida, a modelagem e a análise SQL acontecem no downstream. Isso melhora a auditabilidade, a capacidade de reprodução e a resiliência contra mudanças nas regras de negócios.</p>
+                        <p>O padrão mais antigo sincronizava dados via API diretamente no Google Sheets após mapeamento e filtragem iniciais. O pipeline de ingestão bruta de APIs move o limite de armazenamento mais cedo: os payloads brutos de APIs são capturadas em Supabase primeiro e, em seguida, a modelagem e a análise SQL acontecem no downstream. Isso melhora a auditabilidade, a capacidade de reprodução e a resiliência contra mudanças nas regras de negócios.</p>
 
                     </article>
                 </div>
@@ -369,7 +335,7 @@
 
             <section class="tech-stack-section">
                 <div class="project-context-container">
-                    <h2>Pilha de tecnologia</h2>
+                    <h2>Stack tecnológica</h2>
                     <div class="tech-list">
                         <div class="tech-tag">Node.js 20</div>
                         <div class="tech-tag">JavaScript</div>
@@ -405,7 +371,7 @@
     </div>
 
     <div class="visually-hidden">
-        <p>API Integration Pipeline é um pipeline de integração Node.js e GitHub Actions para API Hablla, API Zoho Creator, API Zenvia Voice, API SIGE ERP, armazenamento em Supabase SQL, design de pipelines ETL, IDs externos idempotentes e automação de backend.</p>
+        <p>API Integration Pipeline é um pipeline de integração Node.js e GitHub Actions para API da Hablla, API do Zoho Creator, API da Zenvia Voice, API do SIGE ERP, armazenamento em Supabase SQL, design de pipelines ETL, IDs externos idempotentes e automação de backend.</p>
     </div>
 
     <script>
@@ -415,7 +381,7 @@
             });
         }());
     </script>
-        <script src="/js/i18n.js?v=cc3ee695f1" defer></script>
+        <script src="/js/i18n.js?v=75d84205d9" defer></script>
     <script src="/js/jquery.min.js?v=d482871a5e" defer></script>
     <script src="/js/index.js?v=0b108f99d1" defer></script>
 </body>

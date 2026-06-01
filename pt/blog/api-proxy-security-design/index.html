@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="author" content="Patrick Araujo">
     <title>Design de proxy zero-trust API: criptografia AES-256 e detecção de PII em Python</title>
-    <meta name="description" content="Como construir uma camada proxy API de confiança zero com criptografia AES-256, mascaramento de campo dinâmico e detecção automatizada de PII em serviços de backend Python.">
+    <meta name="description" content="Como construir uma camada proxy de API de confiança zero com criptografia AES-256, mascaramento de campo dinâmico e detecção automatizada de PII em serviços de backend Python.">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://pklavc.com/pt/blog/api-proxy-security-design/">
     <link rel="alternate" href="https://pklavc.com/blog/api-proxy-security-design/" hreflang="en">
@@ -16,7 +16,7 @@
 
 
 <meta property="og:title" content="Design de proxy zero-trust API: criptografia AES-256 e detecção de PII em Python">
-    <meta property="og:description" content="Um guia prático para arquitetura de proxy de confiança zero API: criptografia em nível de campo, detecção automatizada de PII e controles de privacidade de dados em Python.">
+    <meta property="og:description" content="Um guia prático para arquitetura de proxy de API de confiança zero: criptografia em nível de campo, detecção automatizada de PII e controles de privacidade de dados em Python.">
     <meta property="og:url" content="https://pklavc.com/pt/blog/api-proxy-security-design/">
     <meta property="og:type" content="article">
     <meta property="article:published_time" content="2026-04-24">
@@ -41,7 +41,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Monoton&amp;family=Poppins:wght@500;600;700&amp;family=Raleway:wght@300&amp;display=swap" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Monoton&amp;family=Poppins:wght@500;600;700&amp;family=Raleway:wght@300&amp;display=swap"></noscript>
-    <link rel="stylesheet" href="/css/global.css?v=55251d9722">
+    <link rel="stylesheet" href="/css/global.css?v=d71c8efb77">
     <link rel="stylesheet" href="/css/blog.css?v=560c7eaf05">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.2.6/gsap.min.js" defer></script>
     <script type="application/ld+json">
@@ -129,7 +129,7 @@
                             <span>/</span>
                             <a href="/pt/blog/">Blogue</a>
                             <span>/</span>
-                            <span aria-current="page">Design de proxy de confiança zero API</span>
+                            <span aria-current="page">Design de proxy de API de confiança zero</span>
                         </div>
                         <span class="blog-kicker">API Segurança</span>
                         <h1>Design de proxy zero-trust API: criptografia AES-256 e detecção de PII em Python</h1>
@@ -143,7 +143,7 @@
 
                     <article class="blog-article">
                         <h2>O que significa confiança zero na camada proxy</h2>
-                        <p>A confiança zero não é um produto ou estrutura. É uma postura: nenhum tráfego é confiável por padrão e o acesso é verificado continuamente, em vez de uma vez no perímetro. Na camada proxy API isso significa que mesmo o tráfego interno entre serviços passa pelas mesmas regras de inspeção e aplicação que as solicitações externas. O proxy não relaxa os controles porque a origem é interna.</p>
+                        <p>A confiança zero não é um produto ou estrutura. É uma postura: nenhum tráfego é confiável por padrão e o acesso é verificado continuamente, em vez de uma vez no perímetro. Na camada proxy de API isso significa que mesmo o tráfego interno entre serviços passa pelas mesmas regras de inspeção e aplicação que as solicitações externas. O proxy não relaxa os controles porque a origem é interna.</p>
                         <p><a href="/pt/projetos/cipher-gate-proxy/">Cipher Gate Proxy</a> implementa essa postura com criptografia de campo AES-256, mascaramento dinâmico e detecção automatizada de PII em todo o tráfego que atravessa o proxy, tratando a privacidade dos dados como uma propriedade estrutural em vez de um filtro opcional.</p>
 
                         <h2>Criptografia em nível de campo versus criptografia de transporte</h2>
@@ -165,8 +165,8 @@
                         <p>Os proxies de confiança zero que transformam dados precisam de registros de auditoria imutáveis: o que foi criptografado, quando, com que escopo e quais consumidores acessaram o quê. Sem essa trilha de auditoria, uma investigação de incidente não poderá determinar se ocorreu uma violação de privacidade na camada de proxy ou no downstream. Cada decisão de criptografia e mascaramento deve produzir uma entrada de log que não contenha o valor confidencial em si.</p>
                         <p>Isto se conecta aos padrões de monitoramento e observabilidade explorados em <a href="/pt/blog/infrastructure-anomaly-detection/">Detecção de anomalias de infraestrutura</a>, onde o registro estruturado permite a análise pós-incidente sem expor dados no processo.</p>
 
-                        <h2>Onde a aplicação da segurança do proxy se encaixa na pilha</h2>
-                        <p>Uma camada de segurança de proxy não substitui a validação em nível de aplicativo ou segmentação de rede. É um ponto de fiscalização consistente que aplica controles de privacidade de dados de maneira uniforme. O <a href="/pt/stacks/engenheiro-python/">Python Pilha de engenheiro</a> descreve como esses recursos de proxy se conectam à arquitetura mais ampla de segurança e integração em todo o portfólio de projetos.</p>
+                        <h2>Onde a aplicação da segurança do proxy se encaixa na stack</h2>
+                        <p>Uma camada de segurança de proxy não substitui a validação em nível de aplicativo ou segmentação de rede. É um ponto de fiscalização consistente que aplica controles de privacidade de dados de maneira uniforme. O <a href="/pt/stacks/engenheiro-python/">Python Stack de engenheiro</a> descreve como esses recursos de proxy se conectam à arquitetura mais ampla de segurança e integração em todo o portfólio de projetos.</p>
                     </article>
 
                     <section aria-labelledby="proxy-related-title">
@@ -181,8 +181,8 @@
                                 <p>Padrões de monitoramento e autocorreção que complementam a aplicação da segurança na camada de infraestrutura.</p>
                             </article>
                             <article class="blog-related-card">
-                                <h3><a href="/pt/colecoes/projetos-python/">Python Projetos</a></h3>
-                                <p>Python projetos de backend cobrindo segurança, automação e resiliência de infraestrutura.</p>
+                                <h3><a href="/pt/colecoes/projetos-python/">Projetos Python</a></h3>
+                                <p>projetos Python de backend cobrindo segurança, automação e resiliência de infraestrutura.</p>
                             </article>
                         </div>
                     </section>
@@ -203,7 +203,7 @@
                         <ul>
                             <li><a href="/pt/projetos/cipher-gate-proxy/">Cipher Gate Proxy</a></li>
                             <li><a href="/pt/projetos/aegis-sentinel/">Aegis Sentinel</a></li>
-                            <li><a href="/pt/stacks/engenheiro-python/">Python Pilha de Engenheiro</a></li>
+                            <li><a href="/pt/stacks/engenheiro-python/">Python Stack de Engenheiro</a></li>
                             <li><a href="/pt/sobre/">Sobre Patrick Araujo</a></li>
                         </ul>
                     </section>
@@ -231,7 +231,7 @@
             });
         }());
     </script>
-        <script src="/js/i18n.js?v=cc3ee695f1" defer></script>
+        <script src="/js/i18n.js?v=75d84205d9" defer></script>
     <script src="/js/jquery.min.js?v=d482871a5e" defer></script>
     <script src="/js/index.js?v=0b108f99d1" defer></script>
 </body>

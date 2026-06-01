@@ -48,7 +48,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Monoton&amp;family=Poppins:wght@500;600;700&amp;family=Raleway:wght@300&amp;display=swap" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Monoton&amp;family=Poppins:wght@500;600;700&amp;family=Raleway:wght@300&amp;display=swap"></noscript>
-    <link rel="stylesheet" href="/css/global.css?v=55251d9722">
+    <link rel="stylesheet" href="/css/global.css?v=d71c8efb77">
     <link rel="stylesheet" href="/css/blog.css?v=560c7eaf05">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.2.6/gsap.min.js" defer></script>
 
@@ -173,12 +173,12 @@
 
                         <h2>Barramento CAN: o backbone legado</h2>
                         <p>A Controller Area Network (CAN) tem sido o barramento de comunicação veicular dominante desde a década de 1990. CAN fornece arbitragem baseada em prioridade, detecção de erros e comunicação de transmissão em velocidades de até 1 Mbps (CAN clássico) ou 8 Mbps (CAN-FD). É robusto contra interferência eletromagnética e utiliza apenas dois fios, tornando-o prático para ambientes automotivos adversos.</p>
-                        <p>Em um veículo como o Ferrari Luce, o CAN ainda desempenha funções críticas: eletrônica corporal, comunicação de sensores de baixa largura de banda e compatibilidade legada com componentes que usam protocolos CAN estabelecidos. CAN-FD (Flexible Data-rate) estende a carga útil de 8 bytes para 64 bytes e aumenta a velocidade durante a fase de dados, fornecendo um caminho de atualização significativo sem substituir completamente a camada física.</p>
+                        <p>Em um veículo como o Ferrari Luce, o CAN ainda desempenha funções críticas: eletrônica corporal, comunicação de sensores de baixa largura de banda e compatibilidade legada com componentes que usam protocolos CAN estabelecidos. CAN-FD (Flexible Data-rate) estende o payload de 8 bytes para 64 bytes e aumenta a velocidade durante a fase de dados, fornecendo um caminho de atualização significativo sem substituir completamente a camada física.</p>
                         <p>No entanto, o CAN tem limitações para os requisitos dos veículos elétricos modernos. Seu teto de largura de banda o torna inadequado para feeds de câmeras, nuvens de pontos lidar, dados de mapas de alta resolução ou fluxos de telemetria de alta frequência gerados por motores elétricos. É aqui que a Ethernet automotiva entra na arquitetura.</p>
 
                         <h2>Ethernet automotiva: rede veicular de alta largura de banda</h2>
                         <p>A Ethernet automotiva (100BASE-T1, 1000BASE-T1) traz comunicação multigigabit para a rede do veículo. Ao contrário da Ethernet de consumo, as variantes automotivas usam cabos de par trançado único, reduzindo peso e custo. A Ethernet permite aplicações com uso intensivo de largura de banda: sistemas de câmeras de visão surround, downloads de atualizações over-the-air, streaming de dados de diagnóstico e fusão de sensores de alta frequência.</p>
-                        <p>A mudança para Ethernet introduz conceitos familiares de redes de TI no veículo: switches, VLANs, pilhas TCP/IP, descoberta de serviços e redes sensíveis ao tempo (TSN). O TSN é particularmente importante – ele fornece garantias de latência determinísticas em uma rede Ethernet, permitindo comunicação em tempo real, crítica para a segurança, juntamente com o tráfego de melhor esforço na mesma infraestrutura física.</p>
+                        <p>A mudança para Ethernet introduz conceitos familiares de redes de TI no veículo: switches, VLANs, stacks TCP/IP, descoberta de serviços e redes sensíveis ao tempo (TSN). O TSN é particularmente importante – ele fornece garantias de latência determinísticas em uma rede Ethernet, permitindo comunicação em tempo real, crítica para a segurança, juntamente com o tráfego de melhor esforço na mesma infraestrutura física.</p>
                         <p>Para o Ferrari Luce, a Ethernet automotiva provavelmente serve como backbone conectando controladores de domínio, plataforma central de computação, sistemas de infoentretenimento e módulos de conectividade externos. CAN e CAN-FD permanecem para sensores e atuadores de nós folha onde os requisitos de largura de banda são modestos, mas os requisitos de confiabilidade são extremos.</p>
                         <p>Essa arquitetura híbrida — backbone Ethernet com CAN/CAN-FD nas bordas — representa o que há de mais moderno em redes automotivas. Ele combina a largura de banda e a flexibilidade da Ethernet com a confiabilidade comprovada do CAN em malhas de controle críticas para a segurança.</p>
 
@@ -219,7 +219,7 @@
                                 <p>Como o software crítico para a segurança lida com falhas, mantém a observabilidade e fornece atualizações OTA sem riscos.</p>
                             </article>
                             <article class="blog-related-card">
-                                <h3><a href="/pt/blog/ferrari-luce-electric-software-stack-speculation/">A provável pilha de software de uma Ferrari elétrica</a></h3>
+                                <h3><a href="/pt/blog/ferrari-luce-electric-software-stack-speculation/">A provável stack de software de uma Ferrari elétrica</a></h3>
                                 <p>Análise especulativa de Linux, RTOS, C/C++, Rust e as cadeias de ferramentas por trás de um supercarro elétrico.</p>
                             </article>
                         </div>
@@ -284,7 +284,7 @@
             });
         }());
     </script>
-        <script src="/js/i18n.js?v=cc3ee695f1" defer></script>
+        <script src="/js/i18n.js?v=75d84205d9" defer></script>
     <script src="/js/jquery.min.js?v=d482871a5e" defer></script>
     <script src="/js/index.js?v=0b108f99d1" defer></script>
 

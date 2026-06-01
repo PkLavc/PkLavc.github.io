@@ -35,24 +35,21 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Monoton&amp;family=Poppins:wght@500&amp;family=Raleway:wght@300&amp;display=swap" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Monoton&amp;family=Poppins:wght@500&amp;family=Raleway:wght@300&amp;display=swap"></noscript>
-    <link rel="stylesheet" href="/css/global.css?v=55251d9722">
+    <link rel="stylesheet" href="/css/global.css?v=d71c8efb77">
     <link rel="stylesheet" href="/css/projects.css?v=84c54fcc24">
     <link rel="preload" as="style" href="/css/github-markdown-local.css?v=01d37f05ee">
     <link rel="stylesheet" href="/css/github-markdown-local.css?v=01d37f05ee" media="print" onload="this.media='all'">
     <noscript><link rel="stylesheet" href="/css/github-markdown-local.css?v=01d37f05ee"></noscript>
 
-    <style>
-        .project-hero {
+    <style>.project-hero {
             padding: 60px 20px;
             text-align: center;
             background: linear-gradient(135deg, rgba(0, 0, 0, 0.12), rgba(0, 0, 0, 0.05));
-        }
-        .project-hero h1 {
+        }.project-hero h1 {
             font-size: 2.5rem;
             margin: 20px 0;
             color: #fff;
-        }
-        .project-category-badge {
+        }.project-category-badge {
             display: inline-block;
             background: rgba(120, 80, 255, 0.2);
             border: 1px solid rgba(120, 80, 255, 0.5);
@@ -61,141 +58,114 @@
             border-radius: 20px;
             font-size: 0.9rem;
             margin-bottom: 20px;
-        }
-        .full-readme-section {
+        }.full-readme-section {
             padding: 50px 20px;
             background: rgba(255, 255, 255, 0.02);
-        }
-        .full-readme-container {
+        }.full-readme-container {
             max-width: 1000px;
             margin: 0 auto;
-        }
-        .full-readme-container .markdown-body {
+        }.full-readme-container.markdown-body {
             background: #0d1117;
             border: 1px solid rgba(255, 255, 255, 0.12);
             border-radius: 10px;
             padding: 24px;
-        }
-        .meta-grid {
+        }.meta-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
             gap: 10px;
             margin: 16px 0 24px;
-        }
-        .meta-item {
+        }.meta-item {
             border: 1px solid rgba(255, 255, 255, 0.12);
             border-radius: 10px;
             padding: 10px 12px;
             background: rgba(255, 255, 255, 0.02);
-        }
-        .meta-item strong {
+        }.meta-item strong {
             display: block;
             color: #fff;
             margin-bottom: 4px;
             font-size: 0.9rem;
-        }
-        .flowchart {
+        }.flowchart {
             margin: 14px 0 24px;
             padding: 14px;
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 12px;
             background: rgba(7, 12, 20, 0.8);
-        }
-        .flow-lane {
+        }.flow-lane {
             display: flex;
             flex-wrap: wrap;
             align-items: center;
             gap: 8px;
             margin: 6px 0;
-        }
-        .flow-step {
+        }.flow-step {
             border: 1px solid rgba(168, 139, 255, 0.4);
             border-radius: 8px;
             padding: 8px 10px;
             background: rgba(168, 139, 255, 0.08);
             color: #e2d9ff;
             font-size: 0.9rem;
-        }
-        .flow-arrow {
+        }.flow-arrow {
             color: #a88bff;
             font-weight: 700;
             font-size: 1rem;
             padding: 0 2px;
-        }
-        .section-spacer {
+        }.section-spacer {
             margin-top: 26px;
-        }
-        .stack-table {
+        }.stack-table {
             width: 100%;
             border-collapse: collapse;
             margin: 14px 0 24px;
             font-size: 0.92rem;
-        }
-        .stack-table th,
-        .stack-table td {
+        }.stack-table th,.stack-table td {
             padding: 10px 14px;
             text-align: left;
             border: 1px solid rgba(255,255,255,0.1);
-        }
-        .stack-table th {
+        }.stack-table th {
             background: rgba(168, 139, 255, 0.12);
             color: #c4aeff;
             font-weight: 600;
-        }
-        .stack-table td {
+        }.stack-table td {
             color: #ccc;
-        }
-        .stack-table tr:hover td {
+        }.stack-table tr:hover td {
             background: rgba(255,255,255,0.02);
-        }
-        .project-visual-section {
+        }.project-visual-section {
             padding: 36px 20px;
             background: rgba(255, 255, 255, 0.02);
-        }
-        .project-visual-container {
+        }.project-visual-container {
             max-width: 1040px;
             margin: 0 auto;
-        }
-        .project-visual-grid {
+        }.project-visual-grid {
             display: grid;
             grid-template-columns: 1fr;
             gap: 16px;
-        }
-        .project-visual-grid-secondary {
+        }.project-visual-grid-secondary {
             display: grid;
             grid-template-columns: repeat(2, minmax(0, 1fr));
             gap: 16px;
-        }
-        .project-visual-card {
+        }.project-visual-card {
             margin: 0;
             border: 1px solid rgba(255, 255, 255, 0.12);
             border-radius: 10px;
             overflow: hidden;
             background: #0d1117;
-        }
-        .project-visual-card img {
+        }.project-visual-card img {
             display: block;
             width: 100%;
             height: auto;
             object-fit: contain;
-        }
-        .project-visual-card figcaption {
+        }.project-visual-card figcaption {
             padding: 12px 14px;
             color: #bfcbd3;
             line-height: 1.6;
             font-size: 0.92rem;
             border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
-        @media (max-width: 860px) {
-            .project-visual-grid-secondary {
+        @media (max-width: 860px) {.project-visual-grid-secondary {
                 grid-template-columns: 1fr;
             }
-        }
-        .cta-section {
+        }.cta-section {
             padding: 40px 20px 60px;
             text-align: center;
-        }
-        .cta-button {
+        }.cta-button {
             display: inline-block;
             background: linear-gradient(135deg, #a88bff, #7c3aed);
             color: #fff;
@@ -204,8 +174,7 @@
             text-decoration: none;
             font-weight: 600;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        .cta-button:hover {
+        }.cta-button:hover {
             transform: translateY(-2px);
             box-shadow: 0 10px 30px rgba(168, 139, 255, 0.3);
         }
@@ -398,16 +367,16 @@
                                 <tr><th>Método</th><th>Rota</th><th>Descrição</th></tr>
                             </thead>
                             <tbody>
-                                <tr><td>OBTER/POSTAR</td><td><code>/api/tasks</code></td><td>Liste ou crie tarefas.</td></tr>
-                                <tr><td>POSTAR</td><td><code>/api/tasks/{id}/execute</code></td><td>Enfileirar execução.</td></tr>
+                                <tr><td>OBTER/POST</td><td><code>/api/tasks</code></td><td>Liste ou crie tarefas.</td></tr>
+                                <tr><td>POST</td><td><code>/api/tasks/{id}/execute</code></td><td>Enfileirar execução.</td></tr>
                                 <tr><td>OBTER</td><td><code>/api/tasks/{id}/logs</code></td><td>Logs e rastreamentos operacionais.</td></tr>
-                                <tr><td>OBTER/POSTAR</td><td><code>/api/tasks/{id}/messages</code></td><td>Bate-papo de tarefa persistente.</td></tr>
+                                <tr><td>OBTER/POST</td><td><code>/api/tasks/{id}/messages</code></td><td>Bate-papo de tarefa persistente.</td></tr>
                                 <tr><td>OBTER</td><td><code>/api/agents</code></td><td>Agentes registrados.</td></tr>
-                                <tr><td>OBTER/POSTAR</td><td><code>/api/documents</code></td><td>RAG documentos.</td></tr>
-                                <tr><td>POSTAR</td><td><code>/api/documents/upload</code></td><td>Carregar e indexar.</td></tr>
-                                <tr><td>OBTER/POSTAR</td><td><code>/api/scheduler/jobs</code></td><td>Trabalhos agendados.</td></tr>
-                                <tr><td>OBTER/POSTAR</td><td><code>/api/objectives/goals</code></td><td>Metas autônomas.</td></tr>
-                                <tr><td>POSTAR</td><td><code>/api/assistant/chat</code></td><td>Skyler ponto final.</td></tr>
+                                <tr><td>OBTER/POST</td><td><code>/api/documents</code></td><td>RAG documentos.</td></tr>
+                                <tr><td>POST</td><td><code>/api/documents/upload</code></td><td>Carregar e indexar.</td></tr>
+                                <tr><td>OBTER/POST</td><td><code>/api/scheduler/jobs</code></td><td>Trabalhos agendados.</td></tr>
+                                <tr><td>OBTER/POST</td><td><code>/api/objectives/goals</code></td><td>Metas autônomas.</td></tr>
+                                <tr><td>POST</td><td><code>/api/assistant/chat</code></td><td>Skyler endpoint.</td></tr>
                                 <tr><td>WS</td><td><code>/ws</code></td><td>Eventos em tempo real.</td></tr>
                             </tbody>
                         </table>
@@ -477,7 +446,7 @@
         }());
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.2.6/gsap.min.js" defer></script>
-        <script src="/js/i18n.js?v=cc3ee695f1" defer></script>
+        <script src="/js/i18n.js?v=75d84205d9" defer></script>
     <script src="/js/jquery.min.js?v=d482871a5e" defer></script>
     <script src="/js/index.js?v=0b108f99d1" defer></script>
 </body>

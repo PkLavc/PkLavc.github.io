@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="author" content="Patrick Araujo">
-    <title>Edificio Lavc Systems: Arquitectura de una plataforma local de IA multiagente</title>
+    <title>Construyendo Lavc Systems: Arquitectura de una plataforma local de IA multiagente</title>
     <meta name="description" content="Una inmersión profunda en las decisiones de ingeniería detrás de Lavc Systems: FastAPI backend, React/Vite frontend, Ollama local LLM, LangGraph orquestación multiagente, ChromaDB RAG, HybridMemory y WebSocket en tiempo real observabilidad.">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://pklavc.com/es/blog/lavc-systems-architecture/">
@@ -15,7 +15,7 @@
 
 
 
-<meta property="og:title" content="Edificio Lavc Systems: Arquitectura de una plataforma local de IA multiagente">
+<meta property="og:title" content="Construyendo Lavc Systems: Arquitectura de una plataforma local de IA multiagente">
     <meta property="og:description" content="Cómo FastAPI, LangGraph, Ollama, ChromaDB y React se unen para ejecutar un completo sistema de orquestación de IA multiagente completamente en infraestructura local.">
     <meta property="og:url" content="https://pklavc.com/es/blog/lavc-systems-architecture/">
     <meta property="og:type" content="article">
@@ -35,7 +35,7 @@
     <meta property="og:site_name" content="Patrick Araujo">
     <meta property="og:locale" content="es_ES">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Edificio Lavc Systems: Arquitectura de una plataforma local de IA multiagente">
+    <meta name="twitter:title" content="Construyendo Lavc Systems: Arquitectura de una plataforma local de IA multiagente">
     <meta name="twitter:description" content="Decisiones de ingeniería detrás de una plataforma local multiagente: FastAPI, LangGraph, Ollama, ChromaDB, HybridMemory y eventos WebSocket en tiempo real.">
     <meta name="twitter:image" content="https://pklavc.com/projects/lavc-systems/assets/lavc-ai-operation-dashboard.webp?v=8081b617f4">
     <meta name="twitter:image:alt" content="Lavc Systems panel de operaciones de la plataforma de IA local con orquestación de agentes y controles del sistema">
@@ -46,7 +46,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Monoton&amp;family=Poppins:wght@500;600;700&amp;family=Raleway:wght@300&amp;display=swap" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Monoton&amp;family=Poppins:wght@500;600;700&amp;family=Raleway:wght@300&amp;display=swap"></noscript>
-    <link rel="stylesheet" href="/css/global.css?v=55251d9722">
+    <link rel="stylesheet" href="/css/global.css?v=d71c8efb77">
     <link rel="stylesheet" href="/css/blog.css?v=560c7eaf05">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.2.6/gsap.min.js" defer></script>
     <script type="application/ld+json">
@@ -138,11 +138,11 @@
                             <span>/</span>
                             <a href="/es/blog/">Blog</a>
                             <span>/</span>
-                            <span aria-current="page">Edificio Lavc Systems</span>
+                            <span aria-current="page">Construyendo Lavc Systems</span>
                         </div>
                         <span class="blog-kicker">Ingeniería de plataforma de IA</span>
-                        <h1>Edificio Lavc Systems: Arquitectura de una plataforma local de IA multiagente</h1>
-                        <p>La mayoría de las herramientas de IA actuales suponen un punto final en la nube. Lavc Systems parte de una premisa diferente: toda la pila de ejecución (LLM, agentes, memoria, RAG, programador y observabilidad) se ejecuta en la propia máquina del desarrollador. Esta publicación desglosa las decisiones de ingeniería que lo hacen posible y las compensaciones que conlleva cada elección de tecnología.</p>
+                        <h1>Construyendo Lavc Systems: Arquitectura de una plataforma local de IA multiagente</h1>
+                        <p>La mayoría de las herramientas de IA actuales suponen un endpoint en la nube. Lavc Systems parte de una premisa diferente: toda el stack de ejecución (LLM, agentes, memoria, RAG, programador y observabilidad) se ejecuta en la propia máquina del desarrollador. Esta publicación desglosa las decisiones de ingeniería que lo hacen posible y las compensaciones que conlleva cada elección de tecnología.</p>
                         <div class="blog-post-meta">
                             <span>Publicado el 12 de mayo de 2026</span>
                             <span>14 minutos de lectura</span>
@@ -167,13 +167,13 @@
 
                     <article class="blog-article">
                         <h2>Por qué lo local es primero importante para los sistemas de agentes</h2>
-                        <p>Ejecutar un sistema de agentes de IA en la nube funciona bien cuando necesitas atender a usuarios externos a escala. Funciona mal cuando los datos sobre los que necesita razonar son internos, confidenciales o sólo valiosos en conjunto en su propia infraestructura. El historial de tareas, los documentos internos, las credenciales API y los registros operativos de una empresa no deben salir del edificio solo para ejecutar una consulta de IA sobre ellos.</p>
-                        <p>Lavc Systems se diseñó en torno a esta restricción. El sistema debe ser capaz de razonar sobre datos propietarios, ejecutar tareas y mantener la memoria entre sesiones, sin que nada de ese material toque un servidor de terceros. Cada elección de tecnología en la pila se deriva de este principio.</p>
+                        <p>Ejecutar un sistema de agentes de IA en la nube funciona bien cuando necesitas atender a usuarios externos a escala. Funciona mal cuando los datos sobre los que necesita razonar son internos, confidenciales o sólo valiosos en conjunto en su propia infraestructura. El historial de tareas, los documentos internos, las credenciales de API y los registros operativos de una empresa no deben salir del edificio solo para ejecutar una consulta de IA sobre ellos.</p>
+                        <p>Lavc Systems se diseñó en torno a esta restricción. El sistema debe ser capaz de razonar sobre datos propietarios, ejecutar tareas y mantener la memoria entre sesiones, sin que nada de ese material toque un servidor de terceros. Cada elección de tecnología en el stack se deriva de este principio.</p>
                         <p>La consecuencia es una arquitectura más estricta de la que requiere una plataforma en la nube. No se puede asumir una escala horizontal infinita. Debe ser deliberado sobre lo que permanece en la memoria, lo que va al disco y lo que se indexa en una base de datos vectorial. La infraestructura de IA local no es una versión simplificada de la IA en la nube, sino una disciplina de ingeniería diferente.</p>
 
                         <h2>FastAPI como columna vertebral: ¿por qué no Node.js</h2>
                         <p>El backend sigue funcionando <strong>FastAPI</strong> con Python 3.14 y Uvicorn. La elección de Python en lugar de Node.js aquí no tiene que ver principalmente con el rendimiento, sino con la proximidad del ecosistema. Las bibliotecas más importantes para los sistemas de agentes (LangGraph, ChromaDB, HuggingFace, APScheduler, SQLAlchemy) son todas nativas de Python. Crear un backend Node.js y llamar a los servicios Python agrega un límite de proceso que complica la administración del estado y la depuración sin agregar valor significativo.</p>
-                        <p>El soporte asíncrono de FastAPI se asigna naturalmente al modelo de ejecución de un sistema agente donde muchas operaciones están vinculadas a E/S: esperando una respuesta del modelo, leyendo desde ChromaDB, consultando SQLite. La estructura del enrutador modular permite que cada dominio (tareas, agentes, documentos, programador, objetivos, observabilidad) sea propietario de sus propios puntos finales sin necesidad de acoplarse a un archivo de controlador monolítico.</p>
+                        <p>El soporte asíncrono de FastAPI se asigna naturalmente al modelo de ejecución de un sistema agente donde muchas operaciones están vinculadas a E/S: esperando una respuesta del modelo, leyendo desde ChromaDB, consultando SQLite. La estructura del enrutador modular permite que cada dominio (tareas, agentes, documentos, programador, objetivos, observabilidad) sea propietario de sus propios endpoints sin necesidad de acoplarse a un archivo de controlador monolítico.</p>
 
                         <div class="blog-callout">
                             El patrón de enrutador de FastAPI es el equivalente backend de un límite de módulo bien delimitado: cada enrutador maneja un dominio, importa lo que necesita y no toca lo que no posee. A escala de una plataforma local, esta disciplina previene el inevitable modo de falla del "único manejador que hace todo".
@@ -187,7 +187,7 @@
                         <h2>LangGraph: orquestación como máquina de estados</h2>
                         <p><strong>LangGraph</strong> es la capa de orquestación. En lugar de escribir bucles de agentes imperativos en Python, LangGraph modela el flujo de trabajo de múltiples agentes como un gráfico dirigido donde los nodos son pasos del agente y los bordes son transiciones condicionales. Esto tiene varias consecuencias prácticas para un sistema como Lavc Systems.</p>
                         <p>Primero, las decisiones del agente coordinador se convierten en transiciones gráficas explícitas en lugar de controlar el flujo en un cuerpo funcional. Cuando el coordinador decide delegar al agente programador, esa delegación es un borde con nombre en el gráfico, no una llamada enterrada dentro de un bloque condicional. Esto hace que el seguimiento de ejecución sea legible y depurable: la pantalla Agent Graph en la interfaz de usuario lo muestra en vivo y muestra qué nodos están activos, cuáles se han completado y qué eventos se han emitido.</p>
-                        <p>En segundo lugar, la gestión del estado de LangGraph es componible. Cada paso del agente recibe el estado actual del gráfico, modifica su segmento relevante y pasa el estado actualizado al siguiente nodo. Esto significa que el contexto disponible para cada agente es explícito y de tipo verificado, no un objeto ambiental enhebrado a través de una pila de llamadas. Para una pista de auditoría que aparece ante los usuarios como una pista operativa, las transiciones de estado explícitas son significativamente más fáciles de resumir que el estado compartido implícito.</p>
+                        <p>En segundo lugar, la gestión del estado de LangGraph es componible. Cada paso del agente recibe el estado actual del gráfico, modifica su segmento relevante y pasa el estado actualizado al siguiente nodo. Esto significa que el contexto disponible para cada agente es explícito y de tipo verificado, no un objeto ambiental enhebrado a través de una stack de llamadas. Para una pista de auditoría que aparece ante los usuarios como una pista operativa, las transiciones de estado explícitas son significativamente más fáciles de resumir que el estado compartido implícito.</p>
 
                         <div class="blog-callout">
                             El seguimiento operativo que ven los usuarios (intención detectada, contexto consultado, herramienta o acción utilizada, siguiente paso) no se genera pidiendo al modelo que resuma su propio razonamiento. Se deriva de las transiciones de estado del gráfico reales registradas durante la ejecución. Esto lo hace auditable y preciso en lugar de una aproximación generada por un modelo.
@@ -214,7 +214,7 @@
                         <p>La placa Kanban tiene un requisito diferente: actualizaciones optimistas. Cuando un usuario arrastra una tarjeta de tarea a una nueva columna, la interfaz de usuario debe reflejar ese cambio inmediatamente, antes de que se envíe la solicitud PATCH. <code>/api/tasks/{id}/move</code> ha completado. Si la solicitud falla, la tarjeta debe revertirse. Este patrón (mutación optimista con reversión de fallas) se administra en el almacén de tareas de Zustand en lugar de dentro del componente, lo que mantiene la capa del componente libre de lógica de coordinación.</p>
 
                         <h2>WebSocket como bus de eventos en tiempo real</h2>
-                        <p>el <code>/ws</code> endpoint transporta todos los eventos en tiempo real desde el backend al frontend: cambios de estado de tareas, finalización de pasos del agente, entradas de registro, actualizaciones del estado del sistema y resultados del trabajo del programador. El uso de una única conexión WebSocket en lugar de sondear varios puntos finales reduce la carga del servidor y proporciona a la interfaz de usuario un modelo de eventos consistente independientemente del módulo que generó el evento.</p>
+                        <p>el <code>/ws</code> endpoint transporta todos los eventos en tiempo real desde el backend al frontend: cambios de estado de tareas, finalización de pasos del agente, entradas de registro, actualizaciones del estado del sistema y resultados del trabajo del programador. El uso de una única conexión WebSocket en lugar de sondear varios endpoints reduce la carga del servidor y proporciona a la interfaz de usuario un modelo de eventos consistente independientemente del módulo que generó el evento.</p>
                         <p>El backend gestiona la conexión WebSocket en <code>ws.py</code>, que mantiene la lógica de administración de conexiones separada de los módulos del enrutador. Cada enrutador emite eventos llamando a un emisor de eventos compartido; el controlador WebSocket se suscribe a ese emisor y reenvía eventos a los clientes conectados. Esto significa que agregar un nuevo tipo de evento (por ejemplo, una nueva acción de agente en un módulo futuro) solo requiere emitir el evento desde el nuevo enrutador, sin cambios en la capa de transporte WebSocket.</p>
 
                         <h2>Seguridad: usuarios, auditoría y bóveda local</h2>
@@ -222,7 +222,7 @@
                         <p>La bóveda no es intencionalmente un administrador de secretos en la nube. El almacenamiento de credenciales localmente en una bóveda que la capa del agente puede leer en tiempo de ejecución mantiene los secretos fuera de cualquier servicio externo y al mismo tiempo permite la automatización que los requiere. La desventaja es que la seguridad de la bóveda local es tan sólida como la máquina en la que se ejecuta, lo cual es un límite aceptable para un sistema diseñado explícitamente para el funcionamiento local.</p>
 
                         <h2>Skyler: el mismo asistente, un entorno de ejecución diferente</h2>
-                        <p>Skyler aparece en dos lugares del portafolio Lavc. La versión pública <a href="/es/skyler-assistant/">Skyler Assistant</a> — se ejecuta en Cloudflare Workers con manual RAG, respaldo del proveedor y un modelo de orquestación liviano diseñado para visitantes de cartera pública. Responde preguntas sobre el trabajo, la pila y la experiencia de Patrick. No tiene acceso a datos privados. No ejecuta tareas. Es una interfaz conversacional de sólo lectura sobre una base de conocimientos fija.</p>
+                        <p>Skyler aparece en dos lugares del portafolio Lavc. La versión pública <a href="/es/skyler-assistant/">Skyler Assistant</a> — se ejecuta en Cloudflare Workers con RAG manual, fallback de proveedor y un modelo de orquestación liviano diseñado para visitantes de portafolio público. Responde preguntas sobre el trabajo, el stack y la experiencia de Patrick. No tiene acceso a datos privados. No ejecuta tareas. Es una interfaz conversacional de sólo lectura sobre una base de conocimientos fija.</p>
                         <p>Skyler dentro de Lavc Systems es una implementación diferente en el mismo rol conceptual. Se ejecuta dentro del backend de FastAPI, tiene acceso a la base de datos SQLite, puede consultar ChromaDB, puede crear tareas, leer archivos cargados, escribir credenciales en la bóveda local y generar un seguimiento operativo de sus propias respuestas. El seguimiento no es una prosa generada por el modelo sobre lo que pensó el modelo; es un registro estructurado de las transiciones de estado reales ejecutadas durante la respuesta: intención detectada, fuente de contexto consultada, acción tomada, siguiente paso recomendado.</p>
                         <p>La lección arquitectónica de ambas versiones es que la calidad de un asistente de IA no está determinada principalmente por el modelo. Está determinado por los datos a los que puede acceder el asistente, qué acciones puede realizar y qué tan transparente es su razonamiento para las personas que confían en él. El Skyler público es útil porque tiene la base de conocimientos adecuada y reglas de respuesta claras. El sistema Skyler es más capaz porque tiene acceso al contexto operativo completo de la plataforma en la que vive.</p>
 
@@ -241,7 +241,7 @@
                         <div class="blog-related-grid">
                             <article class="blog-related-card">
                                 <h3><a href="/es/proyectos/skyler-assistant/">Skyler Assistant</a></h3>
-                                <p>La versión de cartera pública de Skyler: un Cloudflare Worker con RAG manual, respaldo del proveedor y soporte de voz. El hermano más ligero del asistente empresarial integrado en Lavc Systems.</p>
+                                <p>La versión pública del portafolio de Skyler: un Cloudflare Worker con RAG manual, fallback de proveedor y soporte de voz. El hermano más ligero del asistente empresarial integrado en Lavc Systems.</p>
                             </article>
                             <article class="blog-related-card">
                                 <h3><a href="/es/blog/backend-automation-systems/">Sistemas de automatización backend</a></h3>
@@ -257,7 +257,7 @@
 
                 <aside class="blog-article-grid">
                     <section class="blog-sidebar-card">
-                        <h2>Pila central</h2>
+                        <h2>Stack central</h2>
                         <ul>
                             <li>FastAPI + Python 3.14 backend con enrutadores modulares.</li>
                             <li>React 18 + TypeScript + Tailwind CSS + interfaz Vite.</li>
@@ -303,7 +303,7 @@
             });
         }());
     </script>
-        <script src="/js/i18n.js?v=cc3ee695f1" defer></script>
+        <script src="/js/i18n.js?v=75d84205d9" defer></script>
     <script src="/js/jquery.min.js?v=d482871a5e" defer></script>
     <script src="/js/index.js?v=0b108f99d1" defer></script>
 </body>

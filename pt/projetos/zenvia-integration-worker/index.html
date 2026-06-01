@@ -4,13 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="author" content="PkLavc" />
-    <title>Zenvia Integration Worker | JavaScript Projeto | Patrick Araujo</title>
+    <title>Zenvia Integration Worker | Projeto JavaScript | Patrick Araujo</title>
     
     <!-- SEO Enhanced Meta Tags -->
-    <meta name="description" content="JavaScript API trabalhador de integração para Zenvia ingestão de relatórios, filtragem de dados e exportação de análises para o Google Sheets.">
+    <meta name="description" content="Worker JavaScript de integração via API para ingestão de relatórios da Zenvia, filtragem de dados e exportação de análises para o Google Sheets.">
         <!-- Open Graph Meta Tags -->
     <meta property="og:title" content="Zenvia Integration Worker | JavaScript | Patrick Araujo">
-    <meta property="og:description" content="JavaScript API trabalhador de integração para Zenvia ingestão de relatórios, filtragem de dados e exportação de análises para o Google Sheets.">
+    <meta property="og:description" content="Worker JavaScript de integração via API para ingestão de relatórios da Zenvia, filtragem de dados e exportação de análises para o Google Sheets.">
     <meta property="og:url" content="https://pklavc.com/pt/projetos/zenvia-integration-worker/">
     <meta property="og:type" content="website">
     <meta property="og:image" content="https://pklavc.com/images/lavc.webp?v=5e84850f26">
@@ -22,7 +22,7 @@
     <!-- Twitter Card Meta Tags -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Zenvia Integration Worker | JavaScript | Patrick Araujo">
-    <meta name="twitter:description" content="JavaScript API trabalhador de integração para Zenvia ingestão de relatórios, filtragem de dados e exportação de análises para o Google Sheets.">
+    <meta name="twitter:description" content="Worker JavaScript de integração via API para ingestão de relatórios da Zenvia, filtragem de dados e exportação de análises para o Google Sheets.">
     <meta name="twitter:image" content="https://pklavc.com/images/lavc.webp?v=5e84850f26">
     <meta name="twitter:image:alt" content="Retrato da marca do engenheiro de backend e especialista em automação Patrick Araujo">
     <meta name="twitter:site" content="@PkLavc">
@@ -103,32 +103,14 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Monoton&amp;family=Poppins:wght@500&amp;family=Raleway:wght@300&amp;display=swap" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Monoton&amp;family=Poppins:wght@500&amp;family=Raleway:wght@300&amp;display=swap"></noscript>
-    <link rel="stylesheet" href="/css/global.css?v=55251d9722">
+    <link rel="stylesheet" href="/css/global.css?v=d71c8efb77">
     <link rel="stylesheet" href="/css/projects.css?v=84c54fcc24">
-    <style>
-        .project-hero { padding: 60px 20px; text-align: center; background: linear-gradient(135deg, rgba(0,0,0,0.1), rgba(0,0,0,0.05)); }
-        .project-hero h1 { font-size: 2.5rem; margin: 20px 0; color: #fff; }
-        .project-category-badge { display: inline-block; background: rgba(100, 200, 255, 0.2); border: 1px solid rgba(100, 200, 255, 0.5); color: #64c8ff; padding: 8px 16px; border-radius: 20px; font-size: 0.9rem; margin-bottom: 20px; }
-        .tech-stack-section { padding: 40px 20px; background: rgba(255, 255, 255, 0.02); }
-        .tech-stack-section h2 { color: #fff; margin-bottom: 20px; font-size: 1.5rem; }
-        .tech-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 40px; }
-        .tech-tag { background: rgba(100, 200, 255, 0.1); border: 1px solid rgba(100, 200, 255, 0.3); color: #64c8ff; padding: 12px 16px; border-radius: 8px; text-align: center; font-size: 0.95rem; }
-        .problem-solution { padding: 40px 20px; max-width: 800px; margin: 0 auto; }
-        .problem-solution h2 { color: #fff; margin: 30px 0 20px 0; font-size: 1.3rem; }
-        .problem-solution p { color: #ccc; line-height: 1.8; margin-bottom: 20px; }
-        .impact-section { padding: 40px 20px; background: rgba(100, 200, 255, 0.05); text-align: center; }
-        .impact-section h2 { color: #fff; margin-bottom: 20px; font-size: 1.3rem; }
-        .impact-text { color: #64c8ff; font-size: 1.1rem; margin: 20px 0; font-weight: 500; }
-        .cta-section { padding: 60px 20px; text-align: center; }
-        .cta-button { display: inline-block; background: linear-gradient(135deg, #64c8ff, #00d4ff); color: #000; padding: 16px 40px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 1rem; transition: transform 0.3s, box-shadow 0.3s; border: none; cursor: pointer; }
-        .cta-button:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(100, 200, 255, 0.3); }
-        .breadcrumb-nav {
+    <style>.project-hero { padding: 60px 20px; text-align: center; background: linear-gradient(135deg, rgba(0,0,0,0.1), rgba(0,0,0,0.05)); }.project-hero h1 { font-size: 2.5rem; margin: 20px 0; color: #fff; }.project-category-badge { display: inline-block; background: rgba(100, 200, 255, 0.2); border: 1px solid rgba(100, 200, 255, 0.5); color: #64c8ff; padding: 8px 16px; border-radius: 20px; font-size: 0.9rem; margin-bottom: 20px; }.tech-stack-section { padding: 40px 20px; background: rgba(255, 255, 255, 0.02); }.tech-stack-section h2 { color: #fff; margin-bottom: 20px; font-size: 1.5rem; }.tech-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 40px; }.tech-tag { background: rgba(100, 200, 255, 0.1); border: 1px solid rgba(100, 200, 255, 0.3); color: #64c8ff; padding: 12px 16px; border-radius: 8px; text-align: center; font-size: 0.95rem; }.problem-solution { padding: 40px 20px; max-width: 800px; margin: 0 auto; }.problem-solution h2 { color: #fff; margin: 30px 0 20px 0; font-size: 1.3rem; }.problem-solution p { color: #ccc; line-height: 1.8; margin-bottom: 20px; }.impact-section { padding: 40px 20px; background: rgba(100, 200, 255, 0.05); text-align: center; }.impact-section h2 { color: #fff; margin-bottom: 20px; font-size: 1.3rem; }.impact-text { color: #64c8ff; font-size: 1.1rem; margin: 20px 0; font-weight: 500; }.cta-section { padding: 60px 20px; text-align: center; }.cta-button { display: inline-block; background: linear-gradient(135deg, #64c8ff, #00d4ff); color: #000; padding: 16px 40px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 1rem; transition: transform 0.3s, box-shadow 0.3s; border: none; cursor: pointer; }.cta-button:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(100, 200, 255, 0.3); }.breadcrumb-nav {
             background: rgba(255, 255, 255, 0.03);
             padding: 12px 20px;
             margin-bottom: 30px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        .breadcrumb {
+        }.breadcrumb {
             list-style: none;
             display: flex;
             align-items: center;
@@ -138,39 +120,25 @@
             padding: 0;
             font-size: 0.95rem;
             color: #A0A0A0;
-        }
-        .breadcrumb li {
+        }.breadcrumb li {
             display: flex;
             align-items: center;
-        }
-        .breadcrumb li:not(:last-child)::after {
+        }.breadcrumb li:not(:last-child)::after {
             content: "/";
             margin-left: 8px;
             font-size: 0.8rem;
             color: #666;
-        }
-        .breadcrumb a {
+        }.breadcrumb a {
             color: #4A9EFF;
             text-decoration: none;
             transition: color 0.3s ease;
-        }
-        .breadcrumb a:hover {
+        }.breadcrumb a:hover {
             color: #64c8ff;
             text-decoration: underline;
-        }
-        .breadcrumb [aria-current="page"] {
+        }.breadcrumb [aria-current="page"] {
             color: #E0E0E0;
             font-weight: 500;
-        }
-            .full-readme-section { padding: 50px 20px; background: rgba(255, 255, 255, 0.02); }
-        .full-readme-container { max-width: 1000px; margin: 0 auto; }
-        .full-readme-container .markdown-body { background: #0d1117; border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 10px; padding: 24px; }
-            .project-context-section { padding: 32px 20px; background: rgba(100, 200, 255, 0.06); }
-        .project-context-container { max-width: 1000px; margin: 0 auto; }
-        .project-context-section h2, .project-context-section h3, .related-projects-section h2 { color: #fff; }
-        .project-context-section p, .project-context-section li, .related-projects-section p, .related-projects-section li { color: #d0d0d0; line-height: 1.7; }
-        .project-context-section a, .related-projects-section a { color: #64c8ff; }
-        .related-projects-section { padding: 32px 20px; background: rgba(255, 255, 255, 0.03); }    </style>
+        }.full-readme-section { padding: 50px 20px; background: rgba(255, 255, 255, 0.02); }.full-readme-container { max-width: 1000px; margin: 0 auto; }.full-readme-container.markdown-body { background: #0d1117; border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 10px; padding: 24px; }.project-context-section { padding: 32px 20px; background: rgba(100, 200, 255, 0.06); }.project-context-container { max-width: 1000px; margin: 0 auto; }.project-context-section h2,.project-context-section h3,.related-projects-section h2 { color: #fff; }.project-context-section p,.project-context-section li,.related-projects-section p,.related-projects-section li { color: #d0d0d0; line-height: 1.7; }.project-context-section a,.related-projects-section a { color: #64c8ff; }.related-projects-section { padding: 32px 20px; background: rgba(255, 255, 255, 0.03); }    </style>
     <link rel="preload" as="style" href="/css/github-markdown-local.css?v=01d37f05ee">
     <link rel="stylesheet" href="/css/github-markdown-local.css?v=01d37f05ee" media="print" onload="this.media='all'">
     <noscript><link rel="stylesheet" href="/css/github-markdown-local.css?v=01d37f05ee"></noscript>
@@ -199,10 +167,10 @@
             <section class="project-hero">
                 <span class="project-category-badge">Ingestão de análise</span>
                 <h1>Zenvia Integration Worker | JavaScript</h1>
-                <p style="color: #aaa; font-size: 1.1rem; margin-top: 15px;">Trabalhador de ingestão para dados de relatórios de chamadas Zenvia que filtram eventos de voz em conjuntos de dados prontos para análise e feeds de painel</p>
+                <p style="color: #aaa; font-size: 1.1rem; margin-top: 15px;">Worker de ingestão para dados de relatórios de chamadas Zenvia que filtram eventos de voz em conjuntos de dados prontos para análise e feeds de painel</p>
             </section>
 
-            <section class="project-context-section" aria-label="Contexto de SEO do projeto"><div class="project-context-container"><h2>Contexto do problema, pilha e tipo de sistema</h2><p>Este trabalhador lida com a ingestão e a filtragem de registros de relatórios de comunicação. Ele se comporta como um processo de integração de dados orientado a eventos com paginação, lógica de data e exportações orientadas para análise.</p><h3>Escopo Técnico</h3><ul><li><strong>Pilha:</strong> JavaScript, Node.js, Zenvia API, Google Sheets API, GitHub Actions</li><li><strong>Tipo de sistema:</strong> sistema de integração de API, pipeline de automação, processamento de estilo de evento</li><li><strong>Palavras-chave no contexto:</strong> processamento de webhook, API node.js, automação</li></ul><p>Arquitetura relacionada: <a href="/pt/projetos/event-driven-integration-service/">Event-Driven Integration Service</a>. Aglomerado: <a href="/pt/colecoes/projetos-integracao-api/">API Projetos de Integração</a>.</p></div></section>
+            <section class="project-context-section" aria-label="Contexto de SEO do projeto"><div class="project-context-container"><h2>Contexto do problema, stack e tipo de sistema</h2><p>Este worker lida com a ingestão e a filtragem de registros de relatórios de comunicação. Ele se comporta como um processo de integração de dados orientado a eventos com paginação, lógica de data e exportações orientadas para análise.</p><h3>Escopo Técnico</h3><ul><li><strong>Stack:</strong> JavaScript, Node.js, API de Zenvia, Google Sheets API, GitHub Actions</li><li><strong>Tipo de sistema:</strong> sistema de integração de APIs, pipeline de automação, processamento orientado a eventos</li><li><strong>Palavras-chave no contexto:</strong> processamento de webhook, APIs em Node.js, automação</li></ul><p>Arquitetura relacionada: <a href="/pt/projetos/event-driven-integration-service/">Event-Driven Integration Service</a>. Coleção: <a href="/pt/colecoes/projetos-integracao-api/">Projetos de Integração de APIs</a>.</p></div></section>
             <section class="full-readme-section" aria-label="LEIA-ME completo">
                 <div class="full-readme-container">
                     <h2 style="color: #fff; margin-bottom: 20px;">Documentação completa do projeto</h2>
@@ -212,7 +180,7 @@
 <a href="https://github.com/PkLavc"><img src="https://img.shields.io/badge/Author-Patrick_Araujo-1f2937" alt="Autor"></a></p>
 <p>Um serviço de trabalho Node.js que sincroniza dados de chamadas da plataforma de comunicação Zenvia com o Google Sheets para geração de relatórios e análise.</p>
 <h2>Visão geral</h2>
-<p>Este trabalhador busca automaticamente registros de chamadas do API de Zenvia e os sincroniza com o Google Sheets, fornecendo uma visão centralizada dos dados de comunicação para operações comerciais.</p>
+<p>Este worker busca automaticamente registros de chamadas da API da Zenvia e os sincroniza com o Google Sheets, fornecendo uma visão centralizada dos dados de comunicação para operações comerciais.</p>
 <h2>Recursos</h2>
 <ul>
 <li><strong>Sincronização de dados de chamadas</strong>: sincroniza automaticamente os registros de chamadas de Zenvia com o Google Sheets</li>
@@ -224,7 +192,7 @@
 <h2>Arquitetura</h2>
 <h3>Componentes</h3>
 <ul>
-<li><strong>Zenvia API Cliente</strong>: busca dados de chamadas da plataforma de comunicação de Zenvia</li>
+<li><strong>API de Zenvia Cliente</strong>: busca dados de chamadas da plataforma de comunicação de Zenvia</li>
 <li><strong>Integração com Google Sheets</strong>: grava dados processados no Google Sheets</li>
 <li><strong>Processamento de Dados</strong>: Filtra e formata dados para compatibilidade com planilhas</li>
 <li><strong>Registro seguro</strong>: Registra todas as operações com mascaramento de dados confidenciais</li>
@@ -232,7 +200,7 @@
 <h3>Fluxo de dados</h3>
 <ol>
 <li><strong>Autenticação</strong>: Recebe token do Google OAuth de Google Auth Worker</li>
-<li><strong>Busca de dados</strong>: Recupera registros de chamadas de Zenvia API</li>
+<li><strong>Busca de dados</strong>: Recupera registros de chamadas de API de Zenvia</li>
 <li><strong>Processamento de Dados</strong>: Filtra os registros de ontem e formata os dados</li>
 <li><strong>Atualização de planilha</strong>: anexa dados processados ao Google Sheets</li>
 <li><strong>Relatório de status</strong>: Reporta o status de execução ao sistema de monitoramento</li>
@@ -249,14 +217,14 @@ SHEET_NAME=your_google_sheet_name
 <p>Os seguintes segredos devem ser configurados no repositório GitHub:</p>
 <ul>
 <li><code>GOOGLE_TOKEN</code>: OAuth token de acesso (fornecido por Google Auth Worker)</li>
-<li><code>ZENVIA_ACCESS_TOKEN</code>: Zenvia API token de acesso</li>
+<li><code>ZENVIA_ACCESS_TOKEN</code>: API de Zenvia token de acesso</li>
 <li><code>ZENVIA_QUEUE_ID</code>: ID de fila opcional para relatórios de fila específicos</li>
 <li><code>SPREADSHEET_ID</code>: ID da planilha do Google Sheets</li>
 <li><code>SHEET_NAME</code>: Nome da planilha de destino na planilha</li>
 </ul>
 <h2>Uso</h2>
 <h3>Acionando a sincronização</h3>
-<p>O trabalhador é acionado automaticamente por eventos de envio do repositório do Google Auth Worker:</p>
+<p>O worker é acionado automaticamente por eventos de envio do repositório do Google Auth Worker:</p>
 <pre><code class="language-json">{
   &quot;event_type&quot;: &quot;google_token_ready&quot;,
   &quot;client_payload&quot;: {
@@ -265,12 +233,12 @@ SHEET_NAME=your_google_sheet_name
 }
 </code></pre>
 <h3>Processamento de Dados</h3>
-<p>O trabalhador processa dados de chamada com a seguinte lógica:</p>
+<p>O worker processa dados de chamada com a seguinte lógica:</p>
 <ol>
 <li><strong>Filtragem de data</strong>: Inclui apenas registros de ontem</li>
 <li><strong>Filtragem de fila</strong>: Se <code>ZENVIA_QUEUE_ID</code> é fornecido, busca dados específicos da fila</li>
 <li><strong>Mapeamento de dados</strong>: mapeia campos Zenvia para colunas da planilha</li>
-<li><strong>Processamento em lote</strong>: Envia dados em lotes de 5.000 linhas para evitar limites API</li>
+<li><strong>Processamento em lote</strong>: Envia dados em lotes de 5.000 linhas para evitar limites de API</li>
 </ol>
 <h3>Campos de dados</h3>
 <p>Os seguintes campos são sincronizados com o Google Sheets:</p>
@@ -302,7 +270,7 @@ SHEET_NAME=your_google_sheet_name
 <h3>Problemas comuns</h3>
 <ol>
 <li><strong>Erros de autenticação</strong>: Verifique o token do Google e o token de acesso Zenvia</li>
-<li><strong>API Limites de taxa</strong>: O trabalhador inclui atrasos para evitar limitação de taxa</li>
+<li><strong>API Limites de taxa</strong>: O worker inclui atrasos para evitar limitação de taxa</li>
 <li><strong>Filtragem de data</strong>: Certifique-se de que o fuso horário do sistema esteja configurado corretamente</li>
 <li><strong>Permissões de planilha</strong>: Verifique as permissões do Google Sheets API</li>
 </ol>
@@ -316,7 +284,7 @@ SHEET_NAME=your_google_sheet_name
 <h2>Pontos de Integração</h2>
 <ul>
 <li><strong>Google Auth Worker</strong>: Recebe tokens OAuth</li>
-<li><strong>Zenvia API</strong>: busca dados de chamada</li>
+<li><strong>API de Zenvia</strong>: busca dados de chamada</li>
 <li><strong>Google Sheets API</strong>: Grava dados processados</li>
 <li><strong>Monitor de operações em nuvem</strong>: relata o status de execução</li>
 </ul>
@@ -343,12 +311,12 @@ SHEET_NAME=your_google_sheet_name
             
             <section class="tech-stack-section">
                 <div style="max-width: 1000px; margin: 0 auto;">
-                    <h2>Pilha de tecnologia</h2>
+                    <h2>Stack tecnológica</h2>
                     <div class="tech-list">
                         <div class="tech-tag">JavaScript</div>
                         <div class="tech-tag">GitHub Actions</div>
                         <div class="tech-tag">Google Sheets</div>
-                        <div class="tech-tag">Zenvia API</div>
+                        <div class="tech-tag">API de Zenvia</div>
                         <div class="tech-tag">Node.js</div>
                     </div>
                 </div>
@@ -358,8 +326,8 @@ SHEET_NAME=your_google_sheet_name
             
             <section class="related-projects-section" aria-label="Links de projetos relacionados">
   <div class="project-context-container">
-    <h2>Projetos de backend relacionados e integrações API</h2>
-    <p>Explore implementações vinculadas em <a href="/pt/colecoes/projetos-python/">automação de backend python</a>, <a href="/pt/colecoes/projetos-javascript/">Fluxos de trabalho da API node.js</a>e <a href="/pt/colecoes/projetos-integracao-api/">sistema de integração de API</a> aglomerados.</p>
+    <h2>Projetos de backend relacionados e integrações de APIs</h2>
+    <p>Explore implementações vinculadas nas coleções de <a href="/pt/colecoes/projetos-python/">automação backend em Python</a>, <a href="/pt/colecoes/projetos-javascript/">fluxos de trabalho de APIs em Node.js</a> e <a href="/pt/colecoes/projetos-integracao-api/">sistemas de integração de APIs</a>.</p>
     <ul>
       <li><a href="/pt/projetos/google-auth-worker/">Google Auth Worker</a> para orquestração de autenticação.</li>
       <li><a href="/pt/projetos/event-driven-integration-service/">Event-Driven Integration Service</a> para processamento de webhook e arquitetura orientada a eventos.</li>
@@ -393,7 +361,7 @@ SHEET_NAME=your_google_sheet_name
     </div>
     
     <div class="visually-hidden">
-        <p>Engenheiro de Software Backend com foco em automação, integrações API, sistemas backend, Python, Node.js, SQL, ETL pipelines, AWS e plataformas operacionais escaláveis.</p>
+        <p>Engenheiro de Software Backend com foco em automação, integrações de APIs, sistemas backend, Python, Node.js, SQL, ETL pipelines, AWS e plataformas operacionais escaláveis.</p>
     </div>
     
     <script>
@@ -403,7 +371,7 @@ SHEET_NAME=your_google_sheet_name
             });
         }());
     </script>
-        <script src="/js/i18n.js?v=cc3ee695f1" defer></script>
+        <script src="/js/i18n.js?v=75d84205d9" defer></script>
     <script src="/js/jquery.min.js?v=d482871a5e" defer></script>
     <script src="/js/index.js?v=0b108f99d1" defer></script>
 </body>

@@ -48,7 +48,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Monoton&amp;family=Poppins:wght@500;600;700&amp;family=Raleway:wght@300&amp;display=swap" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Monoton&amp;family=Poppins:wght@500;600;700&amp;family=Raleway:wght@300&amp;display=swap"></noscript>
-    <link rel="stylesheet" href="/css/global.css?v=55251d9722">
+    <link rel="stylesheet" href="/css/global.css?v=d71c8efb77">
     <link rel="stylesheet" href="/css/blog.css?v=560c7eaf05">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.2.6/gsap.min.js" defer></script>
 
@@ -168,7 +168,7 @@
                         <h2>Baixa latência: quando os microssegundos são importantes</h2>
                         <p>A latência em sistemas de controle automotivo é medida em microssegundos, não em milissegundos. Um circuito de controle de motor operando a 10 kHz tem um orçamento de 100 microssegundos para leitura de sensores, cálculo da saída de controle e comando do atuador. Qualquer atraso além do prazo produz torque incorreto, que o motorista sente como hesitação, vibração ou instabilidade.</p>
                         <p>Alcançar baixa latência requer execução determinística em todas as camadas. O hardware deve fornecer tempos de acesso à memória previsíveis (sem falhas de cache causando atrasos variáveis), o RTOS deve garantir latência de interrupção limitada (o tempo entre uma interrupção de hardware e o início da rotina de serviço de interrupção) e o software aplicativo deve evitar alocação dinâmica de memória, loops ilimitados ou operações de bloqueio que possam causar violações de tempo.</p>
-                        <p>No Ferrari Luce, os sistemas mais sensíveis à latência são o controle do motor (controle orientado ao campo em 10-20 kHz), controle de tração (respondendo ao deslizamento das rodas dentro de 1-2 ms) e suspensão ativa (ajustando o amortecimento em resposta às mudanças na superfície da estrada). Esses sistemas são executados em processadores dedicados em tempo real com pilhas mínimas de software — sem camadas de abstração do sistema operacional, sem compartilhamento de recursos com outros aplicativos, sem possibilidade de preempção por tarefas de menor prioridade.</p>
+                        <p>No Ferrari Luce, os sistemas mais sensíveis à latência são o controle do motor (controle orientado ao campo em 10-20 kHz), controle de tração (respondendo ao deslizamento das rodas dentro de 1-2 ms) e suspensão ativa (ajustando o amortecimento em resposta às mudanças na superfície da estrada). Esses sistemas são executados em processadores dedicados em tempo real com stacks mínimas de software — sem camadas de abstração do sistema operacional, sem compartilhamento de recursos com outros aplicativos, sem possibilidade de preempção por tarefas de menor prioridade.</p>
                         <p>A análise do tempo de execução do pior caso (WCET) é obrigatória para códigos críticos de segurança. As ferramentas de análise estática rastreiam todos os caminhos de execução possíveis através do código e do hardware para determinar o tempo máximo absoluto que qualquer função pode levar. Este WCET deve ser inferior ao intervalo de tempo alocado. Caso contrário, o código deverá ser reestruturado ou o hardware atualizado — não há probabilidade aceitável de sobrecarga.</p>
 
                         <h2>Tolerância a falhas: sobrevivendo a falhas de hardware e software</h2>
@@ -248,7 +248,7 @@
                         <h2>Continue explorando</h2>
                         <ul>
                             <li><a href="/pt/blog/ferrari-luce-ecus-sensors-can-ethernet-realtime/">ECUs e sistemas em tempo real</a></li>
-                            <li><a href="/pt/blog/ferrari-luce-electric-software-stack-speculation/">Pilha de software Ferrari elétrica</a></li>
+                            <li><a href="/pt/blog/ferrari-luce-electric-software-stack-speculation/">Stack de software Ferrari elétrica</a></li>
                             <li><a href="/pt/blog/ferrari-luce-software-defined-vehicle-dynamics/">Dinâmica definida por software</a></li>
                         </ul>
                     </section>
@@ -278,7 +278,7 @@
             });
         }());
     </script>
-        <script src="/js/i18n.js?v=cc3ee695f1" defer></script>
+        <script src="/js/i18n.js?v=75d84205d9" defer></script>
     <script src="/js/jquery.min.js?v=d482871a5e" defer></script>
     <script src="/js/index.js?v=0b108f99d1" defer></script>
 

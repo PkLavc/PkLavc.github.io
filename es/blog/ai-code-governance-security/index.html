@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="author" content="Patrick Araujo">
-    <title>Gobernanza y seguridad para el código generado por IA: proteger la producción de la salida del agente</title>
+    <title>Gobernanza y seguridad para el código generado por IA: proteger la producción de la resultados del agente</title>
     <meta name="description" content="Prácticas de seguridad, marcos de gobernanza y canales de validación para código generado por IA: cómo evitar que resultados de agentes inseguros y no examinados lleguen a los sistemas de producción.">
-    <meta name="keywords" content="Gobernanza de código de IA, seguridad de código generado por IA, revisión de código de IA, escaneo de seguridad, seguridad Claude Code, gobernanza del Codex, seguridad del cursor, validación de salida del agente, seguridad de la cadena de suministro, auditoría de código de IA">
+    <meta name="keywords" content="Gobernanza de código de IA, seguridad de código generado por IA, revisión de código de IA, escaneo de seguridad, seguridad Claude Code, gobernanza del Codex, seguridad del cursor, validación de resultados del agente, seguridad de la cadena de suministro, auditoría de código de IA">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://pklavc.com/es/blog/ai-code-governance-security/">
     <link rel="alternate" href="https://pklavc.com/blog/ai-code-governance-security/" hreflang="en">
@@ -16,7 +16,7 @@
 
 
 
-<meta property="og:title" content="Gobernanza y seguridad para el código generado por IA: proteger la producción de la salida del agente">
+<meta property="og:title" content="Gobernanza y seguridad para el código generado por IA: proteger la producción de la resultados del agente">
     <meta property="og:description" content="Prácticas de seguridad y marcos de gobernanza para código generado por IA: canales de validación, pistas de auditoría y defensa en profundidad para la salida de los agentes.">
     <meta property="og:url" content="https://pklavc.com/es/blog/ai-code-governance-security/">
     <meta property="og:type" content="article">
@@ -26,7 +26,7 @@
     <meta property="article:section" content="AI Engineering">
     <meta property="article:tag" content="Gobernanza del código de IA">
     <meta property="article:tag" content="Seguridad del código generado por IA">
-    <meta property="article:tag" content="validación de salida del agente">
+    <meta property="article:tag" content="validación de resultados del agente">
     <meta property="article:tag" content="auditoría de código">
     <meta property="og:image" content="https://pklavc.com/images/lavc.webp?v=5e84850f26">
     <meta property="og:image:width" content="1024">
@@ -48,7 +48,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Monoton&amp;family=Poppins:wght@500;600;700&amp;family=Raleway:wght@300&amp;display=swap" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Monoton&amp;family=Poppins:wght@500;600;700&amp;family=Raleway:wght@300&amp;display=swap"></noscript>
-    <link rel="stylesheet" href="/css/global.css?v=55251d9722">
+    <link rel="stylesheet" href="/css/global.css?v=d71c8efb77">
     <link rel="stylesheet" href="/css/blog.css?v=560c7eaf05">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.2.6/gsap.min.js" defer></script>
 
@@ -146,7 +146,7 @@
                             <span aria-current="page">Gobernanza del código de IA</span>
                         </div>
                         <span class="blog-kicker">Ingeniería de IA</span>
-                        <h1>Gobernanza y seguridad para el código generado por IA: proteger la producción de la salida del agente</h1>
+                        <h1>Gobernanza y seguridad para el código generado por IA: proteger la producción de la resultados del agente</h1>
                         <p>Los agentes de IA generan código a una velocidad sin precedentes. Sin marcos de gobernanza, validación de seguridad y pistas de auditoría, esa velocidad se convierte en un inconveniente. Esta publicación cubre cómo garantizar que el código generado por IA cumpla con los estándares de calidad y seguridad de producción.</p>
                         <div class="blog-post-meta">
                             <span>Publicado el 28 de mayo de 2026</span>
@@ -168,9 +168,9 @@
                         <p>El código generado por IA tiene patrones de seguridad característicos. Los modelos entrenados en código público reproducen patrones de vulnerabilidad comunes: inyección SQL a través de concatenación de cadenas, XSS a través de salida sin escape, deserialización insegura, credenciales codificadas en patrones de ejemplo y controles de acceso demasiado permisivos.</p>
                         <p>De manera más sutil, los agentes de IA introducen riesgos a través de opciones de dependencia. Sugieren paquetes basados ​​en la popularidad de los datos de entrenamiento, no en el estado de seguridad actual. Pueden introducir dependencias con vulnerabilidades conocidas, paquetes sin mantenimiento o riesgos en la cadena de suministro. Cada adición de dependencia generada por la IA necesita el mismo escrutinio que la elección de un ser humano.</p>
 
-                        <h2>Canales de validación para la salida del agente</h2>
+                        <h2>Canales de validación para la resultados del agente</h2>
                         <p>Una gobernanza eficaz requiere canales de validación automatizados que se ejecuten en cada cambio generado por el agente. Estos canales deben incluir: análisis estático para patrones de vulnerabilidad comunes (SAST), escaneo de dependencias para vulnerabilidades conocidas (SCA), detección de secretos para evitar fugas de credenciales, verificación de tipos para detectar errores lógicos y revisión de código centrada en la seguridad por parte de agentes de revisión especializados.</p>
-                        <p>La canalización debe ejecutarse antes de la fusión, no después. Los RP generados por agentes pasan por las mismas comprobaciones de CI que los RP humanos, con puertas de seguridad adicionales que señalan patrones comúnmente introducidos por la IA: CORS demasiado permisivo, falta de validación de entradas, consultas no parametrizadas y puntos finales internos expuestos.</p>
+                        <p>El pipeline debe ejecutarse antes de la fusión, no después. Los RP generados por agentes pasan por las mismas comprobaciones de CI que los RP humanos, con puertas de seguridad adicionales que señalan patrones comúnmente introducidos por la IA: CORS demasiado permisivo, falta de validación de entradas, consultas no parametrizadas y endpoints internos expuestos.</p>
 
                         <h2>Seguimientos de auditoría y atribución</h2>
                         <p>La gobernanza requiere saber qué código generó la IA, qué agente lo produjo, qué mensaje lo impulsó y quién lo autorizó. Esta pista de auditoría es esencial para la respuesta a incidentes (rastrear una vulnerabilidad hasta su origen), el cumplimiento (demostrar procesos de revisión) y el aprendizaje (comprender qué indicaciones producen resultados seguros o inseguros).</p>
@@ -189,8 +189,8 @@
                         <p>El marco debe ser documentación viva, actualizada a medida que los equipos aprenden qué patrones producen resultados seguros y cuáles requieren puertas adicionales. La gobernanza que nunca se adapta se vuelve demasiado restrictiva (ralentizando a los agentes hasta dejarlos inútiles) o demasiado permisiva (permitiendo el paso de código no revisado).</p>
 
                         <h2>La dimensión de la cadena de suministro</h2>
-                        <p>Los agentes de IA introducen un nuevo riesgo en la cadena de suministro: el modelo en sí. Las influencias de los datos de entrenamiento sugieren patrones. Las actualizaciones del modelo cambian las características de salida. La inyección rápida a través de un contexto malicioso puede dirigir la salida del agente hacia patrones inseguros. Los equipos deben considerar el modelo de IA como parte de su cadena de suministro y gestionarlo en consecuencia.</p>
-                        <p>Las mitigaciones prácticas incluyen: fijar versiones de agentes para flujos de trabajo críticos, probar la salida del agente con respecto a puntos de referencia de seguridad al actualizar, monitorear cambios repentinos en los patrones de código que podrían indicar una regresión del modelo y mantener la revisión humana como puerta final independientemente de la confianza del agente.</p>
+                        <p>Los agentes de IA introducen un nuevo riesgo en la cadena de suministro: el modelo en sí. Las influencias de los datos de entrenamiento sugieren patrones. Las actualizaciones del modelo cambian las características de salida. La inyección rápida a través de un contexto malicioso puede dirigir la resultados del agente hacia patrones inseguros. Los equipos deben considerar el modelo de IA como parte de su cadena de suministro y gestionarlo en consecuencia.</p>
+                        <p>Las mitigaciones prácticas incluyen: fijar versiones de agentes para flujos de trabajo críticos, probar la resultados del agente con respecto a puntos de referencia de seguridad al actualizar, monitorear cambios repentinos en los patrones de código que podrían indicar una regresión del modelo y mantener la revisión humana como puerta final independientemente de la confianza del agente.</p>
                     </article>
 
                     <section aria-labelledby="governance-related-title">
@@ -265,7 +265,7 @@
             });
         }());
     </script>
-        <script src="/js/i18n.js?v=cc3ee695f1" defer></script>
+        <script src="/js/i18n.js?v=75d84205d9" defer></script>
     <script src="/js/jquery.min.js?v=d482871a5e" defer></script>
     <script src="/js/index.js?v=0b108f99d1" defer></script>
 

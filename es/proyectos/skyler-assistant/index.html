@@ -4,16 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="author" content="PkLavc" />
-    <title>Skyler Assistant | Asistente de cartera de IA | Patrick Araujo</title>
+    <title>Skyler Assistant | Asistente de portafolio de IA | Patrick Araujo</title>
 
-    <meta name="description" content="Proyecto Skyler Assistant: asistente de IA de cartera pública con orquestación Cloudflare Worker ligera, RAG manual, saludo multilingüe y respaldo de proveedor.">
-    <meta property="og:title" content="Skyler Assistant | Asistente de cartera de IA | Patrick Araujo">
-    <meta property="og:description" content="Asistente público para el contexto de la cartera, descubrimiento de proyectos, orientación técnica e información profesional.">
+    <meta name="description" content="Proyecto Skyler Assistant: asistente de IA de portafolio público con orquestación Cloudflare Worker ligera, RAG manual, saludo multilingüe y respaldo de proveedor.">
+    <meta property="og:title" content="Skyler Assistant | Asistente de portafolio de IA | Patrick Araujo">
+    <meta property="og:description" content="Asistente público para el contexto de el portafolio, descubrimiento de proyectos, orientación técnica e información profesional.">
     <meta property="og:url" content="https://pklavc.com/es/proyectos/skyler-assistant/">
     <meta property="og:type" content="website">
     <meta property="og:image" content="https://pklavc.com/images/lavc.webp?v=5e84850f26">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Skyler Assistant | Asistente de cartera de IA | Patrick Araujo">
+    <meta name="twitter:title" content="Skyler Assistant | Asistente de portafolio de IA | Patrick Araujo">
     <meta name="twitter:description" content="Lea más sobre la arquitectura de Skyler, la estrategia de RAG y el flujo de tiempo de ejecución.">
     <meta name="twitter:image" content="https://pklavc.com/images/lavc.webp?v=5e84850f26">
     <link rel="canonical" href="https://pklavc.com/es/proyectos/skyler-assistant/">
@@ -31,24 +31,21 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Monoton&amp;family=Poppins:wght@500&amp;family=Raleway:wght@300&amp;display=swap" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Monoton&amp;family=Poppins:wght@500&amp;family=Raleway:wght@300&amp;display=swap"></noscript>
-    <link rel="stylesheet" href="/css/global.css?v=55251d9722">
+    <link rel="stylesheet" href="/css/global.css?v=d71c8efb77">
     <link rel="stylesheet" href="/css/projects.css?v=84c54fcc24">
     <link rel="preload" as="style" href="/css/github-markdown-local.css?v=01d37f05ee">
     <link rel="stylesheet" href="/css/github-markdown-local.css?v=01d37f05ee" media="print" onload="this.media='all'">
     <noscript><link rel="stylesheet" href="/css/github-markdown-local.css?v=01d37f05ee"></noscript>
 
-    <style>
-        .project-hero {
+    <style>.project-hero {
             padding: 60px 20px;
             text-align: center;
             background: linear-gradient(135deg, rgba(0, 0, 0, 0.12), rgba(0, 0, 0, 0.05));
-        }
-        .project-hero h1 {
+        }.project-hero h1 {
             font-size: 2.5rem;
             margin: 20px 0;
             color: #fff;
-        }
-        .project-category-badge {
+        }.project-category-badge {
             display: inline-block;
             background: rgba(100, 200, 255, 0.2);
             border: 1px solid rgba(100, 200, 255, 0.5);
@@ -57,22 +54,18 @@
             border-radius: 20px;
             font-size: 0.9rem;
             margin-bottom: 20px;
-        }
-        .full-readme-section {
+        }.full-readme-section {
             padding: 50px 20px;
             background: rgba(255, 255, 255, 0.02);
-        }
-        .full-readme-container {
+        }.full-readme-container {
             max-width: 1000px;
             margin: 0 auto;
-        }
-        .full-readme-container .markdown-body {
+        }.full-readme-container.markdown-body {
             background: #0d1117;
             border: 1px solid rgba(255, 255, 255, 0.12);
             border-radius: 10px;
             padding: 24px;
-        }
-        .skyler-hero-block {
+        }.skyler-hero-block {
             display: grid;
             grid-template-columns: 120px 1fr;
             gap: 18px;
@@ -82,78 +75,65 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 12px;
             background: rgba(255, 255, 255, 0.02);
-        }
-        .skyler-avatar {
+        }.skyler-avatar {
             width: 110px;
             height: 110px;
             border-radius: 50%;
             border: 1px solid rgba(120, 191, 255, 0.6);
             object-fit: cover;
             background: rgba(0, 0, 0, 0.3);
-        }
-        .meta-grid {
+        }.meta-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
             gap: 10px;
             margin: 16px 0 24px;
-        }
-        .meta-item {
+        }.meta-item {
             border: 1px solid rgba(255, 255, 255, 0.12);
             border-radius: 10px;
             padding: 10px 12px;
             background: rgba(255, 255, 255, 0.02);
-        }
-        .meta-item strong {
+        }.meta-item strong {
             display: block;
             color: #fff;
             margin-bottom: 4px;
             font-size: 0.9rem;
-        }
-        .flowchart {
+        }.flowchart {
             margin: 14px 0 24px;
             padding: 14px;
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 12px;
             background: rgba(7, 12, 20, 0.8);
-        }
-        .flow-lane {
+        }.flow-lane {
             display: flex;
             flex-wrap: wrap;
             align-items: center;
             gap: 8px;
             margin: 6px 0;
-        }
-        .flow-step {
+        }.flow-step {
             border: 1px solid rgba(101, 189, 255, 0.4);
             border-radius: 8px;
             padding: 8px 10px;
             background: rgba(101, 189, 255, 0.08);
             color: #dff1ff;
             font-size: 0.9rem;
-        }
-        .flow-arrow {
+        }.flow-arrow {
             color: #7ebeff;
             font-weight: 700;
             font-size: 1rem;
             padding: 0 2px;
-        }
-        .section-spacer {
+        }.section-spacer {
             margin-top: 26px;
         }
-        @media (max-width: 720px) {
-            .skyler-hero-block {
+        @media (max-width: 720px) {.skyler-hero-block {
                 grid-template-columns: 1fr;
                 text-align: center;
-            }
-            .skyler-avatar {
+            }.skyler-avatar {
                 margin: 0 auto;
             }
-        }
-        .cta-section {
+        }.cta-section {
             padding: 40px 20px 60px;
             text-align: center;
-        }
-        .cta-button {
+        }.cta-button {
             display: inline-block;
             background: linear-gradient(135deg, #64c8ff, #00d4ff);
             color: #000;
@@ -162,8 +142,7 @@
             text-decoration: none;
             font-weight: 600;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        .cta-button:hover {
+        }.cta-button:hover {
             transform: translateY(-2px);
             box-shadow: 0 10px 30px rgba(100, 200, 255, 0.3);
         }
@@ -196,7 +175,7 @@
                     <img src="/images/icon_skyler.webp?v=4b80b918a0" alt="" class="project-hero-logo" width="76" height="76" loading="eager" decoding="async">
                     <h1>Skyler Assistant</h1>
                 </div>
-                <p style="color: #aaa; font-size: 1.1rem; margin-top: 15px;">Asistente de cartera pública con orquestación ligera, RAG manual y respaldo de proveedor.</p>
+                <p style="color: #aaa; font-size: 1.1rem; margin-top: 15px;">Asistente público de portafolio con orquestación ligera, RAG manual y respaldo de proveedor.</p>
             </section>
 
             <section class="full-readme-section" aria-label="Skyler documentación">
@@ -209,7 +188,7 @@
                         <div class="skyler-hero-block">
                             <img class="skyler-avatar" src="/images/icon_skyler.webp?v=4b80b918a0" alt="Skyler icono del asistente">
                             <div>
-                                <p><strong>Skyler</strong> es el asistente de cartera pública de Patrick Araujo, enfocado en el contexto del proyecto, pila técnica, experiencia profesional y orientación de contacto.</p>
+                                <p><strong>Skyler</strong> es el asistente público de portafolio de Patrick Araujo, enfocado en el contexto del proyecto, stack técnico, experiencia profesional y orientación de contacto.</p>
                                 <p>El asistente está diseñado para una orquestación predecible: respuesta local de saludo simple, uso manual de RAG y llamadas LLM solo cuando sea necesario.</p>
                             </div>
                         </div>
@@ -220,11 +199,11 @@
                             <div class="meta-item"><strong>RAG Fuentes</strong>`manual-rag.ts` + páginas pklavc.com en caché</div>
                             <div class="meta-item"><strong>Interfaz</strong>Widget flotante global + página de asistente dedicada</div>
                             <div class="meta-item"><strong>Voz</strong>Web Speech API con preferencia de voz femenina</div>
-                            <div class="meta-item"><strong>Fiabilidad</strong>Respaldo del proveedor y almacenamiento en caché de respuestas</div>
+                            <div class="meta-item"><strong>Fiabilidad</strong>Fallback de proveedor y almacenamiento en caché de respuestas</div>
                         </div>
 
                         <h3>Arquitectura del sistema</h3>
-                        <p>Skyler separa las responsabilidades claramente. La interfaz maneja la interacción y la voz. El trabajador organiza llamadas de memoria, conscientes de la intención RAG y de proveedor. El modelo maneja respuestas directas para mensajes fuera de tema y respuestas guiadas por el portafolio cuando se detecta la intención del portafolio.</p>
+                        <p>Skyler separa las responsabilidades claramente. La interfaz maneja la interacción y la voz. El worker organiza llamadas de memoria, conscientes de la intención RAG y de proveedor. El modelo maneja respuestas directas para mensajes fuera de tema y respuestas guiadas por el portafolio cuando se detecta la intención del portafolio.</p>
 
                         <div class="flowchart" aria-label="Skyler diagrama de flujo de arquitectura de alto nivel">
                             <div class="flow-lane">
@@ -232,12 +211,12 @@
                                 <span class="flow-arrow">-&gt;</span>
                                 <span class="flow-step">/chat API</span>
                                 <span class="flow-arrow">-&gt;</span>
-                                <span class="flow-step">Orquestador de trabajadores</span>
+                                <span class="flow-step">Orquestador de workers</span>
                             </div>
                             <div class="flow-lane">
                                 <span class="flow-step">Cheque de saludo</span>
                                 <span class="flow-arrow">-&gt;</span>
-                                <span class="flow-step">Intención de cartera + RAG Puerta</span>
+                                <span class="flow-step">Intención de portafolio + RAG Puerta</span>
                                 <span class="flow-arrow">-&gt;</span>
                                 <span class="flow-step">Generador de mensajes</span>
                             </div>
@@ -264,14 +243,14 @@
                                 <span class="flow-arrow">-&gt;</span>
                                 <span class="flow-step">¿Pregunta sobre el portafolio?</span>
                                 <span class="flow-arrow">si</span>
-                                <span class="flow-step">Fusionar manual RAG + contexto del sitio en caché</span>
+                                <span class="flow-step">Fusionar RAG manual + contexto del sitio en caché</span>
                             </div>
                             <div class="flow-lane">
-                                <span class="flow-step">Si no es una solicitud de cartera</span>
+                                <span class="flow-step">Si no es una solicitud de portafolio</span>
                                 <span class="flow-arrow">-&gt;</span>
                                 <span class="flow-step">Llama a LLM directamente</span>
                                 <span class="flow-arrow">fallar?</span>
-                                <span class="flow-step">Utilice el respaldo del proveedor</span>
+                                <span class="flow-step">Utilice el fallback de proveedor</span>
                             </div>
                         </div>
 
@@ -284,7 +263,7 @@
                             <li>Uso público/invitado sin inicio de sesión obligatorio</li>
                         </ul>
 
-                        <h3 class="section-spacer">Detalles del trabajador y de los datos</h3>
+                        <h3 class="section-spacer">Detalles del worker y de los datos</h3>
                         <ul>
                             <li><strong>Entrada:</strong> <code>src/chatbot/worker/src/index.ts</code></li>
                             <li><strong>RAG manual:</strong> <code>src/chatbot/worker/src/manual-rag.ts</code></li>
@@ -294,7 +273,7 @@
                         </ul>
 
                         <h3>RAG Cobertura</h3>
-                        <p>El manual RAG incluye identidad, enfoque de rol, pila, enlaces, empresas, métricas de impacto y contexto de credenciales actual. Se fusiona con las páginas del sitio público almacenadas en caché solo cuando el usuario pregunta sobre temas de cartera, lo que mantiene directas las respuestas fuera de tema y reduce la conexión a tierra no deseada.</p>
+                        <p>El RAG manual incluye identidad, enfoque de rol, stack, enlaces, empresas, métricas de impacto y contexto de credenciales actual. Se fusiona con las páginas del sitio público almacenadas en caché solo cuando el usuario pregunta sobre temas de portafolio, lo que mantiene directas las respuestas fuera de tema y reduce la conexión a tierra no deseada.</p>
                         <ul>
                             <li>Identidad y posicionamiento (backend, integraciones, arquitectura)</li>
                             <li>Guía de descubrimiento de proyectos y blogs</li>
@@ -316,7 +295,7 @@
                             <li><strong>Asistente en vivo:</strong> <a href="/es/skyler-assistant/">/asistente-skyler/</a></li>
                             <li><strong>Página de ejemplo de widget global:</strong> <a href="/es/sobre/">/sobre/</a></li>
                             <li><strong>Listado de proyectos:</strong> <a href="/es/proyectos/">/proyectos/</a></li>
-                            <li><strong>Fuente de trabajadores:</strong> <code>src/chatbot/worker/src/index.ts</code></li>
+                            <li><strong>Fuente de workers:</strong> <code>src/chatbot/worker/src/index.ts</code></li>
                             <li><strong>RAG manual:</strong> <code>src/chatbot/worker/src/manual-rag.ts</code></li>
                         </ul>
                     </article>
@@ -348,7 +327,7 @@
         }());
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.2.6/gsap.min.js" defer></script>
-        <script src="/js/i18n.js?v=cc3ee695f1" defer></script>
+        <script src="/js/i18n.js?v=75d84205d9" defer></script>
     <script src="/js/jquery.min.js?v=d482871a5e" defer></script>
     <script src="/js/index.js?v=0b108f99d1" defer></script>
 </body>

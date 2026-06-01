@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="author" content="Patrick Araujo">
     <title>Diseño de proxy zero-trust API: cifrado AES-256 y detección de PII en Python</title>
-    <meta name="description" content="Cómo construir una capa de proxy API de confianza cero con cifrado AES-256, enmascaramiento de campo dinámico y detección automatizada de PII en servicios backend Python.">
+    <meta name="description" content="Cómo construir una capa de proxy de API de confianza cero con cifrado AES-256, enmascaramiento de campo dinámico y detección automatizada de PII en servicios backend Python.">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://pklavc.com/es/blog/api-proxy-security-design/">
     <link rel="alternate" href="https://pklavc.com/blog/api-proxy-security-design/" hreflang="en">
@@ -16,7 +16,7 @@
 
 
 <meta property="og:title" content="Diseño de proxy zero-trust API: cifrado AES-256 y detección de PII en Python">
-    <meta property="og:description" content="Una guía práctica para la arquitectura de proxy de confianza cero API: cifrado a nivel de campo, detección automatizada de PII y controles de privacidad de datos en Python.">
+    <meta property="og:description" content="Una guía práctica para la arquitectura de proxy de API de confianza cero: cifrado a nivel de campo, detección automatizada de PII y controles de privacidad de datos en Python.">
     <meta property="og:url" content="https://pklavc.com/es/blog/api-proxy-security-design/">
     <meta property="og:type" content="article">
     <meta property="article:published_time" content="2026-04-24">
@@ -25,14 +25,14 @@
     <meta property="article:section" content="API Security Engineering">
     <meta property="article:tag" content="confianza cero">
     <meta property="article:tag" content="cifrado aes-256">
-    <meta property="article:tag" content="proxy API">
+    <meta property="article:tag" content="proxy de API">
     <meta property="article:tag" content="detección de pii">
     <meta property="og:image" content="https://pklavc.com/images/lavc.webp?v=5e84850f26">
     <meta property="og:site_name" content="Patrick Araujo">
     <meta property="og:locale" content="es_ES">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Diseño de proxy zero-trust API: cifrado AES-256 y detección de PII en Python">
-    <meta name="twitter:description" content="Cifrado a nivel de campo, detección automatizada de PII y controles de privacidad de datos de confianza cero para Python API capas de proxy.">
+    <meta name="twitter:description" content="Cifrado a nivel de campo, detección automatizada de PII y controles de privacidad de datos de confianza cero para Python capas proxy de API.">
     <meta name="twitter:image" content="https://pklavc.com/images/lavc.webp?v=5e84850f26">
     <meta name="twitter:site" content="@PkLavc">
     <meta name="twitter:creator" content="@PkLavc">
@@ -41,7 +41,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Monoton&amp;family=Poppins:wght@500;600;700&amp;family=Raleway:wght@300&amp;display=swap" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Monoton&amp;family=Poppins:wght@500;600;700&amp;family=Raleway:wght@300&amp;display=swap"></noscript>
-    <link rel="stylesheet" href="/css/global.css?v=55251d9722">
+    <link rel="stylesheet" href="/css/global.css?v=d71c8efb77">
     <link rel="stylesheet" href="/css/blog.css?v=560c7eaf05">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.2.6/gsap.min.js" defer></script>
     <script type="application/ld+json">
@@ -129,25 +129,25 @@
                             <span>/</span>
                             <a href="/es/blog/">Blog</a>
                             <span>/</span>
-                            <span aria-current="page">Diseño de proxy de confianza cero API</span>
+                            <span aria-current="page">Diseño de proxy de API de confianza cero</span>
                         </div>
-                        <span class="blog-kicker">Seguridad de API</span>
+                        <span class="blog-kicker">Seguridad de APIs</span>
                         <h1>Diseño de proxy zero-trust API: cifrado AES-256 y detección de PII en Python</h1>
                         <p>API los servidores proxy ubicados entre los servicios y la Internet abierta son un punto de aplicación natural para los controles de privacidad de datos. La cuestión es si esa aplicación es deliberada o incidental. Un diseño de confianza cero no asume nada sobre la confiabilidad del tráfico que pasa y exige el cifrado y la inspección en cada capa, independientemente del origen interno.</p>
                         <div class="blog-post-meta">
                             <span>Publicado el 24 de abril de 2026</span>
                             <span>8 minutos de lectura</span>
-                            <span>Seguridad de API</span>
+                            <span>Seguridad de APIs</span>
                         </div>
                     </article>
 
                     <article class="blog-article">
                         <h2>Qué significa confianza cero en la capa de proxy</h2>
-                        <p>La confianza cero no es un producto ni un marco. Es una postura: no se confía en ningún tráfico de forma predeterminada y el acceso se verifica continuamente en lugar de una vez en el perímetro. En la capa de proxy API, esto significa que incluso el tráfico interno de servicio a servicio pasa por las mismas reglas de inspección y aplicación que las solicitudes externas. El proxy no relaja los controles porque la fuente es interna.</p>
+                        <p>La confianza cero no es un producto ni un marco. Es una postura: no se confía en ningún tráfico de forma predeterminada y el acceso se verifica continuamente en lugar de una vez en el perímetro. En la capa de proxy de API, esto significa que incluso el tráfico interno de servicio a servicio pasa por las mismas reglas de inspección y aplicación que las solicitudes externas. El proxy no relaja los controles porque la fuente es interna.</p>
                         <p><a href="/es/proyectos/cipher-gate-proxy/">Cipher Gate Proxy</a> implementa esta postura con cifrado de campo AES-256, enmascaramiento dinámico y detección automatizada de PII en todo el tráfico que atraviesa el proxy, tratando la privacidad de los datos como una propiedad estructural en lugar de un filtro opcional.</p>
 
                         <h2>Cifrado a nivel de campo versus cifrado de transporte</h2>
-                        <p>TLS en la capa de transporte protege los datos en movimiento pero los deja expuestos en registros, colas, bases de datos y cualquier sistema que intercepte la carga útil descifrada. El cifrado a nivel de campo mantiene cifrados los valores confidenciales incluso después del descifrado en la capa de transporte, por lo que una entrada de registro o un registro de cola de mensajes contiene el valor del campo cifrado en lugar del texto sin formato.</p>
+                        <p>TLS en la capa de transporte protege los datos en movimiento pero los deja expuestos en registros, colas, bases de datos y cualquier sistema que intercepte la payload descifrada. El cifrado a nivel de campo mantiene cifrados los valores confidenciales incluso después del descifrado en la capa de transporte, por lo que una entrada de registro o un registro de cola de mensajes contiene el valor del campo cifrado en lugar del texto sin formato.</p>
                         <p>AES-256 en modo GCM proporciona cifrado autenticado: cifra el valor y produce una etiqueta de autenticación que detecta manipulación. Esto lo hace adecuado para campos de alto valor, como tokens de credenciales, valores de identidad y datos financieros que deben permanecer cifrados en reposo y en tránsito.</p>
 
                         <div class="blog-callout">
@@ -156,7 +156,7 @@
 
                         <h2>Detección automatizada de PII antes de que se muevan los datos</h2>
                         <p>Los servidores proxy que enrutan datos entre sistemas se encuentran en una posición única para interceptar la PII antes de que llegue al almacenamiento o a los consumidores intermedios. La detección automatizada de PII en la capa de proxy puede identificar patrones comunes (direcciones de correo electrónico, números de teléfono, identificadores de documentos) y aplicar enmascaramiento o cifrado antes de reenviar los datos, sin requerir cambios en los servicios ascendentes o descendentes.</p>
-                        <p>Esta capa de detección es más valiosa en los límites de integración donde el contenido de las cargas útiles entrantes es parcialmente impredecible y no se puede declarar previamente por completo en un esquema.</p>
+                        <p>Esta capa de detección es más valiosa en los límites de integración donde el contenido de los payloads entrantes es parcialmente impredecible y no se puede declarar previamente por completo en un esquema.</p>
 
                         <h2>Enmascaramiento dinámico y el principio de mínima exposición.</h2>
                         <p>No todos los consumidores de una respuesta API necesitan el valor completo del campo. El enmascaramiento dinámico devuelve una representación enmascarada o truncada a los consumidores que no requieren los datos completos. Un servicio descendente que muestra un perfil de usuario puede recibir un correo electrónico enmascarado, mientras que un servicio que procesa la facturación recibe el valor total. Esto reduce la superficie de exposición sin necesidad de APIs o modelos de datos separados.</p>
@@ -165,8 +165,8 @@
                         <p>Los servidores proxy de confianza cero que transforman los datos necesitan registros de auditoría inmutables: qué se cifró, cuándo, con qué alcance y qué consumidores accedieron a qué. Sin esta pista de auditoría, una investigación de incidentes no puede determinar si se produjo una violación de la privacidad en la capa de proxy o en sentido descendente. Cada decisión de cifrado y enmascaramiento debe generar una entrada de registro que no contenga el valor confidencial en sí.</p>
                         <p>Esto se conecta con los patrones de monitoreo y observabilidad explorados en <a href="/es/blog/infrastructure-anomaly-detection/">Detección de anomalías de infraestructura</a>, donde el registro estructurado permite el análisis posterior al incidente sin exponer datos en el proceso.</p>
 
-                        <h2>Dónde encaja la aplicación de la seguridad del proxy en la pila</h2>
-                        <p>Una capa de seguridad de proxy no sustituye a la validación a nivel de aplicación ni a la segmentación de red. Es un punto de cumplimiento consistente que aplica controles de privacidad de datos de manera uniforme. el <a href="/es/stacks/ingeniero-python/">Python Pila de ingenieros</a> describe cómo estas capacidades de proxy se conectan con la arquitectura más amplia de seguridad e integración en toda la cartera de proyectos.</p>
+                        <h2>Dónde encaja la aplicación de la seguridad del proxy en el stack</h2>
+                        <p>Una capa de seguridad de proxy no sustituye a la validación a nivel de aplicación ni a la segmentación de red. Es un punto de cumplimiento consistente que aplica controles de privacidad de datos de manera uniforme. el <a href="/es/stacks/ingeniero-python/">Python Stack de ingenieros</a> describe cómo estas capacidades de proxy se conectan con la arquitectura más amplia de seguridad e integración en toda el portafolio de proyectos.</p>
                     </article>
 
                     <section aria-labelledby="proxy-related-title">
@@ -181,8 +181,8 @@
                                 <p>Patrones de monitoreo y autorreparación que complementan la aplicación de la seguridad en la capa de infraestructura.</p>
                             </article>
                             <article class="blog-related-card">
-                                <h3><a href="/es/colecciones/proyectos-python/">Python Proyectos</a></h3>
-                                <p>Python proyectos backend que cubren seguridad, automatización y resiliencia de infraestructura.</p>
+                                <h3><a href="/es/colecciones/proyectos-python/">Proyectos Python</a></h3>
+                                <p>proyectos Python backend que cubren seguridad, automatización y resiliencia de infraestructura.</p>
                             </article>
                         </div>
                     </section>
@@ -203,7 +203,7 @@
                         <ul>
                             <li><a href="/es/proyectos/cipher-gate-proxy/">Cipher Gate Proxy</a></li>
                             <li><a href="/es/proyectos/aegis-sentinel/">Aegis Sentinel</a></li>
-                            <li><a href="/es/stacks/ingeniero-python/">Python Pila de ingenieros</a></li>
+                            <li><a href="/es/stacks/ingeniero-python/">Python Stack de ingenieros</a></li>
                             <li><a href="/es/sobre/">Acerca de Patrick Araujo</a></li>
                         </ul>
                     </section>
@@ -231,7 +231,7 @@
             });
         }());
     </script>
-        <script src="/js/i18n.js?v=cc3ee695f1" defer></script>
+        <script src="/js/i18n.js?v=75d84205d9" defer></script>
     <script src="/js/jquery.min.js?v=d482871a5e" defer></script>
     <script src="/js/index.js?v=0b108f99d1" defer></script>
 </body>

@@ -48,7 +48,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Monoton&amp;family=Poppins:wght@500;600;700&amp;family=Raleway:wght@300&amp;display=swap" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Monoton&amp;family=Poppins:wght@500;600;700&amp;family=Raleway:wght@300&amp;display=swap"></noscript>
-    <link rel="stylesheet" href="/css/global.css?v=55251d9722">
+    <link rel="stylesheet" href="/css/global.css?v=d71c8efb77">
     <link rel="stylesheet" href="/css/blog.css?v=560c7eaf05">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.2.6/gsap.min.js" defer></script>
 
@@ -173,12 +173,12 @@
 
                         <h2>Bus CAN: la columna vertebral heredada</h2>
                         <p>Controller Area Network (CAN) ha sido el bus de comunicación de vehículos dominante desde la década de 1990. CAN proporciona arbitraje basado en prioridades, detección de errores y comunicación de transmisión a velocidades de hasta 1 Mbps (CAN clásico) u 8 Mbps (CAN-FD). Es resistente a las interferencias electromagnéticas y utiliza sólo dos cables, lo que lo hace práctico para entornos automotrices hostiles.</p>
-                        <p>En un vehículo como el Ferrari Luce, CAN todavía cumple funciones críticas: electrónica de la carrocería, comunicación de sensores de bajo ancho de banda y compatibilidad heredada con componentes que utilizan protocolos CAN establecidos. CAN-FD (velocidad de datos flexible) extiende la carga útil de 8 bytes a 64 bytes y aumenta la velocidad durante la fase de datos, proporcionando una ruta de actualización significativa sin reemplazar completamente la capa física.</p>
+                        <p>En un vehículo como el Ferrari Luce, CAN todavía cumple funciones críticas: electrónica de la carrocería, comunicación de sensores de bajo ancho de banda y compatibilidad heredada con componentes que utilizan protocolos CAN establecidos. CAN-FD (velocidad de datos flexible) extiende la payload de 8 bytes a 64 bytes y aumenta la velocidad durante la fase de datos, proporcionando una ruta de actualización significativa sin reemplazar completamente la capa física.</p>
                         <p>Sin embargo, CAN tiene limitaciones para los requisitos de los vehículos eléctricos modernos. Su límite de ancho de banda lo hace inadecuado para transmisiones de cámaras, nubes de puntos LIDAR, datos de mapas de alta resolución o flujos de telemetría de alta frecuencia que generan los sistemas de propulsión eléctricos. Aquí es donde la Ethernet automotriz entra en la arquitectura.</p>
 
                         <h2>Ethernet para automoción: conexión en red para vehículos de gran ancho de banda</h2>
                         <p>Automotive Ethernet (100BASE-T1, 1000BASE-T1) brinda comunicación multigigabit a la red del vehículo. A diferencia de Ethernet de consumo, las variantes automotrices utilizan cables de par trenzado único, lo que reduce el peso y el costo. Ethernet permite aplicaciones que consumen mucho ancho de banda: sistemas de cámaras de visión envolvente, descargas inalámbricas de actualizaciones, transmisión de datos de diagnóstico y fusión de sensores de alta frecuencia.</p>
-                        <p>El cambio a Ethernet introduce conceptos familiares de redes de TI en el vehículo: conmutadores, VLAN, pilas TCP/IP, descubrimiento de servicios y redes sensibles al tiempo (TSN). TSN es particularmente importante: proporciona garantías de latencia deterministas en una red Ethernet, lo que permite comunicaciones en tiempo real críticas para la seguridad junto con el tráfico de mejor esfuerzo en la misma infraestructura física.</p>
+                        <p>El cambio a Ethernet introduce conceptos familiares de redes de TI en el vehículo: conmutadores, VLAN, stacks TCP/IP, descubrimiento de servicios y redes sensibles al tiempo (TSN). TSN es particularmente importante: proporciona garantías de latencia deterministas en una red Ethernet, lo que permite comunicaciones en tiempo real críticas para la seguridad junto con el tráfico de mejor esfuerzo en la misma infraestructura física.</p>
                         <p>Para Ferrari Luce, la Ethernet automotriz probablemente sirva como columna vertebral que conecta los controladores de dominio, la plataforma informática central, los sistemas de información y entretenimiento y los módulos de conectividad externos. CAN y CAN-FD siguen siendo para sensores y actuadores de nodo de hoja donde los requisitos de ancho de banda son modestos pero los requisitos de confiabilidad son extremos.</p>
                         <p>Esta arquitectura híbrida (troncal Ethernet con CAN/CAN-FD en los bordes) representa lo último en redes automotrices. Combina el ancho de banda y la flexibilidad de Ethernet con la confiabilidad comprobada de CAN en bucles de control críticos para la seguridad.</p>
 
@@ -219,7 +219,7 @@
                                 <p>Cómo el software crítico para la seguridad maneja fallas, mantiene la observabilidad y ofrece actualizaciones OTA sin riesgos.</p>
                             </article>
                             <article class="blog-related-card">
-                                <h3><a href="/es/blog/ferrari-luce-electric-software-stack-speculation/">La probable pila de software de un Ferrari eléctrico</a></h3>
+                                <h3><a href="/es/blog/ferrari-luce-electric-software-stack-speculation/">El probable stack de software de un Ferrari eléctrico</a></h3>
                                 <p>Análisis especulativo de Linux, RTOS, C/C++, Rust y las cadenas de herramientas detrás de un superdeportivo eléctrico.</p>
                             </article>
                         </div>
@@ -255,7 +255,7 @@
                         <ul>
                             <li><a href="/es/blog/ferrari-luce-embedded-software-telemetry-ota/">Software integrado y telemetría</a></li>
                             <li><a href="/es/blog/ferrari-luce-software-defined-vehicle-dynamics/">Dinámica del vehículo definida por software</a></li>
-                            <li><a href="/es/blog/ferrari-luce-software-recalls-cybersecurity-risks/">Retiros de software y ciberseguridad</a></li>
+                            <li><a href="/es/blog/ferrari-luce-software-recalls-cybersecurity-risks/">Recalls de software y ciberseguridad</a></li>
                         </ul>
                     </section>
                 </aside>
@@ -284,7 +284,7 @@
             });
         }());
     </script>
-        <script src="/js/i18n.js?v=cc3ee695f1" defer></script>
+        <script src="/js/i18n.js?v=75d84205d9" defer></script>
     <script src="/js/jquery.min.js?v=d482871a5e" defer></script>
     <script src="/js/index.js?v=0b108f99d1" defer></script>
 
