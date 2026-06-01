@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="PkLavc" />
+    <title>EquipTrack | Gerenciamento de estoque e aluguel de equipamentos | Patrick Araujo</title>
+
+    <!-- SEO Enhanced Meta Tags -->
+    <meta name="description" content="Sistema de gerenciamento de estoque e aluguel de código aberto para empresas de eventos. Rastreia equipamentos de áudio, vídeo e iluminação em eventos com modo convidado, personalização de tema e backend Cloudflare Workers.">
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="EquipTrack | Gerenciamento de estoque e aluguel de equipamentos | Patrick Araujo">
+    <meta property="og:description" content="Sistema de gerenciamento de aluguel e inventário de equipamentos baseado na Web para empresas de eventos, implantado em Cloudflare Workers + D1. SEO contribuído, alternância de barra lateral, modo visitante, temas de cores e automação de CI/CD.">
+    <meta property="og:url" content="https://pklavc.com/pt/projetos/equiptrack/">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Patrick Araujo">
+    <meta property="og:locale" content="pt_BR">
+
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="EquipTrack | Gerenciamento de estoque e aluguel de equipamentos | Patrick Araujo">
+    <meta name="twitter:description" content="Gerenciamento de inventário e aluguel baseado na Web para empresas de eventos. Cloudflare Workers + D1, modo visitante, tema de cores, CI/CD.">
+    <meta name="twitter:site" content="@PkLavc">
+    <meta name="twitter:creator" content="@PkLavc">
+
+    <link rel="canonical" href="https://pklavc.com/pt/projetos/equiptrack/">
+    <link rel="alternate" href="https://pklavc.com/projects/equiptrack/" hreflang="en">
+    <link rel="alternate" href="https://pklavc.com/pt/projetos/equiptrack/" hreflang="pt-BR">
+    <link rel="alternate" href="https://pklavc.com/es/proyectos/equiptrack/" hreflang="es">
+    <link rel="alternate" href="https://pklavc.com/projects/equiptrack/" hreflang="x-default">
+
+
+
+<meta name="robots" content="index, follow">
+<!-- JSON-LD Schema: Person -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Patrick Araujo",
+        "jobTitle": "Backend Software Engineer",
+        "url": "https://pklavc.com",
+        "image": "https://pklavc.com/images/lavc.webp?v=5e84850f26",
+        "sameAs": [
+            "https://github.com/PkLavc",
+            "https://www.linkedin.com/in/pklavc/"
+        ],
+        "description": "Specialist in backend automation, API integration, and scalable system architecture"
+    }
+    </script>
+
+    <!-- JSON-LD Schema: SoftwareApplication -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "EquipTrack",
+        "applicationCategory": "BusinessApplication",
+        "operatingSystem": "Web",
+        "description": "Sistema de inventário e locação de equipamentos para empresas de eventos. Controla itens de áudio, vídeo, iluminação e mobiliário em eventos simultâneos. Evita overbooking, registra manutenção e gerencia o ciclo completo de locação com Cloudflare Workers + D1. Totalmente personalizável por empresa com tema, logo e favicon.",
+        "featureList": [
+            "Event-based equipment check-in and check-out",
+            "Overbooking prevention across concurrent events",
+            "Maintenance and damage tracking",
+            "Cable and accessory stock control",
+            "Guest mode with browser-local data storage",
+            "Dynamic color theming with custom logo and favicon",
+            "Inline SVG icons that adapt to custom colors",
+            "Collapsible sidebar navigation",
+            "Automatic versioning via GitHub Actions",
+            "Cloudflare Workers + D1 serverless backend"
+        ],
+        "author": [
+            {
+                "@type": "Person",
+                "name": "Arthur Perico",
+                "url": "https://github.com/arthurperico"
+            },
+            {
+                "@type": "Person",
+                "name": "Patrick Araujo",
+                "url": "https://github.com/PkLavc"
+            }
+        ],
+        "inLanguage": "pt-BR",
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "BRL"
+        }
+    }
+    </script>
+
+    <!-- JSON-LD Schema: BreadcrumbList -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "https://pklavc.com/"
+            },
+            {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Projects",
+                "item": "https://pklavc.com/pt/projetos/"
+            },
+            {
+                "@type": "ListItem",
+                "position": 3,
+                "name": "EquipTrack",
+                "item": "https://pklavc.com/pt/projetos/equiptrack/"
+            }
+        ]
+    }
+    </script>
+
+    <link rel="icon" type="image/svg+xml" href="https://pklavc.com/images/favicon.svg?v=d15fe4e492">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Monoton&amp;family=Poppins:wght@500&amp;family=Raleway:wght@300&amp;display=swap" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Monoton&amp;family=Poppins:wght@500&amp;family=Raleway:wght@300&amp;display=swap"></noscript>
+    <link rel="stylesheet" href="/css/global.css?v=55251d9722">
+    <link rel="stylesheet" href="/css/projects.css?v=84c54fcc24">
+    <style>
+        .project-hero { padding: 60px 20px; text-align: center; background: linear-gradient(135deg, rgba(0,0,0,0.1), rgba(0,0,0,0.05)); }
+        .project-hero h1 { font-size: 2.5rem; margin: 20px 0; color: #fff; }
+        .project-category-badge { display: inline-block; background: rgba(100, 200, 255, 0.2); border: 1px solid rgba(100, 200, 255, 0.5); color: #64c8ff; padding: 8px 16px; border-radius: 20px; font-size: 0.9rem; margin-bottom: 20px; }
+        .tech-stack-section { padding: 40px 20px; background: rgba(255, 255, 255, 0.02); }
+        .tech-stack-section h2 { color: #fff; margin-bottom: 20px; font-size: 1.5rem; }
+        .tech-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 40px; }
+        .tech-tag { background: rgba(100, 200, 255, 0.1); border: 1px solid rgba(100, 200, 255, 0.3); color: #64c8ff; padding: 12px 16px; border-radius: 8px; text-align: center; font-size: 0.95rem; }
+        .problem-solution { padding: 40px 20px; max-width: 800px; margin: 0 auto; }
+        .problem-solution h2 { color: #fff; margin: 30px 0 20px 0; font-size: 1.3rem; }
+        .problem-solution p { color: #ccc; line-height: 1.8; margin-bottom: 20px; }
+        .impact-section { padding: 40px 20px; background: rgba(100, 200, 255, 0.05); text-align: center; }
+        .impact-section h2 { color: #fff; margin-bottom: 20px; font-size: 1.3rem; }
+        .impact-text { color: #64c8ff; font-size: 1.1rem; margin: 20px 0; font-weight: 500; }
+        .cta-section { padding: 60px 20px; text-align: center; }
+        .cta-buttons { display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; }
+        .cta-button { display: inline-block; background: linear-gradient(135deg, #64c8ff, #00d4ff); color: #000; padding: 16px 40px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 1rem; transition: transform 0.3s, box-shadow 0.3s; border: none; cursor: pointer; }
+        .cta-button:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(100, 200, 255, 0.3); }
+        .cta-button.secondary { background: rgba(100, 200, 255, 0.12); color: #64c8ff; border: 1px solid rgba(100, 200, 255, 0.4); }
+        .cta-button.secondary:hover { background: rgba(100, 200, 255, 0.22); box-shadow: 0 10px 30px rgba(100, 200, 255, 0.15); }
+        .breadcrumb-nav {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 12px 20px;
+            margin-bottom: 30px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .breadcrumb {
+            list-style: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0;
+            font-size: 0.95rem;
+            color: #A0A0A0;
+        }
+        .breadcrumb li { display: flex; align-items: center; }
+        .breadcrumb li:not(:last-child)::after { content: "/"; margin-left: 8px; font-size: 0.8rem; color: #666; }
+        .breadcrumb a { color: #4A9EFF; text-decoration: none; transition: color 0.3s ease; }
+        .breadcrumb a:hover { color: #64c8ff; text-decoration: underline; }
+        .breadcrumb [aria-current="page"] { color: #E0E0E0; font-weight: 500; }
+        .full-readme-section { padding: 50px 20px; background: rgba(255, 255, 255, 0.02); }
+        .full-readme-container { max-width: 1000px; margin: 0 auto; }
+        .full-readme-container .markdown-body { background: #0d1117; border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 10px; padding: 24px; }
+        .project-context-section { padding: 32px 20px; background: rgba(100, 200, 255, 0.06); }
+        .project-context-container { max-width: 1000px; margin: 0 auto; }
+        .project-context-section h2, .project-context-section h3, .related-projects-section h2 { color: #fff; }
+        .project-context-section p, .project-context-section li, .related-projects-section p, .related-projects-section li { color: #d0d0d0; line-height: 1.7; }
+        .project-context-section a, .related-projects-section a { color: #64c8ff; }
+        .related-projects-section { padding: 32px 20px; background: rgba(255, 255, 255, 0.03); }
+        .contributions-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 24px; }
+        @media (max-width: 700px) { .contributions-grid { grid-template-columns: 1fr; } }
+        .contrib-card { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 24px; }
+        .contrib-card h3 { font-size: 1.05rem; margin-bottom: 12px; }
+        .contrib-card.original h3 { color: #a78bfa; }
+        .contrib-card.fork h3 { color: #64c8ff; }
+        .contrib-card ul { padding-left: 18px; }
+        .contrib-card li { color: #d0d0d0; line-height: 1.7; margin-bottom: 4px; font-size: 0.95rem; }
+        .contrib-card .author-link { display: inline-block; margin-top: 14px; font-size: 0.9rem; color: #aaa; text-decoration: none; border: 1px solid rgba(255,255,255,0.15); border-radius: 6px; padding: 4px 12px; }
+        .contrib-card.original .author-link:hover { color: #a78bfa; border-color: #a78bfa; }
+        .contrib-card.fork .author-link:hover { color: #64c8ff; border-color: #64c8ff; }
+        .feature-table { width: 100%; border-collapse: collapse; margin-top: 16px; font-size: 0.95rem; }
+        .feature-table th { text-align: left; padding: 10px 14px; color: #64c8ff; border-bottom: 1px solid rgba(255,255,255,0.12); }
+        .feature-table td { padding: 10px 14px; color: #d0d0d0; border-bottom: 1px solid rgba(255,255,255,0.06); vertical-align: top; }
+        .feature-table tr:last-child td { border-bottom: none; }
+        .badge-original { display: inline-block; background: rgba(167,139,250,0.15); color: #a78bfa; border-radius: 4px; padding: 2px 8px; font-size: 0.8rem; }
+        .badge-fork { display: inline-block; background: rgba(100,200,255,0.15); color: #64c8ff; border-radius: 4px; padding: 2px 8px; font-size: 0.8rem; }
+    </style>
+    <link rel="preload" as="style" href="/css/github-markdown-local.css?v=01d37f05ee">
+    <link rel="stylesheet" href="/css/github-markdown-local.css?v=01d37f05ee" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="/css/github-markdown-local.css?v=01d37f05ee"></noscript>
+</head>
+<body>
+    <div id="breaker"></div>
+    <div id="breaker-two"></div>
+    <div id="all">
+        <div id="navigation-content" role="navigation" aria-label="Navegação primária">
+            <div class="logo"></div>
+            <div class="navigation-links">
+                <a href="/pt/" data-text="INÍCIO">INÍCIO</a>
+                <a href="/pt/sobre/" data-text="SOBRE">SOBRE</a>
+                <a href="/pt/projetos/" data-text="PROJETOS">PROJETOS</a>
+            </div>
+        </div>
+        <div id="navigation-bar">
+            <div class="menubar">
+                <span class="first-span"></span>
+                <span class="second-span"></span>
+                <span class="third-span"></span>
+            </div>
+        </div>
+
+        <main role="main">
+            <nav class="breadcrumb-nav" aria-label="Pão ralado">
+                <ol class="breadcrumb">
+                    <li><a href="/pt/">Página inicial</a></li>
+                    <li><a href="/pt/projetos/">Projetos</a></li>
+                    <li><span aria-current="page">EquipTrack</span></li>
+                </ol>
+            </nav>
+
+            <!-- Hero -->
+            <section class="project-hero">
+                <span class="project-category-badge">Aplicativo da Web Full Stack</span>
+                <h1>EquipTrack</h1>
+                <p style="color: #aaa; font-size: 1.1rem; margin-top: 15px; max-width: 680px; margin-left: auto; margin-right: auto;">Sistema de gerenciamento de inventário e aluguel de equipamentos para empresas de eventos. Rastreia áudio, vídeo, iluminação e móveis em eventos simultâneos – totalmente personalizável por empresa por meio de tema, logotipo e favicon. Implantado em Cloudflare Workers + D1.</p>
+            </section>
+
+            <!-- Context -->
+            <section class="project-context-section" aria-label="Contexto do projeto">
+                <div class="project-context-container">
+                    <h2>O que é EquipTrack?</h2>
+                    <p>EquipTrack é um sistema de controle de inventário e aluguel baseado na web para empresas de eventos. Ele gerencia todo o ciclo de vida do aluguel de equipamentos: criação de eventos, atribuição de equipamentos, check-in e check-out de itens, registro de manutenção e rastreamento de danos. Os recursos de personalização – logotipo trocável, favicon e temas coloridos – são integrados precisamente para que qualquer empresa possa adotá-los como seus.</p>
+                    <p>O sistema começou como uma ferramenta interna por <a href="https://github.com/arthurperico" target="_blank" rel="noopener noreferrer">Arthur Perico</a>, que projetou e construiu a plataforma principal e a migrou para Cloudflare Workers + D1 para implantação na borda. Mais tarde, entrei no projeto e introduzi um conjunto de melhorias que vão desde melhorias de UI/UX até automação de CI/CD.</p>
+                    <h3 style="margin-top:28px;">Escopo Técnico</h3>
+                    <ul>
+                        <li><strong>Pilha:</strong> JavaScript, Node.js, Express (local), Cloudflare Workers, Cloudflare D1 (SQLite-compatível), bcryptjs, GitHub Actions</li>
+                        <li><strong>Tipo de sistema:</strong> Aplicativo web full-stack, backend sem servidor, sistema estilo SaaS de gerenciamento de inventário</li>
+                        <li><strong>Implantação:</strong> Cloudflare Workers (API + ativos) + GitHub Páginas (espelho de front-end estático via Actions)</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- System Overview (README-style) -->
+            <section class="full-readme-section" aria-label="Documentação do sistema">
+                <div class="full-readme-container">
+                    <h2 style="color: #fff; margin-bottom: 20px;">Visão geral do sistema</h2>
+                    <article class="markdown-body">
+
+<h2>EquipTrack — Sistema de Estoque para Eventos</h2>
+
+<p>
+  <img src="https://img.shields.io/badge/Backend-Cloudflare_Workers-orange?logo=cloudflare" alt="Backend: Cloudflare Workers">
+  <img src="https://img.shields.io/badge/Database-Cloudflare_D1_(SQLite)-blue?logo=cloudflare" alt="Banco de dados: D1">
+  <img src="https://img.shields.io/badge/Frontend-HTML_+_CSS_+_JS-yellow" alt="Front-end: HTML + CSS + JS">
+  <img src="https://img.shields.io/badge/CI/CD-GitHub_Actions-black?logo=github-actions" alt="CI/CD: GitHub Actions">
+  <img src="https://img.shields.io/badge/License-MIT-brightgreen" alt="Licença: MIT">
+</p>
+
+<p>Um sistema completo de gerenciamento de estoque e aluguel para empresas de eventos. Gerencia sistemas de áudio, câmeras, equipamentos de iluminação, placas de vídeo e móveis para eventos em eventos simultâneos — com personalização total da marca para que qualquer empresa possa implantá-lo como sua própria ferramenta.</p>
+
+<h2>Módulos principais</h2>
+<table>
+<thead><tr><th>Módulo</th><th>Descrição</th></tr></thead>
+<tbody>
+<tr><td><strong>Eventos</strong></td><td>Crie, pesquise e gerencie eventos. Cada evento rastreia suas atribuições de equipamento.</td></tr>
+<tr><td><strong>Aluguel</strong></td><td>Verifique a entrada e saída de equipamentos por evento. Evita overbooking em eventos simultâneos.</td></tr>
+<tr><td><strong>Manutenção</strong></td><td>Registre danos, quebras e reparos em equipamentos e cabos. Rastreia o histórico de manutenção.</td></tr>
+<tr><td><strong>Banco de dados (Banco)</strong></td><td>Visualização completa de equipamentos, cabos e outros itens registrados.</td></tr>
+<tr><td><strong>Cadastre-se</strong></td><td>Adicione novos equipamentos por nome, código de barras e categoria. Formulários separados para equipamentos, cabos e itens genéricos.</td></tr>
+<tr><td><strong>História</strong></td><td>Registro de auditoria completo de todos os movimentos de aluguel e operações de eventos.</td></tr>
+<tr><td><strong>Usuários (Administrador)</strong></td><td>Painel exclusivo de administrador para gerenciar contas de login e permissões.</td></tr>
+</tbody>
+</table>
+
+<h2>Arquitetura</h2>
+
+<pre><code>Browser (Client)
+  └─ public/
+       ├─ login/index.html      ← Login + guest mode toggle
+       ├─ index.html            ← Main SPA (all modules as sections)
+       ├─ css/                  ← Modular styles: app.css, theme.css, login.css, event.css
+       ├─ js/                   ← app.js, login.js, event.js, storage.js
+       └─ assets/images/        ← Logo, favicon (WebP)
+
+Cloudflare Worker (Edge)
+  └─ src/worker.mjs
+       ├─ Page routing          ← Redirects authenticated users away from login
+       ├─ /api/login POST       ← bcrypt session authentication
+       ├─ /api/logout POST      ← Session invalidation
+       ├─ /api/auth/status GET  ← Auth check (guest detection)
+       ├─ /api/events           ← CRUD for events
+       ├─ /api/equipments       ← CRUD for equipment
+       ├─ /api/cables           ← CRUD for cables
+       ├─ /api/others           ← CRUD for generic items
+       ├─ /api/rentals          ← Rental movements per event
+       ├─ /api/maintenance      ← Damage and repair records
+       ├─ /api/history          ← Full movement log
+       └─ /api/users            ← Admin-only user management
+
+Cloudflare D1 (SQLite)
+  └─ migrations/0001_initial.sql
+       ├─ users
+       ├─ events
+       ├─ equipments
+       ├─ cables
+       ├─ other_items
+       ├─ rentals
+       ├─ maintenance
+       └─ history
+</code></pre>
+
+<h2>Modo visitante</h2>
+<p>Os usuários podem entrar como <strong>Convidado (Convidado)</strong> sem credenciais. No modo visitante, todos os dados são mantidos inteiramente em <code>localStorage</code> através do <code>DataStorage</code> aula em <code>js/storage.js</code>, que alterna de forma transparente entre o API e o armazenamento local do navegador, dependendo do estado de autenticação. Os dados do convidado têm escopo por sessão do navegador e não requerem interação com o servidor.</p>
+
+<h2>Personalização do tema</h2>
+<p>Todos os valores de cores são orientados por propriedades personalizadas CSS (<code>--primary</code>, <code>--primary-2</code>, <code>--primary-3</code>, etc.) definido em <code>css/theme.css</code>. Os usuários podem escolher uma cor de destaque personalizada por meio de um seletor de cores no aplicativo, que escreve para <code>localStorage</code> e aplica-se imediatamente via <code>document.documentElement.style.setProperty()</code>. Imagens de logotipo personalizadas e favicons também podem ser definidas e persistidas para <code>localStorage</code> como strings base64.</p>
+
+<h2>Ícones SVG embutidos</h2>
+<p>O sistema original usava caracteres emoji como ícones de menu. Eles foram substituídos por SVGs embutidos personalizados, cujos <code>stroke</code> herança de cor <code>currentColor</code>, permitindo que eles se adaptem automaticamente à cor do tema ativo definida por meio do CSS <code>--primary</code> variável. Isso faz com que todo o conjunto de ícones reconheça o tema com zero JavaScript de sobrecarga.</p>
+
+<h2>Alternar barra lateral</h2>
+<p>Uma barra lateral recolhível foi adicionada por meio de um botão de alternância (<code>#sidebarToggle</code>). Quando recolhida, a barra lateral desaparece e a área de conteúdo principal se expande – útil em telas menores e para sessões de trabalho focadas.</p>
+
+<h2>Versionamento automático e bloqueio de cache (GitHub Actions)</h2>
+<p>Dois fluxos de trabalho GitHub Actions automatizam o pipeline de implantação:</p>
+<ul>
+<li><strong>implantar páginas.yml</strong> - Ao pressionar para <code>main</code>, verifica o repositório, injeta o curto Git commit SHA em todos <code>__BUILD_VERSION__</code> espaços reservados em arquivos HTML (usados em <code>?v=__BUILD_VERSION__</code> Links CSS/JS) e, em seguida, implanta <code>public/</code> para GitHub páginas.</li>
+<li><strong>sincronizar-docs.yml</strong> - Sempre que <code>public/</code> alterações, copia-o automaticamente para <code>docs/</code>, injeta o mesmo token de versão de compilação, confirma e envia push — mantendo o <code>docs/</code> pasta sincronizada para hospedagem alternativa de páginas GitHub.</li>
+</ul>
+
+<h2>Cloudflare Implantação D1</h2>
+<pre><code class="language-bash"># Install dependencies
+npm install
+
+# Login to Cloudflare
+npx wrangler login
+
+# Create D1 database
+npx wrangler d1 create sistema-estoque-24h
+
+# Apply schema migrations
+npx wrangler d1 migrations apply sistema-estoque-24h --remote
+
+# Export local SQLite data to D1-compatible SQL
+npm run export:d1
+npx wrangler d1 execute sistema-estoque-24h --remote --file d1-export.sql
+
+# Deploy worker
+npm run deploy
+</code></pre>
+
+<h2>Desenvolvimento Local</h2>
+<pre><code class="language-bash">npm install
+npm run dev           # Express server on localhost
+# or
+npm run dev:worker    # Wrangler local emulation
+</code></pre>
+
+                    </article>
+                </div>
+            </section>
+
+            <!-- Contributions -->
+            <section class="project-context-section" aria-label="Autoria e contribuições" style="background: rgba(255,255,255,0.025);">
+                <div class="project-context-container">
+                    <h2>Autoria e Contribuições</h2>
+                    <p style="margin-bottom: 20px;">O sistema original foi projetado e construído por <a href="https://github.com/arthurperico" target="_blank" rel="noopener noreferrer">Arthur Perico</a>. Entrei no projeto e introduzi um conjunto de melhorias direcionadas – listadas separadamente abaixo para refletir uma atribuição precisa.</p>
+
+                    <div class="contributions-grid">
+                        <!-- Original author -->
+                        <div class="contrib-card original">
+                            <h3>◆ Sistema Original — Arthur Perico</h3>
+                            <ul>
+                                <li>Design central do sistema e lógica de negócios completa</li>
+                                <li>Módulos de equipamentos, eventos, cabos, manutenção e histórico</li>
+                                <li>Autenticação de login e sessão (bcryptjs)</li>
+                                <li>Painel de gerenciamento de usuários administradores</li>
+                                <li>Migração de backend de Express/SQLite para Cloudflare Workers + D1</li>
+                                <li>Esquema de banco de dados e migrações SQL</li>
+                                <li>Scripts para backup SQLite e exportação de dados D1</li>
+                                <li>Lógica de prevenção de overbooking de aluguel</li>
+                            </ul>
+                            <a class="author-link" href="https://github.com/arthurperico" target="_blank" rel="noopener noreferrer">github.com/arthurperico</a>
+                        </div>
+
+                        <!-- Fork contributions -->
+                        <div class="contrib-card fork">
+                            <h3>◆ Minhas contribuições — Patrick Araujo</h3>
+                            <ul>
+                                <li>Refatoração completa de SEO: meta descrição, Open Graph, Twitter Cards, dados estruturados JSON-LD em todas as páginas</li>
+                                <li>Barra lateral dobrável com botão de alternância e ícone de divisa animado</li>
+                                <li>Sistema de seleção de cores personalizado – cores de destaque persistidas <code>localStorage</code>, aplicado por meio de variáveis CSS</li>
+                                <li>Upload de logotipo personalizado e favicon, armazenado como base64 em <code>localStorage</code></li>
+                                <li>Ícones de menu emoji substituídos por ícones SVG embutidos – adaptáveis a cores via CSS <code>currentColor</code></li>
+                                <li>Modo visitante: <code>DataStorage</code> classe alterna transparentemente entre API e <code>localStorage</code></li>
+                                <li>Correções de bugs visuais e de botões</li>
+                                <li>Controle de versão automático via GitHub Actions (fluxos de trabalho de implantação + fluxos de trabalho de sincronização)</li>
+                                <li>Quebra de cache com <code>?v=__BUILD_VERSION__</code> injetado no momento da implantação</li>
+                                <li>Reorganização do arquivo do projeto: plana <code>public/</code> → estruturado <code>css/</code>, <code>js/</code>, <code>assets/</code> diretórios</li>
+                                <li>Conversão de ativos: logotipo e favicon de PNG para WebP</li>
+                            </ul>
+                            <a class="author-link" href="https://github.com/PkLavc" target="_blank" rel="noopener noreferrer">github.com/PkLavc</a>
+                        </div>
+                    </div>
+
+                    <h3 style="margin-top: 36px;">Resumo da atribuição de recursos</h3>
+                    <table class="feature-table">
+                        <thead><tr><th>Recurso</th><th>Autor</th></tr></thead>
+                        <tbody>
+                            <tr><td>Módulos de Eventos, Aluguel, Manutenção, Histórico</td><td><span class="badge-original">arthurperico</span></td></tr>
+                            <tr><td>Cloudflare Workers + backend D1</td><td><span class="badge-original">arthurperico</span></td></tr>
+                            <tr><td>autenticação de sessão bcryptjs</td><td><span class="badge-original">arthurperico</span></td></tr>
+                            <tr><td>Gerenciamento de usuários administradores</td><td><span class="badge-original">arthurperico</span></td></tr>
+                            <tr><td>SEO: meta tags, OG, Twitter, JSON-LD</td><td><span class="badge-fork">PkLavc</span></td></tr>
+                            <tr><td>Alternar barra lateral recolhível</td><td><span class="badge-fork">PkLavc</span></td></tr>
+                            <tr><td>Seletor de cores + persistência de tema</td><td><span class="badge-fork">PkLavc</span></td></tr>
+                            <tr><td>Personalização de logotipo + favicon</td><td><span class="badge-fork">PkLavc</span></td></tr>
+                            <tr><td>Ícones SVG embutidos (cor adaptável)</td><td><span class="badge-fork">PkLavc</span></td></tr>
+                            <tr><td>Modo visitante (localStorage DataStorage)</td><td><span class="badge-fork">PkLavc</span></td></tr>
+                            <tr><td>GitHub Actions CI/CD + impedimento de cache</td><td><span class="badge-fork">PkLavc</span></td></tr>
+                            <tr><td>Reorganização da estrutura de arquivos + ativos WebP</td><td><span class="badge-fork">PkLavc</span></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Tech Stack -->
+            <section class="tech-stack-section">
+                <div style="max-width: 1000px; margin: 0 auto;">
+                    <h2>Pilha de tecnologia</h2>
+                    <div class="tech-list">
+                        <div class="tech-tag">JavaScript</div>
+                        <div class="tech-tag">Cloudflare Workers</div>
+                        <div class="tech-tag">Cloudflare D1</div>
+                        <div class="tech-tag">Node.js</div>
+                        <div class="tech-tag">Expresso</div>
+                        <div class="tech-tag">bcryptjs</div>
+                        <div class="tech-tag">GitHub Actions</div>
+                        <div class="tech-tag">SQLite</div>
+                        <div class="tech-tag">Variáveis CSS</div>
+                        <div class="tech-tag">armazenamento local API</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- CTA -->
+            <section class="cta-section">
+                <h2 style="color: #fff; margin-bottom: 30px;">Veja o projeto</h2>
+                <div class="cta-buttons">
+                    <a href="https://github.com/arthurperico" target="_blank" rel="noopener noreferrer" class="cta-button secondary">
+                        Autor original
+                    </a>
+                    <a href="https://github.com/PkLavc" target="_blank" rel="noopener noreferrer" class="cta-button">
+                        Meu GitHub
+                    </a>
+                </div>
+            </section>
+
+        </main>
+
+        <footer class="footer-minimal">
+            <div class="footer-container">
+                <div class="footer-link-list" aria-label="Links de rodapé">
+                    <a class="footer-link-pill" href="https://github.com/PkLavc" target="_blank" rel="noopener noreferrer">GitHub</a>
+                    <a class="footer-link-pill" href="https://www.linkedin.com/in/pklavc/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+                    <a class="footer-link-pill" href="mailto:contact@pklavc.com">E-mail</a>
+                    <a class="footer-link-pill footer-link-pill-accent" href="https://github.com/sponsors/PkLavc" target="_blank" rel="noopener noreferrer">Apoiar no GitHub</a>
+                </div>
+                <p>
+                    © <span data-current-year></span> Patrick Araujo
+                </p>
+            </div>
+        </footer>
+    </div>
+
+    <div class="visually-hidden">
+        <p>Engenheiro de Software Backend com foco em automação, integrações API, sistemas backend, JavaScript, Node.js, Cloudflare Workers e plataformas operacionais escaláveis.</p>
+    </div>
+
+    <script>
+        (function() {
+            document.querySelectorAll('[data-current-year]').forEach(function(node) {
+                node.textContent = String(new Date().getFullYear());
+            });
+        }());
+    </script>
+        <script src="/js/i18n.js?v=cc3ee695f1" defer></script>
+    <script src="/js/jquery.min.js?v=d482871a5e" defer></script>
+    <script src="/js/index.js?v=0b108f99d1" defer></script>
+</body>
+</html>

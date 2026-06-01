@@ -197,6 +197,70 @@ body.navigation-open {
 .close-second{ transform: rotate(-45deg); }
 .navigation-close{ position: absolute; top: max(22px, env(safe-area-inset-top)); right:max(18px, calc(4% + env(safe-area-inset-right))); padding: 10px; cursor: pointer; transition: all.3s ease; opacity: .8; border: 0 !important; background: transparent !important; color: transparent !important; z-index: 2; }
 .navigation-close:hover{ opacity: 1; transform: rotate(90deg); }
+.navigation-language-toggle{
+    position: absolute;
+    top: max(22px, env(safe-area-inset-top));
+    left: max(18px, calc(4% + env(safe-area-inset-left)));
+    width: 42px;
+    height: 42px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 2;
+    border: 0 !important;
+    border-radius: 0;
+    background: transparent !important;
+    color: rgba(255,255,255,0.78) !important;
+    font-size: 22px;
+    line-height: 1;
+    opacity: .82;
+    transition: opacity .3s ease, color .3s ease, transform .3s ease;
+}
+.navigation-language-toggle:hover,
+#navigation-content.is-language-mode .navigation-language-toggle{
+    opacity: 1;
+    color: var(--clr-primary) !important;
+    background: transparent !important;
+    transform: rotate(30deg);
+}
+.navigation-language-options{
+    display: none;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    font-family: 'Poppins', 'Inter', 'Segoe UI', Arial, sans-serif;
+}
+.navigation-language-options a{
+    padding: 10px;
+    text-decoration: none;
+    color: white;
+    font-size: 30px;
+    font-family: 'Poppins', 'Inter', 'Segoe UI', Arial, sans-serif;
+    font-weight: 600;
+    opacity: .7;
+    transition: all .4s ease;
+}
+.navigation-language-options a.is-navigation-enhanced::before,
+.navigation-language-options a.is-navigation-enhanced:hover::before{
+    content: none;
+    display: none;
+}
+.navigation-language-options a:hover,
+.navigation-language-options a.is-current-language{
+    opacity: 1;
+    color: var(--clr-primary);
+}
+.navigation-language-options a:hover .navigation-hover-text{
+    opacity: 1;
+    letter-spacing: 0.08em;
+}
+#navigation-content.is-language-mode .navigation-links{
+    display: none;
+}
+#navigation-content.is-language-mode .navigation-language-options{
+    display: flex;
+}
 .logo img{ height: 80px; position: absolute; top: 3%; left: 2.5%; opacity: .8; z-index: 2; cursor: pointer; transition: all .4s ease; }
 .logo img:hover{ opacity: 1; transform: rotate(-45deg); }
 #navigation-bar img{ height: 80px; position: absolute; top: 15%; left: 2.5%; opacity: .8; transition: all .4s ease; }

@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Patrick Araujo">
+    <title>Desenvolvimento orientado a especificações: escrevendo especificações que máquinas e humanos podem executar</title>
+    <meta name="description" content="Como o desenvolvimento orientado por especificações une a intenção humana e a execução do agente de IA — especificações estruturadas como a interface entre engenheiros e ferramentas de codificação autônomas como Claude Code, Codex e Cursor.">
+    <meta name="keywords" content="desenvolvimento orientado a especificações, especificações de IA, execução de agente, especificações estruturadas, engenharia de contexto, especificações Claude Code, tarefas Codex, regras de cursor, especificações de engenharia, automação">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://pklavc.com/pt/blog/spec-driven-development/">
+    <link rel="alternate" href="https://pklavc.com/blog/spec-driven-development/" hreflang="en">
+    <link rel="alternate" href="https://pklavc.com/pt/blog/spec-driven-development/" hreflang="pt-BR">
+    <link rel="alternate" href="https://pklavc.com/es/blog/spec-driven-development/" hreflang="es">
+    <link rel="alternate" href="https://pklavc.com/blog/spec-driven-development/" hreflang="x-default">
+
+
+
+<meta property="og:title" content="Desenvolvimento orientado a especificações: escrevendo especificações que máquinas e humanos podem executar">
+    <meta property="og:description" content="Especificações estruturadas como interface entre engenheiros e agentes de IA — como escrever especificações que produzam resultados confiáveis e revisáveis do agente.">
+    <meta property="og:url" content="https://pklavc.com/pt/blog/spec-driven-development/">
+    <meta property="og:type" content="article">
+    <meta property="article:published_time" content="2026-05-28">
+    <meta property="article:modified_time" content="2026-05-28">
+    <meta property="article:author" content="Patrick Araujo">
+    <meta property="article:section" content="AI Engineering">
+    <meta property="article:tag" content="desenvolvimento orientado por especificações">
+    <meta property="article:tag" content="engenharia de contexto">
+    <meta property="article:tag" content="Especificações de IA">
+    <meta property="article:tag" content="execução do agente">
+    <meta property="og:image" content="https://pklavc.com/images/lavc.webp?v=5e84850f26">
+    <meta property="og:image:width" content="1024">
+    <meta property="og:image:height" content="1024">
+    <meta property="og:site_name" content="Patrick Araujo">
+    <meta property="og:locale" content="pt_BR">
+    <meta property="og:image:alt" content="Retrato da marca do engenheiro de backend e especialista em automação Patrick Araujo">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Desenvolvimento Orientado a Especificações: Especificações para Máquinas e Humanos">
+    <meta name="twitter:description" content="Como as especificações estruturadas se tornam a interface entre a intenção humana e a execução do agente de IA na engenharia moderna.">
+    <meta name="twitter:image" content="https://pklavc.com/images/lavc.webp?v=5e84850f26">
+    <meta name="twitter:image:alt" content="Retrato da marca do engenheiro de backend e especialista em automação Patrick Araujo">
+    <meta name="twitter:site" content="@PkLavc">
+    <meta name="twitter:creator" content="@PkLavc">
+
+    <link rel="icon" type="image/svg+xml" href="https://pklavc.com/images/favicon.svg?v=d15fe4e492">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Monoton&amp;family=Poppins:wght@500;600;700&amp;family=Raleway:wght@300&amp;display=swap" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Monoton&amp;family=Poppins:wght@500;600;700&amp;family=Raleway:wght@300&amp;display=swap"></noscript>
+    <link rel="stylesheet" href="/css/global.css?v=55251d9722">
+    <link rel="stylesheet" href="/css/blog.css?v=560c7eaf05">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.2.6/gsap.min.js" defer></script>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@graph": [
+            {
+                "@type": "BlogPosting",
+                "headline": "Spec-Driven Development: Writing Specifications That Machines and Humans Can Execute",
+                "description": "How spec-driven development bridges human intent and AI agent execution — structured specifications as the interface between engineers and autonomous coding tools.",
+                "image": "https://pklavc.com/images/lavc.webp?v=5e84850f26",
+                "datePublished": "2026-05-28",
+                "dateModified": "2026-05-28",
+                "author": {
+                    "@type": "Person",
+                    "name": "Patrick Araujo"
+                },
+                "publisher": {
+                    "@type": "Person",
+                    "name": "Patrick Araujo"
+                },
+                "mainEntityOfPage": "https://pklavc.com/pt/blog/spec-driven-development/",
+                "url": "https://pklavc.com/pt/blog/spec-driven-development/",
+                "keywords": [
+                    "spec-driven development",
+                    "ai specifications",
+                    "agent execution",
+                    "context engineering",
+                    "structured specs",
+                    "claude code",
+                    "codex",
+                    "cursor rules",
+                    "automation"
+                ]
+            },
+            {
+                "@type": "BreadcrumbList",
+                "itemListElement": [
+                    {
+                        "@type": "ListItem",
+                        "position": 1,
+                        "name": "Home",
+                        "item": "https://pklavc.com/"
+                    },
+                    {
+                        "@type": "ListItem",
+                        "position": 2,
+                        "name": "Blog",
+                        "item": "https://pklavc.com/pt/blog/"
+                    },
+                    {
+                        "@type": "ListItem",
+                        "position": 3,
+                        "name": "Spec-Driven Development",
+                        "item": "https://pklavc.com/pt/blog/spec-driven-development/"
+                    }
+                ]
+            }
+        ]
+    }
+    </script>
+</head>
+<body class="blog-layout seo-layout">
+    <div id="breaker"></div>
+    <div id="breaker-two"></div>
+    <div id="all">
+        <div class="cursor"></div>
+        <div id="navigation-content" role="navigation" aria-label="Navegação primária">
+            <div class="logo"></div>
+            <div class="navigation-links">
+                <a href="/pt/" data-text="INÍCIO" id="home-link">INÍCIO</a>
+                <a href="/pt/sobre/" data-text="SOBRE" id="about-link">SOBRE</a>
+                <a href="/pt/projetos/" data-text="PROJETOS" id="projects-link">PROJETOS</a>
+                <a href="/pt/blog/" data-text="BLOG" id="blog-link">BLOG</a>
+            </div>
+        </div>
+        <div id="navigation-bar">
+            <div class="menubar">
+                <span class="first-span"></span>
+                <span class="second-span"></span>
+                <span class="third-span"></span>
+            </div>
+        </div>
+
+        <main class="blog-shell" role="main">
+            <div class="blog-columns">
+                <div>
+                    <article class="blog-post-hero">
+                        <div class="blog-breadcrumb" aria-label="Pão ralado">
+                            <a href="/pt/">Página inicial</a>
+                            <span>/</span>
+                            <a href="/pt/blog/">Blogue</a>
+                            <span>/</span>
+                            <span aria-current="page">Desenvolvimento baseado em especificações</span>
+                        </div>
+                        <span class="blog-kicker">Engenharia de IA</span>
+                        <h1>Desenvolvimento orientado a especificações: escrevendo especificações que máquinas e humanos podem executar</h1>
+                        <p>Quando os agentes de IA executam código, a qualidade de sua saída é limitada pela qualidade de sua entrada. O desenvolvimento orientado a especificações trata as especificações estruturadas como a interface principal entre a intenção humana e a execução da máquina – e muda a forma como as equipes de engenharia trabalham com ferramentas autônomas.</p>
+                        <div class="blog-post-meta">
+                            <span>Publicado em 28 de maio de 2026</span>
+                            <span>10 minutos de leitura</span>
+                            <span>Engenharia de IA</span>
+                        </div>
+                    </article>
+
+                    <article class="blog-article">
+                        <h2>Por que as especificações são mais importantes para os agentes de IA</h2>
+                        <p>No desenvolvimento tradicional, um ticket vago ainda pode produzir um bom código porque o desenvolvedor preenche lacunas com o contexto, faz perguntas e toma decisões. Os agentes de IA não podem fazer isso de forma confiável. Eles executam literalmente contra o que lhes é dado. Um prompt vago produz um código vago. Uma especificação precisa produz uma implementação precisa.</p>
+                        <p>O desenvolvimento orientado a especificações inverte o trabalho: em vez de gastar tempo escrevendo código e depurando, os engenheiros gastam tempo escrevendo especificações claras e revisando resultados. A especificação se torna o artefato que captura intenções, restrições, critérios de aceitação e limites arquitetônicos.</p>
+
+                        <div class="blog-callout">
+                            Uma especificação não é documentação após o fato. É o artefato de engenharia que impulsiona a execução — seja por um desenvolvedor humano ou por um agente autônomo.
+                        </div>
+
+                        <h2>Qual é a aparência de uma especificação executável por máquina</h2>
+                        <p>Uma especificação útil para agentes de IA inclui: a declaração do problema com limites claros, critérios de aceitação que podem ser verificados programaticamente, restrições arquiteturais que a implementação deve respeitar, referências a padrões existentes na base de código e não objetivos explícitos que evitam o aumento do escopo.</p>
+                        <p>Esta não é uma ideia nova – é assim que sempre foram as boas especificações de engenharia. A diferença é que, com os agentes de IA, a especificação não é apenas uma ferramenta de comunicação para humanos. É a entrada literal que determina o que será construído. A ambigüidade nas especificações torna-se ambiguidade na saída.</p>
+
+                        <h2>Especificações como engenharia de contexto</h2>
+                        <p>A engenharia de contexto – a curadoria do que um agente de IA vê – é fundamentalmente um problema de especificação. Os arquivos de regras do cursor especificam convenções de codificação. Os arquivos CLAUDE.md de Claude Code especificam o contexto do projeto. As etapas de configuração do Codex especificam as expectativas do ambiente. Todas essas são especificações, apenas distribuídas em diferentes mecanismos.</p>
+                        <p>O desenvolvimento orientado a especificações consolida isso em uma prática deliberada: antes de pedir a um agente para implementar algo, escreva a especificação que define o sucesso. Inclua arquivos, padrões, restrições e critérios de verificação relevantes. A especificação é o contexto.</p>
+
+                        <h2>O loop de verificação de implementação de especificação</h2>
+                        <p>Com agentes autônomos, o fluxo de trabalho se torna: escrever especificações, delegar ao agente, revisar a saída em relação às especificações, iterar. Este loop é mais rápido do que escrever código manualmente para tarefas bem especificadas, mas mais lento para tarefas onde a especificação em si não é clara.</p>
+                        <p>O principal insight é que escrever especificações é um trabalho de engenharia. Requer compreender o sistema, antecipar casos extremos, definir limites e tomar decisões arquitetônicas. O agente lida com a tradução mecânica da especificação até a implementação – o engenheiro lida com o problema mais difícil de definir o que significa “correto”.</p>
+
+                        <h2>Especificações para diferentes ferramentas de agente</h2>
+                        <p>Ferramentas diferentes consomem especificações de maneira diferente. Claude Code funciona bem com especificações de redução in-line na conversa. O Codex espera descrições de tarefas que definam antecipadamente o escopo e os critérios de aceitação. O modo de agente do Cursor se beneficia de arquivos de regras que definem convenções persistentes, além de instruções por tarefa no chat.</p>
+                        <p>O padrão comum é: especificações globais (convenções, arquitetura, padrões) residem em arquivos de configuração que persistem entre tarefas. Especificações específicas da tarefa (o que construir agora, quais restrições se aplicam) são fornecidas por invocação. Ambas as camadas são importantes para uma saída consistente.</p>
+
+                        <h2>Quando as especificações falham</h2>
+                        <p>As especificações falham quando estão incompletas, contraditórias ou desconectadas da realidade da base de código. Um agente que recebe uma especificação que diz “seguir os padrões existentes”, mas não mostra esses padrões, inventará os seus próprios. Uma especificação que define o comportamento, mas não os pontos de integração, produzirá código isolado que não se ajusta ao sistema.</p>
+                        <p>A solução não são mais palavras – é mais precisão. Faça referência a arquivos específicos, nomeie funções específicas, aponte para testes específicos. As melhores especificações são curtas, concretas e verificáveis. Eles dizem ao agente como é o sucesso em termos que o agente pode verificar.</p>
+
+                        <h2>Desenvolvimento orientado por especificações dimensiona equipes</h2>
+                        <p>Quando as especificações são a interface, a engenharia se torna mais paralelizável. Engenheiros seniores escrevem especificações. Agentes (e engenheiros juniores) os implementam. A revisão se concentra em saber se a implementação corresponde à especificação e se a especificação estava correta. Não se trata de substituir engenheiros – trata-se de separar o trabalho cognitivo do design do trabalho mecânico da tradução.</p>
+                    </article>
+
+                    <section aria-labelledby="spec-related-title">
+                        <h2 id="spec-related-title">Leitura relacionada</h2>
+                        <div class="blog-related-grid">
+                            <article class="blog-related-card">
+                                <h3><a href="/pt/blog/autonomous-coding-agents/">Agentes de codificação autônoma: Claude Code, Codex e Cursor</a></h3>
+                                <p>Como os agentes autônomos consomem especificações e executam planos de várias etapas.</p>
+                            </article>
+                            <article class="blog-related-card">
+                                <h3><a href="/pt/blog/ai-native-engineering/">Engenharia nativa de IA: construindo sistemas que pressupõem a participação da IA</a></h3>
+                                <p>Práticas de engenharia projetadas para colaboração entre agentes humanos desde o início.</p>
+                            </article>
+                            <article class="blog-related-card">
+                                <h3><a href="/pt/blog/model-context-protocol-mcp/">MCP — Protocolo de Contexto do Modelo</a></h3>
+                                <p>Como MCP permite que as especificações façam referência a dados e ferramentas em tempo real em vez de contexto estático.</p>
+                            </article>
+                        </div>
+                    </section>
+                </div>
+
+                <aside class="blog-article-grid">
+                    <section class="blog-sidebar-card">
+                        <h2>Conclusões principais</h2>
+                        <ul>
+                            <li>As especificações são a interface entre a intenção humana e a execução do agente.</li>
+                            <li>A qualidade das especificações determina diretamente a qualidade de saída do agente.</li>
+                            <li>Engenharia de contexto é especificação com outro nome.</li>
+                            <li>O loop spec-implement-verify substitui write-debug-refactor.</li>
+                        </ul>
+                    </section>
+                    <section class="blog-sidebar-card">
+                        <h2>Mecanismos de especificação</h2>
+                        <ul>
+                            <li>CLAUDE.md — Claude Code contexto do projeto</li>
+                            <li>Regras de cursor — convenções persistentes</li>
+                            <li>Etapas de configuração do Codex – especificações do ambiente</li>
+                            <li>Prompts de tarefas — especificações por invocação</li>
+                        </ul>
+                    </section>
+                    <section class="blog-sidebar-card">
+                        <h2>Continue explorando</h2>
+                        <ul>
+                            <li><a href="/pt/blog/autonomous-coding-agents/">Agentes de codificação autônomos</a></li>
+                            <li><a href="/pt/blog/vibe-coding-vs-real-engineering/">Codificação Vibe vs Engenharia Real</a></li>
+                            <li><a href="/pt/blog/multi-ai-workflows/">Fluxos de trabalho multi-IA</a></li>
+                        </ul>
+                    </section>
+                </aside>
+            </div>
+        </main>
+    </div>
+
+    <footer class="footer-minimal">
+        <div class="footer-container">
+            <div class="footer-link-list" aria-label="Links de rodapé">
+                <a class="footer-link-pill" href="https://github.com/PkLavc" target="_blank" rel="noopener noreferrer">GitHub</a>
+                <a class="footer-link-pill" href="https://www.linkedin.com/in/pklavc/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+                <a class="footer-link-pill" href="mailto:contact@pklavc.com">E-mail</a>
+                <a class="footer-link-pill footer-link-pill-accent" href="https://github.com/sponsors/PkLavc" target="_blank" rel="noopener noreferrer">Apoiar no GitHub</a>
+            </div>
+            <p>
+                © <span data-current-year></span> Patrick Araujo
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        (function() {
+            document.querySelectorAll('[data-current-year]').forEach(function(node) {
+                node.textContent = String(new Date().getFullYear());
+            });
+        }());
+    </script>
+        <script src="/js/i18n.js?v=cc3ee695f1" defer></script>
+    <script src="/js/jquery.min.js?v=d482871a5e" defer></script>
+    <script src="/js/index.js?v=0b108f99d1" defer></script>
+
+    <div class="visually-hidden">
+        <p>Artigo de desenvolvimento orientado a especificações cobrindo especificações estruturadas para agentes de IA, engenharia de contexto, especificações executáveis ​​por máquina, Claude Code CLAUDE.md, regras de cursor, definições de tarefas do Codex, loop de verificação de implementação de especificações e práticas de engenharia para ferramentas de codificação autônomas.</p>
+    </div>
+</body>
+</html>

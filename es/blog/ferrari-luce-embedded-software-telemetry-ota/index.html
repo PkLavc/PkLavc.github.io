@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Patrick Araujo">
+    <title>Ferrari Luce y la capa de software: sistemas integrados, telemetría, OTA, IA e integración en la nube</title>
+    <meta name="description" content="Cómo un Ferrari eléctrico de próxima generación como el Luce depende del software integrado, la telemetría en tiempo real, las actualizaciones OTA, los sistemas distribuidos, la inferencia de IA, la integración en la nube, la UX digital y la ciberseguridad, explorado desde una perspectiva de ingeniería de TI.">
+    <meta name="keywords" content="Ferrari Luce, software integrado, telemetría, actualizaciones OTA, sistemas distribuidos, IA automotriz, integración en la nube, UX digital, ciberseguridad, software para vehículos eléctricos">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://pklavc.com/es/blog/ferrari-luce-embedded-software-telemetry-ota/">
+    <link rel="alternate" href="https://pklavc.com/blog/ferrari-luce-embedded-software-telemetry-ota/" hreflang="en">
+    <link rel="alternate" href="https://pklavc.com/pt/blog/ferrari-luce-embedded-software-telemetry-ota/" hreflang="pt-BR">
+    <link rel="alternate" href="https://pklavc.com/es/blog/ferrari-luce-embedded-software-telemetry-ota/" hreflang="es">
+    <link rel="alternate" href="https://pklavc.com/blog/ferrari-luce-embedded-software-telemetry-ota/" hreflang="x-default">
+
+
+
+<meta property="og:title" content="Ferrari Luce y la capa de software: sistemas integrados, telemetría, OTA, IA e integración en la nube">
+    <meta property="og:description" content="Un análisis centrado en TI de los sistemas de software que definen un Ferrari eléctrico, desde el código integrado hasta las tuberías en la nube.">
+    <meta property="og:url" content="https://pklavc.com/es/blog/ferrari-luce-embedded-software-telemetry-ota/">
+    <meta property="og:type" content="article">
+    <meta property="article:published_time" content="2026-05-28">
+    <meta property="article:modified_time" content="2026-05-28">
+    <meta property="article:author" content="Patrick Araujo">
+    <meta property="article:section" content="Automotive Software Engineering">
+    <meta property="article:tag" content="software integrado">
+    <meta property="article:tag" content="telemetria">
+    <meta property="article:tag" content="Actualizaciones OTA">
+    <meta property="article:tag" content="Ferrari Luce">
+    <meta property="og:image" content="https://pklavc.com/images/lavc.webp?v=5e84850f26">
+    <meta property="og:image:width" content="1024">
+    <meta property="og:image:height" content="1024">
+    <meta property="og:site_name" content="Patrick Araujo">
+    <meta property="og:locale" content="es_ES">
+    <meta property="og:image:alt" content="Retrato de marca del ingeniero backend y especialista en automatización Patrick Araujo">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Ferrari Luce: Software integrado, telemetría, OTA, IA y nube">
+    <meta name="twitter:description" content="Cómo los sistemas integrados, las canalizaciones OTA, la telemetría distribuida, la inferencia de IA y la integración en la nube definen la identidad del software de un Ferrari eléctrico.">
+    <meta name="twitter:image" content="https://pklavc.com/images/lavc.webp?v=5e84850f26">
+    <meta name="twitter:image:alt" content="Retrato de marca del ingeniero backend y especialista en automatización Patrick Araujo">
+    <meta name="twitter:site" content="@PkLavc">
+    <meta name="twitter:creator" content="@PkLavc">
+
+    <link rel="icon" type="image/svg+xml" href="https://pklavc.com/images/favicon.svg?v=d15fe4e492">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Monoton&amp;family=Poppins:wght@500;600;700&amp;family=Raleway:wght@300&amp;display=swap" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Monoton&amp;family=Poppins:wght@500;600;700&amp;family=Raleway:wght@300&amp;display=swap"></noscript>
+    <link rel="stylesheet" href="/css/global.css?v=55251d9722">
+    <link rel="stylesheet" href="/css/blog.css?v=560c7eaf05">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.2.6/gsap.min.js" defer></script>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@graph": [
+            {
+                "@type": "BlogPosting",
+                "headline": "Ferrari Luce and the Software Layer: Embedded Systems, Telemetry, OTA, AI, and Cloud Integration",
+                "description": "How a next-generation electric Ferrari like the Luce depends on embedded software, real-time telemetry, OTA updates, distributed systems, AI inference, cloud integration, digital UX, and cybersecurity.",
+                "image": "https://pklavc.com/images/lavc.webp?v=5e84850f26",
+                "datePublished": "2026-05-28",
+                "dateModified": "2026-05-28",
+                "author": {
+                    "@type": "Person",
+                    "name": "Patrick Araujo"
+                },
+                "publisher": {
+                    "@type": "Person",
+                    "name": "Patrick Araujo"
+                },
+                "mainEntityOfPage": "https://pklavc.com/es/blog/ferrari-luce-embedded-software-telemetry-ota/",
+                "url": "https://pklavc.com/es/blog/ferrari-luce-embedded-software-telemetry-ota/",
+                "keywords": [
+                    "ferrari luce software",
+                    "embedded software automotive",
+                    "telemetry electric vehicle",
+                    "ota updates automotive",
+                    "distributed systems car",
+                    "ai automotive inference",
+                    "cloud integration vehicle",
+                    "digital ux automotive",
+                    "cybersecurity electric car"
+                ]
+            },
+            {
+                "@type": "BreadcrumbList",
+                "itemListElement": [
+                    {
+                        "@type": "ListItem",
+                        "position": 1,
+                        "name": "Home",
+                        "item": "https://pklavc.com/"
+                    },
+                    {
+                        "@type": "ListItem",
+                        "position": 2,
+                        "name": "Blog",
+                        "item": "https://pklavc.com/es/blog/"
+                    },
+                    {
+                        "@type": "ListItem",
+                        "position": 3,
+                        "name": "Ferrari Luce Embedded Software",
+                        "item": "https://pklavc.com/es/blog/ferrari-luce-embedded-software-telemetry-ota/"
+                    }
+                ]
+            }
+        ]
+    }
+    </script>
+</head>
+<body class="blog-layout seo-layout">
+    <div id="breaker"></div>
+    <div id="breaker-two"></div>
+    <div id="all">
+        <div class="cursor"></div>
+        <div id="navigation-content" role="navigation" aria-label="Navegación primaria">
+            <div class="logo"></div>
+            <div class="navigation-links">
+                <a href="/es/" data-text="INICIO" id="home-link">INICIO</a>
+                <a href="/es/sobre/" data-text="SOBRE" id="about-link">SOBRE</a>
+                <a href="/es/proyectos/" data-text="PROYECTOS" id="projects-link">PROYECTOS</a>
+                <a href="/es/blog/" data-text="BLOG" id="blog-link">BLOG</a>
+            </div>
+        </div>
+        <div id="navigation-bar">
+            <div class="menubar">
+                <span class="first-span"></span>
+                <span class="second-span"></span>
+                <span class="third-span"></span>
+            </div>
+        </div>
+
+        <main class="blog-shell" role="main">
+            <div class="blog-columns">
+                <div>
+                    <article class="blog-post-hero">
+                        <div class="blog-breadcrumb" aria-label="Miga de pan">
+                            <a href="/es/">Inicio</a>
+                            <span>/</span>
+                            <a href="/es/blog/">Blog</a>
+                            <span>/</span>
+                            <span aria-current="page">Ferrari Luce Capa de software</span>
+                        </div>
+                        <span class="blog-kicker">Ingeniería de software automotriz</span>
+                        <h1>Ferrari Luce y la capa de software: sistemas integrados, telemetría, OTA, IA e integración en la nube</h1>
+                        <p>El Ferrari Luce representa el primer vehículo totalmente eléctrico de Ferrari y, con él, un cambio fundamental en lo que define a un Ferrari. Donde antes dominaba la ingeniería de combustión, ahora el software ocupa un lugar central. Esta publicación explora los sistemas de TI que hacen posible un superdeportivo eléctrico: software integrado, canales de telemetría, actualizaciones inalámbricas, computación distribuida, inteligencia artificial, integración en la nube, experiencia de usuario digital y ciberseguridad.</p>
+                        <div class="blog-post-meta">
+                            <span>Publicado el 28 de mayo de 2026</span>
+                            <span>14 minutos de lectura</span>
+                            <span>Ingeniería de software automotriz</span>
+                        </div>
+                    </article>
+
+                    <article class="blog-article">
+                        <h2>Software integrado: la base de todo vehículo eléctrico</h2>
+                        <p>Un vehículo eléctrico funciona con software en cada capa. El sistema de gestión de batería (BMS), los controladores de motor, la gestión térmica, la lógica de frenado regenerativo y el control del chasis ejecutan firmware escrito para restricciones en tiempo real. En un vehículo como el Ferrari Luce, estos sistemas integrados deben ofrecer un comportamiento determinista con una precisión de nivel de microsegundos mientras funcionan en condiciones extremas de temperatura, vibración e interferencia electromagnética.</p>
+                        <p>El software integrado en contextos automotrices es fundamentalmente diferente del software empresarial. Funciona con microcontroladores con memoria y potencia de procesamiento limitadas. Debe cumplir con estándares de seguridad funcional como ISO 26262. No puede fallar, reiniciarse lentamente ni perder memoria con el tiempo. Cada función debe validarse según el tiempo de ejecución en el peor de los casos (WCET) y el código debe poder rastrearse hasta la documentación de requisitos.</p>
+                        <p>Para Luce, el software integrado gobierna cómo los motores eléctricos entregan torque, cómo se equilibran las celdas de la batería durante la carga y descarga, cómo responden los sistemas de enfriamiento a eventos térmicos y cómo funciona el arbitraje de frenado crítico para la seguridad cuando varios sistemas solicitan desaceleración simultáneamente. Esta no es una lógica de capa de aplicación: es programación de sistemas donde el fallo significa daño físico.</p>
+
+                        <div class="blog-callout">
+                            En un Ferrari eléctrico, el software no es una capa de funciones encima del hardware. El software es el plano de control principal que determina el rendimiento, la seguridad y el carácter de conducción.
+                        </div>
+
+                        <h2>Telemetría: datos en tiempo real desde el vehículo a la nube</h2>
+                        <p>La telemetría en un vehículo eléctrico moderno va mucho más allá de lo que popularizó la Fórmula 1. El Ferrari Luce probablemente genera miles de puntos de datos por segundo: voltajes de las celdas de la batería, temperaturas en docenas de sensores, RPM del motor, eficiencia del inversor, presión de los neumáticos, posición de la suspensión, coordenadas GPS, lecturas del acelerómetro y señales de entrada del conductor.</p>
+                        <p>Desde una perspectiva de TI, la telemetría presenta un problema clásico de transmisión de datos. Los datos deben recopilarse con alta frecuencia a partir de sensores distribuidos, agregarse localmente (procesamiento de borde), priorizarse por criticidad y transmitirse a la infraestructura de la nube. El vehículo no puede depender de una conectividad constante, por lo que las estrategias de almacenamiento y reenvío locales son esenciales.</p>
+                        <p>El lado de la nube debe asimilar esta telemetría a escala, potencialmente desde miles de vehículos simultáneamente. Las bases de datos de series temporales, los marcos de procesamiento de flujos y las arquitecturas basadas en eventos manejan el volumen. Los datos alimentan modelos de mantenimiento predictivo, análisis de rendimiento, detección de anomalías en toda la flota y paneles de control orientados al cliente que muestran el historial de carga, la eficiencia de los viajes y los patrones de conducción.</p>
+                        <p>La herencia de Ferrari en la F1 les otorga una profunda experiencia en telemetría. La transición a los coches de carretera significa adaptar los sistemas diseñados para un solo coche en una pista a una flota global que funcione las 24 horas del día, los 7 días de la semana con conectividad variable.</p>
+
+                        <h2>Actualizaciones OTA: evolución del coche tras la entrega</h2>
+                        <p>Las actualizaciones inalámbricas cambian fundamentalmente la relación entre el fabricante y el vehículo. El Ferrari Luce no es un producto estático en el momento de su entrega, es una plataforma que evoluciona. OTA permite corregir errores, mejorar el rendimiento, nuevas funciones, parches de seguridad e incluso realizar ajustes en el carácter de conducción sin tener que visitar el concesionario.</p>
+                        <p>El desafío de ingeniería es significativo. Los sistemas OTA deben manejar descargas parciales (pérdida de conectividad durante la transferencia), validar la integridad del firmware (firmas criptográficas), admitir la reversión si falla una actualización, administrar múltiples objetivos de ECU con diferentes cadencias de actualización y garantizar que el vehículo permanezca seguro y manejable en cada punto durante el proceso de actualización.</p>
+                        <p>Desde una perspectiva de arquitectura de TI, OTA requiere un backend sólido: infraestructura de firma y empaquetado de actualizaciones, mecanismos de implementación por etapas (implementaciones canarias en un subconjunto de vehículos primero), bases de datos de administración de dispositivos que rastrean la versión actual del software de cada vehículo y sistemas de monitoreo que detectan anomalías posteriores a la actualización en toda la flota.</p>
+                        <p>Hay mucho en juego. Una actualización OTA fallida en un teléfono es un inconveniente. Una actualización OTA fallida en un vehículo que viaja a 200 km/h es un incidente de seguridad. Esto exige un rigor de ingeniería que supera la mayoría de los procesos de implementación de software en TI empresarial.</p>
+
+                        <h2>Sistemas distribuidos: el coche como red</h2>
+                        <p>Un vehículo eléctrico moderno es un sistema distribuido. Docenas de unidades de control electrónico (ECU) se comunican a través de múltiples arquitecturas de bus (CAN, CAN-FD, Ethernet, LIN). Cada ECU es un nodo informático independiente con su propio firmware, modos de falla y ciclo de vida de actualización. El vehículo debe mantener un estado constante en estos nodos incluso cuando la comunicación se degrada.</p>
+                        <p>Esto refleja los desafíos de la computación distribuida: consenso, consistencia eventual, tolerancia a la partición y degradación gradual. Cuando la ECU de administración de la batería detecta un evento térmico, esa información debe propagarse al controlador del motor, al sistema de enfriamiento, al tablero y a los sistemas de seguridad en milisegundos. El sistema debe manejar la pérdida de mensajes, la congestión del autobús y las fallas de la ECU sin comprometer la seguridad del vehículo.</p>
+                        <p>Para Ferrari Luce, el desafío de los sistemas distribuidos se ve amplificado por los requisitos de rendimiento. La vectorización del par entre múltiples motores, la aerodinámica activa, la suspensión adaptativa y el frenado regenerativo requieren comunicación coordinada en tiempo real entre ECU que pueden estar físicamente separadas en el chasis del vehículo.</p>
+
+                        <h2>Inteligencia artificial: de los modelos en la nube a la inferencia perimetral</h2>
+                        <p>La IA en la automoción no es un sistema único: abarca varias capas. En el borde (a bordo del vehículo), las redes neuronales manejan tareas de percepción como el monitoreo del conductor, la gestión predictiva de la energía y la asistencia a la conducción adaptativa. Estos modelos deben realizar inferencias dentro de estrictos presupuestos de latencia en hardware especializado (NPU, GPU) con garantías de ejecución deterministas.</p>
+                        <p>En la nube, la IA procesa datos de telemetría de toda la flota para el mantenimiento predictivo, identifica patrones en la degradación de la batería en función de las condiciones climáticas, optimiza las recomendaciones de carga y entrena modelos que luego se implementan en los vehículos a través de actualizaciones OTA. Esto crea un ciclo de aprendizaje continuo: los vehículos generan datos, los sistemas en la nube aprenden de ellos y los modelos mejorados se devuelven a la flota.</p>
+                        <p>Para un vehículo como el Ferrari Luce, la IA probablemente también influya en la dinámica de conducción. La distribución predictiva del par basada en las condiciones de la carretera, las estrategias de regeneración adaptativa que aprenden las preferencias del conductor y la gestión térmica inteligente que anticipa sesiones de conducción de alto rendimiento son aplicaciones plausibles en las que la IA mejora la experiencia del propietario sin requerir la intervención del conductor.</p>
+
+                        <h2>Integración en la nube: el vehículo como punto final conectado</h2>
+                        <p>El Ferrari Luce existe dentro de un ecosistema de nube. Se comunica con los servicios backend de Ferrari para la ingesta de telemetría, distribución OTA, autenticación, diagnóstico remoto y aplicaciones móviles orientadas al cliente. Esta integración requiere protocolos de comunicación seguros, confiables y eficientes.</p>
+                        <p>Desde una perspectiva de TI, el vehículo es un punto final de IoT con limitaciones únicas: conectividad intermitente, limitaciones en el presupuesto de energía para el hardware de comunicación, necesidad de autenticación TLS mutua y regulaciones de privacidad de datos (GDPR para propietarios europeos, CCPA para California). El backend debe manejar la transición de los vehículos entre redes celulares, WiFi en el hogar y operación fuera de línea sin problemas.</p>
+                        <p>La arquitectura de nube para vehículos conectados normalmente incluye intermediarios de mensajes (MQTT o AMQP), puertas de enlace API, microservicios para diferentes dominios funcionales (telemetría, OTA, cuentas de usuario, diagnóstico) y lagos de datos para análisis a largo plazo. El desafío de la escala crece linealmente con el tamaño de la flota y exponencialmente con la granularidad de los datos.</p>
+
+                        <h2>Digital UX: la cabina como interfaz de software</h2>
+                        <p>La experiencia del conductor en Ferrari Luce está definida por el software. Los grupos de instrumentos digitales, los sistemas de información y entretenimiento, las pantallas frontales y los modos de conducción configurables son aplicaciones de software que se ejecutan en hardware integrado. La UX debe transmitir datos de rendimiento, estado del vehículo, navegación y entretenimiento sin abrumar al conductor ni comprometer la seguridad.</p>
+                        <p>Este es un desafío de UX único: la interfaz debe funcionar bajo la luz solar directa, en ángulos de visión extremos, mientras el usuario realiza una tarea crítica para la seguridad (conducir). La latencia de respuesta debe ser imperceptible. La jerarquía visual debe priorizar la información crítica (velocidad, advertencias, alcance) sobre las características de conveniencia (medios, clima). Y el lenguaje de diseño debe reflejar la identidad de marca de Ferrari, algo que no puede basarse en marcos genéricos de UI automotrices.</p>
+                        <p>Las cabinas definidas por software también permiten la personalización. Los perfiles de conductor que recuerdan la posición del asiento, los ángulos de los espejos, las preferencias de visualización, las selecciones de modo de conducción y la configuración del clima se sincronizan a través de cuentas en la nube. Varios conductores que comparten un vehículo obtienen cada uno su propia experiencia. Esto requiere una autenticación segura del usuario a nivel del vehículo y una infraestructura de sincronización de perfiles en la nube.</p>
+
+                        <h2>Seguridad: proteger un superdeportivo conectado</h2>
+                        <p>La ciberseguridad en los vehículos conectados no es opcional: es fundamental para la seguridad. El Ferrari Luce se conecta a redes celulares, WiFi, Bluetooth y, potencialmente, comunicación de vehículo a todo (V2X). Cada interfaz de conectividad es una superficie de ataque. Un vehículo comprometido podría ser controlado, rastreado o inutilizado de forma remota.</p>
+                        <p>Se aplican estrategias de defensa en profundidad: segmentación de la red entre dominios de información y entretenimiento y dominios críticos para la seguridad, módulos de seguridad de hardware (HSM) para el almacenamiento de claves criptográficas, cadenas de arranque seguras que verifican la integridad del firmware antes de la ejecución, sistemas de detección de intrusiones que monitorean el tráfico del bus en busca de mensajes anómalos y centros de operaciones de seguridad que monitorean toda la flota para detectar ataques coordinados.</p>
+                        <p>Los estándares de ciberseguridad automotriz como ISO/SAE 21434 y las regulaciones UNECE WP.29 ahora requieren que los fabricantes implementen sistemas de gestión de ciberseguridad en todo el ciclo de vida del vehículo, desde el diseño hasta la producción, la operación y el desmantelamiento. Para un objetivo de alto valor como un Ferrari, el modelo de amenaza incluye adversarios sofisticados con capacidades de Estado-nación.</p>
+                        <p>La propia infraestructura de actualización OTA debe estar protegida. Si un atacante compromete las claves de firma de actualizaciones o los servidores de distribución, podría implementar firmware malicioso en toda la flota simultáneamente. Esta es la razón por la que los sistemas OTA automotrices requieren una confianza basada en el hardware, ceremonias de firma entre múltiples partes e implementaciones por etapas con detección de anomalías.</p>
+                    </article>
+
+                    <section aria-labelledby="ferrari-embedded-related-title">
+                        <h2 id="ferrari-embedded-related-title">Lectura relacionada</h2>
+                        <div class="blog-related-grid">
+                            <article class="blog-related-card">
+                                <h3><a href="/es/blog/ferrari-luce-ecus-sensors-can-ethernet-realtime/">Ferrari Luce: ECU, sensores, CAN/Ethernet y computación en tiempo real</a></h3>
+                                <p>Profundice en la interfaz hardware-software: arquitecturas de ECU, redes de sensores, protocolos de autobuses automotrices y diseño de sistemas en tiempo real.</p>
+                            </article>
+                            <article class="blog-related-card">
+                                <h3><a href="/es/blog/ferrari-luce-critical-systems-fault-tolerance-observability/">Ferrari Luce: Sistemas críticos, tolerancia a fallos y observabilidad integrada</a></h3>
+                                <p>Cómo el software crítico para la seguridad maneja la baja latencia, la tolerancia a fallas, la OTA segura y las limitaciones de observabilidad en un superdeportivo eléctrico.</p>
+                            </article>
+                            <article class="blog-related-card">
+                                <h3><a href="/es/blog/ferrari-luce-electric-software-stack-speculation/">La probable pila de software de un Ferrari eléctrico</a></h3>
+                                <p>Análisis especulativo de los lenguajes, sistemas operativos, marcos y cadenas de herramientas que probablemente impulsan el Ferrari Luce.</p>
+                            </article>
+                        </div>
+                    </section>
+                </div>
+
+                <aside class="blog-article-grid">
+                    <section class="blog-sidebar-card">
+                        <h2>Temas centrales</h2>
+                        <ul>
+                            <li>Software integrado y limitaciones en tiempo real</li>
+                            <li>Tuberías de telemetría del vehículo a la nube</li>
+                            <li>Arquitectura y seguridad de actualización OTA</li>
+                            <li>Sistemas distribuidos dentro del vehículo.</li>
+                            <li>IA en el borde y en la nube</li>
+                            <li>Integración en la nube y protocolos de IoT</li>
+                            <li>UX digital para cabinas de alto rendimiento</li>
+                            <li>Ciberseguridad y modelado de amenazas</li>
+                        </ul>
+                    </section>
+                    <section class="blog-sidebar-card">
+                        <h2>Estándares clave</h2>
+                        <ul>
+                            <li>ISO 26262 — Seguridad funcional</li>
+                            <li>ISO/SAE 21434 — Ciberseguridad</li>
+                            <li>UNECE WP.29 — Reglamento de vehículos</li>
+                            <li>AUTOSAR - Arquitectura de software</li>
+                        </ul>
+                    </section>
+                    <section class="blog-sidebar-card">
+                        <h2>Continuar explorando</h2>
+                        <ul>
+                            <li><a href="/es/blog/ferrari-luce-ecus-sensors-can-ethernet-realtime/">ECU y sistemas en tiempo real</a></li>
+                            <li><a href="/es/blog/ferrari-luce-electric-software-stack-speculation/">Pila de software Ferrari eléctrico</a></li>
+                            <li><a href="/es/blog/ferrari-luce-software-recalls-cybersecurity-risks/">Retiros de software y ciberseguridad</a></li>
+                        </ul>
+                    </section>
+                </aside>
+            </div>
+        </main>
+    </div>
+
+    <footer class="footer-minimal">
+        <div class="footer-container">
+            <div class="footer-link-list" aria-label="Enlaces de pie de página">
+                <a class="footer-link-pill" href="https://github.com/PkLavc" target="_blank" rel="noopener noreferrer">GitHub</a>
+                <a class="footer-link-pill" href="https://www.linkedin.com/in/pklavc/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+                <a class="footer-link-pill" href="mailto:contact@pklavc.com">Correo electrónico</a>
+                <a class="footer-link-pill footer-link-pill-accent" href="https://github.com/sponsors/PkLavc" target="_blank" rel="noopener noreferrer">Apoyar en GitHub</a>
+            </div>
+            <p>
+                © <span data-current-year></span> Patrick Araujo
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        (function() {
+            document.querySelectorAll('[data-current-year]').forEach(function(node) {
+                node.textContent = String(new Date().getFullYear());
+            });
+        }());
+    </script>
+        <script src="/js/i18n.js?v=cc3ee695f1" defer></script>
+    <script src="/js/jquery.min.js?v=d482871a5e" defer></script>
+    <script src="/js/index.js?v=0b108f99d1" defer></script>
+
+    <div class="visually-hidden">
+        <p>Ferrari Luce artículo de ingeniería de software integrado que cubre telemetría en tiempo real, actualizaciones inalámbricas, sistemas de vehículos distribuidos, inferencia de inteligencia artificial, arquitectura de integración en la nube, experiencia de usuario de cabina digital y ciberseguridad automotriz desde una perspectiva de ingeniería de TI.</p>
+    </div>
+</body>
+</html>

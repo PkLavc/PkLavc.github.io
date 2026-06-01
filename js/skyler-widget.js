@@ -7,26 +7,193 @@
 
   var els = {};
 
+  var COPY = {
+    en: {
+      launcherLabel: "Open or close Skyler chat",
+      launcherAlt: "Skyler chat icon",
+      widgetLabel: "Skyler chat widget",
+      subtitle: "Portfolio assistant",
+      voiceOn: "Voice on",
+      voiceOff: "Voice off",
+      closeChat: "Close chat",
+      statusPrompt: "Ask about projects, stack, and experience.",
+      placeholder: "Type your message here...",
+      sendMessage: "Send message",
+      thinking: "Thinking...",
+      noResponse: "No response.",
+      unavailableMessage: "I could not answer right now.",
+      unavailableStatus: "Chat temporarily unavailable.",
+      voiceEnabledStatus: "Voice mode enabled.",
+      intro: "Hi, I am Skyler. Ask about Patrick's experience, projects, stack, or architecture work.",
+      links: {
+        email: "Send Email",
+        linkedin: "Open LinkedIn",
+        github: "View GitHub",
+        sponsor: "Sponsor Patrick",
+        portfolio: "Open Portfolio",
+        projects: "Browse Projects",
+        blog: "Read Blog",
+        about: "About Patrick",
+        lavc: "View Lavc Systems",
+        skylerProject: "View Skyler Assistant",
+        skylerApp: "Open Skyler Assistant",
+        codepulse: "View CodePulse",
+        googleAuth: "View Google Auth Worker",
+        zoho: "View Zoho Worker",
+        hablla: "View Hablla Worker",
+        zenvia: "View Zenvia Worker",
+        sige: "View SIGE Worker",
+        omie: "View Omie Worker",
+        saas: "View SaaS Platform",
+        cipher: "View Cipher Gate",
+        eventDriven: "View Event-Driven Service",
+        aegis: "View Aegis Sentinel",
+        cloud: "View Cloud Deployment",
+        os: "View OS Optimizer",
+        githubRepo: "View on GitHub",
+        project: "View Project",
+        post: "Read Post",
+        page: "Visit Page",
+        link: "Visit Link"
+      }
+    },
+    pt: {
+      launcherLabel: "Abrir ou fechar chat da Skyler",
+      launcherAlt: "Ícone do chat da Skyler",
+      widgetLabel: "Widget de chat da Skyler",
+      subtitle: "Assistente de portfólio",
+      voiceOn: "Voz ativada",
+      voiceOff: "Voz desativada",
+      closeChat: "Fechar chat",
+      statusPrompt: "Pergunte sobre projetos, stack e experiência.",
+      placeholder: "Digite sua mensagem aqui...",
+      sendMessage: "Enviar mensagem",
+      thinking: "Pensando...",
+      noResponse: "Sem resposta.",
+      unavailableMessage: "Não consegui responder agora.",
+      unavailableStatus: "Chat temporariamente indisponível.",
+      voiceEnabledStatus: "Modo de voz ativado.",
+      intro: "Oi, eu sou a Skyler. Pergunte sobre a experiência, os projetos, a stack ou o trabalho de arquitetura do Patrick.",
+      links: {
+        email: "Enviar e-mail",
+        linkedin: "Abrir LinkedIn",
+        github: "Ver GitHub",
+        sponsor: "Apoiar Patrick",
+        portfolio: "Abrir portfólio",
+        projects: "Ver projetos",
+        blog: "Ler blog",
+        about: "Sobre Patrick",
+        lavc: "Ver Lavc Systems",
+        skylerProject: "Ver Skyler Assistant",
+        skylerApp: "Abrir Skyler Assistant",
+        codepulse: "Ver CodePulse",
+        googleAuth: "Ver Google Auth Worker",
+        zoho: "Ver Zoho Worker",
+        hablla: "Ver Hablla Worker",
+        zenvia: "Ver Zenvia Worker",
+        sige: "Ver SIGE Worker",
+        omie: "Ver Omie Worker",
+        saas: "Ver plataforma SaaS",
+        cipher: "Ver Cipher Gate",
+        eventDriven: "Ver Event-Driven Service",
+        aegis: "Ver Aegis Sentinel",
+        cloud: "Ver Cloud Deployment",
+        os: "Ver OS Optimizer",
+        githubRepo: "Ver no GitHub",
+        project: "Ver projeto",
+        post: "Ler artigo",
+        page: "Abrir página",
+        link: "Abrir link"
+      }
+    },
+    es: {
+      launcherLabel: "Abrir o cerrar el chat de Skyler",
+      launcherAlt: "Ícono del chat de Skyler",
+      widgetLabel: "Widget de chat de Skyler",
+      subtitle: "Asistente de portafolio",
+      voiceOn: "Voz activada",
+      voiceOff: "Voz desactivada",
+      closeChat: "Cerrar chat",
+      statusPrompt: "Pregunta sobre proyectos, stack y experiencia.",
+      placeholder: "Escribe tu mensaje aquí...",
+      sendMessage: "Enviar mensaje",
+      thinking: "Pensando...",
+      noResponse: "Sin respuesta.",
+      unavailableMessage: "No pude responder ahora.",
+      unavailableStatus: "Chat temporalmente no disponible.",
+      voiceEnabledStatus: "Modo de voz activado.",
+      intro: "Hola, soy Skyler. Pregunta sobre la experiencia, los proyectos, el stack o el trabajo de arquitectura de Patrick.",
+      links: {
+        email: "Enviar correo",
+        linkedin: "Abrir LinkedIn",
+        github: "Ver GitHub",
+        sponsor: "Apoyar a Patrick",
+        portfolio: "Abrir portafolio",
+        projects: "Ver proyectos",
+        blog: "Leer blog",
+        about: "Sobre Patrick",
+        lavc: "Ver Lavc Systems",
+        skylerProject: "Ver Skyler Assistant",
+        skylerApp: "Abrir Skyler Assistant",
+        codepulse: "Ver CodePulse",
+        googleAuth: "Ver Google Auth Worker",
+        zoho: "Ver Zoho Worker",
+        hablla: "Ver Hablla Worker",
+        zenvia: "Ver Zenvia Worker",
+        sige: "Ver SIGE Worker",
+        omie: "Ver Omie Worker",
+        saas: "Ver plataforma SaaS",
+        cipher: "Ver Cipher Gate",
+        eventDriven: "Ver Event-Driven Service",
+        aegis: "Ver Aegis Sentinel",
+        cloud: "Ver Cloud Deployment",
+        os: "Ver OS Optimizer",
+        githubRepo: "Ver en GitHub",
+        project: "Ver proyecto",
+        post: "Leer artículo",
+        page: "Abrir página",
+        link: "Abrir enlace"
+      }
+    }
+  };
+
+  function getLocale() {
+    if (window.PkLavcI18n && typeof window.PkLavcI18n.getCurrentLanguage === "function") {
+      return window.PkLavcI18n.getCurrentLanguage();
+    }
+
+    var path = window.location.pathname || "/";
+    if (/^\/pt(?:\/|$)/i.test(path)) return "pt";
+    if (/^\/es(?:\/|$)/i.test(path)) return "es";
+    return "en";
+  }
+
+  function getCopy() {
+    return COPY[getLocale()] || COPY.en;
+  }
+
   function shouldRunWidget() {
     var path = window.location.pathname || "/";
-    return !/^\/skyler-assistant\/?$/i.test(path);
+    return !/^\/(?:(?:pt|es)\/)?skyler-assistant\/?$/i.test(path);
   }
 
   function getVoiceToggleMarkup(isEnabled) {
+    var copy = getCopy();
     return [
       '<span class="about-chat-action-icon about-chat-voice-icon" aria-hidden="true">',
       '  <span class="about-chat-voice-slash"></span>',
       '</span>',
       '<span class="about-chat-action-label">',
-      isEnabled ? "Voice on" : "Voice off",
+      isEnabled ? copy.voiceOn : copy.voiceOff,
       '</span>'
     ].join("");
   }
 
   function getCloseButtonMarkup() {
+    var copy = getCopy();
     return [
       '<span class="about-chat-close-icon" aria-hidden="true"></span>',
-      '<span class="about-chat-action-label">Close chat</span>'
+      '<span class="about-chat-action-label">' + copy.closeChat + '</span>'
     ].join("");
   }
 
@@ -35,39 +202,40 @@
       return;
     }
 
+    var copy = getCopy();
     var launcher = document.createElement("button");
     launcher.id = "about-chat-launcher";
     launcher.className = "about-chat-launcher";
     launcher.type = "button";
     launcher.setAttribute("aria-controls", "about-chat-widget");
     launcher.setAttribute("aria-expanded", "false");
-    launcher.setAttribute("aria-label", "Open or close Skyler chat");
-    launcher.innerHTML = '<img src="/images/icon_skyler.webp?v=4b80b918a0" alt="Skyler chat icon" width="56" height="56" loading="eager" decoding="async">';
+    launcher.setAttribute("aria-label", copy.launcherLabel);
+    launcher.innerHTML = '<img src="/images/icon_skyler.webp?v=4b80b918a0" alt="' + copy.launcherAlt + '" width="56" height="56" loading="eager" decoding="async">';
 
     var widget = document.createElement("section");
     widget.id = "about-chat-widget";
     widget.className = "about-chat-widget";
-    widget.setAttribute("aria-label", "Skyler chat widget");
+    widget.setAttribute("aria-label", copy.widgetLabel);
     widget.setAttribute("aria-hidden", "true");
     widget.inert = true;
     widget.innerHTML = [
       '<header class="about-chat-header">',
       '  <div class="about-chat-title">',
       '    <strong>Skyler</strong>',
-      '    <span>Portfolio assistant</span>',
+      '    <span>' + copy.subtitle + '</span>',
       '  </div>',
       '  <div class="about-chat-actions">',
-      '    <button id="about-chat-voice-toggle" class="about-chat-action-btn about-chat-voice-toggle" type="button" aria-pressed="false" aria-label="Voice off" title="Voice off">' + getVoiceToggleMarkup(false) + '</button>',
-      '    <button id="about-chat-close" class="about-chat-action-btn about-chat-close-btn" type="button" aria-label="Close chat" title="Close chat">' + getCloseButtonMarkup() + '</button>',
+      '    <button id="about-chat-voice-toggle" class="about-chat-action-btn about-chat-voice-toggle" type="button" aria-pressed="false" aria-label="' + copy.voiceOff + '" title="' + copy.voiceOff + '">' + getVoiceToggleMarkup(false) + '</button>',
+      '    <button id="about-chat-close" class="about-chat-action-btn about-chat-close-btn" type="button" aria-label="' + copy.closeChat + '" title="' + copy.closeChat + '">' + getCloseButtonMarkup() + '</button>',
       '  </div>',
       '</header>',
       '<div id="about-chat-log" class="about-chat-log" aria-live="polite"></div>',
-      '<div id="about-chat-status" class="about-chat-status">Ask about projects, stack, and experience.</div>',
+      '<div id="about-chat-status" class="about-chat-status">' + copy.statusPrompt + '</div>',
       '<form id="about-chat-form" class="about-chat-form">',
       '  <div class="about-chat-input-wrap">',
-      '    <textarea id="about-chat-input" class="about-chat-input" placeholder="Type your message here..."></textarea>',
+      '    <textarea id="about-chat-input" class="about-chat-input" placeholder="' + copy.placeholder + '"></textarea>',
       '  </div>',
-      '  <button id="about-chat-send" class="about-chat-send" type="submit" aria-label="Send message" title="Send message"><svg class="about-chat-send-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h8"></path><path d="m12 5 7 7-7 7"></path></svg></button>',
+      '  <button id="about-chat-send" class="about-chat-send" type="submit" aria-label="' + copy.sendMessage + '" title="' + copy.sendMessage + '"><svg class="about-chat-send-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h8"></path><path d="m12 5 7 7-7 7"></path></svg></button>',
       '</form>'
     ].join("");
 
@@ -85,6 +253,41 @@
     els.form = document.getElementById("about-chat-form");
     els.input = document.getElementById("about-chat-input");
     els.send = document.getElementById("about-chat-send");
+  }
+
+  function localizeExistingMarkup() {
+    var copy = getCopy();
+    var title = els.widget ? els.widget.querySelector(".about-chat-title span") : null;
+    var launcherImage = els.launcher ? els.launcher.querySelector("img") : null;
+
+    if (els.launcher) {
+      els.launcher.setAttribute("aria-label", copy.launcherLabel);
+    }
+
+    if (launcherImage) {
+      launcherImage.alt = copy.launcherAlt;
+    }
+
+    if (els.widget) {
+      els.widget.setAttribute("aria-label", copy.widgetLabel);
+    }
+
+    if (title) {
+      title.textContent = copy.subtitle;
+    }
+
+    if (els.status && !els.status.textContent.trim()) {
+      els.status.textContent = copy.statusPrompt;
+    }
+
+    if (els.input) {
+      els.input.setAttribute("placeholder", copy.placeholder);
+    }
+
+    if (els.send) {
+      els.send.setAttribute("aria-label", copy.sendMessage);
+      els.send.setAttribute("title", copy.sendMessage);
+    }
   }
 
   function randomBetween(min, max) {
@@ -183,47 +386,48 @@
       .replace(/"/g, "&quot;");
   }
 
-  var LINK_LABELS = {
-    "mailto:contact@pklavc.com": "Send Email",
-    "https://www.linkedin.com/in/pklavc/": "Open LinkedIn",
-    "https://github.com/PkLavc": "View GitHub",
-    "https://github.com/PkLavc/": "View GitHub",
-    "https://github.com/sponsors/PkLavc": "Sponsor Patrick",
-    "https://pklavc.com/": "Open Portfolio",
-    "https://pklavc.com/projects/": "Browse Projects",
-    "https://pklavc.com/blog/": "Read Blog",
-    "https://pklavc.com/about/": "About Patrick",
-    "https://pklavc.com/projects/lavc-systems/": "View Lavc Systems",
-    "https://pklavc.com/projects/skyler-assistant/": "View Skyler Assistant",
-    "https://pklavc.com/skyler-assistant/": "Open Skyler Assistant",
-    "https://pklavc.com/projects/codepulse-monorepo/": "View CodePulse",
-    "https://pklavc.com/projects/google-auth-worker/": "View Google Auth Worker",
-    "https://pklavc.com/projects/zoho-integration-worker/": "View Zoho Worker",
-    "https://pklavc.com/projects/hablla-integration-worker/": "View Hablla Worker",
-    "https://pklavc.com/projects/zenvia-integration-worker/": "View Zenvia Worker",
-    "https://pklavc.com/projects/sige-integration-worker/": "View SIGE Worker",
-    "https://pklavc.com/projects/omie-integration-worker/": "View Omie Worker",
-    "https://pklavc.com/projects/multi-tenant-saas-platform/": "View SaaS Platform",
-    "https://pklavc.com/projects/cipher-gate-proxy/": "View Cipher Gate",
-    "https://pklavc.com/projects/event-driven-integration-service/": "View Event-Driven Service",
-    "https://pklavc.com/projects/aegis-sentinel/": "View Aegis Sentinel",
-    "https://pklavc.com/projects/cloud-deployment-showcase/": "View Cloud Deployment",
-    "https://pklavc.com/projects/os-resource-optimizer/": "View OS Optimizer",
-    "https://github.com/PkLavc/codepulse-monorepo": "View on GitHub",
-    "https://github.com/PkLavc/codepulse-monorepo/": "View on GitHub",
+  var LINK_LABEL_KEYS = {
+    "mailto:contact@pklavc.com": "email",
+    "https://www.linkedin.com/in/pklavc/": "linkedin",
+    "https://github.com/PkLavc": "github",
+    "https://github.com/PkLavc/": "github",
+    "https://github.com/sponsors/PkLavc": "sponsor",
+    "https://pklavc.com/": "portfolio",
+    "https://pklavc.com/projects/": "projects",
+    "https://pklavc.com/blog/": "blog",
+    "https://pklavc.com/about/": "about",
+    "https://pklavc.com/projects/lavc-systems/": "lavc",
+    "https://pklavc.com/projects/skyler-assistant/": "skylerProject",
+    "https://pklavc.com/skyler-assistant/": "skylerApp",
+    "https://pklavc.com/projects/codepulse-monorepo/": "codepulse",
+    "https://pklavc.com/projects/google-auth-worker/": "googleAuth",
+    "https://pklavc.com/projects/zoho-integration-worker/": "zoho",
+    "https://pklavc.com/projects/hablla-integration-worker/": "hablla",
+    "https://pklavc.com/projects/zenvia-integration-worker/": "zenvia",
+    "https://pklavc.com/projects/sige-integration-worker/": "sige",
+    "https://pklavc.com/projects/omie-integration-worker/": "omie",
+    "https://pklavc.com/projects/multi-tenant-saas-platform/": "saas",
+    "https://pklavc.com/projects/cipher-gate-proxy/": "cipher",
+    "https://pklavc.com/projects/event-driven-integration-service/": "eventDriven",
+    "https://pklavc.com/projects/aegis-sentinel/": "aegis",
+    "https://pklavc.com/projects/cloud-deployment-showcase/": "cloud",
+    "https://pklavc.com/projects/os-resource-optimizer/": "os",
+    "https://github.com/PkLavc/codepulse-monorepo": "githubRepo",
+    "https://github.com/PkLavc/codepulse-monorepo/": "githubRepo",
   };
 
   function getLinkLabel(href) {
-    if (LINK_LABELS[href]) return LINK_LABELS[href];
+    var links = getCopy().links;
+    if (LINK_LABEL_KEYS[href]) return links[LINK_LABEL_KEYS[href]];
     var alt = href.endsWith("/") ? href.slice(0, -1) : href + "/";
-    if (LINK_LABELS[alt]) return LINK_LABELS[alt];
-    if (href.startsWith("mailto:")) return "Send Email";
-    if (href.includes("linkedin.com")) return "Open LinkedIn";
-    if (href.includes("github.com/PkLavc") || href.includes("github.com/pklavc")) return "View GitHub";
-    if (href.includes("pklavc.com/projects/")) return "View Project";
-    if (href.includes("pklavc.com/blog/")) return "Read Post";
-    if (href.includes("pklavc.com")) return "Visit Page";
-    return "Visit Link";
+    if (LINK_LABEL_KEYS[alt]) return links[LINK_LABEL_KEYS[alt]];
+    if (href.startsWith("mailto:")) return links.email;
+    if (href.includes("linkedin.com")) return links.linkedin;
+    if (href.includes("github.com/PkLavc") || href.includes("github.com/pklavc")) return links.github;
+    if (href.includes("pklavc.com/projects/")) return links.project;
+    if (href.includes("pklavc.com/blog/")) return links.post;
+    if (href.includes("pklavc.com")) return links.page;
+    return links.link;
   }
 
   function parseMarkdown(md) {
@@ -418,8 +622,8 @@
 
     els.voiceToggle.classList.toggle("is-active", state.voiceEnabled);
     els.voiceToggle.setAttribute("aria-pressed", state.voiceEnabled ? "true" : "false");
-    els.voiceToggle.setAttribute("aria-label", state.voiceEnabled ? "Voice on" : "Voice off");
-    els.voiceToggle.setAttribute("title", state.voiceEnabled ? "Voice on" : "Voice off");
+    els.voiceToggle.setAttribute("aria-label", state.voiceEnabled ? getCopy().voiceOn : getCopy().voiceOff);
+    els.voiceToggle.setAttribute("title", state.voiceEnabled ? getCopy().voiceOn : getCopy().voiceOff);
     els.voiceToggle.innerHTML = getVoiceToggleMarkup(state.voiceEnabled);
   }
 
@@ -429,8 +633,8 @@
     }
 
     els.closeBtn.classList.add("about-chat-close-btn");
-    els.closeBtn.setAttribute("aria-label", "Close chat");
-    els.closeBtn.setAttribute("title", "Close chat");
+    els.closeBtn.setAttribute("aria-label", getCopy().closeChat);
+    els.closeBtn.setAttribute("title", getCopy().closeChat);
 
     if (!els.closeBtn.querySelector(".about-chat-close-icon")) {
       els.closeBtn.innerHTML = getCloseButtonMarkup();
@@ -508,8 +712,8 @@
     els.input.value = "";
     autoResizeInput();
     appendMessage("user", text, true);
-    setStatus("Skyler is thinking...");
-    var thinking = appendMessage("assistant", "Thinking...", true);
+    setStatus("");
+    var thinking = appendMessage("assistant", getCopy().thinking, true);
 
     try {
       var res = await fetch(state.apiBase + "/chat", {
@@ -532,15 +736,15 @@
       state.conversationId = data.conversation_id || state.conversationId;
       saveSession();
       if (thinking) {
-        thinking.innerHTML = renderMessageContent(data.reply || "No response.");
+        thinking.innerHTML = renderMessageContent(data.reply || getCopy().noResponse);
       }
       setStatus("");
       speakIfEnabled(data.reply || "");
     } catch (err) {
       if (thinking) {
-        thinking.textContent = "I could not answer right now.";
+        thinking.textContent = getCopy().unavailableMessage;
       }
-      setStatus("Chat temporarily unavailable.");
+      setStatus(getCopy().unavailableStatus);
       console.error(err);
     }
   }
@@ -613,6 +817,7 @@
     }
 
     loadSession();
+    localizeExistingMarkup();
     updateVoiceToggle();
     updateCloseButton();
     ensureChatBackdrop();
@@ -623,10 +828,10 @@
     autoResizeInput();
 
     if (els.log && !els.log.querySelector(".about-chat-message")) {
-      appendMessage("assistant", "Hi, I am Skyler. Ask about Patrick's experience, projects, stack, or architecture work.");
+      appendMessage("assistant", getCopy().intro);
     }
 
-    setStatus(state.voiceEnabled ? "Voice mode enabled." : "");
+    setStatus(state.voiceEnabled ? getCopy().voiceEnabledStatus : "");
 
     if ("speechSynthesis" in window) {
       window.speechSynthesis.getVoices();

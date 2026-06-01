@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="PkLavc" />
+    <title>Skyler Assistant | Assistente de portfólio de IA | Patrick Araujo</title>
+
+    <meta name="description" content="Projeto Skyler Assistant: assistente de IA de portfólio público com orquestração Cloudflare Worker leve, manual RAG, saudação multilíngue e substituto de provedor.">
+    <meta property="og:title" content="Skyler Assistant | Assistente de portfólio de IA | Patrick Araujo">
+    <meta property="og:description" content="Assistente público para contexto de portfólio, descoberta de projetos, orientação técnica e informações de carreira.">
+    <meta property="og:url" content="https://pklavc.com/pt/projetos/skyler-assistant/">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://pklavc.com/images/lavc.webp?v=5e84850f26">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Skyler Assistant | Assistente de portfólio de IA | Patrick Araujo">
+    <meta name="twitter:description" content="Leia mais sobre arquitetura Skyler, estratégia RAG e fluxo de tempo de execução.">
+    <meta name="twitter:image" content="https://pklavc.com/images/lavc.webp?v=5e84850f26">
+    <link rel="canonical" href="https://pklavc.com/pt/projetos/skyler-assistant/">
+    <link rel="alternate" href="https://pklavc.com/projects/skyler-assistant/" hreflang="en">
+    <link rel="alternate" href="https://pklavc.com/pt/projetos/skyler-assistant/" hreflang="pt-BR">
+    <link rel="alternate" href="https://pklavc.com/es/proyectos/skyler-assistant/" hreflang="es">
+    <link rel="alternate" href="https://pklavc.com/projects/skyler-assistant/" hreflang="x-default">
+
+
+
+<meta name="robots" content="index, follow">
+
+    <link rel="icon" type="image/svg+xml" href="https://pklavc.com/images/favicon.svg?v=d15fe4e492">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Monoton&amp;family=Poppins:wght@500&amp;family=Raleway:wght@300&amp;display=swap" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Monoton&amp;family=Poppins:wght@500&amp;family=Raleway:wght@300&amp;display=swap"></noscript>
+    <link rel="stylesheet" href="/css/global.css?v=55251d9722">
+    <link rel="stylesheet" href="/css/projects.css?v=84c54fcc24">
+    <link rel="preload" as="style" href="/css/github-markdown-local.css?v=01d37f05ee">
+    <link rel="stylesheet" href="/css/github-markdown-local.css?v=01d37f05ee" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="/css/github-markdown-local.css?v=01d37f05ee"></noscript>
+
+    <style>
+        .project-hero {
+            padding: 60px 20px;
+            text-align: center;
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.12), rgba(0, 0, 0, 0.05));
+        }
+        .project-hero h1 {
+            font-size: 2.5rem;
+            margin: 20px 0;
+            color: #fff;
+        }
+        .project-category-badge {
+            display: inline-block;
+            background: rgba(100, 200, 255, 0.2);
+            border: 1px solid rgba(100, 200, 255, 0.5);
+            color: #64c8ff;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+        .full-readme-section {
+            padding: 50px 20px;
+            background: rgba(255, 255, 255, 0.02);
+        }
+        .full-readme-container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        .full-readme-container .markdown-body {
+            background: #0d1117;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 10px;
+            padding: 24px;
+        }
+        .skyler-hero-block {
+            display: grid;
+            grid-template-columns: 120px 1fr;
+            gap: 18px;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.02);
+        }
+        .skyler-avatar {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            border: 1px solid rgba(120, 191, 255, 0.6);
+            object-fit: cover;
+            background: rgba(0, 0, 0, 0.3);
+        }
+        .meta-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 10px;
+            margin: 16px 0 24px;
+        }
+        .meta-item {
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 10px;
+            padding: 10px 12px;
+            background: rgba(255, 255, 255, 0.02);
+        }
+        .meta-item strong {
+            display: block;
+            color: #fff;
+            margin-bottom: 4px;
+            font-size: 0.9rem;
+        }
+        .flowchart {
+            margin: 14px 0 24px;
+            padding: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            background: rgba(7, 12, 20, 0.8);
+        }
+        .flow-lane {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 8px;
+            margin: 6px 0;
+        }
+        .flow-step {
+            border: 1px solid rgba(101, 189, 255, 0.4);
+            border-radius: 8px;
+            padding: 8px 10px;
+            background: rgba(101, 189, 255, 0.08);
+            color: #dff1ff;
+            font-size: 0.9rem;
+        }
+        .flow-arrow {
+            color: #7ebeff;
+            font-weight: 700;
+            font-size: 1rem;
+            padding: 0 2px;
+        }
+        .section-spacer {
+            margin-top: 26px;
+        }
+        @media (max-width: 720px) {
+            .skyler-hero-block {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            .skyler-avatar {
+                margin: 0 auto;
+            }
+        }
+        .cta-section {
+            padding: 40px 20px 60px;
+            text-align: center;
+        }
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #64c8ff, #00d4ff);
+            color: #000;
+            padding: 14px 34px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(100, 200, 255, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div id="breaker"></div>
+    <div id="breaker-two"></div>
+    <div id="all">
+        <div id="navigation-content" role="navigation" aria-label="Navegação primária">
+            <div class="logo"></div>
+            <div class="navigation-links">
+                <a href="/pt/" data-text="INÍCIO">INÍCIO</a>
+                <a href="/pt/sobre/" data-text="SOBRE">SOBRE</a>
+                <a href="/pt/projetos/" data-text="PROJETOS">PROJETOS</a>
+            </div>
+        </div>
+        <div id="navigation-bar">
+            <div class="menubar">
+                <span class="first-span"></span>
+                <span class="second-span"></span>
+                <span class="third-span"></span>
+            </div>
+        </div>
+
+        <main role="main">
+            <section class="project-hero">
+                <span class="project-category-badge">Assistente de IA</span>
+                <div class="project-hero-title">
+                    <img src="/images/icon_skyler.webp?v=4b80b918a0" alt="" class="project-hero-logo" width="76" height="76" loading="eager" decoding="async">
+                    <h1>Skyler Assistant</h1>
+                </div>
+                <p style="color: #aaa; font-size: 1.1rem; margin-top: 15px;">Assistente de portfólio público com orquestração leve, manual RAG e substituto de provedor.</p>
+            </section>
+
+            <section class="full-readme-section" aria-label="Skyler documentação">
+                <div class="full-readme-container">
+                    <h2 style="color:#fff; margin-bottom:20px;">Projeto Leia mais</h2>
+                    <article class="markdown-body">
+                        <h2>Skyler Assistant</h2>
+                        <p><img src="https://img.shields.io/badge/Runtime-Cloudflare%20Worker-f38020" alt="Tempo de execução"> <img src="https://img.shields.io/badge/RAG-Manual%20%2B%20Site%20Cache-22c55e" alt="RAG"> <img src="https://img.shields.io/badge/UI-Public%20Chat-0ea5e9" alt="IU"> <img src="https://img.shields.io/badge/Fallback-Groq%20to%20OpenRouter-7c3aed" alt="Alternativa"></p>
+
+                        <div class="skyler-hero-block">
+                            <img class="skyler-avatar" src="/images/icon_skyler.webp?v=4b80b918a0" alt="Skyler ícone do assistente">
+                            <div>
+                                <p><strong>Skyler</strong> é o assistente de portfólio público de Patrick Araujo, focado no contexto do projeto, conjunto técnico, experiência profissional e orientação de contato.</p>
+                                <p>O assistente foi projetado para orquestração previsível: saudação simples, resposta local, uso manual RAG e chamadas LLM somente quando necessário.</p>
+                            </div>
+                        </div>
+
+                        <div class="meta-grid">
+                            <div class="meta-item"><strong>Tempo de execução primário</strong>Cloudflare Worker (TypeScript)</div>
+                            <div class="meta-item"><strong>Camada de dados</strong>D1 + KV (`DB`, `CACHE`, `SESSIONS`)</div>
+                            <div class="meta-item"><strong>RAG Fontes</strong>`manual-rag.ts` + páginas pklavc.com em cache</div>
+                            <div class="meta-item"><strong>Interface</strong>Widget flutuante global + página de assistente dedicada</div>
+                            <div class="meta-item"><strong>Voz</strong>Web Speech API com preferência de voz feminina</div>
+                            <div class="meta-item"><strong>Confiabilidade</strong>Fallback do provedor e cache de resposta</div>
+                        </div>
+
+                        <h3>Arquitetura do sistema</h3>
+                        <p>Skyler separa as responsabilidades claramente. O frontend lida com interação e voz. O Worker orquestra memória, reconhecimento de intenção RAG e chamadas de provedor. O modelo lida com respostas diretas para solicitações fora do tópico e respostas guiadas pelo portfólio quando a intenção do portfólio é detectada.</p>
+
+                        <div class="flowchart" aria-label="Skyler fluxograma de arquitetura de alto nível">
+                            <div class="flow-lane">
+                                <span class="flow-step">Usuário (IU da Web)</span>
+                                <span class="flow-arrow">-&gt;</span>
+                                <span class="flow-step">/chat API</span>
+                                <span class="flow-arrow">-&gt;</span>
+                                <span class="flow-step">Orquestrador de Trabalhadores</span>
+                            </div>
+                            <div class="flow-lane">
+                                <span class="flow-step">Verificação de saudação</span>
+                                <span class="flow-arrow">-&gt;</span>
+                                <span class="flow-step">Intenção do portfólio + RAG Portão</span>
+                                <span class="flow-arrow">-&gt;</span>
+                                <span class="flow-step">Construtor de prompts</span>
+                            </div>
+                            <div class="flow-lane">
+                                <span class="flow-step">Provedor Groq</span>
+                                <span class="flow-arrow">ou</span>
+                                <span class="flow-step">Alternativa do OpenRouter</span>
+                                <span class="flow-arrow">-&gt;</span>
+                                <span class="flow-step">Resposta + Armazenamento</span>
+                            </div>
+                        </div>
+
+                        <h3>Fluxo de decisão em tempo de execução</h3>
+                        <div class="flowchart" aria-label="Skyler fluxograma de decisão em tempo de execução">
+                            <div class="flow-lane">
+                                <span class="flow-step">A entrada chega</span>
+                                <span class="flow-arrow">-&gt;</span>
+                                <span class="flow-step">Saudação simples?</span>
+                                <span class="flow-arrow">sim</span>
+                                <span class="flow-step">Resposta rápida de saudação local</span>
+                            </div>
+                            <div class="flow-lane">
+                                <span class="flow-step">Se não for saudação</span>
+                                <span class="flow-arrow">-&gt;</span>
+                                <span class="flow-step">Pergunta do portfólio?</span>
+                                <span class="flow-arrow">sim</span>
+                                <span class="flow-step">Mesclar manual RAG + contexto do site em cache</span>
+                            </div>
+                            <div class="flow-lane">
+                                <span class="flow-step">Se não for uma solicitação de portfólio</span>
+                                <span class="flow-arrow">-&gt;</span>
+                                <span class="flow-step">Ligue para LLM diretamente</span>
+                                <span class="flow-arrow">falhar?</span>
+                                <span class="flow-step">Usar substituto de provedor</span>
+                            </div>
+                        </div>
+
+                        <h3>Experiência de front-end</h3>
+                        <ul>
+                            <li>Iniciador de ícones flutuantes nas páginas do site usando <code>/images/icon_skyler.webp</code></li>
+                            <li>Assistente interativo dedicado em <a href="/pt/skyler-assistant/">/skyler-assistente/</a></li>
+                            <li>Enter envia mensagem, Shift+Enter adiciona quebra de linha</li>
+                            <li>Saída de streaming opcional e alternância de saída de voz</li>
+                            <li>Uso público/convidado sem login obrigatório</li>
+                        </ul>
+
+                        <h3 class="section-spacer">Detalhes do trabalhador e dos dados</h3>
+                        <ul>
+                            <li><strong>Entrada:</strong> <code>src/chatbot/worker/src/index.ts</code></li>
+                            <li><strong>RAG manual:</strong> <code>src/chatbot/worker/src/manual-rag.ts</code></li>
+                            <li><strong>Cache KV:</strong> cache de resposta, cache de incorporação, cache de contexto do site</li>
+                            <li><strong>D1:</strong> usuários, conversas, mensagens, eventos analíticos, versões de prompt</li>
+                            <li><strong>Ligações:</strong> <code>DB</code>, <code>CACHE</code>, <code>SESSIONS</code></li>
+                        </ul>
+
+                        <h3>RAG Cobertura</h3>
+                        <p>O manual RAG inclui identidade, foco de função, pilha, links, empresas, métricas de impacto e contexto de credenciais atual. Ele é mesclado com páginas de sites públicos em cache somente quando o usuário está perguntando sobre tópicos do portfólio, o que mantém diretas as respostas fora do tópico e reduz fundamentações indesejadas.</p>
+                        <ul>
+                            <li>Identidade e posicionamento (backend, integrações, arquitetura)</li>
+                            <li>Orientação para descoberta de projetos e blogs</li>
+                            <li>Referências de contato e perfil (GitHub, LinkedIn, email)</li>
+                            <li>Credenciais, empresas e projetos conhecidos do contexto interno e de páginas públicas</li>
+                            <li>Regras de resposta em texto simples para respostas de cursos, empresas e projetos</li>
+                        </ul>
+
+                        <h3>Estratégia de confiabilidade e fallback</h3>
+                        <ul>
+                            <li>Caminho de execução do provedor principal com novas tentativas</li>
+                            <li>Provedor substituto automático quando o primário falha</li>
+                            <li>Caminho de saudação local mais reconhecimento de intenção RAG para reduzir chamadas de modelo desnecessárias</li>
+                            <li>Cache de resposta para minimizar gastos repetidos de token</li>
+                        </ul>
+
+                        <h3>Caminhos Principais</h3>
+                        <ul>
+                            <li><strong>Assistente ao vivo:</strong> <a href="/pt/skyler-assistant/">/skyler-assistente/</a></li>
+                            <li><strong>Página de exemplo de widget global:</strong> <a href="/pt/sobre/">/sobre/</a></li>
+                            <li><strong>Listagem de projetos:</strong> <a href="/pt/projetos/">/projetos/</a></li>
+                            <li><strong>Fonte do trabalhador:</strong> <code>src/chatbot/worker/src/index.ts</code></li>
+                            <li><strong>RAG manual:</strong> <code>src/chatbot/worker/src/manual-rag.ts</code></li>
+                        </ul>
+                    </article>
+                </div>
+            </section>
+
+            <section class="cta-section" aria-label="Assistente aberto">
+                <a class="cta-button" href="/pt/skyler-assistant/">Abrir Skyler Assistant</a>
+            </section>
+        </main>
+    </div>
+
+    <footer class="footer-minimal">
+        <div class="footer-container">
+            <div class="footer-link-list" aria-label="Links de rodapé">
+                <a class="footer-link-pill" href="https://github.com/PkLavc" target="_blank" rel="noopener noreferrer">GitHub</a>
+                <a class="footer-link-pill" href="https://www.linkedin.com/in/pklavc/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+                <a class="footer-link-pill" href="mailto:contact@pklavc.com">E-mail</a>
+            </div>
+            <p>© <span data-current-year></span> Patrick Araujo</p>
+        </div>
+    </footer>
+
+    <script>
+        (function() {
+            document.querySelectorAll('[data-current-year]').forEach(function(node) {
+                node.textContent = String(new Date().getFullYear());
+            });
+        }());
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.2.6/gsap.min.js" defer></script>
+        <script src="/js/i18n.js?v=cc3ee695f1" defer></script>
+    <script src="/js/jquery.min.js?v=d482871a5e" defer></script>
+    <script src="/js/index.js?v=0b108f99d1" defer></script>
+</body>
+</html>

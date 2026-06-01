@@ -20,7 +20,7 @@ const ASSET_EXTENSIONS = new Set([
   ".webp",
 ]);
 const CONTENT_EXTENSIONS = new Set([".css", ".html", ".js"]);
-const SITE_DIRECTORIES = new Set(["about", "blog", "collections", "css", "js", "projects", "skyler-assistant", "stacks"]);
+const SITE_DIRECTORIES = new Set(["about", "blog", "collections", "css", "es", "js", "projects", "pt", "skyler-assistant", "stacks"]);
 const ROOT_CONTENT_FILES = new Set(["404.html", "index.html"]);
 const VERSION_PARAM = "v";
 const ASSET_PATTERN =

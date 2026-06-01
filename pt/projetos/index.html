@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="author" content="PkLavc" />
+            
+    <!-- SEO Enhanced Meta Tags -->
+    <meta name="description" content="Projetos de engenharia backend focados em automação, integrações de API, pipelines ETL e sistemas operacionais escaláveis construídos com Python, Node.js, SQL e serviços em nuvem.">
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="Projetos Backend | Patrick Araujo | Automação e Integrações de API">
+    <meta property="og:description" content="Portfólio de integração de backend e trabalho de automação abrangendo orquestração OAuth, sincronização ERP, pipelines ETL e sistemas de relatórios operacionais do mundo real.">
+    <meta property="og:url" content="https://pklavc.com/pt/projetos/">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://pklavc.com/images/lavc.webp?v=5e84850f26">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:site_name" content="Patrick Araujo">
+    <meta property="og:locale" content="pt_BR">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Projetos Backend | Patrick Araujo | Automação e Integrações de API">
+    <meta name="twitter:description" content="Portfólio de backend focado em automação, integrações API, pipelines ETL e sistemas de relatórios escaláveis.">
+    <meta name="twitter:image" content="https://pklavc.com/images/lavc.webp?v=5e84850f26">
+    <meta name="twitter:image:alt" content="Retrato da marca do engenheiro de backend e especialista em automação Patrick Araujo">
+    <meta name="twitter:site" content="@PkLavc">
+    <meta name="twitter:creator" content="@PkLavc">
+    <link rel="canonical" href="https://pklavc.com/pt/projetos/">
+    <link rel="alternate" href="https://pklavc.com/projects/" hreflang="en">
+    <link rel="alternate" href="https://pklavc.com/pt/projetos/" hreflang="pt-BR">
+    <link rel="alternate" href="https://pklavc.com/es/proyectos/" hreflang="es">
+    <link rel="alternate" href="https://pklavc.com/projects/" hreflang="x-default">
+
+
+
+<meta name="robots" content="index, follow">
+    <meta property="og:image:alt" content="Retrato da marca do engenheiro de backend e especialista em automação Patrick Araujo">
+    <meta name="twitter:image:alt" content="Retrato da marca do engenheiro de backend e especialista em automação Patrick Araujo">
+        <title>Projetos Backend | Patrick Araujo | Automação e Integrações de API</title>
+    <link rel="icon" type="image/svg+xml" href="https://pklavc.com/images/favicon.svg?v=d15fe4e492">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+        <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Monoton&amp;family=Poppins:wght@500&amp;family=Raleway:wght@300&amp;display=optional" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Monoton&amp;family=Poppins:wght@500&amp;family=Raleway:wght@300&amp;display=optional"></noscript>
+        <link rel="preload" href="/css/global.css?v=55251d9722" as="style">
+        <link rel="preload" href="/css/projects.css?v=84c54fcc24" as="style">
+        <link rel="stylesheet" href="/css/global.css?v=55251d9722">
+        <link rel="stylesheet" href="/css/projects.css?v=84c54fcc24">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.2.6/gsap.min.js" defer></script>
+    </head>
+    <body>
+        <!-- Projects Schema -->
+        <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@graph": [
+                {
+                    "@type": "WebSite",
+                    "@id": "https://pklavc.com/#website",
+                    "url": "https://pklavc.com/",
+                    "name": "Patrick Araujo",
+                    "alternateName": "Patrick Araujo Portfolio"
+                },
+                {
+                    "@type": "CollectionPage",
+                    "@id": "https://pklavc.com/pt/projetos/#projects/",
+                    "url": "https://pklavc.com/pt/projetos/",
+                    "name": "Backend Projects | Patrick Araujo",
+                    "description": "Portfólio de projetos de integração backend, automação, ETL e sincronização ERP.",
+                    "hasPart": [
+                        {
+                            "@type": "CreativeWork",
+                            "name": "Lavc Systems",
+                            "url": "https://pklavc.com/pt/projetos/lavc-systems/",
+                            "description": "Plataforma local de orquestração de IA multiagente com FastAPI, React, Ollama, LangGraph, ChromaDB RAG, HybridMemory, Kanban, metas autônomas e observabilidade WebSocket em tempo real.",
+                            "programmingLanguage": "Python, TypeScript, React"
+                        },
+                        {
+                            "@type": "CreativeWork",
+                            "name": "Skyler Assistant",
+                            "url": "https://pklavc.com/pt/projetos/skyler-assistant/",
+                            "description": "Assistente público de portfólio com RAG sensível ? intenção, contexto do site em cache, regras de resposta em texto simples e arquitetura de fallback de provedor.",
+                            "programmingLanguage": "TypeScript, JavaScript"
+                        },
+                        {
+                            "@type": "CreativeWork",
+                            "name": "CodePulse Monorepo",
+                            "url": "https://github.com/PkLavc/codepulse-monorepo",
+                            "description": "IDE online de alto desempenho construída como aplicação HTML independente, com backend Node.js no Render e mais de 85% de cobertura QA com testes E2E em Playwright.",
+                            "programmingLanguage": "JavaScript, HTML, CSS"
+                        },
+                        {
+                            "@type": "CreativeWork",
+                            "name": "EquipTrack",
+                            "url": "https://pklavc.com/pt/projetos/equiptrack/",
+                            "description": "Sistema de inventário e locação de equipamentos para empresas de eventos, com backend Cloudflare Workers + D1, modo visitante com localStorage, temas dinâmicos, ?cones SVG inline e CI/CD com GitHub Actions.",
+                            "programmingLanguage": "JavaScript, HTML, CSS"
+                        },
+                        {
+                            "@type": "CreativeWork",
+                            "name": "API Integration Pipeline",
+                            "url": "https://pklavc.com/pt/projetos/raw-api-ingestion-pipeline/",
+                            "description": "Pipeline de integração Node.js com GitHub Actions e Supabase SQL para coletar e armazenar payloads das APIs Hablla, Zoho Creator, Zenvia Voice e SIGE ERP para análises reproduzíveis.",
+                            "programmingLanguage": "JavaScript, SQL"
+                        },
+                        {
+                            "@type": "CreativeWork",
+                            "name": "Google Auth Worker",
+                            "url": "https://github.com/operacoesicaiu/worker-google-auth",
+                            "description": "Camada de orquestração OAuth para emitir tokens de acesso do Google e disparar jobs de integração downstream.",
+                            "programmingLanguage": "JavaScript"
+                        },
+                        {
+                            "@type": "CreativeWork",
+                            "name": "Zoho Integration Worker",
+                            "url": "https://github.com/operacoesicaiu/worker-zoho-integration",
+                            "description": "Worker de sincronização de dados que extrai registros do Zoho Creator, normaliza payloads e publica datasets estruturados para relatórios.",
+                            "programmingLanguage": "JavaScript"
+                        },
+                        {
+                            "@type": "CreativeWork",
+                            "name": "Hablla Integration Worker",
+                            "url": "https://github.com/operacoesicaiu/worker-hablla-integration",
+                            "description": "Fluxo operacional de dados que agrega, deduplica e exporta registros da Hablla para relatórios centralizados.",
+                            "programmingLanguage": "JavaScript"
+                        },
+                        {
+                            "@type": "CreativeWork",
+                            "name": "Zenvia Integration Worker",
+                            "url": "https://github.com/operacoesicaiu/worker-zenvia-integration",
+                            "description": "Worker de ingestão analítica que transforma relatórios de chamadas da Zenvia em datasets prontos para dashboards.",
+                            "programmingLanguage": "JavaScript"
+                        },
+                        {
+                            "@type": "CreativeWork",
+                            "name": "SIGE Integration Worker",
+                            "url": "https://github.com/operacoesicaiu/worker-sige-auth",
+                            "description": "Fluxo de sincronização ERP que transforma pedidos do SIGE em datasets consolidados para faturamento.",
+                            "programmingLanguage": "JavaScript"
+                        },
+                        {
+                            "@type": "CreativeWork",
+                            "name": "Omie Integration Worker",
+                            "url": "https://github.com/lojadosapo/worker-omie-integration",
+                            "description": "Fluxo de integração ERP conectando APIs de vendas e produtos da Omie a relatórios e operações downstream.",
+                            "programmingLanguage": "JavaScript"
+                        },
+                        {
+                            "@type": "CreativeWork",
+                            "name": "OS Resource Optimizer",
+                            "url": "https://github.com/PkLavc/os-resource-optimizer",
+                            "description": "Motor de alto desempenho projetado para otimizar escalonamento de CPU e alocação de memória, demonstrando gerenciamento de recursos de baixo nível e eficiência algorítmica.",
+                            "programmingLanguage": "C++"
+                        },
+                        {
+                            "@type": "CreativeWork",
+                            "name": "Multi-Tenant SaaS Platform",
+                            "url": "https://github.com/PkLavc/saas-backend-platform",
+                            "description": "Backend SaaS de nível empresarial com isolamento robusto de dados, segurança RBAC e processamento de jobs em segundo plano com BullMQ.",
+                            "programmingLanguage": "TypeScript, JavaScript"
+                        },
+                        {
+                            "@type": "CreativeWork",
+                            "name": "Cipher Gate Proxy",
+                            "url": "https://github.com/PkLavc/cipher-gate",
+                            "description": "Proxy zero-trust de alto desempenho para privacidade de dados, com criptografia AES-256, mascaramento dinâmico de dados e detecção automatizada de PII.",
+                            "programmingLanguage": "Python"
+                        },
+                        {
+                            "@type": "CreativeWork",
+                            "name": "Event-Driven Service",
+                            "url": "https://github.com/PkLavc/event-driven-integration-service",
+                            "description": "Motor confiável de processamento de webhooks para dados críticos da Stripe e PayPal, com segurança HMAC e tracing distribuído.",
+                            "programmingLanguage": "TypeScript, JavaScript"
+                        },
+                        {
+                            "@type": "CreativeWork",
+                            "name": "Aegis Sentinel",
+                            "url": "https://github.com/PkLavc/aegis-sentinel",
+                            "description": "Motor autônomo de recuperação de infraestrutura com detecção preditiva de anomalias e autocorreção para sistemas backend críticos.",
+                            "programmingLanguage": "Python"
+                        },
+                        {
+                            "@type": "CreativeWork",
+                            "name": "Cloud Deployment Showcase",
+                            "url": "https://github.com/PkLavc/cloud-deployment-showcase",
+                            "description": "Infraestrutura pronta para produção demonstrando orquestração de containers, Infrastructure as Code (IaC) e pipelines automatizados de CI/CD.",
+                            "programmingLanguage": "Docker, YAML, Shell"
+                        }
+                    ]
+                },
+                {
+                    "@type": "Person",
+                    "@id": "https://pklavc.com/#person",
+                    "name": "Patrick Araujo",
+                    "url": "https://pklavc.com/",
+                    "jobTitle": "Backend Software Engineer | Automation, API Integrations & Scalable Systems",
+                    "sameAs": [
+                        "https://github.com/PkLavc",
+                        "https://www.linkedin.com/in/pklavc/"
+                    ]
+                }
+            ]
+        }
+        </script>
+
+        <div id="breaker">
+        </div>
+        <div id="breaker-two">
+        </div>
+        <div id="all">
+            <div class="cursor"></div>
+            <div id="navigation-content" role="navigation" aria-label="Navegação primária">
+                <div class="logo">
+                </div>
+                                <div class="navigation-links">
+                    <a href="/pt/" data-text="INÍCIO" id="home-link" >INÍCIO</a>
+                    <a href="/pt/sobre/" data-text="SOBRE" id="about-link" >SOBRE</a>
+                    <a href="#" data-text="PROJETOS" id="projects-link" >PROJETOS</a>
+                </div>
+            </div>
+            <div id="navigation-bar">
+                <div class="menubar">
+                    <span class="first-span"></span>
+                    <span class="second-span"></span>
+                    <span class="third-span"></span>
+                </div>
+            </div>
+            <main role="main">
+            <div id="projects" aria-label="Vitrine de projetos">
+                <div class="projects-container">
+                    <div class="projects-side-title">
+                        <h1 class="binary-shift-heading" data-binary-heading aria-label="Projetos em destaque">
+                            <span data-binary-segment>Destaque</span> <span class="color" data-binary-segment>Projetos</span>
+                        </h1>
+                    </div>
+
+                    <div class="projects-content-wrapper" aria-label="Grade do projeto">
+                        <div class="projects-grid">
+                            <div class="project-card" role="article">
+                                <div class="project-header">
+                                    <span class="project-category">Plataforma de IA</span>
+                                    <span class="project-tech">FastAPI • React • Ollama • LangGraph • ChromaDB</span>
+                                </div>
+                                <div class="project-title-with-logo">
+                                    <img src="/images/lavc.webp?v=5e84850f26" alt="" class="project-logo" width="58" height="58" loading="lazy">
+                                    <h2><a href="/pt/projetos/lavc-systems/">Lavc Systems</a></h2>
+                                </div>
+                                <div class="project-description">
+                                    <p>Plataforma de orquestração de IA multiagente local com gerenciamento de tarefas Kanban, base de conhecimento RAG, metas autônomas, observabilidade WebSocket em tempo real e um assistente Skyler de nível empresarial.</p>
+                                    <p class="project-caption">Funciona totalmente em sua máquina usando Ollama e LangGraph — nenhum serviço de IA externo é necessário.</p>
+                                </div>
+                                <div class="project-readmore-toggle-wrap">
+                                    <button class="project-readmore-toggle" type="button" onclick="window.location.href='/pt/projetos/lavc-systems/'">Leia mais</button>
+                                </div>
+                                <div class="project-features">
+                                    <span>Multiagente</span>
+                                    <span>LLM local</span>
+                                    <span>RAG + Memória</span>
+                                </div>
+                                <div class="project-actions">
+                                    <a href="/pt/projetos/lavc-systems/" class="project-link">Ver projeto</a>
+                                </div>
+                            </div>
+
+                            <div class="project-card" role="article">
+                                <div class="project-header">
+                                    <span class="project-category">Assistente de IA</span>
+                                    <span class="project-tech">Cloudflare Worker • RAG manual • Fala na Web API</span>
+                                </div>
+                                <div class="project-title-with-logo">
+                                    <img src="/images/icon_skyler.webp?v=4b80b918a0" alt="" class="project-logo" width="58" height="58" loading="lazy">
+                                    <h2><a href="/pt/projetos/skyler-assistant/">Skyler Assistant</a></h2>
+                                </div>
+                                <div class="project-description">
+                                    <p>Assistente de portfólio AI desenvolvido para respostas rápidas multilíngues, contexto manual RAG e substituto confiável LLM com orquestração leve.</p>
+                                    <p class="project-caption">Projetado para orientação rápida sobre Patrick, projetos, pilha e experiência profissional.</p>
+                                </div>
+                                <div class="project-readmore-toggle-wrap">
+                                    <button class="project-readmore-toggle" type="button" onclick="window.location.href='/pt/projetos/skyler-assistant/'">Leia mais</button>
+                                </div>
+                                <div class="project-features">
+                                    <span>RAG manual</span>
+                                    <span>Modo de voz</span>
+                                    <span>Cloudflare Worker</span>
+                                </div>
+                                <div class="project-actions">
+                                    <a href="/pt/skyler-assistant/" class="project-link">Abrir Skyler Assistant</a>
+                                </div>
+                            </div>
+
+                            <div class="project-card" role="article">
+                                <div class="project-header">
+                                    <span class="project-category">Engenharia Full Stack</span>
+                                    <span class="project-tech">Vanilla JS • Cloudflare Workers • IA de trabalhadores</span>
+                                </div>
+                                <div class="project-title-with-logo">
+                                    <img src="/images/codepulse_monorepo.webp?v=f437c47931" alt="" class="project-logo" width="58" height="58" loading="lazy">
+                                    <h2><a href="/pt/projetos/codepulse-monorepo/">CodePulse Monorepo</a></h2>
+                                </div>
+                                <p>IDE online construído em infraestrutura 100% Cloudflare — JavaScript é executado nativamente no Edge via Workers, enquanto Python, Java e C++ usam simulação determinística de IA por meio de Workers AI com temperatura zero.</p>
+                                <p class="project-caption">Vem com um assistente de IA para análise de código e mais de 85% de cobertura de controle de qualidade por meio de testes Playwright E2E.</p>
+                                <div class="project-features">
+                                    <span>Alto desempenho</span>
+                                    <span>Monorepo</span>
+                                    <span>CI/CD</span>
+                                </div>
+                                <div class="project-actions">
+                                    <a href="https://github.com/PkLavc/codepulse-monorepo" target="_blank" rel="noopener noreferrer" class="project-link">Ver no GitHub</a>
+                                    <a href="https://pklavc.com/codepulse-monorepo/" target="_blank" rel="noopener noreferrer nofollow" class="project-link project-demo-link">Ver demonstração</a>
+                                </div>
+                            </div>
+
+                            <div class="project-card" role="article">
+                                <div class="project-header">
+                                    <span class="project-category">Aplicativo da Web Full Stack</span>
+                                    <span class="project-tech">JavaScript • Cloudflare Workers • D1 • GitHub Actions</span>
+                                </div>
+                                <h2><a href="/pt/projetos/equiptrack/">EquipTrack</a></h2>
+                                <p>Sistema de gerenciamento de inventário e aluguel de equipamentos para empresas de eventos. Rastreia equipamentos de áudio, vídeo e iluminação em eventos simultâneos com prevenção de overbooking, registro de manutenção e histórico completo de aluguel.</p>
+                                <div class="project-features">
+                                    <span>Cloudflare Workers</span>
+                                    <span>Modo visitante</span>
+                                    <span>Automação CI/CD</span>
+                                </div>
+                                <div class="project-actions">
+                                    <a href="/pt/projetos/equiptrack/" class="project-link">Ver detalhes</a>
+                                    <a href="https://github.com/arthurperico" target="_blank" rel="noopener noreferrer" class="project-link">Autor original</a>
+                                </div>
+                            </div>
+
+                            <div class="project-card" role="article">
+                                <div class="project-header">
+                                    <span class="project-category">Engenharia de Dados</span>
+                                    <span class="project-tech">Node.js | GitHub Actions | Supabase | SQL</span>
+                                </div>
+                                <h2><a href="/pt/projetos/raw-api-ingestion-pipeline/">API Integration Pipeline</a></h2>
+                                <div class="project-description">
+                                    <p>Coleta e armazena payloads de API de Hablla, Zoho Creator, Zenvia Voice e SIGE ERP em tabelas Supabase SQL — permitindo análises reproduzíveis e relatórios operacionais derivados de SQL.</p>
+                                    <p class="project-caption">Construído com IDs externos idempotentes, janelas de coleta agendadas e um limite claro entre a coleta API e a modelagem downstream.</p>
+                                </div>
+                                <div class="project-readmore-toggle-wrap">
+                                    <button class="project-readmore-toggle" type="button" onclick="window.location.href='/pt/projetos/raw-api-ingestion-pipeline/'">Leia mais</button>
+                                </div>
+                                <div class="project-features">
+                                    <span>Integração de API</span>
+                                    <span>Supabase SQL</span>
+                                    <span>GitHub Actions</span>
+                                </div>
+                                <div class="project-actions">
+                                    <a href="https://github.com/operacoesicaiu/icaiu-data" target="_blank" rel="noopener noreferrer" class="project-link">Ver no GitHub</a>
+                                </div>
+                            </div>
+
+                            <div class="project-card" role="article">
+                                <div class="project-header">
+                                    <span class="project-category">Arquitetura de Integração</span>
+                                    <span class="project-tech">JavaScript • GitHub Actions • OAuth</span>
+                                </div>
+                                <h2><a href="/pt/projetos/google-auth-worker/">Google Auth Worker</a></h2>
+                                <p>Construímos a camada de orquestração OAuth em JavaScript e GitHub Actions para emitir tokens de acesso do Google e acionar trabalhos de integração downstream.</p>
+                                <p class="project-caption">Autenticação centralizada e envio de trabalhadores para pipelines de relatórios de produção.</p>
+                                <div class="project-features">
+                                    <span>Ciclo de vida OAuth</span>
+                                    <span>Orquestração de trabalho</span>
+                                    <span>API segurança</span>
+                                </div>
+                                <div class="project-actions">
+                                    <a href="https://github.com/operacoesicaiu/worker-google-auth" target="_blank" rel="noopener noreferrer" class="project-link">Ver no GitHub</a>
+                                </div>
+                            </div>
+
+                            <div class="project-card" role="article">
+                                <div class="project-header">
+                                    <span class="project-category">ETL Pipeline</span>
+                                    <span class="project-tech">JavaScript • GitHub Actions • Google Sheets</span>
+                                </div>
+                                <h2><a href="/pt/projetos/zoho-integration-worker/">Zoho Integration Worker</a></h2>
+                                <p>Projetei um serviço de sincronização que extrai registros do Zoho Creator, normaliza campos mapeados e publica conjuntos de dados estruturados no Google Sheets.</p>
+                                <p class="project-caption">Parte da espinha dorsal por trás dos fluxos de trabalho de relatórios que reduziram o tempo de processamento em aproximadamente 40%.</p>
+                                <div class="project-features">
+                                    <span>Normalização de dados</span>
+                                    <span>Zoho Creator</span>
+                                    <span>Sincronização de relatórios</span>
+                                </div>
+                                <div class="project-actions">
+                                    <a href="https://github.com/operacoesicaiu/worker-zoho-integration" target="_blank" rel="noopener noreferrer" class="project-link">Ver no GitHub</a>
+                                </div>
+                            </div>
+
+                            <div class="project-card" role="article">
+                                <div class="project-header">
+                                    <span class="project-category">Fluxo de dados operacionais</span>
+                                    <span class="project-tech">JavaScript • GitHub Actions • Google Sheets</span>
+                                </div>
+                                <h2><a href="/pt/projetos/hablla-integration-worker/">Hablla Integration Worker</a></h2>
+                                <p>Implementou um trabalhador de transformação que agrega Hablla cartões, presença e dados de clientes e, em seguida, desduplica e exporta conjuntos de dados operacionais limpos.</p>
+                                <p class="project-caption">Maior confiabilidade de dados em fluxos de trabalho de serviços de várias fontes e relatórios centralizados.</p>
+                                <div class="project-features">
+                                    <span>Desduplicação</span>
+                                    <span>API Hablla</span>
+                                    <span>Dados operacionais</span>
+                                </div>
+                                <div class="project-actions">
+                                    <a href="https://github.com/operacoesicaiu/worker-hablla-integration" target="_blank" rel="noopener noreferrer" class="project-link">Ver no GitHub</a>
+                                </div>
+                            </div>
+
+                            <div class="project-card" role="article">
+                                <div class="project-header">
+                                    <span class="project-category">Ingestão de análise</span>
+                                    <span class="project-tech">JavaScript • GitHub Actions • Google Sheets</span>
+                                </div>
+                                <h2><a href="/pt/projetos/zenvia-integration-worker/">Zenvia Integration Worker</a></h2>
+                                <p>Projetei um trabalhador de ingestão para Zenvia dados de relatórios de chamadas, filtrando eventos de voz em conjuntos de dados prontos para análise e feeds de painel.</p>
+                                <p class="project-caption">Suporta monitoramento em tempo real e relatórios operacionais centralizados.</p>
+                                <div class="project-features">
+                                    <span>Análise de chamadas</span>
+                                    <span>API Zenvia</span>
+                                    <span>Feeds de dashboard</span>
+                                </div>
+                                <div class="project-actions">
+                                    <a href="https://github.com/operacoesicaiu/worker-zenvia-integration" target="_blank" rel="noopener noreferrer" class="project-link">Ver no GitHub</a>
+                                </div>
+                            </div>
+
+                            <div class="project-card" role="article">
+                                <div class="project-header">
+                                    <span class="project-category">ERP Sincronização</span>
+                                    <span class="project-tech">JavaScript • GitHub Actions • Google Sheets</span>
+                                </div>
+                                <h2><a href="/pt/projetos/sige-integration-worker/">SIGE Integration Worker</a></h2>
+                                <p>Lógica de sincronização criada que extrai pedidos SIGE ERP, transforma campos de faturamento e gera conjuntos de dados consolidados para fluxos de trabalho financeiros.</p>
+                                <p class="project-caption">Consolidação de faturamento manual substituída por automação de backend repetível.</p>
+                                <div class="project-features">
+                                    <span>Dados de faturamento</span>
+                                    <span>SIGE ERP</span>
+                                    <span>Operações financeiras</span>
+                                </div>
+                                <div class="project-actions">
+                                    <a href="https://github.com/operacoesicaiu/worker-sige-auth" target="_blank" rel="noopener noreferrer" class="project-link">Ver no GitHub</a>
+                                </div>
+                            </div>
+
+                            <div class="project-card" role="article">
+                                <div class="project-header">
+                                    <span class="project-category">ERP Integração</span>
+                                    <span class="project-tech">JavaScript • GitHub Actions • Google Sheets</span>
+                                </div>
+                                <h2><a href="/pt/projetos/omie-integration-worker/">Omie Integration Worker</a></h2>
+                                <p>Conectado Omie pedidos de vendas e produtos API a planilhas downstream e fluxos de relatórios, mantendo os dados de ERP disponíveis para operações logísticas e financeiras.</p>
+                                <p class="project-caption">Dados ERP integrados em automações abrangendo mais de 6 sistemas de negócios.</p>
+                                <div class="project-features">
+                                    <span>Dados de vendas</span>
+                                    <span>Omie ERP</span>
+                                    <span>Sincronização entre sistemas</span>
+                                </div>
+                                <div class="project-actions">
+                                    <a href="https://github.com/lojadosapo/worker-omie-auth" target="_blank" rel="noopener noreferrer" class="project-link">Ver no GitHub</a>
+                                </div>
+                            </div>
+
+                            <div class="project-card" role="article">
+                                <div class="project-header">
+                                    <span class="project-category">Engenharia de Sistemas</span>
+                                    <span class="project-tech">C++ • Internos do SO • HPC</span>
+                                </div>
+                                    <h2><a href="/pt/projetos/os-resource-optimizer/">OS Resource Optimizer</a></h2>
+                                <p>Mecanismo de alto desempenho projetado para otimizar o agendamento da CPU e a alocação de memória. Demonstra gerenciamento de recursos de baixo nível e eficiência algorítmica.</p>
+                                <div class="project-features">
+                                    <span>Agendamento</span>
+                                    <span>Gerenciamento de memória</span>
+                                    <span>C++17</span>
+                                </div>
+                                <a href="https://github.com/PkLavc/os-resource-optimizer" target="_blank" rel="noopener noreferrer" class="project-link">Ver no GitHub</a>
+                            </div>
+
+                            <div class="project-card" role="article">
+                                <div class="project-header">
+                                    <span class="project-category">Arquitetura de backend</span>
+                                    <span class="project-tech">TypeScript • NestJS • Postgres</span>
+                                </div>
+                                    <h2><a href="/pt/projetos/multi-tenant-saas-platform/">Multi-Tenant SaaS Platform</a></h2>
+                                <p>Backend SaaS de nível empresarial com isolamento robusto de dados (locação em nível de linha), segurança RBAC e processamento de trabalhos em segundo plano com BullMQ.</p>
+                                <div class="project-features">
+                                    <span>Clean Architecture</span>
+                                    <span>Multi-tenant</span>
+                                    <span>Redis</span>
+                                </div>
+                                <a href="https://github.com/PkLavc/saas-backend-platform" target="_blank" rel="noopener noreferrer" class="project-link">Ver no GitHub</a>
+                            </div>
+
+                            <div class="project-card" role="article">
+                                <div class="project-header">
+                                    <span class="project-category">Cibersegurança</span>
+                                    <span class="project-tech">Python • Criptografia • Confiança Zero</span>
+                                </div>
+                                    <h2><a href="/pt/projetos/cipher-gate-proxy/">Cipher Gate Proxy</a></h2>
+                                <p>Proxy zero-trust de alto desempenho para privacidade de dados. Implementa criptografia AES-256, mascaramento dinâmico de dados (DDM) e detecção automatizada de PII.</p>
+                                <div class="project-features">
+                                    <span>AES-256</span>
+                                    <span>Privacidade de dados</span>
+                                    <span>API Segurança</span>
+                                </div>
+                                <a href="https://github.com/PkLavc/cipher-gate" target="_blank" rel="noopener noreferrer" class="project-link">Ver no GitHub</a>
+                            </div>
+
+                            <div class="project-card" role="article">
+                                <div class="project-header">
+                                    <span class="project-category">Sistemas Distribuídos</span>
+                                    <span class="project-tech">NestJS • BullMQ • OpenTelemetry</span>
+                                </div>
+                                    <h2><a href="/pt/projetos/event-driven-integration-service/">Event-Driven Service</a></h2>
+                                <p>Mecanismo de processamento de webhook confiável para dados de missão crítica do Stripe e PayPal. Possui segurança HMAC e rastreamento distribuído.</p>
+                                <div class="project-features">
+                                    <span>Microsserviços</span>
+                                    <span>Observabilidade</span>
+                                    <span>Filas</span>
+                                </div>
+                                <a href="https://github.com/PkLavc/event-driven-integration-service" target="_blank" rel="noopener noreferrer" class="project-link">Ver no GitHub</a>
+                            </div>
+
+                            <div class="project-card" role="article">
+                                <div class="project-header">
+                                    <span class="project-category">SRE e IA</span>
+                                    <span class="project-tech">Python • Detecção de anomalias</span>
+                                </div>
+                                    <h2><a href="/pt/projetos/aegis-sentinel/">Aegis Sentinel</a></h2>
+                                <p>Mecanismo autônomo de recuperação de infraestrutura com detecção preditiva de anomalias e recursos de autocorreção para sistemas backend críticos.</p>
+                                <div class="project-features">
+                                    <span>Self-healing</span>
+                                    <span>DevOps</span>
+                                    <span>Preditivo</span>
+                                </div>
+                                <a href="https://github.com/PkLavc/aegis-sentinel" target="_blank" rel="noopener noreferrer" class="project-link">Ver no GitHub</a>
+                            </div>
+
+                            <div class="project-card" role="article">
+                                <div class="project-header">
+                                    <span class="project-category">DevOps</span>
+                                    <span class="project-tech">Docker • Nginx • GitHub Actions</span>
+                                </div>
+                                    <h2><a href="/pt/projetos/cloud-deployment-showcase/">Cloud Deployment Showcase</a></h2>
+                                <p>Infraestrutura pronta para produção que demonstra orquestração de contêineres, infraestrutura como código (IaC) e pipelines automatizados de CI/CD.</p>
+                                <div class="project-features">
+                                    <span>IaC</span>
+                                    <span>Monitoramento</span>
+                                    <span>Nginx</span>
+                                </div>
+                                <a href="https://github.com/PkLavc/cloud-deployment-showcase" target="_blank" rel="noopener noreferrer" class="project-link">Ver no GitHub</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </main>
+        <footer class="footer-minimal">
+            <div class="footer-container">
+                <div class="footer-link-list" aria-label="Links de rodapé">
+                    <a class="footer-link-pill" href="https://github.com/PkLavc" target="_blank" rel="noopener noreferrer">GitHub</a>
+                    <a class="footer-link-pill" href="https://www.linkedin.com/in/pklavc/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+                    <a class="footer-link-pill" href="mailto:contact@pklavc.com">E-mail</a>
+                    <a class="footer-link-pill footer-link-pill-accent" href="https://github.com/sponsors/PkLavc" target="_blank" rel="noopener noreferrer">Apoiar no GitHub</a>
+                </div>
+                <p>
+                    © <span data-current-year></span> Patrick Araujo
+                </p>
+            </div>
+        </footer>
+        <script>
+            (function() {
+                document.querySelectorAll('[data-current-year]').forEach(function(node) {
+                    node.textContent = String(new Date().getFullYear());
+                });
+            }());
+        </script>
+        <script src="/js/i18n.js?v=cc3ee695f1" defer></script>
+        <script src="/js/jquery.min.js?v=d482871a5e" defer></script>
+        <script src="/js/index.js?v=0b108f99d1" defer></script>
+        <script src="/js/projects-readmore.js?v=1f3f92a8e6" defer></script>
+
+<div class="visually-hidden">
+    <p>Portfólio de projetos de backend focado em automação, integrações API, pipelines ETL, sincronização ERP, sistemas de relatórios, Python, Node.js, SQL e fluxos de trabalho operacionais escaláveis.</p>
+</div>
+    
+    </body>
+    </html>

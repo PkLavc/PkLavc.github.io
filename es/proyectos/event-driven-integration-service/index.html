@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="PkLavc" />
+    <title>Event-Driven Service | Proyecto NestJS | Patrick Araujo</title>
+    
+    <!-- SEO Enhanced Meta Tags -->
+    <meta name="description" content="Node.js sistema de integración de backend y webhook que utiliza NestJS, colas y observabilidad para un procesamiento API confiable basado en eventos.">
+        <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="Event-Driven Service | NestJS | Patrick Araujo">
+    <meta property="og:description" content="Node.js sistema de integración de backend y webhook que utiliza NestJS, colas y observabilidad para un procesamiento API confiable basado en eventos.">
+    <meta property="og:url" content="https://pklavc.com/es/proyectos/event-driven-integration-service/">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://pklavc.com/images/lavc.webp?v=5e84850f26">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:site_name" content="Patrick Araujo">
+    <meta property="og:locale" content="es_ES">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Event-Driven Service | NestJS | Patrick Araujo">
+    <meta name="twitter:description" content="Node.js sistema de integración de backend y webhook que utiliza NestJS, colas y observabilidad para un procesamiento API confiable basado en eventos.">
+    <meta name="twitter:image" content="https://pklavc.com/images/lavc.webp?v=5e84850f26">
+    <meta name="twitter:image:alt" content="Retrato de marca del ingeniero backend y especialista en automatización Patrick Araujo">
+    <meta name="twitter:site" content="@PkLavc">
+    <meta name="twitter:creator" content="@PkLavc">
+    
+    <link rel="canonical" href="https://pklavc.com/es/proyectos/event-driven-integration-service/">
+    <link rel="alternate" href="https://pklavc.com/projects/event-driven-integration-service/" hreflang="en">
+    <link rel="alternate" href="https://pklavc.com/pt/projetos/event-driven-integration-service/" hreflang="pt-BR">
+    <link rel="alternate" href="https://pklavc.com/es/proyectos/event-driven-integration-service/" hreflang="es">
+    <link rel="alternate" href="https://pklavc.com/projects/event-driven-integration-service/" hreflang="x-default">
+
+
+
+<meta name="robots" content="index, follow">
+<!-- JSON-LD Schema: Person -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Patrick Araujo",
+        "jobTitle": "Backend Software Engineer",
+        "url": "https://pklavc.com",
+        "image": "https://pklavc.com/images/lavc.webp?v=5e84850f26",
+        "sameAs": [
+            "https://github.com/PkLavc",
+            "https://www.linkedin.com/in/pklavc/"
+        ],
+        "description": "Specialist in backend automation, API integration, and scalable system architecture"
+    }
+    </script>
+    
+    <!-- JSON-LD Schema: Article -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": "Event-Driven Service | NestJS",
+        "description": "Event-Driven Service construido con NestJS. Motor confiable de procesamiento de webhooks para datos críticos de Stripe y PayPal, con seguridad HMAC y tracing distribuido.",
+        "author": {
+            "@type": "Person",
+            "name": "Patrick Araujo"
+        },
+        "mainEntityOfPage": "https://pklavc.com/es/proyectos/event-driven-integration-service/",
+        "url": "https://pklavc.com/es/proyectos/event-driven-integration-service/",
+        "keywords": "Patrick Araujo, Backend Software Engineer, NestJS, Event-Driven Service"
+    }
+    </script>
+    
+    <!-- JSON-LD Schema: BreadcrumbList -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "https://pklavc.com/"
+            },
+            {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Projects",
+                "item": "https://pklavc.com/es/proyectos/"
+            },
+            {
+                "@type": "ListItem",
+                "position": 3,
+                "name": "Event-Driven Service",
+                "item": "https://pklavc.com/es/proyectos/event-driven-integration-service/"
+            }
+        ]
+    }
+    </script>
+    <link rel="icon" type="image/svg+xml" href="https://pklavc.com/images/favicon.svg?v=d15fe4e492">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Monoton&amp;family=Poppins:wght@500&amp;family=Raleway:wght@300&amp;display=swap" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Monoton&amp;family=Poppins:wght@500&amp;family=Raleway:wght@300&amp;display=swap"></noscript>
+    <link rel="stylesheet" href="/css/global.css?v=55251d9722">
+    <link rel="stylesheet" href="/css/projects.css?v=84c54fcc24">
+    <style>
+        .project-hero { padding: 60px 20px; text-align: center; background: linear-gradient(135deg, rgba(0,0,0,0.1), rgba(0,0,0,0.05)); }
+        .project-hero h1 { font-size: 2.5rem; margin: 20px 0; color: #fff; }
+        .project-category-badge { display: inline-block; background: rgba(100, 200, 255, 0.2); border: 1px solid rgba(100, 200, 255, 0.5); color: #64c8ff; padding: 8px 16px; border-radius: 20px; font-size: 0.9rem; margin-bottom: 20px; }
+        .tech-stack-section { padding: 40px 20px; background: rgba(255, 255, 255, 0.02); }
+        .tech-stack-section h2 { color: #fff; margin-bottom: 20px; font-size: 1.5rem; }
+        .tech-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 40px; }
+        .tech-tag { background: rgba(100, 200, 255, 0.1); border: 1px solid rgba(100, 200, 255, 0.3); color: #64c8ff; padding: 12px 16px; border-radius: 8px; text-align: center; font-size: 0.95rem; }
+        .problem-solution { padding: 40px 20px; max-width: 800px; margin: 0 auto; }
+        .problem-solution h2 { color: #fff; margin: 30px 0 20px 0; font-size: 1.3rem; }
+        .problem-solution p { color: #ccc; line-height: 1.8; margin-bottom: 20px; }
+        .impact-section { padding: 40px 20px; background: rgba(100, 200, 255, 0.05); text-align: center; }
+        .impact-section h2 { color: #fff; margin-bottom: 20px; font-size: 1.3rem; }
+        .impact-text { color: #64c8ff; font-size: 1.1rem; margin: 20px 0; font-weight: 500; }
+        .cta-section { padding: 60px 20px; text-align: center; }
+        .cta-button { display: inline-block; background: linear-gradient(135deg, #64c8ff, #00d4ff); color: #000; padding: 16px 40px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 1rem; transition: transform 0.3s, box-shadow 0.3s; border: none; cursor: pointer; }
+        .cta-button:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(100, 200, 255, 0.3); }
+        .breadcrumb-nav {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 12px 20px;
+            margin-bottom: 30px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .breadcrumb {
+            list-style: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0;
+            font-size: 0.95rem;
+            color: #A0A0A0;
+        }
+        .breadcrumb li {
+            display: flex;
+            align-items: center;
+        }
+        .breadcrumb li:not(:last-child)::after {
+            content: "/";
+            margin-left: 8px;
+            font-size: 0.8rem;
+            color: #666;
+        }
+        .breadcrumb a {
+            color: #4A9EFF;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        .breadcrumb a:hover {
+            color: #64c8ff;
+            text-decoration: underline;
+        }
+        .breadcrumb [aria-current="page"] {
+            color: #E0E0E0;
+            font-weight: 500;
+        }
+            .full-readme-section { padding: 50px 20px; background: rgba(255, 255, 255, 0.02); }
+        .full-readme-container { max-width: 1000px; margin: 0 auto; }
+        .full-readme-container .markdown-body { background: #0d1117; border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 10px; padding: 24px; }
+            .project-context-section { padding: 32px 20px; background: rgba(100, 200, 255, 0.06); }
+        .project-context-container { max-width: 1000px; margin: 0 auto; }
+        .project-context-section h2, .project-context-section h3, .related-projects-section h2 { color: #fff; }
+        .project-context-section p, .project-context-section li, .related-projects-section p, .related-projects-section li { color: #d0d0d0; line-height: 1.7; }
+        .project-context-section a, .related-projects-section a { color: #64c8ff; }
+        .related-projects-section { padding: 32px 20px; background: rgba(255, 255, 255, 0.03); }    </style>
+    <link rel="preload" as="style" href="/css/github-markdown-local.css?v=01d37f05ee">
+    <link rel="stylesheet" href="/css/github-markdown-local.css?v=01d37f05ee" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="/css/github-markdown-local.css?v=01d37f05ee"></noscript>
+</head>
+<body>
+    <div id="breaker"></div>
+    <div id="breaker-two"></div>
+    <div id="all">
+        <div id="navigation-content" role="navigation" aria-label="Navegación primaria">
+            <div class="logo"></div>
+            <div class="navigation-links">
+                <a href="/es/" data-text="INICIO">INICIO</a>
+                <a href="/es/sobre/" data-text="SOBRE">SOBRE</a>
+                <a href="/es/proyectos/" data-text="PROYECTOS">PROYECTOS</a>
+            </div>
+        </div>
+        <div id="navigation-bar">
+            <div class="menubar">
+                <span class="first-span"></span>
+                <span class="second-span"></span>
+                <span class="third-span"></span>
+            </div>
+        </div>
+        
+        <main role="main">
+
+            <section class="project-hero">
+                <span class="project-category-badge">Sistemas distribuidos</span>
+                <h1>Event-Driven Service | NestJS</h1>
+                <p style="color: #aaa; font-size: 1.1rem; margin-top: 15px;">Motor de procesamiento de webhooks confiable para datos críticos de Stripe y PayPal con seguridad HMAC y seguimiento distribuido</p>
+            </section>
+
+            <section class="project-context-section" aria-label="Contexto SEO del proyecto">
+  <div class="project-context-container">
+    <h2>Contexto del problema, pila y tipo de sistema</h2>
+    <p>Este proyecto aborda la confiabilidad de la integración de webhooks en servicios distribuidos. Se centra en la idempotencia, los reintentos, el procesamiento de colas y la observabilidad para que los flujos de eventos permanezcan estables en condiciones de falla.</p>
+    <h3>Alcance técnico</h3>
+    <ul>
+      <li><strong>Pila:</strong> TypeScript, Node.js, NestJS, BullMQ, Redis, PostgreSQL, OpenTelemetry</li>
+      <li><strong>Tipo de sistema:</strong> integración de webhook, arquitectura basada en eventos, backend de API de node.js</li>
+      <li><strong>Palabras clave en contexto:</strong> procesamiento de webhooks, arquitectura basada en eventos, sistema de automatización</li>
+    </ul>
+    <p>Integraciones relacionadas: <a href="/es/proyectos/google-auth-worker/">Google Auth Worker</a>, <a href="/es/proyectos/zoho-integration-worker/">Zoho Integration Worker</a>, y <a href="/es/proyectos/zenvia-integration-worker/">Zenvia Integration Worker</a>. Página del grupo: <a href="/es/colecciones/proyectos-integracion-api/">API Proyectos de Integración</a>.</p>
+  </div>
+</section>
+            <section class="full-readme-section" aria-label="LÉAME completo">
+                <div class="full-readme-container">
+                    <h2 style="color: #fff; margin-bottom: 20px;">Documentación completa del proyecto</h2>
+                    <article class="markdown-body">
+<h2>Event-Driven Integration Service</h2><p><a href="https://github.com/PkLavc/event-driven-integration-service"><img src="https://img.shields.io/badge/Source-GitHub-black?logo=github" alt="Código fuente"></a>
+<a href="https://pklavc.com/es/proyectos/"><img src="https://img.shields.io/badge/Portfolio-Projects-0A66C2?logo=google-chrome&amp;logoColor=white" alt="Portafolio"></a>
+<a href="https://github.com/PkLavc"><img src="https://img.shields.io/badge/Author-Patrick_Araujo-1f2937" alt="Autor"></a></p>
+<h2>Arquitectura Técnica</h2>
+<h3>Flujo de procesamiento de eventos</h3>
+<p>El servicio implementa una arquitectura sólida basada en eventos para procesar webhooks externos con entrega e idempotencia garantizadas.</p>
+<ol>
+<li><strong>Capa de ingreso</strong>: Los puntos finales de webhook específicos del proveedor reciben solicitudes HTTP POST</li>
+<li><strong>Validación de seguridad</strong>: Verificación de firma HMAC utilizando secretos específicos del proveedor</li>
+<li><strong>Verificación de idempotencia</strong>: La validación de restricciones de la base de datos atómica evita el procesamiento duplicado</li>
+<li><strong>Persistencia de eventos</strong>: La operación Atomic INSERT almacena el evento con estado PENDIENTE</li>
+<li><strong>Despacho de cola</strong>: ID de evento en cola para BullMQ con configuración de retroceso exponencial</li>
+<li><strong>Procesamiento asincrónico</strong>: El trabajador procesa eventos con lógica de reintento y actualizaciones de estado.</li>
+<li><strong>Finalización</strong>: El estado del evento cambia a COMPLETADO o DEAD_LETTER en caso de falla</li>
+</ol>
+<h3>Diagrama de flujo de datos</h3>
+<pre><code>External Provider -> HTTP Endpoint -> HMAC Validation -> Database Constraint Check
+    |
+Event Stored (PENDING) -> BullMQ Queue -> Worker Process -> Status Updates
+    |
+COMPLETED / DEAD_LETTER -> Observability Stack
+</code></pre>
+<h3>Pila de tecnología</h3>
+<ul>
+<li><strong>Tiempo de ejecución</strong>: Node.js 18+ con TypeScript 5.0+</li>
+<li><strong>Marco</strong>: NestJS 10+ con inyección de dependencia</li>
+<li><strong>Base de datos</strong>: PostgreSQL 15+ con Prisma ORM</li>
+<li><strong>Sistema de cola</strong>: BullMQ 5+ con Redis 7+</li>
+<li><strong>Observabilidad</strong>: OpenTelemetry 1.20+ con Jaeger</li>
+<li><strong>Registro</strong>: Winston 3.11+ con salida JSON estructurada</li>
+<li><strong>Contenedorización</strong>: Docker con compilaciones de varias etapas</li>
+</ul>
+<h2>Fiabilidad y resiliencia</h2>
+<h3>Idempotencia atómica</h3>
+<p>El sistema garantiza un procesamiento exactamente una vez mediante restricciones a nivel de base de datos:</p>
+<ul>
+<li><strong>Restricción única</strong>: El índice único compuesto en (proveedor, eventId) evita condiciones de carrera</li>
+<li><strong>Operaciones atómicas</strong>: Declaración INSERT única con manejo de violación de restricciones</li>
+<li><strong>Seguimiento de estado</strong>: Ciclo de vida del evento desde PENDIENTE -&gt; PROCESANDO -&gt; COMPLETADO/LETRA MUERTA</li>
+<li><strong>Manejo de duplicados</strong>: Los eventos existentes devuelven 200 OK sin reprocesamiento</li>
+</ul>
+<h3>Estrategia de reintento</h3>
+<p>Mecanismo de reintento configurable con retroceso exponencial:</p>
+<ul>
+<li><strong>Intentos máximos</strong>: 3 reintentos por evento</li>
+<li><strong>Algoritmo de retroceso</strong>: Retraso exponencial (2^intento * 1000ms)</li>
+<li><strong>Retraso inicial</strong>: 1 segundo de retraso base</li>
+<li><strong>Actualizaciones de estado</strong>: Se realiza un seguimiento del recuento de reintentos y de la marca de tiempo del siguiente reintento por evento</li>
+<li><strong>Escalada de fallas</strong>: Los eventos que exceden el límite de reintentos se mueven a la cola de mensajes no entregados</li>
+</ul>
+<h3>Cola de mensajes fallidos</h3>
+<p>Los eventos fallidos se aíslan para su análisis e intervención manual:</p>
+<ul>
+<li><strong>Escalada automática</strong>: Los eventos que exceden el límite de reintentos se mueven automáticamente</li>
+<li><strong>Estado de aislamiento</strong>: El estado DEAD_LETTER impide futuros intentos de procesamiento</li>
+<li><strong>Pista de auditoría</strong>: Historial de procesamiento completo mantenido para depuración</li>
+<li><strong>Recuperación manual</strong>: Los eventos fallidos se pueden volver a poner en cola para reintentar</li>
+</ul>
+<h2>Pila de observabilidad</h2>
+<h3>Seguimiento distribuido</h3>
+<p>La implementación de OpenTelemetry proporciona visibilidad de solicitudes de un extremo a otro:</p>
+<ul>
+<li><strong>Creación de tramos</strong>: Intervalo dedicado para cada ciclo de vida de procesamiento de eventos</li>
+<li><strong>Atributos de extensión</strong>: event.id, event.type, event.provider, reintento_count</li>
+<li><strong>Grabación de errores</strong>: Excepciones capturadas con seguimientos de pila completa</li>
+<li><strong>Seguimiento de estado</strong>: El estado del intervalo refleja el éxito o el fracaso del procesamiento.</li>
+<li><strong>Propagación de trazas</strong>: Correlación entre los límites del servicio</li>
+</ul>
+<h3>Registro estructurado</h3>
+<p>Registro basado en Winston con información contextual:</p>
+<ul>
+<li><strong>Correlación de eventos</strong>: Inyección automática de eventId en todos los mensajes de registro</li>
+<li><strong>Formato estructurado</strong>: Salida JSON compatible con ELK/Datadog</li>
+<li><strong>Niveles de registro</strong>: DEPURACIÓN, INFORMACIÓN, ADVERTENCIA, ERROR con la categorización adecuada</li>
+<li><strong>Enriquecimiento del contexto</strong>: Solicitar metadatos, estado de procesamiento, información de tiempo</li>
+<li><strong>Rotación de registros</strong>: Políticas de retención y rotación configurables</li>
+</ul>
+<h3>Monitoreo de salud</h3>
+<p>NestJS Terminus proporciona controles de salud integrales:</p>
+<ul>
+<li><strong>Conectividad de base de datos</strong>: PostgreSQL monitoreo del estado de la conexión</li>
+<li><strong>Uso de la memoria</strong>: Seguimiento de memoria RSS y montón</li>
+<li><strong>Estado de la cola</strong>: Conexión de Redis y monitoreo de profundidad de cola</li>
+<li><strong>Estado del servicio</strong>: Punto final HTTP para comprobaciones de estado del balanceador de carga</li>
+</ul>
+<h2>API Estándares</h2>
+<h3>Respuestas de error estandarizadas</h3>
+<p>Todos los puntos finales API devuelven un formato de error consistente:</p>
+<pre><code class="language-json">{
+  &quot;statusCode&quot;: 500,
+  &quot;timestamp&quot;: &quot;2026-03-06T13:37:07.038Z&quot;,
+  &quot;path&quot;: &quot;/api/webhooks/stripe&quot;,
+  &quot;message&quot;: &quot;Error description&quot;,
+  &quot;correlationId&quot;: &quot;uuid-v4&quot;,
+  &quot;traceId&quot;: &quot;otel-trace-id&quot;
+}
+</code></pre>
+<p><strong>Campos obligatorios</strong>:</p>
+<ul>
+<li><code>statusCode</code>: código de estado HTTP</li>
+<li><code>timestamp</code>: marca de tiempo con formato ISO 8601</li>
+<li><code>path</code>: Solicitar ruta</li>
+<li><code>message</code>: Descripción del error legible por humanos</li>
+<li><code>correlationId</code>: UUID para seguimiento de solicitudes</li>
+<li><code>traceId</code>: OpenTelemetry identificador de seguimiento</li>
+</ul>
+<h3>Puntos finales de webhook</h3>
+<p>Puntos finales específicos del proveedor con validación de seguridad:</p>
+<pre><code class="language-http">POST /webhooks/{provider}
+Content-Type: application/json
+X-{Provider}-Signature: signature-header-value
+</code></pre>
+<p><strong>Proveedores compatibles</strong>:</p>
+<ul>
+<li><code>stripe</code>: Webhooks de pago de franjas</li>
+<li><code>paypal</code>: Webhooks de transacciones de PayPal  </li>
+<li><code>github</code>: GitHub webhooks del repositorio</li>
+</ul>
+<h3>Punto final de verificación de estado</h3>
+<pre><code class="language-http">GET /health
+</code></pre>
+<p>Devuelve el estado de salud del sistema con métricas de base de datos y memoria.</p>
+<h2>Operaciones de infraestructura</h2>
+<h3>Apagado elegante</h3>
+<p>El servicio maneja señales de terminación para un apagado limpio:</p>
+<ul>
+<li><strong>Manejo de señales</strong>: Procesamiento de señales SIGTERM y SIGINT</li>
+<li><strong>Limpieza de conexión</strong>: Terminación de la conexión Prisma y Redis</li>
+<li><strong>Finalización del trabajo</strong>: Los trabajos activos se pueden completar antes del apagado.</li>
+<li><strong>Liberación de recursos</strong>: Limpieza adecuada de los recursos del sistema.</li>
+<li><strong>Códigos de salida</strong>: Códigos de salida apropiados para sistemas de orquestación</li>
+</ul>
+<h3>Gestión de configuración</h3>
+<p>Configuración basada en entorno con validación:</p>
+<pre><code class="language-env"># Database Configuration
+DATABASE_URL=&quot;postgresql://user:pass@host:port/database&quot;
+
+# Redis Configuration  
+REDIS_HOST=&quot;localhost&quot;
+REDIS_PORT=&quot;6379&quot;
+
+# Provider Secrets
+STRIPE_WEBHOOK_SECRET=&quot;whsec_...&quot;
+PAYPAL_WEBHOOK_SECRET=&quot;...&quot;
+GITHUB_WEBHOOK_SECRET=&quot;...&quot;
+
+# Observability
+OTEL_SERVICE_NAME=&quot;event-driven-integration-service&quot;
+JAEGER_ENDPOINT=&quot;http://localhost:14268/api/traces&quot;
+</code></pre>
+<h2>Desarrollo y pruebas</h2>
+<h3>Requisitos previos</h3>
+<ul>
+<li>Node.js 18+</li>
+<li>PostgreSQL 15+</li>
+<li>Redis 7+</li>
+<li>Docker 24+ (para infraestructura)</li>
+</ul>
+<h3>Configuración local</h3>
+<ol>
+<li><p><strong>Instalar dependencias</strong></p>
+<pre><code class="language-bash">npm install
+</code></pre>
+</li>
+<li><p><strong>Migración de base de datos</strong></p>
+<pre><code class="language-bash">npm run prisma:migrate
+npm run prisma:generate
+</code></pre>
+</li>
+<li><p><strong>Iniciar infraestructura</strong></p>
+<pre><code class="language-bash">docker-compose up -d
+</code></pre>
+</li>
+<li><p><strong>Servidor de desarrollo</strong></p>
+<pre><code class="language-bash">npm run start:dev
+</code></pre>
+</li>
+</ol>
+<h3>Estrategia de prueba</h3>
+<ul>
+<li><strong>Pruebas unitarias</strong>: Jest con prueba de componentes aislados</li>
+<li><strong>Pruebas de integración</strong>: Validación del procesamiento de webhooks de un extremo a otro</li>
+<li><strong>Infraestructura simulada</strong>: Redis y burla de base de datos para CI/CD</li>
+<li><strong>Pruebas de carga</strong>: Validación del rendimiento en condiciones de alto rendimiento</li>
+</ul>
+<h3>Implementación de Docker</h3>
+<pre><code class="language-bash">docker-compose up --build
+</code></pre>
+<p>Dockerfile de varias etapas optimiza el tamaño y la seguridad de la imagen de producción.</p>
+<h2>Características de rendimiento</h2>
+<h3>Capacidad de rendimiento</h3>
+<ul>
+<li><strong>Procesamiento de eventos</strong>: Más de 1000 eventos/segundo por instancia de trabajador</li>
+<li><strong>Operaciones de base de datos</strong>: Agrupación de conexiones con límites configurables</li>
+<li><strong>Rendimiento de la cola</strong>: Cola basada en Redis con escalado horizontal</li>
+<li><strong>Uso de la memoria</strong>: Optimizado para procesos de larga duración</li>
+</ul>
+<h3>Consideraciones de escalabilidad</h3>
+<ul>
+<li><strong>Escala horizontal</strong>: Se admiten varias instancias de trabajadores</li>
+<li><strong>Escalado de bases de datos</strong>: Leer réplicas para escenarios de gran volumen</li>
+<li><strong>Partición de colas</strong>: Múltiples instancias de cola para distribución de carga</li>
+<li><strong>Integración de monitoreo</strong>: Métricas de Prometheus para decisiones de escala</li>
+</ul>
+<h2>Implementación de seguridad</h2>
+<h3>Validación de firma HMAC</h3>
+<p>Verificación de firma específica del proveedor:</p>
+<ul>
+<li><strong>Algoritmo</strong>: HMAC-SHA256 con secretos de proveedor</li>
+<li><strong>Análisis de encabezado</strong>: Extracción del encabezado de firma específica del proveedor</li>
+<li><strong>Protección contra ataques de sincronización</strong>: Implementación de comparación en tiempo constante</li>
+<li><strong>Gestión Secreta</strong>: Almacenamiento secreto basado en el entorno</li>
+</ul>
+<h3>Validación de entrada</h3>
+<p>Sanitización y validación integral de insumos:</p>
+<ul>
+<li><strong>Esquema JSON</strong>: Validación de carga útil específica del proveedor</li>
+<li><strong>Tipo de verificación</strong>: Validación de tipo de tiempo de ejecución para campos críticos</li>
+<li><strong>Límites de tamaño</strong>: Restricciones de tamaño de carga útil para evitar DoS</li>
+<li><strong>Tipo de contenido</strong>: Validación estricta del tipo de contenido</li>
+</ul>
+<h2>Despliegue de producción</h2>
+<h3>Requisitos de infraestructura</h3>
+<ul>
+<li><strong>Base de datos</strong>: PostgreSQL 15+ con agrupación de conexiones</li>
+<li><strong>Cola de mensajes</strong>: Redis 7+ con configuración de persistencia</li>
+<li><strong>Observabilidad</strong>: Recolector Jaeger para rastreo distribuido</li>
+<li><strong>Equilibrador de carga</strong>: Terminación HTTP/HTTPS con controles de estado</li>
+</ul>
+<h3>Pila de monitoreo</h3>
+<ul>
+<li><strong>Métricas</strong>: Prometheus con métricas de aplicaciones personalizadas</li>
+<li><strong>Paneles de control</strong>: Grafana para visibilidad operativa</li>
+<li><strong>alertando</strong>: AlertManager para respuesta a incidentes</li>
+<li><strong>Agregación de registros</strong>: pila ELK o equivalente para análisis de registros</li>
+</ul>
+<h3>Procedimientos operativos</h3>
+<ul>
+<li><strong>Implementación</strong>: Implementación azul-verde sin tiempo de inactividad</li>
+<li><strong>Revertir</strong>: Reversión automatizada de fallas en las comprobaciones de estado</li>
+<li><strong>Escalado</strong>: Escalado automático del pod horizontal según la profundidad de la cola</li>
+<li><strong>Copia de seguridad</strong>: Procedimientos de copia de seguridad y recuperación de bases de datos.</li>
+</ul>
+<h2>Impacto de ingeniería</h2>
+<h3>Ingeniería de Confiabilidad</h3>
+<ul>
+<li><strong>Garantías SLA</strong>: 99,9 % de tiempo de actividad con la infraestructura adecuada</li>
+<li><strong>Error de presupuesto</strong>: Umbrales de tasa de error configurables</li>
+<li><strong>Respuesta a incidentes</strong>: Registro y seguimiento estructurados para una depuración rápida</li>
+<li><strong>Planificación de capacidad</strong>: Decisiones de escalado basadas en métricas</li>
+</ul>
+<h3>Ingeniería de Seguridad</h3>
+<ul>
+<li><strong>Protección de datos</strong>: Comunicación y almacenamiento cifrados</li>
+<li><strong>Control de acceso</strong>: Autenticación específica del proveedor</li>
+<li><strong>Pista de auditoría</strong>: Historial de procesamiento completo para cumplimiento</li>
+<li><strong>Gestión de vulnerabilidades</strong>: Escaneo y actualizaciones periódicas de dependencias</li>
+</ul>
+<h3>Ingeniería de observabilidad</h3>
+<ul>
+<li><strong>Prácticas de ERE</strong>: Presupuestos de errores e implementación de SLI/SLO</li>
+<li><strong>Eficiencia de depuración</strong>: Registros estructurados y seguimiento distribuido</li>
+<li><strong>Monitoreo del desempeño</strong>: Métricas y alertas en tiempo real</li>
+<li><strong>Planificación de capacidad</strong>: Datos históricos para el dimensionamiento de infraestructuras.</li>
+</ul>
+<p><a href="https://github.com/sponsors/PkLavc"><img src="https://img.shields.io/badge/Apoyar%20en%20GitHub-%23ea4aaa?style=for-the-badge&amp;logo=github-sponsors&amp;logoColor=white" alt="GitHub Sponsors"></a></p>
+<h2>Autor</h2>
+<p><strong>Patrick Araujo - Ingeniero Informático</strong><br><strong>GitHub</strong>: <a href="https://github.com/PkLavc">https://github.com/PkLavc</a><br><strong>Portafolio</strong>: <a href="https://pklavc.com/es/proyectos/">https://pklavc.com/projects/</a></p>
+<hr>
+<p><em>Event-Driven Integration Service - Arquitectura de procesamiento de webhooks confiable con idempotencia, reintentos y observabilidad profunda.</em></p>
+                    </article>
+                </div>
+            </section>
+            
+            <section class="tech-stack-section">
+                <div style="max-width: 1000px; margin: 0 auto;">
+                    <h2>Pila de tecnología</h2>
+                    <div class="tech-list">
+                        <div class="tech-tag">NestJS</div>
+                        <div class="tech-tag">TypeScript</div>
+                        <div class="tech-tag">ToroMQ</div>
+                        <div class="tech-tag">OpenTelemetry</div>
+                        <div class="tech-tag">Microservicios</div>
+                    </div>
+                </div>
+            </section>
+
+            
+            
+            <section class="related-projects-section" aria-label="Enlaces de proyectos relacionados">
+  <div class="project-context-container">
+    <h2>Proyectos backend relacionados e integraciones API</h2>
+    <p>Explore implementaciones vinculadas en <a href="/es/colecciones/proyectos-python/">automatización del backend de Python</a>, <a href="/es/colecciones/proyectos-javascript/">Flujos de trabajo de la API de node.js</a>, y <a href="/es/colecciones/proyectos-integracion-api/">sistema de integración API</a> racimos.</p>
+    <ul>
+      <li><a href="/es/proyectos/google-auth-worker/">Google Auth Worker</a> para la orquestación de autenticación.</li>
+      <li><a href="/es/proyectos/event-driven-integration-service/">Event-Driven Integration Service</a> para procesamiento de webhooks y arquitectura basada en eventos.</li>
+      <li><a href="/es/proyectos/zoho-integration-worker/">Zoho Integration Worker</a> para flujos de trabajo de soporte de automatización de Zoho Deluge.</li>
+      <li><a href="/es/proyectos/cipher-gate-proxy/">Cipher Gate Proxy</a> para el procesamiento de seguridad backend de Python.</li>
+    </ul>
+  </div>
+</section>
+            <section class="cta-section">
+                <h2 style="color: #fff; margin-bottom: 30px;">Ver el código fuente</h2>
+                <a href="https://github.com/PkLavc/event-driven-integration-service" target="_blank" rel="noopener noreferrer" class="cta-button">
+                    Abrir en GitHub
+                </a>
+            </section>
+
+        </main>
+        
+        <footer class="footer-minimal">
+            <div class="footer-container">
+                <div class="footer-link-list" aria-label="Enlaces de pie de página">
+                    <a class="footer-link-pill" href="https://github.com/PkLavc" target="_blank" rel="noopener noreferrer">GitHub</a>
+                    <a class="footer-link-pill" href="https://www.linkedin.com/in/pklavc/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+                    <a class="footer-link-pill" href="mailto:contact@pklavc.com">Correo electrónico</a>
+                    <a class="footer-link-pill footer-link-pill-accent" href="https://github.com/sponsors/PkLavc" target="_blank" rel="noopener noreferrer">Apoyar en GitHub</a>
+                </div>
+                <p>
+                    © <span data-current-year></span> Patrick Araujo
+                </p>
+            </div>
+        </footer>
+    </div>
+    
+    <div class="visually-hidden">
+        <p>Ingeniero de Software Backend enfocado en automatización, integraciones de API, sistemas backend, Python, Node.js, SQL, ETL pipelines, AWS y plataformas operativas escalables.</p>
+    </div>
+    
+    <script>
+        (function() {
+            document.querySelectorAll('[data-current-year]').forEach(function(node) {
+                node.textContent = String(new Date().getFullYear());
+            });
+        }());
+    </script>
+        <script src="/js/i18n.js?v=cc3ee695f1" defer></script>
+    <script src="/js/jquery.min.js?v=d482871a5e" defer></script>
+    <script src="/js/index.js?v=0b108f99d1" defer></script>
+</body>
+</html>
+
+
+
+

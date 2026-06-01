@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="PkLavc" />
+    <title>Lavc Systems | Plataforma local de orquestração de IA | Patrick Araujo</title>
+
+    <meta name="description" content="Lavc Systems: plataforma desktop/web local para orquestração de IA multiagente, automação corporativa, base de conhecimento RAG, operações Kanban e observabilidade em tempo real construída com FastAPI, React, Ollama, LangGraph e ChromaDB.">
+    <meta property="og:title" content="Lavc Systems | Plataforma local de orquestração de IA | Patrick Araujo">
+    <meta property="og:description" content="Plataforma local para orquestração de agentes de IA, RAG, memória híbrida, objetivos autônomos e gerenciamento de tarefas orientado por Kanban — rodando totalmente em sua máquina com Ollama.">
+    <meta property="og:url" content="https://pklavc.com/pt/projetos/lavc-systems/">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://pklavc.com/projects/lavc-systems/assets/lavc-ai-operation-dashboard.webp?v=8081b617f4">
+    <meta property="og:image:width" content="1280">
+    <meta property="og:image:height" content="548">
+    <meta property="og:image:alt" content="Lavc Systems painel de operação da plataforma de IA local com orquestração de agentes e controles de sistema">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Lavc Systems | Plataforma local de orquestração de IA | Patrick Araujo">
+    <meta name="twitter:description" content="Leia mais sobre a arquitetura Lavc Systems: multiagente LangGraph, ChromaDB RAG, HybridMemory, Kanban e eventos WebSocket em tempo real.">
+    <meta name="twitter:image" content="https://pklavc.com/projects/lavc-systems/assets/lavc-ai-operation-dashboard.webp?v=8081b617f4">
+    <meta name="twitter:image:alt" content="Lavc Systems painel de operação da plataforma de IA local com orquestração de agentes e controles de sistema">
+    <link rel="canonical" href="https://pklavc.com/pt/projetos/lavc-systems/">
+    <link rel="alternate" href="https://pklavc.com/projects/lavc-systems/" hreflang="en">
+    <link rel="alternate" href="https://pklavc.com/pt/projetos/lavc-systems/" hreflang="pt-BR">
+    <link rel="alternate" href="https://pklavc.com/es/proyectos/lavc-systems/" hreflang="es">
+    <link rel="alternate" href="https://pklavc.com/projects/lavc-systems/" hreflang="x-default">
+
+
+
+<meta name="robots" content="index, follow">
+
+    <link rel="icon" type="image/svg+xml" href="https://pklavc.com/images/favicon.svg?v=d15fe4e492">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Monoton&amp;family=Poppins:wght@500&amp;family=Raleway:wght@300&amp;display=swap" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Monoton&amp;family=Poppins:wght@500&amp;family=Raleway:wght@300&amp;display=swap"></noscript>
+    <link rel="stylesheet" href="/css/global.css?v=55251d9722">
+    <link rel="stylesheet" href="/css/projects.css?v=84c54fcc24">
+    <link rel="preload" as="style" href="/css/github-markdown-local.css?v=01d37f05ee">
+    <link rel="stylesheet" href="/css/github-markdown-local.css?v=01d37f05ee" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="/css/github-markdown-local.css?v=01d37f05ee"></noscript>
+
+    <style>
+        .project-hero {
+            padding: 60px 20px;
+            text-align: center;
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.12), rgba(0, 0, 0, 0.05));
+        }
+        .project-hero h1 {
+            font-size: 2.5rem;
+            margin: 20px 0;
+            color: #fff;
+        }
+        .project-category-badge {
+            display: inline-block;
+            background: rgba(120, 80, 255, 0.2);
+            border: 1px solid rgba(120, 80, 255, 0.5);
+            color: #a88bff;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+        .full-readme-section {
+            padding: 50px 20px;
+            background: rgba(255, 255, 255, 0.02);
+        }
+        .full-readme-container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        .full-readme-container .markdown-body {
+            background: #0d1117;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 10px;
+            padding: 24px;
+        }
+        .meta-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 10px;
+            margin: 16px 0 24px;
+        }
+        .meta-item {
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 10px;
+            padding: 10px 12px;
+            background: rgba(255, 255, 255, 0.02);
+        }
+        .meta-item strong {
+            display: block;
+            color: #fff;
+            margin-bottom: 4px;
+            font-size: 0.9rem;
+        }
+        .flowchart {
+            margin: 14px 0 24px;
+            padding: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            background: rgba(7, 12, 20, 0.8);
+        }
+        .flow-lane {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 8px;
+            margin: 6px 0;
+        }
+        .flow-step {
+            border: 1px solid rgba(168, 139, 255, 0.4);
+            border-radius: 8px;
+            padding: 8px 10px;
+            background: rgba(168, 139, 255, 0.08);
+            color: #e2d9ff;
+            font-size: 0.9rem;
+        }
+        .flow-arrow {
+            color: #a88bff;
+            font-weight: 700;
+            font-size: 1rem;
+            padding: 0 2px;
+        }
+        .section-spacer {
+            margin-top: 26px;
+        }
+        .stack-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 14px 0 24px;
+            font-size: 0.92rem;
+        }
+        .stack-table th,
+        .stack-table td {
+            padding: 10px 14px;
+            text-align: left;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .stack-table th {
+            background: rgba(168, 139, 255, 0.12);
+            color: #c4aeff;
+            font-weight: 600;
+        }
+        .stack-table td {
+            color: #ccc;
+        }
+        .stack-table tr:hover td {
+            background: rgba(255,255,255,0.02);
+        }
+        .project-visual-section {
+            padding: 36px 20px;
+            background: rgba(255, 255, 255, 0.02);
+        }
+        .project-visual-container {
+            max-width: 1040px;
+            margin: 0 auto;
+        }
+        .project-visual-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 16px;
+        }
+        .project-visual-grid-secondary {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 16px;
+        }
+        .project-visual-card {
+            margin: 0;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 10px;
+            overflow: hidden;
+            background: #0d1117;
+        }
+        .project-visual-card img {
+            display: block;
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+        }
+        .project-visual-card figcaption {
+            padding: 12px 14px;
+            color: #bfcbd3;
+            line-height: 1.6;
+            font-size: 0.92rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        @media (max-width: 860px) {
+            .project-visual-grid-secondary {
+                grid-template-columns: 1fr;
+            }
+        }
+        .cta-section {
+            padding: 40px 20px 60px;
+            text-align: center;
+        }
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #a88bff, #7c3aed);
+            color: #fff;
+            padding: 14px 34px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(168, 139, 255, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div id="breaker"></div>
+    <div id="breaker-two"></div>
+    <div id="all">
+        <div id="navigation-content" role="navigation" aria-label="Navegação primária">
+            <div class="logo"></div>
+            <div class="navigation-links">
+                <a href="/pt/" data-text="INÍCIO">INÍCIO</a>
+                <a href="/pt/sobre/" data-text="SOBRE">SOBRE</a>
+                <a href="/pt/projetos/" data-text="PROJETOS">PROJETOS</a>
+            </div>
+        </div>
+        <div id="navigation-bar">
+            <div class="menubar">
+                <span class="first-span"></span>
+                <span class="second-span"></span>
+                <span class="third-span"></span>
+            </div>
+        </div>
+
+        <main role="main">
+            <section class="project-hero">
+                <span class="project-category-badge">Plataforma de IA</span>
+                <div class="project-hero-title">
+                    <img src="/images/lavc.webp?v=5e84850f26" alt="" class="project-hero-logo" width="76" height="76" loading="eager" decoding="async">
+                    <h1>Lavc Systems</h1>
+                </div>
+                <p style="color: #aaa; font-size: 1.1rem; margin-top: 15px;">Plataforma local de orquestração de IA multiagente com RAG, Kanban gerenciamento de tarefas, metas autônomas e observabilidade em tempo real.</p>
+            </section>
+
+            <section class="project-visual-section" aria-label="Lavc Systems recursos visuais da interface">
+                <div class="project-visual-container">
+                    <div class="project-visual-grid">
+                        <figure class="project-visual-card">
+                            <img src="/projects/lavc-systems/assets/lavc-ai-operation-dashboard.webp?v=8081b617f4" width="1280" height="548" alt="Painel de operação Lavc Systems mostrando agentes locais de IA, status da tarefa e sinais de observabilidade" loading="eager" decoding="async">
+                            <figcaption>Painel de operação para agentes locais de IA, tarefas autônomas, status do sistema e observabilidade em tempo real.</figcaption>
+                        </figure>
+                        <div class="project-visual-grid-secondary">
+                            <figure class="project-visual-card">
+                                <img src="/projects/lavc-systems/assets/lavc-ai-agent-orchestration-graph.webp?v=7ba29e7ca7" width="1280" height="550" alt="Lavc Systems gráfico de orquestração de agentes com nós de fluxo de trabalho multiagentes e caminhos de execução" loading="lazy" decoding="async">
+                                <figcaption>Gráfico de orquestração de agentes mostrando como o coordenador, os agentes especializados, a memória e as ferramentas se movimentam em um fluxo de trabalho.</figcaption>
+                            </figure>
+                            <figure class="project-visual-card">
+                                <img src="/projects/lavc-systems/assets/lavc-ai-system-control-metrics.webp?v=75aeee3a79" width="1280" height="546" alt="Painel de métricas de controle Lavc Systems para tempo de execução local LLM, memória, agendador e integridade de execução" loading="lazy" decoding="async">
+                                <figcaption>As métricas de controle tornam visíveis o tempo de execução local LLM, a integridade do agendador, o uso de memória e os sinais de execução.</figcaption>
+                            </figure>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="full-readme-section" aria-label="Lavc Systems documentação">
+                <div class="full-readme-container">
+                    <h2 style="color:#fff; margin-bottom:20px;">Projeto Leia mais</h2>
+                    <article class="markdown-body">
+                        <h2>Lavc Systems</h2>
+                        <p>
+                            <img src="https://img.shields.io/badge/Backend-FastAPI%20%2B%20Python%203.14-009688" alt="Backend">
+                            <img src="https://img.shields.io/badge/Frontend-React%2018%20%2B%20TypeScript-61dafb" alt="Interface">
+                            <img src="https://img.shields.io/badge/LLM-Ollama%20Local-22c55e" alt="LLM">
+                            <img src="https://img.shields.io/badge/Orchestration-LangGraph%20%2B%20MultiAgent-7c3aed" alt="Orquestração">
+                            <img src="https://img.shields.io/badge/RAG-ChromaDB%20%2B%20HuggingFace-f59e0b" alt="RAG">
+                        </p>
+
+                        <p>
+                            <strong>Lavc Systems</strong> é uma plataforma desktop/web local para orquestrar agentes de IA, gerenciar automação corporativa, armazenar conhecimento RAG e rastrear trabalho operacional por meio de uma interface Kanban.
+                            O sistema executa um <strong>FastAPI</strong> backend, um <strong>React/Vite</strong> frontend e um conjunto de agentes locais conectados a <strong>Ollama</strong> — tudo em sua própria máquina, sem necessidade de serviço externo de IA.
+                        </p>
+
+                        <div class="meta-grid">
+                            <div class="meta-item"><strong>Backend</strong>FastAPI, Python 3.14, Uvicórnio</div>
+                            <div class="meta-item"><strong>Interface</strong>React 18, TypeScript, Tailwind CSS, Vite</div>
+                            <div class="meta-item"><strong>Estado</strong>Zustand</div>
+                            <div class="meta-item"><strong>LLM Tempo de execução</strong>Ollama · padrão <code>qwen2.5-coder:7b</code></div>
+                            <div class="meta-item"><strong>Orquestração</strong>LangGraph · fila multiagente</div>
+                            <div class="meta-item"><strong>RAG e memória</strong>ChromaDB · Embeddings HuggingFace · HybridMemory</div>
+                            <div class="meta-item"><strong>Banco de dados</strong>SQLite, SQLAlquimia</div>
+                            <div class="meta-item"><strong>Em tempo real</strong>WebSocket</div>
+                            <div class="meta-item"><strong>Agendador</strong>APScheduler + agendador.db</div>
+                            <div class="meta-item"><strong>Segurança</strong>Usuários, empresas, log de auditoria, cofre local, escopos</div>
+                        </div>
+
+                        <h3>Arquitetura do sistema</h3>
+                        <p>A plataforma separa as preocupações em quatro camadas de execução: o front-end React voltado para o usuário, o backend FastAPI com roteadores modulares, a camada de orquestração multiagente e a camada de dados que cobre SQLite, ChromaDB e armazenamento de arquivos local.</p>
+
+                        <div class="flowchart" aria-label="Lavc Systems fluxograma de arquitetura de alto nível">
+                            <div class="flow-lane">
+                                <span class="flow-step">React Front-end (Vite)</span>
+                                <span class="flow-arrow">→</span>
+                                <span class="flow-step">FastAPI Roteadores</span>
+                                <span class="flow-arrow">→</span>
+                                <span class="flow-step">Fila de tarefas</span>
+                            </div>
+                            <div class="flow-lane">
+                                <span class="flow-step">Agente Coordenador</span>
+                                <span class="flow-arrow">→</span>
+                                <span class="flow-step">LangGraph Pipeline</span>
+                                <span class="flow-arrow">→</span>
+                                <span class="flow-step">Agentes Especialistas</span>
+                            </div>
+                            <div class="flow-lane">
+                                <span class="flow-step">HybridMemory + ChromaDB</span>
+                                <span class="flow-arrow">→</span>
+                                <span class="flow-step">Ollama (local LLM)</span>
+                                <span class="flow-arrow">→</span>
+                                <span class="flow-step">Eventos WebSocket → IU</span>
+                            </div>
+                        </div>
+
+                        <h3>Fluxo Operacional</h3>
+                        <div class="flowchart" aria-label="Fluxo de execução de tarefas">
+                            <div class="flow-lane">
+                                <span class="flow-step">O usuário cria tarefa</span>
+                                <span class="flow-arrow">→</span>
+                                <span class="flow-step">Kanban + fila</span>
+                                <span class="flow-arrow">→</span>
+                                <span class="flow-step">Coordenador escolhe pipeline</span>
+                            </div>
+                            <div class="flow-lane">
+                                <span class="flow-step">Agentes usam memória, RAG e ferramentas</span>
+                                <span class="flow-arrow">→</span>
+                                <span class="flow-step">Logs + artefatos em detalhes da tarefa</span>
+                            </div>
+                            <div class="flow-lane">
+                                <span class="flow-step">Rastreamento operacional</span>
+                                <span class="flow-arrow">→</span>
+                                <span class="flow-step">Auditável: intenção/contexto/ação/próxima etapa</span>
+                            </div>
+                        </div>
+
+                        <h3>Módulos de interface</h3>
+                        <table class="stack-table" aria-label="Módulos de interface">
+                            <thead>
+                                <tr><th>Tela</th><th>Objetivo</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td><strong>Operação</strong></td><td>Kanban, Agendador e Objetivos: tarefas, jobs recorrentes e metas priorizadas.</td></tr>
+                                <tr><td><strong>Controle</strong></td><td>Painel executivo, integridade do sistema, recursos, logs, rastreamentos e execução.</td></tr>
+                                <tr><td><strong>Conhecimento</strong></td><td>RAG documentos, aprendizagem contínua, memórias, habilidades e estratégias.</td></tr>
+                                <tr><td><strong>Agentes</strong></td><td>Agent Graph (primário), Agent Studio e Workflow para edição e design de fluxos.</td></tr>
+                                <tr><td><strong>Ferramentas</strong></td><td>Plugins, APIse registro de ferramentas disponíveis para agentes.</td></tr>
+                                <tr><td><strong>Configurações</strong></td><td>Modelos, parâmetros de tempo de execução e preferências do sistema.</td></tr>
+                            </tbody>
+                        </table>
+
+                        <h3>Lista de agentes padrão</h3>
+                        <table class="stack-table" aria-label="Agentes padrão">
+                            <thead>
+                                <tr><th>Tipo</th><th>Função</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td><code>coordinator</code></td><td>Planeja, decide pipeline, delega.</td></tr>
+                                <tr><td><code>analyst</code></td><td>Analisa dados, documentos e contexto.</td></tr>
+                                <tr><td><code>programmer</code></td><td>Implementa e ajusta o código.</td></tr>
+                                <tr><td><code>executor</code></td><td>Executa comandos, scripts e validações.</td></tr>
+                                <tr><td><code>documenter</code></td><td>Produz documentação e artefatos de texto.</td></tr>
+                                <tr><td><code>reviewer</code></td><td>Avalia qualidade, consistência e resultado final.</td></tr>
+                                <tr><td><code>specialist:*</code></td><td>Especialistas de domínio criados no Agent Studio.</td></tr>
+                            </tbody>
+                        </table>
+
+                        <h3 class="section-spacer">RAG e Conhecimento</h3>
+                        <p>A tela Conhecimento agrupa toda a gestão do conhecimento em um só lugar:</p>
+                        <ul>
+                            <li>RAG Documentos: upload, edição de texto, metadados, exclusão e reindexação.</li>
+                            <li>Aprendizagem Contínua: experiências, habilidades, estratégias e memórias.</li>
+                            <li>Memória Híbrida: SQLite para registros estruturados e ChromaDB para busca semântica.</li>
+                            <li>Artefatos de tarefas: os resultados e arquivos gerados podem retroalimentar a base de conhecimento interna.</li>
+                        </ul>
+
+                        <h3>Skyler Dentro de Lavc Systems</h3>
+                        <p>
+                            Skyler é o assistente de IA flutuante incorporado no sistema. Em Lavc Systems, Skyler opera em um nível significativamente mais avançado do que a versão de portfólio público:
+                            ela pode consultar a integridade do sistema, ler dados de tarefas, criar e executar tarefas, ler arquivos carregados, salvar credenciais API no cofre local e exibir um rastreamento operacional auditável para cada resposta.
+                            O sistema não registra o raciocínio do modelo bruto – o que surge é um resumo estruturado: intenção detectada, contexto consultado, ferramenta ou ação usada e próxima etapa.
+                        </p>
+                        <p>
+                            O portfólio público Skyler em <a href="/pt/skyler-assistant/">/skyler-assistente/</a> é uma versão mais leve, implantada na nuvem, destinada a visitantes externos.
+                            Lavc Systems Skyler é executado localmente, tem acesso a dados internos e participa diretamente do loop de orquestração de tarefas.
+                        </p>
+
+                        <h3>Principais API Terminais</h3>
+                        <table class="stack-table" aria-label="Principais pontos de extremidade API">
+                            <thead>
+                                <tr><th>Método</th><th>Rota</th><th>Descrição</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>OBTER/POSTAR</td><td><code>/api/tasks</code></td><td>Liste ou crie tarefas.</td></tr>
+                                <tr><td>POSTAR</td><td><code>/api/tasks/{id}/execute</code></td><td>Enfileirar execução.</td></tr>
+                                <tr><td>OBTER</td><td><code>/api/tasks/{id}/logs</code></td><td>Logs e rastreamentos operacionais.</td></tr>
+                                <tr><td>OBTER/POSTAR</td><td><code>/api/tasks/{id}/messages</code></td><td>Bate-papo de tarefa persistente.</td></tr>
+                                <tr><td>OBTER</td><td><code>/api/agents</code></td><td>Agentes registrados.</td></tr>
+                                <tr><td>OBTER/POSTAR</td><td><code>/api/documents</code></td><td>RAG documentos.</td></tr>
+                                <tr><td>POSTAR</td><td><code>/api/documents/upload</code></td><td>Carregar e indexar.</td></tr>
+                                <tr><td>OBTER/POSTAR</td><td><code>/api/scheduler/jobs</code></td><td>Trabalhos agendados.</td></tr>
+                                <tr><td>OBTER/POSTAR</td><td><code>/api/objectives/goals</code></td><td>Metas autônomas.</td></tr>
+                                <tr><td>POSTAR</td><td><code>/api/assistant/chat</code></td><td>Skyler ponto final.</td></tr>
+                                <tr><td>WS</td><td><code>/ws</code></td><td>Eventos em tempo real.</td></tr>
+                            </tbody>
+                        </table>
+
+                        <h3>Estrutura do Projeto</h3>
+                        <pre><code>vale-develop-analytics-2026/
+  backend/
+    agents/          # LangGraph pipelines and multi-agent orchestration
+    app/             # global subsystem state
+    auth/            # users, companies and authentication
+    knowledge/       # graph, semantic index and solution library
+    learning/        # experiences, strategies, skills and prompt optimizer
+    memory/          # HybridMemory
+    objectives/      # GoalEngine, priority and autonomous scheduler
+    observability/   # traces, metrics and execution
+    routers/         # modular endpoints
+    scheduler/       # scheduled jobs
+    tools/           # registry, tools and Graphify
+    main.py          # FastAPI entry point
+    ws.py            # WebSocket
+  frontend/
+    src/
+      components/    # shared UI, graph, workflow, chat
+      hooks/         # WebSocket and Agent Graph runtime
+      pages/         # app screens
+      store/         # Zustand stores
+      types/         # TypeScript types
+  plugins/           # local plugins
+  data/              # databases, logs, uploads, vectors and local artefacts</code></pre>
+
+                        <h3 class="section-spacer">Executando localmente</h3>
+                        <p><strong>Janelas:</strong></p>
+                        <pre><code>start.bat</code></pre>
+                        <p><strong>Linux/macOS:</strong></p>
+                        <pre><code>./start.sh</code></pre>
+                        <ul>
+                            <li>Interface: <code>http://localhost:5173</code></li>
+                            <li>Backend: <code>http://localhost:8000</code></li>
+                        </ul>
+                    </article>
+                </div>
+            </section>
+
+            <section class="cta-section" aria-label="Projetos relacionados">
+                <a class="cta-button" href="/pt/skyler-assistant/">Abrir Skyler Assistant (versão do portfólio)</a>
+            </section>
+        </main>
+    </div>
+
+    <footer class="footer-minimal">
+        <div class="footer-container">
+            <div class="footer-link-list" aria-label="Links de rodapé">
+                <a class="footer-link-pill" href="https://github.com/PkLavc" target="_blank" rel="noopener noreferrer">GitHub</a>
+                <a class="footer-link-pill" href="https://www.linkedin.com/in/pklavc/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+                <a class="footer-link-pill" href="mailto:contact@pklavc.com">E-mail</a>
+                <a class="footer-link-pill footer-link-pill-accent" href="https://github.com/sponsors/PkLavc" target="_blank" rel="noopener noreferrer">Apoiar no GitHub</a>
+            </div>
+            <p>© <span data-current-year></span> Patrick Araujo</p>
+        </div>
+    </footer>
+
+    <script>
+        (function() {
+            document.querySelectorAll('[data-current-year]').forEach(function(node) {
+                node.textContent = String(new Date().getFullYear());
+            });
+        }());
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.2.6/gsap.min.js" defer></script>
+        <script src="/js/i18n.js?v=cc3ee695f1" defer></script>
+    <script src="/js/jquery.min.js?v=d482871a5e" defer></script>
+    <script src="/js/index.js?v=0b108f99d1" defer></script>
+</body>
+</html>

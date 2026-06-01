@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="PkLavc" />
+    <title>SIGE Integration Worker | JavaScript Projeto | Patrick Araujo</title>
+    
+    <!-- SEO Enhanced Meta Tags -->
+    <meta name="description" content="Node.js ERP API trabalhador de integração que transforma SIGE dados de faturamento e pedidos em conjuntos de dados estruturados de automação financeira para painéis.">
+        <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="SIGE Integration Worker | JavaScript | Patrick Araujo">
+    <meta property="og:description" content="Node.js ERP API trabalhador de integração que transforma SIGE dados de faturamento e pedidos em conjuntos de dados estruturados de automação financeira para painéis.">
+    <meta property="og:url" content="https://pklavc.com/pt/projetos/sige-integration-worker/">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://pklavc.com/images/lavc.webp?v=5e84850f26">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:site_name" content="Patrick Araujo">
+    <meta property="og:locale" content="pt_BR">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="SIGE Integration Worker | JavaScript | Patrick Araujo">
+    <meta name="twitter:description" content="Node.js ERP API trabalhador de integração que transforma SIGE dados de faturamento e pedidos em conjuntos de dados estruturados de automação financeira para painéis.">
+    <meta name="twitter:image" content="https://pklavc.com/images/lavc.webp?v=5e84850f26">
+    <meta name="twitter:image:alt" content="Retrato da marca do engenheiro de backend e especialista em automação Patrick Araujo">
+    <meta name="twitter:site" content="@PkLavc">
+    <meta name="twitter:creator" content="@PkLavc">
+    
+    <link rel="canonical" href="https://pklavc.com/pt/projetos/sige-integration-worker/">
+    <link rel="alternate" href="https://pklavc.com/projects/sige-integration-worker/" hreflang="en">
+    <link rel="alternate" href="https://pklavc.com/pt/projetos/sige-integration-worker/" hreflang="pt-BR">
+    <link rel="alternate" href="https://pklavc.com/es/proyectos/sige-integration-worker/" hreflang="es">
+    <link rel="alternate" href="https://pklavc.com/projects/sige-integration-worker/" hreflang="x-default">
+
+
+
+<meta name="robots" content="index, follow">
+<!-- JSON-LD Schema: Person -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Patrick Araujo",
+        "jobTitle": "Backend Software Engineer",
+        "url": "https://pklavc.com",
+        "image": "https://pklavc.com/images/lavc.webp?v=5e84850f26",
+        "sameAs": [
+            "https://github.com/PkLavc",
+            "https://www.linkedin.com/in/pklavc/"
+        ],
+        "description": "Specialist in backend automation, API integration, and scalable system architecture"
+    }
+    </script>
+    
+    <!-- JSON-LD Schema: Article -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": "SIGE Integration Worker | JavaScript",
+        "description": "SIGE Integration Worker construído com JavaScript. Fluxo de sincronização ERP que transforma pedidos do SIGE em datasets consolidados de faturamento para operações financeiras",
+        "author": {
+            "@type": "Person",
+            "name": "Patrick Araujo"
+        },
+        "mainEntityOfPage": "https://pklavc.com/pt/projetos/sige-integration-worker/",
+        "url": "https://pklavc.com/pt/projetos/sige-integration-worker/",
+        "keywords": "Patrick Araujo, Backend Software Engineer, JavaScript, SIGE Integration Worker"
+    }
+    </script>
+    
+    <!-- JSON-LD Schema: BreadcrumbList -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "https://pklavc.com/"
+            },
+            {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Projects",
+                "item": "https://pklavc.com/pt/projetos/"
+            },
+            {
+                "@type": "ListItem",
+                "position": 3,
+                "name": "SIGE Integration Worker",
+                "item": "https://pklavc.com/pt/projetos/sige-integration-worker/"
+            }
+        ]
+    }
+    </script>
+    <link rel="icon" type="image/svg+xml" href="https://pklavc.com/images/favicon.svg?v=d15fe4e492">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Monoton&amp;family=Poppins:wght@500&amp;family=Raleway:wght@300&amp;display=swap" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Monoton&amp;family=Poppins:wght@500&amp;family=Raleway:wght@300&amp;display=swap"></noscript>
+    <link rel="stylesheet" href="/css/global.css?v=55251d9722">
+    <link rel="stylesheet" href="/css/projects.css?v=84c54fcc24">
+    <style>
+        .project-hero { padding: 60px 20px; text-align: center; background: linear-gradient(135deg, rgba(0,0,0,0.1), rgba(0,0,0,0.05)); }
+        .project-hero h1 { font-size: 2.5rem; margin: 20px 0; color: #fff; }
+        .project-category-badge { display: inline-block; background: rgba(100, 200, 255, 0.2); border: 1px solid rgba(100, 200, 255, 0.5); color: #64c8ff; padding: 8px 16px; border-radius: 20px; font-size: 0.9rem; margin-bottom: 20px; }
+        .tech-stack-section { padding: 40px 20px; background: rgba(255, 255, 255, 0.02); }
+        .tech-stack-section h2 { color: #fff; margin-bottom: 20px; font-size: 1.5rem; }
+        .tech-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 40px; }
+        .tech-tag { background: rgba(100, 200, 255, 0.1); border: 1px solid rgba(100, 200, 255, 0.3); color: #64c8ff; padding: 12px 16px; border-radius: 8px; text-align: center; font-size: 0.95rem; }
+        .problem-solution { padding: 40px 20px; max-width: 800px; margin: 0 auto; }
+        .problem-solution h2 { color: #fff; margin: 30px 0 20px 0; font-size: 1.3rem; }
+        .problem-solution p { color: #ccc; line-height: 1.8; margin-bottom: 20px; }
+        .impact-section { padding: 40px 20px; background: rgba(100, 200, 255, 0.05); text-align: center; }
+        .impact-section h2 { color: #fff; margin-bottom: 20px; font-size: 1.3rem; }
+        .impact-text { color: #64c8ff; font-size: 1.1rem; margin: 20px 0; font-weight: 500; }
+        .cta-section { padding: 60px 20px; text-align: center; }
+        .cta-button { display: inline-block; background: linear-gradient(135deg, #64c8ff, #00d4ff); color: #000; padding: 16px 40px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 1rem; transition: transform 0.3s, box-shadow 0.3s; border: none; cursor: pointer; }
+        .cta-button:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(100, 200, 255, 0.3); }
+        .breadcrumb-nav {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 12px 20px;
+            margin-bottom: 30px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .breadcrumb {
+            list-style: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0;
+            font-size: 0.95rem;
+            color: #A0A0A0;
+        }
+        .breadcrumb li {
+            display: flex;
+            align-items: center;
+        }
+        .breadcrumb li:not(:last-child)::after {
+            content: "/";
+            margin-left: 8px;
+            font-size: 0.8rem;
+            color: #666;
+        }
+        .breadcrumb a {
+            color: #4A9EFF;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        .breadcrumb a:hover {
+            color: #64c8ff;
+            text-decoration: underline;
+        }
+        .breadcrumb [aria-current="page"] {
+            color: #E0E0E0;
+            font-weight: 500;
+        }
+            .full-readme-section { padding: 50px 20px; background: rgba(255, 255, 255, 0.02); }
+        .full-readme-container { max-width: 1000px; margin: 0 auto; }
+        .full-readme-container .markdown-body { background: #0d1117; border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 10px; padding: 24px; }
+            .project-context-section { padding: 32px 20px; background: rgba(100, 200, 255, 0.06); }
+        .project-context-container { max-width: 1000px; margin: 0 auto; }
+        .project-context-section h2, .project-context-section h3, .related-projects-section h2 { color: #fff; }
+        .project-context-section p, .project-context-section li, .related-projects-section p, .related-projects-section li { color: #d0d0d0; line-height: 1.7; }
+        .project-context-section a, .related-projects-section a { color: #64c8ff; }
+        .related-projects-section { padding: 32px 20px; background: rgba(255, 255, 255, 0.03); }    </style>
+    <link rel="preload" as="style" href="/css/github-markdown-local.css?v=01d37f05ee">
+    <link rel="stylesheet" href="/css/github-markdown-local.css?v=01d37f05ee" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="/css/github-markdown-local.css?v=01d37f05ee"></noscript>
+</head>
+<body>
+    <div id="breaker"></div>
+    <div id="breaker-two"></div>
+    <div id="all">
+        <div id="navigation-content" role="navigation" aria-label="Navegação primária">
+            <div class="logo"></div>
+            <div class="navigation-links">
+                <a href="/pt/" data-text="INÍCIO">INÍCIO</a>
+                <a href="/pt/sobre/" data-text="SOBRE">SOBRE</a>
+                <a href="/pt/projetos/" data-text="PROJETOS">PROJETOS</a>
+            </div>
+        </div>
+        <div id="navigation-bar">
+            <div class="menubar">
+                <span class="first-span"></span>
+                <span class="second-span"></span>
+                <span class="third-span"></span>
+            </div>
+        </div>
+        
+        <main role="main">
+            <section class="project-hero">
+                <span class="project-category-badge">ERP Sincronização</span>
+                <h1>SIGE Integration Worker | JavaScript</h1>
+                <p style="color: #aaa; font-size: 1.1rem; margin-top: 15px;">Fluxo de trabalho de sincronização ERP para transformar pedidos SIGE em conjuntos de dados de faturamento consolidados para operações financeiras</p>
+            </section>
+
+            <section class="project-context-section" aria-label="Contexto de SEO do projeto"><div class="project-context-container"><h2>Contexto do problema, pilha e tipo de sistema</h2><p>Este projeto automatiza a consolidação de faturamento ERP integrando dados de pedidos com conjuntos de dados operacionais baseados em planilhas existentes. Ele reduz as etapas de reconciliação manual por meio do processamento backend determinístico.</p><h3>Escopo Técnico</h3><ul><li><strong>Pilha:</strong> JavaScript, Node.js, SIGE API, Google Sheets API, GitHub Actions</li><li><strong>Tipo de sistema:</strong> ERP sistema de integração de API, automação financeira, fluxo de trabalho de backend</li><li><strong>Palavras-chave no contexto:</strong> API node.js, sistema de automação, integração de API</li></ul><p>Integrações ERP relacionadas: <a href="/pt/projetos/omie-integration-worker/">Omie Integration Worker</a> e <a href="/pt/projetos/zoho-integration-worker/">Zoho Integration Worker</a>.</p></div></section>
+            <section class="full-readme-section" aria-label="LEIA-ME completo">
+                <div class="full-readme-container">
+                    <h2 style="color: #fff; margin-bottom: 20px;">Documentação completa do projeto</h2>
+                    <article class="markdown-body">
+<h2>SIGE Integration Worker</h2><p><a href="https://github.com/operacoesicaiu/worker-sige-auth"><img src="https://img.shields.io/badge/Source-GitHub-black?logo=github" alt="Código Fonte"></a>
+<a href="https://pklavc.com/pt/projetos/"><img src="https://img.shields.io/badge/Portfolio-Projects-0A66C2?logo=google-chrome&amp;logoColor=white" alt="Portfólio"></a>
+<a href="https://github.com/PkLavc"><img src="https://img.shields.io/badge/Author-Patrick_Araujo-1f2937" alt="Autor"></a></p>
+<p>Um trabalhador de integração Node.js que sincroniza pedidos faturados SIGE com o Google Sheets, enriquece registros com lógica de correlação ERP e calcula campos de atribuição para relatórios financeiros operacionais.</p>
+<h2>Visão geral</h2>
+<p>Este trabalhador ingere pedidos faturados de SIGE, enriquece cada registro pesquisando linhas históricas ERP e grava conjuntos de dados normalizados em um <code>Faturamento</code> folha.</p>
+<p>Suporta:</p>
+<ul>
+<li>sincronização automática diária via envio de repositório</li>
+<li>modo de preenchimento histórico em massa (<code>em_massa.js</code>) para reprodução de intervalo de datas</li>
+<li>lógica de atribuição entre fontes (Novo vs Retirada)</li>
+</ul>
+<h2>Arquitetura</h2>
+<pre><code class="language-mermaid">graph LR
+		A[Google Auth Worker] --&gt;|repository_dispatch| B[SIGE Integration Worker]
+		B --&gt; C[SIGE API]
+		B --&gt; D[ERP Google Sheet]
+		B --&gt; E[Faturamento Google Sheet]
+		C --&gt; B
+		D --&gt; B
+		B --&gt; E
+</code></pre>
+<h2>Lógica de Processamento</h2>
+<h3>Sincronização diária (<code>index.js</code>)</h3>
+<ol>
+<li>Leia o bloco ERP mais recente (últimas 25 mil linhas)</li>
+<li>Consultar SIGE pedidos faturados de ontem</li>
+<li>Opcionalmente, consulte o endpoint de pessoas SIGE para enriquecimento de contato</li>
+<li>Correlacionar por CPF e classificar eventos ERP relacionados</li>
+<li>Calcular <code>Novo</code> e <code>Retirada</code> referências de data serial</li>
+<li>Lógica de divisão de valor quando uma retirada anterior é detectada</li>
+<li>Anexar conjunto de linhas estruturado final a <code>Faturamento</code></li>
+</ol>
+<h3>Sincronização em massa (<code>em_massa.js</code>)</h3>
+<p>O fluxo de trabalho manual executa uma reprodução controlada de intervalo de datas para reconstruir janelas históricas enquanto preserva as mesmas regras de mapeamento de negócios.</p>
+<h2>Principais recursos</h2>
+<ul>
+<li>ERP correlação por CPF para atribuição de vendedor</li>
+<li>Geração de data serial do Excel para correspondência determinística</li>
+<li>Lógica de divisão financeira para pedidos vinculados a retiradas</li>
+<li>Proteção de injeção de fórmula de planilha (<code>sanitize</code>)</li>
+<li>Logs operacionais seguros com rótulos de gravidade com carimbo de data/hora</li>
+<li>API limitação no modo em lote para estabilidade sob os limites do provedor</li>
+</ul>
+<h2>Segurança e integridade de dados</h2>
+<ul>
+<li>Limpa o texto gerado pelo usuário antes de escrever no Planilhas</li>
+<li>Usa credenciais somente secretas para SIGE e Google APIs</li>
+<li>Evita gravações diretas e inseguras de fórmulas</li>
+<li>Inclui saídas de erro controladas para observabilidade de CI</li>
+</ul>
+<h2>Configuração</h2>
+<h3>Variáveis de ambiente necessárias</h3>
+<pre><code class="language-bash">SIGE_TOKEN=your_sige_token
+SIGE_USER=your_sige_user
+SIGE_APP=your_sige_app
+GOOGLE_TOKEN=oauth_access_token
+SPREADSHEET_ID=destination_sheet_id
+ERP_SPREADSHEET_ID=erp_source_sheet_id
+</code></pre>
+<h2>Gatilhos de fluxo de trabalho</h2>
+<h3>Automático</h3>
+<pre><code class="language-yaml">on:
+	repository_dispatch:
+		types:
+			- google_token_ready
+</code></pre>
+<h3>Preenchimento manual</h3>
+<pre><code class="language-yaml">on:
+	repository_dispatch:
+		types:
+			- report_token_ready
+</code></pre>
+<h2>Esquema de saída (alto nível)</h2>
+<p>O resultado <code>Faturamento</code> as linhas incluem:</p>
+<ul>
+<li>contato do cliente e CPF</li>
+<li>identificadores de pedido e fatura</li>
+<li>status do pedido e data de cobrança</li>
+<li>valor do pedido e valor de divisão ajustado</li>
+<li>referências de vendedores (Novo e Retirada)</li>
+<li>chave de partição mês/ano</li>
+</ul>
+<h2>Licença</h2>
+<p>Este projeto está licenciado sob a licença MIT. Veja o <a href="https://github.com/operacoesicaiu/worker-sige-auth#license">notas de licença</a> no repositório.</p>
+<h2>Autor</h2>
+<p><strong>Patrick Araujo - Engenheiro de Computação</strong><br><strong>GitHub</strong>: <a href="https://github.com/PkLavc">https://github.com/PkLavc</a><br><strong>Portfólio</strong>: <a href="https://pklavc.com/pt/projetos/">https://pklavc.com/projects/</a></p>
+<hr>
+<p><em>SIGE Integration Worker - Sincronização de faturamento com reconhecimento de ERP para relatórios operacionais de nível financeiro.</em></p>
+<p><a href="https://github.com/sponsors/PkLavc"><img src="https://img.shields.io/badge/Apoiar%20no%20GitHub-%23ea4aaa?style=for-the-badge&amp;logo=github-sponsors&amp;logoColor=white" alt="GitHub Sponsors"></a></p>
+                    </article>
+                </div>
+            </section>
+            
+            <section class="tech-stack-section">
+                <div style="max-width: 1000px; margin: 0 auto;">
+                    <h2>Pilha de tecnologia</h2>
+                    <div class="tech-list">
+                        <div class="tech-tag">JavaScript</div>
+                        <div class="tech-tag">GitHub Actions</div>
+                        <div class="tech-tag">Google Sheets</div>
+                        <div class="tech-tag">SIGE ERP</div>
+                        <div class="tech-tag">Node.js</div>
+                    </div>
+                </div>
+            </section>
+
+            
+            
+            <section class="related-projects-section" aria-label="Links de projetos relacionados">
+  <div class="project-context-container">
+    <h2>Projetos de backend relacionados e integrações API</h2>
+    <p>Explore implementações vinculadas em <a href="/pt/colecoes/projetos-python/">automação de backend python</a>, <a href="/pt/colecoes/projetos-javascript/">Fluxos de trabalho da API node.js</a>e <a href="/pt/colecoes/projetos-integracao-api/">sistema de integração de API</a> aglomerados.</p>
+    <ul>
+      <li><a href="/pt/projetos/google-auth-worker/">Google Auth Worker</a> para orquestração de autenticação.</li>
+      <li><a href="/pt/projetos/event-driven-integration-service/">Event-Driven Integration Service</a> para processamento de webhook e arquitetura orientada a eventos.</li>
+      <li><a href="/pt/projetos/zoho-integration-worker/">Zoho Integration Worker</a> para fluxos de trabalho de suporte à automação Zoho Deluge.</li>
+      <li><a href="/pt/projetos/cipher-gate-proxy/">Cipher Gate Proxy</a> para processamento de segurança de backend python.</li>
+    </ul>
+  </div>
+</section>
+            <section class="cta-section">
+                <h2 style="color: #fff; margin-bottom: 30px;">Veja o código-fonte</h2>
+                <a href="https://github.com/operacoesicaiu/worker-sige-auth" target="_blank" rel="noopener noreferrer" class="cta-button">
+                    Abrir em GitHub
+                </a>
+            </section>
+
+        </main>
+        
+        <footer class="footer-minimal">
+            <div class="footer-container">
+                <div class="footer-link-list" aria-label="Links de rodapé">
+                    <a class="footer-link-pill" href="https://github.com/PkLavc" target="_blank" rel="noopener noreferrer">GitHub</a>
+                    <a class="footer-link-pill" href="https://www.linkedin.com/in/pklavc/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+                    <a class="footer-link-pill" href="mailto:contact@pklavc.com">E-mail</a>
+                    <a class="footer-link-pill footer-link-pill-accent" href="https://github.com/sponsors/PkLavc" target="_blank" rel="noopener noreferrer">Apoiar no GitHub</a>
+                </div>
+                <p>
+                    © <span data-current-year></span> Patrick Araujo
+                </p>
+            </div>
+        </footer>
+    </div>
+    
+    <div class="visually-hidden">
+        <p>Engenheiro de Software Backend com foco em automação, integrações API, sistemas backend, Python, Node.js, SQL, ETL pipelines, AWS e plataformas operacionais escaláveis.</p>
+    </div>
+    
+    <script>
+        (function() {
+            document.querySelectorAll('[data-current-year]').forEach(function(node) {
+                node.textContent = String(new Date().getFullYear());
+            });
+        }());
+    </script>
+        <script src="/js/i18n.js?v=cc3ee695f1" defer></script>
+    <script src="/js/jquery.min.js?v=d482871a5e" defer></script>
+    <script src="/js/index.js?v=0b108f99d1" defer></script>
+</body>
+</html>
+
+
+

@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="PkLavc" />
+    <title>OS Resource Optimizer | Proyecto C++17 | Patrick Araujo</title>
+    
+    <!-- SEO Enhanced Meta Tags -->
+    <meta name="description" content="Proyecto de ingeniería de sistemas centrado en la optimización de recursos, ajuste de rendimiento y diseño de algoritmos de bajo nivel para escenarios informáticos de alto rendimiento.">
+        <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="OS Resource Optimizer | C++17 | Patrick Araujo">
+    <meta property="og:description" content="Proyecto de ingeniería de sistemas centrado en la optimización de recursos, ajuste de rendimiento y diseño de algoritmos de bajo nivel para escenarios informáticos de alto rendimiento.">
+    <meta property="og:url" content="https://pklavc.com/es/proyectos/os-resource-optimizer/">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://pklavc.com/images/lavc.webp?v=5e84850f26">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:site_name" content="Patrick Araujo">
+    <meta property="og:locale" content="es_ES">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="OS Resource Optimizer | C++17 | Patrick Araujo">
+    <meta name="twitter:description" content="Proyecto de ingeniería de sistemas centrado en la optimización de recursos, ajuste de rendimiento y diseño de algoritmos de bajo nivel para escenarios informáticos de alto rendimiento.">
+    <meta name="twitter:image" content="https://pklavc.com/images/lavc.webp?v=5e84850f26">
+    <meta name="twitter:image:alt" content="Retrato de marca del ingeniero backend y especialista en automatización Patrick Araujo">
+    <meta name="twitter:site" content="@PkLavc">
+    <meta name="twitter:creator" content="@PkLavc">
+    
+    <link rel="canonical" href="https://pklavc.com/es/proyectos/os-resource-optimizer/">
+    <link rel="alternate" href="https://pklavc.com/projects/os-resource-optimizer/" hreflang="en">
+    <link rel="alternate" href="https://pklavc.com/pt/projetos/os-resource-optimizer/" hreflang="pt-BR">
+    <link rel="alternate" href="https://pklavc.com/es/proyectos/os-resource-optimizer/" hreflang="es">
+    <link rel="alternate" href="https://pklavc.com/projects/os-resource-optimizer/" hreflang="x-default">
+
+
+
+<meta name="robots" content="index, follow">
+<!-- JSON-LD Schema: Person -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Patrick Araujo",
+        "jobTitle": "Backend Software Engineer",
+        "url": "https://pklavc.com",
+        "image": "https://pklavc.com/images/lavc.webp?v=5e84850f26",
+        "sameAs": [
+            "https://github.com/PkLavc",
+            "https://www.linkedin.com/in/pklavc/"
+        ],
+        "description": "Specialist in backend automation, API integration, and scalable system architecture"
+    }
+    </script>
+    
+    <!-- JSON-LD Schema: Article -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": "OS Resource Optimizer | C++17",
+        "description": "OS Resource Optimizer construido con C++17. Motor de alto rendimiento para optimizar planificación de CPU y asignación de memoria con eficiencia algorítmica avanzada",
+        "author": {
+            "@type": "Person",
+            "name": "Patrick Araujo"
+        },
+        "mainEntityOfPage": "https://pklavc.com/es/proyectos/os-resource-optimizer/",
+        "url": "https://pklavc.com/es/proyectos/os-resource-optimizer/",
+        "keywords": "Patrick Araujo, Backend Software Engineer, C++17, OS Resource Optimizer"
+    }
+    </script>
+    
+    <!-- JSON-LD Schema: BreadcrumbList -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "https://pklavc.com/"
+            },
+            {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Projects",
+                "item": "https://pklavc.com/es/proyectos/"
+            },
+            {
+                "@type": "ListItem",
+                "position": 3,
+                "name": "OS Resource Optimizer",
+                "item": "https://pklavc.com/es/proyectos/os-resource-optimizer/"
+            }
+        ]
+    }
+    </script>
+    <link rel="icon" type="image/svg+xml" href="https://pklavc.com/images/favicon.svg?v=d15fe4e492">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Monoton&amp;family=Poppins:wght@500&amp;family=Raleway:wght@300&amp;display=swap" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Monoton&amp;family=Poppins:wght@500&amp;family=Raleway:wght@300&amp;display=swap"></noscript>
+    <link rel="stylesheet" href="/css/global.css?v=55251d9722">
+    <link rel="stylesheet" href="/css/projects.css?v=84c54fcc24">
+    <style>
+        .project-hero { padding: 60px 20px; text-align: center; background: linear-gradient(135deg, rgba(0,0,0,0.1), rgba(0,0,0,0.05)); }
+        .project-hero h1 { font-size: 2.5rem; margin: 20px 0; color: #fff; }
+        .project-category-badge { display: inline-block; background: rgba(100, 200, 255, 0.2); border: 1px solid rgba(100, 200, 255, 0.5); color: #64c8ff; padding: 8px 16px; border-radius: 20px; font-size: 0.9rem; margin-bottom: 20px; }
+        .tech-stack-section { padding: 40px 20px; background: rgba(255, 255, 255, 0.02); }
+        .tech-stack-section h2 { color: #fff; margin-bottom: 20px; font-size: 1.5rem; }
+        .tech-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 40px; }
+        .tech-tag { background: rgba(100, 200, 255, 0.1); border: 1px solid rgba(100, 200, 255, 0.3); color: #64c8ff; padding: 12px 16px; border-radius: 8px; text-align: center; font-size: 0.95rem; }
+        .problem-solution { padding: 40px 20px; max-width: 800px; margin: 0 auto; }
+        .problem-solution h2 { color: #fff; margin: 30px 0 20px 0; font-size: 1.3rem; }
+        .problem-solution p { color: #ccc; line-height: 1.8; margin-bottom: 20px; }
+        .impact-section { padding: 40px 20px; background: rgba(100, 200, 255, 0.05); text-align: center; }
+        .impact-section h2 { color: #fff; margin-bottom: 20px; font-size: 1.3rem; }
+        .impact-text { color: #64c8ff; font-size: 1.1rem; margin: 20px 0; font-weight: 500; }
+        .cta-section { padding: 60px 20px; text-align: center; }
+        .cta-button { display: inline-block; background: linear-gradient(135deg, #64c8ff, #00d4ff); color: #000; padding: 16px 40px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 1rem; transition: transform 0.3s, box-shadow 0.3s; border: none; cursor: pointer; }
+        .cta-button:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(100, 200, 255, 0.3); }
+        .breadcrumb-nav {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 12px 20px;
+            margin-bottom: 30px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .breadcrumb {
+            list-style: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0;
+            font-size: 0.95rem;
+            color: #A0A0A0;
+        }
+        .breadcrumb li {
+            display: flex;
+            align-items: center;
+        }
+        .breadcrumb li:not(:last-child)::after {
+            content: "/";
+            margin-left: 8px;
+            font-size: 0.8rem;
+            color: #666;
+        }
+        .breadcrumb a {
+            color: #4A9EFF;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        .breadcrumb a:hover {
+            color: #64c8ff;
+            text-decoration: underline;
+        }
+        .breadcrumb [aria-current="page"] {
+            color: #E0E0E0;
+            font-weight: 500;
+        }
+            .full-readme-section { padding: 50px 20px; background: rgba(255, 255, 255, 0.02); }
+        .full-readme-container { max-width: 1000px; margin: 0 auto; }
+        .full-readme-container .markdown-body { background: #0d1117; border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 10px; padding: 24px; }
+            .project-context-section { padding: 32px 20px; background: rgba(100, 200, 255, 0.06); }
+        .project-context-container { max-width: 1000px; margin: 0 auto; }
+        .project-context-section h2, .project-context-section h3, .related-projects-section h2 { color: #fff; }
+        .project-context-section p, .project-context-section li, .related-projects-section p, .related-projects-section li { color: #d0d0d0; line-height: 1.7; }
+        .project-context-section a, .related-projects-section a { color: #64c8ff; }
+        .related-projects-section { padding: 32px 20px; background: rgba(255, 255, 255, 0.03); }    </style>
+    <link rel="preload" as="style" href="/css/github-markdown-local.css?v=01d37f05ee">
+    <link rel="stylesheet" href="/css/github-markdown-local.css?v=01d37f05ee" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="/css/github-markdown-local.css?v=01d37f05ee"></noscript>
+</head>
+<body>
+    <div id="breaker"></div>
+    <div id="breaker-two"></div>
+    <div id="all">
+        <div id="navigation-content" role="navigation" aria-label="Navegación primaria">
+            <div class="logo"></div>
+            <div class="navigation-links">
+                <a href="/es/" data-text="INICIO">INICIO</a>
+                <a href="/es/sobre/" data-text="SOBRE">SOBRE</a>
+                <a href="/es/proyectos/" data-text="PROYECTOS">PROYECTOS</a>
+            </div>
+        </div>
+        <div id="navigation-bar">
+            <div class="menubar">
+                <span class="first-span"></span>
+                <span class="second-span"></span>
+                <span class="third-span"></span>
+            </div>
+        </div>
+        
+        <main role="main">
+            <section class="project-hero">
+                <span class="project-category-badge">Ingeniería de Sistemas</span>
+                <h1>OS Resource Optimizer | C++17</h1>
+                <p style="color: #aaa; font-size: 1.1rem; margin-top: 15px;">Motor de alto rendimiento diseñado para optimizar la programación de la CPU y la asignación de memoria con eficiencia algorítmica avanzada</p>
+            </section>
+
+            <section class="project-context-section" aria-label="Contexto SEO del proyecto"><div class="project-context-container"><h2>Contexto del problema, pila y tipo de sistema</h2><p>Este proyecto de sistemas tiene como objetivo la asignación de recursos y la optimización de la programación. Se incluye como un artefacto de ingeniería de backend complementario centrado en el comportamiento del rendimiento y la confiabilidad algorítmica.</p><h3>Alcance técnico</h3><ul><li><strong>Pila:</strong> C++17, programación de sistemas, algoritmos de optimización.</li><li><strong>Tipo de sistema:</strong> motor de rendimiento, flujo de trabajo de optimización</li><li><strong>Palabras clave en contexto:</strong> ingeniero backend, optimización del rendimiento, lógica de automatización</li></ul><p>Páginas backend/API relacionadas: <a href="/es/stacks/backend-nodejs/">Node.js Servidor</a> y <a href="/es/stacks/ingeniero-python/">Python Ingeniero</a>.</p></div></section>
+            <section class="full-readme-section" aria-label="LÉAME completo">
+                <div class="full-readme-container">
+                    <h2 style="color: #fff; margin-bottom: 20px;">Documentación completa del proyecto</h2>
+                    <article class="markdown-body">
+<h2>OS Resource Optimizer</h2>
+<p><a href="https://isocpp.org"><img src="https://img.shields.io/badge/C%2B%2B-17+-blue.svg" alt="Versión C++"></a>
+<a href="https://github.com/PkLavc/os-resource-optimizer#license"><img src="https://img.shields.io/badge/License-MIT-green.svg" alt="Licencia: MIT"></a>
+<a href="https://github.com/PkLavc/os-resource-optimizer/actions"><img src="https://img.shields.io/badge/Build-Passing-brightgreen.svg" alt="Estado de construcción"></a>
+<a href="https://cmake.org"><img src="https://img.shields.io/badge/Platform-Cross--Platform-blue.svg" alt="Plataforma: multiplataforma"></a>
+<a href="https://www.openmp.org"><img src="https://img.shields.io/badge/Performance-High-blue.svg" alt="Rendimiento: Alto"></a></p>
+<h2>Descripción general del proyecto</h2>
+<p>OS Resource Optimizer es un motor de optimización y administración de recursos del sistema C++ de alto rendimiento diseñado para la asignación, programación y monitoreo del rendimiento de recursos a nivel del sistema operativo. Este proyecto demuestra conceptos avanzados de programación de sistemas y algoritmos de optimización de recursos en tiempo real.</p>
+<h3>Ingeniería de Sistemas Avanzados e Impacto</h3>
+<table>
+<thead>
+<tr>
+<th align="left">Desafío</th>
+<th align="left">Implementación</th>
+<th align="left">Beneficio de interés nacional e industria</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>Programación de procesos</strong></td>
+<td align="left">Round Robin preventivo, SJF y MLFQ</td>
+<td align="left">Optimiza los sistemas en tiempo real en infraestructura crítica</td>
+</tr>
+<tr>
+<td align="left"><strong>Gestión de memoria</strong></td>
+<td align="left">Asignadores personalizados de mejor ajuste/primer ajuste</td>
+<td align="left">Reduce la huella de memoria y los costos de hardware en los centros de datos</td>
+</tr>
+<tr>
+<td align="left"><strong>Ejecución paralela</strong></td>
+<td align="left">Integración de subprocesos múltiples OpenMP</td>
+<td align="left">Permite la escalabilidad de la informática de alto rendimiento (HPC)</td>
+</tr>
+<tr>
+<td align="left"><strong>Estabilidad de los recursos</strong></td>
+<td align="left">Simulaciones de prevención de interbloqueos</td>
+<td align="left">Mejora la confiabilidad para sistemas operativos aeroespaciales e industriales.</td>
+</tr>
+</tbody></table>
+<h2>Descripción general de la arquitectura</h2>
+<h3>Tubería de simulación</h3>
+<pre><code class="language-mermaid">graph TD
+    A[Process Queue] --&gt; B{Scheduler}
+    B --&gt;|SJF/RR/Priority| C[CPU Execution]
+    C --&gt; D{Memory Manager}
+    D --&gt;|Alloc/Free| E[RAM Simulation]
+    E --&gt; F[Performance Metrics]
+    
+    style B fill:#f96,stroke:#333,stroke-width:2px
+    style D fill:#69f,stroke:#333,stroke-width:2px
+</code></pre>
+<h3>Componentes principales</h3>
+<ul>
+<li><strong>Simulador de hardware</strong>: Simulación realista de recursos de hardware</li>
+<li><strong>Gerente de Procesos</strong>: Ciclo de vida avanzado del proceso y gestión del estado.</li>
+<li><strong>Programador</strong>: Múltiples algoritmos de programación con optimización del rendimiento</li>
+<li><strong>Administrador de memoria</strong>: Estrategias eficientes de asignación y desasignación de memoria</li>
+<li><strong>Motor de análisis</strong>: Monitoreo y optimización del rendimiento en tiempo real</li>
+</ul>
+<h2>Especificaciones técnicas</h2>
+<h3>Tecnologías centrales</h3>
+<ul>
+<li><strong>Idioma</strong>: C++17 con cumplimiento de estándares modernos</li>
+<li><strong>Sistema de construcción</strong>: CMake 3.15+ para compilaciones multiplataforma</li>
+<li><strong>concurrencia</strong>: OpenMP para procesamiento paralelo</li>
+<li><strong>Pruebas</strong>: Integración del marco de prueba de Google</li>
+<li><strong>Rendimiento</strong>: Algoritmos optimizados con una sobrecarga mínima</li>
+<li><strong>Soporte de plataforma</strong>: Windows, Linux, macOS</li>
+</ul>
+<h3>Arquitectura del sistema</h3>
+<h4>1. Capa de simulación de hardware</h4>
+<ul>
+<li><strong>Simulación de CPU</strong>: Modelado de procesador multinúcleo</li>
+<li><strong>Simulación de memoria</strong>: Simulación de jerarquía de RAM y caché</li>
+<li><strong>Simulación de E/S</strong>: Modelado de E/S de disco y red</li>
+<li><strong>Monitoreo de recursos</strong>: Recopilación de métricas de hardware en tiempo real</li>
+</ul>
+<h4>2. Sistema de Gestión de Procesos</h4>
+<ul>
+<li><strong>Estados del proceso</strong>: Implementación completa de la máquina de estados</li>
+<li><strong>Gestión de prioridades</strong>: Ajuste de prioridad dinámico</li>
+<li><strong>Asignación de recursos</strong>: Asignación eficiente de CPU y memoria</li>
+<li><strong>Gestión del ciclo de vida</strong>: Creación, ejecución y terminación</li>
+</ul>
+<h4>3. Algoritmos de programación</h4>
+<ul>
+<li><strong>Ronda Robin</strong>: Programación basada en intervalos de tiempo</li>
+<li><strong>Programación prioritaria</strong>: Ejecución de procesos basada en prioridades</li>
+<li><strong>El trabajo más corto primero</strong>: Optimización del tiempo de finalización del trabajo</li>
+<li><strong>Comentarios multinivel</strong>: Estrategias de programación adaptativas</li>
+</ul>
+<h4>4. Gestión de la memoria</h4>
+<ul>
+<li><strong>Estrategias de asignación</strong>: Algoritmos de primer ajuste, mejor ajuste y peor ajuste</li>
+<li><strong>Manejo de fragmentación</strong>: Compactación y optimización de la memoria</li>
+<li><strong>Memoria virtual</strong>: Simulación de paginación e intercambio</li>
+<li><strong>Gestión de caché</strong>: LRU y otras políticas de reemplazo de caché</li>
+</ul>
+<h4>5. Análisis y seguimiento</h4>
+<ul>
+<li><strong>Métricas de rendimiento</strong>: utilización de CPU, uso de memoria, rendimiento</li>
+<li><strong>Monitoreo en tiempo real</strong>: Seguimiento del rendimiento del sistema en vivo</li>
+<li><strong>Análisis de optimización</strong>: Análisis de patrones de uso de recursos</li>
+<li><strong>Informes</strong>: Informes de rendimiento detallados y recomendaciones</li>
+</ul>
+<h3>Estándares y prácticas modernas de C++17</h3>
+<ul>
+<li><strong>Gestión inteligente de recursos</strong>: Cumplimiento estricto de RAII y punteros inteligentes (<code>std::unique_ptr</code>, <code>std::shared_ptr</code>) para una gestión de memoria sin fugas.</li>
+<li><strong>Sintaxis moderna</strong>: Uso de <code>std::optional</code> para búsquedas de recursos, <code>std::variant</code> para tipos de procesos y enlaces estructurados para análisis métricos.</li>
+<li><strong>Algoritmos paralelos</strong>: Aprovechamiento de OpenMP para simular la contención de múltiples núcleos y la distribución de cargas de trabajo en paralelo.</li>
+</ul>
+<h2>Características de rendimiento</h2>
+<h3>Resultados de referencia</h3>
+<ul>
+<li><strong>Programación de procesos</strong>: &lt; 1 ms de tiempo de decisión de programación</li>
+<li><strong>Asignación de memoria</strong>: &lt; 0,5 ms de tiempo de asignación promedio</li>
+<li><strong>Monitoreo de recursos</strong>: Actualizaciones en tiempo real a 100Hz</li>
+<li><strong>Eficiencia de la memoria</strong>: &lt; 5 % de sobrecarga de memoria para la gestión</li>
+<li><strong>Escalabilidad</strong>: Admite más de 10 000 procesos simultáneos</li>
+</ul>
+<h3>Funciones de optimización</h3>
+<ul>
+<li><strong>Algoritmos adaptativos</strong>: Autoajuste basado en patrones de carga de trabajo</li>
+<li><strong>Equilibrio de carga</strong>: Distribución automática de recursos</li>
+<li><strong>Programación predictiva</strong>: Predicción de carga de trabajo basada en ML</li>
+<li><strong>Eficiencia Energética</strong>: Gestión de recursos consciente del poder</li>
+</ul>
+<h2>Instalación y uso</h2>
+<h3>Requisitos previos</h3>
+<ul>
+<li>Compilador compatible con C++17 (GCC 7+, Clang 5+, MSVC 2017+)</li>
+<li>CMake 3.15 o superior</li>
+<li>Git para control de fuente</li>
+</ul>
+<h3>Instrucciones de construcción</h3>
+<pre><code class="language-bash"># Clone the repository
+git clone https://github.com/PkLavc/os-resource-optimizer.git
+cd os-resource-optimizer
+
+# Create build directory
+mkdir build &amp;&amp; cd build
+
+# Configure with CMake
+cmake .. -DCMAKE_BUILD_TYPE=Release
+
+# Build the project
+cmake --build . --config Release
+
+# Run tests
+ctest --output-on-failure
+</code></pre>
+<h3>Construcciones multiplataforma</h3>
+<h4>Linux/macOS</h4>
+<pre><code class="language-bash">cmake .. -DCMAKE_BUILD_TYPE=Release
+make -j$(nproc)
+</code></pre>
+<h4>Windows (Visual Studio)</h4>
+<pre><code class="language-bash">cmake .. -G &quot;Visual Studio 16 2019&quot; -A x64
+cmake --build . --config Release
+</code></pre>
+<h4>Windows (MinGW)</h4>
+<pre><code class="language-bash">cmake .. -G &quot;MinGW Makefiles&quot; -DCMAKE_BUILD_TYPE=Release
+mingw32-make -j4
+</code></pre>
+<h2>Ejemplos de uso</h2>
+<h3>Optimización de recursos básicos</h3>
+<pre><code class="language-cpp">#include &quot;core/resource_optimizer.h&quot;
+
+int main() {
+    // Initialize the optimizer
+    ResourceOptimizer optimizer;
+    
+    // Configure optimization parameters
+    optimizer.setOptimizationLevel(OptimizationLevel::HIGH);
+    optimizer.enableParallelProcessing(true);
+    
+    // Start optimization
+    optimizer.startOptimization();
+    
+    // Monitor performance
+    while (optimizer.isRunning()) {
+        auto metrics = optimizer.getPerformanceMetrics();
+        std::cout &lt;&lt; &quot;CPU Usage: &quot; &lt;&lt; metrics.cpuUsage &lt;&lt; &quot;%&quot; &lt;&lt; std::endl;
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+    }
+    
+    return 0;
+}
+</code></pre>
+<h3>Algoritmo de programación personalizado</h3>
+<pre><code class="language-cpp">class CustomScheduler : public Scheduler {
+public:
+    Process* schedule(const std::vector&lt;Process*&gt;&amp; readyQueue) override {
+        // Implement custom scheduling logic
+        return selectProcess(readyQueue);
+    }
+    
+private:
+    Process* selectProcess(const std::vector&lt;Process*&gt;&amp; queue) {
+        // Custom selection algorithm
+        // ...
+    }
+};
+
+// Register custom scheduler
+optimizer.registerScheduler(&quot;custom&quot;, std::make_shared&lt;CustomScheduler&gt;());
+</code></pre>
+<h2>Opciones de configuración</h2>
+<h3>Configuración de tiempo de ejecución</h3>
+<pre><code class="language-yaml"># config.yaml
+optimization:
+  level: HIGH
+  parallel_processing: true
+  memory_threshold: 80
+  cpu_threshold: 90
+
+scheduling:
+  algorithm: ROUND_ROBIN
+  time_slice: 100
+  priority_boost: true
+
+memory:
+  allocation_strategy: BEST_FIT
+  compaction_enabled: true
+  virtual_memory: true
+
+monitoring:
+  update_interval: 1000
+  log_level: INFO
+  metrics_enabled: true
+</code></pre>
+<h3>Variables de entorno</h3>
+<pre><code class="language-bash">export OPTIMIZER_LOG_LEVEL=DEBUG
+export OPTIMIZER_PARALLEL_JOBS=4
+export OPTIMIZER_MEMORY_LIMIT=8GB
+</code></pre>
+<h2>Pruebas y Validación</h2>
+<h3>Pruebas unitarias</h3>
+<pre><code class="language-bash"># Run all unit tests
+./build/tests/os-resource-optimizer-tests
+
+# Run specific test suites
+./build/tests/os-resource-optimizer-tests --gtest_filter=&quot;Scheduler.*&quot;
+
+# Generate test coverage
+cmake .. -DCOVERAGE=ON
+make coverage
+</code></pre>
+<h3>Puntos de referencia de rendimiento</h3>
+<pre><code class="language-bash"># Run performance benchmarks
+./build/benchmarks/os-resource-optimizer-bench
+
+# Generate performance reports
+./build/benchmarks/os-resource-optimizer-bench --report
+</code></pre>
+<h3>Pruebas de integración</h3>
+<pre><code class="language-bash"># Run integration tests
+ctest -L integration
+
+# Run stress tests
+ctest -L stress --timeout 300
+</code></pre>
+<h2>Monitoreo y análisis</h2>
+<h3>Monitoreo en tiempo real</h3>
+<pre><code class="language-cpp">// Enable real-time monitoring
+optimizer.enableMonitoring(true);
+
+// Get current system metrics
+auto metrics = optimizer.getSystemMetrics();
+std::cout &lt;&lt; &quot;Active Processes: &quot; &lt;&lt; metrics.processCount &lt;&lt; std::endl;
+std::cout &lt;&lt; &quot;Memory Usage: &quot; &lt;&lt; metrics.memoryUsage &lt;&lt; &quot; MB&quot; &lt;&lt; std::endl;
+std::cout &lt;&lt; &quot;CPU Load: &quot; &lt;&lt; metrics.cpuLoad &lt;&lt; &quot;%&quot; &lt;&lt; std::endl;
+</code></pre>
+<h3>Informes de desempeño</h3>
+<pre><code class="language-cpp">// Generate performance report
+auto report = optimizer.generatePerformanceReport();
+std::cout &lt;&lt; &quot;Optimization Report:&quot; &lt;&lt; std::endl;
+std::cout &lt;&lt; &quot;  Efficiency: &quot; &lt;&lt; report.efficiency &lt;&lt; &quot;%&quot; &lt;&lt; std::endl;
+std::cout &lt;&lt; &quot;  Resource Utilization: &quot; &lt;&lt; report.resourceUtilization &lt;&lt; &quot;%&quot; &lt;&lt; std::endl;
+std::cout &lt;&lt; &quot;  Recommendations: &quot; &lt;&lt; report.recommendations.size() &lt;&lt; std::endl;
+</code></pre>
+<h2>Pautas de desarrollo</h2>
+<h3>Estilo de código</h3>
+<ul>
+<li>Siga la guía de estilo de Google C++</li>
+<li>Utilice funciones modernas de C++17</li>
+<li>Implementar RAII para la gestión de recursos</li>
+<li>Utilice punteros inteligentes para la gestión de la memoria</li>
+<li>Prefiere la corrección constante y las especificaciones sin excepción.</li>
+</ul>
+<h3>Pautas de desempeño</h3>
+<ul>
+<li>Minimizar las asignaciones de memoria en rutas activas</li>
+<li>Utilice la semántica de movimiento para objetos grandes</li>
+<li>Implementar estructuras de datos eficientes</li>
+<li>Perfilar y optimizar secciones críticas</li>
+<li>Considere la localidad de caché en el diseño de algoritmos</li>
+</ul>
+<h3>Requisitos de prueba</h3>
+<ul>
+<li>Se requiere más del 90% de cobertura de código</li>
+<li>Pruebas unitarias para todas las interfaces públicas.</li>
+<li>Pruebas de integración de componentes del sistema.</li>
+<li>Puntos de referencia de rendimiento para rutas críticas</li>
+<li>Detección de pérdida de memoria en todas las pruebas.</li>
+</ul>
+<h2>Implementación</h2>
+<h3>Construcción de producción</h3>
+<pre><code class="language-bash"># Create optimized production build
+cmake .. -DCMAKE_BUILD_TYPE=Release -DPRODUCTION=ON
+make -j$(nproc)
+
+# Install to system
+sudo make install
+</code></pre>
+<h3>Implementación de contenedores</h3>
+<pre><code class="language-dockerfile">FROM ubuntu:20.04
+
+# Install dependencies
+RUN apt-get update &amp;&amp; apt-get install -y \
+    build-essential \
+    cmake \
+    libgtest-dev
+
+# Copy source and build
+COPY . /app
+WORKDIR /app
+RUN mkdir build &amp;&amp; cd build &amp;&amp; \
+    cmake .. -DCMAKE_BUILD_TYPE=Release &amp;&amp; \
+    make -j$(nproc)
+
+# Run the optimizer
+CMD [&quot;./build/os-resource-optimizer&quot;]
+</code></pre>
+<h2>Contribuyendo</h2>
+<ol>
+<li>Bifurcar el repositorio</li>
+<li>Crear una rama de características</li>
+<li>Implementar cambios con pruebas.</li>
+<li>Actualizar documentación</li>
+<li>Enviar solicitud de extracción</li>
+</ol>
+<h3>Flujo de trabajo de desarrollo</h3>
+<pre><code class="language-bash"># Create feature branch
+git checkout -b feature/new-scheduler
+
+# Make changes and commit
+git add .
+git commit -m &quot;Add new scheduling algorithm&quot;
+
+# Push and create PR
+git push origin feature/new-scheduler
+</code></pre>
+<h2>Autor</h2>
+<p><strong>Patrick Araujo - Ingeniero Informático</strong> Para ver otros proyectos y detalles de la cartera, visite:
+<a href="https://pklavc.com/es/proyectos/">https://pklavc.com/projects/</a></p>
+<hr>
+<p><em>OS Resource Optimizer - Gestión avanzada de recursos del sistema para entornos informáticos de alto rendimiento.</em></p>
+<p><a href="https://github.com/sponsors/PkLavc"><img src="https://img.shields.io/badge/Apoyar%20en%20GitHub-%23ea4aaa?style=for-the-badge&amp;logo=github-sponsors&amp;logoColor=white" alt="GitHub Sponsors"></a></p>
+                    </article>
+                </div>
+            </section>
+            
+            <section class="tech-stack-section">
+                <div style="max-width: 1000px; margin: 0 auto;">
+                    <h2>Pila de tecnología</h2>
+                    <div class="tech-list">
+                        <div class="tech-tag">C++17</div>
+                        <div class="tech-tag">Componentes internos del sistema operativo</div>
+                        <div class="tech-tag">Computación de alto rendimiento</div>
+                        <div class="tech-tag">Gestión de memoria</div>
+                        <div class="tech-tag">Algoritmos</div>
+                    </div>
+                </div>
+            </section>
+
+            
+            
+            <section class="related-projects-section" aria-label="Enlaces de proyectos relacionados">
+  <div class="project-context-container">
+    <h2>Proyectos backend relacionados e integraciones API</h2>
+    <p>Explore implementaciones vinculadas en <a href="/es/colecciones/proyectos-python/">automatización del backend de Python</a>, <a href="/es/colecciones/proyectos-javascript/">Flujos de trabajo de la API de node.js</a>, y <a href="/es/colecciones/proyectos-integracion-api/">sistema de integración API</a> racimos.</p>
+    <ul>
+      <li><a href="/es/proyectos/google-auth-worker/">Google Auth Worker</a> para la orquestación de autenticación.</li>
+      <li><a href="/es/proyectos/event-driven-integration-service/">Event-Driven Integration Service</a> para procesamiento de webhooks y arquitectura basada en eventos.</li>
+      <li><a href="/es/proyectos/zoho-integration-worker/">Zoho Integration Worker</a> para flujos de trabajo de soporte de automatización de Zoho Deluge.</li>
+      <li><a href="/es/proyectos/cipher-gate-proxy/">Cipher Gate Proxy</a> para el procesamiento de seguridad backend de Python.</li>
+    </ul>
+  </div>
+</section>
+            <section class="cta-section">
+                <h2 style="color: #fff; margin-bottom: 30px;">Ver el código fuente</h2>
+                <a href="https://github.com/PkLavc/os-resource-optimizer" target="_blank" rel="noopener noreferrer" class="cta-button">
+                    Abrir en GitHub
+                </a>
+            </section>
+
+        </main>
+        
+        <footer class="footer-minimal">
+            <div class="footer-container">
+                <div class="footer-link-list" aria-label="Enlaces de pie de página">
+                    <a class="footer-link-pill" href="https://github.com/PkLavc" target="_blank" rel="noopener noreferrer">GitHub</a>
+                    <a class="footer-link-pill" href="https://www.linkedin.com/in/pklavc/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+                    <a class="footer-link-pill" href="mailto:contact@pklavc.com">Correo electrónico</a>
+                    <a class="footer-link-pill footer-link-pill-accent" href="https://github.com/sponsors/PkLavc" target="_blank" rel="noopener noreferrer">Apoyar en GitHub</a>
+                </div>
+                <p>
+                    © <span data-current-year></span> Patrick Araujo
+                </p>
+            </div>
+        </footer>
+    </div>
+    
+    <div class="visually-hidden">
+        <p>Ingeniero de Software Backend enfocado en automatización, integraciones de API, sistemas backend, Python, Node.js, SQL, ETL pipelines, AWS y plataformas operativas escalables.</p>
+    </div>
+    
+    <script>
+        (function() {
+            document.querySelectorAll('[data-current-year]').forEach(function(node) {
+                node.textContent = String(new Date().getFullYear());
+            });
+        }());
+    </script>
+        <script src="/js/i18n.js?v=cc3ee695f1" defer></script>
+    <script src="/js/jquery.min.js?v=d482871a5e" defer></script>
+    <script src="/js/index.js?v=0b108f99d1" defer></script>
+</body>
+</html>
+
+
+

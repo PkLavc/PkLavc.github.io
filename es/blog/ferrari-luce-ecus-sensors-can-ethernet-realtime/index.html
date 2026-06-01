@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Patrick Araujo">
+    <title>Ferrari Luce: ECU, sensores, redes CAN/Ethernet, computación integrada, computación perimetral y sistemas en tiempo real</title>
+    <meta name="description" content="Una exploración técnica de la arquitectura de la ECU, las redes de sensores, los sistemas de bus CAN y Ethernet, la computación integrada, el procesamiento de borde, la sincronización en la nube y el diseño de sistemas en tiempo real dentro de un Ferrari eléctrico de próxima generación como el Luce.">
+    <meta name="keywords" content="Ferrari Luce, arquitectura de ECU, sensores automotrices, bus CAN, Ethernet automotriz, computación integrada, computación de borde, sincronización en la nube, sistemas en tiempo real, arquitectura de vehículos eléctricos">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://pklavc.com/es/blog/ferrari-luce-ecus-sensors-can-ethernet-realtime/">
+    <link rel="alternate" href="https://pklavc.com/blog/ferrari-luce-ecus-sensors-can-ethernet-realtime/" hreflang="en">
+    <link rel="alternate" href="https://pklavc.com/pt/blog/ferrari-luce-ecus-sensors-can-ethernet-realtime/" hreflang="pt-BR">
+    <link rel="alternate" href="https://pklavc.com/es/blog/ferrari-luce-ecus-sensors-can-ethernet-realtime/" hreflang="es">
+    <link rel="alternate" href="https://pklavc.com/blog/ferrari-luce-ecus-sensors-can-ethernet-realtime/" hreflang="x-default">
+
+
+
+<meta property="og:title" content="Ferrari Luce: ECU, sensores, CAN/Ethernet, computación integrada y sistemas en tiempo real">
+    <meta property="og:description" content="Dentro de la interfaz hardware-software de un Ferrari eléctrico: redes de ECU, fusión de sensores, autobuses automotrices y computación determinista.">
+    <meta property="og:url" content="https://pklavc.com/es/blog/ferrari-luce-ecus-sensors-can-ethernet-realtime/">
+    <meta property="og:type" content="article">
+    <meta property="article:published_time" content="2026-05-28">
+    <meta property="article:modified_time" content="2026-05-28">
+    <meta property="article:author" content="Patrick Araujo">
+    <meta property="article:section" content="Automotive Software Engineering">
+    <meta property="article:tag" content="Arquitectura de la ECU">
+    <meta property="article:tag" content="Autobús CAN">
+    <meta property="article:tag" content="Ethernet automotriz">
+    <meta property="article:tag" content="sistemas en tiempo real">
+    <meta property="og:image" content="https://pklavc.com/images/lavc.webp?v=5e84850f26">
+    <meta property="og:image:width" content="1024">
+    <meta property="og:image:height" content="1024">
+    <meta property="og:site_name" content="Patrick Araujo">
+    <meta property="og:locale" content="es_ES">
+    <meta property="og:image:alt" content="Retrato de marca del ingeniero backend y especialista en automatización Patrick Araujo">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Ferrari Luce: ECU, sensores, CAN/Ethernet y sistemas en tiempo real">
+    <meta name="twitter:description" content="Cómo las arquitecturas de ECU, las redes de sensores, los protocolos de bus y la computación determinista definen la plataforma integrada de un Ferrari eléctrico.">
+    <meta name="twitter:image" content="https://pklavc.com/images/lavc.webp?v=5e84850f26">
+    <meta name="twitter:image:alt" content="Retrato de marca del ingeniero backend y especialista en automatización Patrick Araujo">
+    <meta name="twitter:site" content="@PkLavc">
+    <meta name="twitter:creator" content="@PkLavc">
+
+    <link rel="icon" type="image/svg+xml" href="https://pklavc.com/images/favicon.svg?v=d15fe4e492">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Monoton&amp;family=Poppins:wght@500;600;700&amp;family=Raleway:wght@300&amp;display=swap" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Monoton&amp;family=Poppins:wght@500;600;700&amp;family=Raleway:wght@300&amp;display=swap"></noscript>
+    <link rel="stylesheet" href="/css/global.css?v=55251d9722">
+    <link rel="stylesheet" href="/css/blog.css?v=560c7eaf05">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.2.6/gsap.min.js" defer></script>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@graph": [
+            {
+                "@type": "BlogPosting",
+                "headline": "Ferrari Luce: ECUs, Sensors, CAN/Ethernet Networks, Embedded Computing, Edge Computing, and Real-Time Systems",
+                "description": "A technical exploration of the ECU architecture, sensor networks, CAN and Ethernet bus systems, embedded computing, edge processing, cloud synchronization, and real-time system design inside a next-generation electric Ferrari.",
+                "image": "https://pklavc.com/images/lavc.webp?v=5e84850f26",
+                "datePublished": "2026-05-28",
+                "dateModified": "2026-05-28",
+                "author": {
+                    "@type": "Person",
+                    "name": "Patrick Araujo"
+                },
+                "publisher": {
+                    "@type": "Person",
+                    "name": "Patrick Araujo"
+                },
+                "mainEntityOfPage": "https://pklavc.com/es/blog/ferrari-luce-ecus-sensors-can-ethernet-realtime/",
+                "url": "https://pklavc.com/es/blog/ferrari-luce-ecus-sensors-can-ethernet-realtime/",
+                "keywords": [
+                    "ferrari luce ecu",
+                    "automotive sensors",
+                    "can bus electric vehicle",
+                    "automotive ethernet",
+                    "embedded computing automotive",
+                    "edge computing vehicle",
+                    "cloud sync automotive",
+                    "real-time systems car",
+                    "sensor fusion"
+                ]
+            },
+            {
+                "@type": "BreadcrumbList",
+                "itemListElement": [
+                    {
+                        "@type": "ListItem",
+                        "position": 1,
+                        "name": "Home",
+                        "item": "https://pklavc.com/"
+                    },
+                    {
+                        "@type": "ListItem",
+                        "position": 2,
+                        "name": "Blog",
+                        "item": "https://pklavc.com/es/blog/"
+                    },
+                    {
+                        "@type": "ListItem",
+                        "position": 3,
+                        "name": "Ferrari Luce ECUs and Real-Time Systems",
+                        "item": "https://pklavc.com/es/blog/ferrari-luce-ecus-sensors-can-ethernet-realtime/"
+                    }
+                ]
+            }
+        ]
+    }
+    </script>
+</head>
+<body class="blog-layout seo-layout">
+    <div id="breaker"></div>
+    <div id="breaker-two"></div>
+    <div id="all">
+        <div class="cursor"></div>
+        <div id="navigation-content" role="navigation" aria-label="Navegación primaria">
+            <div class="logo"></div>
+            <div class="navigation-links">
+                <a href="/es/" data-text="INICIO" id="home-link">INICIO</a>
+                <a href="/es/sobre/" data-text="SOBRE" id="about-link">SOBRE</a>
+                <a href="/es/proyectos/" data-text="PROYECTOS" id="projects-link">PROYECTOS</a>
+                <a href="/es/blog/" data-text="BLOG" id="blog-link">BLOG</a>
+            </div>
+        </div>
+        <div id="navigation-bar">
+            <div class="menubar">
+                <span class="first-span"></span>
+                <span class="second-span"></span>
+                <span class="third-span"></span>
+            </div>
+        </div>
+
+        <main class="blog-shell" role="main">
+            <div class="blog-columns">
+                <div>
+                    <article class="blog-post-hero">
+                        <div class="blog-breadcrumb" aria-label="Miga de pan">
+                            <a href="/es/">Inicio</a>
+                            <span>/</span>
+                            <a href="/es/blog/">Blog</a>
+                            <span>/</span>
+                            <span aria-current="page">ECU, sensores y sistemas en tiempo real</span>
+                        </div>
+                        <span class="blog-kicker">Ingeniería de software automotriz</span>
+                        <h1>Ferrari Luce: ECU, sensores, redes CAN/Ethernet, computación integrada, computación perimetral y sistemas en tiempo real</h1>
+                        <p>La frontera hardware-software en un vehículo eléctrico como el Ferrari Luce es donde la física se encuentra con la computación. Esta publicación examina las unidades de control electrónico, las redes de sensores, las arquitecturas de bus de comunicación, las plataformas informáticas integradas, las estrategias de procesamiento de borde, los patrones de sincronización en la nube y las garantías de sistemas en tiempo real que, en conjunto, hacen que un superdeportivo eléctrico moderno funcione.</p>
+                        <div class="blog-post-meta">
+                            <span>Publicado el 28 de mayo de 2026</span>
+                            <span>13 minutos de lectura</span>
+                            <span>Ingeniería de software automotriz</span>
+                        </div>
+                    </article>
+
+                    <article class="blog-article">
+                        <h2>ECU: los nodos de cálculo distribuidos de un vehículo</h2>
+                        <p>Una unidad de control electrónico (ECU) es una computadora integrada dedicada responsable de una función específica del vehículo. Los vehículos premium modernos contienen entre 70 y más de 100 ecus. Cada uno gestiona un dominio: tren motriz, gestión de la batería, control de la carrocería, dinámica del chasis, infoentretenimiento, asistencia avanzada al conductor, gestión térmica, iluminación y más.</p>
+                        <p>En un vehículo eléctrico como el Ferrari Luce, el panorama de la ECU cambia en comparación con los vehículos de combustión. No existe ningún módulo de control del motor en el sentido tradicional. En cambio, los controladores de motor (inversores), los sistemas de gestión de baterías y las unidades de distribución de energía ocupan un lugar central. Cada motor puede tener su propio controlador dedicado que ejecuta algoritmos de control orientado a campo (FOC) a frecuencias de conmutación de decenas de kilohercios.</p>
+                        <p>La industria está avanzando hacia controladores de dominio y arquitecturas zonales, consolidando muchas ECU pequeñas en menos plataformas informáticas y más potentes. Una arquitectura zonal agrupa las ECU por ubicación física en el vehículo en lugar de por función, lo que reduce la complejidad del cableado y permite una implementación de software más flexible. El Ferrari Luce probablemente adopte elementos de este enfoque dado su diseño eléctrico limpio.</p>
+
+                        <div class="blog-callout">
+                            Un vehículo no es una computadora: es una red de docenas de computadoras especializadas que deben ponerse de acuerdo sobre la realidad en microsegundos.
+                        </div>
+
+                        <h2>Sensores: generando los datos que el software necesita</h2>
+                        <p>Los sensores son la interfaz entre el mundo físico y el plano de control digital. Un superdeportivo eléctrico como el Luce requiere un amplio conjunto de sensores: sensores de temperatura en cada módulo de batería, sensores de corriente en cada fase del motor, sensores de velocidad de las ruedas para ABS y control de tracción, acelerómetros y giroscopios para sistemas de estabilidad, sensores de presión para frenado y monitoreo de neumáticos, sensores de posición para dirección y suspensión, y sensores de proximidad para estacionamiento y prevención de colisiones.</p>
+                        <p>El volumen de datos de los sensores es significativo. Un solo paquete de baterías con cientos de celdas requiere monitoreo individual de voltaje y temperatura. Los controladores de motor toman muestras de la corriente y la posición del rotor miles de veces por segundo. Las unidades de medición inercial (IMU) proporcionan datos de seis ejes a alta frecuencia para el cálculo de la dinámica del vehículo.</p>
+                        <p>La fusión de sensores (combinar datos de múltiples tipos de sensores para producir una comprensión más precisa del estado del vehículo) es un desafío clave del software. La velocidad de las ruedas, los datos de la IMU, el GPS y el ángulo de dirección deben fusionarse para determinar la trayectoria real del vehículo. Los sensores individuales tienen modos de ruido, deriva y falla. El algoritmo de fusión debe producir resultados confiables incluso cuando los sensores individuales se degradan.</p>
+                        <p>Para un vehículo de alto rendimiento, la precisión y la latencia del sensor afectan directamente la dinámica de conducción. Un retraso de incluso unos pocos milisegundos en el informe de velocidad de las ruedas puede degradar la respuesta del control de tracción. Esto impone requisitos estrictos al hardware de la interfaz del sensor (ADC, acondicionamiento de señales) y al software que procesa las lecturas sin procesar en valores utilizables.</p>
+
+                        <h2>Bus CAN: la columna vertebral heredada</h2>
+                        <p>Controller Area Network (CAN) ha sido el bus de comunicación de vehículos dominante desde la década de 1990. CAN proporciona arbitraje basado en prioridades, detección de errores y comunicación de transmisión a velocidades de hasta 1 Mbps (CAN clásico) u 8 Mbps (CAN-FD). Es resistente a las interferencias electromagnéticas y utiliza sólo dos cables, lo que lo hace práctico para entornos automotrices hostiles.</p>
+                        <p>En un vehículo como el Ferrari Luce, CAN todavía cumple funciones críticas: electrónica de la carrocería, comunicación de sensores de bajo ancho de banda y compatibilidad heredada con componentes que utilizan protocolos CAN establecidos. CAN-FD (velocidad de datos flexible) extiende la carga útil de 8 bytes a 64 bytes y aumenta la velocidad durante la fase de datos, proporcionando una ruta de actualización significativa sin reemplazar completamente la capa física.</p>
+                        <p>Sin embargo, CAN tiene limitaciones para los requisitos de los vehículos eléctricos modernos. Su límite de ancho de banda lo hace inadecuado para transmisiones de cámaras, nubes de puntos LIDAR, datos de mapas de alta resolución o flujos de telemetría de alta frecuencia que generan los sistemas de propulsión eléctricos. Aquí es donde la Ethernet automotriz entra en la arquitectura.</p>
+
+                        <h2>Ethernet para automoción: conexión en red para vehículos de gran ancho de banda</h2>
+                        <p>Automotive Ethernet (100BASE-T1, 1000BASE-T1) brinda comunicación multigigabit a la red del vehículo. A diferencia de Ethernet de consumo, las variantes automotrices utilizan cables de par trenzado único, lo que reduce el peso y el costo. Ethernet permite aplicaciones que consumen mucho ancho de banda: sistemas de cámaras de visión envolvente, descargas inalámbricas de actualizaciones, transmisión de datos de diagnóstico y fusión de sensores de alta frecuencia.</p>
+                        <p>El cambio a Ethernet introduce conceptos familiares de redes de TI en el vehículo: conmutadores, VLAN, pilas TCP/IP, descubrimiento de servicios y redes sensibles al tiempo (TSN). TSN es particularmente importante: proporciona garantías de latencia deterministas en una red Ethernet, lo que permite comunicaciones en tiempo real críticas para la seguridad junto con el tráfico de mejor esfuerzo en la misma infraestructura física.</p>
+                        <p>Para Ferrari Luce, la Ethernet automotriz probablemente sirva como columna vertebral que conecta los controladores de dominio, la plataforma informática central, los sistemas de información y entretenimiento y los módulos de conectividad externos. CAN y CAN-FD siguen siendo para sensores y actuadores de nodo de hoja donde los requisitos de ancho de banda son modestos pero los requisitos de confiabilidad son extremos.</p>
+                        <p>Esta arquitectura híbrida (troncal Ethernet con CAN/CAN-FD en los bordes) representa lo último en redes automotrices. Combina el ancho de banda y la flexibilidad de Ethernet con la confiabilidad comprobada de CAN en bucles de control críticos para la seguridad.</p>
+
+                        <h2>Computación integrada: plataformas para ejecución determinista</h2>
+                        <p>Las plataformas informáticas dentro de un vehículo deben ofrecer un rendimiento determinista. A diferencia de las cargas de trabajo de servidores donde los picos ocasionales de latencia son aceptables, la informática automotriz integrada debe garantizar los tiempos de ejecución en el peor de los casos. Un circuito de control de motor que no cumpla con su fecha límite podría producir picos de torsión peligrosos.</p>
+                        <p>La computación integrada en Ferrari Luce abarca una variedad de hardware: pequeños microcontroladores (serie ARM Cortex-M) para interfaces de sensores y tareas de control simples, procesadores de rango medio (ARM Cortex-R) para funciones críticas de seguridad en tiempo real y procesadores de aplicaciones de alto rendimiento (ARM Cortex-A o x86) para información, entretenimiento, navegación e inferencia de IA.</p>
+                        <p>El aislamiento del hardware es fundamental. Las funciones críticas para la seguridad (frenado, dirección, tren motriz) deben estar físicamente separadas de las funciones que no son de seguridad (infoentretenimiento, conectividad). Los hipervisores pueden proporcionar aislamiento de software en hardware compartido, pero los estándares de seguridad funcional automotriz prefieren fuertemente la separación de hardware para obtener los niveles más altos de integridad de seguridad (ASIL-D).</p>
+                        <p>Las unidades de protección de memoria (MPU), los temporizadores de vigilancia de hardware y los núcleos de bloqueo (dos núcleos que ejecutan las mismas instrucciones y comparan resultados) proporcionan detección de fallas a nivel de hardware. Esta redundancia garantiza que los fallos puntuales en el hardware informático no se propaguen al comportamiento crítico de seguridad del vehículo.</p>
+
+                        <h2>Edge Computing: procesamiento de datos donde se generan.</h2>
+                        <p>La informática de punta en el contexto del automóvil significa procesar datos a bordo del vehículo en lugar de enviarlo todo a la nube. Esto es esencial porque la conectividad en la nube es intermitente, la latencia es inaceptable para los bucles de control y los costos de ancho de banda para la carga continua de telemetría de alta frecuencia serían prohibitivos.</p>
+                        <p>El Ferrari Luce probablemente realiza cálculos de borde significativos: algoritmos de fusión de sensores que combinan datos de docenas de fuentes en tiempo real, modelos de batería predictivos que estiman el estado de carga y el rango restante, algoritmos de dinámica de conducción que adaptan la suspensión y la distribución del torque a las condiciones de la carretera, e inferencia local de IA para el monitoreo del conductor y la optimización de la energía.</p>
+                        <p>La computación perimetral también permite la reducción inteligente de datos. En lugar de cargar cada lectura sin procesar del sensor, los procesadores de borde pueden extraer características, detectar anomalías, calcular agregados y solo transmitir eventos o resúmenes significativos a la nube. Esto reduce el uso del ancho de banda celular, amplía el presupuesto de energía de la antena y centra los análisis del lado de la nube en datos procesables.</p>
+                        <p>El desafío es que el hardware de computación de punta debe funcionar dentro de las limitaciones térmicas y energéticas del automóvil. A diferencia de una GPU de centro de datos con refrigeración activa y potencia ilimitada, un procesador de vanguardia para automóviles debe funcionar de manera confiable entre -40 °C y +85 °C, consumir una energía mínima y sobrevivir más de 15 años de vibración y ciclos térmicos.</p>
+
+                        <h2>Sincronización en la nube: conectar el estado del vehículo a los sistemas backend</h2>
+                        <p>La sincronización en la nube cierra la brecha entre la informática de punta del vehículo y la infraestructura backend de Ferrari. Los datos fluyen bidireccionalmente: la telemetría, los eventos de diagnóstico y los análisis de uso fluyen del vehículo a la nube, mientras que las actualizaciones OTA, los cambios de configuración, los datos de navegación y los comandos remotos fluyen de la nube al vehículo.</p>
+                        <p>El desafío de la sincronización es gestionar con elegancia la conectividad intermitente. El vehículo debe almacenar datos localmente cuando está fuera de línea, priorizar los mensajes críticos (alertas de seguridad, notificaciones de robo) sobre la telemetría masiva, manejar la resolución de conflictos cuando el estado del vehículo y la nube divergen y reanudar la sincronización de manera eficiente cuando regresa la conectividad.</p>
+                        <p>Protocolos como MQTT proporcionan mensajes de publicación y suscripción livianos adecuados para dispositivos restringidos. Sin embargo, la diversidad de datos del vehículo (desde lecturas de sensores de un solo byte hasta registros de diagnóstico de varios megabytes) significa que coexisten múltiples patrones de comunicación: transmisión en tiempo real para telemetría, solicitud-respuesta para diagnósticos y transferencia masiva para paquetes OTA.</p>
+                        <p>Para Ferrari Luce, la sincronización en la nube también permite obtener información sobre toda la flota. La telemetría agregada de todos los vehículos ayuda a Ferrari a identificar problemas emergentes (una química de la celda de la batería que se degrada más rápido de lo esperado en climas cálidos), validar el impacto de la actualización OTA (¿el nuevo algoritmo de regeneración realmente mejoró la eficiencia?) y optimizar futuros diseños de vehículos basados ​​en patrones de uso del mundo real.</p>
+
+                        <h2>Sistemas en tiempo real: cuando el momento es la corrección</h2>
+                        <p>En los sistemas en tiempo real, un resultado correcto entregado demasiado tarde es un resultado incorrecto. El Ferrari Luce opera múltiples bucles de control en tiempo real simultáneamente: control del motor a frecuencias de kilohercios, control de tracción en tiempos de respuesta de milisegundos, gestión térmica a intervalos de menos de un segundo y dinámica del vehículo a velocidades que coinciden con las frecuencias de actualización del sensor.</p>
+                        <p>Los sistemas operativos en tiempo real (RTOS) brindan las garantías de programación que estos sistemas necesitan: programación preventiva basada en prioridades, latencia de interrupción limitada, asignación de memoria determinista y comunicación predecible entre tareas. A diferencia de los sistemas operativos de propósito general que optimizan el rendimiento, un RTOS optimiza el cumplimiento de los plazos.</p>
+                        <p>Se aplican requisitos estrictos en tiempo real (el incumplimiento de la fecha límite provoca fallas en el sistema) a funciones críticas para la seguridad, como el frenado y la dirección. Los requisitos suaves en tiempo real (no cumplir con la fecha límite degrada la calidad pero no es catastrófico) se aplican al audio/video del infoentretenimiento y al procesamiento de sensores no críticos. La arquitectura del sistema debe separar claramente estos dominios y asignar recursos informáticos adecuados a cada uno.</p>
+                        <p>Para un vehículo eléctrico de alto rendimiento, la precisión en tiempo real afecta directamente a la experiencia de conducción. La vectorización de par que responde en 1 ms se siente responsiva y natural. El mismo algoritmo con una latencia de 10 ms parece desconectado e impreciso. El rendimiento en tiempo real no es sólo un requisito de seguridad: es un diferenciador de rendimiento que exigen los estándares de ingeniería de Ferrari.</p>
+                    </article>
+
+                    <section aria-labelledby="ferrari-ecus-related-title">
+                        <h2 id="ferrari-ecus-related-title">Lectura relacionada</h2>
+                        <div class="blog-related-grid">
+                            <article class="blog-related-card">
+                                <h3><a href="/es/blog/ferrari-luce-embedded-software-telemetry-ota/">Ferrari Luce: Software integrado, telemetría, OTA, IA y nube</a></h3>
+                                <p>La capa de software más amplia (desde el código integrado hasta los canales en la nube) que define un Ferrari eléctrico.</p>
+                            </article>
+                            <article class="blog-related-card">
+                                <h3><a href="/es/blog/ferrari-luce-critical-systems-fault-tolerance-observability/">Ferrari Luce: Sistemas críticos, tolerancia a fallos y observabilidad</a></h3>
+                                <p>Cómo el software crítico para la seguridad maneja fallas, mantiene la observabilidad y ofrece actualizaciones OTA sin riesgos.</p>
+                            </article>
+                            <article class="blog-related-card">
+                                <h3><a href="/es/blog/ferrari-luce-electric-software-stack-speculation/">La probable pila de software de un Ferrari eléctrico</a></h3>
+                                <p>Análisis especulativo de Linux, RTOS, C/C++, Rust y las cadenas de herramientas detrás de un superdeportivo eléctrico.</p>
+                            </article>
+                        </div>
+                    </section>
+                </div>
+
+                <aside class="blog-article-grid">
+                    <section class="blog-sidebar-card">
+                        <h2>Temas centrales</h2>
+                        <ul>
+                            <li>Arquitecturas de ECU y diseño zonal.</li>
+                            <li>Redes de sensores automotrices y fusión.</li>
+                            <li>Autobuses CAN, CAN-FD y LIN</li>
+                            <li>Ethernet automotriz y TSN</li>
+                            <li>Plataformas informáticas integradas</li>
+                            <li>Computación de borde para vehículos</li>
+                            <li>Patrones de sincronización en la nube</li>
+                            <li>Garantías del sistema en tiempo real</li>
+                        </ul>
+                    </section>
+                    <section class="blog-sidebar-card">
+                        <h2>Tecnologías clave</h2>
+                        <ul>
+                            <li>ARM Cortex-M, Cortex-R, Cortex-A</li>
+                            <li>CAN-FD: tramas de 64 bytes, 8 Mbps</li>
+                            <li>Ethernet 100BASE-T1/1000BASE-T1</li>
+                            <li>Redes sensibles al tiempo (TSN)</li>
+                            <li>RTOS: programación determinista</li>
+                        </ul>
+                    </section>
+                    <section class="blog-sidebar-card">
+                        <h2>Continuar explorando</h2>
+                        <ul>
+                            <li><a href="/es/blog/ferrari-luce-embedded-software-telemetry-ota/">Software integrado y telemetría</a></li>
+                            <li><a href="/es/blog/ferrari-luce-software-defined-vehicle-dynamics/">Dinámica del vehículo definida por software</a></li>
+                            <li><a href="/es/blog/ferrari-luce-software-recalls-cybersecurity-risks/">Retiros de software y ciberseguridad</a></li>
+                        </ul>
+                    </section>
+                </aside>
+            </div>
+        </main>
+    </div>
+
+    <footer class="footer-minimal">
+        <div class="footer-container">
+            <div class="footer-link-list" aria-label="Enlaces de pie de página">
+                <a class="footer-link-pill" href="https://github.com/PkLavc" target="_blank" rel="noopener noreferrer">GitHub</a>
+                <a class="footer-link-pill" href="https://www.linkedin.com/in/pklavc/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+                <a class="footer-link-pill" href="mailto:contact@pklavc.com">Correo electrónico</a>
+                <a class="footer-link-pill footer-link-pill-accent" href="https://github.com/sponsors/PkLavc" target="_blank" rel="noopener noreferrer">Apoyar en GitHub</a>
+            </div>
+            <p>
+                © <span data-current-year></span> Patrick Araujo
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        (function() {
+            document.querySelectorAll('[data-current-year]').forEach(function(node) {
+                node.textContent = String(new Date().getFullYear());
+            });
+        }());
+    </script>
+        <script src="/js/i18n.js?v=cc3ee695f1" defer></script>
+    <script src="/js/jquery.min.js?v=d482871a5e" defer></script>
+    <script src="/js/index.js?v=0b108f99d1" defer></script>
+
+    <div class="visually-hidden">
+        <p>Ferrari Luce Artículo sobre arquitectura de ECU que cubre sensores automotrices, redes de bus CAN, Ethernet automotriz, plataformas informáticas integradas, informática de punta, sincronización en la nube, sistemas en tiempo real, fusión de sensores, redes sensibles al tiempo y ejecución determinista para el control de vehículos eléctricos.</p>
+    </div>
+</body>
+</html>

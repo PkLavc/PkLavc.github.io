@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Patrick Araujo">
+    <title>Skyler Assistant | Patrick Araujo</title>
+    <meta name="description" content="Interativo Skyler Assistant para perguntas de portfólio sobre projetos, arquitetura de backend, integrações e experiência profissional.">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://pklavc.com/pt/skyler-assistant/">
+    <link rel="alternate" href="https://pklavc.com/skyler-assistant/" hreflang="en">
+    <link rel="alternate" href="https://pklavc.com/pt/skyler-assistant/" hreflang="pt-BR">
+    <link rel="alternate" href="https://pklavc.com/es/skyler-assistant/" hreflang="es">
+    <link rel="alternate" href="https://pklavc.com/skyler-assistant/" hreflang="x-default">
+
+
+
+<meta property="og:title" content="Skyler Assistant | Patrick Araujo">
+    <meta property="og:description" content="Assistente público de IA para contexto de portfólio, projetos, pilha e tópicos de arquitetura.">
+    <meta property="og:url" content="https://pklavc.com/pt/skyler-assistant/">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://pklavc.com/images/lavc.webp?v=5e84850f26">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Skyler Assistant | Patrick Araujo">
+    <meta name="twitter:description" content="Experimente Skyler e pergunte sobre os projetos, habilidades, arquitetura e experiência de Patrick.">
+    <meta name="twitter:image" content="https://pklavc.com/images/lavc.webp?v=5e84850f26">
+    <link rel="icon" type="image/svg+xml" href="https://pklavc.com/images/favicon.svg?v=d15fe4e492">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Monoton&amp;family=Poppins:wght@500;600;700&amp;family=Raleway:wght@300&amp;display=swap" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Monoton&amp;family=Poppins:wght@500;600;700&amp;family=Raleway:wght@300&amp;display=swap"></noscript>
+    <link rel="stylesheet" href="/css/global.css?v=55251d9722">
+    <link rel="stylesheet" href="/css/blog.css?v=560c7eaf05">
+    <style>
+        body.skyler-page {
+            --skyler-ink: #050508;
+            --skyler-panel: rgba(9, 9, 16, 0.9);
+            --skyler-panel-strong: rgba(13, 10, 22, 0.96);
+            --skyler-line: rgba(0, 231, 255, 0.18);
+            --skyler-line-hot: rgba(255, 42, 169, 0.24);
+            --skyler-cyan: #00e7ff;
+            --skyler-cyan-soft: #8cf4ff;
+            --skyler-pink: #ff2aa9;
+            --skyler-hot: #ff235c;
+            --skyler-violet: #8a5cff;
+            --skyler-text: #f3f8ff;
+            --skyler-muted: #9bb3c1;
+            background: #050508;
+            color: #e7ecef;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body.skyler-page #all {
+            position: relative;
+            min-height: 100vh;
+        }
+
+        body.skyler-page .footer-minimal {
+            position: relative;
+        }
+
+        .skyler-threat-field {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            overflow: hidden;
+            pointer-events: none;
+            background:
+                linear-gradient(125deg, #050508 0%, #090811 45%, #170617 100%),
+                repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.025) 0 1px, transparent 1px 7px);
+        }
+
+        .skyler-threat-field::before,
+        .skyler-threat-field::after,
+        .skyler-threat-horizon,
+        .skyler-threat-reveal,
+        .skyler-threat-reticle {
+            content: "";
+            position: absolute;
+            pointer-events: none;
+        }
+
+        .skyler-threat-field::before {
+            left: -22%;
+            right: -22%;
+            bottom: -18%;
+            height: 86%;
+            opacity: 0.42;
+            transform: perspective(820px) rotateX(64deg);
+            transform-origin: center bottom;
+            background:
+                linear-gradient(90deg, rgba(0, 231, 255, 0.22) 1px, transparent 1px),
+                linear-gradient(0deg, rgba(255, 42, 169, 0.18) 1px, transparent 1px);
+            background-size: 72px 72px;
+            animation: skylerThreatGrid 18s linear infinite;
+        }
+
+        .skyler-threat-field::after {
+            inset: 0;
+            opacity: 0.28;
+            background:
+                repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.045) 0 1px, transparent 1px 5px),
+                repeating-linear-gradient(90deg, transparent 0 78px, rgba(0, 231, 255, 0.08) 78px 79px, transparent 79px 156px);
+            mix-blend-mode: screen;
+        }
+
+        .skyler-threat-horizon {
+            left: -8%;
+            right: -8%;
+            bottom: 18%;
+            height: 108px;
+            opacity: 0.74;
+            background:
+                linear-gradient(90deg, transparent 0%, rgba(0, 231, 255, 0.42) 18%, rgba(255, 42, 169, 0.7) 48%, rgba(255, 35, 92, 0.52) 70%, transparent 100%),
+                repeating-linear-gradient(90deg, transparent 0 42px, rgba(255, 255, 255, 0.2) 42px 43px, transparent 43px 84px);
+            clip-path: polygon(0 54%, 9% 45%, 18% 56%, 28% 43%, 39% 52%, 50% 40%, 61% 53%, 72% 44%, 83% 55%, 100% 47%, 100% 59%, 83% 62%, 72% 55%, 61% 64%, 50% 54%, 39% 65%, 28% 55%, 18% 63%, 9% 53%, 0 62%);
+            filter: drop-shadow(0 0 16px rgba(255, 42, 169, 0.34)) drop-shadow(0 0 18px rgba(0, 231, 255, 0.22));
+            animation: skylerThreatHorizon 7s ease-in-out infinite alternate;
+        }
+
+        .skyler-threat-reveal {
+            inset: 0;
+            opacity: 0;
+            clip-path: circle(var(--skyler-scan-radius, 0px) at var(--skyler-scan-x, 50%) var(--skyler-scan-y, 50%));
+            background:
+                repeating-linear-gradient(90deg, rgba(0, 231, 255, 0.16) 0 1px, transparent 1px 19px),
+                repeating-linear-gradient(0deg, rgba(255, 42, 169, 0.16) 0 1px, transparent 1px 23px),
+                linear-gradient(135deg, rgba(255, 42, 169, 0.16), rgba(138, 92, 255, 0.1) 46%, rgba(0, 231, 255, 0.12));
+            mix-blend-mode: screen;
+            transition: clip-path 0.2s ease, opacity 0.2s ease;
+        }
+
+        .skyler-threat-reticle {
+            left: var(--skyler-scan-x, 50%);
+            top: var(--skyler-scan-y, 50%);
+            width: 92px;
+            height: 92px;
+            opacity: 0;
+            border: 1px solid rgba(255, 35, 92, 0.55);
+            border-radius: 50%;
+            transform: translate(-50%, -50%) scale(0.92);
+            box-shadow:
+                inset 0 0 0 1px rgba(0, 231, 255, 0.16),
+                0 0 22px rgba(255, 42, 169, 0.18);
+            transition: opacity 0.16s ease, transform 0.16s ease;
+        }
+
+        .skyler-threat-reticle::before,
+        .skyler-threat-reticle::after {
+            content: "";
+            position: absolute;
+            background: linear-gradient(90deg, transparent, rgba(0, 231, 255, 0.76), rgba(255, 42, 169, 0.72), transparent);
+        }
+
+        .skyler-threat-reticle::before {
+            left: 12px;
+            right: 12px;
+            top: calc(50% - 1px);
+            height: 1px;
+        }
+
+        .skyler-threat-reticle::after {
+            top: 12px;
+            bottom: 12px;
+            left: calc(50% - 1px);
+            width: 1px;
+            transform: rotate(90deg);
+        }
+
+        body.is-skyler-scanning .skyler-threat-reveal {
+            --skyler-scan-radius: 240px;
+            opacity: 0.86;
+        }
+
+        body.is-skyler-scanning .skyler-threat-reticle {
+            opacity: 0.72;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .skyler-shell {
+            position: relative;
+            z-index: 1;
+            width: min(1420px, calc(100% - 24px));
+            min-height: calc(100vh - 116px);
+            margin: 68px auto 24px;
+        }
+
+        .skyler-app {
+            display: grid;
+            grid-template-columns: minmax(220px, 280px) minmax(0, 1fr);
+            gap: 14px;
+            align-items: start;
+        }
+
+        .skyler-panel {
+            min-width: 0;
+            border: 1px solid var(--skyler-line);
+            border-radius: 8px;
+            background: var(--skyler-panel);
+            box-shadow:
+                0 24px 70px rgba(0, 0, 0, 0.38),
+                0 0 34px rgba(255, 42, 169, 0.07),
+                inset 0 1px 0 rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(10px);
+        }
+
+        .skyler-presence {
+            min-width: 0;
+            padding: 18px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            gap: 18px;
+            overflow: hidden;
+        }
+
+        .skyler-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .skyler-avatar {
+            width: 74px;
+            height: 74px;
+            object-fit: contain;
+            flex: 0 0 auto;
+            filter: drop-shadow(0 12px 24px rgba(0, 0, 0, 0.38));
+        }
+
+        .skyler-eyebrow,
+        .skyler-section-label,
+        .chat-card-label {
+            color: var(--skyler-cyan-soft);
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+        }
+
+        .skyler-brand h1 {
+            margin: 2px 0 0;
+            color: #fff;
+            font-family: 'Poppins', sans-serif;
+            font-size: clamp(2rem, 3.3vw, 2.8rem);
+            line-height: 1;
+            text-shadow: 0 0 18px rgba(255, 42, 169, 0.34), 0 0 20px rgba(0, 231, 255, 0.18);
+        }
+
+        .skyler-lede {
+            margin: 14px 0 0;
+            color: #ced7e2;
+            font-size: 0.95rem;
+            line-height: 1.62;
+        }
+
+        .skyler-system-note {
+            margin-top: 16px;
+            padding: 12px;
+            border: 1px solid rgba(255, 42, 169, 0.34);
+            border-radius: 8px;
+            background: linear-gradient(135deg, rgba(255, 42, 169, 0.12), rgba(0, 231, 255, 0.07));
+            color: #f5d9ff;
+            font-size: 0.88rem;
+            line-height: 1.5;
+        }
+
+        .skyler-prompt-group {
+            display: grid;
+            gap: 10px;
+            margin-top: 8px;
+        }
+
+        .skyler-prompt-list {
+            display: grid;
+            gap: 8px;
+        }
+
+        body.skyler-page .skyler-prompt-chip,
+        body.skyler-page .skyler-tool-btn,
+        body.skyler-page .skyler-send-btn {
+            border: 1px solid #2b2b2b !important;
+            border-radius: 8px !important;
+            background: rgba(16, 13, 25, 0.92) !important;
+            color: var(--skyler-text) !important;
+            font: inherit;
+            cursor: pointer;
+            transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+        }
+
+        body.skyler-page .skyler-prompt-chip {
+            width: 100%;
+            min-height: 50px;
+            padding: 12px 13px;
+            text-align: left;
+            line-height: 1.35;
+        }
+
+        body.skyler-page .skyler-prompt-chip:hover,
+        body.skyler-page .skyler-tool-btn:hover,
+        body.skyler-page .skyler-send-btn:hover {
+            border-color: #66e0ff !important;
+            background: rgba(26, 17, 36, 0.98) !important;
+            color: #fff !important;
+            transform: translateY(-1px);
+            box-shadow: 0 0 18px rgba(255, 42, 169, 0.08);
+        }
+
+        .skyler-link-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: auto;
+        }
+
+        .skyler-link-row a {
+            display: inline-flex;
+            align-items: center;
+            min-height: 34px;
+            padding: 0 11px;
+            border: 1px solid rgba(255, 42, 169, 0.3);
+            border-radius: 8px;
+            color: #ff8ddd;
+            text-decoration: none;
+            font-size: 0.82rem;
+            font-weight: 700;
+        }
+
+        .skyler-link-row a:hover {
+            border-color: rgba(0, 231, 255, 0.52);
+            color: var(--skyler-cyan-soft);
+        }
+
+        .skyler-chat-panel {
+            position: relative;
+            isolation: isolate;
+            min-width: 0;
+            min-height: 720px;
+            height: calc(100vh - 92px);
+            max-height: none;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .skyler-chat-panel::before,
+        .skyler-chat-panel::after {
+            content: "";
+            position: absolute;
+            pointer-events: none;
+        }
+
+        .skyler-chat-panel::before {
+            inset: 0;
+            z-index: 0;
+            opacity: 0;
+            clip-path: circle(var(--skyler-chat-scan-radius, 0px) at var(--skyler-chat-scan-x, 50%) var(--skyler-chat-scan-y, 50%));
+            background:
+                repeating-linear-gradient(90deg, rgba(0, 231, 255, 0.24) 0 1px, transparent 1px 16px),
+                repeating-linear-gradient(0deg, rgba(255, 42, 169, 0.22) 0 1px, transparent 1px 20px),
+                linear-gradient(135deg, rgba(255, 42, 169, 0.28), rgba(138, 92, 255, 0.16) 48%, rgba(0, 231, 255, 0.2));
+            mix-blend-mode: screen;
+            transition: clip-path 0.2s ease, opacity 0.2s ease;
+        }
+
+        .skyler-chat-panel::after {
+            left: var(--skyler-chat-scan-x, 50%);
+            top: var(--skyler-chat-scan-y, 50%);
+            z-index: 2;
+            width: 118px;
+            height: 118px;
+            opacity: 0;
+            border: 1px solid rgba(255, 35, 92, 0.6);
+            border-radius: 50%;
+            transform: translate(-50%, -50%) scale(0.92);
+            background:
+                linear-gradient(90deg, transparent calc(50% - 1px), rgba(0, 231, 255, 0.65) 50%, transparent calc(50% + 1px)),
+                linear-gradient(0deg, transparent calc(50% - 1px), rgba(255, 42, 169, 0.68) 50%, transparent calc(50% + 1px));
+            box-shadow:
+                inset 0 0 0 1px rgba(0, 231, 255, 0.12),
+                0 0 22px rgba(255, 42, 169, 0.16);
+            mix-blend-mode: screen;
+            transition: opacity 0.16s ease, transform 0.16s ease;
+        }
+
+        body.is-skyler-scanning .skyler-chat-panel::before {
+            --skyler-chat-scan-radius: 280px;
+            opacity: 0.68;
+        }
+
+        body.is-skyler-scanning .skyler-chat-panel::after {
+            opacity: 0.34;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .skyler-context-toggle {
+            display: none;
+        }
+
+        .skyler-chat-top {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            padding: 18px 20px;
+            border-bottom: 1px solid var(--skyler-line);
+            background: rgba(13, 10, 22, 0.92);
+        }
+
+        .skyler-chat-heading {
+            min-width: 0;
+        }
+
+        .skyler-chat-heading h2 {
+            margin: 0 0 6px;
+            color: #fff;
+            font-family: 'Poppins', sans-serif;
+            font-size: clamp(1.25rem, 2vw, 1.65rem);
+            line-height: 1.2;
+            text-shadow: 0 0 16px rgba(0, 231, 255, 0.18);
+        }
+
+        .skyler-status-text {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            min-height: 20px;
+            color: #c1d7e8;
+            font-size: 0.86rem;
+            line-height: 1.4;
+        }
+
+        .skyler-status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--skyler-cyan);
+            box-shadow: 0 0 0 4px rgba(0, 231, 255, 0.13), 0 0 16px rgba(255, 42, 169, 0.24);
+            flex: 0 0 auto;
+        }
+
+        .skyler-toolbar {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        body.skyler-page .skyler-tool-btn {
+            min-height: 38px;
+            padding: 0 12px;
+            font-size: 0.84rem;
+            font-weight: 700;
+        }
+
+        body.skyler-page .skyler-tool-btn.is-active {
+            border-color: rgba(255, 42, 169, 0.5) !important;
+            background: rgba(255, 42, 169, 0.13) !important;
+            color: #ffd7f2 !important;
+        }
+
+        .chat-log {
+            position: relative;
+            z-index: 1;
+            flex: 1;
+            min-height: 0;
+            border: 0;
+            background:
+                repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.025) 0 1px, transparent 1px 9px),
+                linear-gradient(180deg, rgba(255, 42, 169, 0.035), transparent 28%),
+                rgba(7, 7, 13, 0.78);
+            overflow: auto;
+            padding: 22px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            user-select: text;
+        }
+
+        .chat-card {
+            width: fit-content;
+            max-width: min(76ch, 84%);
+            border: 1px solid #292929;
+            border-radius: 8px;
+            padding: 11px 13px;
+            color: #edf3f5;
+            user-select: text;
+        }
+
+        .chat-card-user {
+            align-self: flex-end;
+            border-color: rgba(102, 224, 255, 0.34);
+            background: linear-gradient(135deg, rgba(0, 231, 255, 0.12), rgba(255, 42, 169, 0.1));
+        }
+
+        .chat-card-assistant {
+            align-self: flex-start;
+            border-color: rgba(138, 92, 255, 0.24);
+            background: rgba(17, 14, 27, 0.94);
+        }
+
+        .chat-card-content {
+            margin-top: 5px;
+            color: #dfe7eb;
+            line-height: 1.58;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .chat-card-assistant .chat-card-content {
+            white-space: normal;
+        }
+
+        .skyler-composer {
+            position: relative;
+            z-index: 1;
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto;
+            gap: 10px;
+            align-items: end;
+            padding: 16px;
+            border-top: 1px solid var(--skyler-line);
+            background: rgba(13, 10, 22, 0.94);
+        }
+
+        .skyler-input-wrap {
+            min-width: 0;
+            border: 1px solid rgba(0, 231, 255, 0.16);
+            border-radius: 8px;
+            background: rgba(5, 5, 10, 0.94);
+            overflow: hidden;
+        }
+
+        .skyler-input-wrap:focus-within {
+            border-color: rgba(255, 42, 169, 0.64);
+            box-shadow: 0 0 0 2px rgba(255, 42, 169, 0.08);
+        }
+
+        #chat-input {
+            width: 100%;
+            min-height: 54px;
+            height: 54px;
+            max-height: 170px;
+            resize: none;
+            border: 0;
+            outline: 0;
+            background: transparent;
+            color: #f3f7f8;
+            padding: 15px 14px;
+            font: inherit;
+            line-height: 1.45;
+            display: block;
+        }
+
+        #chat-input::placeholder {
+            color: #7e898f;
+        }
+
+        body.skyler-page .skyler-send-btn {
+            width: 54px;
+            min-width: 54px;
+            min-height: 54px;
+            padding: 0;
+            border-color: transparent !important;
+            background: linear-gradient(135deg, var(--skyler-cyan), var(--skyler-pink)) !important;
+            color: #050510 !important;
+            font-weight: 800;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        body.skyler-page .skyler-send-icon {
+            width: 22px;
+            height: 22px;
+            stroke: currentColor;
+            stroke-width: 2.6;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            fill: none;
+        }
+
+        body.skyler-page .skyler-send-btn:disabled,
+        body.skyler-page .skyler-tool-btn:disabled {
+            opacity: 0.54;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .skyler-inline-link {
+            color: #66e0ff;
+            text-decoration: underline;
+            word-break: break-all;
+        }
+
+        .skyler-inline-link:hover {
+            color: #a8efff;
+        }
+
+        .skyler-action-btns {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 7px;
+            margin-top: 11px;
+            white-space: normal;
+        }
+
+        .skyler-action-btn {
+            display: inline-flex;
+            align-items: center;
+            min-height: 32px;
+            padding: 0 11px;
+            border: 1px solid rgba(102, 224, 255, 0.32);
+            border-radius: 8px;
+            background: rgba(255, 42, 169, 0.09);
+            color: #ffa7e4;
+            font-size: 0.82rem;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .skyler-action-btn:hover {
+            border-color: rgba(0, 231, 255, 0.62);
+            background: rgba(0, 231, 255, 0.12);
+            color: #d7f8ff;
+        }
+
+        .chat-card-content strong {
+            font-weight: 800;
+            color: #fff;
+        }
+
+        .chat-card-content em {
+            font-style: italic;
+        }
+
+        .chat-card-content del {
+            opacity: 0.72;
+            text-decoration: line-through;
+        }
+
+        .chat-card-content .skyler-heading {
+            display: block;
+            margin: 4px 0 6px;
+            font-weight: 800;
+            color: #fff;
+        }
+
+        .chat-card-content code.skyler-code {
+            padding: 2px 5px;
+            border-radius: 4px;
+            background: rgba(255, 42, 169, 0.13);
+            color: #ffb8eb;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 0.86em;
+        }
+
+        .chat-card-content pre.skyler-pre {
+            margin: 9px 0;
+            padding: 10px 12px;
+            border: 1px solid rgba(0, 231, 255, 0.18);
+            border-radius: 8px;
+            background: rgba(5, 5, 10, 0.92);
+            overflow-x: auto;
+            white-space: pre;
+        }
+
+        .chat-card-content pre.skyler-pre code {
+            padding: 0;
+            background: none;
+            color: #e9eff1;
+        }
+
+        .chat-card-content ul.skyler-ul,
+        .chat-card-content ol.skyler-ol {
+            margin: 7px 0 7px 19px;
+            padding: 0;
+        }
+
+        .chat-card-content li {
+            margin-bottom: 4px;
+        }
+
+        @media (max-width: 980px) {
+            .skyler-shell {
+                width: min(100% - 20px, 760px);
+                min-height: calc(100dvh - 92px);
+                margin-top: 72px;
+            }
+
+            .skyler-app {
+                display: block;
+            }
+
+            .skyler-presence {
+                position: fixed;
+                left: 10px;
+                top: 10px;
+                z-index: 9997;
+                width: min(320px, calc(100vw - 56px));
+                max-height: calc(100dvh - 20px);
+                overflow-y: auto;
+                transform: translateX(calc(-100% - 18px));
+                transition: transform 0.22s ease;
+            }
+
+            body.is-skyler-context-open .skyler-presence {
+                transform: translateX(0);
+            }
+
+            .skyler-chat-panel {
+                height: calc(100dvh - 92px);
+                min-height: 0;
+            }
+
+            .skyler-context-toggle {
+                position: fixed;
+                left: 8px;
+                top: 50%;
+                z-index: 9998;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                width: 40px;
+                height: 58px;
+                border: 1px solid rgba(255, 42, 169, 0.42) !important;
+                border-radius: 0 8px 8px 0 !important;
+                background: rgba(16, 13, 25, 0.96) !important;
+                color: var(--skyler-pink) !important;
+                font: 800 1.4rem/1 'Inter', sans-serif;
+                cursor: pointer;
+                transform: translateY(-50%);
+                box-shadow: 0 14px 36px rgba(0, 0, 0, 0.34);
+                transition: left 0.22s ease, background 0.2s ease, color 0.2s ease;
+            }
+
+            .skyler-context-toggle:hover {
+                background: rgba(26, 17, 36, 0.98) !important;
+                color: var(--skyler-cyan-soft) !important;
+            }
+
+            body.is-skyler-context-open .skyler-context-toggle {
+                left: min(328px, calc(100vw - 48px));
+            }
+        }
+
+        @media (max-width: 640px) {
+            .skyler-shell {
+                width: calc(100% - 20px);
+                margin: 72px auto 28px;
+            }
+
+            .skyler-presence,
+            .skyler-chat-top,
+            .chat-log,
+            .skyler-composer {
+                padding: 14px;
+            }
+
+            .skyler-brand {
+                align-items: flex-start;
+            }
+
+            .skyler-avatar {
+                width: 68px;
+                height: 68px;
+            }
+
+            .skyler-chat-top {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .skyler-toolbar {
+                width: 100%;
+                justify-content: flex-start;
+            }
+
+            .chat-card {
+                max-width: 94%;
+            }
+
+            .skyler-composer {
+                grid-template-columns: 1fr;
+            }
+
+            body.skyler-page .skyler-send-btn {
+                width: 100%;
+            }
+        }
+
+        @keyframes skylerThreatGrid {
+            from {
+                background-position: 0 0, 0 0;
+            }
+
+            to {
+                background-position: 0 144px, 144px 0;
+            }
+        }
+
+        @keyframes skylerThreatHorizon {
+            0% {
+                transform: translate3d(-1.5%, 0, 0) scaleY(0.9);
+                background-position: 0% 50%, 0 0;
+            }
+
+            100% {
+                transform: translate3d(1.5%, 0, 0) scaleY(1.08);
+                background-position: 100% 50%, 84px 0;
+            }
+        }
+
+        @media (max-width: 1024px), (hover: none), (pointer: coarse) {
+            .skyler-threat-reveal,
+            .skyler-threat-reticle {
+                display: none;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .skyler-threat-field::before,
+            .skyler-threat-horizon {
+                animation: none;
+            }
+
+            .skyler-threat-reveal,
+            .skyler-threat-reticle {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body class="blog-layout seo-layout skyler-page">
+    <div id="breaker"></div>
+    <div id="breaker-two"></div>
+    <div class="skyler-threat-field" aria-hidden="true">
+        <div class="skyler-threat-horizon"></div>
+        <div class="skyler-threat-reveal"></div>
+        <div class="skyler-threat-reticle"></div>
+    </div>
+    <div id="all">
+        <div class="cursor"></div>
+
+        <div id="navigation-content" role="navigation" aria-label="Navegação primária">
+            <div class="logo"></div>
+            <div class="navigation-links">
+                <a href="/pt/" data-text="INÍCIO" id="home-link">INÍCIO</a>
+                <a href="/pt/sobre/" data-text="SOBRE" id="about-link">SOBRE</a>
+                <a href="/pt/projetos/" data-text="PROJETOS" id="projects-link">PROJETOS</a>
+                <a href="/pt/blog/" data-text="BLOG" id="blog-link">BLOG</a>
+            </div>
+        </div>
+
+        <div id="navigation-bar">
+            <div class="menubar" aria-label="Alternar navegação" role="button" tabindex="0">
+                <span class="first-span"></span>
+                <span class="second-span"></span>
+                <span class="third-span"></span>
+            </div>
+        </div>
+
+        <main class="skyler-shell" role="main" aria-label="Skyler assistente">
+            <input id="api-base" type="hidden" value="https://api.pklavc.com">
+            <input id="stream-toggle" type="checkbox" checked hidden aria-hidden="true">
+            <button id="skyler-context-toggle" class="skyler-context-toggle" type="button" aria-controls="skyler-context-panel" aria-expanded="false" aria-label="Abra o menu de contexto Skyler">></button>
+
+            <section class="skyler-app">
+                <aside id="skyler-context-panel" class="skyler-panel skyler-presence" aria-label="Skyler contexto">
+                    <div>
+                        <div class="skyler-brand">
+                            <img class="skyler-avatar" src="/images/icon_skyler.webp?v=4b80b918a0" alt="Skyler" width="92" height="92" loading="eager" decoding="async">
+                            <div>
+                                <span class="skyler-eyebrow">IA de portfólio</span>
+                                <h1>Skyler</h1>
+                            </div>
+                        </div>
+                        <p class="skyler-lede">Pergunte sobre o trabalho de backend, integrações, automação, arquitetura e compensações do projeto de Patrick.</p>
+                        <p id="upload-status" class="skyler-system-note">Contexto do portfólio online.</p>
+                    </div>
+
+                    <div class="skyler-prompt-group" aria-label="Solicitações sugeridas">
+                        <span class="skyler-section-label">Tente perguntar</span>
+                        <div class="skyler-prompt-list">
+                            <button class="skyler-prompt-chip" type="button" data-prompt="What projects best show Patrick's backend architecture experience?">Melhores projetos de arquitetura</button>
+                            <button class="skyler-prompt-chip" type="button" data-prompt="Summarize Patrick's experience with API integrations and automation.">API resumo de integrações</button>
+                            <button class="skyler-prompt-chip" type="button" data-prompt="Which stack would Patrick use for a scalable worker or ETL pipeline?">Pilha para pipelines de trabalho</button>
+                            <button class="skyler-prompt-chip" type="button" data-prompt="Share links to Patrick's strongest backend projects.">Links do projeto de backend</button>
+                        </div>
+                    </div>
+
+                    <div class="skyler-link-row" aria-label="Links relacionados">
+                        <a href="/pt/projetos/skyler-assistant/">Detalhes do projeto</a>
+                        <a href="/pt/projetos/">Projetos</a>
+                        <a href="/pt/sobre/">Sobre</a>
+                    </div>
+                </aside>
+
+                <section class="skyler-panel skyler-chat-panel" aria-label="Conversar com Skyler">
+                    <header class="skyler-chat-top">
+                        <div class="skyler-chat-heading">
+                            <h2>Fale com Skyler</h2>
+                            <p id="auth-status" class="skyler-status-text"><span class="skyler-status-dot" aria-hidden="true"></span>Pronto para perguntas sobre portfólio.</p>
+                        </div>
+                        <div class="skyler-toolbar" aria-label="Controles de conversa">
+                            <button id="voice-input-btn" class="skyler-tool-btn" type="button">Entrada de voz</button>
+                            <button id="voice-toggle" class="skyler-tool-btn" type="button" aria-pressed="false">Voz desligada</button>
+                            <button id="reset-btn" class="skyler-tool-btn" type="button">Redefinir</button>
+                        </div>
+                    </header>
+
+                    <div id="chat-log" class="chat-log" aria-live="polite"></div>
+
+                    <form id="chat-form" class="skyler-composer">
+                        <div class="skyler-input-wrap">
+                            <label class="visually-hidden" for="chat-input">Mensagem</label>
+                            <textarea id="chat-input" placeholder="Pergunte sobre projetos, empresas, cursos, arquitetura ou trabalhos de backend..."></textarea>
+                        </div>
+                        <button id="send-btn" class="skyler-send-btn" type="submit" aria-label="Enviar mensagem" title="Enviar mensagem"><svg class="skyler-send-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h8"></path><path d="m12 5 7 7-7 7"></path></svg></button>
+                    </form>
+                </section>
+            </section>
+        </main>
+    </div>
+
+    <footer class="footer-minimal">
+        <div class="footer-container">
+            <div class="footer-link-list" aria-label="Links de rodapé">
+                <a class="footer-link-pill" href="https://github.com/PkLavc" target="_blank" rel="noopener noreferrer">GitHub</a>
+                <a class="footer-link-pill" href="https://www.linkedin.com/in/pklavc/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+                <a class="footer-link-pill" href="mailto:contact@pklavc.com">E-mail</a>
+                <a class="footer-link-pill footer-link-pill-accent" href="/pt/projetos/skyler-assistant/">Detalhes do projeto</a>
+            </div>
+            <p>
+                © <span data-current-year></span> Patrick Araujo
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        (function() {
+            document.querySelectorAll('[data-current-year]').forEach(function(node) {
+                node.textContent = String(new Date().getFullYear());
+            });
+        }());
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+        <script src="/js/i18n.js?v=cc3ee695f1" defer></script>
+    <script src="/js/jquery.min.js?v=d482871a5e" defer></script>
+    <script src="/js/index.js?v=0b108f99d1" defer></script>
+    <script src="/js/testing-chat.js?v=c5c8cacc5f" defer></script>
+</body>
+</html>

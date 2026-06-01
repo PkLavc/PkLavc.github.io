@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="PkLavc" />
+    <title>CodePulse Monorepo | Projeto Vanilla JavaScript | Patrick Araujo</title>
+    
+    <!-- SEO Enhanced Meta Tags -->
+    <meta name="description" content="Node.js projeto de engenharia de backend para execução de código APIs, fluxos de trabalho de CI e controles de qualidade de automação em um monorepo de alto desempenho.">
+        <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="CodePulse Monorepo | Baunilha JavaScript | Patrick Araujo">
+    <meta property="og:description" content="Node.js projeto de engenharia de backend para execução de código APIs, fluxos de trabalho de CI e controles de qualidade de automação em um monorepo de alto desempenho.">
+    <meta property="og:url" content="https://pklavc.com/pt/projetos/codepulse-monorepo/">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://pklavc.com/projects/codepulse-monorepo/assets/codepulse-online-compiler-ide.webp?v=25c14b6d62">
+    <meta property="og:image:width" content="1280">
+    <meta property="og:image:height" content="720">
+    <meta property="og:image:alt" content="CodePulse interface IDE do compilador online com editor de código e espaço de trabalho de execução">
+    <meta property="og:site_name" content="Patrick Araujo">
+    <meta property="og:locale" content="pt_BR">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="CodePulse Monorepo | Baunilha JavaScript | Patrick Araujo">
+    <meta name="twitter:description" content="Node.js projeto de engenharia de backend para execução de código APIs, fluxos de trabalho de CI e controles de qualidade de automação em um monorepo de alto desempenho.">
+    <meta name="twitter:image" content="https://pklavc.com/projects/codepulse-monorepo/assets/codepulse-online-compiler-ide.webp?v=25c14b6d62">
+    <meta name="twitter:image:alt" content="CodePulse interface IDE do compilador online com editor de código e espaço de trabalho de execução">
+    <meta name="twitter:site" content="@PkLavc">
+    <meta name="twitter:creator" content="@PkLavc">
+    
+    <link rel="canonical" href="https://pklavc.com/pt/projetos/codepulse-monorepo/">
+    <link rel="alternate" href="https://pklavc.com/projects/codepulse-monorepo/" hreflang="en">
+    <link rel="alternate" href="https://pklavc.com/pt/projetos/codepulse-monorepo/" hreflang="pt-BR">
+    <link rel="alternate" href="https://pklavc.com/es/proyectos/codepulse-monorepo/" hreflang="es">
+    <link rel="alternate" href="https://pklavc.com/projects/codepulse-monorepo/" hreflang="x-default">
+
+
+
+<meta name="robots" content="index, follow">
+<!-- JSON-LD Schema: Person -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Patrick Araujo",
+        "jobTitle": "Backend Software Engineer",
+        "url": "https://pklavc.com",
+        "image": "https://pklavc.com/images/lavc.webp?v=5e84850f26",
+        "sameAs": [
+            "https://github.com/PkLavc",
+            "https://www.linkedin.com/in/pklavc/"
+        ],
+        "description": "Specialist in backend automation, API integration, and scalable system architecture"
+    }
+    </script>
+    
+    <!-- JSON-LD Schema: Article -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": "CodePulse Monorepo | Vanilla JavaScript",
+        "description": "CodePulse Monorepo built with Vanilla JavaScript. High-performance online IDE built as a standalone HTML application with robust Node.js backend and 85%+ QA coverage",
+        "image": "https://pklavc.com/projects/codepulse-monorepo/assets/codepulse-online-compiler-ide.webp?v=25c14b6d62",
+        "author": {
+            "@type": "Person",
+            "name": "Patrick Araujo"
+        },
+        "mainEntityOfPage": "https://pklavc.com/pt/projetos/codepulse-monorepo/",
+        "url": "https://pklavc.com/pt/projetos/codepulse-monorepo/",
+        "keywords": "Patrick Araujo, Backend Software Engineer, Vanilla JavaScript, CodePulse Monorepo"
+    }
+    </script>
+    
+    <!-- JSON-LD Schema: BreadcrumbList -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "https://pklavc.com/"
+            },
+            {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Projects",
+                "item": "https://pklavc.com/pt/projetos/"
+            },
+            {
+                "@type": "ListItem",
+                "position": 3,
+                "name": "CodePulse Monorepo",
+                "item": "https://pklavc.com/pt/projetos/codepulse-monorepo/"
+            }
+        ]
+    }
+    </script>
+    <link rel="icon" type="image/svg+xml" href="https://pklavc.com/images/favicon.svg?v=d15fe4e492">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Monoton&amp;family=Poppins:wght@500&amp;family=Raleway:wght@300&amp;display=swap" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Monoton&amp;family=Poppins:wght@500&amp;family=Raleway:wght@300&amp;display=swap"></noscript>
+    <link rel="stylesheet" href="/css/global.css?v=55251d9722">
+    <link rel="stylesheet" href="/css/projects.css?v=84c54fcc24">
+    <style>
+        .project-hero { padding: 60px 20px; text-align: center; background: linear-gradient(135deg, rgba(0,0,0,0.1), rgba(0,0,0,0.05)); }
+        .project-hero h1 { font-size: 2.5rem; margin: 20px 0; color: #fff; }
+        .project-category-badge { display: inline-block; background: rgba(100, 200, 255, 0.2); border: 1px solid rgba(100, 200, 255, 0.5); color: #64c8ff; padding: 8px 16px; border-radius: 20px; font-size: 0.9rem; margin-bottom: 20px; }
+        .tech-stack-section { padding: 40px 20px; background: rgba(255, 255, 255, 0.02); }
+        .tech-stack-section h2 { color: #fff; margin-bottom: 20px; font-size: 1.5rem; }
+        .tech-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 40px; }
+        .tech-tag { background: rgba(100, 200, 255, 0.1); border: 1px solid rgba(100, 200, 255, 0.3); color: #64c8ff; padding: 12px 16px; border-radius: 8px; text-align: center; font-size: 0.95rem; }
+        .problem-solution { padding: 40px 20px; max-width: 800px; margin: 0 auto; }
+        .problem-solution h2 { color: #fff; margin: 30px 0 20px 0; font-size: 1.3rem; }
+        .problem-solution p { color: #ccc; line-height: 1.8; margin-bottom: 20px; }
+        .impact-section { padding: 40px 20px; background: rgba(100, 200, 255, 0.05); text-align: center; }
+        .impact-section h2 { color: #fff; margin-bottom: 20px; font-size: 1.3rem; }
+        .impact-text { color: #64c8ff; font-size: 1.1rem; margin: 20px 0; font-weight: 500; }
+        .cta-section { padding: 60px 20px; text-align: center; }
+        .cta-buttons { display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; }
+        .cta-button { display: inline-block; background: linear-gradient(135deg, #64c8ff, #00d4ff); color: #000; padding: 16px 40px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 1rem; transition: transform 0.3s, box-shadow 0.3s; border: none; cursor: pointer; }
+        .cta-button:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(100, 200, 255, 0.3); }
+        .breadcrumb-nav {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 12px 20px;
+            margin-bottom: 30px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .breadcrumb {
+            list-style: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0;
+            font-size: 0.95rem;
+            color: #A0A0A0;
+        }
+        .breadcrumb li {
+            display: flex;
+            align-items: center;
+        }
+        .breadcrumb li:not(:last-child)::after {
+            content: "/";
+            margin-left: 8px;
+            font-size: 0.8rem;
+            color: #666;
+        }
+        .breadcrumb a {
+            color: #4A9EFF;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        .breadcrumb a:hover {
+            color: #64c8ff;
+            text-decoration: underline;
+        }
+        .breadcrumb [aria-current="page"] {
+            color: #E0E0E0;
+            font-weight: 500;
+        }
+            .full-readme-section { padding: 50px 20px; background: rgba(255, 255, 255, 0.02); }
+        .full-readme-container { max-width: 1000px; margin: 0 auto; }
+        .full-readme-container .markdown-body { background: #0d1117; border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 10px; padding: 24px; }
+            .project-context-section { padding: 32px 20px; background: rgba(100, 200, 255, 0.06); }
+        .project-context-container { max-width: 1000px; margin: 0 auto; }
+        .project-context-section h2, .project-context-section h3, .related-projects-section h2 { color: #fff; }
+        .project-context-section p, .project-context-section li, .related-projects-section p, .related-projects-section li { color: #d0d0d0; line-height: 1.7; }
+        .project-context-section a, .related-projects-section a { color: #64c8ff; }
+        .related-projects-section { padding: 32px 20px; background: rgba(255, 255, 255, 0.03); }
+        .project-visual-section { padding: 34px 20px; background: rgba(255, 255, 255, 0.02); }
+        .project-visual-container { max-width: 1000px; margin: 0 auto; }
+        .project-visual-frame {
+            margin: 0;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 10px;
+            overflow: hidden;
+            background: #0d1117;
+        }
+        .project-visual-frame img {
+            display: block;
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+        }
+        .project-visual-frame figcaption {
+            padding: 12px 14px;
+            color: #bfcbd3;
+            line-height: 1.6;
+            font-size: 0.95rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+    </style>
+    <link rel="preload" as="style" href="/css/github-markdown-local.css?v=01d37f05ee">
+    <link rel="stylesheet" href="/css/github-markdown-local.css?v=01d37f05ee" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="/css/github-markdown-local.css?v=01d37f05ee"></noscript>
+</head>
+<body>
+    <div id="breaker"></div>
+    <div id="breaker-two"></div>
+    <div id="all">
+        <div id="navigation-content" role="navigation" aria-label="Navegação primária">
+            <div class="logo"></div>
+            <div class="navigation-links">
+                <a href="/pt/" data-text="INÍCIO">INÍCIO</a>
+                <a href="/pt/sobre/" data-text="SOBRE">SOBRE</a>
+                <a href="/pt/projetos/" data-text="PROJETOS">PROJETOS</a>
+            </div>
+        </div>
+        <div id="navigation-bar">
+            <div class="menubar">
+                <span class="first-span"></span>
+                <span class="second-span"></span>
+                <span class="third-span"></span>
+            </div>
+        </div>
+        
+        <main role="main">
+            <section class="project-hero">
+                <span class="project-category-badge">Engenharia Full Stack</span>
+                <div class="project-hero-title">
+                    <img src="/images/codepulse_monorepo.webp?v=f437c47931" alt="" class="project-hero-logo" width="76" height="76" loading="eager" decoding="async">
+                    <h1>CodePulse Monorepo | Baunilha JavaScript</h1>
+                </div>
+                <p style="color: #aaa; font-size: 1.1rem; margin-top: 15px;">IDE on-line de alto desempenho desenvolvido como um aplicativo HTML independente com backend robusto Node.js e cobertura de controle de qualidade superior a 85%</p>
+            </section>
+
+            <section class="project-visual-section" aria-label="CodePulse captura de tela da interface">
+                <div class="project-visual-container">
+                    <figure class="project-visual-frame">
+                        <img src="/projects/codepulse-monorepo/assets/codepulse-online-compiler-ide.webp?v=25c14b6d62" width="1280" height="720" alt="CodePulse interface IDE do compilador online mostrando o editor de código, controles de execução de linguagem e espaço de trabalho de saída" loading="eager" decoding="async">
+                        <figcaption>CodePulse empacota uma experiência IDE de navegador com uma execução Node.js API, tornando o fluxo de trabalho de front-end, backend e controle de qualidade visível como uma superfície de produto monorepo.</figcaption>
+                    </figure>
+                </div>
+            </section>
+
+            <section class="project-context-section" aria-label="Contexto de SEO do projeto"><div class="project-context-container"><h2>Contexto do problema, pilha e tipo de sistema</h2><p>Este projeto demonstra padrões de engenharia de backend node.js em uma configuração monorepo com execução APIs e fluxos de trabalho de automação de qualidade, incluindo cobertura de teste e comportamento de CI.</p><h3>Escopo Técnico</h3><ul><li><strong>Pilha:</strong> JavaScript, Node.js, Fastify, Playwright, fluxos de trabalho de CI</li><li><strong>Tipo de sistema:</strong> backend da API node.js, sistema de automação, pipeline de entrega</li><li><strong>Palavras-chave no contexto:</strong> desenvolvedor javascript, backend node.js, automação</li></ul><p>Projetos de backend relacionados: <a href="/pt/projetos/multi-tenant-saas-platform/">Multi-Tenant SaaS Platform</a> e <a href="/pt/projetos/event-driven-integration-service/">Event-Driven Integration Service</a>.</p></div></section>
+            <section class="full-readme-section" aria-label="LEIA-ME completo">
+                <div class="full-readme-container">
+                    <h2 style="color: #fff; margin-bottom: 20px;">Documentação completa do projeto</h2>
+                    <article class="markdown-body">
+<h2>CodePulse: Mecanismo de execução de código de alto desempenho</h2><p><a href="https://github.com/PkLavc/codepulse-monorepo"><img src="https://img.shields.io/badge/Source-GitHub-black?logo=github" alt="Código Fonte"></a>
+<a href="https://pklavc.com/pt/projetos/"><img src="https://img.shields.io/badge/Portfolio-Projects-0A66C2?logo=google-chrome&amp;logoColor=white" alt="Portfólio"></a>
+<a href="https://github.com/PkLavc"><img src="https://img.shields.io/badge/Author-Patrick_Araujo-1f2937" alt="Autor"></a></p>
+<p><strong>Um Monorepo profissional com front-end HTML independente, backend Node.js, testes E2E e alta cobertura de controle de qualidade</strong></p>
+<!-- ci-trigger: validate GlotService fixes -->
+<p><a href="https://github.com/PkLavc/codepulse-monorepo/actions"><img src="https://github.com/PkLavc/codepulse-monorepo/workflows/Deploy%20to%20GitHub%20Pages/badge.svg" alt="Pipeline de CI/CD"></a>
+<a href="https://codecov.io/gh/PkLavc/codepulse-monorepo"><img src="https://codecov.io/gh/PkLavc/codepulse-monorepo/branch/main/graph/badge.svg" alt="Cobertura CodeCov"></a>
+<a href="https://github.com/PkLavc/codepulse-monorepo/tree/main/frontend"><img src="https://img.shields.io/badge/Frontend-HTML%20%2B%20CSS%20%2B%20JS-blue" alt="Interface: HTML + CSS + JavaScript"></a>
+<a href="https://github.com/PkLavc/codepulse-monorepo/tree/main/backend"><img src="https://img.shields.io/badge/Backend-Node.js%20%2B%20Fastify-blue" alt="Backend: Node.js + Fastify"></a>
+<a href="https://github.com/PkLavc/codepulse-monorepo#testing--qa"><img src="https://img.shields.io/badge/E2E%20Tests-Playwright-purple" alt="Testes E2E: Dramaturgo"></a>
+<a href="https://github.com/PkLavc/codepulse-monorepo#license"><img src="https://img.shields.io/badge/License-MIT-yellow" alt="Licença: MIT"></a></p>
+<h2>Visão geral do projeto</h2>
+<p>CodePulse é um monorepo de nível profissional que apresenta excelência em engenharia de software com:</p>
+<ul>
+<li><strong>Interface</strong>: Aplicativo HTML autônomo com CSS/JavaScript (interface semelhante a IDE)</li>
+<li><strong>Backend</strong>: Cloudflare Workers com TypeScript (serviço de computação de borda)</li>
+<li><strong>Execução de Código</strong>: Arquitetura híbrida baseada 100% na infraestrutura Cloudflare onde JavaScript é executado nativamente no Edge através de Workers e outras linguagens utilizam simulação determinística de IA via Cloudflare Workers IA com temperatura zero</li>
+<li><strong>Assistente de IA</strong>: Editor inteligente com assistente de IA integrado que analisa o código do usuário para ajustar automaticamente problemas de recuo, erros de sintaxe e erros de digitação de variáveis</li>
+<li><strong>Teste</strong>: Vitest (unidade), Playwright (e2e), infraestrutura de teste abrangente</li>
+<li><strong>CI/CD</strong>: GitHub Actions com testes automatizados, linting e implantações</li>
+<li><strong>Implantação</strong>: GitHub Páginas (front-end) + Cloudflare Workers (backend)</li>
+</ul>
+<h3>Excelência em engenharia e vitrine profissional</h3>
+<table>
+<thead>
+<tr>
+<th align="left">Recurso</th>
+<th align="left">Implementação</th>
+<th align="left">Impacto na indústria</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>Altos padrões de controle de qualidade</strong></td>
+<td align="left">Mais de 85% de cobertura e testes E2E</td>
+<td align="left">Reduz defeitos de software e custos de manutenção</td>
+</tr>
+<tr>
+<td align="left"><strong>Automação primeiro</strong></td>
+<td align="left">CI/CD completo (GitHub Actions)</td>
+<td align="left">Acelera o tempo de colocação no mercado de soluções digitais</td>
+</tr>
+<tr>
+<td align="left"><strong>Monorepo escalável</strong></td>
+<td align="left">Espaços de trabalho de fios + TypeScript</td>
+<td align="left">Demonstra o gerenciamento de sistemas empresariais complexos</td>
+</tr>
+<tr>
+<td align="left"><strong>Nativo da nuvem</strong></td>
+<td align="left">Cloudflare Workers + IA de trabalhadores</td>
+<td align="left">Apresenta computação moderna sem servidor e integração de IA</td>
+</tr>
+</tbody></table>
+<h2>Implantação e Integração</h2>
+<h3>Configuração de implantação</h3>
+<h4>Backend (Cloudflare Workers)</h4>
+<ul>
+<li>Implantação automática via GitHub Actions</li>
+<li>JavaScript execução nativamente no Edge via Workers</li>
+<li>Simulação determinística de IA para Python, Java, C++ via Cloudflare Workers AI com temperatura zero</li>
+<li>Arquitetura de ponta para latência mínima</li>
+</ul>
+<h4>Front-end (GitHub páginas)</h4>
+<ul>
+<li>Implantação direta via GitHub Actions</li>
+<li>Hospedado em <code>https://pklavc.com/codepulse-monorepo</code></li>
+<li>Nenhum processo de construção necessário (HTML independente)</li>
+</ul>
+<h2>Pilha de tecnologia</h2>
+<table>
+<thead>
+<tr>
+<th>Camada</th>
+<th>Tecnologia</th>
+<th>Versão</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Interface</strong></td>
+<td>HTML5 / CSS3 / Vanilla JS (autônomo)</td>
+<td>Moderno</td>
+</tr>
+<tr>
+<td></td>
+<td>Partícula.js</td>
+<td>Mais recente</td>
+</tr>
+<tr>
+<td><strong>Backend</strong></td>
+<td>Node.js</td>
+<td>20.x</td>
+</tr>
+<tr>
+<td></td>
+<td>Fastificar</td>
+<td>4.x</td>
+</tr>
+<tr>
+<td></td>
+<td>TypeScript</td>
+<td>5.x</td>
+</tr>
+<tr>
+<td><strong>Execução de Código</strong></td>
+<td>Glot.io API</td>
+<td>Mais recente</td>
+</tr>
+<tr>
+<td><strong>Teste</strong></td>
+<td>Teste</td>
+<td>Mais recente</td>
+</tr>
+<tr>
+<td></td>
+<td>Dramaturgo</td>
+<td>Mais recente</td>
+</tr>
+<tr>
+<td><strong>CI/CD</strong></td>
+<td>GitHub Actions</td>
+<td>-</td>
+</tr>
+<tr>
+<td><strong>Qualidade do código</strong></td>
+<td>ESLint</td>
+<td>Mais recente</td>
+</tr>
+<tr>
+<td></td>
+<td>Codecov</td>
+<td>-</td>
+</tr>
+</tbody></table>
+<h2>Estrutura do Projeto</h2>
+<h3>Fluxo de interação do sistema</h3>
+<pre><code class="language-mermaid">graph LR
+    A[Frontend: HTML/CSS/JS] --&gt;|API Calls| B[Backend: Fastify/Node]
+    B --&gt;|Glot.io API| C[Code Execution]
+    D[Playwright E2E] --&gt;|Tests| A
+    D --&gt;|Tests| B
+    E[CI/CD Pipeline] --&gt;|Validates| D
+</code></pre>
+<pre><code>codepulse-monorepo/
+|-- frontend/              # Standalone HTML application
+|   |-- index.html         # Main IDE application
+|   |-- src/               # Visual assets (GIFs, Logos, Icons)
+|   |   |-- code.gif
+|   |   |-- doc.gif
+|   |   |-- logo.png
+|   |   |-- play.gif
+|   |   `-- return.gif
+|   |-- package.json
+|   `-- vite.config.ts
+|-- backend/               # Node.js + Fastify API
+|   |-- src/
+|   |   |-- server.ts
+|   |   |-- server.test.ts
+|   |   `-- services/
+|   |       `-- glot.service.ts
+|   |-- package.json
+|   `-- tsconfig.json
+|-- e2e/                   # Playwright end-to-end tests
+|   |-- tests/
+|   |-- package.json
+|   `-- playwright.config.ts
+|-- .github/workflows/     # CI/CD pipelines
+|   `-- ci.yml
+|-- package.json           # Root workspace configuration
+`-- README.md              # This file
+</code></pre>
+<h2>Início rápido</h2>
+<h3>Pré-requisitos</h3>
+<ul>
+<li>Node.js 20.x ou superior</li>
+<li>NPM 9.x ou superior</li>
+</ul>
+<h3>Instalação</h3>
+<pre><code class="language-bash"># Install dependencies across all workspaces
+npm install
+</code></pre>
+<h3>Desenvolvimento</h3>
+<pre><code class="language-bash"># Start backend in development mode
+cd backend &amp;&amp; npm run dev
+
+# Frontend runs directly from index.html (no build required)
+# Open frontend/index.html in browser to test
+</code></pre>
+<h3>Teste</h3>
+<pre><code class="language-bash"># Run all tests
+npm test
+
+# With coverage report
+npm run test:coverage
+
+# E2E tests
+cd e2e &amp;&amp; npm test
+</code></pre>
+<h3>Construir</h3>
+<pre><code class="language-bash"># Build backend only
+cd backend &amp;&amp; npm run build
+
+# Frontend: No build required. The frontend runs as a high-performance standalone HTML application.
+</code></pre>
+<h3>Linting</h3>
+<pre><code class="language-bash"># Lint backend packages
+cd backend &amp;&amp; npm run lint
+
+# Format code
+npm run format
+</code></pre>
+<h2>Teste e controle de qualidade</h2>
+<h3>Teste de front-end</h3>
+<ul>
+<li><strong>Teste Manual</strong>: Teste direto do navegador via <code>frontend/index.html</code></li>
+<li><strong>Nenhuma construção necessária</strong>: Aplicativo HTML independente</li>
+<li><strong>Verificação Visual</strong>: Efeitos de partículas, design responsivo, execução de código</li>
+</ul>
+<h3>Teste de backend</h3>
+<ul>
+<li><strong>Testes unitários</strong>: Vitest com serviços simulados</li>
+<li><strong>Cobertura</strong>: Em desenvolvimento (estrutura básica de teste implementada)</li>
+<li><strong>Configuração</strong>: <code>backend/vitest.config.ts</code></li>
+<li><strong>API Teste</strong>: Acelere os endpoints do servidor e a integração Glot.io</li>
+</ul>
+<h3>Teste E2E</h3>
+<ul>
+<li><strong>Estrutura</strong>: Dramaturgo</li>
+<li><strong>Navegadores</strong>: Cromo, Firefox, WebKit</li>
+<li><strong>Configuração</strong>: <code>e2e/playwright.config.ts</code></li>
+<li><strong>Cenários de teste</strong>: Fluxo de trabalho de execução de código, tratamento de erros, cenários de tempo limite</li>
+</ul>
+<h3>Instantâneo de métricas de controle de qualidade</h3>
+<ul>
+<li><strong>Teste de Unidade</strong>: Vitest (estrutura de teste de backend implementada)</li>
+<li><strong>Teste E2E</strong>: Dramaturgo (verificação entre navegadores)</li>
+<li><strong>Teste Manual</strong>: Funcionalidade IDE de front-end</li>
+<li><strong>Análise Estática</strong>: ESLint + TypeScript (modo estrito)</li>
+<li><strong>Rastreamento Contínuo</strong>: Integração Codecov para regressão de cobertura</li>
+</ul>
+<h2>Execução de Código</h2>
+<p><strong>Suporte multilíngue</strong>: Python, JavaScript, Java, C++, C#, PHP, Go, Ruby</p>
+<p><strong>Fluxo de Execução</strong>:</p>
+<ol>
+<li>O usuário escreve o código na textarea</li>
+<li>Seleciona a linguagem de programação no menu suspenso</li>
+<li>Clica no botão "Executar" ou usa Ctrl+Enter</li>
+<li>Código enviado ao backend via fetch API</li>
+<li>Backend executa código usando Glot.io API</li>
+<li>Resultados exibidos na área de saída</li>
+</ol>
+<h2>Pipeline de CI/CD</h2>
+<h3>Fluxo de trabalho automatizado (<code>.github/workflows/ci.yml</code>)</h3>
+<ol>
+<li><p><strong>Lint e trabalho de teste</strong></p>
+<ul>
+<li>Funciona em: Push to main, solicitações pull</li>
+<li>Node.js versões: 20.x</li>
+<li>Etapas:<ul>
+<li>Código de check-out</li>
+<li>Instalar Node.js</li>
+<li>Instale dependências com NPM</li>
+<li>Execute o ESLint</li>
+<li>Execute testes unitários com cobertura</li>
+<li>Carregar cobertura para Codecov</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>Trabalho de implantação de front-end</strong></p>
+<ul>
+<li>É executado após o sucesso do lint-and-test</li>
+<li>Cópias <code>frontend/</code> diretório diretamente para GitHub páginas</li>
+<li>Nenhum processo de construção necessário (HTML independente)</li>
+<li>Status: [OK] Marca de seleção verde</li>
+</ul>
+</li>
+<li><p><strong>Emblemas de status</strong></p>
+<ul>
+<li>Pipeline CI/CD: Automático de GitHub Actions</li>
+<li>Cobertura de código: da integração Codecov</li>
+</ul>
+</li>
+</ol>
+<h2>Cobertura de código</h2>
+<ul>
+<li><strong>Interface</strong>: Abordagem de teste manual (aplicativo HTML independente)</li>
+<li><strong>Backend</strong>: Infraestrutura de teste implementada (métricas de cobertura a serem implementadas)</li>
+<li><strong>Geral</strong>: Estrutura de teste pronta para implementação de cobertura</li>
+<li>Integração Codecov para rastreamento contínuo</li>
+</ul>
+<h2>API Documentação</h2>
+<p>Pontos de extremidade de backend API:</p>
+<pre><code>GET  /api/health - Health check
+POST /api/execute - Execute code (POST variant)
+</code></pre>
+<h2>Variáveis de ambiente</h2>
+<h3>Backend (.env)</h3>
+<pre><code>NODE_ENV=production
+PORT=3001
+CORE_ALLOWED_ORIGINS=*
+EXECUTION_TIMEOUT=5000
+GLOT_API_URL=https://run.glot.io
+GLOT_API_TOKEN=your_glot_api_token
+</code></pre>
+<h3>Front-end (.env.production)</h3>
+<pre><code>VITE_API_URL=https://codepulse-monorepo-backend.onrender.com
+VITE_APP_NAME=CodePulse
+</code></pre>
+<h2>Documentação</h2>
+<ul>
+<li><strong>Configuração de front-end</strong>: Veja <a href="https://github.com/PkLavc/codepulse-monorepo/tree/main/frontend">espaço de trabalho de front-end</a></li>
+<li><strong>Configuração de backend</strong>: Veja <a href="https://github.com/PkLavc/codepulse-monorepo/tree/main/backend">espaço de trabalho de backend</a></li>
+<li><strong>Testes E2E</strong>: Veja <a href="https://github.com/PkLavc/codepulse-monorepo#testing--qa">notas de teste e controle de qualidade</a></li>
+</ul>
+<h2>Contribuindo</h2>
+<p>Contribuições são bem-vindas! Certifique-se de:</p>
+<ol>
+<li>Todos os testes passam: <code>npm test</code></li>
+<li>O código está lintado: <code>npm run lint</code></li>
+<li>A cobertura é mantida: <code>npm run test:coverage</code></li>
+<li>Mensagens de commit seguem commits convencionais</li>
+<li>As alterações de front-end são testadas manualmente por meio de <code>frontend/index.html</code></li>
+<li>Mudanças de backend mantêm a compatibilidade de integração Glot.io</li>
+</ol>
+<h2>Roteiro</h2>
+<ul>
+<li><input checked="" disabled="" type="checkbox"> <strong>Fase 1</strong>: Motor principal e arquitetura Monorepo</li>
+<li><input checked="" disabled="" type="checkbox"> <strong>Fase 2</strong>: Auditoria de segurança e aplicação de variáveis ambientais</li>
+<li><input disabled="" type="checkbox"> <strong>Fase 3</strong>: Automação n8n e integração PostgreSQL</li>
+<li><input disabled="" type="checkbox"> <strong>Fase 4</strong>: Suporte avançado ao WebContainer para execução local</li>
+</ul>
+<h2>Licença</h2>
+<p>Licença MIT - veja o <a href="https://github.com/PkLavc/codepulse-monorepo#license">notas de licença</a> no repositório para obter detalhes.</p>
+<h2>Segurança e Pesquisa</h2>
+<h3>Marco de segurança 1: concluído [OK]</h3>
+<p><strong>CP-SEC-001: Exposição de token API codificada</strong></p>
+<ul>
+<li><strong>Estado</strong>: [CONCLUÍDO]</li>
+<li><strong>Encontrando</strong>: Token Glot.io API codificado no código-fonte</li>
+<li><strong>Impacto</strong>: Potencial abuso de API e interrupção do serviço</li>
+<li><strong>Mitigação</strong>: credenciais movidas apenas para variáveis de ambiente</li>
+<li><strong>Data</strong>: março de 2026</li>
+</ul>
+<h3>Pesquisa de segurança</h3>
+<p>Este projeto serve como uma plataforma de pesquisa de segurança para:</p>
+<ul>
+<li><strong>Análise Estática (SAST)</strong>: ESLint, TypeScript modo estrito, SonarQube</li>
+<li><strong>Teste Dinâmico (DAST)</strong>: Dramaturgo, OWASP ZAP, roteiros personalizados</li>
+<li><strong>Pesquisa de vulnerabilidade</strong>: RCE, injeção de comando, segurança de contêiner</li>
+<li><strong>Desenvolvimento Seguro</strong>: Implementação e validação de melhores práticas</li>
+</ul>
+<h2>Autor</h2>
+<p><strong>Patrick Araujo - Engenheiro de Computação</strong><br><strong>GitHub</strong>: <a href="https://github.com/PkLavc">https://github.com/PkLavc</a><br><strong>Portfólio</strong>: <a href="https://pklavc.com/pt/projetos/">https://pklavc.com/projects/</a></p>
+<hr>
+<p><em>CodePulse - Uma arquitetura monorepo de alto desempenho para desenvolvimento de aplicativos full-stack modernos.</em> </p>
+<p><a href="https://github.com/sponsors/PkLavc"><img src="https://img.shields.io/badge/Apoiar%20no%20GitHub-%23ea4aaa?style=for-the-badge&amp;logo=github-sponsors&amp;logoColor=white" alt="GitHub Sponsors"></a></p>
+                    </article>
+                </div>
+            </section>
+            
+            <section class="tech-stack-section">
+                <div style="max-width: 1000px; margin: 0 auto;">
+                    <h2>Pilha de tecnologia</h2>
+                    <div class="tech-list">
+                        <div class="tech-tag">Baunilha JavaScript</div>
+                        <div class="tech-tag">Fastificar</div>
+                        <div class="tech-tag">Glot.io</div>
+                        <div class="tech-tag">Dramaturgo</div>
+                        <div class="tech-tag">Node.js</div>
+                    </div>
+                </div>
+            </section>
+
+            
+            
+            <section class="related-projects-section" aria-label="Links de projetos relacionados">
+  <div class="project-context-container">
+    <h2>Projetos de backend relacionados e integrações API</h2>
+    <p>Explore implementações vinculadas em <a href="/pt/colecoes/projetos-python/">automação de backend python</a>, <a href="/pt/colecoes/projetos-javascript/">Fluxos de trabalho da API node.js</a>e <a href="/pt/colecoes/projetos-integracao-api/">sistema de integração de API</a> aglomerados.</p>
+    <ul>
+      <li><a href="/pt/projetos/google-auth-worker/">Google Auth Worker</a> para orquestração de autenticação.</li>
+      <li><a href="/pt/projetos/event-driven-integration-service/">Event-Driven Integration Service</a> para processamento de webhook e arquitetura orientada a eventos.</li>
+      <li><a href="/pt/projetos/zoho-integration-worker/">Zoho Integration Worker</a> para fluxos de trabalho de suporte à automação Zoho Deluge.</li>
+      <li><a href="/pt/projetos/cipher-gate-proxy/">Cipher Gate Proxy</a> para processamento de segurança de backend python.</li>
+    </ul>
+  </div>
+</section>
+            <section class="cta-section">
+                <h2 style="color: #fff; margin-bottom: 30px;">Veja o projeto</h2>
+                <div class="cta-buttons">
+                    <a href="https://github.com/PkLavc/codepulse-monorepo" target="_blank" rel="noopener noreferrer" class="cta-button">
+                        Ver código
+                    </a>
+                    <a href="https://pklavc.com/codepulse-monorepo/" target="_blank" rel="noopener noreferrer nofollow" class="cta-button">
+                        Demonstração ao vivo
+                    </a>
+                </div>
+            </section>
+
+        </main>
+        
+        <footer class="footer-minimal">
+            <div class="footer-container">
+                <div class="footer-link-list" aria-label="Links de rodapé">
+                    <a class="footer-link-pill" href="https://github.com/PkLavc" target="_blank" rel="noopener noreferrer">GitHub</a>
+                    <a class="footer-link-pill" href="https://www.linkedin.com/in/pklavc/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+                    <a class="footer-link-pill" href="mailto:contact@pklavc.com">E-mail</a>
+                    <a class="footer-link-pill footer-link-pill-accent" href="https://github.com/sponsors/PkLavc" target="_blank" rel="noopener noreferrer">Apoiar no GitHub</a>
+                </div>
+                <p>
+                    © <span data-current-year></span> Patrick Araujo
+                </p>
+            </div>
+        </footer>
+    </div>
+    
+    <div class="visually-hidden">
+        <p>Engenheiro de Software Backend com foco em automação, integrações API, sistemas backend, Python, Node.js, SQL, ETL pipelines, AWS e plataformas operacionais escaláveis.</p>
+    </div>
+    
+    <script>
+        (function() {
+            document.querySelectorAll('[data-current-year]').forEach(function(node) {
+                node.textContent = String(new Date().getFullYear());
+            });
+        }());
+    </script>
+        <script src="/js/i18n.js?v=cc3ee695f1" defer></script>
+    <script src="/js/jquery.min.js?v=d482871a5e" defer></script>
+    <script src="/js/index.js?v=0b108f99d1" defer></script>
+</body>
+</html>

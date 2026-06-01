@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Patrick Araujo">
+    <title>Software que controla un Ferrari eléctrico: par, tracción, regeneración, distribución de energía, suspensión y modos de conducción</title>
+    <meta name="description" content="Cómo el software en un vehículo como el Ferrari Luce define la entrega de torque, el control de tracción, el frenado regenerativo, la distribución de potencia entre los motores, la suspensión adaptativa y los modos de conducción configurables: la dinámica del vehículo definida por software de un superdeportivo eléctrico.">
+    <meta name="keywords" content="Ferrari Luce, vehículo definido por software, control de par, control de tracción, frenado regenerativo, distribución de potencia, suspensión adaptativa, modos de conducción, dinámica del vehículo eléctrico, software de control del vehículo">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://pklavc.com/es/blog/ferrari-luce-software-defined-vehicle-dynamics/">
+    <link rel="alternate" href="https://pklavc.com/blog/ferrari-luce-software-defined-vehicle-dynamics/" hreflang="en">
+    <link rel="alternate" href="https://pklavc.com/pt/blog/ferrari-luce-software-defined-vehicle-dynamics/" hreflang="pt-BR">
+    <link rel="alternate" href="https://pklavc.com/es/blog/ferrari-luce-software-defined-vehicle-dynamics/" hreflang="es">
+    <link rel="alternate" href="https://pklavc.com/blog/ferrari-luce-software-defined-vehicle-dynamics/" hreflang="x-default">
+
+
+
+<meta property="og:title" content="Software que controla un Ferrari eléctrico: par, tracción, regeneración y dinámica">
+    <meta property="og:description" content="Cada aspecto de la conducción del Ferrari Luce (par, tracción, frenado, suspensión, modos) se rige por software.">
+    <meta property="og:url" content="https://pklavc.com/es/blog/ferrari-luce-software-defined-vehicle-dynamics/">
+    <meta property="og:type" content="article">
+    <meta property="article:published_time" content="2026-05-28">
+    <meta property="article:modified_time" content="2026-05-28">
+    <meta property="article:author" content="Patrick Araujo">
+    <meta property="article:section" content="Automotive Software Engineering">
+    <meta property="article:tag" content="control de par">
+    <meta property="article:tag" content="control de tracción">
+    <meta property="article:tag" content="frenado regenerativo">
+    <meta property="article:tag" content="dinámica del vehículo">
+    <meta property="og:image" content="https://pklavc.com/images/lavc.webp?v=5e84850f26">
+    <meta property="og:image:width" content="1024">
+    <meta property="og:image:height" content="1024">
+    <meta property="og:site_name" content="Patrick Araujo">
+    <meta property="og:locale" content="es_ES">
+    <meta property="og:image:alt" content="Retrato de marca del ingeniero backend y especialista en automatización Patrick Araujo">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Dinámica de vehículos definida por software en Ferrari Luce">
+    <meta name="twitter:description" content="Par, tracción, regeneración, distribución de potencia, suspensión y modos de conducción, todo controlado por software en un Ferrari eléctrico.">
+    <meta name="twitter:image" content="https://pklavc.com/images/lavc.webp?v=5e84850f26">
+    <meta name="twitter:image:alt" content="Retrato de marca del ingeniero backend y especialista en automatización Patrick Araujo">
+    <meta name="twitter:site" content="@PkLavc">
+    <meta name="twitter:creator" content="@PkLavc">
+
+    <link rel="icon" type="image/svg+xml" href="https://pklavc.com/images/favicon.svg?v=d15fe4e492">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Monoton&amp;family=Poppins:wght@500;600;700&amp;family=Raleway:wght@300&amp;display=swap" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Monoton&amp;family=Poppins:wght@500;600;700&amp;family=Raleway:wght@300&amp;display=swap"></noscript>
+    <link rel="stylesheet" href="/css/global.css?v=55251d9722">
+    <link rel="stylesheet" href="/css/blog.css?v=560c7eaf05">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.2.6/gsap.min.js" defer></script>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@graph": [
+            {
+                "@type": "BlogPosting",
+                "headline": "Software That Controls an Electric Ferrari: Torque, Traction, Regeneration, Power Distribution, Suspension, and Driving Modes",
+                "description": "How software defines torque delivery, traction control, regenerative braking, power distribution, adaptive suspension, and driving modes in a vehicle like the Ferrari Luce.",
+                "image": "https://pklavc.com/images/lavc.webp?v=5e84850f26",
+                "datePublished": "2026-05-28",
+                "dateModified": "2026-05-28",
+                "author": {
+                    "@type": "Person",
+                    "name": "Patrick Araujo"
+                },
+                "publisher": {
+                    "@type": "Person",
+                    "name": "Patrick Araujo"
+                },
+                "mainEntityOfPage": "https://pklavc.com/es/blog/ferrari-luce-software-defined-vehicle-dynamics/",
+                "url": "https://pklavc.com/es/blog/ferrari-luce-software-defined-vehicle-dynamics/",
+                "keywords": [
+                    "ferrari luce dynamics",
+                    "torque control software",
+                    "traction control algorithm",
+                    "regenerative braking",
+                    "power distribution ev",
+                    "adaptive suspension",
+                    "driving modes software",
+                    "software defined vehicle",
+                    "vehicle dynamics control"
+                ]
+            },
+            {
+                "@type": "BreadcrumbList",
+                "itemListElement": [
+                    {
+                        "@type": "ListItem",
+                        "position": 1,
+                        "name": "Home",
+                        "item": "https://pklavc.com/"
+                    },
+                    {
+                        "@type": "ListItem",
+                        "position": 2,
+                        "name": "Blog",
+                        "item": "https://pklavc.com/es/blog/"
+                    },
+                    {
+                        "@type": "ListItem",
+                        "position": 3,
+                        "name": "Software-Defined Vehicle Dynamics",
+                        "item": "https://pklavc.com/es/blog/ferrari-luce-software-defined-vehicle-dynamics/"
+                    }
+                ]
+            }
+        ]
+    }
+    </script>
+</head>
+<body class="blog-layout seo-layout">
+    <div id="breaker"></div>
+    <div id="breaker-two"></div>
+    <div id="all">
+        <div class="cursor"></div>
+        <div id="navigation-content" role="navigation" aria-label="Navegación primaria">
+            <div class="logo"></div>
+            <div class="navigation-links">
+                <a href="/es/" data-text="INICIO" id="home-link">INICIO</a>
+                <a href="/es/sobre/" data-text="SOBRE" id="about-link">SOBRE</a>
+                <a href="/es/proyectos/" data-text="PROYECTOS" id="projects-link">PROYECTOS</a>
+                <a href="/es/blog/" data-text="BLOG" id="blog-link">BLOG</a>
+            </div>
+        </div>
+        <div id="navigation-bar">
+            <div class="menubar">
+                <span class="first-span"></span>
+                <span class="second-span"></span>
+                <span class="third-span"></span>
+            </div>
+        </div>
+
+        <main class="blog-shell" role="main">
+            <div class="blog-columns">
+                <div>
+                    <article class="blog-post-hero">
+                        <div class="blog-breadcrumb" aria-label="Miga de pan">
+                            <a href="/es/">Inicio</a>
+                            <span>/</span>
+                            <a href="/es/blog/">Blog</a>
+                            <span>/</span>
+                            <span aria-current="page">Dinámica del vehículo definida por software</span>
+                        </div>
+                        <span class="blog-kicker">Ingeniería de software automotriz</span>
+                        <h1>Software que controla un Ferrari eléctrico: par, tracción, regeneración, distribución de energía, suspensión y modos de conducción</h1>
+                        <p>En un Ferrari de combustión, la ingeniería mecánica definía el carácter de conducción. En el Ferrari Luce, el software lo define. Cada aspecto de cómo el automóvil acelera, frena, toma curvas y responde a las acciones del conductor se rige por algoritmos que se ejecutan en controladores integrados. El pedal del acelerador no está conectado a un cuerpo del acelerador; envía una señal al software que decide cuánto torque entrega cada motor. Esta publicación explora cómo el software controla la dinámica fundamental de un superdeportivo eléctrico.</p>
+                        <div class="blog-post-meta">
+                            <span>Publicado el 28 de mayo de 2026</span>
+                            <span>13 minutos de lectura</span>
+                            <span>Ingeniería de software automotriz</span>
+                        </div>
+                    </article>
+
+                    <article class="blog-article">
+                        <h2>Control de par: el software como motor</h2>
+                        <p>En un vehículo eléctrico, la entrega de par está totalmente controlada por software. Los motores eléctricos producen un par proporcional a la corriente, y el inversor que suministra esa corriente es comandado por un controlador de motor que ejecuta algoritmos de control orientado a campo (FOC). El conductor presiona el pedal del acelerador, un sensor de posición lee la entrada y el software determina cuánto torque solicitar a cada motor.</p>
+                        <p>Esta intermediación de software es lo que diferencia fundamentalmente a un Ferrari eléctrico de uno de combustión. El mapa del pedal del acelerador (la relación entre la posición del pedal y la salida de par) es una calibración de software. Puede ser lineal, progresivo, agresivo o cualquier forma que elijan los ingenieros. Puede variar según el modo de conducción, la velocidad, el estado de carga de la batería o las condiciones térmicas.</p>
+                        <p>Para el Ferrari Luce con múltiples motores eléctricos, el control del par se convierte en orquestación del par. El software decide no sólo cuánto par total producir, sino también cómo distribuirlo entre los motores. La distribución delantera-trasera afecta la estabilidad y la agilidad. La distribución de izquierda a derecha permite la vectorización del par para tomar curvas más cerradas. La lógica de orquestación se ejecuta a frecuencias de kilohercios, ajustando continuamente la distribución en función de la retroalimentación del sensor.</p>
+                        <p>La precisión del control del par eléctrico es algo que los motores de combustión no pueden igualar. Un motor de combustión tiene inercia rotacional, retrasos en la combustión y vínculos mecánicos que introducen latencia de respuesta. Un motor eléctrico puede pasar de cero al par máximo en milisegundos de un solo dígito. Esta velocidad es a la vez una oportunidad (respuesta instantánea) y un desafío (el software debe evitar picos de torsión que podrían romper la tracción o desestabilizar el vehículo).</p>
+
+                        <div class="blog-callout">
+                            En el Ferrari Luce, presionar el acelerador no exige energía, sino que solicita una experiencia. El software decide cómo entregarlo de forma segura y emocionante.
+                        </div>
+
+                        <h2>Control de tracción: evitando el patinaje de las ruedas mediante algoritmos</h2>
+                        <p>El control de tracción en un vehículo eléctrico es algorítmicamente más sencillo y físicamente más rápido que en un vehículo de combustión. Con los motores eléctricos, el par se puede reducir en menos de un milisegundo, en comparación con las decenas de milisegundos necesarios para cortar la chispa o cerrar el cuerpo del acelerador. Esta ventaja de velocidad significa que el control de tracción eléctrico puede ser menos intrusivo: puede gestionar el deslizamiento en amplitudes más pequeñas, manteniendo el agarre sin que el conductor sienta una intervención excesiva.</p>
+                        <p>El algoritmo de control de tracción en el Ferrari Luce probablemente utiliza sensores de velocidad de las ruedas (que miden las tasas de rotación de las ruedas individuales), la unidad de medición inercial del vehículo (que mide la aceleración real del vehículo) y retroalimentación del par del motor para detectar y gestionar el deslizamiento de las ruedas. Cuando la velocidad de rotación de una rueda excede la velocidad de avance del vehículo más allá de un umbral, el controlador reduce el torque a ese motor hasta que se restablece la tracción.</p>
+                        <p>Con control de motor individual por eje (o potencialmente por rueda), el Ferrari Luce puede implementar estrategias de tracción diferencial. Si la rueda trasera interior pierde tracción en una curva, solo se reduce el par del motor: la rueda exterior continúa entregando toda su potencia. Se trata de vectorización de par aplicada a la gestión de la tracción: mantener el máximo empuje total mientras se gestiona individualmente el límite de agarre de cada neumático.</p>
+                        <p>La calibración del control de tracción (cuánto deslizamiento permitir, qué tan agresivamente intervenir, qué tan rápido restaurar el torque) define el carácter del automóvil. Una configuración centrada en la pista podría permitir un mayor deslizamiento para la participación del conductor. Un entorno de clima húmedo podría intervenir antes por motivos de seguridad. Estas calibraciones son parámetros de software puros que pueden evolucionar a través de actualizaciones OTA a medida que Ferrari recopila datos del mundo real sobre el comportamiento de los neumáticos, las condiciones de la superficie y los comentarios del conductor.</p>
+
+                        <h2>Frenado regenerativo: convertir la energía cinética en autonomía</h2>
+                        <p>El frenado regenerativo convierte la energía cinética del vehículo nuevamente en energía eléctrica almacenada en la batería. Cuando el conductor levanta el acelerador o aplica el pedal del freno, los motores eléctricos funcionan como generadores, produciendo una fuerza de frenado mientras cargan la batería. La cantidad de regeneración (qué tan fuerte se siente la desaceleración y cuánta energía se recupera) está controlada completamente por software.</p>
+                        <p>El algoritmo de regeneración debe equilibrar múltiples objetivos: comodidad del conductor (sensación constante del pedal), eficiencia energética (máxima recuperación), protección de la batería (no cargar demasiado rápido cuando la batería está llena o demasiado fría) y seguridad de frenado (combinando frenado regenerativo y de fricción para garantizar que siempre se cumplan los requisitos de distancia de frenado).</p>
+                        <p>Para el Ferrari Luce, la calibración del frenado regenerativo probablemente varía según el modo de conducción. Un modo de confort podría utilizar una regeneración suave que imite la sensación de desaceleración de un automóvil de combustión. Un modo deportivo podría aumentar la regeneración para el comportamiento de conducción con un solo pedal, donde levantar el acelerador produce una desaceleración significativa. Un modo de carrera podría optimizarse únicamente para la recuperación de energía durante las sesiones de pista.</p>
+                        <p>El algoritmo de combinación de frenos es particularmente complejo. Cuando el conductor pisa el pedal del freno, el sistema debe determinar cuánta desaceleración producir de forma regenerativa (recuperando energía) y cuánta con los frenos de fricción (desperdiciando energía en forma de calor). La división varía dinámicamente según la velocidad (la regeneración es menos efectiva a bajas velocidades), el estado de la batería (no se puede regenerar hasta convertirse en una batería llena), la temperatura (las baterías frías limitan la velocidad de carga) y la fuerza de desaceleración requerida (el frenado de emergencia siempre usa frenos de fricción total para obtener la máxima potencia de frenado).</p>
+
+                        <h2>Distribución de energía: orquestando múltiples motores</h2>
+                        <p>El Ferrari Luce probablemente cuente con múltiples motores eléctricos; una configuración común para los vehículos eléctricos de alto rendimiento es un motor por eje, o incluso uno por rueda. El software de distribución de energía determina cómo se divide la solicitud de par total entre estos motores en función de las condiciones de conducción, el estado de la dinámica del vehículo y el modo seleccionado por el conductor.</p>
+                        <p>La distribución del par delantero-trasero afecta el equilibrio de manejo fundamental del vehículo. Más torsión en la parte trasera produce una tendencia al sobreviraje (la parte trasera se desliza antes que la delantera). Más torsión en la parte delantera produce subviraje (la parte delantera empuja mucho). El controlador de distribución ajusta este equilibrio continuamente (miles de veces por segundo) para mantener el carácter de manejo que los ingenieros de Ferrari han definido para cada modo de conducción.</p>
+                        <p>En las curvas, la distribución se vuelve tridimensional. Las ruedas exteriores soportan más carga y pueden generar más fuerza de tracción. Enviar más torsión a las ruedas exteriores mantiene la estabilidad y maximiza la fuerza total en las curvas. Este efecto de vectorización de par crea un diferencial virtual que es infinitamente ajustable, algo que ningún diferencial mecánico puede lograr.</p>
+                        <p>El algoritmo de distribución de energía también gestiona las limitaciones térmicas. Si un motor se acerca a su límite térmico, el controlador puede cambiar la carga a motores más fríos, manteniendo el rendimiento total del vehículo y protegiendo los componentes individuales. Este equilibrio de carga con sensibilidad térmica es invisible para el conductor, pero es esencial para una conducción sostenida de alto rendimiento, especialmente en la pista.</p>
+
+                        <h2>Suspensión adaptativa: conducción y manejo definidos por software</h2>
+                        <p>Los sistemas de suspensión adaptativos ajustan la fuerza de amortiguación y, en configuraciones avanzadas, la altura de marcha y la tasa de resorte, según las condiciones de conducción. En el Ferrari Luce, los amortiguadores magnetorreológicos o los amortiguadores hidráulicos controlados electrónicamente probablemente cambian sus características en tiempo real según los comandos del controlador de suspensión.</p>
+                        <p>El algoritmo de suspensión procesa entradas de acelerómetros (que detectan la rugosidad de la superficie de la carretera), sensores de posición de las ruedas (que miden el recorrido de la suspensión), velocidad del vehículo, ángulo de dirección y aceleración lateral. Con base en estas entradas, calcula la amortiguación óptima para cada esquina del vehículo de forma independiente: firme para la estabilidad en las curvas, suave para la comodidad de marcha sobre superficies rugosas y todo lo demás.</p>
+                        <p>La información de vista previa de las cámaras o lidar (si está instalado) puede permitir un ajuste predictivo de la suspensión. Si el sistema detecta un bache o un badén más adelante, puede ablandar previamente los amortiguadores correspondientes antes de que la rueda alcance el obstáculo. Esta capacidad predictiva representa la frontera de la suspensión adaptativa: responder a las condiciones de la carretera antes de que la suspensión las experimente.</p>
+                        <p>Para el Ferrari Luce, el software de suspensión también debe gestionar la masa adicional del paquete de baterías, que se encuentra en la parte baja del chasis. Esta distribución de masa afecta la dinámica de balanceo, el cabeceo al frenar y el agachamiento al acelerar. Los algoritmos de suspensión tienen en cuenta la masa y la posición de la batería para optimizar el control de la carrocería en todos los escenarios de conducción. Los sistemas antivuelco activos pueden controlar aún más la inclinación de la carrocería durante las curvas, manteniendo estable la batería de gran masa.</p>
+
+                        <h2>Modos de conducción: reconfigurando todo el vehículo con software</h2>
+                        <p>Los modos de conducción en el Ferrari Luce no son simples cambios en el mapa del acelerador. Representan una reconfiguración completa del vehículo: las características de entrega de torque, la sensibilidad del control de tracción, la fuerza de regeneración, la firmeza de la suspensión, el peso de la dirección, el sesgo de distribución de potencia, la posición aerodinámica activa, el carácter de síntesis de sonido y la prioridad de la información de visualización cambian simultáneamente cuando el conductor selecciona un modo diferente.</p>
+                        <p>Se trata de una orquestación de software en docenas de ECU. Cuando el conductor selecciona el modo "Sport", el controlador de dinámica del vehículo transmite un cambio de modo a través de la red del vehículo. Cada ECU suscrita lee sus nuevos parámetros de calibración y ajusta el comportamiento en consecuencia. La transición debe ser suave: sin cambios bruscos de torsión, sin tirones en la suspensión, sin fallas en la pantalla. El cambio de modo es una transición de estado coordinada a través de un sistema distribuido.</p>
+                        <p>Las configuraciones de modo típicas para un vehículo como el Ferrari Luce pueden incluir: un modo de confort/rango (par suave, regeneración máxima, suspensión suave, dirección ligera), un modo deportivo (par agresivo, regeneración moderada, suspensión firme, dirección ponderada), un modo de carrera/pista (par máximo, regeneración de rendimiento optimizado, suspensión rígida, dirección directa) y potencialmente un modo mojado/hielo (par suave, intervención de control de tracción intensa, suspensión adaptativa).</p>
+                        <p>Ferrari también puede ofrecer personalización de modo individual, lo que permite a los propietarios mezclar y combinar parámetros (tren motriz deportivo con suspensión cómoda, por ejemplo). Esto requiere que el software valide las combinaciones por motivos de seguridad (no se puede combinar el par máximo con el control de tracción desactivado sin un juicio de ingeniería sobre las consecuencias) y almacenar configuraciones personalizadas como perfiles de conductor sincronizados con la nube.</p>
+                        <p>Las actualizaciones OTA pueden ofrecer nuevos modos de conducción posventa. Un modo específico de pista desarrollado después de analizar la telemetría de propietarios que visitan circuitos con frecuencia. Un modo de invierno perfeccionado basándose en datos de flotas de los países nórdicos. Un modo de confort en carretera optimizado para una eficiencia de alcance de larga distancia. El carácter del vehículo no está fijado en el momento de la entrega en fábrica: evoluciona a medida que el equipo de software de Ferrari aprende de la flota global.</p>
+                    </article>
+
+                    <section aria-labelledby="ferrari-dynamics-related-title">
+                        <h2 id="ferrari-dynamics-related-title">Lectura relacionada</h2>
+                        <div class="blog-related-grid">
+                            <article class="blog-related-card">
+                                <h3><a href="/es/blog/ferrari-luce-embedded-software-telemetry-ota/">Ferrari Luce: Software integrado, telemetría, OTA, IA y nube</a></h3>
+                                <p>La capa de software completa, desde el código integrado hasta los canales en la nube, que hace posible Luce.</p>
+                            </article>
+                            <article class="blog-related-card">
+                                <h3><a href="/es/blog/ferrari-luce-electric-software-stack-speculation/">La probable pila de software de un Ferrari eléctrico</a></h3>
+                                <p>Qué lenguajes y plataformas probablemente ejecutan los algoritmos descritos en esta publicación.</p>
+                            </article>
+                            <article class="blog-related-card">
+                                <h3><a href="/es/blog/ferrari-luce-critical-systems-fault-tolerance-observability/">Sistemas críticos, tolerancia a fallos y observabilidad</a></h3>
+                                <p>Cómo el software de control crítico para la seguridad logra la confiabilidad que exige la dinámica del vehículo.</p>
+                            </article>
+                        </div>
+                    </section>
+                </div>
+
+                <aside class="blog-article-grid">
+                    <section class="blog-sidebar-card">
+                        <h2>Temas centrales</h2>
+                        <ul>
+                            <li>Entrega de par y mapeo de pedales.</li>
+                            <li>Algoritmos de control de tracción</li>
+                            <li>Frenado regenerativo y combinación</li>
+                            <li>Distribución de energía multimotor</li>
+                            <li>Control de suspensión adaptativa</li>
+                            <li>Orquestación del modo de conducción</li>
+                            <li>Vectorización de par</li>
+                        </ul>
+                    </section>
+                    <section class="blog-sidebar-card">
+                        <h2>Conceptos clave</h2>
+                        <ul>
+                            <li>Control orientado al campo (FOC)</li>
+                            <li>Algoritmos de mezcla de frenos</li>
+                            <li>Equilibrio de carga con reconocimiento térmico</li>
+                            <li>Ajuste predictivo de la suspensión</li>
+                            <li>Orquestación en modo distribuido</li>
+                        </ul>
+                    </section>
+                    <section class="blog-sidebar-card">
+                        <h2>Continuar explorando</h2>
+                        <ul>
+                            <li><a href="/es/blog/ferrari-luce-ecus-sensors-can-ethernet-realtime/">ECU y sistemas en tiempo real</a></li>
+                            <li><a href="/es/blog/ferrari-luce-electric-software-stack-speculation/">Pila de software Ferrari eléctrico</a></li>
+                            <li><a href="/es/blog/ferrari-luce-software-recalls-cybersecurity-risks/">Retiros y ciberseguridad</a></li>
+                        </ul>
+                    </section>
+                </aside>
+            </div>
+        </main>
+    </div>
+
+    <footer class="footer-minimal">
+        <div class="footer-container">
+            <div class="footer-link-list" aria-label="Enlaces de pie de página">
+                <a class="footer-link-pill" href="https://github.com/PkLavc" target="_blank" rel="noopener noreferrer">GitHub</a>
+                <a class="footer-link-pill" href="https://www.linkedin.com/in/pklavc/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+                <a class="footer-link-pill" href="mailto:contact@pklavc.com">Correo electrónico</a>
+                <a class="footer-link-pill footer-link-pill-accent" href="https://github.com/sponsors/PkLavc" target="_blank" rel="noopener noreferrer">Apoyar en GitHub</a>
+            </div>
+            <p>
+                © <span data-current-year></span> Patrick Araujo
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        (function() {
+            document.querySelectorAll('[data-current-year]').forEach(function(node) {
+                node.textContent = String(new Date().getFullYear());
+            });
+        }());
+    </script>
+        <script src="/js/i18n.js?v=cc3ee695f1" defer></script>
+    <script src="/js/jquery.min.js?v=d482871a5e" defer></script>
+    <script src="/js/index.js?v=0b108f99d1" defer></script>
+
+    <div class="visually-hidden">
+        <p>Ferrari Luce artículo sobre dinámica de vehículos definido por software que cubre algoritmos de control de par, control de tracción, frenado regenerativo, combinación de frenos, distribución de potencia multimotor, vectorización de par, sistemas de suspensión adaptativa, amortiguadores magnetorreológicos, orquestación de modos de conducción y carácter de vehículo definido por software en superdeportivos eléctricos.</p>
+    </div>
+</body>
+</html>

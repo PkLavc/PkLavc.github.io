@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="PkLavc" />
+    <title>Aegis Sentinel | Python Proyecto | Patrick Araujo</title>
+    
+    <!-- SEO Enhanced Meta Tags -->
+    <meta name="description" content="Python sistema de automatización backend para detección de anomalías, flujos de trabajo de recuperación de infraestructura y operaciones de servicios resilientes.">
+        <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="Aegis Sentinel | Python | Patrick Araujo">
+    <meta property="og:description" content="Python sistema de automatización backend para detección de anomalías, flujos de trabajo de recuperación de infraestructura y operaciones de servicios resilientes.">
+    <meta property="og:url" content="https://pklavc.com/es/proyectos/aegis-sentinel/">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://pklavc.com/images/lavc.webp?v=5e84850f26">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:site_name" content="Patrick Araujo">
+    <meta property="og:locale" content="es_ES">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Aegis Sentinel | Python | Patrick Araujo">
+    <meta name="twitter:description" content="Python sistema de automatización backend para detección de anomalías, flujos de trabajo de recuperación de infraestructura y operaciones de servicios resilientes.">
+    <meta name="twitter:image" content="https://pklavc.com/images/lavc.webp?v=5e84850f26">
+    <meta name="twitter:image:alt" content="Retrato de marca del ingeniero backend y especialista en automatización Patrick Araujo">
+    <meta name="twitter:site" content="@PkLavc">
+    <meta name="twitter:creator" content="@PkLavc">
+    
+    <link rel="canonical" href="https://pklavc.com/es/proyectos/aegis-sentinel/">
+    <link rel="alternate" href="https://pklavc.com/projects/aegis-sentinel/" hreflang="en">
+    <link rel="alternate" href="https://pklavc.com/pt/projetos/aegis-sentinel/" hreflang="pt-BR">
+    <link rel="alternate" href="https://pklavc.com/es/proyectos/aegis-sentinel/" hreflang="es">
+    <link rel="alternate" href="https://pklavc.com/projects/aegis-sentinel/" hreflang="x-default">
+
+
+
+<meta name="robots" content="index, follow">
+<!-- JSON-LD Schema: Person -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Patrick Araujo",
+        "jobTitle": "Backend Software Engineer",
+        "url": "https://pklavc.com",
+        "image": "https://pklavc.com/images/lavc.webp?v=5e84850f26",
+        "sameAs": [
+            "https://github.com/PkLavc",
+            "https://www.linkedin.com/in/pklavc/"
+        ],
+        "description": "Specialist in backend automation, API integration, and scalable system architecture"
+    }
+    </script>
+    
+    <!-- JSON-LD Schema: Article -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": "Aegis Sentinel | Python",
+        "description": "Aegis Sentinel construido con Python. Motor autónomo de recuperación de infraestructura con detección predictiva de anomalías y autocorrección",
+        "author": {
+            "@type": "Person",
+            "name": "Patrick Araujo"
+        },
+        "mainEntityOfPage": "https://pklavc.com/es/proyectos/aegis-sentinel/",
+        "url": "https://pklavc.com/es/proyectos/aegis-sentinel/",
+        "keywords": "Patrick Araujo, Backend Software Engineer, Python, Aegis Sentinel"
+    }
+    </script>
+    
+    <!-- JSON-LD Schema: BreadcrumbList -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "https://pklavc.com/"
+            },
+            {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Projects",
+                "item": "https://pklavc.com/es/proyectos/"
+            },
+            {
+                "@type": "ListItem",
+                "position": 3,
+                "name": "Aegis Sentinel",
+                "item": "https://pklavc.com/es/proyectos/aegis-sentinel/"
+            }
+        ]
+    }
+    </script>
+    <link rel="icon" type="image/svg+xml" href="https://pklavc.com/images/favicon.svg?v=d15fe4e492">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Monoton&amp;family=Poppins:wght@500&amp;family=Raleway:wght@300&amp;display=swap" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Monoton&amp;family=Poppins:wght@500&amp;family=Raleway:wght@300&amp;display=swap"></noscript>
+    <link rel="stylesheet" href="/css/global.css?v=55251d9722">
+    <link rel="stylesheet" href="/css/projects.css?v=84c54fcc24">
+    <style>
+        .project-hero { padding: 60px 20px; text-align: center; background: linear-gradient(135deg, rgba(0,0,0,0.1), rgba(0,0,0,0.05)); }
+        .project-hero h1 { font-size: 2.5rem; margin: 20px 0; color: #fff; }
+        .project-category-badge { display: inline-block; background: rgba(100, 200, 255, 0.2); border: 1px solid rgba(100, 200, 255, 0.5); color: #64c8ff; padding: 8px 16px; border-radius: 20px; font-size: 0.9rem; margin-bottom: 20px; }
+        .tech-stack-section { padding: 40px 20px; background: rgba(255, 255, 255, 0.02); }
+        .tech-stack-section h2 { color: #fff; margin-bottom: 20px; font-size: 1.5rem; }
+        .tech-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 40px; }
+        .tech-tag { background: rgba(100, 200, 255, 0.1); border: 1px solid rgba(100, 200, 255, 0.3); color: #64c8ff; padding: 12px 16px; border-radius: 8px; text-align: center; font-size: 0.95rem; }
+        .problem-solution { padding: 40px 20px; max-width: 800px; margin: 0 auto; }
+        .problem-solution h2 { color: #fff; margin: 30px 0 20px 0; font-size: 1.3rem; }
+        .problem-solution p { color: #ccc; line-height: 1.8; margin-bottom: 20px; }
+        .impact-section { padding: 40px 20px; background: rgba(100, 200, 255, 0.05); text-align: center; }
+        .impact-section h2 { color: #fff; margin-bottom: 20px; font-size: 1.3rem; }
+        .impact-text { color: #64c8ff; font-size: 1.1rem; margin: 20px 0; font-weight: 500; }
+        .cta-section { padding: 60px 20px; text-align: center; }
+        .cta-button { display: inline-block; background: linear-gradient(135deg, #64c8ff, #00d4ff); color: #000; padding: 16px 40px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 1rem; transition: transform 0.3s, box-shadow 0.3s; border: none; cursor: pointer; }
+        .cta-button:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(100, 200, 255, 0.3); }
+        .breadcrumb-nav {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 12px 20px;
+            margin-bottom: 30px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .breadcrumb {
+            list-style: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0;
+            font-size: 0.95rem;
+            color: #A0A0A0;
+        }
+        .breadcrumb li {
+            display: flex;
+            align-items: center;
+        }
+        .breadcrumb li:not(:last-child)::after {
+            content: "/";
+            margin-left: 8px;
+            font-size: 0.8rem;
+            color: #666;
+        }
+        .breadcrumb a {
+            color: #4A9EFF;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        .breadcrumb a:hover {
+            color: #64c8ff;
+            text-decoration: underline;
+        }
+        .breadcrumb [aria-current="page"] {
+            color: #E0E0E0;
+            font-weight: 500;
+        }
+            .full-readme-section { padding: 50px 20px; background: rgba(255, 255, 255, 0.02); }
+        .full-readme-container { max-width: 1000px; margin: 0 auto; }
+        .full-readme-container .markdown-body { background: #0d1117; border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 10px; padding: 24px; }
+            .project-context-section { padding: 32px 20px; background: rgba(100, 200, 255, 0.06); }
+        .project-context-container { max-width: 1000px; margin: 0 auto; }
+        .project-context-section h2, .project-context-section h3, .related-projects-section h2 { color: #fff; }
+        .project-context-section p, .project-context-section li, .related-projects-section p, .related-projects-section li { color: #d0d0d0; line-height: 1.7; }
+        .project-context-section a, .related-projects-section a { color: #64c8ff; }
+        .related-projects-section { padding: 32px 20px; background: rgba(255, 255, 255, 0.03); }    </style>
+    <link rel="preload" as="style" href="/css/github-markdown-local.css?v=01d37f05ee">
+    <link rel="stylesheet" href="/css/github-markdown-local.css?v=01d37f05ee" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="/css/github-markdown-local.css?v=01d37f05ee"></noscript>
+</head>
+<body>
+    <div id="breaker"></div>
+    <div id="breaker-two"></div>
+    <div id="all">
+        <div id="navigation-content" role="navigation" aria-label="Navegación primaria">
+            <div class="logo"></div>
+            <div class="navigation-links">
+                <a href="/es/" data-text="INICIO">INICIO</a>
+                <a href="/es/sobre/" data-text="SOBRE">SOBRE</a>
+                <a href="/es/proyectos/" data-text="PROYECTOS">PROYECTOS</a>
+            </div>
+        </div>
+        <div id="navigation-bar">
+            <div class="menubar">
+                <span class="first-span"></span>
+                <span class="second-span"></span>
+                <span class="third-span"></span>
+            </div>
+        </div>
+        
+        <main role="main">
+            <section class="project-hero">
+                <span class="project-category-badge">SRE e IA</span>
+                <h1>Aegis Sentinel | Python</h1>
+                <p style="color: #aaa; font-size: 1.1rem; margin-top: 15px;">Motor de recuperación de infraestructura autónomo que presenta detección predictiva de anomalías y capacidades de autorreparación.</p>
+            </section>
+
+            <section class="project-context-section" aria-label="Contexto SEO del proyecto">
+  <div class="project-context-container">
+    <h2>Contexto del problema, pila y tipo de sistema</h2>
+    <p>Este proyecto se centra en la detección de anomalías y flujos de autorreparación para operaciones de infraestructura. Refleja la automatización del backend de Python utilizada para mejorar la resiliencia del sistema mediante monitoreo y acciones de recuperación controladas.</p>
+    <h3>Alcance técnico</h3>
+    <ul>
+      <li><strong>Pila:</strong> Python, detección de anomalías, monitoreo de infraestructura, automatización de recuperación</li>
+      <li><strong>Tipo de sistema:</strong> automatización de backend de Python, motor de resiliencia, inteligencia operativa</li>
+      <li><strong>Palabras clave en contexto:</strong> automatización de backend de Python, sistema de automatización, ingeniero de backend</li>
+    </ul>
+    <p>Proyectos relacionados: <a href="/es/proyectos/cipher-gate-proxy/">Cipher Gate Proxy</a> y <a href="/es/proyectos/cloud-deployment-showcase/">Cloud Deployment Showcase</a>. Ver <a href="/es/colecciones/proyectos-python/">Python Proyectos</a>.</p>
+  </div>
+</section>
+            <section class="full-readme-section" aria-label="LÉAME completo">
+                <div class="full-readme-container">
+                    <h2 style="color: #fff; margin-bottom: 20px;">Documentación completa del proyecto</h2>
+                    <article class="markdown-body">
+<h2>Aegis Sentinel</h2>
+<p><a href="https://python.org"><img src="https://img.shields.io/badge/Python-3.11+-blue.svg" alt="Python Versión"></a>
+<a href="https://github.com/PkLavc/aegis-sentinel#license"><img src="https://img.shields.io/badge/License-MIT-green.svg" alt="Licencia: MIT"></a>
+<a href="https://github.com/PkLavc/aegis-sentinel"><img src="https://img.shields.io/github/stars/PkLavc/aegis-sentinel?style=social" alt="GitHub Estrellas"></a></p>
+<h2>Resumen ejecutivo</h2>
+<p>Aegis Sentinel es un motor de reparación automática y monitoreo de infraestructura de alta confiabilidad diseñado para garantizar la continuidad del negocio y la resiliencia de la infraestructura en entornos empresariales. Este sistema implementa algoritmos avanzados de detección de anomalías y mecanismos de recuperación automatizados para evitar tiempos de inactividad catastróficos en los servicios digitales.</p>
+<p>La plataforma demuestra principios de ingeniería avanzados adecuados para los estándares internacionales, particularmente alineados con los requisitos EB-2 NIW para demostrar una capacidad excepcional en ingeniería de sistemas y automatización de infraestructura.</p>
+<h2>Especificaciones de ingeniería</h2>
+<h3>Arquitectura Técnica</h3>
+<p>Aegis Sentinel emplea una arquitectura modular orientada a servicios con tres componentes principales:</p>
+<ol>
+<li><strong>Servicio de monitorización</strong>: Recopilación de métricas del sistema en tiempo real</li>
+<li><strong>Detección de anomalías de ML</strong>: Identificación de anomalías basada en aprendizaje automático</li>
+<li><strong>Motor de recuperación</strong>: Acciones automatizadas de remediación y curación.</li>
+</ol>
+<h3>Tecnologías centrales</h3>
+<ul>
+<li><strong>Python 3.11+</strong> con sugerencias de tipo estrictas</li>
+<li><strong>Registro JSON estructurado</strong> para la auditabilidad empresarial</li>
+<li><strong>Bosque de aislamiento</strong> y detección estadística de anomalías</li>
+<li><strong>Gestión de contenedores Docker</strong> para recuperación automatizada</li>
+<li><strong>Pruebas completas</strong> con marco pytest</li>
+</ul>
+<h3>Flujo de trabajo visual</h3>
+<pre><code class="language-mermaid">graph LR
+    A[Metrics Collection] --&gt; B[ML Detection]
+    B --&gt; C{Anomaly?}
+    C -- No --&gt; A
+    C -- Yes --&gt; D[Recovery Engine]
+    D --&gt; E[Self-Healing Action]
+</code></pre>
+<h3>Requisitos del sistema</h3>
+<ul>
+<li>Python 3.11 o superior</li>
+<li>Docker (para acciones de recuperación en contenedores)</li>
+<li>Bibliotecas estándar Python: psutil, numpy, scikit-learn</li>
+<li>Opcional: Redis para almacenamiento en caché distribuido</li>
+</ul>
+<h2>Contexto de interés nacional</h2>
+<p>En la economía digital actual, la confiabilidad de la infraestructura es fundamental para mantener los servicios esenciales. Aegis Sentinel aborda el interés nacional al:</p>
+<ul>
+<li><strong>Prevención de tiempos de inactividad catastróficos</strong> en infraestructura digital crítica</li>
+<li><strong>Reducir el impacto económico</strong> de fallas del sistema a través de una rápida recuperación automatizada</li>
+<li><strong>Mejorar la resiliencia de la ciberseguridad</strong> mediante la detección proactiva de anomalías</li>
+<li><strong>Demostrando liderazgo tecnológico</strong> en la automatización de infraestructuras</li>
+</ul>
+<h3>Métricas de impacto de ingeniería</h3>
+<table>
+<thead>
+<tr>
+<th align="left">Métrica</th>
+<th align="left">Objetivo</th>
+<th align="left">Beneficio de Interés Nacional</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>Latencia de detección</strong></td>
+<td align="left">&lt; 2,0 s</td>
+<td align="left">Respuesta en tiempo real a fallas críticas</td>
+</tr>
+<tr>
+<td align="left"><strong>Tasa de falsos positivos</strong></td>
+<td align="left">&lt; 5%</td>
+<td align="left">Minimiza la interrupción operativa</td>
+</tr>
+<tr>
+<td align="left"><strong>Éxito de la recuperación</strong></td>
+<td align="left">&gt; 95%</td>
+<td align="left">Garantiza una alta disponibilidad para los servicios esenciales.</td>
+</tr>
+</tbody></table>
+<p>La capacidad del sistema para detectar y solucionar problemas antes de que se conviertan en interrupciones del servicio contribuye directamente a la estabilidad y confiabilidad de los servicios digitales que son esenciales para la sociedad moderna.</p>
+<h2>Instalación</h2>
+<pre><code class="language-bash">git clone https://github.com/PkLavc/aegis-sentinel.git
+cd aegis-sentinel
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+pip install -r requirements.txt
+</code></pre>
+<h2>Uso</h2>
+<h3>Uso básico</h3>
+<pre><code class="language-python">from src.main import AegisSentinel
+
+# Initialize the system with default configuration
+sentinel = AegisSentinel()
+
+# Start monitoring
+await sentinel.start()
+
+# The system will automatically detect anomalies and trigger recovery
+# Monitor runs in the background and logs all activities
+</code></pre>
+<h3>Configuración avanzada</h3>
+<pre><code class="language-python">from src.main import AegisSentinel
+from src.monitor import MonitoringConfig
+from src.detector import DetectionConfig
+from src.healer import RecoveryConfig
+
+# Custom configuration
+monitoring_config = MonitoringConfig(
+    collection_interval=5.0,  # Check every 5 seconds
+    api_endpoints=[&quot;https://api.example.com/health&quot;],
+    enable_network_monitoring=True,
+    enable_disk_monitoring=True
+)
+
+detection_config = DetectionConfig(
+    isolation_contamination=0.1,
+    statistical_threshold_multiplier=3.0,
+    min_samples_for_detection=50
+)
+
+recovery_config = RecoveryConfig(
+    enable_docker_recovery=True,
+    enable_cache_recovery=True,
+    max_concurrent_actions=3
+)
+
+# Initialize with custom configuration
+sentinel = AegisSentinel(
+    monitoring_config=monitoring_config,
+    detection_config=detection_config,
+    recovery_config=recovery_config
+)
+
+# Start monitoring
+await sentinel.start()
+
+# Get service status
+status = sentinel.get_status()
+print(f&quot;Service running: {status[&#39;service_status&#39;]}&quot;)
+print(f&quot;Anomalies detected: {status[&#39;anomalies_detected&#39;]}&quot;)
+print(f&quot;Recovery success rate: {status[&#39;success_rate&#39;]:.1f}%&quot;)
+</code></pre>
+<h3>Uso programático</h3>
+<pre><code class="language-python">import asyncio
+from src.main import aegis_sentinel_context
+
+async def main():
+    # Use context manager for automatic cleanup
+    async with aegis_sentinel_context() as sentinel:
+        print(&quot;Aegis Sentinel is running...&quot;)
+        
+        # Monitor for 60 seconds
+        await asyncio.sleep(60)
+        
+        # Get current status
+        status = sentinel.get_status()
+        print(f&quot;Uptime: {status[&#39;uptime_seconds&#39;]} seconds&quot;)
+
+if __name__ == &quot;__main__&quot;:
+    asyncio.run(main())
+</code></pre>
+<h2>Opciones de configuración</h2>
+<h3>Configuración de monitoreo</h3>
+<ul>
+<li><code>collection_interval</code>: Tiempo entre recopilaciones de métricas (predeterminado: 5,0 segundos)</li>
+<li><code>api_endpoints</code>: Lista de API puntos finales para monitorear latencia y disponibilidad</li>
+<li><code>enable_network_monitoring</code>: Habilitar la recopilación de métricas de red.</li>
+<li><code>enable_disk_monitoring</code>: Habilitar el monitoreo del uso del disco</li>
+</ul>
+<h3>Configuración de detección</h3>
+<ul>
+<li><code>isolation_contamination</code>: Proporción esperada de anomalías en los datos (predeterminado: 0,1)</li>
+<li><code>isolation_n_estimators</code>: Número de árboles en el bosque de aislamiento (predeterminado: 100)</li>
+<li><code>statistical_threshold_multiplier</code>: Multiplicador de desviación estándar para detección estadística (predeterminado: 3,0)</li>
+<li><code>min_samples_for_detection</code>: Muestras mínimas requeridas antes de que comience la detección (predeterminado: 50)</li>
+</ul>
+<h3>Configuración de recuperación</h3>
+<ul>
+<li><code>enable_docker_recovery</code>: Habilite la recuperación de reinicio del contenedor Docker</li>
+<li><code>enable_cache_recovery</code>: Habilitar la recuperación de vaciado de caché</li>
+<li><code>enable_service_recovery</code>: Habilitar la recuperación de reinicio del servicio del sistema</li>
+<li><code>max_concurrent_actions</code>: Máximo de acciones de recuperación simultáneas (predeterminado: 3)</li>
+<li><code>action_timeout</code>: Tiempo de espera predeterminado para acciones de recuperación (predeterminado: 120,0 segundos)</li>
+</ul>
+<h2>Pruebas</h2>
+<p>Ejecute el conjunto de pruebas:</p>
+<pre><code class="language-bash"># Using the simple test runner
+python run_tests.py
+
+# Using pytest (if available)
+pytest tests/
+
+# Run specific test modules
+pytest tests/test_monitor.py
+pytest tests/test_detector.py
+</code></pre>
+<h2>Registro</h2>
+<p>Aegis Sentinel utiliza registro JSON estructurado para la auditabilidad empresarial:</p>
+<pre><code class="language-json">{
+  &quot;timestamp&quot;: &quot;2026-02-18T10:15:30Z&quot;,
+  &quot;level&quot;: &quot;WARNING&quot;,
+  &quot;event&quot;: &quot;anomaly_detected&quot;,
+  &quot;metric&quot;: &quot;memory_usage&quot;,
+  &quot;value&quot;: 92.5,
+  &quot;action&quot;: &quot;docker_container_restart&quot;,
+  &quot;target&quot;: &quot;api_gateway_v1&quot;
+}
+</code></pre>
+<pre><code class="language-python">import logging
+
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format=&#39;%(asctime)s - %(name)s - %(levelname)s - %(message)s&#39;
+)
+
+# Log files are automatically created as &#39;aegis_sentinel.log&#39;
+</code></pre>
+<p>Niveles de registro:</p>
+<ul>
+<li><code>INFO</code>: Estado de operación general y acciones de recuperación</li>
+<li><code>WARNING</code>: Eventos de detección de anomalías</li>
+<li><code>ERROR</code>: Errores del sistema y acciones de recuperación fallidas</li>
+<li><code>DEBUG</code>: Información detallada de detección y recopilación de métricas</li>
+</ul>
+<h2>Contribuyendo</h2>
+<p>Este proyecto sigue estrictos estándares profesionales. Todas las contribuciones deben incluir:</p>
+<ul>
+<li>Pruebas unitarias completas</li>
+<li>Escriba anotaciones para todas las funciones.</li>
+<li>Registro estructurado para todas las operaciones.</li>
+<li>Documentación para nuevas funciones.</li>
+</ul>
+<h2>Licencia</h2>
+<p>Licencia MIT: consulte el archivo de LICENCIA para obtener más detalles.</p>
+<h2>Autor</h2>
+<p><strong>Patrick Araujo - Ingeniero Informático</strong> Para ver otros proyectos y detalles de la cartera, visite:
+<a href="https://pklavc.com/es/proyectos/">https://pklavc.com/projects/</a></p>
+<hr>
+<p><em>Este proyecto es parte de una cartera profesional que demuestra capacidades avanzadas de ingeniería de sistemas para infraestructura de alta disponibilidad.</em></p>
+<p><a href="https://github.com/sponsors/PkLavc"><img src="https://img.shields.io/badge/Apoyar%20en%20GitHub-%23ea4aaa?style=for-the-badge&amp;logo=github-sponsors&amp;logoColor=white" alt="GitHub Sponsors"></a></p>
+                    </article>
+                </div>
+            </section>
+            
+            <section class="tech-stack-section">
+                <div style="max-width: 1000px; margin: 0 auto;">
+                    <h2>Pila de tecnología</h2>
+                    <div class="tech-list">
+                        <div class="tech-tag">Python</div>
+                        <div class="tech-tag">Aprendizaje automático</div>
+                        <div class="tech-tag">Detección de anomalías</div>
+                        <div class="tech-tag">Infraestructura APIs</div>
+                        <div class="tech-tag">Automatización de DevOps</div>
+                    </div>
+                </div>
+            </section>
+
+            
+            
+            <section class="related-projects-section" aria-label="Enlaces de proyectos relacionados">
+  <div class="project-context-container">
+    <h2>Proyectos backend relacionados e integraciones API</h2>
+    <p>Explore implementaciones vinculadas en <a href="/es/colecciones/proyectos-python/">automatización del backend de Python</a>, <a href="/es/colecciones/proyectos-javascript/">Flujos de trabajo de la API de node.js</a>, y <a href="/es/colecciones/proyectos-integracion-api/">sistema de integración API</a> racimos.</p>
+    <ul>
+      <li><a href="/es/proyectos/google-auth-worker/">Google Auth Worker</a> para la orquestación de autenticación.</li>
+      <li><a href="/es/proyectos/event-driven-integration-service/">Event-Driven Integration Service</a> para procesamiento de webhooks y arquitectura basada en eventos.</li>
+      <li><a href="/es/proyectos/zoho-integration-worker/">Zoho Integration Worker</a> para flujos de trabajo de soporte de automatización de Zoho Deluge.</li>
+      <li><a href="/es/proyectos/cipher-gate-proxy/">Cipher Gate Proxy</a> para el procesamiento de seguridad backend de Python.</li>
+    </ul>
+  </div>
+</section>
+            <section class="cta-section">
+                <h2 style="color: #fff; margin-bottom: 30px;">Ver el código fuente</h2>
+                <a href="https://github.com/PkLavc/aegis-sentinel" target="_blank" rel="noopener noreferrer" class="cta-button">
+                    Abrir en GitHub
+                </a>
+            </section>
+
+        </main>
+        
+        <footer class="footer-minimal">
+            <div class="footer-container">
+                <div class="footer-link-list" aria-label="Enlaces de pie de página">
+                    <a class="footer-link-pill" href="https://github.com/PkLavc" target="_blank" rel="noopener noreferrer">GitHub</a>
+                    <a class="footer-link-pill" href="https://www.linkedin.com/in/pklavc/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+                    <a class="footer-link-pill" href="mailto:contact@pklavc.com">Correo electrónico</a>
+                    <a class="footer-link-pill footer-link-pill-accent" href="https://github.com/sponsors/PkLavc" target="_blank" rel="noopener noreferrer">Apoyar en GitHub</a>
+                </div>
+                <p>
+                    © <span data-current-year></span> Patrick Araujo
+                </p>
+            </div>
+        </footer>
+    </div>
+    
+    <div class="visually-hidden">
+        <p>Ingeniero de Software Backend enfocado en automatización, integraciones de API, sistemas backend, Python, Node.js, SQL, ETL pipelines, AWS y plataformas operativas escalables.</p>
+    </div>
+    
+    <script>
+        (function() {
+            document.querySelectorAll('[data-current-year]').forEach(function(node) {
+                node.textContent = String(new Date().getFullYear());
+            });
+        }());
+    </script>
+        <script src="/js/i18n.js?v=cc3ee695f1" defer></script>
+    <script src="/js/jquery.min.js?v=d482871a5e" defer></script>
+    <script src="/js/index.js?v=0b108f99d1" defer></script>
+</body>
+</html>
+
+
+

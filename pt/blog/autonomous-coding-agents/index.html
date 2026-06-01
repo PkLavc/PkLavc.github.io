@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Patrick Araujo">
+    <title>Agentes de codificação autônomos: como Claude Code, Codex e Cursor estão mudando a engenharia</title>
+    <meta name="description" content="Como agentes de codificação autônomos como Claude Code, Codex, Cursor e Windsurf funcionam na prática — abrangendo execução em várias etapas, agentes de terminal, engenharia de contexto e como são os fluxos de trabalho de agentes reais na produção.">
+    <meta name="keywords" content="agentes de codificação autônomos, Claude Code, Codex, Cursor, Windsurf, agentes de terminal, agentes de múltiplas etapas, engenharia de agentes, engenharia de contexto, ferramentas de codificação de IA">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://pklavc.com/pt/blog/autonomous-coding-agents/">
+    <link rel="alternate" href="https://pklavc.com/blog/autonomous-coding-agents/" hreflang="en">
+    <link rel="alternate" href="https://pklavc.com/pt/blog/autonomous-coding-agents/" hreflang="pt-BR">
+    <link rel="alternate" href="https://pklavc.com/es/blog/autonomous-coding-agents/" hreflang="es">
+    <link rel="alternate" href="https://pklavc.com/blog/autonomous-coding-agents/" hreflang="x-default">
+
+
+
+<meta property="og:title" content="Agentes de codificação autônomos: como Claude Code, Codex e Cursor estão mudando a engenharia">
+    <meta property="og:description" content="Perspectiva prática de engenharia sobre agentes de codificação autônomos – execução em várias etapas, agentes terminais e como realmente são os fluxos de trabalho de agente além das demonstrações.">
+    <meta property="og:url" content="https://pklavc.com/pt/blog/autonomous-coding-agents/">
+    <meta property="og:type" content="article">
+    <meta property="article:published_time" content="2026-05-28">
+    <meta property="article:modified_time" content="2026-05-28">
+    <meta property="article:author" content="Patrick Araujo">
+    <meta property="article:section" content="AI Engineering">
+    <meta property="article:tag" content="agentes de codificação autônomos">
+    <meta property="article:tag" content="engenharia agente">
+    <meta property="article:tag" content="agentes terminais">
+    <meta property="article:tag" content="engenharia de contexto">
+    <meta property="og:image" content="https://pklavc.com/images/lavc.webp?v=5e84850f26">
+    <meta property="og:image:width" content="1024">
+    <meta property="og:image:height" content="1024">
+    <meta property="og:site_name" content="Patrick Araujo">
+    <meta property="og:locale" content="pt_BR">
+    <meta property="og:image:alt" content="Retrato da marca do engenheiro de backend e especialista em automação Patrick Araujo">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Agentes de codificação autônomos: Claude Code, Codex, Cursor e Windsurf">
+    <meta name="twitter:description" content="Agentes de várias etapas, fluxos de trabalho de terminal, engenharia de contexto e como realmente é a codificação autônoma na engenharia real.">
+    <meta name="twitter:image" content="https://pklavc.com/images/lavc.webp?v=5e84850f26">
+    <meta name="twitter:image:alt" content="Retrato da marca do engenheiro de backend e especialista em automação Patrick Araujo">
+    <meta name="twitter:site" content="@PkLavc">
+    <meta name="twitter:creator" content="@PkLavc">
+
+    <link rel="icon" type="image/svg+xml" href="https://pklavc.com/images/favicon.svg?v=d15fe4e492">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Monoton&amp;family=Poppins:wght@500;600;700&amp;family=Raleway:wght@300&amp;display=swap" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Monoton&amp;family=Poppins:wght@500;600;700&amp;family=Raleway:wght@300&amp;display=swap"></noscript>
+    <link rel="stylesheet" href="/css/global.css?v=55251d9722">
+    <link rel="stylesheet" href="/css/blog.css?v=560c7eaf05">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.2.6/gsap.min.js" defer></script>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@graph": [
+            {
+                "@type": "BlogPosting",
+                "headline": "Autonomous Coding Agents: How Claude Code, Codex, and Cursor Are Changing Engineering",
+                "description": "How autonomous coding agents like Claude Code, Codex, Cursor, and Windsurf work in practice — covering multi-step execution, terminal agents, context engineering, and what real agentic workflows look like in production.",
+                "image": "https://pklavc.com/images/lavc.webp?v=5e84850f26",
+                "datePublished": "2026-05-28",
+                "dateModified": "2026-05-28",
+                "author": {
+                    "@type": "Person",
+                    "name": "Patrick Araujo"
+                },
+                "publisher": {
+                    "@type": "Person",
+                    "name": "Patrick Araujo"
+                },
+                "mainEntityOfPage": "https://pklavc.com/pt/blog/autonomous-coding-agents/",
+                "url": "https://pklavc.com/pt/blog/autonomous-coding-agents/",
+                "keywords": [
+                    "autonomous coding agents",
+                    "claude code",
+                    "codex",
+                    "cursor",
+                    "windsurf",
+                    "terminal agents",
+                    "multi-step agents",
+                    "agentic engineering",
+                    "context engineering"
+                ]
+            },
+            {
+                "@type": "BreadcrumbList",
+                "itemListElement": [
+                    {
+                        "@type": "ListItem",
+                        "position": 1,
+                        "name": "Home",
+                        "item": "https://pklavc.com/"
+                    },
+                    {
+                        "@type": "ListItem",
+                        "position": 2,
+                        "name": "Blog",
+                        "item": "https://pklavc.com/pt/blog/"
+                    },
+                    {
+                        "@type": "ListItem",
+                        "position": 3,
+                        "name": "Autonomous Coding Agents",
+                        "item": "https://pklavc.com/pt/blog/autonomous-coding-agents/"
+                    }
+                ]
+            }
+        ]
+    }
+    </script>
+</head>
+<body class="blog-layout seo-layout">
+    <div id="breaker"></div>
+    <div id="breaker-two"></div>
+    <div id="all">
+        <div class="cursor"></div>
+        <div id="navigation-content" role="navigation" aria-label="Navegação primária">
+            <div class="logo"></div>
+            <div class="navigation-links">
+                <a href="/pt/" data-text="INÍCIO" id="home-link">INÍCIO</a>
+                <a href="/pt/sobre/" data-text="SOBRE" id="about-link">SOBRE</a>
+                <a href="/pt/projetos/" data-text="PROJETOS" id="projects-link">PROJETOS</a>
+                <a href="/pt/blog/" data-text="BLOG" id="blog-link">BLOG</a>
+            </div>
+        </div>
+        <div id="navigation-bar">
+            <div class="menubar">
+                <span class="first-span"></span>
+                <span class="second-span"></span>
+                <span class="third-span"></span>
+            </div>
+        </div>
+
+        <main class="blog-shell" role="main">
+            <div class="blog-columns">
+                <div>
+                    <article class="blog-post-hero">
+                        <div class="blog-breadcrumb" aria-label="Pão ralado">
+                            <a href="/pt/">Página inicial</a>
+                            <span>/</span>
+                            <a href="/pt/blog/">Blogue</a>
+                            <span>/</span>
+                            <span aria-current="page">Agentes de codificação autônomos</span>
+                        </div>
+                        <span class="blog-kicker">Engenharia de IA</span>
+                        <h1>Agentes de codificação autônomos: como Claude Code, Codex e Cursor estão mudando a engenharia</h1>
+                        <p>Os agentes de codificação não são mais preenchidos automaticamente. Ferramentas como Claude Code, Codex, Cursor e Windsurf agora executam planos de várias etapas, executam comandos de terminal, leem resultados de testes e iteram falhas de forma autônoma. Esta postagem aborda o que isso significa para fluxos de trabalho reais de engenharia.</p>
+                        <div class="blog-post-meta">
+                            <span>Publicado em 28 de maio de 2026</span>
+                            <span>11 minutos de leitura</span>
+                            <span>Engenharia de IA</span>
+                        </div>
+                    </article>
+
+                    <article class="blog-article">
+                        <h2>Do preenchimento automático à execução autônoma</h2>
+                        <p>A primeira geração de ferramentas de codificação de IA – sugestões do Copilot, conclusões inline – funcionou no nível da linha. O engenheiro escreveu a intenção, o modelo previu a continuação. Isso foi útil, mas limitado: cada sugestão exigia validação humana antes que o cursor avançasse.</p>
+                        <p>Os agentes de codificação autônomos operam de maneira diferente. Claude Code é executado no terminal, lê sua base de código, grava arquivos, executa comandos, observa a saída e itera. O modo de agente do Cursor planeja alterações em vários arquivos, executa linters e corrige erros em um loop. O Codex opera de forma assíncrona em tarefas inteiras: você descreve o que deseja, ele ramifica, codifica, testa e retorna uma solicitação pull. Windsurf combina integração IDE com fluxos de agente que abrangem vários arquivos e sessões de terminal.</p>
+
+                        <div class="blog-callout">
+                            A mudança não é de “IA escreve código” para “AI escreve mais código”. Vai de “A IA sugere” a “A IA executa um plano e verifica seus próprios resultados”.
+                        </div>
+
+                        <h2>O que os agentes de múltiplas etapas realmente fazem</h2>
+                        <p>Um agente de codificação em várias etapas não gera apenas texto. Opera em um ciclo: planejar, agir, observar, revisar. Claude Code lê a estrutura do seu projeto, identifica arquivos relevantes, grava alterações, executa testes, lê falhas e corrige até que o conjunto seja aprovado. O Codex faz isso em um ambiente de nuvem em área restrita, onde pode instalar dependências, executar compilações e validar seu próprio trabalho.</p>
+                        <p>Isso muda a unidade de trabalho. Em vez de revisar sugestões linha por linha, os engenheiros revisam as implementações concluídas. O ciclo de feedback passa de “esta linha parece correta” para “este PR resolve o problema de maneira correta e segura”.</p>
+
+                        <h2>Agentes terminais e por que eles são importantes</h2>
+                        <p>Claude Code e agentes de terminal semelhantes são executados onde os engenheiros já trabalham. Eles têm acesso ao git, gerenciadores de pacotes, executores de testes, linters e ao sistema de arquivos completo. Este não é um sandbox restrito com uma interface de chat – é uma ferramenta que opera com os mesmos recursos que um desenvolvedor tem em sua sessão de terminal.</p>
+                        <p>A execução nativa do terminal significa que o agente pode descobrir o contexto que as ferramentas baseadas em chat não percebem: erros de construção, incompatibilidades de tipo entre módulos, padrões de saída de teste e comportamento em tempo de execução. Isso também significa que o agente pode validar suas próprias alterações imediatamente, em vez de devolver o código não verificado ao ser humano.</p>
+
+                        <h2>A engenharia de contexto é a verdadeira habilidade</h2>
+                        <p>O gargalo na codificação agente não é a capacidade do modelo – é o contexto. Um agente que começa do zero fará suposições sobre sua arquitetura, convenções e restrições. Um agente que começa com um contexto bem estruturado — especificações, documentos de arquitetura, padrões de teste, guias de estilo — produz código adequado ao seu sistema.</p>
+                        <p>Engenharia de contexto significa selecionar o que o agente vê: arquivos relevantes, convenções de projeto, padrões existentes e restrições explícitas. Ferramentas como arquivos de regras do Cursor, convenções CLAUDE.md do Claude Code e etapas de configuração do Codex são mecanismos para engenharia de contexto. Os engenheiros que obtêm os melhores resultados dos agentes são aqueles que investem em tornar sua base de código legível para as máquinas.</p>
+
+                        <h2>Cursor, Claude Code, Codex, Windsurf: diferentes modelos de agência</h2>
+                        <p>Essas ferramentas representam filosofias diferentes. O Cursor se integra perfeitamente ao IDE e executa agentes que modificam arquivos no local com feedback visual imediato. Claude Code prioriza o terminal, tratando a base de código como um espaço de trabalho onde o agente opera junto com o desenvolvedor. Codex é assíncrono e baseado em nuvem, tratando tarefas como trabalhos em segundo plano que retornam resultados. Windsurf combina IDE e fluxos de agente com foco na coerência de vários arquivos.</p>
+                        <p>Nenhum deles é “melhor” em termos absolutos. A escolha certa depende do fluxo de trabalho: emparelhamento síncrono versus delegação assíncrona, IDE nativo versus nativo de terminal, feedback em tempo real versus execução em lote.</p>
+
+                        <h2>O que muda na prática da engenharia</h2>
+                        <p>Quando os agentes podem executar planos de várias etapas de forma autônoma, a engenharia muda para especificação, revisão e arquitetura. O trabalho do engenheiro passa a ser: definir o problema com precisão, fornecer o contexto correto, revisar criticamente a saída e manter a integridade do sistema ao longo do tempo.</p>
+                        <p>Isso não elimina a habilidade de engenharia – ela a amplifica. Uma especificação clara produz melhor resultado do agente. Uma base de código bem arquitetada é mais fácil para os agentes estenderem corretamente. Uma boa cobertura de testes oferece aos agentes um ciclo de verificação. Os fundamentos são mais importantes, não menos.</p>
+
+                        <h2>Restrições reais na produção</h2>
+                        <p>Agentes autônomos não são mágicos. Eles alucinam APIs, introduzem bugs sutis, perdem casos extremos e, às vezes, produzem código que passa nos testes, mas viola os limites da arquitetura. Nos sistemas de produção, cada saída do agente ainda precisa de revisão humana para implicações de segurança, características de desempenho e coerência de design.</p>
+                        <p>A abordagem prática é usar agentes para tarefas bem definidas com critérios de verificação claros: implementar esse recurso de acordo com esta especificação, corrigir esse teste com falha, refatorar este módulo para corresponder a esse padrão. Os prompts abertos do tipo "construa algo para mim" produzem resultados imprevisíveis que exigem mais tempo de revisão do que economizam.</p>
+                    </article>
+
+                    <section aria-labelledby="agents-related-title">
+                        <h2 id="agents-related-title">Leitura relacionada</h2>
+                        <div class="blog-related-grid">
+                            <article class="blog-related-card">
+                                <h3><a href="/pt/blog/spec-driven-development/">Desenvolvimento orientado a especificações: escrita para máquinas e humanos</a></h3>
+                                <p>Como as especificações estruturadas se tornam a interface entre a intenção humana e a execução do agente.</p>
+                            </article>
+                            <article class="blog-related-card">
+                                <h3><a href="/pt/blog/multi-ai-workflows/">Fluxos de trabalho multi-AI: orquestrando agentes em engenharia real</a></h3>
+                                <p>Padrões para combinar vários agentes de IA em fluxos de trabalho de produção.</p>
+                            </article>
+                            <article class="blog-related-card">
+                                <h3><a href="/pt/blog/ai-native-engineering/">Engenharia nativa de IA: construindo sistemas que pressupõem a participação da IA</a></h3>
+                                <p>Como é a engenharia quando os agentes de IA são participantes de primeira classe no processo de desenvolvimento.</p>
+                            </article>
+                        </div>
+                    </section>
+                </div>
+
+                <aside class="blog-article-grid">
+                    <section class="blog-sidebar-card">
+                        <h2>Conclusões principais</h2>
+                        <ul>
+                            <li>Os agentes de codificação agora executam planos de várias etapas, não apenas sugestões.</li>
+                            <li>Os agentes terminais operam com recursos completos de desenvolvedor.</li>
+                            <li>A engenharia de contexto determina a qualidade da saída do agente.</li>
+                            <li>A engenharia muda em direção à especificação e revisão.</li>
+                        </ul>
+                    </section>
+                    <section class="blog-sidebar-card">
+                        <h2>Ferramentas cobertas</h2>
+                        <ul>
+                            <li>Claude Code — agente nativo do terminal</li>
+                            <li>Codex — agente assíncrono baseado em nuvem</li>
+                            <li>Cursor — modo de agente integrado ao IDE</li>
+                            <li>Windsurf — IDE agente de vários arquivos</li>
+                        </ul>
+                    </section>
+                    <section class="blog-sidebar-card">
+                        <h2>Continue explorando</h2>
+                        <ul>
+                            <li><a href="/pt/blog/model-context-protocol-mcp/">MCP: Protocolo de Contexto do Modelo</a></li>
+                            <li><a href="/pt/blog/vibe-coding-vs-real-engineering/">Codificação Vibe vs Engenharia Real</a></li>
+                            <li><a href="/pt/blog/ai-code-governance-security/">Governança do código de IA</a></li>
+                        </ul>
+                    </section>
+                </aside>
+            </div>
+        </main>
+    </div>
+
+    <footer class="footer-minimal">
+        <div class="footer-container">
+            <div class="footer-link-list" aria-label="Links de rodapé">
+                <a class="footer-link-pill" href="https://github.com/PkLavc" target="_blank" rel="noopener noreferrer">GitHub</a>
+                <a class="footer-link-pill" href="https://www.linkedin.com/in/pklavc/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+                <a class="footer-link-pill" href="mailto:contact@pklavc.com">E-mail</a>
+                <a class="footer-link-pill footer-link-pill-accent" href="https://github.com/sponsors/PkLavc" target="_blank" rel="noopener noreferrer">Apoiar no GitHub</a>
+            </div>
+            <p>
+                © <span data-current-year></span> Patrick Araujo
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        (function() {
+            document.querySelectorAll('[data-current-year]').forEach(function(node) {
+                node.textContent = String(new Date().getFullYear());
+            });
+        }());
+    </script>
+        <script src="/js/i18n.js?v=cc3ee695f1" defer></script>
+    <script src="/js/jquery.min.js?v=d482871a5e" defer></script>
+    <script src="/js/index.js?v=0b108f99d1" defer></script>
+
+    <div class="visually-hidden">
+        <p>Artigo sobre agentes de codificação autônomos cobrindo Claude Code, Codex, Cursor, Windsurf, agentes de várias etapas, agentes de terminal, engenharia de contexto, fluxos de trabalho de engenharia de agentes e a mudança do preenchimento automático de IA para a execução autônoma de planos no desenvolvimento de software.</p>
+    </div>
+</body>
+</html>

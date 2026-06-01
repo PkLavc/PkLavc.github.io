@@ -9,6 +9,180 @@
 
   var els = {};
 
+  var COPY = {
+    en: {
+      userLabel: "You",
+      voiceOn: "Voice on",
+      voiceOff: "Voice off",
+      closeContext: "Close Skyler context menu",
+      openContext: "Open Skyler context menu",
+      speechUnavailable: "Speech recognition is not available in this browser.",
+      listening: "Listening...",
+      voiceInputError: "Voice input could not start.",
+      ready: "Ready for portfolio questions.",
+      thinking: "Thinking...",
+      noResponse: "No response.",
+      unavailableMessage: "I could not answer right now.",
+      unavailableStatus: "Chat temporarily unavailable.",
+      resetMessage: "**Memory reset.** Ask me where you want to go next.",
+      resetStatus: "Memory reset.",
+      voiceEnabled: "Voice output enabled.",
+      voiceDisabled: "Voice output disabled.",
+      contextOnline: "Portfolio context online: projects, stack, blog posts, and architecture notes.",
+      intro: "**Hi, I am Skyler.** Ask about Patrick's projects, backend systems, integrations, or technical tradeoffs.",
+      links: {
+        email: "Send Email",
+        linkedin: "Open LinkedIn",
+        github: "View GitHub",
+        sponsor: "Sponsor Patrick",
+        portfolio: "Open Portfolio",
+        projects: "Browse Projects",
+        blog: "Read Blog",
+        about: "About Patrick",
+        lavc: "View Lavc Systems",
+        skylerProject: "View Skyler Assistant",
+        skylerApp: "Open Skyler Assistant",
+        codepulse: "View CodePulse",
+        googleAuth: "View Google Auth Worker",
+        zoho: "View Zoho Worker",
+        hablla: "View Hablla Worker",
+        zenvia: "View Zenvia Worker",
+        sige: "View SIGE Worker",
+        omie: "View Omie Worker",
+        saas: "View SaaS Platform",
+        cipher: "View Cipher Gate",
+        eventDriven: "View Event-Driven Service",
+        aegis: "View Aegis Sentinel",
+        cloud: "View Cloud Deployment",
+        os: "View OS Optimizer",
+        githubRepo: "View on GitHub",
+        project: "View Project",
+        post: "Read Post",
+        page: "Visit Page",
+        link: "Visit Link"
+      }
+    },
+    pt: {
+      userLabel: "Você",
+      voiceOn: "Voz ativada",
+      voiceOff: "Voz desativada",
+      closeContext: "Fechar menu de contexto da Skyler",
+      openContext: "Abrir menu de contexto da Skyler",
+      speechUnavailable: "O reconhecimento de voz não está disponível neste navegador.",
+      listening: "Ouvindo...",
+      voiceInputError: "Não foi possível iniciar a entrada de voz.",
+      ready: "Pronto para perguntas sobre o portfólio.",
+      thinking: "Pensando...",
+      noResponse: "Sem resposta.",
+      unavailableMessage: "Não consegui responder agora.",
+      unavailableStatus: "Chat temporariamente indisponível.",
+      resetMessage: "**Memória reiniciada.** Pergunte para onde quer ir agora.",
+      resetStatus: "Memória reiniciada.",
+      voiceEnabled: "Saída de voz ativada.",
+      voiceDisabled: "Saída de voz desativada.",
+      contextOnline: "Contexto do portfólio online: projetos, stack, artigos do blog e notas de arquitetura.",
+      intro: "**Oi, eu sou a Skyler.** Pergunte sobre os projetos, sistemas backend, integrações ou decisões técnicas do Patrick.",
+      links: {
+        email: "Enviar e-mail",
+        linkedin: "Abrir LinkedIn",
+        github: "Ver GitHub",
+        sponsor: "Apoiar Patrick",
+        portfolio: "Abrir portfólio",
+        projects: "Ver projetos",
+        blog: "Ler blog",
+        about: "Sobre Patrick",
+        lavc: "Ver Lavc Systems",
+        skylerProject: "Ver Skyler Assistant",
+        skylerApp: "Abrir Skyler Assistant",
+        codepulse: "Ver CodePulse",
+        googleAuth: "Ver Google Auth Worker",
+        zoho: "Ver Zoho Worker",
+        hablla: "Ver Hablla Worker",
+        zenvia: "Ver Zenvia Worker",
+        sige: "Ver SIGE Worker",
+        omie: "Ver Omie Worker",
+        saas: "Ver plataforma SaaS",
+        cipher: "Ver Cipher Gate",
+        eventDriven: "Ver Event-Driven Service",
+        aegis: "Ver Aegis Sentinel",
+        cloud: "Ver Cloud Deployment",
+        os: "Ver OS Optimizer",
+        githubRepo: "Ver no GitHub",
+        project: "Ver projeto",
+        post: "Ler artigo",
+        page: "Abrir página",
+        link: "Abrir link"
+      }
+    },
+    es: {
+      userLabel: "Tú",
+      voiceOn: "Voz activada",
+      voiceOff: "Voz desactivada",
+      closeContext: "Cerrar menú contextual de Skyler",
+      openContext: "Abrir menú contextual de Skyler",
+      speechUnavailable: "El reconocimiento de voz no está disponible en este navegador.",
+      listening: "Escuchando...",
+      voiceInputError: "No se pudo iniciar la entrada de voz.",
+      ready: "Listo para preguntas sobre el portafolio.",
+      thinking: "Pensando...",
+      noResponse: "Sin respuesta.",
+      unavailableMessage: "No pude responder ahora.",
+      unavailableStatus: "Chat temporalmente no disponible.",
+      resetMessage: "**Memoria reiniciada.** Pregunta hacia dónde quieres ir ahora.",
+      resetStatus: "Memoria reiniciada.",
+      voiceEnabled: "Salida de voz activada.",
+      voiceDisabled: "Salida de voz desactivada.",
+      contextOnline: "Contexto del portafolio en línea: proyectos, stack, artículos del blog y notas de arquitectura.",
+      intro: "**Hola, soy Skyler.** Pregunta sobre los proyectos, sistemas backend, integraciones o decisiones técnicas de Patrick.",
+      links: {
+        email: "Enviar correo",
+        linkedin: "Abrir LinkedIn",
+        github: "Ver GitHub",
+        sponsor: "Apoyar a Patrick",
+        portfolio: "Abrir portafolio",
+        projects: "Ver proyectos",
+        blog: "Leer blog",
+        about: "Sobre Patrick",
+        lavc: "Ver Lavc Systems",
+        skylerProject: "Ver Skyler Assistant",
+        skylerApp: "Abrir Skyler Assistant",
+        codepulse: "Ver CodePulse",
+        googleAuth: "Ver Google Auth Worker",
+        zoho: "Ver Zoho Worker",
+        hablla: "Ver Hablla Worker",
+        zenvia: "Ver Zenvia Worker",
+        sige: "Ver SIGE Worker",
+        omie: "Ver Omie Worker",
+        saas: "Ver plataforma SaaS",
+        cipher: "Ver Cipher Gate",
+        eventDriven: "Ver Event-Driven Service",
+        aegis: "Ver Aegis Sentinel",
+        cloud: "Ver Cloud Deployment",
+        os: "Ver OS Optimizer",
+        githubRepo: "Ver en GitHub",
+        project: "Ver proyecto",
+        post: "Leer artículo",
+        page: "Abrir página",
+        link: "Abrir enlace"
+      }
+    }
+  };
+
+  function getLocale() {
+    if (window.PkLavcI18n && typeof window.PkLavcI18n.getCurrentLanguage === "function") {
+      return window.PkLavcI18n.getCurrentLanguage();
+    }
+
+    var path = window.location.pathname || "/";
+    if (/^\/pt(?:\/|$)/i.test(path)) return "pt";
+    if (/^\/es(?:\/|$)/i.test(path)) return "es";
+    return "en";
+  }
+
+  function getCopy() {
+    return COPY[getLocale()] || COPY.en;
+  }
+
   function cacheElements() {
     els.apiBaseInput = document.getElementById("api-base");
     els.authStatus = document.getElementById("auth-status");
@@ -59,47 +233,48 @@
       .replace(/"/g, "&quot;");
   }
 
-  var LINK_LABELS = {
-    "mailto:contact@pklavc.com": "Send Email",
-    "https://www.linkedin.com/in/pklavc/": "Open LinkedIn",
-    "https://github.com/PkLavc": "View GitHub",
-    "https://github.com/PkLavc/": "View GitHub",
-    "https://github.com/sponsors/PkLavc": "Sponsor Patrick",
-    "https://pklavc.com/": "Open Portfolio",
-    "https://pklavc.com/projects/": "Browse Projects",
-    "https://pklavc.com/blog/": "Read Blog",
-    "https://pklavc.com/about/": "About Patrick",
-    "https://pklavc.com/projects/lavc-systems/": "View Lavc Systems",
-    "https://pklavc.com/projects/skyler-assistant/": "View Skyler Assistant",
-    "https://pklavc.com/skyler-assistant/": "Open Skyler Assistant",
-    "https://pklavc.com/projects/codepulse-monorepo/": "View CodePulse",
-    "https://pklavc.com/projects/google-auth-worker/": "View Google Auth Worker",
-    "https://pklavc.com/projects/zoho-integration-worker/": "View Zoho Worker",
-    "https://pklavc.com/projects/hablla-integration-worker/": "View Hablla Worker",
-    "https://pklavc.com/projects/zenvia-integration-worker/": "View Zenvia Worker",
-    "https://pklavc.com/projects/sige-integration-worker/": "View SIGE Worker",
-    "https://pklavc.com/projects/omie-integration-worker/": "View Omie Worker",
-    "https://pklavc.com/projects/multi-tenant-saas-platform/": "View SaaS Platform",
-    "https://pklavc.com/projects/cipher-gate-proxy/": "View Cipher Gate",
-    "https://pklavc.com/projects/event-driven-integration-service/": "View Event-Driven Service",
-    "https://pklavc.com/projects/aegis-sentinel/": "View Aegis Sentinel",
-    "https://pklavc.com/projects/cloud-deployment-showcase/": "View Cloud Deployment",
-    "https://pklavc.com/projects/os-resource-optimizer/": "View OS Optimizer",
-    "https://github.com/PkLavc/codepulse-monorepo": "View on GitHub",
-    "https://github.com/PkLavc/codepulse-monorepo/": "View on GitHub",
+  var LINK_LABEL_KEYS = {
+    "mailto:contact@pklavc.com": "email",
+    "https://www.linkedin.com/in/pklavc/": "linkedin",
+    "https://github.com/PkLavc": "github",
+    "https://github.com/PkLavc/": "github",
+    "https://github.com/sponsors/PkLavc": "sponsor",
+    "https://pklavc.com/": "portfolio",
+    "https://pklavc.com/projects/": "projects",
+    "https://pklavc.com/blog/": "blog",
+    "https://pklavc.com/about/": "about",
+    "https://pklavc.com/projects/lavc-systems/": "lavc",
+    "https://pklavc.com/projects/skyler-assistant/": "skylerProject",
+    "https://pklavc.com/skyler-assistant/": "skylerApp",
+    "https://pklavc.com/projects/codepulse-monorepo/": "codepulse",
+    "https://pklavc.com/projects/google-auth-worker/": "googleAuth",
+    "https://pklavc.com/projects/zoho-integration-worker/": "zoho",
+    "https://pklavc.com/projects/hablla-integration-worker/": "hablla",
+    "https://pklavc.com/projects/zenvia-integration-worker/": "zenvia",
+    "https://pklavc.com/projects/sige-integration-worker/": "sige",
+    "https://pklavc.com/projects/omie-integration-worker/": "omie",
+    "https://pklavc.com/projects/multi-tenant-saas-platform/": "saas",
+    "https://pklavc.com/projects/cipher-gate-proxy/": "cipher",
+    "https://pklavc.com/projects/event-driven-integration-service/": "eventDriven",
+    "https://pklavc.com/projects/aegis-sentinel/": "aegis",
+    "https://pklavc.com/projects/cloud-deployment-showcase/": "cloud",
+    "https://pklavc.com/projects/os-resource-optimizer/": "os",
+    "https://github.com/PkLavc/codepulse-monorepo": "githubRepo",
+    "https://github.com/PkLavc/codepulse-monorepo/": "githubRepo",
   };
 
   function getLinkLabel(href) {
-    if (LINK_LABELS[href]) return LINK_LABELS[href];
+    var links = getCopy().links;
+    if (LINK_LABEL_KEYS[href]) return links[LINK_LABEL_KEYS[href]];
     var alt = href.endsWith("/") ? href.slice(0, -1) : href + "/";
-    if (LINK_LABELS[alt]) return LINK_LABELS[alt];
-    if (href.startsWith("mailto:")) return "Send Email";
-    if (href.includes("linkedin.com")) return "Open LinkedIn";
-    if (href.includes("github.com/PkLavc") || href.includes("github.com/pklavc")) return "View GitHub";
-    if (href.includes("pklavc.com/projects/")) return "View Project";
-    if (href.includes("pklavc.com/blog/")) return "Read Post";
-    if (href.includes("pklavc.com")) return "Visit Page";
-    return "Visit Link";
+    if (LINK_LABEL_KEYS[alt]) return links[LINK_LABEL_KEYS[alt]];
+    if (href.startsWith("mailto:")) return links.email;
+    if (href.includes("linkedin.com")) return links.linkedin;
+    if (href.includes("github.com/PkLavc") || href.includes("github.com/pklavc")) return links.github;
+    if (href.includes("pklavc.com/projects/")) return links.project;
+    if (href.includes("pklavc.com/blog/")) return links.post;
+    if (href.includes("pklavc.com")) return links.page;
+    return links.link;
   }
 
   function parseMarkdown(md) {
@@ -223,7 +398,7 @@
     }
 
     var card = document.createElement("article");
-    var who = role === "assistant" ? "Skyler" : "You";
+    var who = role === "assistant" ? "Skyler" : getCopy().userLabel;
     card.className = "chat-card chat-card-" + role;
     card.innerHTML = '<span class="chat-card-label">' + who + '</span><div class="chat-card-content"></div>';
     setMessageContent(card, text, rawText || role !== "assistant");
@@ -294,7 +469,7 @@
     document.body.classList.toggle("is-skyler-context-open", shouldOpen);
     els.contextToggle.textContent = shouldOpen ? "<" : ">";
     els.contextToggle.setAttribute("aria-expanded", shouldOpen ? "true" : "false");
-    els.contextToggle.setAttribute("aria-label", shouldOpen ? "Close Skyler context menu" : "Open Skyler context menu");
+    els.contextToggle.setAttribute("aria-label", shouldOpen ? getCopy().closeContext : getCopy().openContext);
     els.contextPanel.setAttribute("aria-hidden", !isMobileContextLayout() || shouldOpen ? "false" : "true");
   }
 
@@ -389,7 +564,7 @@
       return;
     }
 
-    var label = state.voiceEnabled ? "Voice on" : "Voice off";
+    var label = state.voiceEnabled ? getCopy().voiceOn : getCopy().voiceOff;
     els.voiceToggle.classList.toggle("is-active", state.voiceEnabled);
     els.voiceToggle.setAttribute("aria-pressed", state.voiceEnabled ? "true" : "false");
 
@@ -404,7 +579,7 @@
   function readVoiceInput() {
     var Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!Recognition) {
-      setStatus("Speech recognition is not available in this browser.");
+      setStatus(getCopy().speechUnavailable);
       return;
     }
 
@@ -418,7 +593,7 @@
     recognition.maxAlternatives = 1;
 
     recognition.onstart = function () {
-      setStatus("Listening...");
+      setStatus(getCopy().listening);
     };
 
     recognition.onresult = function (event) {
@@ -430,12 +605,12 @@
     };
 
     recognition.onerror = function () {
-      setStatus("Voice input could not start.");
+      setStatus(getCopy().voiceInputError);
     };
 
     recognition.onend = function () {
       if (!state.isBusy) {
-        setStatus("Ready for portfolio questions.");
+        setStatus(getCopy().ready);
       }
     };
 
@@ -503,7 +678,7 @@
     state.conversationId = data.conversation_id || state.conversationId;
     saveSession();
 
-    var reply = data.reply || "No response.";
+    var reply = data.reply || getCopy().noResponse;
     setMessageContent(assistantCard, reply, false);
     return reply;
   }
@@ -586,7 +761,7 @@
     }
 
     if (!finalText) {
-      finalText = "No response.";
+      finalText = getCopy().noResponse;
       setMessageContent(assistantCard, finalText, true);
     }
 
@@ -608,10 +783,10 @@
     els.chatInput.value = "";
     autoResizeInput();
     appendMessage("user", text, true);
-    var assistantCard = appendMessage("assistant", "Thinking...", true);
+    var assistantCard = appendMessage("assistant", getCopy().thinking, true);
 
     setBusy(true);
-    setStatus("Skyler is thinking...");
+    setStatus("");
 
     try {
       var reply = isStreamingEnabled()
@@ -619,10 +794,10 @@
         : await sendStandard(text, assistantCard);
 
       speakIfEnabled(reply);
-      setStatus("Ready for portfolio questions.");
+      setStatus(getCopy().ready);
     } catch (err) {
-      setMessageContent(assistantCard, "I could not answer right now.", true);
-      setStatus("Chat temporarily unavailable.");
+      setMessageContent(assistantCard, getCopy().unavailableMessage, true);
+      setStatus(getCopy().unavailableStatus);
       console.error(err);
     } finally {
       setBusy(false);
@@ -640,8 +815,8 @@
       els.chatLog.innerHTML = "";
     }
 
-    appendMessage("assistant", "**Memory reset.** Ask me where you want to go next.");
-    setStatus("Memory reset.");
+    appendMessage("assistant", getCopy().resetMessage);
+    setStatus(getCopy().resetStatus);
   }
 
   function bindEvents() {
@@ -667,7 +842,7 @@
         state.voiceEnabled = !state.voiceEnabled;
         updateVoiceToggle();
         saveSession();
-        setStatus(state.voiceEnabled ? "Voice output enabled." : "Voice output disabled.");
+        setStatus(state.voiceEnabled ? getCopy().voiceEnabled : getCopy().voiceDisabled);
       });
 
       els.voiceToggle.addEventListener("change", function () {
@@ -734,7 +909,7 @@
     }
 
     if (els.uploadStatus) {
-      els.uploadStatus.textContent = "Portfolio context online: projects, stack, blog posts, and architecture notes.";
+      els.uploadStatus.textContent = getCopy().contextOnline;
     }
 
     bindEvents();
@@ -742,8 +917,8 @@
     updateVoiceToggle();
     syncContextLayout();
     autoResizeInput();
-    setStatus("Ready for portfolio questions.");
-    appendMessage("assistant", "**Hi, I am Skyler.** Ask about Patrick's projects, backend systems, integrations, or technical tradeoffs.");
+    setStatus(getCopy().ready);
+    appendMessage("assistant", getCopy().intro);
 
     if ("speechSynthesis" in window) {
       window.speechSynthesis.getVoices();

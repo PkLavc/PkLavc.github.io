@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="PkLavc" />
+    <title>Cipher Gate Proxy | Python Projeto | Patrick Araujo</title>
+    
+    <!-- SEO Enhanced Meta Tags -->
+    <meta name="description" content="Python projeto de segurança de backend implementando API automação de proxy, criptografia AES-256, mascaramento dinâmico e controles de privacidade de dados em fluxos de confiança zero.">
+        <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="Cipher Gate Proxy | Python | Patrick Araujo">
+    <meta property="og:description" content="Python projeto de segurança de backend implementando API automação de proxy, criptografia AES-256, mascaramento dinâmico e controles de privacidade de dados em fluxos de confiança zero.">
+    <meta property="og:url" content="https://pklavc.com/pt/projetos/cipher-gate-proxy/">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://pklavc.com/images/lavc.webp?v=5e84850f26">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:site_name" content="Patrick Araujo">
+    <meta property="og:locale" content="pt_BR">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Cipher Gate Proxy | Python | Patrick Araujo">
+    <meta name="twitter:description" content="Python projeto de segurança de backend implementando API automação de proxy, criptografia AES-256, mascaramento dinâmico e controles de privacidade de dados em fluxos de confiança zero.">
+    <meta name="twitter:image" content="https://pklavc.com/images/lavc.webp?v=5e84850f26">
+    <meta name="twitter:image:alt" content="Retrato da marca do engenheiro de backend e especialista em automação Patrick Araujo">
+    <meta name="twitter:site" content="@PkLavc">
+    <meta name="twitter:creator" content="@PkLavc">
+    
+    <link rel="canonical" href="https://pklavc.com/pt/projetos/cipher-gate-proxy/">
+    <link rel="alternate" href="https://pklavc.com/projects/cipher-gate-proxy/" hreflang="en">
+    <link rel="alternate" href="https://pklavc.com/pt/projetos/cipher-gate-proxy/" hreflang="pt-BR">
+    <link rel="alternate" href="https://pklavc.com/es/proyectos/cipher-gate-proxy/" hreflang="es">
+    <link rel="alternate" href="https://pklavc.com/projects/cipher-gate-proxy/" hreflang="x-default">
+
+
+
+<meta name="robots" content="index, follow">
+<!-- JSON-LD Schema: Person -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Patrick Araujo",
+        "jobTitle": "Backend Software Engineer",
+        "url": "https://pklavc.com",
+        "image": "https://pklavc.com/images/lavc.webp?v=5e84850f26",
+        "sameAs": [
+            "https://github.com/PkLavc",
+            "https://www.linkedin.com/in/pklavc/"
+        ],
+        "description": "Specialist in backend automation, API integration, and scalable system architecture"
+    }
+    </script>
+    
+    <!-- JSON-LD Schema: Article -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": "Cipher Gate Proxy | Python",
+        "description": "Cipher Gate Proxy construído com Python. Proxy zero-trust de alto desempenho para privacidade de dados com criptografia AES-256 e detecção automatizada de PII",
+        "author": {
+            "@type": "Person",
+            "name": "Patrick Araujo"
+        },
+        "mainEntityOfPage": "https://pklavc.com/pt/projetos/cipher-gate-proxy/",
+        "url": "https://pklavc.com/pt/projetos/cipher-gate-proxy/",
+        "keywords": "Patrick Araujo, Backend Software Engineer, Python, Cipher Gate Proxy"
+    }
+    </script>
+    
+    <!-- JSON-LD Schema: BreadcrumbList -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "https://pklavc.com/"
+            },
+            {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Projects",
+                "item": "https://pklavc.com/pt/projetos/"
+            },
+            {
+                "@type": "ListItem",
+                "position": 3,
+                "name": "Cipher Gate Proxy",
+                "item": "https://pklavc.com/pt/projetos/cipher-gate-proxy/"
+            }
+        ]
+    }
+    </script>
+    <link rel="icon" type="image/svg+xml" href="https://pklavc.com/images/favicon.svg?v=d15fe4e492">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Monoton&amp;family=Poppins:wght@500&amp;family=Raleway:wght@300&amp;display=swap" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Monoton&amp;family=Poppins:wght@500&amp;family=Raleway:wght@300&amp;display=swap"></noscript>
+    <link rel="stylesheet" href="/css/global.css?v=55251d9722">
+    <link rel="stylesheet" href="/css/projects.css?v=84c54fcc24">
+    <style>
+        .project-hero { padding: 60px 20px; text-align: center; background: linear-gradient(135deg, rgba(0,0,0,0.1), rgba(0,0,0,0.05)); }
+        .project-hero h1 { font-size: 2.5rem; margin: 20px 0; color: #fff; }
+        .project-category-badge { display: inline-block; background: rgba(100, 200, 255, 0.2); border: 1px solid rgba(100, 200, 255, 0.5); color: #64c8ff; padding: 8px 16px; border-radius: 20px; font-size: 0.9rem; margin-bottom: 20px; }
+        .tech-stack-section { padding: 40px 20px; background: rgba(255, 255, 255, 0.02); }
+        .tech-stack-section h2 { color: #fff; margin-bottom: 20px; font-size: 1.5rem; }
+        .tech-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 40px; }
+        .tech-tag { background: rgba(100, 200, 255, 0.1); border: 1px solid rgba(100, 200, 255, 0.3); color: #64c8ff; padding: 12px 16px; border-radius: 8px; text-align: center; font-size: 0.95rem; }
+        .problem-solution { padding: 40px 20px; max-width: 800px; margin: 0 auto; }
+        .problem-solution h2 { color: #fff; margin: 30px 0 20px 0; font-size: 1.3rem; }
+        .problem-solution p { color: #ccc; line-height: 1.8; margin-bottom: 20px; }
+        .impact-section { padding: 40px 20px; background: rgba(100, 200, 255, 0.05); text-align: center; }
+        .impact-section h2 { color: #fff; margin-bottom: 20px; font-size: 1.3rem; }
+        .impact-text { color: #64c8ff; font-size: 1.1rem; margin: 20px 0; font-weight: 500; }
+        .cta-section { padding: 60px 20px; text-align: center; }
+        .cta-button { display: inline-block; background: linear-gradient(135deg, #64c8ff, #00d4ff); color: #000; padding: 16px 40px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 1rem; transition: transform 0.3s, box-shadow 0.3s; border: none; cursor: pointer; }
+        .cta-button:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(100, 200, 255, 0.3); }
+        .breadcrumb-nav {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 12px 20px;
+            margin-bottom: 30px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .breadcrumb {
+            list-style: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0;
+            font-size: 0.95rem;
+            color: #A0A0A0;
+        }
+        .breadcrumb li {
+            display: flex;
+            align-items: center;
+        }
+        .breadcrumb li:not(:last-child)::after {
+            content: "/";
+            margin-left: 8px;
+            font-size: 0.8rem;
+            color: #666;
+        }
+        .breadcrumb a {
+            color: #4A9EFF;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        .breadcrumb a:hover {
+            color: #64c8ff;
+            text-decoration: underline;
+        }
+        .breadcrumb [aria-current="page"] {
+            color: #E0E0E0;
+            font-weight: 500;
+        }
+            .full-readme-section { padding: 50px 20px; background: rgba(255, 255, 255, 0.02); }
+        .full-readme-container { max-width: 1000px; margin: 0 auto; }
+        .full-readme-container .markdown-body { background: #0d1117; border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 10px; padding: 24px; }
+            .project-context-section { padding: 32px 20px; background: rgba(100, 200, 255, 0.06); }
+        .project-context-container { max-width: 1000px; margin: 0 auto; }
+        .project-context-section h2, .project-context-section h3, .related-projects-section h2 { color: #fff; }
+        .project-context-section p, .project-context-section li, .related-projects-section p, .related-projects-section li { color: #d0d0d0; line-height: 1.7; }
+        .project-context-section a, .related-projects-section a { color: #64c8ff; }
+        .related-projects-section { padding: 32px 20px; background: rgba(255, 255, 255, 0.03); }    </style>
+    <link rel="preload" as="style" href="/css/github-markdown-local.css?v=01d37f05ee">
+    <link rel="stylesheet" href="/css/github-markdown-local.css?v=01d37f05ee" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="/css/github-markdown-local.css?v=01d37f05ee"></noscript>
+</head>
+<body>
+    <div id="breaker"></div>
+    <div id="breaker-two"></div>
+    <div id="all">
+        <div id="navigation-content" role="navigation" aria-label="Navegação primária">
+            <div class="logo"></div>
+            <div class="navigation-links">
+                <a href="/pt/" data-text="INÍCIO">INÍCIO</a>
+                <a href="/pt/sobre/" data-text="SOBRE">SOBRE</a>
+                <a href="/pt/projetos/" data-text="PROJETOS">PROJETOS</a>
+            </div>
+        </div>
+        <div id="navigation-bar">
+            <div class="menubar">
+                <span class="first-span"></span>
+                <span class="second-span"></span>
+                <span class="third-span"></span>
+            </div>
+        </div>
+        
+        <main role="main">
+            <section class="project-hero">
+                <span class="project-category-badge">Cibersegurança</span>
+                <h1>Cipher Gate Proxy | Python</h1>
+                <p style="color: #aaa; font-size: 1.1rem; margin-top: 15px;">Proxy zero-trust de alto desempenho para privacidade de dados com criptografia AES-256 e detecção automatizada de PII</p>
+            </section>
+
+            <section class="project-context-section" aria-label="Contexto de SEO do projeto">
+  <div class="project-context-container">
+    <h2>Contexto do problema, pilha e tipo de sistema</h2>
+    <p>Este projeto Python está posicionado como uma camada de processamento de backend segura para tráfego API onde dados confidenciais requerem criptografia e filtragem baseada em políticas. Ele representa um cenário de automação de backend python com controles de segurança nos limites de integração.</p>
+    <h3>Escopo Técnico</h3>
+    <ul>
+      <li><strong>Pilha:</strong> Python, criptografia, API padrões de proxy, mascaramento e controles de privacidade</li>
+      <li><strong>Tipo de sistema:</strong> backend python, integração de segurança de API, sistema de automação</li>
+      <li><strong>Palavras-chave no contexto:</strong> backend python, sistema de integração de API, automação</li>
+    </ul>
+    <p>Trabalho relacionado Python: <a href="/pt/projetos/aegis-sentinel/">Aegis Sentinel</a>. Confiabilidade de backend relacionada: <a href="/pt/projetos/event-driven-integration-service/">Event-Driven Integration Service</a>. Veja <a href="/pt/stacks/engenheiro-python/">Python Engenheiro</a>.</p>
+  </div>
+</section>
+            <section class="full-readme-section" aria-label="LEIA-ME completo">
+                <div class="full-readme-container">
+                    <h2 style="color: #fff; margin-bottom: 20px;">Documentação completa do projeto</h2>
+                    <article class="markdown-body">
+<h2>Proxy de segurança CipherGate</h2>
+<p><a href="https://python.org"><img src="https://img.shields.io/badge/Python-3.11+-blue.svg" alt="Python Versão"></a>
+<a href="https://github.com/PkLavc/cipher-gate"><img src="https://img.shields.io/badge/Security-Zero--Trust-red.svg" alt="Segurança"></a>
+<a href="https://github.com/PkLavc/cipher-gate#license"><img src="https://img.shields.io/badge/License-MIT-green.svg" alt="Licença: MIT"></a></p>
+<h2>Visão geral</h2>
+<p>CipherGate Security Proxy é uma solução de segurança zero-trust de nível empresarial projetada para proteger dados confidenciais em trânsito. Esta implementação pronta para produção fornece recursos abrangentes de proteção de dados, autenticação e monitoramento para infraestrutura digital moderna.</p>
+<h3>Princípios Básicos de Segurança</h3>
+<ul>
+<li><strong>Verifique explicitamente</strong>: Cada solicitação passa por autenticação e autorização criptográfica</li>
+<li><strong>Acesso com menor privilégio</strong>: Mascaramento de dados baseado em função e controle de acesso</li>
+<li><strong>Presumir violação</strong>: Monitoramento contínuo com trilhas de auditoria à prova de falsificação</li>
+<li><strong>Proteção criptográfica</strong>: Criptografia de nível militar com verificação de integridade</li>
+</ul>
+<h2>Arquitetura Técnica</h2>
+<h3>Fluxo de trabalho de segurança</h3>
+<pre><code class="language-mermaid">graph LR
+    A[Inbound Request] --&gt; B[CipherGate Proxy]
+    B --&gt; C{PII Detector}
+    C -- Sensitive Data --&gt; D[AES-256 Masking]
+    C -- Safe Data --&gt; E[Forward to Backend]
+    D --&gt; E
+    E --&gt; F[Secure Response]
+</code></pre>
+<h3>Componentes principais</h3>
+<h4>1. Proxy de segurança (<code>proxy.py</code>)</h4>
+<ul>
+<li><strong>Servidor proxy de alto desempenho baseado em FastAPI</strong></li>
+<li><strong>Implementação de middleware zero-trust</strong></li>
+<li><strong>Interceptação e validação de solicitação/resposta</strong></li>
+<li><strong>Integração de controle de acesso baseado em função</strong></li>
+</ul>
+<h4>2. Cofre criptográfico (<code>crypto_vault.py</code>)</h4>
+<ul>
+<li><strong>Criptografia AES-256-GCM para dados em repouso</strong></li>
+<li><strong>HMAC-SHA256 para verificação de integridade de dados</strong></li>
+<li><strong>RSA-2048 para assinatura e validação de token</strong></li>
+<li><strong>Geração e gerenciamento seguros de chaves</strong></li>
+</ul>
+<h4>3. Mecanismo de mascaramento de dados dinâmico (<code>masking_engine.py</code>)</h4>
+<ul>
+<li><strong>Detecção automática de padrões de dados confidenciais</strong></li>
+<li><strong>Mascaramento baseado em função com vários níveis</strong>:<ul>
+<li><strong>Completo</strong>: Visibilidade completa dos dados (Admin)</li>
+<li><strong>Parcial</strong>: Preservação do primeiro/último caractere (Usuário)</li>
+<li><strong>Últimos Quatro</strong>: Apenas os últimos 4 dígitos visíveis (Usuário)</li>
+<li><strong>Mascarado</strong>: Máscara completa com asteriscos (Convidado)</li>
+</ul>
+</li>
+<li><strong>Preservação da estrutura</strong>: Mantém o formato dos dados e a integridade do esquema</li>
+</ul>
+<h4>4. Auditor de Conformidade (<code>compliance_auditor.py</code>)</h4>
+<ul>
+<li><strong>Registro de auditoria à prova de adulteração com encadeamento criptográfico</strong></li>
+<li><strong>Relatórios de conformidade com GDPR/HIPAA</strong></li>
+<li><strong>Detecção de violação de segurança em tempo real</strong></li>
+<li><strong>Trilha de auditoria imutável com verificação de integridade</strong></li>
+</ul>
+<h2>Especificações de segurança</h2>
+<h3>Padrões criptográficos</h3>
+<ul>
+<li><strong>AES-256-GCM</strong>: Algoritmo de criptografia padrão da indústria com criptografia autenticada</li>
+<li><strong>HMAC-SHA256</strong>: Verificação de integridade criptográfica usando SHA-256</li>
+<li><strong>RSA-2048</strong>: Assinatura digital e validação de token com chaves de 2.048 bits</li>
+<li><strong>Geração Aleatória Segura</strong>: Geração de chave criptograficamente segura usando <code>secrets</code> módulo</li>
+<li><strong>Algoritmo de Luhn</strong>: Validação de cartão de crédito compatível com PCI-DSS</li>
+<li><strong>Mitigação de ReDoS</strong>: Proteção contra negação de serviço de expressão regular com limites de tamanho de entrada</li>
+</ul>
+<h3>Padrões de proteção de dados</h3>
+<ul>
+<li><strong>Conformidade com o GDPR</strong>: Minimização de dados, limitação de finalidade e requisitos abrangentes de auditoria</li>
+<li><strong>Conformidade com HIPAA</strong>: Proteção de informações de saúde protegidas (PHI) com salvaguardas técnicas</li>
+<li><strong>Conformidade com PCI-DSS</strong>: Implementação de padrões de segurança de dados da indústria de cartões de pagamento</li>
+<li><strong>Estrutura de confiança zero do NIST</strong>: Implementação total das diretrizes NIST SP 800-207</li>
+</ul>
+<h3>Arquitetura de gerenciamento de chaves</h3>
+<h4>Derivação de chave mestra</h4>
+<ul>
+<li>Geração de chaves baseada no ambiente com mecanismos de fallback seguros</li>
+<li>Derivação de chave baseada em SHA-256 para maior segurança</li>
+<li>Isolamento de chaves com chaves separadas para diferentes operações criptográficas</li>
+</ul>
+<h4>Armazenamento de chaves persistente</h4>
+<ul>
+<li>Armazenamento criptografado AES-256 para chaves criptográficas</li>
+<li>Validação de permissões do sistema de arquivos entre plataformas</li>
+<li>Medidas de segurança multiplataforma para sistemas Windows e Unix</li>
+</ul>
+<h4>Gerenciamento chave do ciclo de vida</h4>
+<ul>
+<li>Geração de chave aleatória criptograficamente segura</li>
+<li>Integridade de chave abrangente e validação de formato</li>
+<li>Verificação de permissão do sistema de arquivos em tempo de execução</li>
+<li>Manuseio seguro de memória com limpeza automática</li>
+</ul>
+<h2>Auditoria de alta simultaneidade</h2>
+<p>O sistema de auditoria de conformidade da CipherGate foi projetado para ambientes de alto rendimento e em escala empresarial:</p>
+<h3>Registrador assíncrono singleton</h3>
+<ul>
+<li>Padrão singleton thread-safe garantindo instância única em todos os threads e processos</li>
+<li>Detecção e reutilização inteligente de loop de eventos em ambientes FastAPI</li>
+<li>Processamento em segundo plano com gravação de log assíncrona para evitar bloqueio</li>
+<li>Arquitetura baseada em fila para processamento de log sem bloqueio</li>
+</ul>
+<h3>Trilhas de auditoria à prova de adulteração</h3>
+<ul>
+<li>Encadeamento criptográfico com cada registro de auditoria vinculado a entradas anteriores</li>
+<li>Registro imutável com trilha de auditoria de gravação única e verificação de integridade</li>
+<li>Processamento em tempo real com processamento de log de auditoria inferior a um milissegundo</li>
+<li>Armazenamento escalonável com E/S de arquivo assíncrono para operações de alto volume</li>
+</ul>
+<h3>Desempenho de alto rendimento</h3>
+<ul>
+<li>Operações de E/S sem bloqueio, evitando o bloqueio de caminhos críticos de aplicativos</li>
+<li>Uso otimizado de memória para implantações em larga escala</li>
+<li>Integração perfeita com a arquitetura de loop de eventos do FastAPI</li>
+<li>Fallback síncrono para ambientes sem execução de loops de eventos</li>
+</ul>
+<h2>Recursos de resiliência</h2>
+<p>Mecanismos de resiliência abrangentes projetados para ambientes de produção:</p>
+<h3>Degradação Graciosa</h3>
+<ul>
+<li>Tratamento de falhas de componentes com continuidade do sistema durante falhas de componentes individuais</li>
+<li>Fallback automático para padrões seguros quando recursos avançados não estão disponíveis</li>
+<li>Isolamento de erros evitando a cascata de falhas de componentes</li>
+<li>Continuidade do serviço garantindo que as principais funções de segurança permaneçam operacionais</li>
+</ul>
+<h3>Segurança do sistema de arquivos</h3>
+<ul>
+<li>Validação em tempo de execução de permissões do sistema de arquivos para arquivos críticos para a segurança</li>
+<li>Suporte multiplataforma com medidas de segurança específicas da plataforma</li>
+<li>Permissões de arquivo restritivas (600) para arquivos de chave criptográfica</li>
+<li>Monitoramento contínuo da postura de segurança do sistema de arquivos</li>
+</ul>
+<h3>Resiliência Operacional</h3>
+<ul>
+<li>Reinicie a persistência com chaves criptográficas e preservação de configuração</li>
+<li>Recuperação automática de estado após falhas do sistema</li>
+<li>Verificações de integridade abrangentes para todos os componentes críticos</li>
+<li>Tratamento da degradação do desempenho enquanto mantém a segurança</li>
+</ul>
+<h3>Monitoramento de segurança</h3>
+<ul>
+<li>Alertas em tempo real para violações e anomalias de segurança</li>
+<li>Verificação contínua da integridade da trilha de auditoria</li>
+<li>Monitoramento de desempenho de operação de segurança</li>
+<li>Geração automatizada de relatórios de conformidade para requisitos regulatórios</li>
+</ul>
+<h2>Conformidade e Auditoria</h2>
+<h3>Alinhamento Regulatório</h3>
+<table>
+<thead>
+<tr>
+<th align="left">Regulamento</th>
+<th align="left">Requisito</th>
+<th align="left">Implementação CipherGate</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>GDPR</strong></td>
+<td align="left">Direito à privacidade</td>
+<td align="left">Mascaramento Dinâmico de Dados (PII)</td>
+</tr>
+<tr>
+<td align="left"><strong>HIPAA</strong></td>
+<td align="left">Salvaguardas Técnicas</td>
+<td align="left">Criptografia AES-256 e trilhas de auditoria</td>
+</tr>
+<tr>
+<td align="left"><strong>PCI-DSS</strong></td>
+<td align="left">Segurança do cartão de pagamento</td>
+<td align="left">Algoritmo Luhn e mascaramento de cartão</td>
+</tr>
+<tr>
+<td align="left"><strong>NIST 800-207</strong></td>
+<td align="left">Arquitetura de confiança zero</td>
+<td align="left">Middleware de verificação contínua</td>
+</tr>
+</tbody></table>
+<h3>Exemplo de registro de auditoria</h3>
+<pre><code class="language-json">{
+  &quot;event&quot;: &quot;pii_masking_applied&quot;,
+  &quot;source_ip&quot;: &quot;192.168.1.50&quot;,
+  &quot;endpoint&quot;: &quot;/v1/user/data&quot;,
+  &quot;masked_fields&quot;: [&quot;email&quot;, &quot;credit_card&quot;],
+  &quot;algorithm&quot;: &quot;AES-256-GCM&quot;,
+  &quot;status&quot;: &quot;success&quot;
+}
+</code></pre>
+<h3>Recursos de trilha de auditoria</h3>
+<ul>
+<li>Encadeamento criptográfico com cada entrada de log criptograficamente vinculada à anterior</li>
+<li>Detecção de adulteração com detecção automática de tentativas de modificação de log</li>
+<li>Monitoramento em tempo real com streaming de eventos de segurança ao vivo</li>
+<li>Relatórios de conformidade com relatórios automatizados de conformidade GDPR/HIPAA</li>
+</ul>
+<h3>Monitoramento de segurança</h3>
+<ul>
+<li>Análise de padrões de acesso para detecção de padrões de acesso incomuns</li>
+<li>Registro de violação de segurança com registro automático de violação de política</li>
+<li>Monitoramento de desempenho com latência de solicitação e métricas de rendimento</li>
+<li>Rastreamento de erros com registro detalhado de erros para solução de problemas</li>
+</ul>
+<h2>Configuração e uso</h2>
+<h3>Pré-requisitos</h3>
+<ul>
+<li>Python 3.11+</li>
+<li>gerenciador de pacotes pip</li>
+</ul>
+<h3>Instalação</h3>
+<pre><code class="language-bash"># Clone the repository
+git clone https://github.com/PkLavc/cipher-gate.git
+cd cipher-gate
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Start the proxy server
+python proxy.py
+</code></pre>
+<h3>Configuração</h3>
+<p>O proxy é executado em <code>http://localhost:8000</code> por padrão com os seguintes endpoints:</p>
+<ul>
+<li><strong>Verificação de saúde</strong>: <code>GET /health</code></li>
+<li><strong>API Proxy</strong>: <code>POST /api/proxy/{service_path:path}</code></li>
+<li><strong>Documentação</strong>: <code>GET /docs</code> (IU do Swagger)</li>
+</ul>
+<h3>Exemplo de uso</h3>
+<pre><code class="language-bash"># Test the proxy with sample data
+curl -X POST &quot;http://localhost:8000/api/proxy/test-service&quot; \
+  -H &quot;accept: application/json&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#39;{
+    &quot;user&quot;: {
+      &quot;name&quot;: &quot;John Doe&quot;,
+      &quot;email&quot;: &quot;john.doe@example.com&quot;,
+      &quot;ssn&quot;: &quot;123-45-6789&quot;
+    },
+    &quot;message&quot;: &quot;Contact me at user@domain.com&quot;
+  }&#39;
+</code></pre>
+<h3>Controle de acesso baseado em função</h3>
+<p>CipherGate oferece suporte a quatro funções de usuário com diferentes níveis de acesso a dados:</p>
+<ul>
+<li><strong>Administrador</strong>: Visibilidade total dos dados</li>
+<li><strong>Usuário</strong>: Mascaramento parcial (primeiro/último caractere preservado)</li>
+<li><strong>Convidado</strong>: Mascaramento completo</li>
+<li><strong>Auditor</strong>: Visibilidade total para monitoramento de conformidade</li>
+</ul>
+<h3>Configuração de segurança</h3>
+<p>Defina a variável de ambiente da chave mestra para implantações de produção:</p>
+<pre><code class="language-bash">export CIPHERGATE_MASTER_KEY=&quot;your-64-character-hex-key-here&quot;
+python proxy.py
+</code></pre>
+<h2>Características de desempenho</h2>
+<h3>Referências</h3>
+<ul>
+<li><strong>Criptografia/Descriptografia</strong>: &lt; 100 ms para cargas úteis de 10 KB</li>
+<li><strong>Mascaramento de dados</strong>: &lt; 100 ms para estruturas de dados aninhadas complexas</li>
+<li><strong>Validação de token</strong>: &lt; 10 ms por solicitação</li>
+<li><strong>Registro de auditoria</strong>: &lt; 1 ms por entrada de log</li>
+</ul>
+<h3>Escalabilidade</h3>
+<ul>
+<li><strong>Escala horizontal</strong>: Design sem estado suporta balanceamento de carga</li>
+<li><strong>Eficiência de memória</strong>: consumo mínimo de memória por solicitação</li>
+<li><strong>Otimização de CPU</strong>: Operações criptográficas eficientes</li>
+<li><strong>Desempenho da rede</strong>: Adição de latência mínima para solicitações com proxy</li>
+</ul>
+<h2>Desenvolvimento e Contribuição</h2>
+<h3>Padrões de qualidade do código</h3>
+<ul>
+<li>Digite dicas para manutenção total</li>
+<li>Documentos abrangentes e comentários embutidos</li>
+<li>Cobertura de testes com foco na segurança</li>
+<li>Revisão de segurança obrigatória para todas as alterações</li>
+</ul>
+<h3>Ciclo de vida de desenvolvimento de segurança</h3>
+<ol>
+<li>Modelagem de ameaças com análise de requisitos de segurança</li>
+<li>Codificação segura seguindo as diretrizes OWASP</li>
+<li>Execução automatizada de testes de segurança</li>
+<li>Revisão por pares com foco na segurança</li>
+<li>Práticas de implantação seguras</li>
+</ol>
+<h2>Suporte e Manutenção</h2>
+<h3>Atualizações de segurança</h3>
+<ul>
+<li>Auditorias de segurança regulares com avaliações trimestrais</li>
+<li>Atualizações automatizadas de dependências e patches de segurança</li>
+<li>Resposta 24 horas por dia a vulnerabilidades críticas</li>
+<li>Comunicação de segurança transparente por meio de avisos</li>
+</ul>
+<h3>Serviços Profissionais</h3>
+<ul>
+<li>Assistência de implantação personalizada e suporte à implementação</li>
+<li>Avaliações de segurança específicas da organização</li>
+<li>Programas de treinamento em arquitetura zero-trust</li>
+<li>Consultoria de conformidade regulatória</li>
+</ul>
+<h2>Autor</h2>
+<p><strong>Patrick Araujo - Engenheiro de Computação</strong></p>
+<p>Para visualizar outros projetos e detalhes do portfólio, visite:
+<a href="https://pklavc.com/pt/projetos/">https://pklavc.com/projects/</a></p>
+<p><a href="https://github.com/sponsors/PkLavc"><img src="https://img.shields.io/badge/Apoiar%20no%20GitHub-%23ea4aaa?style=for-the-badge&amp;logo=github-sponsors&amp;logoColor=white" alt="GitHub Sponsors"></a></p>
+                    </article>
+                </div>
+            </section>
+            
+            <section class="tech-stack-section">
+                <div style="max-width: 1000px; margin: 0 auto;">
+                    <h2>Pilha de tecnologia</h2>
+                    <div class="tech-list">
+                        <div class="tech-tag">Python</div>
+                        <div class="tech-tag">Criptografia</div>
+                        <div class="tech-tag">Arquitetura de confiança zero</div>
+                        <div class="tech-tag">AES-256</div>
+                        <div class="tech-tag">API Segurança</div>
+                    </div>
+                </div>
+            </section>
+
+            
+            
+            <section class="related-projects-section" aria-label="Links de projetos relacionados">
+  <div class="project-context-container">
+    <h2>Projetos de backend relacionados e integrações API</h2>
+    <p>Explore implementações vinculadas em <a href="/pt/colecoes/projetos-python/">automação de backend python</a>, <a href="/pt/colecoes/projetos-javascript/">Fluxos de trabalho da API node.js</a>e <a href="/pt/colecoes/projetos-integracao-api/">sistema de integração de API</a> aglomerados.</p>
+    <ul>
+      <li><a href="/pt/projetos/google-auth-worker/">Google Auth Worker</a> para orquestração de autenticação.</li>
+      <li><a href="/pt/projetos/event-driven-integration-service/">Event-Driven Integration Service</a> para processamento de webhook e arquitetura orientada a eventos.</li>
+      <li><a href="/pt/projetos/zoho-integration-worker/">Zoho Integration Worker</a> para fluxos de trabalho de suporte à automação Zoho Deluge.</li>
+      <li><a href="/pt/projetos/cipher-gate-proxy/">Cipher Gate Proxy</a> para processamento de segurança de backend python.</li>
+    </ul>
+  </div>
+</section>
+            <section class="cta-section">
+                <h2 style="color: #fff; margin-bottom: 30px;">Veja o código-fonte</h2>
+                <a href="https://github.com/PkLavc/cipher-gate" target="_blank" rel="noopener noreferrer" class="cta-button">
+                    Abrir em GitHub
+                </a>
+            </section>
+
+        </main>
+        
+        <footer class="footer-minimal">
+            <div class="footer-container">
+                <div class="footer-link-list" aria-label="Links de rodapé">
+                    <a class="footer-link-pill" href="https://github.com/PkLavc" target="_blank" rel="noopener noreferrer">GitHub</a>
+                    <a class="footer-link-pill" href="https://www.linkedin.com/in/pklavc/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+                    <a class="footer-link-pill" href="mailto:contact@pklavc.com">E-mail</a>
+                    <a class="footer-link-pill footer-link-pill-accent" href="https://github.com/sponsors/PkLavc" target="_blank" rel="noopener noreferrer">Apoiar no GitHub</a>
+                </div>
+                <p>
+                    © <span data-current-year></span> Patrick Araujo
+                </p>
+            </div>
+        </footer>
+    </div>
+    
+    <div class="visually-hidden">
+        <p>Engenheiro de Software Backend com foco em automação, integrações API, sistemas backend, Python, Node.js, SQL, ETL pipelines, AWS e plataformas operacionais escaláveis.</p>
+    </div>
+    
+    <script>
+        (function() {
+            document.querySelectorAll('[data-current-year]').forEach(function(node) {
+                node.textContent = String(new Date().getFullYear());
+            });
+        }());
+    </script>
+        <script src="/js/i18n.js?v=cc3ee695f1" defer></script>
+    <script src="/js/jquery.min.js?v=d482871a5e" defer></script>
+    <script src="/js/index.js?v=0b108f99d1" defer></script>
+</body>
+</html>
+
+
+
