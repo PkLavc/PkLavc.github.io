@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Patrick Araujo">
+    <title>Digital Provenance, SBOMs, And Signed AI-Generated Code</title>
+    <meta name="description" content="How SLSA provenance, SBOMs, ML-BOMs, Sigstore signatures, attestations, and policy gates make AI-generated code and model artifacts easier to verify before production.">
+    <meta name="keywords" content="digital provenance, SBOM, ML-BOM, SLSA provenance, Sigstore, Cosign, signed AI code, AI generated code security, software supply chain, attestations">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://pklavc.com/blog/digital-provenance-sboms-signed-ai-code/">
+    <link rel="alternate" href="https://pklavc.com/blog/digital-provenance-sboms-signed-ai-code/" hreflang="en">
+    <link rel="alternate" href="https://pklavc.com/pt/blog/digital-provenance-sboms-signed-ai-code/" hreflang="pt-BR">
+    <link rel="alternate" href="https://pklavc.com/es/blog/digital-provenance-sboms-signed-ai-code/" hreflang="es">
+    <link rel="alternate" href="https://pklavc.com/blog/digital-provenance-sboms-signed-ai-code/" hreflang="x-default">
+
+    <meta property="og:title" content="Digital Provenance, SBOMs, And Signed AI-Generated Code">
+    <meta property="og:description" content="A practical verification pipeline for code, containers, SBOMs, model artifacts, and agent-generated changes.">
+    <meta property="og:url" content="https://pklavc.com/blog/digital-provenance-sboms-signed-ai-code/">
+    <meta property="og:type" content="article">
+    <meta property="article:published_time" content="2026-06-01">
+    <meta property="article:modified_time" content="2026-06-01">
+    <meta property="article:author" content="Patrick Araujo">
+    <meta property="article:section" content="Software Supply Chain">
+    <meta property="article:tag" content="provenance">
+    <meta property="article:tag" content="SBOM">
+    <meta property="article:tag" content="Sigstore">
+    <meta property="article:tag" content="AI code">
+    <meta property="og:image" content="https://pklavc.com/images/lavc.webp?v=5e84850f26">
+    <meta property="og:image:width" content="1024">
+    <meta property="og:image:height" content="1024">
+    <meta property="og:site_name" content="Patrick Araujo">
+    <meta property="og:locale" content="en_US">
+    <meta property="og:image:alt" content="Brand portrait of backend engineer and automation specialist Patrick Araujo">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Digital Provenance, SBOMs, And Signed AI-Generated Code">
+    <meta name="twitter:description" content="SLSA, SBOMs, Sigstore, and policy checks for AI-generated software.">
+    <meta name="twitter:image" content="https://pklavc.com/images/lavc.webp?v=5e84850f26">
+    <meta name="twitter:image:alt" content="Brand portrait of backend engineer and automation specialist Patrick Araujo">
+    <meta name="twitter:site" content="@PkLavc">
+    <meta name="twitter:creator" content="@PkLavc">
+    <link rel="icon" type="image/svg+xml" href="https://pklavc.com/images/favicon.svg?v=d15fe4e492">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Monoton&family=Poppins:wght@500;600;700&family=Raleway:wght@300&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Monoton&family=Poppins:wght@500;600;700&family=Raleway:wght@300&display=swap"></noscript>
+    <link rel="stylesheet" href="/css/global.css?v=d71c8efb77">
+    <link rel="stylesheet" href="/css/blog.css?v=560c7eaf05">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.2.6/gsap.min.js" defer></script>
+    <style>
+        .blog-diagram{margin:24px 0;padding:20px;border:1px solid rgba(0,209,255,.22);border-radius:8px;background:linear-gradient(180deg,rgba(0,209,255,.06),rgba(255,255,255,.025))}
+        .blog-diagram-title{display:block;color:var(--clr-primary);font-size:.78rem;font-weight:700;letter-spacing:.08em;margin-bottom:14px;text-transform:uppercase}
+        .blog-flow-grid,.blog-metric-grid{display:grid;gap:10px}
+        .blog-flow-grid{grid-template-columns:repeat(6,minmax(0,1fr))}
+        .blog-metric-grid{grid-template-columns:repeat(4,minmax(0,1fr));margin:18px 0 24px}
+        .blog-flow-step,.blog-metric-card{min-height:112px;padding:14px;border:1px solid rgba(255,255,255,.12);border-radius:8px;background:rgba(10,10,10,.68)}
+        .blog-flow-step strong,.blog-metric-card strong{display:block;color:#fff;font-size:.9rem;line-height:1.3;margin-bottom:8px}
+        .blog-flow-step span,.blog-metric-card span{color:#b9b9b9;font-size:.84rem;line-height:1.55}
+        .blog-table-wrap{margin:24px 0;overflow-x:auto;border:1px solid rgba(255,255,255,.1);border-radius:8px}
+        .blog-table-wrap table{width:100%;border-collapse:collapse;min-width:760px;background:#0f0f0f}
+        .blog-table-wrap th,.blog-table-wrap td{padding:12px 14px;border-bottom:1px solid rgba(255,255,255,.08);color:#b9b9b9;line-height:1.55;text-align:left;vertical-align:top}
+        .blog-table-wrap th{color:#fff;background:rgba(0,209,255,.08)}
+        @media(max-width:900px){.blog-flow-grid,.blog-metric-grid{grid-template-columns:1fr}}
+    </style>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@graph": [
+            {
+                "@type": "BlogPosting",
+                "headline": "Digital Provenance, SBOMs, And Signed AI-Generated Code",
+                "description": "How SLSA provenance, SBOMs, ML-BOMs, Sigstore signatures, attestations, and policy gates make AI-generated code and model artifacts easier to verify before production.",
+                "image": "https://pklavc.com/images/lavc.webp?v=5e84850f26",
+                "datePublished": "2026-06-01",
+                "dateModified": "2026-06-01",
+                "author": {"@type": "Person", "name": "Patrick Araujo"},
+                "publisher": {"@type": "Person", "name": "Patrick Araujo"},
+                "mainEntityOfPage": "https://pklavc.com/blog/digital-provenance-sboms-signed-ai-code/",
+                "url": "https://pklavc.com/blog/digital-provenance-sboms-signed-ai-code/",
+                "keywords": ["digital provenance", "SBOM", "SLSA", "Sigstore", "AI-generated code", "software supply chain"]
+            },
+            {
+                "@type": "BreadcrumbList",
+                "itemListElement": [
+                    {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://pklavc.com/"},
+                    {"@type": "ListItem", "position": 2, "name": "Blog", "item": "https://pklavc.com/blog/"},
+                    {"@type": "ListItem", "position": 3, "name": "Digital Provenance", "item": "https://pklavc.com/blog/digital-provenance-sboms-signed-ai-code/"}
+                ]
+            }
+        ]
+    }
+    </script>
+</head>
+<body class="blog-layout seo-layout">
+    <div id="breaker"></div><div id="breaker-two"></div>
+    <div id="all">
+        <div class="cursor"></div>
+        <div id="navigation-content" role="navigation" aria-label="Primary navigation"><div class="logo"></div><div class="navigation-links"><a href="/" data-text="HOME" id="home-link">HOME</a><a href="/about/" data-text="ABOUT" id="about-link">ABOUT</a><a href="/projects/" data-text="PROJECTS" id="projects-link">PROJECTS</a><a href="/blog/" data-text="BLOG" id="blog-link">BLOG</a></div></div>
+        <div id="navigation-bar"><div class="menubar"><span class="first-span"></span><span class="second-span"></span><span class="third-span"></span></div></div>
+        <main class="blog-shell" role="main">
+            <div class="blog-columns">
+                <div>
+                    <article class="blog-post-hero">
+                        <div class="blog-breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a><span>/</span><a href="/blog/">Blog</a><span>/</span><span aria-current="page">Digital Provenance</span></div>
+                        <span class="blog-kicker">Software Supply Chain</span>
+                        <h1>Digital Provenance, SBOMs, And Signed AI-Generated Code</h1>
+                        <p>AI agents can now draft code, update dependencies, generate containers, and modify deployment files in minutes. That speed is useful only if production can answer a boring but critical question: who produced this artifact, from which source, with which dependencies, under which workflow, and has it changed since?</p>
+                        <div class="blog-post-meta"><span>Published Jun 1, 2026</span><span>12 min read</span><span>Supply Chain Security</span></div>
+                    </article>
+                    <article class="blog-article">
+                        <h2>Provenance turns AI output into evidence</h2>
+                        <p>Generated code is not special because it came from an AI model. It is special because it can change more code paths, faster, with less human typing. That makes supply-chain evidence more important, not less. A pull request comment saying "the agent wrote this" is not provenance. A signed attestation tying the artifact to source, commit, workflow, builder, dependencies, and digest is much closer to something a deployment gate can verify.</p>
+                        <p>SLSA focuses on provenance for build integrity. Sigstore provides signing and transparency tooling for artifacts. CycloneDX covers SBOMs and ML-BOMs so software, models, datasets, and dependencies can be represented in a structured way. Together, they give AI-generated code a verifiable trail.</p>
+                        <div class="blog-diagram" aria-label="AI code provenance pipeline"><span class="blog-diagram-title">AI code verification pipeline</span><div class="blog-flow-grid"><div class="blog-flow-step"><strong>Agent change</strong><span>Code, tests, prompts, dependencies, or deployment files are modified.</span></div><div class="blog-flow-step"><strong>Review</strong><span>Human approves behavior, risk, and architecture impact.</span></div><div class="blog-flow-step"><strong>Build</strong><span>CI produces artifact from pinned source and workflow identity.</span></div><div class="blog-flow-step"><strong>Document</strong><span>SBOM, ML-BOM, licenses, models, datasets, and dependency graph.</span></div><div class="blog-flow-step"><strong>Sign</strong><span>Artifact and attestations are signed and logged.</span></div><div class="blog-flow-step"><strong>Verify</strong><span>Admission policy checks digest, provenance, signer, and risk before deploy.</span></div></div></div>
+                        <h2>SBOM is the ingredient list, provenance is the receipt</h2>
+                        <p>An SBOM tells you what is inside. Provenance tells you how it was produced. A signature tells you whether the thing you are deploying still matches what was signed. AI-era delivery needs all three because generated changes often touch glue code, transitive dependencies, prompt templates, generated SDKs, and container layers at the same time.</p>
+                        <p>For AI systems, the inventory expands. It is not enough to list npm or Python dependencies. You also need model name and version, dataset lineage, embedding model, prompt template version, eval suite, tool permissions, and runtime policy.</p>
+                        <div class="blog-metric-grid" aria-label="Provenance controls"><div class="blog-metric-card"><strong>SBOM</strong><span>What packages, licenses, files, and components are present?</span></div><div class="blog-metric-card"><strong>ML-BOM</strong><span>Which models, datasets, frameworks, and training or eval metadata matter?</span></div><div class="blog-metric-card"><strong>Attestation</strong><span>Who built it, from what source, using which workflow and builder?</span></div><div class="blog-metric-card"><strong>Signature</strong><span>Can production verify artifact identity before it runs?</span></div></div>
+                        <h2>What should be signed</h2>
+                        <p>The mistake is signing only the final container and calling it done. A useful AI supply chain signs the container image, SBOM, model artifact, eval report, deployment manifest, and provenance statement. The signature is not just ceremony; it allows an admission controller or deployment script to reject unknown artifacts before they touch production.</p>
+                        <div class="blog-table-wrap" aria-label="Digital provenance artifacts for AI-generated code"><table><thead><tr><th>Artifact</th><th>What it proves</th><th>Policy gate</th></tr></thead><tbody><tr><td>Source commit</td><td>Which repository revision introduced the change, including agent-authored files.</td><td>Require protected branch, review, and workflow identity.</td></tr><tr><td>Build provenance</td><td>Which builder, workflow, inputs, and digest produced the artifact.</td><td>Accept only trusted CI builders and expected repo paths.</td></tr><tr><td>SBOM</td><td>Which software dependencies, licenses, and components are included.</td><td>Block banned licenses, vulnerable packages, and unknown registries.</td></tr><tr><td>ML-BOM</td><td>Which models, datasets, embeddings, frameworks, and eval metadata are involved.</td><td>Block unapproved models or missing data lineage.</td></tr><tr><td>Container signature</td><td>Whether the image digest matches a trusted signature.</td><td>Deploy only signed digests, never mutable tags alone.</td></tr><tr><td>Eval attestation</td><td>Which tests, scans, and model evals passed for this exact artifact.</td><td>Require minimum coverage, security scan, and eval threshold.</td></tr></tbody></table></div>
+                        <h2>AI agents need identity in the trail</h2>
+                        <p>When an agent makes a change, the provenance trail should not pretend a human typed every line. The commit and pull request should show the human approver, the agent or workflow identity, the tools used, and the files touched. The point is not blame. The point is replayability: if a model upgrade or agent policy causes bad output, you need to find every artifact built under that context.</p>
+                        <p>This is where AI governance meets DevSecOps. Agent output should become an input to the same verification fabric as human code: branch protection, tests, SBOM, signed provenance, artifact verification, and runtime monitoring.</p>
+                        <h2>What I would build</h2>
+                        <p>I would build an "AI artifact passport" for every deployable service. The passport would combine source commit, human reviewer, agent identity, prompt or task reference, SBOM, ML-BOM, SLSA provenance, cosign signature, eval results, vulnerability scan, and deployment environment. Production would reject releases without a valid passport.</p>
+                        <p>The best version would be boring to use: one CI reusable workflow emits the evidence, one policy engine verifies it, and one dashboard shows what is trusted, what is expired, and what cannot be reproduced.</p>
+                        <h2>The design principle</h2>
+                        <p>AI-generated code does not need a separate trust universe. It needs stronger evidence inside the software supply chain we already have. If a system cannot prove where an artifact came from, what it contains, who approved it, and why production accepted it, then speed has outrun accountability.</p>
+                    </article>
+                    <section aria-labelledby="provenance-related-title"><h2 id="provenance-related-title">Related reading</h2><div class="blog-related-grid"><article class="blog-related-card"><h3><a href="/blog/ai-code-governance-security/">AI Code Governance</a></h3><p>Security gates and audit trails for generated code.</p></article><article class="blog-related-card"><h3><a href="/blog/typescript-ai-coding-backend-reliability/">TypeScript AI Reliability</a></h3><p>Compile, schema, CI, and review gates for AI-assisted backend code.</p></article><article class="blog-related-card"><h3><a href="/blog/confidential-computing-ai-pipelines/">Confidential AI Pipelines</a></h3><p>Attestation and key release for protected AI workloads.</p></article></div></section>
+                </div>
+                <aside class="blog-article-grid">
+                    <section class="blog-sidebar-card"><h2>Core takeaways</h2><ul><li>SBOM explains what is inside; provenance explains how it was produced.</li><li>AI-generated code should carry agent identity, human approval, and build evidence.</li><li>Sign containers, SBOMs, ML-BOMs, model artifacts, and attestations.</li><li>Production should verify evidence before accepting an artifact.</li></ul></section>
+                    <section class="blog-sidebar-card"><h2>Verification gates</h2><ul><li>Protected source</li><li>Trusted builder</li><li>SBOM and ML-BOM</li><li>Signed artifact</li><li>SLSA provenance</li><li>Admission policy</li></ul></section>
+                    <section class="blog-sidebar-card"><h2>References</h2><ul><li><a href="https://slsa.dev/spec/v1.1/distributing-provenance" target="_blank" rel="noopener noreferrer">SLSA provenance distribution</a></li><li><a href="https://docs.sigstore.dev/" target="_blank" rel="noopener noreferrer">Sigstore overview</a></li><li><a href="https://docs.sigstore.dev/cosign/" target="_blank" rel="noopener noreferrer">Cosign documentation</a></li><li><a href="https://www.cyclonedx.org/capabilities/mlbom" target="_blank" rel="noopener noreferrer">CycloneDX ML-BOM</a></li><li><a href="https://docs.pypi.org/attestations/" target="_blank" rel="noopener noreferrer">PyPI digital attestations</a></li></ul></section>
+                    <section class="blog-sidebar-card"><h2>Build idea</h2><p>An AI artifact passport that joins agent identity, human approval, SBOM, ML-BOM, SLSA provenance, signatures, scans, evals, and deploy policy.</p></section>
+                </aside>
+            </div>
+        </main>
+    </div>
+    <footer class="footer-minimal"><div class="footer-container"><div class="footer-link-list" aria-label="Footer links"><a class="footer-link-pill" href="https://github.com/PkLavc" target="_blank" rel="noopener noreferrer">GitHub</a><a class="footer-link-pill" href="https://www.linkedin.com/in/pklavc/" target="_blank" rel="noopener noreferrer">LinkedIn</a><a class="footer-link-pill" href="mailto:contact@pklavc.com">Email</a><a class="footer-link-pill footer-link-pill-accent" href="https://github.com/sponsors/PkLavc" target="_blank" rel="noopener noreferrer">Sponsor me</a></div><p>&copy; <span data-current-year></span> Patrick Araujo</p></div></footer>
+    <script>(function(){document.querySelectorAll('[data-current-year]').forEach(function(node){node.textContent=String(new Date().getFullYear());});}());</script>
+    <script src="/js/i18n.js?v=75d84205d9" defer></script><script src="/js/jquery.min.js?v=d482871a5e" defer></script><script src="/js/index.js?v=0b108f99d1" defer></script>
+    <div class="visually-hidden"><p>Digital provenance article covering AI-generated code security, SLSA provenance, SBOMs, ML-BOMs, Sigstore, Cosign, artifact signing, attestations, software supply chain security, AI artifact passport, and production admission policy.</p></div>
+</body>
+</html>

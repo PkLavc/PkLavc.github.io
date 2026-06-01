@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Patrick Araujo">
+    <title>EU AI Act For Builders: Turning Regulation Into Engineering Requirements</title>
+    <meta name="description" content="A builder-focused guide to translating the EU AI Act into engineering requirements: AI inventory, risk classification, documentation, data quality, logging, human oversight, monitoring, and incident response.">
+    <meta name="keywords" content="EU AI Act engineering requirements, AI compliance engineering, high risk AI systems, AI governance, AI inventory, human oversight, AI logs, model risk management, AI Act builders">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://pklavc.com/blog/eu-ai-act-engineering-requirements/">
+    <link rel="alternate" href="https://pklavc.com/blog/eu-ai-act-engineering-requirements/" hreflang="en">
+    <link rel="alternate" href="https://pklavc.com/pt/blog/eu-ai-act-engineering-requirements/" hreflang="pt-BR">
+    <link rel="alternate" href="https://pklavc.com/es/blog/eu-ai-act-engineering-requirements/" hreflang="es">
+    <link rel="alternate" href="https://pklavc.com/blog/eu-ai-act-engineering-requirements/" hreflang="x-default">
+
+    <meta property="og:title" content="EU AI Act For Builders">
+    <meta property="og:description" content="How to convert AI regulation into practical engineering controls, evidence, review gates, and runtime monitoring.">
+    <meta property="og:url" content="https://pklavc.com/blog/eu-ai-act-engineering-requirements/">
+    <meta property="og:type" content="article">
+    <meta property="article:published_time" content="2026-06-01">
+    <meta property="article:modified_time" content="2026-06-01">
+    <meta property="article:author" content="Patrick Araujo">
+    <meta property="article:section" content="AI Governance">
+    <meta property="article:tag" content="EU AI Act">
+    <meta property="article:tag" content="AI compliance">
+    <meta property="article:tag" content="AI governance">
+    <meta property="article:tag" content="software engineering">
+    <meta property="og:image" content="https://pklavc.com/images/lavc.webp?v=5e84850f26">
+    <meta property="og:image:width" content="1024">
+    <meta property="og:image:height" content="1024">
+    <meta property="og:site_name" content="Patrick Araujo">
+    <meta property="og:locale" content="en_US">
+    <meta property="og:image:alt" content="Brand portrait of backend engineer and automation specialist Patrick Araujo">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="EU AI Act For Builders">
+    <meta name="twitter:description" content="Engineering controls, evidence, and runtime checks for AI Act readiness.">
+    <meta name="twitter:image" content="https://pklavc.com/images/lavc.webp?v=5e84850f26">
+    <meta name="twitter:image:alt" content="Brand portrait of backend engineer and automation specialist Patrick Araujo">
+    <meta name="twitter:site" content="@PkLavc">
+    <meta name="twitter:creator" content="@PkLavc">
+    <link rel="icon" type="image/svg+xml" href="https://pklavc.com/images/favicon.svg?v=d15fe4e492">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Monoton&family=Poppins:wght@500;600;700&family=Raleway:wght@300&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Monoton&family=Poppins:wght@500;600;700&family=Raleway:wght@300&display=swap"></noscript>
+    <link rel="stylesheet" href="/css/global.css?v=d71c8efb77">
+    <link rel="stylesheet" href="/css/blog.css?v=560c7eaf05">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.2.6/gsap.min.js" defer></script>
+    <style>
+        .blog-diagram{margin:24px 0;padding:20px;border:1px solid rgba(0,209,255,.22);border-radius:8px;background:linear-gradient(180deg,rgba(0,209,255,.06),rgba(255,255,255,.025))}
+        .blog-diagram-title{display:block;color:var(--clr-primary);font-size:.78rem;font-weight:700;letter-spacing:.08em;margin-bottom:14px;text-transform:uppercase}
+        .blog-flow-grid,.blog-metric-grid,.blog-timeline-grid{display:grid;gap:10px}
+        .blog-flow-grid{grid-template-columns:repeat(6,minmax(0,1fr))}
+        .blog-metric-grid{grid-template-columns:repeat(4,minmax(0,1fr));margin:18px 0 24px}
+        .blog-timeline-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+        .blog-flow-step,.blog-metric-card,.blog-timeline-card{min-height:108px;padding:14px;border:1px solid rgba(255,255,255,.12);border-radius:8px;background:rgba(10,10,10,.68)}
+        .blog-flow-step strong,.blog-metric-card strong,.blog-timeline-card strong{display:block;color:#fff;font-size:.9rem;line-height:1.3;margin-bottom:8px}
+        .blog-flow-step span,.blog-metric-card span,.blog-timeline-card span{color:#b9b9b9;font-size:.84rem;line-height:1.55}
+        .blog-table-wrap{margin:24px 0;overflow-x:auto;border:1px solid rgba(255,255,255,.1);border-radius:8px}
+        .blog-table-wrap table{width:100%;border-collapse:collapse;min-width:760px;background:#0f0f0f}
+        .blog-table-wrap th,.blog-table-wrap td{padding:12px 14px;border-bottom:1px solid rgba(255,255,255,.08);color:#b9b9b9;line-height:1.55;text-align:left;vertical-align:top}
+        .blog-table-wrap th{color:#fff;background:rgba(0,209,255,.08)}
+        @media(max-width:960px){.blog-flow-grid,.blog-metric-grid,.blog-timeline-grid{grid-template-columns:1fr}}
+    </style>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@graph": [
+            {
+                "@type": "BlogPosting",
+                "headline": "EU AI Act For Builders: Turning Regulation Into Engineering Requirements",
+                "description": "A builder-focused guide to translating the EU AI Act into engineering requirements: AI inventory, risk classification, documentation, data quality, logging, human oversight, monitoring, and incident response.",
+                "image": "https://pklavc.com/images/lavc.webp?v=5e84850f26",
+                "datePublished": "2026-06-01",
+                "dateModified": "2026-06-01",
+                "author": {"@type": "Person", "name": "Patrick Araujo"},
+                "publisher": {"@type": "Person", "name": "Patrick Araujo"},
+                "mainEntityOfPage": "https://pklavc.com/blog/eu-ai-act-engineering-requirements/",
+                "url": "https://pklavc.com/blog/eu-ai-act-engineering-requirements/",
+                "keywords": ["EU AI Act", "AI governance", "AI compliance engineering", "high risk AI", "human oversight", "AI monitoring"]
+            },
+            {
+                "@type": "BreadcrumbList",
+                "itemListElement": [
+                    {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://pklavc.com/"},
+                    {"@type": "ListItem", "position": 2, "name": "Blog", "item": "https://pklavc.com/blog/"},
+                    {"@type": "ListItem", "position": 3, "name": "EU AI Act For Builders", "item": "https://pklavc.com/blog/eu-ai-act-engineering-requirements/"}
+                ]
+            }
+        ]
+    }
+    </script>
+</head>
+<body class="blog-layout seo-layout">
+    <div id="breaker"></div><div id="breaker-two"></div>
+    <div id="all">
+        <div class="cursor"></div>
+        <div id="navigation-content" role="navigation" aria-label="Primary navigation"><div class="logo"></div><div class="navigation-links"><a href="/" data-text="HOME" id="home-link">HOME</a><a href="/about/" data-text="ABOUT" id="about-link">ABOUT</a><a href="/projects/" data-text="PROJECTS" id="projects-link">PROJECTS</a><a href="/blog/" data-text="BLOG" id="blog-link">BLOG</a></div></div>
+        <div id="navigation-bar"><div class="menubar"><span class="first-span"></span><span class="second-span"></span><span class="third-span"></span></div></div>
+        <main class="blog-shell" role="main">
+            <div class="blog-columns">
+                <div>
+                    <article class="blog-post-hero">
+                        <div class="blog-breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a><span>/</span><a href="/blog/">Blog</a><span>/</span><span aria-current="page">EU AI Act</span></div>
+                        <span class="blog-kicker">AI Governance</span>
+                        <h1>EU AI Act For Builders</h1>
+                        <p>The EU AI Act is usually discussed like a legal document. Builders need a different lens: what has to exist in the repository, the deployment pipeline, the observability stack, the product review process, and the incident workflow before an AI feature can ship with confidence?</p>
+                        <div class="blog-post-meta"><span>Published Jun 1, 2026</span><span>12 min read</span><span>Compliance Engineering</span></div>
+                    </article>
+                    <article class="blog-article">
+                        <h2>Regulation becomes real as engineering artifacts</h2>
+                        <p>The AI Act classifies AI systems by risk and attaches different duties to providers, deployers, importers, distributors, and other actors. That vocabulary matters, but the work starts with artifacts: an AI system inventory, a risk classification record, technical documentation, evaluation evidence, logs, user instructions, monitoring, and clear ownership.</p>
+                        <p>This is not legal advice. It is a builder's map for the conversations engineering teams should have with product, security, privacy, legal, and operations. The strongest teams will not treat compliance as a PDF at launch; they will treat it as a lifecycle inside the delivery system.</p>
+                        <div class="blog-diagram" aria-label="AI Act engineering pipeline"><span class="blog-diagram-title">AI Act engineering pipeline</span><div class="blog-flow-grid"><div class="blog-flow-step"><strong>Inventory</strong><span>List AI systems, model providers, users, markets, and business owners.</span></div><div class="blog-flow-step"><strong>Classify</strong><span>Map use cases to unacceptable, high, transparency, GPAI, or limited risk.</span></div><div class="blog-flow-step"><strong>Control</strong><span>Add data, logging, oversight, security, and accuracy requirements.</span></div><div class="blog-flow-step"><strong>Evidence</strong><span>Attach tests, evals, model cards, policies, and release records.</span></div><div class="blog-flow-step"><strong>Operate</strong><span>Monitor drift, incidents, feedback, abuse, and human override paths.</span></div><div class="blog-flow-step"><strong>Review</strong><span>Reassess after model, data, region, provider, or product changes.</span></div></div></div>
+                        <h2>The timeline is not one switch</h2>
+                        <p>The European Commission describes a phased implementation. The Act entered into force in August 2024, with prohibitions and AI literacy rules already applying from February 2025. Governance and general-purpose AI obligations started applying in August 2025. The Commission also describes 2026 as a major application year, with later dates for some high-risk systems after the 2026 simplification agreement.</p>
+                        <p>For builders, the lesson is simple: do not wait for a single deadline. Create versioned readiness checks that can adapt as guidance, codes of practice, harmonised standards, and product scope evolve.</p>
+                        <div class="blog-diagram" aria-label="EU AI Act implementation timeline"><span class="blog-diagram-title">Implementation checkpoints</span><div class="blog-timeline-grid"><div class="blog-timeline-card"><strong>Aug 2024</strong><span>AI Act enters into force.</span></div><div class="blog-timeline-card"><strong>Feb 2025</strong><span>Prohibited AI practices and AI literacy duties begin.</span></div><div class="blog-timeline-card"><strong>Aug 2025</strong><span>GPAI and governance obligations start applying.</span></div><div class="blog-timeline-card"><strong>2026-2028</strong><span>Broader application and staged high-risk timelines continue.</span></div></div></div>
+                        <h2>High-risk is an architecture question</h2>
+                        <p>When a use case can affect employment, education, access to essential services, law enforcement, migration, critical infrastructure, or safety-related product behavior, classification is not a label tucked into a spreadsheet. It changes the architecture. You need traceable inputs, explainable outputs where appropriate, documented limitations, security controls, human oversight, quality management, and post-market monitoring.</p>
+                        <p>The engineering question is: can you show how the system was built, tested, released, monitored, and changed? If not, you are relying on memory instead of evidence.</p>
+                        <div class="blog-metric-grid" aria-label="AI Act engineering gates"><div class="blog-metric-card"><strong>Risk record</strong><span>Use case, role, region, model, data, users, and classification.</span></div><div class="blog-metric-card"><strong>Data proof</strong><span>Data quality, representativeness, lineage, retention, and access rules.</span></div><div class="blog-metric-card"><strong>Runtime logs</strong><span>Inputs, outputs, decisions, overrides, errors, model version, and operator actions.</span></div><div class="blog-metric-card"><strong>Oversight path</strong><span>Human review, escalation, fallback, appeal, and stop conditions.</span></div></div>
+                        <h2>Translate obligations into backlog items</h2>
+                        <p>The most useful exercise is to turn policy phrases into acceptance criteria. "Human oversight" becomes admin permissions, review queues, override buttons, audit logs, training material, and on-call runbooks. "Accuracy and robustness" becomes eval suites, adversarial tests, monitoring dashboards, model versioning, and release gates.</p>
+                        <div class="blog-table-wrap" aria-label="EU AI Act engineering artifacts"><table><thead><tr><th>Regulatory theme</th><th>Engineering artifact</th><th>Where it should live</th></tr></thead><tbody><tr><td>AI system inventory</td><td>Registry with owner, role, provider, model, data source, market, and classification.</td><td>Governance database plus repository metadata.</td></tr><tr><td>Technical documentation</td><td>Architecture diagram, model description, intended use, limitations, tests, and release notes.</td><td>Docs-as-code attached to the service.</td></tr><tr><td>Data governance</td><td>Dataset lineage, quality checks, bias analysis, access control, retention, and deletion rules.</td><td>Data catalog, CI checks, and privacy review.</td></tr><tr><td>Human oversight</td><td>Review queue, operator guidance, override flow, escalation path, and rollback controls.</td><td>Product UI, admin panel, runbook, and audit log.</td></tr><tr><td>Logging and monitoring</td><td>Model version, input class, output class, decision status, errors, abuse signals, and drift metrics.</td><td>Observability stack and incident workflow.</td></tr><tr><td>Change management</td><td>Risk reassessment when model, data, market, feature, or provider changes.</td><td>Pull request template and release checklist.</td></tr></tbody></table></div>
+                        <h2>What I would build</h2>
+                        <p>I would build an AI release gateway that sits between product development and production. Every AI feature would register itself with an inventory file, declare its use case, link to model and data documentation, define eval thresholds, expose logging fields, and pass a policy-as-code check before deployment.</p>
+                        <p>For teams using agents, I would add one more rule: generated AI features cannot be merged unless the agent also updates the evidence. If code changes the model call, prompt, schema, data path, or decision workflow, the related inventory, tests, and monitoring must change in the same pull request.</p>
+                        <h2>The builder principle</h2>
+                        <p>AI regulation is not only a legal deadline. It is pressure to make AI systems legible. Good engineering already wants that: clear ownership, observable behavior, controlled change, testable claims, and an audit trail when something goes wrong. The teams that win will make compliance a byproduct of disciplined delivery.</p>
+                    </article>
+                    <section aria-labelledby="eu-ai-act-related-title"><h2 id="eu-ai-act-related-title">Related reading</h2><div class="blog-related-grid"><article class="blog-related-card"><h3><a href="/blog/ai-code-governance-security/">AI Code Governance</a></h3><p>Security gates, audit trails, and review discipline for generated code.</p></article><article class="blog-related-card"><h3><a href="/blog/securing-ai-agents-prompt-injection-tool-abuse/">Securing AI Agents</a></h3><p>Prompt injection, tool abuse, and permission boundaries for agentic systems.</p></article><article class="blog-related-card"><h3><a href="/blog/typescript-ai-coding-backend-reliability/">TypeScript AI Reliability</a></h3><p>Compile, schema, CI, and review gates for AI-assisted backend code.</p></article></div></section>
+                </div>
+                <aside class="blog-article-grid">
+                    <section class="blog-sidebar-card"><h2>Core takeaways</h2><ul><li>AI Act readiness becomes real through engineering artifacts, not launch-day PDFs.</li><li>Classification should drive architecture, logging, oversight, monitoring, and review gates.</li><li>Every AI feature needs owner, role, use case, model, data, market, and change history.</li><li>Policy-as-code and docs-as-code make compliance easier to maintain.</li></ul></section>
+                    <section class="blog-sidebar-card"><h2>Build the checklist</h2><ul><li>AI inventory</li><li>Risk classification</li><li>Technical documentation</li><li>Data governance</li><li>Human oversight</li><li>Monitoring and incident response</li></ul></section>
+                    <section class="blog-sidebar-card"><h2>Official sources</h2><ul><li><a href="https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai" target="_blank" rel="noopener noreferrer">European Commission AI Act overview</a></li><li><a href="https://digital-strategy.ec.europa.eu/en/faqs/navigating-ai-act" target="_blank" rel="noopener noreferrer">Navigating the AI Act</a></li><li><a href="https://digital-strategy.ec.europa.eu/en/news/eu-rules-general-purpose-ai-models-start-apply-tomorrow-bringing-more-transparency-safety-and" target="_blank" rel="noopener noreferrer">GPAI rules application</a></li><li><a href="https://digital-strategy.ec.europa.eu/en/news/commission-seeks-feedback-draft-guidelines-classification-high-risk-artificial-intelligence-systems" target="_blank" rel="noopener noreferrer">High-risk classification guidelines</a></li><li><a href="https://digital-strategy.ec.europa.eu/en/news/eu-agrees-simplify-ai-rules-boost-innovation-and-ban-nudification-apps-protect-citizens" target="_blank" rel="noopener noreferrer">2026 simplification agreement</a></li></ul></section>
+                    <section class="blog-sidebar-card"><h2>Legal note</h2><p>This article is an engineering interpretation for builders, not legal advice. Teams shipping into the EU should work with qualified counsel and official guidance.</p></section>
+                </aside>
+            </div>
+        </main>
+    </div>
+    <footer class="footer-minimal"><div class="footer-container"><div class="footer-link-list" aria-label="Footer links"><a class="footer-link-pill" href="https://github.com/PkLavc" target="_blank" rel="noopener noreferrer">GitHub</a><a class="footer-link-pill" href="https://www.linkedin.com/in/pklavc/" target="_blank" rel="noopener noreferrer">LinkedIn</a><a class="footer-link-pill" href="mailto:contact@pklavc.com">Email</a><a class="footer-link-pill footer-link-pill-accent" href="https://github.com/sponsors/PkLavc" target="_blank" rel="noopener noreferrer">Sponsor me</a></div><p>&copy; <span data-current-year></span> Patrick Araujo</p></div></footer>
+    <script>(function(){document.querySelectorAll('[data-current-year]').forEach(function(node){node.textContent=String(new Date().getFullYear());});}());</script>
+    <script src="/js/i18n.js?v=75d84205d9" defer></script><script src="/js/jquery.min.js?v=d482871a5e" defer></script><script src="/js/index.js?v=0b108f99d1" defer></script>
+    <div class="visually-hidden"><p>EU AI Act engineering article covering AI compliance engineering, high-risk AI systems, AI system inventory, data governance, human oversight, AI logging, monitoring, incident response, model documentation, and release gates.</p></div>
+</body>
+</html>

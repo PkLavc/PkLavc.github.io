@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Patrick Araujo">
+    <title>Pipeline de telemetria com ESP32: MQTT, Cloudflare Workers, Supabase, SQL e dashboards</title>
+    <meta name="description" content="Uma arquitetura visual de telemetria com ESP32 para enviar dados de sensores por MQTT, Cloudflare Workers, Supabase/Postgres, views SQL, alertas e gráficos de dashboard.">
+    <meta name="keywords" content="pipeline de telemetria ESP32, ESP32 MQTT, dashboard IoT, Cloudflare Workers IoT, Supabase IoT, sensores ESP32, séries temporais SQL, telemetria de borda, arquitetura IoT">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://pklavc.com/pt/blog/esp32-telemetry-pipeline-mqtt-workers-supabase/">
+    <link rel="alternate" href="https://pklavc.com/blog/esp32-telemetry-pipeline-mqtt-workers-supabase/" hreflang="en">
+    <link rel="alternate" href="https://pklavc.com/pt/blog/esp32-telemetry-pipeline-mqtt-workers-supabase/" hreflang="pt-BR">
+    <link rel="alternate" href="https://pklavc.com/es/blog/esp32-telemetry-pipeline-mqtt-workers-supabase/" hreflang="es">
+    <link rel="alternate" href="https://pklavc.com/blog/esp32-telemetry-pipeline-mqtt-workers-supabase/" hreflang="x-default">
+
+    <meta property="og:title" content="Pipeline de telemetria com ESP32: MQTT, Cloudflare Workers, Supabase, SQL e dashboards">
+    <meta property="og:description" content="Uma arquitetura IoT visual mostrando como dispositivos ESP32 viram sistemas backend reais com ingestão MQTT, armazenamento SQL, gráficos, alertas e observabilidade.">
+    <meta property="og:url" content="https://pklavc.com/pt/blog/esp32-telemetry-pipeline-mqtt-workers-supabase/">
+    <meta property="og:type" content="article">
+    <meta property="article:published_time" content="2026-06-01">
+    <meta property="article:modified_time" content="2026-06-01">
+    <meta property="article:author" content="Patrick Araujo">
+    <meta property="article:section" content="Engenharia Backend para IoT">
+    <meta property="article:tag" content="ESP32">
+    <meta property="article:tag" content="MQTT">
+    <meta property="article:tag" content="dashboards IoT">
+    <meta property="article:tag" content="Supabase">
+    <meta property="og:image" content="https://pklavc.com/images/lavc.webp?v=5e84850f26">
+    <meta property="og:image:width" content="1024">
+    <meta property="og:image:height" content="1024">
+    <meta property="og:site_name" content="Patrick Araujo">
+    <meta property="og:locale" content="pt_BR">
+    <meta property="og:image:alt" content="Retrato de marca do engenheiro backend e especialista em automação Patrick Araujo">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Pipeline de telemetria com ESP32">
+    <meta name="twitter:description" content="Sensores ESP32, MQTT, Workers, Supabase, views SQL, alertas e dashboards visuais para dados IoT.">
+    <meta name="twitter:image" content="https://pklavc.com/images/lavc.webp?v=5e84850f26">
+    <meta name="twitter:image:alt" content="Retrato de marca do engenheiro backend e especialista em automação Patrick Araujo">
+    <meta name="twitter:site" content="@PkLavc">
+    <meta name="twitter:creator" content="@PkLavc">
+
+    <link rel="icon" type="image/svg+xml" href="https://pklavc.com/images/favicon.svg?v=d15fe4e492">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Monoton&amp;family=Poppins:wght@500;600;700&amp;family=Raleway:wght@300&amp;display=swap" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Monoton&amp;family=Poppins:wght@500;600;700&amp;family=Raleway:wght@300&amp;display=swap"></noscript>
+    <link rel="stylesheet" href="/css/global.css?v=d71c8efb77">
+    <link rel="stylesheet" href="/css/blog.css?v=560c7eaf05">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.2.6/gsap.min.js" defer></script>
+    <style>
+        .blog-diagram{margin:24px 0;padding:20px;border:1px solid rgba(0,209,255,.22);border-radius:8px;background:linear-gradient(180deg,rgba(0,209,255,.06),rgba(255,255,255,.025))}
+        .blog-diagram-title{display:block;color:var(--clr-primary);font-size:.78rem;font-weight:700;letter-spacing:.08em;margin-bottom:14px;text-transform:uppercase}
+        .blog-flow-grid,.blog-metric-grid{display:grid;gap:10px}
+        .blog-flow-grid{grid-template-columns:repeat(6,minmax(0,1fr))}
+        .blog-metric-grid{grid-template-columns:repeat(4,minmax(0,1fr));margin:18px 0 24px}
+        .blog-flow-step,.blog-metric-card{min-height:104px;padding:14px;border:1px solid rgba(255,255,255,.12);border-radius:8px;background:rgba(10,10,10,.68)}
+        .blog-flow-step strong,.blog-metric-card strong{display:block;color:#fff;font-size:.9rem;line-height:1.3;margin-bottom:8px}
+        .blog-flow-step span,.blog-metric-card span{color:#b9b9b9;font-size:.84rem;line-height:1.55}
+        .blog-sparkline{display:flex;align-items:end;gap:6px;height:120px;margin-top:16px;padding:12px;border-radius:8px;background:rgba(0,0,0,.22)}
+        .blog-sparkline span{flex:1;min-width:12px;border-radius:4px 4px 0 0;background:linear-gradient(180deg,var(--clr-primary),rgba(0,209,255,.18))}
+        .blog-table-wrap{margin:24px 0;overflow-x:auto;border:1px solid rgba(255,255,255,.1);border-radius:8px}
+        .blog-table-wrap table{width:100%;border-collapse:collapse;min-width:700px;background:#0f0f0f}
+        .blog-table-wrap th,.blog-table-wrap td{padding:12px 14px;border-bottom:1px solid rgba(255,255,255,.08);color:#b9b9b9;line-height:1.55;text-align:left;vertical-align:top}
+        .blog-table-wrap th{color:#fff;background:rgba(0,209,255,.08)}
+        @media(max-width:900px){.blog-flow-grid,.blog-metric-grid{grid-template-columns:1fr}}
+    </style>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@graph": [
+            {
+                "@type": "BlogPosting",
+                "headline": "Pipeline de telemetria com ESP32: MQTT, Cloudflare Workers, Supabase, SQL e dashboards",
+                "description": "Uma arquitetura visual de telemetria com ESP32 para enviar dados de sensores por MQTT, Cloudflare Workers, Supabase/Postgres, views SQL, alertas e gráficos de dashboard.",
+                "image": "https://pklavc.com/images/lavc.webp?v=5e84850f26",
+                "datePublished": "2026-06-01",
+                "dateModified": "2026-06-01",
+                "author": {"@type": "Person", "name": "Patrick Araujo"},
+                "publisher": {"@type": "Person", "name": "Patrick Araujo"},
+                "mainEntityOfPage": "https://pklavc.com/pt/blog/esp32-telemetry-pipeline-mqtt-workers-supabase/",
+                "url": "https://pklavc.com/pt/blog/esp32-telemetry-pipeline-mqtt-workers-supabase/",
+                "keywords": ["ESP32", "MQTT", "IoT dashboard", "Cloudflare Workers", "Supabase", "SQL time series", "telemetria de borda"]
+            },
+            {
+                "@type": "BreadcrumbList",
+                "itemListElement": [
+                    {"@type": "ListItem", "position": 1, "name": "Início", "item": "https://pklavc.com/pt/"},
+                    {"@type": "ListItem", "position": 2, "name": "Blog", "item": "https://pklavc.com/pt/blog/"},
+                    {"@type": "ListItem", "position": 3, "name": "Pipeline de telemetria com ESP32", "item": "https://pklavc.com/pt/blog/esp32-telemetry-pipeline-mqtt-workers-supabase/"}
+                ]
+            }
+        ]
+    }
+    </script>
+</head>
+<body class="blog-layout seo-layout">
+    <div id="breaker"></div>
+    <div id="breaker-two"></div>
+    <div id="all">
+        <div class="cursor"></div>
+        <div id="navigation-content" role="navigation" aria-label="Navegação principal">
+            <div class="logo"></div>
+            <div class="navigation-links">
+                <a href="/pt/" data-text="INÍCIO" id="home-link">INÍCIO</a>
+                <a href="/pt/sobre/" data-text="SOBRE" id="about-link">SOBRE</a>
+                <a href="/pt/projetos/" data-text="PROJETOS" id="projects-link">PROJETOS</a>
+                <a href="/pt/blog/" data-text="BLOG" id="blog-link">BLOG</a>
+            </div>
+        </div>
+        <div id="navigation-bar">
+            <div class="menubar">
+                <span class="first-span"></span>
+                <span class="second-span"></span>
+                <span class="third-span"></span>
+            </div>
+        </div>
+
+        <main class="blog-shell" role="main">
+            <div class="blog-columns">
+                <div>
+                    <article class="blog-post-hero">
+                        <div class="blog-breadcrumb" aria-label="Trilha de navegação">
+                            <a href="/pt/">Início</a>
+                            <span>/</span>
+                            <a href="/pt/blog/">Blog</a>
+                            <span>/</span>
+                            <span aria-current="page">Telemetria ESP32</span>
+                        </div>
+                        <span class="blog-kicker">Engenharia Backend para IoT</span>
+                        <h1>Pipeline de telemetria com ESP32: MQTT, Cloudflare Workers, Supabase, SQL e dashboards</h1>
+                        <p>Projetos com ESP32 ficam realmente interessantes quando deixam de ser dispositivos isolados e viram sistemas observáveis. Um sensor de temperatura, vibração, relé, câmera ou nó com bateria é só a borda do sistema. A engenharia começa quando cada leitura vira dado confiável: validado, armazenado, exibido em gráficos, monitorado e reproduzível.</p>
+                        <div class="blog-post-meta">
+                            <span>Publicado em 1 de junho de 2026</span>
+                            <span>12 min de leitura</span>
+                            <span>Backend IoT</span>
+                        </div>
+                    </article>
+
+                    <article class="blog-article">
+                        <h2>Por que ESP32 também é conversa de backend</h2>
+                        <p>ESP32 costuma aparecer como hardware maker, mas a arquitetura ao redor dele é problema de backend. Dispositivos perdem Wi-Fi, sensores geram ruído, relógios atrasam, mensagens duplicam, baterias acabam e dashboards mentem quando o pipeline não tem modelo de frescor. Um projeto profissional com ESP32 precisa de idempotência, retries, validação de schema, observabilidade e bom desenho de armazenamento.</p>
+                        <p>Placas mais novas da Espressif deixam a borda ainda mais capaz. A Espressif descreve o <a href="https://www.espressif.com/en/node/5997" target="_blank" rel="noopener noreferrer">ESP32-C6</a> com suporte a Wi-Fi 6, Bluetooth 5 LE e IEEE 802.15.4, abrindo espaço para Matter, Thread, redes no estilo Zigbee e IoT de baixo consumo. O chip é pequeno; o sistema em volta dele não é.</p>
+
+                        <div class="blog-diagram" aria-label="Pipeline de telemetria ESP32">
+                            <span class="blog-diagram-title">Pipeline de telemetria</span>
+                            <div class="blog-flow-grid">
+                                <div class="blog-flow-step"><strong>Nó ESP32</strong><span>Lê sensores e adiciona metadados do dispositivo.</span></div>
+                                <div class="blog-flow-step"><strong>Broker MQTT</strong><span>Recebe eventos compactos e lida com conexão instável.</span></div>
+                                <div class="blog-flow-step"><strong>Worker API</strong><span>Valida payloads, assina ingestão e normaliza dados.</span></div>
+                                <div class="blog-flow-step"><strong>Postgres</strong><span>Guarda leituras brutas, estado do device e agregados.</span></div>
+                                <div class="blog-flow-step"><strong>Views SQL</strong><span>Modelam janelas prontas para dashboard.</span></div>
+                                <div class="blog-flow-step"><strong>Alertas</strong><span>Detectam limites, silêncio de devices e anomalias.</span></div>
+                            </div>
+                        </div>
+
+                        <h2>O payload do dispositivo deve ser simples</h2>
+                        <p>Os melhores payloads de telemetria são previsíveis: ID do dispositivo, timestamp, versão de firmware, tipo de sensor, valor, unidade, bateria, força do sinal, número de sequência e ID único do evento. Isso já permite investigar duplicatas, atrasos, relógios ruins, rollouts de firmware e saúde dos dispositivos.</p>
+                        <p>Um erro comum é tratar o ESP32 como única fonte de verdade. O backend também deve adicionar timestamp de servidor, ID de ingestão, resultado de validação e tópico de origem. O dispositivo relata o que viu. O backend registra quando e como o sistema recebeu aquilo.</p>
+
+                        <div class="blog-metric-grid" aria-label="Métricas de exemplo para dashboard IoT">
+                            <div class="blog-metric-card"><strong>24 devices</strong><span>Nós ativos vistos nos últimos 10 minutos.</span></div>
+                            <div class="blog-metric-card"><strong>2,1s p95</strong><span>Latência entre sensor e banco de dados.</span></div>
+                            <div class="blog-metric-card"><strong>98,7%</strong><span>Payloads válidos após validação de schema.</span></div>
+                            <div class="blog-metric-card"><strong>3 alertas</strong><span>Dispositivos sem dados ou acima do limite.</span></div>
+                        </div>
+
+                        <div class="blog-diagram" aria-label="Gráfico ilustrativo de média horária">
+                            <span class="blog-diagram-title">Exemplo de gráfico: média horária do sensor</span>
+                            <div class="blog-sparkline" aria-hidden="true">
+                                <span style="height:38%"></span><span style="height:44%"></span><span style="height:52%"></span><span style="height:61%"></span><span style="height:73%"></span><span style="height:68%"></span><span style="height:57%"></span><span style="height:49%"></span><span style="height:54%"></span><span style="height:63%"></span><span style="height:71%"></span><span style="height:66%"></span>
+                            </div>
+                        </div>
+
+                        <h2>MQTT é ingestão, não banco de dados</h2>
+                        <p>MQTT é ótimo para dispositivos pequenos porque é leve, orientado a tópicos e tolera redes intermitentes. Mas o broker não deve ser a base analítica de longo prazo. O trabalho dele é mover mensagens. O trabalho do backend é preservar histórico, validar dados, calcular agregados e expor dashboards.</p>
+                        <p>Um padrão limpo é: ESP32 publica no MQTT, um worker de ingestão recebe a mensagem, valida o payload, grava dados brutos em Postgres/Supabase e depois cria views para janelas de dashboard. Assim o sistema fica reproduzível: se um gráfico parece errado, você inspeciona os eventos brutos.</p>
+
+                        <h2>O que eu construiria</h2>
+                        <p>Eu começaria com uma versão pequena, mas com formato de produção: dispositivos ESP32 publicando JSON via MQTT, endpoint de ingestão em Cloudflare Worker, tabelas Supabase/Postgres para leituras brutas e registro de devices, views SQL para agregados horários e um dashboard simples com frescor, gráficos e alertas.</p>
+                        <p>Para portfólio, o dashboard precisa ser visual desde o início: cards de métricas, status dos dispositivos, sparklines, histórico de alertas, distribuição de versões de firmware e log de eventos. Isso transforma o projeto de demo de sensor em plataforma operacional de telemetria.</p>
+
+                        <div class="blog-table-wrap" aria-label="Modelo de dados para telemetria IoT">
+                            <table>
+                                <thead><tr><th>Tabela</th><th>Propósito</th><th>Campos importantes</th></tr></thead>
+                                <tbody>
+                                    <tr><td><code>iot_devices</code></td><td>Registro dos nós ESP32 conhecidos.</td><td>device_id, location, firmware_version, last_seen_at, status</td></tr>
+                                    <tr><td><code>sensor_readings_raw</code></td><td>Eventos brutos em modo append-only.</td><td>event_id, device_id, sensor_type, value, unit, device_timestamp, received_at</td></tr>
+                                    <tr><td><code>sensor_readings_hourly</code></td><td>View agregada pronta para dashboard.</td><td>device_id, sensor_type, hour_bucket, avg_value, min_value, max_value</td></tr>
+                                    <tr><td><code>iot_alerts</code></td><td>Alertas de limite, frescor e anomalia.</td><td>alert_id, device_id, severity, reason, opened_at, resolved_at</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <h2>Falhas que valem aparecer no artigo</h2>
+                        <p>Bons posts de IoT mostram falhas visualmente. Os alertas úteis não são só "temperatura alta". Também são "device parou de reportar", "bateria caiu rápido demais", "firmware está antigo", "números de sequência pularam" e "schema do payload mudou". Esses sinais separam uma demo funcional de um sistema que dá para manter.</p>
+                        <p>A mesma lógica vale para vibração industrial, estufas inteligentes, medidores de energia, caixas d'água, rastreamento de equipamentos e laboratórios de telemetria veicular. Quando sensor vira pipeline backend, ESP32 deixa de ser só hardware e vira um nó de borda em um sistema distribuído.</p>
+                    </article>
+
+                    <section aria-labelledby="esp32-related-title">
+                        <h2 id="esp32-related-title">Leitura relacionada</h2>
+                        <div class="blog-related-grid">
+                            <article class="blog-related-card"><h3><a href="/pt/blog/raw-api-ingestion-supabase-sql/">Ingestão de APIs com Supabase SQL</a></h3><p>Como payloads brutos e views SQL tornam analytics reproduzível.</p></article>
+                            <article class="blog-related-card"><h3><a href="/pt/blog/event-driven-api-integrations/">Integrações de APIs orientadas a eventos</a></h3><p>Retries, idempotência e rastreabilidade também servem para mensagens IoT.</p></article>
+                            <article class="blog-related-card"><h3><a href="/pt/blog/ferrari-luce-embedded-software-telemetry-ota/">Software embarcado e telemetria</a></h3><p>Como telemetria veicular espelha muitos problemas de backend IoT.</p></article>
+                        </div>
+                    </section>
+                </div>
+
+                <aside class="blog-article-grid">
+                    <section class="blog-sidebar-card"><h2>Ideias centrais</h2><ul><li>Telemetria ESP32 é arquitetura backend, não só demo de firmware.</li><li>MQTT move mensagens; SQL preserva histórico e permite analytics reproduzível.</li><li>Dashboards precisam de frescor, saúde dos devices e alertas, não só gráficos.</li><li>Cada leitura deve ser rastreável do device à linha no banco.</li></ul></section>
+                    <section class="blog-sidebar-card"><h2>Stack sugerido</h2><ul><li>Firmware ESP32</li><li>Broker MQTT</li><li>Cloudflare Worker</li><li>Supabase/Postgres</li><li>Views SQL</li><li>Dashboard e alertas</li></ul></section>
+                    <section class="blog-sidebar-card"><h2>Ângulo de hardware</h2><ul><li><a href="https://www.espressif.com/en/node/5997" target="_blank" rel="noopener noreferrer">Visão geral do ESP32-C6</a></li><li>Wi-Fi 6 e Bluetooth LE</li><li>Matter, Thread e IEEE 802.15.4</li><li>Redes de sensores de baixo consumo</li></ul></section>
+                    <section class="blog-sidebar-card"><h2>Continue explorando</h2><ul><li><a href="/pt/blog/integration-worker-etl-pipelines/">Pipelines ETL em workers</a></li><li><a href="/pt/blog/infrastructure-anomaly-detection/">Detecção de anomalias de infraestrutura</a></li><li><a href="/pt/blog/cloud-deployment-patterns/">Padrões de deploy em cloud</a></li></ul></section>
+                </aside>
+            </div>
+        </main>
+    </div>
+
+    <footer class="footer-minimal">
+        <div class="footer-container">
+            <div class="footer-link-list" aria-label="Links do rodapé">
+                <a class="footer-link-pill" href="https://github.com/PkLavc" target="_blank" rel="noopener noreferrer">GitHub</a>
+                <a class="footer-link-pill" href="https://www.linkedin.com/in/pklavc/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+                <a class="footer-link-pill" href="mailto:contact@pklavc.com">Email</a>
+                <a class="footer-link-pill footer-link-pill-accent" href="https://github.com/sponsors/PkLavc" target="_blank" rel="noopener noreferrer">Apoie no GitHub</a>
+            </div>
+            <p>&copy; <span data-current-year></span> Patrick Araujo</p>
+        </div>
+    </footer>
+
+    <script>
+        (function(){document.querySelectorAll('[data-current-year]').forEach(function(node){node.textContent=String(new Date().getFullYear());});}());
+    </script>
+    <script src="/js/i18n.js?v=75d84205d9" defer></script>
+    <script src="/js/jquery.min.js?v=d482871a5e" defer></script>
+    <script src="/js/index.js?v=0b108f99d1" defer></script>
+
+    <div class="visually-hidden">
+        <p>Artigo sobre pipeline de telemetria ESP32 cobrindo ingestão MQTT, Cloudflare Workers, Supabase SQL, armazenamento de séries temporais em Postgres, dashboards IoT, gráficos de sensores, registro de dispositivos, telemetria de firmware, alertas, idempotência e observabilidade de sensores de borda.</p>
+    </div>
+</body>
+</html>

@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Patrick Araujo">
+    <title>Identidad y autorización para agentes de IA: OAuth para servicios no humanos</title>
+    <meta name="description" content="Cómo diseñar identidad, alcances OAuth, gateways de políticas, logs de auditoría y autorización de mínimo privilegio para agentes de IA que actúan sobre APIs y herramientas internas.">
+    <meta name="keywords" content="identidad de agentes de IA, autorización para agentes de IA, OAuth para agentes de IA, identidad no humana, seguridad de agentes, seguridad MCP, autorización de API, mínimo privilegio para agentes, logs de auditoría, gateway de herramientas">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://pklavc.com/es/blog/ai-agent-identity-authorization-oauth/">
+    <link rel="alternate" href="https://pklavc.com/blog/ai-agent-identity-authorization-oauth/" hreflang="en">
+    <link rel="alternate" href="https://pklavc.com/pt/blog/ai-agent-identity-authorization-oauth/" hreflang="pt-BR">
+    <link rel="alternate" href="https://pklavc.com/es/blog/ai-agent-identity-authorization-oauth/" hreflang="es">
+    <link rel="alternate" href="https://pklavc.com/blog/ai-agent-identity-authorization-oauth/" hreflang="x-default">
+
+    <meta property="og:title" content="Identidad y autorización para agentes de IA: OAuth para servicios no humanos">
+    <meta property="og:description" content="Una guía de arquitectura backend para dar a los agentes de IA acceso acotado, auditable y revocable a APIs y herramientas sin convertirlos en cuentas de servicio con demasiado poder.">
+    <meta property="og:url" content="https://pklavc.com/es/blog/ai-agent-identity-authorization-oauth/">
+    <meta property="og:type" content="article">
+    <meta property="article:published_time" content="2026-06-01">
+    <meta property="article:modified_time" content="2026-06-01">
+    <meta property="article:author" content="Patrick Araujo">
+    <meta property="article:section" content="Arquitectura de Seguridad en IA">
+    <meta property="article:tag" content="agentes de IA">
+    <meta property="article:tag" content="OAuth">
+    <meta property="article:tag" content="identidad no humana">
+    <meta property="article:tag" content="seguridad de APIs">
+    <meta property="og:image" content="https://pklavc.com/images/lavc.webp?v=5e84850f26">
+    <meta property="og:image:width" content="1024">
+    <meta property="og:image:height" content="1024">
+    <meta property="og:site_name" content="Patrick Araujo">
+    <meta property="og:locale" content="es_ES">
+    <meta property="og:image:alt" content="Retrato de marca del ingeniero backend y especialista en automatización Patrick Araujo">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Identidad y autorización para agentes de IA">
+    <meta name="twitter:description" content="Alcances OAuth, gateways de políticas, trazas de auditoría y mínimo privilegio para agentes de IA que llaman APIs y herramientas internas.">
+    <meta name="twitter:image" content="https://pklavc.com/images/lavc.webp?v=5e84850f26">
+    <meta name="twitter:image:alt" content="Retrato de marca del ingeniero backend y especialista en automatización Patrick Araujo">
+    <meta name="twitter:site" content="@PkLavc">
+    <meta name="twitter:creator" content="@PkLavc">
+
+    <link rel="icon" type="image/svg+xml" href="https://pklavc.com/images/favicon.svg?v=d15fe4e492">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Monoton&amp;family=Poppins:wght@500;600;700&amp;family=Raleway:wght@300&amp;display=swap" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Monoton&amp;family=Poppins:wght@500;600;700&amp;family=Raleway:wght@300&amp;display=swap"></noscript>
+    <link rel="stylesheet" href="/css/global.css?v=d71c8efb77">
+    <link rel="stylesheet" href="/css/blog.css?v=560c7eaf05">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.2.6/gsap.min.js" defer></script>
+    <style>
+        .blog-diagram {
+            margin: 24px 0;
+            padding: 20px;
+            border: 1px solid rgba(0, 209, 255, 0.22);
+            border-radius: 8px;
+            background: linear-gradient(180deg, rgba(0, 209, 255, 0.06), rgba(255, 255, 255, 0.025));
+        }
+
+        .blog-diagram-title {
+            display: block;
+            color: var(--clr-primary);
+            font-size: 0.78rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            margin-bottom: 14px;
+            text-transform: uppercase;
+        }
+
+        .blog-flow-grid {
+            display: grid;
+            grid-template-columns: repeat(6, minmax(0, 1fr));
+            gap: 10px;
+        }
+
+        .blog-flow-step,
+        .blog-control-card {
+            min-height: 104px;
+            padding: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 8px;
+            background: rgba(10, 10, 10, 0.68);
+        }
+
+        .blog-flow-step strong,
+        .blog-control-card strong {
+            display: block;
+            color: #ffffff;
+            font-size: 0.9rem;
+            line-height: 1.3;
+            margin-bottom: 8px;
+        }
+
+        .blog-flow-step span,
+        .blog-control-card span {
+            color: #b9b9b9;
+            font-size: 0.84rem;
+            line-height: 1.55;
+        }
+
+        .blog-control-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 12px;
+            margin: 18px 0 24px;
+        }
+
+        .blog-table-wrap {
+            margin: 24px 0;
+            overflow-x: auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+        }
+
+        .blog-table-wrap table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 680px;
+            background: #0f0f0f;
+        }
+
+        .blog-table-wrap th,
+        .blog-table-wrap td {
+            padding: 12px 14px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            color: #b9b9b9;
+            line-height: 1.55;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        .blog-table-wrap th {
+            color: #ffffff;
+            background: rgba(0, 209, 255, 0.08);
+        }
+
+        @media (max-width: 900px) {
+            .blog-flow-grid,
+            .blog-control-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@graph": [
+            {
+                "@type": "BlogPosting",
+                "headline": "Identidad y autorización para agentes de IA: OAuth para servicios no humanos",
+                "description": "Cómo diseñar identidad, alcances OAuth, gateways de políticas, logs de auditoría y autorización de mínimo privilegio para agentes de IA que actúan sobre APIs y herramientas internas.",
+                "image": "https://pklavc.com/images/lavc.webp?v=5e84850f26",
+                "datePublished": "2026-06-01",
+                "dateModified": "2026-06-01",
+                "author": {
+                    "@type": "Person",
+                    "name": "Patrick Araujo"
+                },
+                "publisher": {
+                    "@type": "Person",
+                    "name": "Patrick Araujo"
+                },
+                "mainEntityOfPage": "https://pklavc.com/es/blog/ai-agent-identity-authorization-oauth/",
+                "url": "https://pklavc.com/es/blog/ai-agent-identity-authorization-oauth/",
+                "keywords": [
+                    "identidad de agentes de IA",
+                    "autorización para agentes de IA",
+                    "OAuth para agentes de IA",
+                    "identidad no humana",
+                    "seguridad de agentes",
+                    "autorización de API",
+                    "mínimo privilegio",
+                    "gateway de herramientas",
+                    "logs de auditoría"
+                ]
+            },
+            {
+                "@type": "BreadcrumbList",
+                "itemListElement": [
+                    {
+                        "@type": "ListItem",
+                        "position": 1,
+                        "name": "Inicio",
+                        "item": "https://pklavc.com/es/"
+                    },
+                    {
+                        "@type": "ListItem",
+                        "position": 2,
+                        "name": "Blog",
+                        "item": "https://pklavc.com/es/blog/"
+                    },
+                    {
+                        "@type": "ListItem",
+                        "position": 3,
+                        "name": "Identidad y autorización para agentes de IA",
+                        "item": "https://pklavc.com/es/blog/ai-agent-identity-authorization-oauth/"
+                    }
+                ]
+            }
+        ]
+    }
+    </script>
+</head>
+<body class="blog-layout seo-layout">
+    <div id="breaker"></div>
+    <div id="breaker-two"></div>
+    <div id="all">
+        <div class="cursor"></div>
+        <div id="navigation-content" role="navigation" aria-label="Navegación principal">
+            <div class="logo"></div>
+            <div class="navigation-links">
+                <a href="/es/" data-text="INICIO" id="home-link">INICIO</a>
+                <a href="/es/sobre/" data-text="SOBRE" id="about-link">SOBRE</a>
+                <a href="/es/proyectos/" data-text="PROYECTOS" id="projects-link">PROYECTOS</a>
+                <a href="/es/blog/" data-text="BLOG" id="blog-link">BLOG</a>
+            </div>
+        </div>
+        <div id="navigation-bar">
+            <div class="menubar">
+                <span class="first-span"></span>
+                <span class="second-span"></span>
+                <span class="third-span"></span>
+            </div>
+        </div>
+
+        <main class="blog-shell" role="main">
+            <div class="blog-columns">
+                <div>
+                    <article class="blog-post-hero">
+                        <div class="blog-breadcrumb" aria-label="Ruta de navegación">
+                            <a href="/es/">Inicio</a>
+                            <span>/</span>
+                            <a href="/es/blog/">Blog</a>
+                            <span>/</span>
+                            <span aria-current="page">Identidad de agentes de IA</span>
+                        </div>
+                        <span class="blog-kicker">Arquitectura de Seguridad en IA</span>
+                        <h1>Identidad y autorización para agentes de IA: OAuth para servicios no humanos</h1>
+                        <p>Los agentes de IA se están convirtiendo en participantes activos de los sistemas de software. Leen issues, abren pull requests, consultan bases de datos, llaman APIs SaaS, programan tareas y disparan automatizaciones. Eso significa que necesitan modelos de identidad y autorización tan bien diseñados como los que usamos para personas y servicios backend.</p>
+                        <div class="blog-post-meta">
+                            <span>Publicado el 1 de junio de 2026</span>
+                            <span>13 min de lectura</span>
+                            <span>Seguridad en IA</span>
+                        </div>
+                    </article>
+
+                    <article class="blog-article">
+                        <h2>El nuevo problema de identidad</h2>
+                        <p>Durante años, los sistemas backend separaron a los actores en dos grupos: personas y servicios. Las personas iniciaban sesión con cuentas de usuario. Los servicios usaban claves de API, cuentas de servicio, clientes OAuth o identidad de workload. Los agentes de IA rompen esa frontera porque se comportan como servicios, pero muchas veces actúan en nombre de una persona y dentro de un contexto que cambia con cada tarea.</p>
+                        <p>Un agente que resume logs quizá solo necesita lectura. Cinco minutos después, ese mismo agente puede intentar crear un ticket de incidente, rotar una credencial o disparar un despliegue. Si el sistema lo trata como una cuenta de servicio administrativa permanente, cada llamada nace con demasiados privilegios. Si lo trata como una sesión normal de usuario, pierde la capacidad de distinguir intención humana de ejecución autónoma.</p>
+
+                        <div class="blog-callout">
+                            La pregunta central no es "¿este agente puede llamar la API?". La pregunta correcta es: "¿qué actor delegó qué permiso a qué agente, para qué tarea, durante cuánto tiempo y con qué rastro de auditoría?"
+                        </div>
+
+                        <h2>Por qué esto ya es urgente</h2>
+                        <p>En 2026, esto dejó de ser un ejercicio teórico de arquitectura. NIST lanzó una <a href="https://www.nist.gov/news-events/news/2026/02/announcing-ai-agent-standards-initiative-interoperable-and-secure" target="_blank" rel="noopener noreferrer">iniciativa de estándares para agentes de IA</a> centrada en ecosistemas seguros e interoperables. NIST también publicó un <a href="https://www.nist.gov/publications/summary-analysis-responses-request-information-regarding-security-considerations-ai" target="_blank" rel="noopener noreferrer">resumen de respuestas sobre seguridad de agentes de IA</a>, donde hubo amplio acuerdo en que los agentes introducen riesgos nuevos y que las prácticas tradicionales de ciberseguridad necesitan adaptarse.</p>
+                        <p>Para quienes construyen backend, la conclusión práctica es clara: el acceso de agentes no puede improvisarse. Cuando un agente tiene acceso a herramientas, tus APIs deben saber quién es el agente, a quién representa, qué puede hacer y cómo revocar esa autoridad cuando la tarea termina.</p>
+
+                        <div class="blog-diagram" aria-label="Pipeline de autorización para agentes de IA">
+                            <span class="blog-diagram-title">Pipeline de autorización</span>
+                            <div class="blog-flow-grid">
+                                <div class="blog-flow-step">
+                                    <strong>Intención humana</strong>
+                                    <span>El usuario pide al agente una tarea con límites claros.</span>
+                                </div>
+                                <div class="blog-flow-step">
+                                    <strong>Plan del agente</strong>
+                                    <span>El agente propone las herramientas y acciones necesarias.</span>
+                                </div>
+                                <div class="blog-flow-step">
+                                    <strong>Revisión de política</strong>
+                                    <span>Un gateway evalúa riesgo, alcance, dueño y ambiente.</span>
+                                </div>
+                                <div class="blog-flow-step">
+                                    <strong>Token acotado</strong>
+                                    <span>OAuth o identidad de workload emite autoridad temporal.</span>
+                                </div>
+                                <div class="blog-flow-step">
+                                    <strong>Llamada de herramienta</strong>
+                                    <span>La API ejecuta únicamente la operación aprobada.</span>
+                                </div>
+                                <div class="blog-flow-step">
+                                    <strong>Evento de auditoría</strong>
+                                    <span>Actor, tarea, token, entrada, salida y resultado quedan registrados.</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h2>OAuth es delegación, no magia</h2>
+                        <p>OAuth es útil porque modela autorización delegada. Un usuario o sistema concede a un cliente acceso limitado a un resource server. Eso encaja bien con flujos de agentes, siempre que la implementación no convierta OAuth en un contenedor de permisos amplios y de larga duración.</p>
+                        <p>En un flujo delegado por una persona, el agente normalmente debería recibir un token estrecho, temporal y vinculado a una tarea. En flujos de agentes en segundo plano, client credentials o workload identity pueden tener sentido, pero también necesitan alcances, restricciones de política y trazabilidad. La clave es evitar un único "token del agente" capaz de leer y escribir todo.</p>
+
+                        <h2>La identidad debe tener capas</h2>
+                        <p>Un buen modelo de identidad para agentes registra más de un actor. Debe capturar la persona solicitante, la instancia del agente, la herramienta o servidor MCP usado, la API destino y la decisión de política que permitió la acción. Es parecido al tracing distribuido: una petición pasa por varios sistemas, pero el trace mantiene conectada la historia.</p>
+
+                        <div class="blog-control-grid" aria-label="Capas de identidad para agentes de IA">
+                            <div class="blog-control-card">
+                                <strong>Principal humano</strong>
+                                <span>La persona o equipo que solicitó y aprobó la tarea.</span>
+                            </div>
+                            <div class="blog-control-card">
+                                <strong>Principal del agente</strong>
+                                <span>Runtime, familia de modelo, configuración e identidad de sesión.</span>
+                            </div>
+                            <div class="blog-control-card">
+                                <strong>Principal de herramienta</strong>
+                                <span>Cliente de API, servidor MCP, worker o integración que ejecutó la acción.</span>
+                            </div>
+                        </div>
+
+                        <p>Esta identidad por capas importa mucho durante una respuesta a incidentes. Si cambia una fila de la base de datos, el log no debería decir solo "service-account-agent-prod actualizó la fila 123". Debería responder: qué usuario inició la tarea, qué agente generó la acción, qué permiso fue concedido, qué herramienta la ejecutó y si el resultado coincide con el plan aprobado.</p>
+
+                        <h2>El patrón del gateway de políticas</h2>
+                        <p>El lugar más seguro para aplicar autorización de agentes no es el prompt. Los prompts pueden describir reglas, pero la aplicación real pertenece al código. Un gateway de políticas se ubica entre el agente y las herramientas. Recibe llamadas propuestas, las evalúa contra políticas, solicita aprobación humana cuando hace falta, emite credenciales acotadas y escribe eventos de auditoría.</p>
+                        <p>Esto es especialmente importante en ecosistemas de herramientas tipo MCP. MCP puede exponer capacidades muy útiles a los agentes, pero cada capacidad expuesta también es una frontera de permisos. Un servidor MCP de base de datos no debería conceder escritura solo porque el agente formuló una petición convincente. El gateway debe decidir si esa tarea, actor, ambiente y recurso justifican la acción.</p>
+
+                        <h2>Los alcances deben tener forma de tarea</h2>
+                        <p>Los alcances tradicionales suelen describir permisos amplios de aplicación: leer facturas, escribir tickets, administrar usuarios. Los agentes necesitan alcances más contextuales. Un alcance con forma de tarea podría permitir crear un solo ticket para un cliente, leer logs de un servicio durante la última hora o generar un pull request en borrador sin permiso de merge.</p>
+
+                        <div class="blog-table-wrap" aria-label="Tabla de controles de autorización para agentes">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Control</th>
+                                        <th>Patrón débil</th>
+                                        <th>Patrón más seguro</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Vida del token</td>
+                                        <td>Token compartido y duradero para todas las acciones del agente.</td>
+                                        <td>Token corto, vinculado a una tarea o sesión concreta.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Diseño de alcance</td>
+                                        <td>Alcances genéricos de administrador, como <code>write:all</code>.</td>
+                                        <td>Alcances limitados por recurso, acción, ambiente y tiempo.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Aprobación humana</td>
+                                        <td>El agente decide por sí mismo cuándo una acción es segura.</td>
+                                        <td>La política exige aprobación para llamadas destructivas o de alto riesgo.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Auditabilidad</td>
+                                        <td>Los logs muestran solo el nombre de una cuenta de servicio.</td>
+                                        <td>Los logs conectan persona, agente, herramienta, token, petición y resultado.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Revocación</td>
+                                        <td>La credencial sigue activa después de terminar la tarea.</td>
+                                        <td>El token expira automáticamente y puede revocarse de inmediato.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <h2>Lo que yo construiría</h2>
+                        <p>Para una implementación práctica y útil como pieza de portafolio, construiría un gateway de autorización para agentes con Cloudflare Workers o FastAPI, usando Postgres/Supabase para políticas y auditoría. El agente nunca llamaría APIs sensibles directamente. Enviaría la acción propuesta al gateway. El gateway validaría la petición, la mapearía a una política, emitiría una credencial corta o un token interno firmado y luego haría proxy de la llamada aprobada.</p>
+                        <p>La primera versión incluiría: registro de herramientas, definiciones de acciones acotadas, niveles de riesgo, estados de aprobación humana, expiración de tokens, logs estructurados y un pequeño dashboard con acciones recientes de agentes. Ese dashboard importa. La seguridad de agentes no consiste solo en bloquear ataques; también consiste en hacer visible la actividad autónoma para que las personas puedan confiar en ella.</p>
+
+                        <h2>Fallos que conviene diseñar desde el inicio</h2>
+                        <p>Los sistemas de autorización para agentes fallan de formas bastante predecibles. El fallo más común es el exceso de privilegios: un token amplio es más fácil de entregar que uno acotado. El segundo es la falta de atribución: el log muestra que se llamó una API, pero no explica por qué. El tercero es el bypass de política: el agente encuentra una ruta directa a la API y evita el gateway. El cuarto es la fatiga de aprobación: las personas aprueban todo porque el sistema pide confirmación demasiadas veces.</p>
+                        <p>Un buen diseño reduce estos fallos con políticas default-deny, emisión estrecha de tokens, acceso a herramientas por un camino controlado, aprobación basada en riesgo y dashboards que resumen actividad en lugar de hundir a los revisores en logs crudos.</p>
+
+                        <h2>Observabilidad para acciones de agentes</h2>
+                        <p>Cada acción de agente debería generar telemetría estructurada. Como mínimo: ID del agente, solicitante humano, ID de tarea, herramienta usada, recurso objetivo, alcances solicitados, alcances concedidos, decisión de política, estado de aprobación, latencia, resultado y si hubo campos sensibles redactados.</p>
+                        <p>Con esos eventos, el sistema puede responder preguntas útiles: qué herramientas usan más los agentes, qué acciones requieren más aprobación manual, qué alcances son demasiado amplios, qué prompts producen bloqueos repetidos y qué automatizaciones ya son lo suficientemente seguras para ganar más autonomía.</p>
+
+                        <h2>El principio de diseño</h2>
+                        <p>Los agentes de IA no deberían heredar confianza por escribir con fluidez. Un plan bien redactado no es autorización. Una llamada de herramienta formulada con seguridad no es aprobación. Los sistemas de producción necesitan límites aplicables: identidad, alcances, política, aprobación, ejecución, auditoría y revocación.</p>
+                        <p>Esa es la diferencia entre un agente simplemente conectado a herramientas y un agente capaz de participar con seguridad en operaciones backend reales.</p>
+                    </article>
+
+                    <section aria-labelledby="agent-identity-related-title">
+                        <h2 id="agent-identity-related-title">Lectura relacionada</h2>
+                        <div class="blog-related-grid">
+                            <article class="blog-related-card">
+                                <h3><a href="/es/blog/model-context-protocol-mcp/">MCP: la interfaz estándar para herramientas de agentes de IA</a></h3>
+                                <p>Cómo las interfaces de herramientas cambian la forma en que los agentes interactúan con sistemas reales.</p>
+                            </article>
+                            <article class="blog-related-card">
+                                <h3><a href="/es/blog/ai-code-governance-security/">Gobernanza y seguridad para código generado por IA</a></h3>
+                                <p>Gates de validación, trazas de auditoría y protecciones de producción para salidas de agentes.</p>
+                            </article>
+                            <article class="blog-related-card">
+                                <h3><a href="/es/blog/oauth-token-management/">Gestión de tokens OAuth en workers backend</a></h3>
+                                <p>Patrones de ciclo de vida de credenciales para servicios backend y workers de integración.</p>
+                            </article>
+                        </div>
+                    </section>
+                </div>
+
+                <aside class="blog-article-grid">
+                    <section class="blog-sidebar-card">
+                        <h2>Ideas centrales</h2>
+                        <ul>
+                            <li>Los agentes necesitan su propia capa de identidad, no tokens administrativos compartidos.</li>
+                            <li>OAuth funciona mejor con tokens acotados, cortos y conscientes de la tarea.</li>
+                            <li>La aplicación de políticas debe vivir en un gateway, no solo en prompts.</li>
+                            <li>Los logs de auditoría deben conectar intención humana con ejecución autónoma.</li>
+                        </ul>
+                    </section>
+                    <section class="blog-sidebar-card">
+                        <h2>Plano de control</h2>
+                        <ul>
+                            <li>Registro de herramientas</li>
+                            <li>Tokens de acción acotados</li>
+                            <li>Aprobaciones basadas en riesgo</li>
+                            <li>Eventos de auditoría estructurados</li>
+                            <li>Revocación y expiración</li>
+                        </ul>
+                    </section>
+                    <section class="blog-sidebar-card">
+                        <h2>Señales externas</h2>
+                        <ul>
+                            <li><a href="https://www.nist.gov/news-events/news/2026/02/announcing-ai-agent-standards-initiative-interoperable-and-secure" target="_blank" rel="noopener noreferrer">Iniciativa de NIST para estándares de agentes de IA</a></li>
+                            <li><a href="https://www.nist.gov/publications/summary-analysis-responses-request-information-regarding-security-considerations-ai" target="_blank" rel="noopener noreferrer">Respuestas de NIST sobre seguridad de agentes</a></li>
+                            <li><a href="https://www.nist.gov/itl/ai-risk-management-framework" target="_blank" rel="noopener noreferrer">AI Risk Management Framework de NIST</a></li>
+                        </ul>
+                    </section>
+                    <section class="blog-sidebar-card">
+                        <h2>Continuar explorando</h2>
+                        <ul>
+                            <li><a href="/es/blog/autonomous-coding-agents/">Agentes de codificación autónomos</a></li>
+                            <li><a href="/es/blog/ai-native-engineering/">Ingeniería nativa de IA</a></li>
+                            <li><a href="/es/blog/lavc-systems-architecture/">Arquitectura de Lavc Systems</a></li>
+                        </ul>
+                    </section>
+                </aside>
+            </div>
+        </main>
+    </div>
+
+    <footer class="footer-minimal">
+        <div class="footer-container">
+            <div class="footer-link-list" aria-label="Enlaces del pie de página">
+                <a class="footer-link-pill" href="https://github.com/PkLavc" target="_blank" rel="noopener noreferrer">GitHub</a>
+                <a class="footer-link-pill" href="https://www.linkedin.com/in/pklavc/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+                <a class="footer-link-pill" href="mailto:contact@pklavc.com">Email</a>
+                <a class="footer-link-pill footer-link-pill-accent" href="https://github.com/sponsors/PkLavc" target="_blank" rel="noopener noreferrer">Apoyar en GitHub</a>
+            </div>
+            <p>
+                &copy; <span data-current-year></span> Patrick Araujo
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        (function() {
+            document.querySelectorAll('[data-current-year]').forEach(function(node) {
+                node.textContent = String(new Date().getFullYear());
+            });
+        }());
+    </script>
+    <script src="/js/i18n.js?v=75d84205d9" defer></script>
+    <script src="/js/jquery.min.js?v=d482871a5e" defer></script>
+    <script src="/js/index.js?v=0b108f99d1" defer></script>
+
+    <div class="visually-hidden">
+        <p>Artículo sobre identidad y autorización para agentes de IA que cubre OAuth para agentes, identidad no humana, autorización de APIs, tokens acotados, gateways de políticas, seguridad de herramientas MCP, logs de auditoría, mínimo privilegio, aprobación humana y arquitectura backend para acciones autónomas seguras.</p>
+    </div>
+</body>
+</html>

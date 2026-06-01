@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Patrick Araujo">
+    <title>Confidential Computing For AI Pipelines: Protecting Data In Use</title>
+    <meta name="description" content="How confidential computing, TEEs, attestation, confidential containers, and key release policies can protect sensitive data, prompts, embeddings, and model inference in AI pipelines.">
+    <meta name="keywords" content="confidential computing AI, data in use, trusted execution environment, TEE, confidential containers, AI inference security, attestation, secure key release, privacy preserving AI">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://pklavc.com/blog/confidential-computing-ai-pipelines/">
+    <link rel="alternate" href="https://pklavc.com/blog/confidential-computing-ai-pipelines/" hreflang="en">
+    <link rel="alternate" href="https://pklavc.com/pt/blog/confidential-computing-ai-pipelines/" hreflang="pt-BR">
+    <link rel="alternate" href="https://pklavc.com/es/blog/confidential-computing-ai-pipelines/" hreflang="es">
+    <link rel="alternate" href="https://pklavc.com/blog/confidential-computing-ai-pipelines/" hreflang="x-default">
+
+    <meta property="og:title" content="Confidential Computing For AI Pipelines">
+    <meta property="og:description" content="Protecting sensitive prompts, embeddings, model calls, and regulated data while they are being processed.">
+    <meta property="og:url" content="https://pklavc.com/blog/confidential-computing-ai-pipelines/">
+    <meta property="og:type" content="article">
+    <meta property="article:published_time" content="2026-06-01">
+    <meta property="article:modified_time" content="2026-06-01">
+    <meta property="article:author" content="Patrick Araujo">
+    <meta property="article:section" content="AI Security">
+    <meta property="article:tag" content="confidential computing">
+    <meta property="article:tag" content="AI security">
+    <meta property="article:tag" content="attestation">
+    <meta property="article:tag" content="confidential containers">
+    <meta property="og:image" content="https://pklavc.com/images/lavc.webp?v=5e84850f26">
+    <meta property="og:image:width" content="1024">
+    <meta property="og:image:height" content="1024">
+    <meta property="og:site_name" content="Patrick Araujo">
+    <meta property="og:locale" content="en_US">
+    <meta property="og:image:alt" content="Brand portrait of backend engineer and automation specialist Patrick Araujo">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Confidential Computing For AI Pipelines">
+    <meta name="twitter:description" content="TEEs, attestation, confidential containers, and key release policies for AI pipelines.">
+    <meta name="twitter:image" content="https://pklavc.com/images/lavc.webp?v=5e84850f26">
+    <meta name="twitter:image:alt" content="Brand portrait of backend engineer and automation specialist Patrick Araujo">
+    <meta name="twitter:site" content="@PkLavc">
+    <meta name="twitter:creator" content="@PkLavc">
+    <link rel="icon" type="image/svg+xml" href="https://pklavc.com/images/favicon.svg?v=d15fe4e492">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Monoton&family=Poppins:wght@500;600;700&family=Raleway:wght@300&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Monoton&family=Poppins:wght@500;600;700&family=Raleway:wght@300&display=swap"></noscript>
+    <link rel="stylesheet" href="/css/global.css?v=d71c8efb77">
+    <link rel="stylesheet" href="/css/blog.css?v=560c7eaf05">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.2.6/gsap.min.js" defer></script>
+    <style>
+        .blog-diagram{margin:24px 0;padding:20px;border:1px solid rgba(0,209,255,.22);border-radius:8px;background:linear-gradient(180deg,rgba(0,209,255,.06),rgba(255,255,255,.025))}
+        .blog-diagram-title{display:block;color:var(--clr-primary);font-size:.78rem;font-weight:700;letter-spacing:.08em;margin-bottom:14px;text-transform:uppercase}
+        .blog-flow-grid,.blog-metric-grid{display:grid;gap:10px}
+        .blog-flow-grid{grid-template-columns:repeat(6,minmax(0,1fr))}
+        .blog-metric-grid{grid-template-columns:repeat(4,minmax(0,1fr));margin:18px 0 24px}
+        .blog-flow-step,.blog-metric-card{min-height:112px;padding:14px;border:1px solid rgba(255,255,255,.12);border-radius:8px;background:rgba(10,10,10,.68)}
+        .blog-flow-step strong,.blog-metric-card strong{display:block;color:#fff;font-size:.9rem;line-height:1.3;margin-bottom:8px}
+        .blog-flow-step span,.blog-metric-card span{color:#b9b9b9;font-size:.84rem;line-height:1.55}
+        .blog-table-wrap{margin:24px 0;overflow-x:auto;border:1px solid rgba(255,255,255,.1);border-radius:8px}
+        .blog-table-wrap table{width:100%;border-collapse:collapse;min-width:760px;background:#0f0f0f}
+        .blog-table-wrap th,.blog-table-wrap td{padding:12px 14px;border-bottom:1px solid rgba(255,255,255,.08);color:#b9b9b9;line-height:1.55;text-align:left;vertical-align:top}
+        .blog-table-wrap th{color:#fff;background:rgba(0,209,255,.08)}
+        @media(max-width:900px){.blog-flow-grid,.blog-metric-grid{grid-template-columns:1fr}}
+    </style>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@graph": [
+            {
+                "@type": "BlogPosting",
+                "headline": "Confidential Computing For AI Pipelines: Protecting Data In Use",
+                "description": "How confidential computing, TEEs, attestation, confidential containers, and key release policies can protect sensitive data, prompts, embeddings, and model inference in AI pipelines.",
+                "image": "https://pklavc.com/images/lavc.webp?v=5e84850f26",
+                "datePublished": "2026-06-01",
+                "dateModified": "2026-06-01",
+                "author": {"@type": "Person", "name": "Patrick Araujo"},
+                "publisher": {"@type": "Person", "name": "Patrick Araujo"},
+                "mainEntityOfPage": "https://pklavc.com/blog/confidential-computing-ai-pipelines/",
+                "url": "https://pklavc.com/blog/confidential-computing-ai-pipelines/",
+                "keywords": ["confidential computing", "AI security", "trusted execution environment", "attestation", "confidential containers", "data in use"]
+            },
+            {
+                "@type": "BreadcrumbList",
+                "itemListElement": [
+                    {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://pklavc.com/"},
+                    {"@type": "ListItem", "position": 2, "name": "Blog", "item": "https://pklavc.com/blog/"},
+                    {"@type": "ListItem", "position": 3, "name": "Confidential Computing AI Pipelines", "item": "https://pklavc.com/blog/confidential-computing-ai-pipelines/"}
+                ]
+            }
+        ]
+    }
+    </script>
+</head>
+<body class="blog-layout seo-layout">
+    <div id="breaker"></div><div id="breaker-two"></div>
+    <div id="all">
+        <div class="cursor"></div>
+        <div id="navigation-content" role="navigation" aria-label="Primary navigation"><div class="logo"></div><div class="navigation-links"><a href="/" data-text="HOME" id="home-link">HOME</a><a href="/about/" data-text="ABOUT" id="about-link">ABOUT</a><a href="/projects/" data-text="PROJECTS" id="projects-link">PROJECTS</a><a href="/blog/" data-text="BLOG" id="blog-link">BLOG</a></div></div>
+        <div id="navigation-bar"><div class="menubar"><span class="first-span"></span><span class="second-span"></span><span class="third-span"></span></div></div>
+        <main class="blog-shell" role="main">
+            <div class="blog-columns">
+                <div>
+                    <article class="blog-post-hero">
+                        <div class="blog-breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a><span>/</span><a href="/blog/">Blog</a><span>/</span><span aria-current="page">Confidential AI</span></div>
+                        <span class="blog-kicker">AI Security</span>
+                        <h1>Confidential Computing For AI Pipelines</h1>
+                        <p>Encryption at rest protects stored data. TLS protects data in transit. Confidential computing targets the missing phase: data in use, when prompts, embeddings, model weights, feature vectors, and regulated records are actually being processed.</p>
+                        <div class="blog-post-meta"><span>Published Jun 1, 2026</span><span>11 min read</span><span>Data In Use</span></div>
+                    </article>
+                    <article class="blog-article">
+                        <h2>The AI version of the problem</h2>
+                        <p>Traditional pipelines decrypt data before business logic can use it. That is normal, but AI raises the stakes. A RAG pipeline might expose sensitive documents to an embedding service. An inference job might combine private prompts, patient notes, payment data, or source code with a model hosted in infrastructure the customer does not fully control.</p>
+                        <p>Confidential computing uses hardware-backed trusted execution environments and attestation so teams can ask a sharper question: is this exact workload running in the expected protected environment before keys, secrets, or sensitive data are released?</p>
+                        <div class="blog-diagram" aria-label="Normal encryption versus confidential computing"><span class="blog-diagram-title">Normal encryption vs confidential compute</span><div class="blog-flow-grid"><div class="blog-flow-step"><strong>At rest</strong><span>Database, object storage, and backups are encrypted.</span></div><div class="blog-flow-step"><strong>In transit</strong><span>TLS protects data while moving between services.</span></div><div class="blog-flow-step"><strong>In use gap</strong><span>Application memory can expose plaintext during processing.</span></div><div class="blog-flow-step"><strong>TEE</strong><span>Protected execution environment isolates code and data.</span></div><div class="blog-flow-step"><strong>Attest</strong><span>Verifier checks workload measurements before key release.</span></div><div class="blog-flow-step"><strong>Operate</strong><span>Logs, policy, and rotation keep the trust boundary alive.</span></div></div></div>
+                        <h2>Attestation is the release gate</h2>
+                        <p>The important pattern is not "put the model in a magic box." It is conditional trust. The key management service should release a decryption key only after attestation proves that the code, image, runtime, TEE, and policy match the expected state. If the image changes, the measurement changes. If the platform is not trusted, keys do not arrive.</p>
+                        <p>For cloud-native teams, confidential containers make this familiar: you still think in Pods, images, policies, and Kubernetes, but the runtime can launch workloads inside confidential VMs and bind secret delivery to attestation.</p>
+                        <div class="blog-metric-grid" aria-label="Confidential AI controls"><div class="blog-metric-card"><strong>Measure</strong><span>Record image digest, policy, runtime, and platform evidence.</span></div><div class="blog-metric-card"><strong>Attest</strong><span>Verify that workload state matches allowed measurements.</span></div><div class="blog-metric-card"><strong>Release</strong><span>Deliver keys or credentials only after successful verification.</span></div><div class="blog-metric-card"><strong>Audit</strong><span>Log attestation, access, output class, and policy decisions.</span></div></div>
+                        <h2>Where it fits in AI pipelines</h2>
+                        <p>Confidential computing is most valuable when the data is sensitive and the infrastructure boundary is uncomfortable: healthcare analytics, financial fraud models, enterprise code assistants, private RAG, regulated AI inference, cross-company analytics, and multi-tenant SaaS features that process customer data.</p>
+                        <div class="blog-table-wrap" aria-label="Confidential computing for AI pipeline risks"><table><thead><tr><th>AI pipeline risk</th><th>Confidential computing control</th><th>Engineering artifact</th></tr></thead><tbody><tr><td>Prompt or document exposure</td><td>Decrypt prompts and retrieved chunks only inside an attested environment.</td><td>Attestation policy plus key release rule.</td></tr><tr><td>Model theft</td><td>Load weights only after the runtime and image measurement pass verification.</td><td>Signed model artifact and protected model loader.</td></tr><tr><td>Embedding leakage</td><td>Generate and store embeddings under tenant-aware policy and encrypted memory.</td><td>Tenant-scoped vector pipeline and audit log.</td></tr><tr><td>Untrusted operator access</td><td>Reduce host, hypervisor, and operator visibility into workload memory.</td><td>TEE-backed runtime and operational access policy.</td></tr><tr><td>Weak incident evidence</td><td>Log attestation, key release, artifact digests, and output class.</td><td>Security event stream and immutable audit store.</td></tr></tbody></table></div>
+                        <h2>What I would build</h2>
+                        <p>I would build a confidential RAG gateway. Every request would carry tenant, data class, model policy, and retrieval scope. The gateway would attest the confidential container, request keys only after verification, decrypt retrieved chunks inside the trusted boundary, call the model, redact outputs by policy, and emit an audit record.</p>
+                        <p>The developer experience matters: OpenAPI contracts, local mock attestation, signed image checks, test vectors for rejected measurements, and dashboards that show how often keys were denied. Confidential computing should feel like a deployment gate, not a research project.</p>
+                        <h2>The design principle</h2>
+                        <p>Confidential computing is not a replacement for encryption, IAM, network security, or application security. It is another boundary. In AI pipelines, that boundary is becoming useful because the most valuable data often appears exactly where old encryption models are weakest: during computation.</p>
+                    </article>
+                    <section aria-labelledby="confidential-related-title"><h2 id="confidential-related-title">Related reading</h2><div class="blog-related-grid"><article class="blog-related-card"><h3><a href="/blog/kubernetes-ai-workload-operating-system/">Kubernetes AI Workloads</a></h3><p>How AI workloads run across GPU pools, serving platforms, and observability stacks.</p></article><article class="blog-related-card"><h3><a href="/blog/securing-ai-agents-prompt-injection-tool-abuse/">Securing AI Agents</a></h3><p>Permission boundaries, prompt injection, and tool abuse controls.</p></article><article class="blog-related-card"><h3><a href="/blog/apac-ai-infrastructure-semiconductors-data-centers/">APAC AI Infrastructure</a></h3><p>Why AI capacity depends on chips, data centers, and software supply chains.</p></article></div></section>
+                </div>
+                <aside class="blog-article-grid">
+                    <section class="blog-sidebar-card"><h2>Core takeaways</h2><ul><li>AI pipelines expose sensitive data during computation, not only in storage or transit.</li><li>Attestation should decide whether keys and secrets are released.</li><li>Confidential containers bring TEE-backed execution closer to Kubernetes workflows.</li><li>The best use cases involve sensitive data, shared infrastructure, and audit requirements.</li></ul></section>
+                    <section class="blog-sidebar-card"><h2>Pipeline gates</h2><ul><li>Signed image</li><li>TEE launch</li><li>Remote attestation</li><li>Conditional key release</li><li>Encrypted output</li><li>Audit event</li></ul></section>
+                    <section class="blog-sidebar-card"><h2>Technical sources</h2><ul><li><a href="https://confidentialcomputing.io/about/" target="_blank" rel="noopener noreferrer">Confidential Computing Consortium</a></li><li><a href="https://www.cncf.io/projects/confidential-containers/" target="_blank" rel="noopener noreferrer">CNCF Confidential Containers</a></li><li><a href="https://www.cncf.io/blog/2026/05/19/automating-confidential-containers-coco-infrastructure-with-kyverno/" target="_blank" rel="noopener noreferrer">CNCF CoCo and Kyverno</a></li><li><a href="https://learn.microsoft.com/en-us/azure/confidential-computing/attestation-solutions" target="_blank" rel="noopener noreferrer">Microsoft attestation scenarios</a></li><li><a href="https://docs.nvidia.com/confidential-computing/index.html" target="_blank" rel="noopener noreferrer">NVIDIA confidential computing docs</a></li></ul></section>
+                    <section class="blog-sidebar-card"><h2>Build idea</h2><p>A confidential RAG gateway with attestation, tenant-scoped key release, protected retrieval, output policy, and immutable audit events.</p></section>
+                </aside>
+            </div>
+        </main>
+    </div>
+    <footer class="footer-minimal"><div class="footer-container"><div class="footer-link-list" aria-label="Footer links"><a class="footer-link-pill" href="https://github.com/PkLavc" target="_blank" rel="noopener noreferrer">GitHub</a><a class="footer-link-pill" href="https://www.linkedin.com/in/pklavc/" target="_blank" rel="noopener noreferrer">LinkedIn</a><a class="footer-link-pill" href="mailto:contact@pklavc.com">Email</a><a class="footer-link-pill footer-link-pill-accent" href="https://github.com/sponsors/PkLavc" target="_blank" rel="noopener noreferrer">Sponsor me</a></div><p>&copy; <span data-current-year></span> Patrick Araujo</p></div></footer>
+    <script>(function(){document.querySelectorAll('[data-current-year]').forEach(function(node){node.textContent=String(new Date().getFullYear());});}());</script>
+    <script src="/js/i18n.js?v=75d84205d9" defer></script><script src="/js/jquery.min.js?v=d482871a5e" defer></script><script src="/js/index.js?v=0b108f99d1" defer></script>
+    <div class="visually-hidden"><p>Confidential computing article covering AI pipeline security, data in use, trusted execution environments, remote attestation, confidential containers, key release policies, protected RAG, embeddings, model weights, privacy, and audit logs.</p></div>
+</body>
+</html>

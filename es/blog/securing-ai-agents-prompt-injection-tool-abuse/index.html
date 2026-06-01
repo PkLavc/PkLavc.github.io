@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Patrick Araujo">
+    <title>Cómo proteger agentes de IA contra prompt injection, abuso de herramientas y privilegios excesivos</title>
+    <meta name="description" content="Una guía práctica de seguridad backend para defender agentes de IA contra prompt injection, abuso de herramientas, agencia excesiva, exfiltración de datos y acciones autónomas inseguras.">
+    <meta name="keywords" content="seguridad de agentes de IA, prompt injection, abuso de herramientas, agencia excesiva, seguridad MCP, seguridad de aplicaciones LLM, arquitectura de seguridad en IA, OWASP LLM Top 10, secuestro de agentes, mínimo privilegio">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://pklavc.com/es/blog/securing-ai-agents-prompt-injection-tool-abuse/">
+    <link rel="alternate" href="https://pklavc.com/blog/securing-ai-agents-prompt-injection-tool-abuse/" hreflang="en">
+    <link rel="alternate" href="https://pklavc.com/pt/blog/securing-ai-agents-prompt-injection-tool-abuse/" hreflang="pt-BR">
+    <link rel="alternate" href="https://pklavc.com/es/blog/securing-ai-agents-prompt-injection-tool-abuse/" hreflang="es">
+    <link rel="alternate" href="https://pklavc.com/blog/securing-ai-agents-prompt-injection-tool-abuse/" hreflang="x-default">
+
+    <meta property="og:title" content="Cómo proteger agentes de IA contra prompt injection, abuso de herramientas y privilegios excesivos">
+    <meta property="og:description" content="Cómo proteger sistemas agentic con cuarentena de contexto, gateways de políticas, allowlists de herramientas, aprobaciones humanas y observabilidad preparada para auditoría.">
+    <meta property="og:url" content="https://pklavc.com/es/blog/securing-ai-agents-prompt-injection-tool-abuse/">
+    <meta property="og:type" content="article">
+    <meta property="article:published_time" content="2026-06-01">
+    <meta property="article:modified_time" content="2026-06-01">
+    <meta property="article:author" content="Patrick Araujo">
+    <meta property="article:section" content="Arquitectura de Seguridad en IA">
+    <meta property="article:tag" content="prompt injection">
+    <meta property="article:tag" content="seguridad de agentes de IA">
+    <meta property="article:tag" content="seguridad MCP">
+    <meta property="article:tag" content="mínimo privilegio">
+    <meta property="og:image" content="https://pklavc.com/images/lavc.webp?v=5e84850f26">
+    <meta property="og:image:width" content="1024">
+    <meta property="og:image:height" content="1024">
+    <meta property="og:site_name" content="Patrick Araujo">
+    <meta property="og:locale" content="es_ES">
+    <meta property="og:image:alt" content="Retrato de marca del ingeniero backend y especialista en automatización Patrick Araujo">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Cómo proteger agentes de IA contra abuso de herramientas">
+    <meta name="twitter:description" content="Prompt injection, agencia excesiva, gateways de políticas, allowlists de herramientas y trazas de auditoría para agentes de IA seguros.">
+    <meta name="twitter:image" content="https://pklavc.com/images/lavc.webp?v=5e84850f26">
+    <meta name="twitter:image:alt" content="Retrato de marca del ingeniero backend y especialista en automatización Patrick Araujo">
+    <meta name="twitter:site" content="@PkLavc">
+    <meta name="twitter:creator" content="@PkLavc">
+
+    <link rel="icon" type="image/svg+xml" href="https://pklavc.com/images/favicon.svg?v=d15fe4e492">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Monoton&amp;family=Poppins:wght@500;600;700&amp;family=Raleway:wght@300&amp;display=swap" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Monoton&amp;family=Poppins:wght@500;600;700&amp;family=Raleway:wght@300&amp;display=swap"></noscript>
+    <link rel="stylesheet" href="/css/global.css?v=d71c8efb77">
+    <link rel="stylesheet" href="/css/blog.css?v=560c7eaf05">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.2.6/gsap.min.js" defer></script>
+    <style>
+        .blog-diagram {
+            margin: 24px 0;
+            padding: 20px;
+            border: 1px solid rgba(0, 209, 255, 0.22);
+            border-radius: 8px;
+            background: linear-gradient(180deg, rgba(0, 209, 255, 0.06), rgba(255, 255, 255, 0.025));
+        }
+        .blog-diagram-title {
+            display: block;
+            color: var(--clr-primary);
+            font-size: 0.78rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            margin-bottom: 14px;
+            text-transform: uppercase;
+        }
+        .blog-flow-grid,
+        .blog-control-grid {
+            display: grid;
+            gap: 10px;
+        }
+        .blog-flow-grid {
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+        }
+        .blog-control-grid {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            margin: 18px 0 24px;
+        }
+        .blog-flow-step,
+        .blog-control-card {
+            min-height: 104px;
+            padding: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 8px;
+            background: rgba(10, 10, 10, 0.68);
+        }
+        .blog-flow-step strong,
+        .blog-control-card strong {
+            display: block;
+            color: #ffffff;
+            font-size: 0.9rem;
+            line-height: 1.3;
+            margin-bottom: 8px;
+        }
+        .blog-flow-step span,
+        .blog-control-card span {
+            color: #b9b9b9;
+            font-size: 0.84rem;
+            line-height: 1.55;
+        }
+        .blog-table-wrap {
+            margin: 24px 0;
+            overflow-x: auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+        }
+        .blog-table-wrap table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 700px;
+            background: #0f0f0f;
+        }
+        .blog-table-wrap th,
+        .blog-table-wrap td {
+            padding: 12px 14px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            color: #b9b9b9;
+            line-height: 1.55;
+            text-align: left;
+            vertical-align: top;
+        }
+        .blog-table-wrap th {
+            color: #ffffff;
+            background: rgba(0, 209, 255, 0.08);
+        }
+        @media (max-width: 900px) {
+            .blog-flow-grid,
+            .blog-control-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@graph": [
+            {
+                "@type": "BlogPosting",
+                "headline": "Cómo proteger agentes de IA contra prompt injection, abuso de herramientas y privilegios excesivos",
+                "description": "Una guía práctica de seguridad backend para defender agentes de IA contra prompt injection, abuso de herramientas, agencia excesiva, exfiltración de datos y acciones autónomas inseguras.",
+                "image": "https://pklavc.com/images/lavc.webp?v=5e84850f26",
+                "datePublished": "2026-06-01",
+                "dateModified": "2026-06-01",
+                "author": {
+                    "@type": "Person",
+                    "name": "Patrick Araujo"
+                },
+                "publisher": {
+                    "@type": "Person",
+                    "name": "Patrick Araujo"
+                },
+                "mainEntityOfPage": "https://pklavc.com/es/blog/securing-ai-agents-prompt-injection-tool-abuse/",
+                "url": "https://pklavc.com/es/blog/securing-ai-agents-prompt-injection-tool-abuse/",
+                "keywords": [
+                    "seguridad de agentes de IA",
+                    "prompt injection",
+                    "abuso de herramientas",
+                    "agencia excesiva",
+                    "seguridad MCP",
+                    "seguridad de aplicaciones LLM",
+                    "secuestro de agentes",
+                    "mínimo privilegio",
+                    "arquitectura de seguridad en IA"
+                ]
+            },
+            {
+                "@type": "BreadcrumbList",
+                "itemListElement": [
+                    {
+                        "@type": "ListItem",
+                        "position": 1,
+                        "name": "Inicio",
+                        "item": "https://pklavc.com/es/"
+                    },
+                    {
+                        "@type": "ListItem",
+                        "position": 2,
+                        "name": "Blog",
+                        "item": "https://pklavc.com/es/blog/"
+                    },
+                    {
+                        "@type": "ListItem",
+                        "position": 3,
+                        "name": "Cómo proteger agentes de IA",
+                        "item": "https://pklavc.com/es/blog/securing-ai-agents-prompt-injection-tool-abuse/"
+                    }
+                ]
+            }
+        ]
+    }
+    </script>
+</head>
+<body class="blog-layout seo-layout">
+    <div id="breaker"></div>
+    <div id="breaker-two"></div>
+    <div id="all">
+        <div class="cursor"></div>
+        <div id="navigation-content" role="navigation" aria-label="Navegación principal">
+            <div class="logo"></div>
+            <div class="navigation-links">
+                <a href="/es/" data-text="INICIO" id="home-link">INICIO</a>
+                <a href="/es/sobre/" data-text="SOBRE" id="about-link">SOBRE</a>
+                <a href="/es/proyectos/" data-text="PROYECTOS" id="projects-link">PROYECTOS</a>
+                <a href="/es/blog/" data-text="BLOG" id="blog-link">BLOG</a>
+            </div>
+        </div>
+        <div id="navigation-bar">
+            <div class="menubar">
+                <span class="first-span"></span>
+                <span class="second-span"></span>
+                <span class="third-span"></span>
+            </div>
+        </div>
+
+        <main class="blog-shell" role="main">
+            <div class="blog-columns">
+                <div>
+                    <article class="blog-post-hero">
+                        <div class="blog-breadcrumb" aria-label="Ruta de navegación">
+                            <a href="/es/">Inicio</a>
+                            <span>/</span>
+                            <a href="/es/blog/">Blog</a>
+                            <span>/</span>
+                            <span aria-current="page">Cómo proteger agentes de IA</span>
+                        </div>
+                        <span class="blog-kicker">Arquitectura de Seguridad en IA</span>
+                        <h1>Cómo proteger agentes de IA contra prompt injection, abuso de herramientas y privilegios excesivos</h1>
+                        <p>Un agente de IA no es peligroso porque escriba texto convincente. Se vuelve peligroso cuando texto no confiable puede influir en acciones: llamadas de API, edición de archivos, consultas de base de datos, actualización de tickets, comandos de shell o mensajes enviados a otros sistemas. La seguridad de agentes empieza separando lo que el modelo puede leer de lo que el sistema puede ejecutar.</p>
+                        <div class="blog-post-meta">
+                            <span>Publicado el 1 de junio de 2026</span>
+                            <span>14 min de lectura</span>
+                            <span>Seguridad en IA</span>
+                        </div>
+                    </article>
+
+                    <article class="blog-article">
+                        <h2>Prompt injection es un problema de ejecución</h2>
+                        <p>Prompt injection suele describirse como un problema de texto: una instrucción maliciosa escondida en un mensaje, página web, email, documento, issue de repositorio o fragmento recuperado por RAG. En sistemas con agentes, sin embargo, el riesgo real está en la ejecución. El ataque importa porque el modelo puede convertir contexto manipulado en una llamada de herramienta.</p>
+                        <p>La página de <a href="https://owasp.org/www-community/attacks/PromptInjection" target="_blank" rel="noopener noreferrer">OWASP sobre prompt injection</a> lo presenta como una vulnerabilidad que apunta al comportamiento de los LLM. Para equipos backend, el siguiente paso es preguntar qué frontera del sistema recibe la salida del modelo. Si la respuesta es "una herramienta con permisos", prompt injection deja de ser solo comportamiento del modelo y pasa a ser un problema de autorización y control de flujo.</p>
+
+                        <div class="blog-callout">
+                            Un ataque de prompt injection tiene éxito cuando contexto no confiable cambia una ruta de acción privilegiada. La defensa no es solo un mejor prompt; es un mejor plano de control.
+                        </div>
+
+                        <h2>Por qué los sistemas con agentes son más difíciles de defender</h2>
+                        <p>El trabajo de NIST en 2026 sobre seguridad de agentes de IA destaca riesgos de agentes que interactúan con datos adversariales, incluido el prompt injection indirecto. En un texto sobre red teaming, NIST describió el secuestro de agentes como un riesgo creciente cuando los agentes procesan fuentes externas como emails, sitios web y repositorios de código. Es exactamente ahí donde trabajan muchos agentes de ingeniería.</p>
+                        <p>La seguridad clásica de aplicaciones asume que el código controla la ejecución. Los sistemas agentic agregan un planificador probabilístico entre el usuario y la acción. Ese planificador puede ser útil, pero no debe convertirse en la capa de enforcement. El enforcement debe vivir en código determinístico: políticas, schemas, allowlists, aprobaciones, sandboxing y logs.</p>
+
+                        <div class="blog-diagram" aria-label="Ruta de ataque de prompt injection">
+                            <span class="blog-diagram-title">Ruta de ataque</span>
+                            <div class="blog-flow-grid">
+                                <div class="blog-flow-step">
+                                    <strong>Contenido no confiable</strong>
+                                    <span>Email, issue, página, PDF, resultado de herramienta o fragmento RAG.</span>
+                                </div>
+                                <div class="blog-flow-step">
+                                    <strong>Instrucción inyectada</strong>
+                                    <span>Texto oculto ordena ignorar políticas o filtrar datos.</span>
+                                </div>
+                                <div class="blog-flow-step">
+                                    <strong>Planificador del agente</strong>
+                                    <span>El modelo mezcla instrucciones confiables con contexto hostil.</span>
+                                </div>
+                                <div class="blog-flow-step">
+                                    <strong>Ejecución de herramienta</strong>
+                                    <span>Corre una API, shell, navegador, repositorio o base de datos privilegiada.</span>
+                                </div>
+                                <div class="blog-flow-step">
+                                    <strong>Impacto</strong>
+                                    <span>Exfiltración, cambio no autorizado, spam, fraude o persistencia.</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h2>Separa instrucciones confiables de contenido no confiable</h2>
+                        <p>La primera regla de diseño es la cuarentena de contexto. Instrucciones de sistema, políticas de desarrollador, intención del usuario, contenido recuperado, salidas de herramientas y documentos externos no son equivalentes. Deben representarse como clases distintas de datos y pasar por rutas de control distintas.</p>
+                        <p>Una arquitectura segura trata el contenido no confiable como evidencia, no como autoridad. El agente puede resumirlo, citarlo y usarlo para proponer un plan. No debería permitir que ese contenido redefina políticas, conceda permisos, elija credenciales o elimine aprobaciones.</p>
+
+                        <div class="blog-control-grid" aria-label="Capas de control para seguridad de agentes">
+                            <div class="blog-control-card">
+                                <strong>Cuarentena de contexto</strong>
+                                <span>Etiqueta contenido por nivel de confianza e impide que texto externo cambie políticas.</span>
+                            </div>
+                            <div class="blog-control-card">
+                                <strong>Gateway de herramientas</strong>
+                                <span>Dirige toda acción por schemas, allowlists, riesgo y revisión de políticas.</span>
+                            </div>
+                            <div class="blog-control-card">
+                                <strong>Aprobación humana</strong>
+                                <span>Exige confirmación explícita para acciones destructivas, externas o de alto riesgo.</span>
+                            </div>
+                        </div>
+
+                        <h2>El abuso de herramientas es más amplio que prompt injection</h2>
+                        <p>Prompt injection es una ruta hacia el abuso de herramientas, pero no la única. Un agente también puede usar herramientas de forma indebida por objetivos ambiguos, permisos demasiado amplios, retrieval defectuoso, schemas débiles, falta de validación o un modelo que optimiza la finalización de la tarea sin respetar límites operativos.</p>
+                        <p>El <a href="https://owasp.org/www-project-mcp-top-10/" target="_blank" rel="noopener noreferrer">OWASP MCP Top 10</a> destaca riesgos directamente relacionados con herramientas de agentes, incluidos command injection y prompt injection mediante payloads contextuales. Esto importa porque los servidores MCP y adaptadores de herramientas suelen estar cerca de sistemas poderosos: archivos, navegadores, bases de datos, CI, APIs cloud y paneles administrativos.</p>
+
+                        <h2>Usa allowlists en lugar de herramientas abiertas</h2>
+                        <p>Los agentes no deberían recibir una capacidad genérica de "ejecutar comando" o "llamar API" salvo que el entorno esté fuertemente aislado y el radio de impacto sea intencionalmente pequeño. Las herramientas de producción deben ser estrechas: crear una issue en borrador, leer estado de despliegue, buscar una factura por ID, resumir logs del servicio X o abrir un pull request sin permiso de merge.</p>
+                        <p>Esa es la diferencia entre exponer una cocina entera y exponer un botón. El agente no necesita toda la cocina para cada tarea. Necesita una operación segura, con entradas tipadas, políticas y salida predecible.</p>
+
+                        <div class="blog-table-wrap" aria-label="Matriz de amenazas y controles">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Amenaza</th>
+                                        <th>Señal de ejemplo</th>
+                                        <th>Control backend</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Prompt injection indirecto</td>
+                                        <td>Documento externo ordena al agente ignorar instrucciones anteriores.</td>
+                                        <td>Cuarentena de contexto, escaneo de prompt injection y prohibición de cambiar políticas desde contenido recuperado.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Agencia excesiva</td>
+                                        <td>El agente puede enviar emails, editar archivos y desplegar con un token amplio.</td>
+                                        <td>Alcances con forma de tarea, allowlists de herramientas y aprobaciones.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Manipulación de salida de herramienta</td>
+                                        <td>El resultado de una herramienta contiene instrucciones para guiar la siguiente acción.</td>
+                                        <td>Schemas estrictos de salida, escaping, etiquetas de confianza y validación secundaria.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Exfiltración de datos</td>
+                                        <td>El agente intenta enviar secretos a una URL externa o a un mensaje.</td>
+                                        <td>Revisiones DLP, controles de egress, redacción y allowlists de destino.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Bypass de política</td>
+                                        <td>El agente llama una API directa en vez del gateway aprobado.</td>
+                                        <td>Segmentación de red, credenciales centralizadas y acceso default-deny.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <h2>Lo que yo construiría</h2>
+                        <p>Construiría un gateway de seguridad de agentes delante de toda herramienta privilegiada. El gateway recibiría llamadas propuestas, validaría el schema de entrada, clasificaría el riesgo, revisaría políticas, aplicaría allowlists de destino, exigiría aprobación cuando corresponda, ejecutaría la acción con una credencial acotada y escribiría un evento de auditoría inmutable.</p>
+                        <p>Para un stack pequeño pero realista, usaría Cloudflare Workers para el gateway, FastAPI para herramientas internas de mayor riesgo, Supabase/Postgres para políticas y auditoría, y una cola para aprobaciones humanas. Cada herramienta tendría schema, nivel de riesgo, recursos permitidos, destinos permitidos y nivel máximo de autonomía.</p>
+
+                        <h2>La detección también importa</h2>
+                        <p>La prevención no lo detecta todo. Los sistemas con agentes necesitan detección: acciones bloqueadas de forma repetida, secuencias inusuales de herramientas, acceso repentino a recursos sensibles, llamadas disparadas por contenido no confiable y salidas con secretos o destinos externos. Esto debe convertirse en métricas y alertas, no solo en logs que alguien quizá lea después.</p>
+                        <p>Los mejores dashboards muestran actividad de agentes como operación de producción: volumen de acciones, intentos bloqueados, cola de aprobación, latencia de herramientas, llamadas de alto riesgo, principales fuentes externas y denegaciones recientes de política. Si un agente puede actuar, debe ser observable.</p>
+
+                        <h2>La regla práctica</h2>
+                        <p>No le pidas al modelo que sea la frontera de seguridad. Pídele a sistemas determinísticos que sean esa frontera. El modelo puede proponer, explicar, resumir y redactar. El plano de control decide qué puede ejecutarse.</p>
+                    </article>
+
+                    <section aria-labelledby="agent-security-related-title">
+                        <h2 id="agent-security-related-title">Lectura relacionada</h2>
+                        <div class="blog-related-grid">
+                            <article class="blog-related-card">
+                                <h3><a href="/es/blog/ai-agent-identity-authorization-oauth/">Identidad y autorización para agentes de IA</a></h3>
+                                <p>Cómo OAuth acotado, auditoría y gateways de políticas hacen más seguro el acceso a herramientas.</p>
+                            </article>
+                            <article class="blog-related-card">
+                                <h3><a href="/es/blog/model-context-protocol-mcp/">MCP: Protocolo de Contexto del Modelo</a></h3>
+                                <p>Por qué las interfaces de herramientas necesitan fronteras de seguridad cuando se exponen a agentes.</p>
+                            </article>
+                            <article class="blog-related-card">
+                                <h3><a href="/es/blog/ai-code-governance-security/">Gobernanza y seguridad para código generado por IA</a></h3>
+                                <p>Pipelines de validación y gates de revisión para cambios generados por agentes.</p>
+                            </article>
+                        </div>
+                    </section>
+                </div>
+
+                <aside class="blog-article-grid">
+                    <section class="blog-sidebar-card">
+                        <h2>Ideas centrales</h2>
+                        <ul>
+                            <li>Prompt injection se vuelve crítico cuando la salida del modelo puede disparar herramientas.</li>
+                            <li>El contexto no confiable no puede redefinir políticas.</li>
+                            <li>Toda llamada privilegiada debe pasar por enforcement determinístico.</li>
+                            <li>La seguridad de agentes necesita prevención, aprobación, logs y detección.</li>
+                        </ul>
+                    </section>
+                    <section class="blog-sidebar-card">
+                        <h2>Controles</h2>
+                        <ul>
+                            <li>Cuarentena de contexto</li>
+                            <li>Allowlists de herramientas</li>
+                            <li>Validación de schema</li>
+                            <li>Aprobación basada en riesgo</li>
+                            <li>Restricciones de egress</li>
+                        </ul>
+                    </section>
+                    <section class="blog-sidebar-card">
+                        <h2>Señales externas</h2>
+                        <ul>
+                            <li><a href="https://owasp.org/www-community/attacks/PromptInjection" target="_blank" rel="noopener noreferrer">OWASP Prompt Injection</a></li>
+                            <li><a href="https://owasp.org/www-project-mcp-top-10/" target="_blank" rel="noopener noreferrer">OWASP MCP Top 10</a></li>
+                            <li><a href="https://www.nist.gov/blogs/caisi-research-blog/insights-ai-agent-security-large-scale-red-teaming-competition" target="_blank" rel="noopener noreferrer">Insights de NIST sobre red teaming de agentes</a></li>
+                        </ul>
+                    </section>
+                    <section class="blog-sidebar-card">
+                        <h2>Continuar explorando</h2>
+                        <ul>
+                            <li><a href="/es/blog/autonomous-coding-agents/">Agentes de codificación autónomos</a></li>
+                            <li><a href="/es/blog/ai-native-engineering/">Ingeniería nativa de IA</a></li>
+                            <li><a href="/es/blog/api-proxy-security-design/">Diseño de proxy API zero-trust</a></li>
+                        </ul>
+                    </section>
+                </aside>
+            </div>
+        </main>
+    </div>
+
+    <footer class="footer-minimal">
+        <div class="footer-container">
+            <div class="footer-link-list" aria-label="Enlaces del pie de página">
+                <a class="footer-link-pill" href="https://github.com/PkLavc" target="_blank" rel="noopener noreferrer">GitHub</a>
+                <a class="footer-link-pill" href="https://www.linkedin.com/in/pklavc/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+                <a class="footer-link-pill" href="mailto:contact@pklavc.com">Email</a>
+                <a class="footer-link-pill footer-link-pill-accent" href="https://github.com/sponsors/PkLavc" target="_blank" rel="noopener noreferrer">Apoyar en GitHub</a>
+            </div>
+            <p>
+                &copy; <span data-current-year></span> Patrick Araujo
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        (function() {
+            document.querySelectorAll('[data-current-year]').forEach(function(node) {
+                node.textContent = String(new Date().getFullYear());
+            });
+        }());
+    </script>
+    <script src="/js/i18n.js?v=75d84205d9" defer></script>
+    <script src="/js/jquery.min.js?v=d482871a5e" defer></script>
+    <script src="/js/index.js?v=0b108f99d1" defer></script>
+
+    <div class="visually-hidden">
+        <p>Artículo sobre seguridad de agentes de IA que cubre prompt injection, prompt injection indirecto, abuso de herramientas, agencia excesiva, seguridad MCP, cuarentena de contexto, gateways de herramientas, validación de schema, aprobación humana, controles de egress, logs de auditoría y detección en sistemas agentic.</p>
+    </div>
+</body>
+</html>
