@@ -237,8 +237,8 @@
                 }
             }
         </style>
-        <link rel="preload" href="/css/about.css?v=e9f02f7d2a" as="style">
-        <link rel="stylesheet" href="/css/about.css?v=e9f02f7d2a">
+        <link rel="preload" href="/css/about.css?v=1c75060a4c" as="style">
+        <link rel="stylesheet" href="/css/about.css?v=1c75060a4c">
         <link rel="preload" href="/css/space-reveal.css?v=601db46cac" as="style">
         <link rel="stylesheet" href="/css/space-reveal.css?v=601db46cac">
     </head>
@@ -852,6 +852,44 @@
                 }
 
                 function setupContacts() {
+                    function fallbackCopyText(text) {
+                        return new Promise(function(resolve, reject) {
+                            const textarea = document.createElement('textarea');
+                            textarea.value = text;
+                            textarea.setAttribute('readonly', '');
+                            textarea.style.position = 'fixed';
+                            textarea.style.top = '0';
+                            textarea.style.left = '-9999px';
+                            textarea.style.opacity = '0';
+                            document.body.appendChild(textarea);
+                            textarea.focus();
+                            textarea.select();
+                            textarea.setSelectionRange(0, textarea.value.length);
+
+                            try {
+                                if (document.execCommand('copy')) {
+                                    resolve();
+                                } else {
+                                    reject(new Error('Copy command failed'));
+                                }
+                            } catch (error) {
+                                reject(error);
+                            } finally {
+                                document.body.removeChild(textarea);
+                            }
+                        });
+                    }
+
+                    function copyTextToClipboard(text) {
+                        if (navigator.clipboard && window.isSecureContext) {
+                            return navigator.clipboard.writeText(text).catch(function() {
+                                return fallbackCopyText(text);
+                            });
+                        }
+
+                        return fallbackCopyText(text);
+                    }
+
                     function copyButtonMarkup(state) {
                         if (state === 'copied') {
                             return '<lottie-player src="/images/copied.json?v=8332ed623d" background="transparent" speed="1" class="copy-btn-icon" loop autoplay aria-hidden="true"></lottie-player><span>Copied</span>';
@@ -870,16 +908,20 @@
                     });
 
                     document.querySelectorAll('.copy-btn').forEach(function(button) {
+                        button.setAttribute('aria-live', 'polite');
+                        button.dataset.defaultMarkup = button.innerHTML;
+
                         button.addEventListener('click', function(event) {
                             event.preventDefault();
                             const textToCopy = button.getAttribute('data-copy');
-                            const originalText = button.innerHTML;
+                            const originalText = button.dataset.defaultMarkup;
 
-                            navigator.clipboard.writeText(textToCopy).then(function() {
+                            copyTextToClipboard(textToCopy).then(function() {
+                                window.clearTimeout(button.copyResetTimer);
                                 button.classList.add('copied');
                                 button.innerHTML = copyButtonMarkup('copied');
 
-                                window.setTimeout(function() {
+                                button.copyResetTimer = window.setTimeout(function() {
                                     button.classList.remove('copied');
                                     button.innerHTML = originalText;
                                 }, 2000);
