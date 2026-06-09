@@ -147,37 +147,37 @@ Suggested visual primitives for future HTML posts:
 
 ## United States Trend Backlog
 
-- [ ] AI Agent Standards And The New Backend Boundary
+- [x] AI Agent Standards And The New Backend Boundary
   Slug: `ai-agent-standards-backend-boundary`
   Angle: NIST, agent interoperability, external tools, and why API contracts become agent contracts.
   Visual: agent ecosystem map.
 
-- [ ] AI Agent Security: Why Prompt Injection Is An Authorization Problem
+- [x] AI Agent Security: Why Prompt Injection Is An Authorization Problem
   Slug: `prompt-injection-authorization-problem`
   Angle: treat prompt injection as confused-deputy access control, not only prompt hygiene.
   Visual: attack path vs least-privilege path.
 
-- [ ] Non-Human Identity: Service Accounts, Agents, Bots, And Audit Trails
+- [x] Non-Human Identity: Service Accounts, Agents, Bots, And Audit Trails
   Slug: `non-human-identity-agents-bots-audit-trails`
   Angle: compare service accounts, OAuth clients, API keys, workload identity, and agent identity.
   Visual: identity decision matrix.
 
-- [ ] AI-Native Development Platforms: The CI/CD Pipeline After Coding Agents
+- [x] AI-Native Development Platforms: The CI/CD Pipeline After Coding Agents
   Slug: `ai-native-development-platforms-ci-cd`
   Angle: generated code must pass specs, tests, security checks, provenance, and review gates.
   Visual: AI-assisted SDLC pipeline.
 
-- [ ] TypeScript, Python, And AI Code Generation: Where Each Fits
+- [x] TypeScript, Python, And AI Code Generation: Where Each Fits
   Slug: `typescript-python-ai-code-generation`
   Angle: TypeScript for contracts and app glue, Python for AI/data/backend automation, SQL for facts.
   Visual: language-to-layer stack chart.
 
-- [ ] AI Compute Cost Engineering: Tokens, GPUs, Caches, And Queue Backpressure
+- [x] AI Compute Cost Engineering: Tokens, GPUs, Caches, And Queue Backpressure
   Slug: `ai-compute-cost-engineering`
   Angle: AI systems fail economically before they fail technically.
   Visual: cost pipeline and request budget chart.
 
-- [ ] Cloud Cost Observability For AI Workloads
+- [x] Cloud Cost Observability For AI Workloads
   Slug: `cloud-cost-observability-ai-workloads`
   Angle: FinOps for inference, embeddings, vector DBs, storage, egress, and scheduled jobs.
   Visual: cost allocation dashboard.

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Patrick Araujo">
+    <title>AI Agent Standards And The New Backend Boundary</title>
+    <meta name="description" content="How NIST's AI Agent Standards Initiative, MCP, A2A, OpenAPI, identity, delegation, and auditability are reshaping the backend boundary for interoperable agents.">
+    <meta name="keywords" content="AI agent standards, NIST AI Agent Standards Initiative, MCP, A2A protocol, agent interoperability, AI agent backend, agent identity, agent authorization, OpenAPI agents">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://pklavc.com/blog/ai-agent-standards-backend-boundary/">
+    <link rel="alternate" href="https://pklavc.com/blog/ai-agent-standards-backend-boundary/" hreflang="en">
+    <link rel="alternate" href="https://pklavc.com/pt/blog/ai-agent-standards-backend-boundary/" hreflang="pt-BR">
+    <link rel="alternate" href="https://pklavc.com/es/blog/ai-agent-standards-backend-boundary/" hreflang="es">
+    <link rel="alternate" href="https://pklavc.com/blog/ai-agent-standards-backend-boundary/" hreflang="x-default">
+
+    <meta property="og:title" content="AI Agent Standards And The New Backend Boundary">
+    <meta property="og:description" content="Why interoperable agents turn identity, delegation, task state, tools, and audit into backend contracts.">
+    <meta property="og:url" content="https://pklavc.com/blog/ai-agent-standards-backend-boundary/">
+    <meta property="og:type" content="article">
+    <meta property="article:published_time" content="2026-06-08">
+    <meta property="article:modified_time" content="2026-06-08">
+    <meta property="article:author" content="Patrick Araujo">
+    <meta property="article:section" content="AI Architecture">
+    <meta property="article:tag" content="AI agent standards">
+    <meta property="article:tag" content="MCP">
+    <meta property="article:tag" content="A2A">
+    <meta property="article:tag" content="backend architecture">
+    <meta property="og:image" content="https://pklavc.com/images/lavc.webp?v=5e84850f26">
+    <meta property="og:image:width" content="1024">
+    <meta property="og:image:height" content="1024">
+    <meta property="og:site_name" content="Patrick Araujo">
+    <meta property="og:locale" content="en_US">
+    <meta property="og:image:alt" content="Brand portrait of backend engineer and automation specialist Patrick Araujo">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="AI Agent Standards And The New Backend Boundary">
+    <meta name="twitter:description" content="MCP, A2A, identity, delegation, task state, and auditability as backend contracts.">
+    <meta name="twitter:image" content="https://pklavc.com/images/lavc.webp?v=5e84850f26">
+    <meta name="twitter:image:alt" content="Brand portrait of backend engineer and automation specialist Patrick Araujo">
+    <meta name="twitter:site" content="@PkLavc">
+    <meta name="twitter:creator" content="@PkLavc">
+    <link rel="icon" type="image/svg+xml" href="https://pklavc.com/images/favicon.svg?v=d15fe4e492">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Monoton&family=Poppins:wght@500;600;700&family=Raleway:wght@300&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Monoton&family=Poppins:wght@500;600;700&family=Raleway:wght@300&display=swap"></noscript>
+    <link rel="stylesheet" href="/css/global.css?v=d71c8efb77">
+    <link rel="stylesheet" href="/css/blog.css?v=560c7eaf05">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.2.6/gsap.min.js" defer></script>
+    <style>
+        .blog-diagram{margin:24px 0;padding:20px;border:1px solid rgba(0,209,255,.22);border-radius:8px;background:linear-gradient(180deg,rgba(0,209,255,.06),rgba(255,255,255,.025))}
+        .blog-diagram-title{display:block;color:var(--clr-primary);font-size:.78rem;font-weight:700;letter-spacing:.08em;margin-bottom:14px;text-transform:uppercase}
+        .blog-flow-grid,.blog-metric-grid{display:grid;gap:10px}
+        .blog-flow-grid{grid-template-columns:repeat(6,minmax(0,1fr))}
+        .blog-metric-grid{grid-template-columns:repeat(4,minmax(0,1fr));margin:18px 0 24px}
+        .blog-flow-step,.blog-metric-card{min-height:112px;padding:14px;border:1px solid rgba(255,255,255,.12);border-radius:8px;background:rgba(10,10,10,.68)}
+        .blog-flow-step strong,.blog-metric-card strong{display:block;color:#fff;font-size:.9rem;line-height:1.3;margin-bottom:8px}
+        .blog-flow-step span,.blog-metric-card span{color:#b9b9b9;font-size:.84rem;line-height:1.55}
+        .blog-table-wrap{margin:24px 0;overflow-x:auto;border:1px solid rgba(255,255,255,.1);border-radius:8px}
+        .blog-table-wrap table{width:100%;border-collapse:collapse;min-width:780px;background:#0f0f0f}
+        .blog-table-wrap th,.blog-table-wrap td{padding:12px 14px;border-bottom:1px solid rgba(255,255,255,.08);color:#b9b9b9;line-height:1.55;text-align:left;vertical-align:top}
+        .blog-table-wrap th{color:#fff;background:rgba(0,209,255,.08)}
+        @media(max-width:900px){.blog-flow-grid,.blog-metric-grid{grid-template-columns:1fr}}
+    </style>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@graph": [
+            {
+                "@type": "BlogPosting",
+                "headline": "AI Agent Standards And The New Backend Boundary",
+                "description": "How NIST's AI Agent Standards Initiative, MCP, A2A, OpenAPI, identity, delegation, and auditability are reshaping the backend boundary for interoperable agents.",
+                "image": "https://pklavc.com/images/lavc.webp?v=5e84850f26",
+                "datePublished": "2026-06-08",
+                "dateModified": "2026-06-08",
+                "author": {"@type": "Person", "name": "Patrick Araujo"},
+                "publisher": {"@type": "Person", "name": "Patrick Araujo"},
+                "mainEntityOfPage": "https://pklavc.com/blog/ai-agent-standards-backend-boundary/",
+                "url": "https://pklavc.com/blog/ai-agent-standards-backend-boundary/",
+                "keywords": ["AI agent standards", "NIST", "MCP", "A2A", "agent interoperability", "backend architecture"]
+            },
+            {
+                "@type": "BreadcrumbList",
+                "itemListElement": [
+                    {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://pklavc.com/"},
+                    {"@type": "ListItem", "position": 2, "name": "Blog", "item": "https://pklavc.com/blog/"},
+                    {"@type": "ListItem", "position": 3, "name": "AI Agent Standards", "item": "https://pklavc.com/blog/ai-agent-standards-backend-boundary/"}
+                ]
+            }
+        ]
+    }
+    </script>
+</head>
+<body class="blog-layout seo-layout">
+    <div id="breaker"></div><div id="breaker-two"></div>
+    <div id="all">
+        <div class="cursor"></div>
+        <div id="navigation-content" role="navigation" aria-label="Primary navigation"><div class="logo"></div><div class="navigation-links"><a href="/" data-text="HOME" id="home-link">HOME</a><a href="/about/" data-text="ABOUT" id="about-link">ABOUT</a><a href="/projects/" data-text="PROJECTS" id="projects-link">PROJECTS</a><a href="/blog/" data-text="BLOG" id="blog-link">BLOG</a></div></div>
+        <div id="navigation-bar"><div class="menubar"><span class="first-span"></span><span class="second-span"></span><span class="third-span"></span></div></div>
+        <main class="blog-shell" role="main">
+            <div class="blog-columns">
+                <div>
+                    <article class="blog-post-hero">
+                        <div class="blog-breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a><span>/</span><a href="/blog/">Blog</a><span>/</span><span aria-current="page">AI Agent Standards</span></div>
+                        <span class="blog-kicker">AI Architecture</span>
+                        <h1>AI Agent Standards And The New Backend Boundary</h1>
+                        <p>Backend boundaries used to be mostly request and response contracts. Interoperable agents add a wider surface: capability discovery, delegated authority, long-running tasks, tool calls, agent-to-agent messages, artifacts, approvals, budgets, and audit trails.</p>
+                        <div class="blog-post-meta"><span>Published Jun 8, 2026</span><span>12 min read</span><span>Agent Interoperability</span></div>
+                    </article>
+                    <article class="blog-article">
+                        <h2>Standards are moving agents out of isolated demos</h2>
+                        <p>NIST launched its AI Agent Standards Initiative in February 2026 around interoperability, open protocol development, security, and identity. Its May 2026 security report found broad agreement that familiar cybersecurity principles remain relevant, but need adaptation for agent systems. That is the signal backend teams should care about: agents are becoming external actors inside real systems, not just chat interfaces.</p>
+                        <p>MCP standardizes how agents interact with tools and resources. A2A standardizes how independent agents discover each other and exchange tasks. OpenAPI still describes service contracts underneath. Identity and authorization standards decide who may act. The new backend boundary is where all of these meet.</p>
+                        <div class="blog-diagram" aria-label="AI agent standards ecosystem"><span class="blog-diagram-title">Agent standards ecosystem</span><div class="blog-flow-grid"><div class="blog-flow-step"><strong>Principal</strong><span>Human, tenant, organization, or service delegates a task.</span></div><div class="blog-flow-step"><strong>Identity</strong><span>Agent identity, responsible principal, scopes, and delegation chain.</span></div><div class="blog-flow-step"><strong>A2A</strong><span>Agents discover capabilities and exchange tasks, messages, and artifacts.</span></div><div class="blog-flow-step"><strong>MCP</strong><span>Agents discover and invoke tools, resources, prompts, and data.</span></div><div class="blog-flow-step"><strong>Backend</strong><span>OpenAPI services, queues, workflows, databases, and policy engines.</span></div><div class="blog-flow-step"><strong>Evidence</strong><span>Task state, approvals, costs, tool calls, results, and audit history.</span></div></div></div>
+                        <h2>Interoperability creates contracts beyond JSON shape</h2>
+                        <p>Traditional API contracts focus on inputs, outputs, and errors. Agent contracts must also explain capability, authority, expected duration, side effects, progress, cancellation, artifacts, costs, and what happens when the remote agent disappears. A schema can tell you that a field is a string. It cannot tell you whether an agent is allowed to place the order represented by that string.</p>
+                        <p>This is why the standards conversation changes backend architecture. The boundary needs protocol compatibility and policy compatibility. Two agents may speak the same protocol while disagreeing on identity, trust, data handling, or acceptable side effects.</p>
+                        <div class="blog-metric-grid" aria-label="New backend boundary controls"><div class="blog-metric-card"><strong>Capability</strong><span>What can the agent or tool actually do, and under which version?</span></div><div class="blog-metric-card"><strong>Authority</strong><span>Who delegated the task, with which scopes, limits, and expiration?</span></div><div class="blog-metric-card"><strong>State</strong><span>What is the task lifecycle, progress, timeout, retry, and cancellation path?</span></div><div class="blog-metric-card"><strong>Evidence</strong><span>Can every message, action, artifact, approval, and cost be reconstructed?</span></div></div>
+                        <h2>The boundary needs an agent control plane</h2>
+                        <p>Protocols should not be confused with governance. MCP can describe and invoke tools, but the backend still needs permission checks. A2A can move tasks between agents, but the backend still needs to decide which agents are trusted. OpenAPI can describe an operation, but the backend still needs idempotency, quotas, and rollback.</p>
+                        <p>A practical control plane sits between protocols and production systems. It verifies agent identity, resolves the responsible principal, applies policy, creates task records, limits budget, routes calls, observes progress, requires approval for high-risk actions, and produces audit evidence.</p>
+                        <div class="blog-table-wrap" aria-label="Agent standard contracts and backend controls"><table><thead><tr><th>Standard surface</th><th>What it standardizes</th><th>Backend control still required</th></tr></thead><tbody><tr><td>MCP tools and resources</td><td>Discovery and invocation of external capabilities and context.</td><td>Tool allowlists, argument validation, tenant policy, rate limits, and approval.</td></tr><tr><td>A2A tasks and agent cards</td><td>Agent discovery, task exchange, messages, artifacts, and lifecycle.</td><td>Trust registry, delegation validation, task budgets, cancellation, and evidence.</td></tr><tr><td>OpenAPI services</td><td>HTTP operations, schemas, responses, and authentication descriptions.</td><td>Runtime authorization, idempotency, data classification, quotas, and rollback.</td></tr><tr><td>Identity standards</td><td>Authentication, claims, tokens, scopes, and delegated access.</td><td>Responsible-human mapping, ephemeral credentials, revocation, and separation of duties.</td></tr><tr><td>Event standards</td><td>Structured notifications for state changes and async workflows.</td><td>Replay protection, ordering, deduplication, retention, and incident correlation.</td></tr><tr><td>Audit evidence</td><td>No single protocol owns the complete trail.</td><td>Unified task ledger joining identities, messages, tools, approvals, outputs, and cost.</td></tr></tbody></table></div>
+                        <h2>What I would build</h2>
+                        <p>I would build an agent boundary service that speaks MCP toward tools, A2A toward external agents, OpenAPI toward internal services, and events toward workflow systems. Every request would become a task record with principal, agent identity, scopes, budget, risk level, expected artifacts, approval policy, and expiration.</p>
+                        <p>The visible product would be an agent ecosystem map: which agents exist, who owns them, which protocols and versions they support, which tools and agents they may call, what data they touch, their current tasks, and the evidence behind every completed action.</p>
+                        <h2>The design principle</h2>
+                        <p>Standards make agents interoperable. Backend controls make that interoperability survivable. The new boundary is not one API endpoint; it is the place where capability, identity, delegation, state, policy, and evidence are joined before autonomous software is allowed to act.</p>
+                    </article>
+                    <section aria-labelledby="agent-standards-related-title"><h2 id="agent-standards-related-title">Related reading</h2><div class="blog-related-grid"><article class="blog-related-card"><h3><a href="/blog/api-layer-for-ai-agents-mcp-openapi-webhooks/">API Layer For AI Agents</a></h3><p>MCP, OpenAPI, webhooks, and permissioned tool gateways.</p></article><article class="blog-related-card"><h3><a href="/blog/ai-agent-identity-authorization-oauth/">AI Agent Identity</a></h3><p>OAuth and authorization for non-human workers.</p></article><article class="blog-related-card"><h3><a href="/blog/securing-ai-agents-prompt-injection-tool-abuse/">Securing AI Agents</a></h3><p>Prompt injection, tool abuse, and privilege boundaries.</p></article></div></section>
+                </div>
+                <aside class="blog-article-grid">
+                    <section class="blog-sidebar-card"><h2>Core takeaways</h2><ul><li>MCP, A2A, OpenAPI, identity, and events solve different parts of agent interoperability.</li><li>Protocol compatibility does not automatically create trust or authorization.</li><li>Agent contracts need capability, authority, task state, side effects, and evidence.</li><li>A control plane should join protocols to production policy.</li></ul></section>
+                    <section class="blog-sidebar-card"><h2>Boundary checklist</h2><ul><li>Agent identity</li><li>Responsible principal</li><li>Delegation scopes</li><li>Task lifecycle</li><li>Tool and agent policy</li><li>Unified audit ledger</li></ul></section>
+                    <section class="blog-sidebar-card"><h2>References</h2><ul><li><a href="https://www.nist.gov/news-events/news/2026/02/announcing-ai-agent-standards-initiative-interoperable-and-secure" target="_blank" rel="noopener noreferrer">NIST AI Agent Standards Initiative</a></li><li><a href="https://www.nist.gov/publications/summary-analysis-responses-request-information-regarding-security-considerations-ai" target="_blank" rel="noopener noreferrer">NIST AI agent security report</a></li><li><a href="https://modelcontextprotocol.io/specification/2025-06-18/server/tools" target="_blank" rel="noopener noreferrer">MCP tools specification</a></li><li><a href="https://www.linuxfoundation.org/press/a2a-protocol-surpasses-150-organizations-lands-in-major-cloud-platforms-and-sees-enterprise-production-use-in-first-year" target="_blank" rel="noopener noreferrer">Linux Foundation A2A update</a></li><li><a href="https://www.nccoe.nist.gov/projects/software-and-ai-agent-identity-and-authorization" target="_blank" rel="noopener noreferrer">NIST NCCoE agent identity project</a></li></ul></section>
+                    <section class="blog-sidebar-card"><h2>Build idea</h2><p>An agent boundary control plane joining MCP, A2A, OpenAPI, identity, task state, policy, approvals, budgets, and audit evidence.</p></section>
+                </aside>
+            </div>
+        </main>
+    </div>
+    <footer class="footer-minimal"><div class="footer-container"><div class="footer-link-list" aria-label="Footer links"><a class="footer-link-pill" href="https://github.com/PkLavc" target="_blank" rel="noopener noreferrer">GitHub</a><a class="footer-link-pill" href="https://www.linkedin.com/in/pklavc/" target="_blank" rel="noopener noreferrer">LinkedIn</a><a class="footer-link-pill" href="mailto:contact@pklavc.com">Email</a><a class="footer-link-pill footer-link-pill-accent" href="https://github.com/sponsors/PkLavc" target="_blank" rel="noopener noreferrer">Sponsor me</a></div><p>&copy; <span data-current-year></span> Patrick Araujo</p></div></footer>
+    <script>(function(){document.querySelectorAll('[data-current-year]').forEach(function(node){node.textContent=String(new Date().getFullYear());});}());</script>
+    <script src="/js/i18n.js?v=75d84205d9" defer></script><script src="/js/jquery.min.js?v=d482871a5e" defer></script><script src="/js/index.js?v=0b108f99d1" defer></script>
+    <div class="visually-hidden"><p>AI agent standards article covering NIST's AI Agent Standards Initiative, MCP, A2A, OpenAPI, agent interoperability, identity, authorization, delegation, task state, tool gateways, policy, audit evidence, and the new backend boundary.</p></div>
+</body>
+</html>
