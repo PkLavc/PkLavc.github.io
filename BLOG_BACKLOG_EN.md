@@ -182,22 +182,22 @@ Suggested visual primitives for future HTML posts:
   Angle: FinOps for inference, embeddings, vector DBs, storage, egress, and scheduled jobs.
   Visual: cost allocation dashboard.
 
-- [ ] Preemptive Cybersecurity: Detecting Risk Before The Incident Ticket
+- [x] Preemptive Cybersecurity: Detecting Risk Before The Incident Ticket
   Slug: `preemptive-cybersecurity-detection-pipelines`
   Angle: predictive signals, threat intel, anomaly detection, and automated containment.
   Visual: risk scoring pipeline.
 
-- [ ] AI Security Platforms: From Tool Sprawl To Control Plane
+- [x] AI Security Platforms: From Tool Sprawl To Control Plane
   Slug: `ai-security-platform-control-plane`
   Angle: model inventory, prompts, data flows, permissions, logs, vendor risk, and governance.
   Visual: control-plane architecture.
 
-- [ ] Software Supply Chain Provenance For AI-Generated Pull Requests
+- [x] Software Supply Chain Provenance For AI-Generated Pull Requests
   Slug: `software-supply-chain-provenance-ai-prs`
   Angle: SBOM, SLSA, signed artifacts, generated code labels, traceability.
   Visual: provenance chain.
 
-- [ ] Post-Quantum Readiness For Backend Engineers
+- [x] Post-Quantum Readiness For Backend Engineers
   Slug: `post-quantum-readiness-backend-engineers`
   Angle: inventory cryptography, TLS dependencies, token lifetimes, signatures, vendor readiness.
   Visual: crypto inventory table and migration timeline.
