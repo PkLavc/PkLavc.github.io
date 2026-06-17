@@ -1076,14 +1076,19 @@ body {
 }
 
 .professional-experience-section .experience-content {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    display: flex;
     gap: 18px;
     margin-top: 14px;
     align-items: flex-start;
-    overflow: visible;
-    padding: 2px 0 0;
-    height: var(--experience-track-height, auto);
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 12px 42px 0;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: 42px;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    cursor: grab;
+    min-height: var(--experience-track-height, auto);
 }
 
 .professional-experience-section {
@@ -1108,6 +1113,8 @@ body {
 }
 
 .experience-company {
+    flex: 0 0 clamp(320px, 38vw, 430px);
+    scroll-snap-align: center;
     min-width: 0;
     margin: 0;
     padding: 18px;
@@ -1198,6 +1205,10 @@ body {
     line-height: 1.4;
 }
 
+.experience-company.freelance-work .experience-company-header {
+    grid-template-columns: minmax(0, 1fr) auto;
+}
+
 .experience-company-count {
     align-self: start;
     padding: 4px 8px;
@@ -1234,6 +1245,16 @@ body {
     text-align: left;
     cursor: pointer;
     font: inherit;
+}
+
+.experience-role-toggle.has-client-logo {
+    grid-template-columns: 42px minmax(0, 1fr) 28px;
+}
+
+.freelance-client-logo {
+    width: 42px;
+    height: 42px;
+    object-fit: contain;
 }
 
 .experience-role-toggle:hover,
@@ -1328,17 +1349,10 @@ body {
     }
 
     .professional-experience-section .experience-content {
-        display: flex;
         gap: 14px;
         margin-inline: -12px;
         padding: 12px 34px 0;
-        overflow-x: auto;
-        overflow-y: hidden;
-        scroll-snap-type: x mandatory;
         scroll-padding-inline: 34px;
-        scrollbar-width: none;
-        -webkit-overflow-scrolling: touch;
-        cursor: grab;
     }
 
     .experience-carousel-return {
@@ -1346,9 +1360,7 @@ body {
     }
 
     .experience-company {
-        min-width: auto;
         flex: 0 0 min(72vw, 340px);
-        scroll-snap-align: center;
         padding: 12px;
     }
 
@@ -1376,8 +1388,21 @@ body {
         justify-self: start;
     }
 
+    .experience-company.freelance-work .experience-company-header {
+        grid-template-columns: 1fr;
+    }
+
     .experience-role-toggle {
         padding: 10px;
+    }
+
+    .experience-role-toggle.has-client-logo {
+        grid-template-columns: 34px minmax(0, 1fr) 26px;
+    }
+
+    .freelance-client-logo {
+        width: 34px;
+        height: 34px;
     }
 
     .experience-role-heading b {
@@ -1424,7 +1449,7 @@ body {
 
 .slider .slide-track {
     display: flex;
-    width: calc(150px * 18);
+    width: calc(150px * 24);
     animation: scroll 28s linear infinite;
     will-change: transform;
     transform: translate3d(0, 0, 0);
@@ -1464,7 +1489,7 @@ body {
     }
 
     .slider .slide-track {
-        width: calc(78px * 18);
+        width: calc(78px * 24);
         animation-duration: 18s;
     }
 
