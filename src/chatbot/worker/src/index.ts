@@ -54,13 +54,13 @@ const MAX_MEMORY_ITEMS = 8;
 const SITE_RAG_CACHE_KEY = "site_rag_cache:v2";
 const SITE_RAG_META_KEY = "site_rag_cache_meta:v2";
 const SITE_RAG_CACHE_TTL_SECONDS = 3600;
-const SITE_RAG_SOURCE_PATHS = ["/", "/about/", "/projects/", "/projects/lavc-systems/", "/projects/raw-api-ingestion-pipeline/", "/blog/", "/blog/raw-api-ingestion-supabase-sql/"];
+const SITE_RAG_SOURCE_PATHS = ["/", "/about/", "/pt/sobre/", "/es/sobre/", "/projects/", "/projects/lavc-systems/", "/projects/raw-api-ingestion-pipeline/", "/projects/zoho-integration-worker/", "/stacks/zoho-deluge-developer/", "/blog/", "/blog/raw-api-ingestion-supabase-sql/"];
 const AGENT_NAME = "Skyler";
 const AGENT_PROFILE = "Skyler is a female AI assistant.";
 const INTERNAL_PORTFOLIO_CONTEXT = [
   "Name: Patrick Araujo.",
-  "Role focus: Backend Software Engineer and API Integration Engineer.",
-  "Core domains: automation systems, API integrations, ETL/data pipelines, scalable backend architecture.",
+  "Role focus: Backend Software Engineer, API Integration Engineer, and Zoho Creator & Automation Developer.",
+  "Core domains: automation systems, API integrations, ETL/data pipelines, scalable backend architecture, Zoho Creator pages/reports, Deluge automations, and LATAM workflow reporting.",
   "Platform style: cloud-first and serverless patterns, worker orchestration, integration workflows.",
   "Portfolio themes: monorepo backend architecture, multi-tenant SaaS, event-driven integrations, deployment patterns.",
   "Public website scope: personal portfolio with projects, stacks, blog technical articles, and architecture-focused content.",
