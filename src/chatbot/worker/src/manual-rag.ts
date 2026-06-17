@@ -10,10 +10,10 @@ export const MANUAL_RAG_CONTEXT = [
   "Contact email: contact@pklavc.com",
   "Core stack: Python, Node.js, SQL, JavaScript, PostgreSQL, REST APIs, AWS, Google Cloud, Zoho, Deluge.",
   "Architecture focus: automation, API integrations, ETL pipelines, backend scalability, system design, integration governance.",
-  "Measured impact: 8K-12K daily transactions, ~3 hours/day saved per analyst, ~40% faster processing, ~35-40% faster APIs.",
+  "Measured impact: variable-volume operational systems, ~3 hours/day saved per analyst, ~40% faster processing, ~35-40% faster APIs.",
   // ── Employment history (actual jobs) ──────────────────────────────────────
   "EMPLOYMENT HISTORY (companies Patrick actually worked at as an employee):",
-  "Job 1 — Loja do Sapo: Apple technical assistance. Role: Solutions Architect / Backend & Integration Engineer. Built ERP sync pipelines, API automation workers, and operational reporting infrastructure handling 8K-12K daily transactions.",
+  "Job 1 — Loja do Sapo: Apple technical assistance. Role: Solutions Architect / Backend & Integration Engineer. Built ERP sync pipelines, API automation workers, and operational reporting infrastructure for variable-volume operational workflows.",
   "Job 2 — iCaiu: Apple technical assistance. Role: Systems Integration Architect. Designed automation workers, ETL pipelines, multi-source data aggregation systems, and reporting dashboards. Reduced processing time ~40% and analyst manual work ~3 hours/day.",
   "Job 3 — WR Auto Pecas: auto parts company. Earlier career; backend automation and internal systems work.",
   // ── Critical disambiguation ───────────────────────────────────────────────
@@ -120,21 +120,21 @@ export const MANUAL_RAG_SECTIONS: Array<{ key: string; keywords: string[]; conte
     ],
     content: [
       "Patrick's employment history (actual companies he worked at as an employee):",
-      "1. Loja do Sapo — Apple technical assistance. Role: Solutions Architect / Backend & Integration Engineer. Built ERP synchronization pipelines, API automation workers, and reporting infrastructure handling 8K-12K daily transactions.",
+      "1. Loja do Sapo — Apple technical assistance. Role: Solutions Architect / Backend & Integration Engineer. Built ERP synchronization pipelines, API automation workers, and reporting infrastructure for variable-volume operational workflows.",
       "2. iCaiu — Apple technical assistance. Role: Systems Integration Architect. Designed automation workers, ETL pipelines, multi-source data aggregation, and reporting dashboards. Reduced processing time ~40% and saved ~3 hours/day per analyst.",
       "3. WR Auto Pecas — auto parts company. Earlier career. Backend automation and internal systems work.",
       "Full career and experience details: https://pklavc.com/about/",
     ],
     contentPt: [
       "Histórico de empregos do Patrick (empresas onde trabalhou de fato como funcionário):",
-      "1. Loja do Sapo — assistência técnica especializada em produtos Apple. Cargo: Solutions Architect / Backend & Integration Engineer. Construiu pipelines de sincronização de ERP, workers de automação de API e infraestrutura de relatórios com 8 a 12 mil transações diárias.",
+      "1. Loja do Sapo — assistência técnica especializada em produtos Apple. Cargo: Solutions Architect / Backend & Integration Engineer. Construiu pipelines de sincronização de ERP, workers de automação de API e infraestrutura de relatórios para fluxos operacionais de volume variável.",
       "2. iCaiu — assistência técnica especializada em produtos Apple. Cargo: Systems Integration Architect. Projetou workers de automação, pipelines ETL, sistemas de agregação de dados e dashboards. Reduziu tempo de processamento ~40% e economizou ~3h/dia por analista.",
       "3. WR Auto Peças — empresa de autopeças. Início de carreira. Automação de backend e sistemas internos.",
       "Detalhes completos da carreira: https://pklavc.com/about/",
     ],
     contentEs: [
       "Historial de empleo de Patrick (empresas donde trabajó como empleado):",
-      "1. Loja do Sapo — asistencia técnica especializada en productos Apple. Cargo: Solutions Architect / Backend & Integration Engineer. Construyó pipelines de sincronización ERP, workers de automatización de API e infraestructura de reportes con 8 a 12 mil transacciones diarias.",
+      "1. Loja do Sapo — asistencia técnica especializada en productos Apple. Cargo: Solutions Architect / Backend & Integration Engineer. Construyó pipelines de sincronización ERP, workers de automatización de API e infraestructura de reportes para flujos operativos de volumen variable.",
       "2. iCaiu — asistencia técnica especializada en productos Apple. Cargo: Systems Integration Architect. Diseñó workers de automatización, pipelines ETL, sistemas de agregación de datos y dashboards. Redujo el tiempo de procesamiento ~40% y ahorró ~3h/día por analista.",
       "3. WR Auto Peças — empresa de autopartes. Inicio de carrera. Automatización de backend y sistemas internos.",
       "Detalles completos de carrera: https://pklavc.com/about/",
