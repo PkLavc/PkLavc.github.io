@@ -70,6 +70,51 @@ function initDynamicViewportHeight() {
 
 initDynamicViewportHeight();
 
+function trackAggregatedGeoVisit() {
+  var hostname = window.location.hostname.toLowerCase();
+  var isProductionSite = hostname === 'pklavc.com' || hostname === 'www.pklavc.com';
+  var sessionKey = 'pklavc.geoVisitTracked';
+
+  if (!isProductionSite || navigator.globalPrivacyControl === true || typeof window.fetch !== 'function') {
+    return Promise.resolve({ tracked: false });
+  }
+
+  try {
+    if (!window.sessionStorage) {
+      return Promise.resolve({ tracked: false, reason: 'session_storage_unavailable' });
+    }
+
+    if (window.sessionStorage.getItem(sessionKey)) {
+      return Promise.resolve({ tracked: false, reason: 'session_already_counted' });
+    }
+  } catch (error) {
+    return Promise.resolve({ tracked: false, reason: 'session_storage_unavailable' });
+  }
+
+  return window.fetch('https://api.pklavc.com/analytics/visit', {
+    method: 'POST',
+    mode: 'cors',
+    credentials: 'omit',
+    keepalive: true
+  }).then(function(response) {
+    if (!response.ok) {
+      throw new Error('geo_visit_request_failed');
+    }
+
+    try {
+      window.sessionStorage.setItem(sessionKey, '1');
+    } catch (error) {
+      // The write already succeeded; the next page may retry if storage changed.
+    }
+
+    return { tracked: true };
+  }).catch(function() {
+    return { tracked: false, reason: 'request_failed' };
+  });
+}
+
+window.PkLavcGeoVisitReady = trackAggregatedGeoVisit();
+
 function isTouchOrMobile() {
   return (
     'ontouchstart' in window ||
@@ -438,6 +483,47 @@ function ensureBlogNavigationLink() {
   });
 }
 
+function ensureVisitorMapNavigationLink() {
+  var i18n = window.PkLavcI18n;
+  var locale = i18n && typeof i18n.getCurrentLanguage === 'function'
+    ? i18n.getCurrentLanguage()
+    : (/^\/(pt|es)(\/|$)/.test(window.location.pathname) ? window.location.pathname.split('/')[1] : 'en');
+  var labels = {
+    en: 'VISIT MAP',
+    pt: 'MAPA DE VISITAS',
+    es: 'MAPA DE VISITAS'
+  };
+  var label = labels[locale] || labels.en;
+  var href = i18n && typeof i18n.getLocalizedRoute === 'function'
+    ? i18n.getLocalizedRoute('/visitors/', locale)
+    : locale === 'pt'
+      ? '/pt/visitantes/'
+      : locale === 'es'
+        ? '/es/visitantes/'
+        : '/visitors/';
+
+  document.querySelectorAll('.navigation-links').forEach(function(navList) {
+    if (navList.querySelector('#visitor-map-link')) {
+      return;
+    }
+
+    var visitorMapLink = document.createElement('a');
+    var blogLink = navList.querySelector('#blog-link') || navList.querySelector('a[href="/blog/"]');
+
+    visitorMapLink.href = href;
+    visitorMapLink.id = 'visitor-map-link';
+    visitorMapLink.setAttribute('data-text', label);
+    visitorMapLink.textContent = label;
+
+    if (blogLink) {
+      navList.insertBefore(visitorMapLink, blogLink);
+      return;
+    }
+
+    navList.appendChild(visitorMapLink);
+  });
+}
+
 function createNavigationLabelFragment(label) {
   var fragment = document.createDocumentFragment();
 
@@ -493,6 +579,7 @@ function enhanceNavigationMenuLetters() {
 }
 
 ensureBlogNavigationLink();
+ensureVisitorMapNavigationLink();
 if (window.PkLavcI18n && typeof window.PkLavcI18n.localizeNavigation === 'function') {
   window.PkLavcI18n.localizeNavigation();
 }

@@ -49,6 +49,28 @@ type AuthUser = {
   role: string;
 };
 
+type GeoCfProperties = {
+  country?: string;
+  region?: string;
+  regionCode?: string;
+  botManagement?: {
+    score?: number;
+    verifiedBot?: boolean;
+  };
+};
+
+type GeoCountryRow = {
+  country_code: string;
+  visits: number;
+};
+
+type GeoRegionRow = {
+  country_code: string;
+  region_code: string;
+  region_name: string;
+  visits: number;
+};
+
 const encoder = new TextEncoder();
 const MAX_MEMORY_ITEMS = 8;
 const SITE_RAG_CACHE_KEY = "site_rag_cache:v2";
@@ -105,6 +127,136 @@ export default {
             refreshed_at: siteRagStatus.refreshedAt,
           },
         }), env, origin);
+      }
+
+      if (url.pathname === "/analytics/visit" && request.method === "POST") {
+        if (!isAllowedOrigin(env, origin)) {
+          return withCors(json({ error: "origin_not_allowed" }, 403), env, origin);
+        }
+
+        if (isAutomatedVisitor(request)) {
+          return withCors(new Response(null, { status: 204 }), env, origin);
+        }
+
+        const cf = (request as Request & { cf?: GeoCfProperties }).cf;
+        const countryCode = normalizeCountryCode(cf?.country);
+
+        if (!countryCode) {
+          return withCors(new Response(null, { status: 204 }), env, origin);
+        }
+
+        const regionCode = normalizeGeoValue(cf?.regionCode, 24).toUpperCase();
+        const regionName = normalizeGeoValue(cf?.region, 80);
+        const visitDate = new Date().toISOString().slice(0, 10);
+        const updatedAt = new Date().toISOString();
+
+        await env.DB.prepare(
+          `INSERT INTO geo_visit_daily (
+            visit_date,
+            country_code,
+            region_code,
+            region_name,
+            visits,
+            updated_at
+          ) VALUES (?, ?, ?, ?, 1, ?)
+          ON CONFLICT(visit_date, country_code, region_code)
+          DO UPDATE SET
+            visits = visits + 1,
+            region_name = CASE
+              WHEN excluded.region_name <> '' THEN excluded.region_name
+              ELSE geo_visit_daily.region_name
+            END,
+            updated_at = excluded.updated_at`,
+        )
+          .bind(visitDate, countryCode, regionCode, regionName, updatedAt)
+          .run();
+
+        return withCors(new Response(null, { status: 204 }), env, origin);
+      }
+
+      if (url.pathname === "/analytics/map" && request.method === "GET") {
+        const period = parseGeoAnalyticsPeriod(url.searchParams.get("days"));
+        const dateClause = period.days === null ? "" : "WHERE visit_date >= date('now', ?)";
+        const since = period.days === null ? null : `-${Math.max(period.days - 1, 0)} days`;
+
+        const countryStatement = env.DB.prepare(
+          `SELECT country_code, SUM(visits) AS visits
+          FROM geo_visit_daily
+          ${dateClause}
+          GROUP BY country_code
+          ORDER BY visits DESC, country_code ASC`,
+        );
+        const regionStatement = env.DB.prepare(
+          `SELECT country_code, region_code, region_name, SUM(visits) AS visits
+          FROM geo_visit_daily
+          ${dateClause}
+          ${dateClause ? "AND" : "WHERE"} (region_code <> '' OR region_name <> '')
+          GROUP BY country_code, region_code, region_name
+          ORDER BY visits DESC, region_name ASC`,
+        );
+
+        const countryResult = period.days === null
+          ? await countryStatement.all<GeoCountryRow>()
+          : await countryStatement.bind(since).all<GeoCountryRow>();
+        const regionResult = period.days === null
+          ? await regionStatement.all<GeoRegionRow>()
+          : await regionStatement.bind(since).all<GeoRegionRow>();
+
+        const regionsByCountry = new Map<string, Array<{
+          code: string;
+          name: string;
+          visits: number;
+        }>>();
+
+        for (const row of regionResult.results || []) {
+          const code = normalizeCountryCode(row.country_code);
+          if (!code) {
+            continue;
+          }
+
+          const regions = regionsByCountry.get(code) || [];
+          regions.push({
+            code: normalizeGeoValue(row.region_code, 24),
+            name: normalizeGeoValue(row.region_name, 80) || normalizeGeoValue(row.region_code, 24) || "Unknown region",
+            visits: Number(row.visits || 0),
+          });
+          regionsByCountry.set(code, regions);
+        }
+
+        const countries = (countryResult.results || [])
+          .map((row) => {
+            const code = normalizeCountryCode(row.country_code);
+            return code
+              ? {
+                  code,
+                  visits: Number(row.visits || 0),
+                  regions: regionsByCountry.get(code) || [],
+                }
+              : null;
+          })
+          .filter((country): country is {
+            code: string;
+            visits: number;
+            regions: Array<{ code: string; name: string; visits: number }>;
+          } => country !== null);
+
+        const response = json({
+          ok: true,
+          generated_at: new Date().toISOString(),
+          period: {
+            key: period.key,
+            days: period.days,
+          },
+          summary: {
+            visits: countries.reduce((total, country) => total + country.visits, 0),
+            countries: countries.length,
+            regions: (regionResult.results || []).length,
+          },
+          countries,
+        });
+        response.headers.set("Cache-Control", "public, max-age=60, s-maxage=300, stale-while-revalidate=600");
+
+        return withCors(response, env, origin);
       }
 
       if (url.pathname === "/auth/login" && request.method === "POST") {
@@ -1468,6 +1620,47 @@ async function logEvent(env: Env, userId: number | null, eventType: string, payl
   } catch {
     // analytics failures must never crash the request path
   }
+}
+
+function isAllowedOrigin(env: Env, origin: string | null): boolean {
+  const allowed = new Set((env.ALLOWED_ORIGINS || "").split(",").map((item) => item.trim()).filter(Boolean));
+  return allowed.has("*") || Boolean(origin && allowed.has(origin));
+}
+
+function isAutomatedVisitor(request: Request): boolean {
+  const userAgent = request.headers.get("User-Agent") || "";
+  const cf = (request as Request & { cf?: GeoCfProperties }).cf;
+
+  if (cf?.botManagement?.verifiedBot || (typeof cf?.botManagement?.score === "number" && cf.botManagement.score <= 1)) {
+    return true;
+  }
+
+  return /bot|crawler|spider|slurp|preview|headless|lighthouse|pagespeed|uptime|monitor/i.test(userAgent);
+}
+
+function normalizeCountryCode(value: unknown): string {
+  const code = String(value || "").trim().toUpperCase();
+  return /^[A-Z]{2}$/.test(code) && code !== "XX" ? code : "";
+}
+
+function normalizeGeoValue(value: unknown, maxLength: number): string {
+  return String(value || "")
+    .replace(/[\u0000-\u001F\u007F]/g, "")
+    .trim()
+    .slice(0, maxLength);
+}
+
+function parseGeoAnalyticsPeriod(value: string | null): { key: string; days: number | null } {
+  if (value === "all") {
+    return { key: "all", days: null };
+  }
+
+  const days = Number(value || "30");
+  if (days === 7 || days === 30 || days === 90 || days === 365) {
+    return { key: String(days), days };
+  }
+
+  return { key: "30", days: 30 };
 }
 
 async function scalar(env: Env, sql: string): Promise<number> {

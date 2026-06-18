@@ -7,6 +7,7 @@
     pt: {
       about: 'sobre',
       projects: 'projetos',
+      visitors: 'visitantes',
       blog: 'blog',
       collections: 'colecoes',
       stacks: 'stacks',
@@ -15,6 +16,7 @@
     es: {
       about: 'sobre',
       projects: 'proyectos',
+      visitors: 'visitantes',
       blog: 'blog',
       collections: 'colecciones',
       stacks: 'stacks',
@@ -26,6 +28,7 @@
     pt: {
       sobre: 'about',
       projetos: 'projects',
+      visitantes: 'visitors',
       blog: 'blog',
       colecoes: 'collections',
       stacks: 'stacks',
@@ -34,6 +37,7 @@
     es: {
       sobre: 'about',
       proyectos: 'projects',
+      visitantes: 'visitors',
       blog: 'blog',
       colecciones: 'collections',
       stacks: 'stacks',
@@ -83,6 +87,7 @@
       home: 'HOME',
       about: 'ABOUT',
       projects: 'PROJECTS',
+      visitors: 'VISIT MAP',
       blog: 'BLOG',
       navigation: 'Primary navigation',
       languageSettings: 'Language settings'
@@ -91,6 +96,7 @@
       home: 'IN\u00cdCIO',
       about: 'SOBRE',
       projects: 'PROJETOS',
+      visitors: 'MAPA DE VISITAS',
       blog: 'BLOG',
       navigation: 'Navega\u00e7\u00e3o principal',
       languageSettings: 'Configura\u00e7\u00f5es de idioma'
@@ -99,6 +105,7 @@
       home: 'INICIO',
       about: 'SOBRE',
       projects: 'PROYECTOS',
+      visitors: 'MAPA DE VISITAS',
       blog: 'BLOG',
       navigation: 'Navegaci\u00f3n principal',
       languageSettings: 'Configuraci\u00f3n de idioma'
@@ -374,6 +381,10 @@
 
     document.querySelectorAll('#projects-link').forEach(function(link) {
       setNavigationLink(link, labels.projects, getLocalizedRoute('/projects/', locale));
+    });
+
+    document.querySelectorAll('#visitor-map-link').forEach(function(link) {
+      setNavigationLink(link, labels.visitors, getLocalizedRoute('/visitors/', locale));
     });
 
     document.querySelectorAll('#blog-link').forEach(function(link) {
