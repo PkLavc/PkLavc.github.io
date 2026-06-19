@@ -274,7 +274,7 @@ Suggested visual primitives for future HTML posts:
   Angle: classify tickets, summarize calls, detect churn risk, route actions, log decisions.
   Visual: contact center AI pipeline.
 
-- [ ] Satellite Direct-To-Device And Resilient Backend Design
+- [x] Satellite Direct-To-Device And Resilient Backend Design
   Slug: `satellite-direct-to-device-resilient-backend-design`
   Angle: intermittent connectivity, delayed events, local buffering, degraded modes.
   Visual: connectivity fallback diagram.
