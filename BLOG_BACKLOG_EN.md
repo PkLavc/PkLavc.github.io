@@ -309,7 +309,7 @@ Suggested visual primitives for future HTML posts:
   Angle: language detection, fallback logic, RAG per locale, tone, compliance, hallucination control.
   Visual: multilingual routing pipeline.
 
-- [ ] Agricultural IoT With ESP32: Soil Sensors, Irrigation, And Predictive Alerts
+- [x] Agricultural IoT With ESP32: Soil Sensors, Irrigation, And Predictive Alerts
   Slug: `agricultural-iot-esp32-soil-irrigation-alerts`
   Angle: low-cost sensors, offline operation, cloud ingestion, dashboards, and alerts.
   Visual: field sensor to dashboard pipeline.
