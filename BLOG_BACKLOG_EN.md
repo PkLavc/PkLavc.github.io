@@ -269,7 +269,7 @@ Suggested visual primitives for future HTML posts:
   Angle: APIs, IoT, field operations, customer care AI, service automation, and observability.
   Visual: operator platform ecosystem.
 
-- [ ] AI Customer Care In Telecom: From Call Logs To Automated Resolution
+- [x] AI Customer Care In Telecom: From Call Logs To Automated Resolution
   Slug: `ai-customer-care-telecom-call-logs-resolution`
   Angle: classify tickets, summarize calls, detect churn risk, route actions, log decisions.
   Visual: contact center AI pipeline.
