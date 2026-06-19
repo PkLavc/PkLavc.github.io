@@ -304,7 +304,7 @@ Suggested visual primitives for future HTML posts:
   Angle: timezone overlap, contracts, docs, CI, async review, and delivery metrics.
   Visual: collaboration workflow.
 
-- [ ] Spanish-Portuguese-English AI Support Bots
+- [x] Spanish-Portuguese-English AI Support Bots
   Slug: `multilingual-ai-support-bots-latam`
   Angle: language detection, fallback logic, RAG per locale, tone, compliance, hallucination control.
   Visual: multilingual routing pipeline.
