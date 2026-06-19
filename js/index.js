@@ -483,47 +483,6 @@ function ensureBlogNavigationLink() {
   });
 }
 
-function ensureVisitorMapNavigationLink() {
-  var i18n = window.PkLavcI18n;
-  var locale = i18n && typeof i18n.getCurrentLanguage === 'function'
-    ? i18n.getCurrentLanguage()
-    : (/^\/(pt|es)(\/|$)/.test(window.location.pathname) ? window.location.pathname.split('/')[1] : 'en');
-  var labels = {
-    en: 'VISIT MAP',
-    pt: 'MAPA DE VISITAS',
-    es: 'MAPA DE VISITAS'
-  };
-  var label = labels[locale] || labels.en;
-  var href = i18n && typeof i18n.getLocalizedRoute === 'function'
-    ? i18n.getLocalizedRoute('/visitors/', locale)
-    : locale === 'pt'
-      ? '/pt/visitantes/'
-      : locale === 'es'
-        ? '/es/visitantes/'
-        : '/visitors/';
-
-  document.querySelectorAll('.navigation-links').forEach(function(navList) {
-    if (navList.querySelector('#visitor-map-link')) {
-      return;
-    }
-
-    var visitorMapLink = document.createElement('a');
-    var blogLink = navList.querySelector('#blog-link') || navList.querySelector('a[href="/blog/"]');
-
-    visitorMapLink.href = href;
-    visitorMapLink.id = 'visitor-map-link';
-    visitorMapLink.setAttribute('data-text', label);
-    visitorMapLink.textContent = label;
-
-    if (blogLink) {
-      navList.insertBefore(visitorMapLink, blogLink);
-      return;
-    }
-
-    navList.appendChild(visitorMapLink);
-  });
-}
-
 function createNavigationLabelFragment(label) {
   var fragment = document.createDocumentFragment();
 
@@ -579,7 +538,6 @@ function enhanceNavigationMenuLetters() {
 }
 
 ensureBlogNavigationLink();
-ensureVisitorMapNavigationLink();
 if (window.PkLavcI18n && typeof window.PkLavcI18n.localizeNavigation === 'function') {
   window.PkLavcI18n.localizeNavigation();
 }
