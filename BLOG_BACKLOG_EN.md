@@ -279,7 +279,7 @@ Suggested visual primitives for future HTML posts:
   Angle: intermittent connectivity, delayed events, local buffering, degraded modes.
   Visual: connectivity fallback diagram.
 
-- [ ] WhatsApp Commerce Automation: CRM, Payments, Logistics, And Human Handoff
+- [x] WhatsApp Commerce Automation: CRM, Payments, Logistics, And Human Handoff
   Slug: `whatsapp-commerce-automation-crm-payments-logistics`
   Angle: messaging is the frontend; backend systems handle state, identity, payment, and fulfillment.
   Visual: WhatsApp order lifecycle.
