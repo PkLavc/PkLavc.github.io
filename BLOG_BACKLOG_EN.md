@@ -202,59 +202,59 @@ Suggested visual primitives for future HTML posts:
   Angle: inventory cryptography, TLS dependencies, token lifetimes, signatures, vendor readiness.
   Visual: crypto inventory table and migration timeline.
 
-- [ ] Physical AI In Warehouses And Robotics: Backend Systems Behind Autonomous Machines
+- [x] Physical AI In Warehouses And Robotics: Backend Systems Behind Autonomous Machines
   Slug: `physical-ai-robotics-backend-systems`
   Angle: robotics needs event streams, telemetry, safety loops, scheduling, and digital twins.
   Visual: robot telemetry and command pipeline.
 
-- [ ] AI Agents In SaaS Admin Panels
+- [x] AI Agents In SaaS Admin Panels
   Slug: `ai-agents-saas-admin-panels`
   Angle: how to let an agent act on accounts, invoices, support tickets, and reports safely.
   Visual: approval workflow.
 
-- [ ] Confidential Computing For Multi-Tenant SaaS Data
+- [x] Confidential Computing For Multi-Tenant SaaS Data
   Slug: `confidential-computing-multi-tenant-saas`
   Angle: protect sensitive tenant analytics while enabling AI features.
   Visual: tenant boundary plus enclave diagram.
 
-- [ ] Data Provenance For RAG Systems
+- [x] Data Provenance For RAG Systems
   Slug: `data-provenance-rag-systems`
   Angle: answer trust depends on document source, embedding time, chunk lineage, and retrieval logs.
   Visual: RAG lineage graph.
 
-- [ ] The API Gateway Becomes An Agent Gateway
+- [x] The API Gateway Becomes An Agent Gateway
   Slug: `api-gateway-agent-gateway`
   Angle: rate limits, scopes, tool registries, policy checks, and event logs for agent calls.
   Visual: API gateway vs agent gateway comparison.
 
-- [ ] AI-Assisted Incident Response Runbooks
+- [x] AI-Assisted Incident Response Runbooks
   Slug: `ai-assisted-incident-response-runbooks`
   Angle: agents can summarize logs, propose actions, and open PRs, but humans approve recovery.
   Visual: incident response swimlane.
 
-- [ ] Data Center Energy As A Software Architecture Constraint
+- [x] Data Center Energy As A Software Architecture Constraint
   Slug: `data-center-energy-software-architecture`
   Angle: AI infra, scheduling, caching, regional placement, and carbon-aware workloads.
   Visual: workload placement matrix.
 
-- [ ] Model Evaluation Pipelines For Product Teams
+- [x] Model Evaluation Pipelines For Product Teams
   Slug: `model-evaluation-pipelines-product-teams`
   Angle: eval datasets, regression tests, prompt versioning, human review, and metrics.
   Visual: eval CI pipeline.
 
-- [ ] Secure Local LLMs For Sensitive Developer Workflows
+- [x] Secure Local LLMs For Sensitive Developer Workflows
   Slug: `secure-local-llms-sensitive-development`
   Angle: local models, Ollama, RAG, source-code privacy, and enterprise data boundaries.
   Visual: local vs cloud model trust boundary.
 
 ## Latin America Trend Backlog
 
-- [ ] Latin America 5G Architecture: From Coverage To Real Enterprise Use Cases
+- [x] Latin America 5G Architecture: From Coverage To Real Enterprise Use Cases
   Slug: `latin-america-5g-enterprise-architecture`
   Angle: 5G value appears when connected to APIs, cloud services, edge processing, and dashboards.
   Visual: 5G enterprise stack diagram.
 
-- [ ] Digital Trust In Latin America: Fraud, Identity, And Payment APIs
+- [x] Digital Trust In Latin America: Fraud, Identity, And Payment APIs
   Slug: `latin-america-digital-trust-fraud-identity-payment-apis`
   Angle: payments, KYC, device signals, behavioral data, and real-time anti-fraud checks.
   Visual: fraud scoring pipeline.
