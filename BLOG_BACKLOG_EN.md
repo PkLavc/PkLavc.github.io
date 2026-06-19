@@ -284,7 +284,7 @@ Suggested visual primitives for future HTML posts:
   Angle: messaging is the frontend; backend systems handle state, identity, payment, and fulfillment.
   Visual: WhatsApp order lifecycle.
 
-- [ ] Pix, Open Finance, And Reconciliation Pipelines In Brazil
+- [x] Pix, Open Finance, And Reconciliation Pipelines In Brazil
   Slug: `pix-open-finance-reconciliation-pipelines`
   Angle: event-driven payments, idempotency, settlement, ledger integrity, and fraud checks.
   Visual: payment reconciliation pipeline.
