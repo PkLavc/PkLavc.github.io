@@ -289,7 +289,7 @@ Suggested visual primitives for future HTML posts:
   Angle: event-driven payments, idempotency, settlement, ledger integrity, and fraud checks.
   Visual: payment reconciliation pipeline.
 
-- [ ] Low-Cost Observability For Latin American SMEs
+- [x] Low-Cost Observability For Latin American SMEs
   Slug: `low-cost-observability-latin-american-smes`
   Angle: logs, cron monitoring, synthetic checks, alerts, and dashboards without enterprise budgets.
   Visual: minimal observability stack.
