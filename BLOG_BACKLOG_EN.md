@@ -294,7 +294,7 @@ Suggested visual primitives for future HTML posts:
   Angle: logs, cron monitoring, synthetic checks, alerts, and dashboards without enterprise budgets.
   Visual: minimal observability stack.
 
-- [ ] ERP Integration In Latin America: Omie, SIGE, Zoho, Sheets, And SQL
+- [x] ERP Integration In Latin America: Omie, SIGE, Zoho, Sheets, And SQL
   Slug: `erp-integration-latin-america-omie-sige-zoho-sql`
   Angle: turn real project experience into regional architecture guidance.
   Visual: multi-ERP normalization graph.
