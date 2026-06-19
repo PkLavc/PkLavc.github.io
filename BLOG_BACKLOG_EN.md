@@ -299,7 +299,7 @@ Suggested visual primitives for future HTML posts:
   Angle: turn real project experience into regional architecture guidance.
   Visual: multi-ERP normalization graph.
 
-- [ ] Nearshore Engineering: API Design Across US And Latin America Teams
+- [x] Nearshore Engineering: API Design Across US And Latin America Teams
   Slug: `nearshore-engineering-api-design-us-latam`
   Angle: timezone overlap, contracts, docs, CI, async review, and delivery metrics.
   Visual: collaboration workflow.
