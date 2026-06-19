@@ -259,12 +259,12 @@ Suggested visual primitives for future HTML posts:
   Angle: payments, KYC, device signals, behavioral data, and real-time anti-fraud checks.
   Visual: fraud scoring pipeline.
 
-- [ ] The 32 Percent Usage Gap: Building Offline-First Systems For Mobile Internet Gaps
+- [x] The 32 Percent Usage Gap: Building Offline-First Systems For Mobile Internet Gaps
   Slug: `offline-first-systems-mobile-internet-gaps`
   Angle: local cache, sync queues, conflict resolution, low-bandwidth UX, and retry design.
   Visual: offline sync state machine.
 
-- [ ] Brazil's 5G And AI Opportunity: What Developers Can Build Around Operators
+- [x] Brazil's 5G And AI Opportunity: What Developers Can Build Around Operators
   Slug: `brazil-5g-ai-developer-opportunity`
   Angle: APIs, IoT, field operations, customer care AI, service automation, and observability.
   Visual: operator platform ecosystem.
