@@ -351,7 +351,7 @@ Suggested visual primitives for future HTML posts:
 
 ## Europe Trend Backlog
 
-- [ ] EU AI Act As A Software Architecture Problem
+- [x] EU AI Act As A Software Architecture Problem
   Slug: `eu-ai-act-software-architecture-problem`
   Angle: compliance becomes logging, monitoring, documentation, dataset governance, and human oversight.
   Visual: regulation-to-control matrix.
