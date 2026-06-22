@@ -314,7 +314,7 @@ Suggested visual primitives for future HTML posts:
   Angle: low-cost sensors, offline operation, cloud ingestion, dashboards, and alerts.
   Visual: field sensor to dashboard pipeline.
 
-- [ ] Smart Mining And Industrial Telemetry In Latin America
+- [x] Smart Mining And Industrial Telemetry In Latin America
   Slug: `smart-mining-industrial-telemetry-latin-america`
   Angle: vibration, temperature, safety, predictive maintenance, and edge buffering.
   Visual: industrial sensor topology.
