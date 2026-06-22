@@ -324,7 +324,7 @@ Suggested visual primitives for future HTML posts:
   Angle: accounts, devices, documents, phone numbers, transfers, and anomaly links.
   Visual: graph database fraud network.
 
-- [ ] Digital Public Services And GovTech APIs
+- [x] Digital Public Services And GovTech APIs
   Slug: `digital-public-services-govtech-apis-latam`
   Angle: identity, forms, document status, payment, notification, and auditability.
   Visual: citizen service API pipeline.
