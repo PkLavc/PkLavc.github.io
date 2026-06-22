@@ -339,7 +339,7 @@ Suggested visual primitives for future HTML posts:
   Angle: camera traps, edge classification, cloud storage, labels, dashboards, conservation alerts.
   Visual: wildlife monitoring ML pipeline.
 
-- [ ] Field Service Automation For Connectivity Infrastructure
+- [x] Field Service Automation For Connectivity Infrastructure
   Slug: `field-service-automation-connectivity-infrastructure`
   Angle: tickets, technician routing, asset inventory, SLA, mobile offline forms.
   Visual: work order flow.
