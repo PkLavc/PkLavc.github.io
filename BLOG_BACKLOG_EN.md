@@ -344,7 +344,7 @@ Suggested visual primitives for future HTML posts:
   Angle: tickets, technician routing, asset inventory, SLA, mobile offline forms.
   Visual: work order flow.
 
-- [ ] Building Reliable APIs For High-Variance Networks
+- [x] Building Reliable APIs For High-Variance Networks
   Slug: `reliable-apis-high-variance-networks`
   Angle: retries, backoff, idempotency, compression, pagination, and graceful degradation.
   Visual: retry/backoff timeline.
