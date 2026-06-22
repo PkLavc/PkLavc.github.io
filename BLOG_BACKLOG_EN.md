@@ -334,7 +334,7 @@ Suggested visual primitives for future HTML posts:
   Angle: how region choice impacts API latency, compliance, egress, and reliability.
   Visual: latency decision matrix.
 
-- [ ] AI For Biodiversity Monitoring: Cameras, Sensors, And Cloud Pipelines
+- [x] AI For Biodiversity Monitoring: Cameras, Sensors, And Cloud Pipelines
   Slug: `ai-biodiversity-monitoring-cameras-sensors-cloud`
   Angle: camera traps, edge classification, cloud storage, labels, dashboards, conservation alerts.
   Visual: wildlife monitoring ML pipeline.
