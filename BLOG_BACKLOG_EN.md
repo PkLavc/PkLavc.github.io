@@ -356,7 +356,7 @@ Suggested visual primitives for future HTML posts:
   Angle: compliance becomes logging, monitoring, documentation, dataset governance, and human oversight.
   Visual: regulation-to-control matrix.
 
-- [ ] NIS2 For Developers: Turning Cybersecurity Regulation Into Backend Requirements
+- [x] NIS2 For Developers: Turning Cybersecurity Regulation Into Backend Requirements
   Slug: `nis2-developer-backend-requirements`
   Angle: incident reporting, risk management, supply chain, vulnerability management, and board accountability.
   Visual: NIS2 obligation pipeline.
