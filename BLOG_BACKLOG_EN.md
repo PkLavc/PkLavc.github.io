@@ -319,7 +319,7 @@ Suggested visual primitives for future HTML posts:
   Angle: vibration, temperature, safety, predictive maintenance, and edge buffering.
   Visual: industrial sensor topology.
 
-- [ ] Anti-Fraud Graphs For Regional Fintech
+- [x] Anti-Fraud Graphs For Regional Fintech
   Slug: `anti-fraud-graphs-regional-fintech`
   Angle: accounts, devices, documents, phone numbers, transfers, and anomaly links.
   Visual: graph database fraud network.
