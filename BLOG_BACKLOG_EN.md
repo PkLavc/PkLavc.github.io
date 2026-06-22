@@ -329,7 +329,7 @@ Suggested visual primitives for future HTML posts:
   Angle: identity, forms, document status, payment, notification, and auditability.
   Visual: citizen service API pipeline.
 
-- [ ] Cloud Regions, Data Residency, And Latency In Latin America
+- [x] Cloud Regions, Data Residency, And Latency In Latin America
   Slug: `cloud-regions-data-residency-latency-latin-america`
   Angle: how region choice impacts API latency, compliance, egress, and reliability.
   Visual: latency decision matrix.
