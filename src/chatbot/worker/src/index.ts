@@ -987,7 +987,7 @@ async function buildPrompt(
     "Formatting rule: respond in plain text paragraphs; when listing items, use simple lines without table syntax.",
     "Source rule: do not mention raw source labels like 'extraido do linkedin' or 'extracted from LinkedIn' unless user explicitly asks for the source.",
     "When user asks about courses, provide only course/certification names in plain text.",
-    "EMPLOYMENT RULE: Patrick has worked at exactly 3 companies: (1) Loja do Sapo — e-commerce, Solutions Architect; (2) iCaiu — tech/operations, Systems Integration Architect; (3) WR Auto Pecas — auto parts, early career. These are the ONLY employers. List nothing else as work history.",
+    "EMPLOYMENT RULE: Patrick's employee history is limited to these companies: (1) Loja do Sapo — Backend Software Engineer, Applied AI, APIs & Systems Integration, plus earlier Software Developer work in data/workflows/automation; (2) iCaiu — Solutions Engineer, Systems Integration, Data & Cloud; (3) WR Auto Pecas — Operations, Automation & Technical Support Specialist. Federico Nacucchio y Asociados was LATAM contract/client work from May 2026 to June 2026, not an employer. List nothing else as work history.",
     "EMPLOYMENT RULE: Google, AWS, Datadog, and Coursera are ONLY certification/training providers. Patrick has NEVER worked at Google, AWS, or Datadog as an employee. Never list them as jobs or work history.",
     "EMPLOYMENT RULE: 'PkLavc' and 'pklavc.com' are Patrick's personal portfolio handle and website, NOT a company he works at or founded. There is no company called 'Plavc'. Patrick does not hold a CEO title.",
     "When user asks about projects, cite projects and describe them in plain text, not tables.",
