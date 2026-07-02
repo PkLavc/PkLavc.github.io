@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Patrick Araujo">
+    <title>Como automatizei relatórios operacionais com APIs, ETL e SQL</title>
+    <meta name="description" content="Um pipeline de relatórios começa com coleta confiável de APIs, mantém dados brutos auditáveis e leva regras de negócio para modelos SQL que podem evoluir.">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://pklavc.com/pt/blog/operational-reports-apis-etl-sql/">
+    <link rel="alternate" href="https://pklavc.com/blog/operational-reports-apis-etl-sql/" hreflang="en">
+    <link rel="alternate" href="https://pklavc.com/pt/blog/operational-reports-apis-etl-sql/" hreflang="pt-BR">
+    <link rel="alternate" href="https://pklavc.com/es/blog/operational-reports-apis-etl-sql/" hreflang="es">
+    <link rel="alternate" href="https://pklavc.com/blog/operational-reports-apis-etl-sql/" hreflang="x-default">
+    <meta property="og:title" content="Como automatizei relatórios operacionais com APIs, ETL e SQL">
+    <meta property="og:description" content="Um pipeline de relatórios começa com coleta confiável de APIs, mantém dados brutos auditáveis e leva regras de negócio para modelos SQL que podem evoluir.">
+    <meta property="og:url" content="https://pklavc.com/pt/blog/operational-reports-apis-etl-sql/">
+    <meta property="og:type" content="article">
+    <meta property="article:published_time" content="2026-06-30">
+    <meta property="article:modified_time" content="2026-06-30">
+    <meta property="article:author" content="Patrick Araujo">
+    <meta property="og:image" content="https://pklavc.com/images/lavc.webp?v=5e84850f26">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Brand portrait of backend engineer and automation specialist Patrick Araujo">
+    <meta property="og:site_name" content="Patrick Araujo">
+    <meta property="og:locale" content="pt_BR">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Como automatizei relatórios operacionais com APIs, ETL e SQL">
+    <meta name="twitter:description" content="Um pipeline de relatórios começa com coleta confiável de APIs, mantém dados brutos auditáveis e leva regras de negócio para modelos SQL que podem evoluir.">
+    <meta name="twitter:image" content="https://pklavc.com/images/lavc.webp?v=5e84850f26">
+    <meta name="twitter:image:alt" content="Brand portrait of backend engineer and automation specialist Patrick Araujo">
+    <meta name="twitter:site" content="@PkLavc">
+    <meta name="twitter:creator" content="@PkLavc">
+    <link rel="icon" type="image/svg+xml" href="https://pklavc.com/images/favicon.svg?v=d15fe4e492">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Monoton&family=Poppins:wght@500;600;700&family=Raleway:wght@300&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Monoton&family=Poppins:wght@500;600;700&family=Raleway:wght@300&display=swap"></noscript>
+    <link rel="stylesheet" href="/css/global.css?v=d2afcaae08">
+    <link rel="stylesheet" href="/css/blog.css?v=69e51c2923">
+    <link rel="stylesheet" href="/css/projects.css?v=03a688de1d">
+    <script type="application/ld+json">{
+        "@context": "https://schema.org",
+        "@graph": [
+                {
+                        "@type": "BlogPosting",
+                        "headline": "Como automatizei relatórios operacionais com APIs, ETL e SQL",
+                        "description": "Um pipeline de relatórios começa com coleta confiável de APIs, mantém dados brutos auditáveis e leva regras de negócio para modelos SQL que podem evoluir.",
+                        "image": "https://pklavc.com/images/lavc.webp?v=5e84850f26",
+                        "datePublished": "2026-06-30",
+                        "dateModified": "2026-06-30",
+                        "author": {
+                                "@type": "Person",
+                                "name": "Patrick Araujo"
+                        },
+                        "publisher": {
+                                "@type": "Person",
+                                "name": "Patrick Araujo"
+                        },
+                        "mainEntityOfPage": "https://pklavc.com/pt/blog/operational-reports-apis-etl-sql/",
+                        "url": "https://pklavc.com/pt/blog/operational-reports-apis-etl-sql/",
+                        "keywords": [
+                                "Data Automation",
+                                "Backend Engineering",
+                                "Python",
+                                "FastAPI",
+                                "API integrations",
+                                "LLM",
+                                "RAG"
+                        ]
+                },
+                {
+                        "@type": "BreadcrumbList",
+                        "itemListElement": [
+                                {
+                                        "@type": "ListItem",
+                                        "position": 1,
+                                        "name": "Início",
+                                        "item": "https://pklavc.com/pt/"
+                                },
+                                {
+                                        "@type": "ListItem",
+                                        "position": 2,
+                                        "name": "Blog",
+                                        "item": "https://pklavc.com/pt/blog/"
+                                },
+                                {
+                                        "@type": "ListItem",
+                                        "position": 3,
+                                        "name": "Como automatizei relatórios operacionais com APIs, ETL e SQL",
+                                        "item": "https://pklavc.com/pt/blog/operational-reports-apis-etl-sql/"
+                                }
+                        ]
+                }
+        ]
+}</script>
+</head>
+<body class="blog-layout seo-layout">
+    <div id="breaker"></div>
+    <div id="breaker-two"></div>
+    <div id="all">
+        <div class="cursor"></div>
+        <div id="navigation-content" role="navigation" aria-label="Início navigation">
+            <div class="logo"></div>
+            <div class="navigation-links">
+                <a href="/pt/" data-text="INÍCIO" id="home-link">INÍCIO</a>
+                <a href="/pt/sobre/" data-text="SOBRE" id="about-link">SOBRE</a>
+                <a href="/pt/projetos/" data-text="PROJETOS" id="projects-link">PROJETOS</a>
+                <a href="/pt/blog/" data-text="BLOG" id="blog-link">BLOG</a>
+            </div>
+        </div>
+        <div id="navigation-bar">
+            <div class="menubar">
+                <span class="first-span"></span>
+                <span class="second-span"></span>
+                <span class="third-span"></span>
+            </div>
+        </div>
+        <main class="blog-shell" role="main">
+            <div class="blog-columns">
+                <div>
+                    <article class="blog-post-hero">
+                        <div class="blog-breadcrumb" aria-label="Breadcrumb">
+                            <a href="/pt/">Início</a>
+                            <span>/</span>
+                            <a href="/pt/blog/">Blog</a>
+                            <span>/</span>
+                            <span aria-current="page">Como automatizei relatórios operacionais com APIs, ETL e SQL</span>
+                        </div>
+                        <span class="blog-kicker">Automação de Dados</span>
+                        <h1>Como automatizei relatórios operacionais com APIs, ETL e SQL</h1>
+                        <p>Um pipeline de relatórios começa com coleta confiável de APIs, mantém dados brutos auditáveis e leva regras de negócio para modelos SQL que podem evoluir.</p>
+                        <div class="blog-post-meta">
+                            <span>Publicado em 30 de junho de 2026</span>
+                            <span>7 min de leitura</span>
+                            <span>Automação de Dados</span>
+                        </div>
+                    </article>
+                    <article class="blog-article">
+                        <h2>Relatórios falham antes do dashboard</h2>
+                        <p>Um dashboard só é tão confiável quanto a camada de coleta por trás dele. Muitos problemas começam com registros ausentes, payloads duplicados, tokens expirados ou janelas de coleta mal definidas.</p>
+
+                        <h2>ETL deve aceitar replay</h2>
+                        <p>Um job precisa poder rodar de novo para a mesma janela sem mudar o significado do dataset. Isso exige IDs externos, upserts e respostas brutas armazenadas.</p>
+
+                        <h2>SQL é a camada de modelagem</h2>
+                        <p>Depois que os payloads brutos estão salvos, SQL expressa joins, filtros e definições operacionais sem chamar o provedor novamente.</p>
+
+                        <h2>Automação é trabalho de confiabilidade</h2>
+                        <p>O objetivo não é apenas economizar esforço manual. O resultado mais forte é um processo repetível com logs, modos de falha claros e dados auditáveis.</p>
+
+                        <h2>Relatório é contrato, não screenshot</h2>
+                        <p>Relatórios operacionais devem ser tratados como um contrato repetível. A mesma janela de entrada deve produzir o mesmo resultado interpretado, ou o sistema deve explicar por que mudou. Isso significa que o pipeline precisa de logs de coleta, armazenamento de payload bruto, regras de transformação e definições claras para campos de negócio. Um dashboard estático pode parecer pronto enquanto o caminho dos dados continua frágil. O trabalho de engenharia é tornar esse caminho explicável.</p>
+
+                        <h2>Reconciliação pertence ao pipeline</h2>
+                        <p>Muitos problemas de relatório aparecem quando totais não batem entre portal do provedor, banco interno e dashboard. O pipeline deve incluir checagens de reconciliação que comparam contagens, totais, IDs ausentes e janelas de data. Essas checagens não precisam ser sofisticadas para ter valor. Até uma tabela simples de divergências economiza horas porque aponta direto para a janela quebrada ou para a resposta do provedor que causou o problema.</p>
+
+                        <h2>Automação deve deixar espaço para mudança</h2>
+                        <p>Relatórios evoluem porque o negócio evolui. Novos status aparecem, categorias antigas deixam de importar e gestores fazem outras perguntas. Um bom desenho de ETL separa coleta de modelagem para que essas mudanças não exijam reescrever todo o pipeline. Python cuida da coleta e dos jobs repetíveis; SQL cuida da interpretação; o dashboard consome uma superfície modelada estável. Essa separação mantém a automação útil depois da primeira versão.</p>
+                        <div class="blog-callout">
+                            Evidência relacionada: <a href="/pt/projetos/raw-api-ingestion-pipeline/">Pipeline de Integração de APIs com SQL, Supabase e GitHub Actions</a>. Continue pela trilha técnica em <a href="/pt/projetos/automacao-python/">Portfólio para Automação Python</a> ou entre em contato diretamente.
+                        </div>
+                    </article>
+                </div>
+                <aside class="blog-article-grid">
+                    <section class="blog-sidebar-card">
+                        <h2>Continue explorando</h2>
+                        <ul>
+                            <li><a href="/pt/projetos/automacao-python/">Portfólio para Automação Python</a></li>
+                            <li><a href="/pt/projetos/raw-api-ingestion-pipeline/">Pipeline de Integração de APIs com SQL, Supabase e GitHub Actions</a></li>
+                            <li><a href="mailto:contact@pklavc.com">Contato</a></li>
+                        </ul>
+                    </section>
+                    <section class="blog-sidebar-card">
+                        <h2>Posts relacionados</h2>
+                        <ul>
+                            <li><a href="/pt/blog/ai-kanban-fastapi-rag-agents/">Como criei uma plataforma Kanban com IA usando FastAPI, RAG e agentes</a></li>
+                            <li><a href="/pt/blog/api-integrations-python-sql-github-actions/">Como estruturo integrações de APIs com Python, SQL e GitHub Actions</a></li>
+                            <li><a href="/pt/blog/llms-internal-systems-critical-decisions/">Como uso LLMs em sistemas internos sem deixar a IA tomar decisões críticas</a></li>
+                        </ul>
+                    </section>
+                </aside>
+            </div>
+        </main>
+    </div>
+    <footer class="footer-minimal">
+        <div class="footer-container">
+            <div class="footer-link-list" aria-label="Footer links">
+                <a class="footer-link-pill" href="https://github.com/PkLavc" target="_blank" rel="noopener noreferrer">GitHub</a>
+                <a class="footer-link-pill" href="https://www.linkedin.com/in/pklavc/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+                <a class="footer-link-pill" href="mailto:contact@pklavc.com">E-mail</a>
+            </div>
+            <p>&copy; <span data-current-year></span> Patrick Araujo</p>
+        </div>
+    </footer>
+    <script>
+        (function() {
+            document.querySelectorAll('[data-current-year]').forEach(function(node) {
+                node.textContent = String(new Date().getFullYear());
+            });
+        }());
+    </script>
+    <script src="/js/i18n.js?v=02a6baa07c" defer></script>
+    <script src="/js/jquery.min.js?v=91e8044a4b" defer></script>
+    <script src="/js/index.js?v=e3b8c67480" defer></script>
+</body>
+</html>

@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Patrick Araujo">
+    <title>Cómo uso LLMs en sistemas internos sin dejar que la IA controle decisiones críticas</title>
+    <meta name="description" content="Los LLMs pueden resumir, recuperar contexto, redactar y sugerir, pero acciones críticas necesitan política, permisos, auditoría y caminos determinísticos de ejecución.">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://pklavc.com/es/blog/llms-internal-systems-critical-decisions/">
+    <link rel="alternate" href="https://pklavc.com/blog/llms-internal-systems-critical-decisions/" hreflang="en">
+    <link rel="alternate" href="https://pklavc.com/pt/blog/llms-internal-systems-critical-decisions/" hreflang="pt-BR">
+    <link rel="alternate" href="https://pklavc.com/es/blog/llms-internal-systems-critical-decisions/" hreflang="es">
+    <link rel="alternate" href="https://pklavc.com/blog/llms-internal-systems-critical-decisions/" hreflang="x-default">
+    <meta property="og:title" content="Cómo uso LLMs en sistemas internos sin dejar que la IA controle decisiones críticas">
+    <meta property="og:description" content="Los LLMs pueden resumir, recuperar contexto, redactar y sugerir, pero acciones críticas necesitan política, permisos, auditoría y caminos determinísticos de ejecución.">
+    <meta property="og:url" content="https://pklavc.com/es/blog/llms-internal-systems-critical-decisions/">
+    <meta property="og:type" content="article">
+    <meta property="article:published_time" content="2026-06-30">
+    <meta property="article:modified_time" content="2026-06-30">
+    <meta property="article:author" content="Patrick Araujo">
+    <meta property="og:image" content="https://pklavc.com/images/lavc.webp?v=5e84850f26">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Brand portrait of backend engineer and automation specialist Patrick Araujo">
+    <meta property="og:site_name" content="Patrick Araujo">
+    <meta property="og:locale" content="es_ES">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Cómo uso LLMs en sistemas internos sin dejar que la IA controle decisiones críticas">
+    <meta name="twitter:description" content="Los LLMs pueden resumir, recuperar contexto, redactar y sugerir, pero acciones críticas necesitan política, permisos, auditoría y caminos determinísticos de ejecución.">
+    <meta name="twitter:image" content="https://pklavc.com/images/lavc.webp?v=5e84850f26">
+    <meta name="twitter:image:alt" content="Brand portrait of backend engineer and automation specialist Patrick Araujo">
+    <meta name="twitter:site" content="@PkLavc">
+    <meta name="twitter:creator" content="@PkLavc">
+    <link rel="icon" type="image/svg+xml" href="https://pklavc.com/images/favicon.svg?v=d15fe4e492">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Monoton&family=Poppins:wght@500;600;700&family=Raleway:wght@300&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Monoton&family=Poppins:wght@500;600;700&family=Raleway:wght@300&display=swap"></noscript>
+    <link rel="stylesheet" href="/css/global.css?v=d2afcaae08">
+    <link rel="stylesheet" href="/css/blog.css?v=69e51c2923">
+    <link rel="stylesheet" href="/css/projects.css?v=03a688de1d">
+    <script type="application/ld+json">{
+        "@context": "https://schema.org",
+        "@graph": [
+                {
+                        "@type": "BlogPosting",
+                        "headline": "Cómo uso LLMs en sistemas internos sin dejar que la IA controle decisiones críticas",
+                        "description": "Los LLMs pueden resumir, recuperar contexto, redactar y sugerir, pero acciones críticas necesitan política, permisos, auditoría y caminos determinísticos de ejecución.",
+                        "image": "https://pklavc.com/images/lavc.webp?v=5e84850f26",
+                        "datePublished": "2026-06-30",
+                        "dateModified": "2026-06-30",
+                        "author": {
+                                "@type": "Person",
+                                "name": "Patrick Araujo"
+                        },
+                        "publisher": {
+                                "@type": "Person",
+                                "name": "Patrick Araujo"
+                        },
+                        "mainEntityOfPage": "https://pklavc.com/es/blog/llms-internal-systems-critical-decisions/",
+                        "url": "https://pklavc.com/es/blog/llms-internal-systems-critical-decisions/",
+                        "keywords": [
+                                "LLM Systems",
+                                "Backend Engineering",
+                                "Python",
+                                "FastAPI",
+                                "API integrations",
+                                "LLM",
+                                "RAG"
+                        ]
+                },
+                {
+                        "@type": "BreadcrumbList",
+                        "itemListElement": [
+                                {
+                                        "@type": "ListItem",
+                                        "position": 1,
+                                        "name": "Inicio",
+                                        "item": "https://pklavc.com/es/"
+                                },
+                                {
+                                        "@type": "ListItem",
+                                        "position": 2,
+                                        "name": "Blog",
+                                        "item": "https://pklavc.com/es/blog/"
+                                },
+                                {
+                                        "@type": "ListItem",
+                                        "position": 3,
+                                        "name": "Cómo uso LLMs en sistemas internos sin dejar que la IA controle decisiones críticas",
+                                        "item": "https://pklavc.com/es/blog/llms-internal-systems-critical-decisions/"
+                                }
+                        ]
+                }
+        ]
+}</script>
+</head>
+<body class="blog-layout seo-layout">
+    <div id="breaker"></div>
+    <div id="breaker-two"></div>
+    <div id="all">
+        <div class="cursor"></div>
+        <div id="navigation-content" role="navigation" aria-label="Inicio navigation">
+            <div class="logo"></div>
+            <div class="navigation-links">
+                <a href="/es/" data-text="INICIO" id="home-link">INICIO</a>
+                <a href="/es/sobre/" data-text="SOBRE" id="about-link">SOBRE</a>
+                <a href="/es/proyectos/" data-text="PROYECTOS" id="projects-link">PROYECTOS</a>
+                <a href="/es/blog/" data-text="BLOG" id="blog-link">BLOG</a>
+            </div>
+        </div>
+        <div id="navigation-bar">
+            <div class="menubar">
+                <span class="first-span"></span>
+                <span class="second-span"></span>
+                <span class="third-span"></span>
+            </div>
+        </div>
+        <main class="blog-shell" role="main">
+            <div class="blog-columns">
+                <div>
+                    <article class="blog-post-hero">
+                        <div class="blog-breadcrumb" aria-label="Breadcrumb">
+                            <a href="/es/">Inicio</a>
+                            <span>/</span>
+                            <a href="/es/blog/">Blog</a>
+                            <span>/</span>
+                            <span aria-current="page">Cómo uso LLMs en sistemas internos sin dejar que la IA controle decisiones críticas</span>
+                        </div>
+                        <span class="blog-kicker">Sistemas con LLM</span>
+                        <h1>Cómo uso LLMs en sistemas internos sin dejar que la IA controle decisiones críticas</h1>
+                        <p>Los LLMs pueden resumir, recuperar contexto, redactar y sugerir, pero acciones críticas necesitan política, permisos, auditoría y caminos determinísticos de ejecución.</p>
+                        <div class="blog-post-meta">
+                            <span>Publicado el 30 de junio de 2026</span>
+                            <span>7 min de lectura</span>
+                            <span>Sistemas con LLM</span>
+                        </div>
+                    </article>
+                    <article class="blog-article">
+                        <h2>La salida del LLM es una propuesta</h2>
+                        <p>El modelo puede ayudar a interpretar contexto, redactar una respuesta o explicar opciones. No debe aprobar en silencio acciones financieras, de seguridad u operativas.</p>
+
+                        <h2>Las herramientas necesitan permisos</h2>
+                        <p>Cada llamada de herramienta necesita alcance, entradas permitidas, logging y una razón legible. La frontera del sistema importa más que el prompt del modelo.</p>
+
+                        <h2>RAG necesita disciplina de fuentes</h2>
+                        <p>La recuperación de contexto debe mostrar de dónde vino la información y qué sostiene. Una respuesta segura sin contexto rastreable no basta en flujos internos.</p>
+
+                        <h2>El control humano sigue explícito</h2>
+                        <p>El patrón más fuerte es simple: IA acelera preparación, humanos aprueban cambios de alto impacto y servicios determinísticos ejecutan la acción aprobada.</p>
+
+                        <h2>El modelo no debe poseer la autoridad</h2>
+                        <p>La autoridad pertenece a la aplicación, no al LLM. Un modelo puede clasificar un problema, resumir un documento o redactar una recomendación, pero la aplicación debe decidir qué herramientas existen, qué entradas se permiten, quién aprueba una acción y qué se registra. Esa separación evita que el texto del prompt sea una frontera de seguridad. El modelo ayuda a interpretar; los servicios determinísticos aplican la política.</p>
+
+                        <h2>La recuperación necesita ventanas explícitas</h2>
+                        <p>Los sistemas internos suelen contener información de calidad mixta: notas antiguas, políticas actuales, tickets incompletos y registros sensibles. RAG no debe volcar todo eso en un prompt. La recuperación necesita filtros, etiquetas de fuente, señales de frescura y una forma de mostrar al usuario qué evidencia sostuvo la respuesta. Cuando el sistema no encuentra contexto suficiente, el comportamiento correcto es decirlo claramente, no llenar el vacío con lenguaje plausible.</p>
+
+                        <h2>Los flujos de aprobación son diseño de producto</h2>
+                        <p>La aprobación humana debe estar visible en el flujo, no escondida como un detalle posterior. Un buen sistema interno con IA muestra la acción propuesta, la evidencia, los registros afectados y la razón por la que una persona es necesaria. Luego registra quién aprobó, cuándo y qué operación determinística fue ejecutada. Eso hace que el sistema sea útil en operaciones reales porque las personas pueden confiar en el camino entre sugerencia y acción.</p>
+                        <div class="blog-callout">
+                            Evidencia relacionada: <a href="/es/proyectos/skyler-assistant/">Asistente IA con RAG para portafolio y consulta contextual</a>. Continua por la ruta técnica en <a href="/es/proyectos/llm-rag/">Portafolio para LLM / RAG Engineer</a> o entra en contacto directamente.
+                        </div>
+                    </article>
+                </div>
+                <aside class="blog-article-grid">
+                    <section class="blog-sidebar-card">
+                        <h2>Continúa explorando</h2>
+                        <ul>
+                            <li><a href="/es/proyectos/llm-rag/">Portafolio para LLM / RAG Engineer</a></li>
+                            <li><a href="/es/proyectos/skyler-assistant/">Asistente IA con RAG para portafolio y consulta contextual</a></li>
+                            <li><a href="mailto:contact@pklavc.com">Contacto</a></li>
+                        </ul>
+                    </section>
+                    <section class="blog-sidebar-card">
+                        <h2>Posts relacionados</h2>
+                        <ul>
+                            <li><a href="/es/blog/ai-kanban-fastapi-rag-agents/">Cómo construí una plataforma Kanban con IA usando FastAPI, RAG y agentes</a></li>
+                            <li><a href="/es/blog/api-integrations-python-sql-github-actions/">Cómo estructuro integraciones de APIs con Python, SQL y GitHub Actions</a></li>
+                            <li><a href="/es/blog/fastapi-backends-logs-queues-traceability/">Cómo construir backends FastAPI con logs, colas y trazabilidad</a></li>
+                        </ul>
+                    </section>
+                </aside>
+            </div>
+        </main>
+    </div>
+    <footer class="footer-minimal">
+        <div class="footer-container">
+            <div class="footer-link-list" aria-label="Footer links">
+                <a class="footer-link-pill" href="https://github.com/PkLavc" target="_blank" rel="noopener noreferrer">GitHub</a>
+                <a class="footer-link-pill" href="https://www.linkedin.com/in/pklavc/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+                <a class="footer-link-pill" href="mailto:contact@pklavc.com">Correo</a>
+            </div>
+            <p>&copy; <span data-current-year></span> Patrick Araujo</p>
+        </div>
+    </footer>
+    <script>
+        (function() {
+            document.querySelectorAll('[data-current-year]').forEach(function(node) {
+                node.textContent = String(new Date().getFullYear());
+            });
+        }());
+    </script>
+    <script src="/js/i18n.js?v=02a6baa07c" defer></script>
+    <script src="/js/jquery.min.js?v=91e8044a4b" defer></script>
+    <script src="/js/index.js?v=e3b8c67480" defer></script>
+</body>
+</html>

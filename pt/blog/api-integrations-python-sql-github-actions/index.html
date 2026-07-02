@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Patrick Araujo">
+    <title>Como estruturo integrações de APIs com Python, SQL e GitHub Actions</title>
+    <meta name="description" content="Um padrão conciso para integrações de APIs: fronteira de credenciais, ingestão bruta, identificadores idempotentes, jobs agendados, modelagem SQL e relatórios operacionais.">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://pklavc.com/pt/blog/api-integrations-python-sql-github-actions/">
+    <link rel="alternate" href="https://pklavc.com/blog/api-integrations-python-sql-github-actions/" hreflang="en">
+    <link rel="alternate" href="https://pklavc.com/pt/blog/api-integrations-python-sql-github-actions/" hreflang="pt-BR">
+    <link rel="alternate" href="https://pklavc.com/es/blog/api-integrations-python-sql-github-actions/" hreflang="es">
+    <link rel="alternate" href="https://pklavc.com/blog/api-integrations-python-sql-github-actions/" hreflang="x-default">
+    <meta property="og:title" content="Como estruturo integrações de APIs com Python, SQL e GitHub Actions">
+    <meta property="og:description" content="Um padrão conciso para integrações de APIs: fronteira de credenciais, ingestão bruta, identificadores idempotentes, jobs agendados, modelagem SQL e relatórios operacionais.">
+    <meta property="og:url" content="https://pklavc.com/pt/blog/api-integrations-python-sql-github-actions/">
+    <meta property="og:type" content="article">
+    <meta property="article:published_time" content="2026-06-30">
+    <meta property="article:modified_time" content="2026-06-30">
+    <meta property="article:author" content="Patrick Araujo">
+    <meta property="og:image" content="https://pklavc.com/images/lavc.webp?v=5e84850f26">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Brand portrait of backend engineer and automation specialist Patrick Araujo">
+    <meta property="og:site_name" content="Patrick Araujo">
+    <meta property="og:locale" content="pt_BR">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Como estruturo integrações de APIs com Python, SQL e GitHub Actions">
+    <meta name="twitter:description" content="Um padrão conciso para integrações de APIs: fronteira de credenciais, ingestão bruta, identificadores idempotentes, jobs agendados, modelagem SQL e relatórios operacionais.">
+    <meta name="twitter:image" content="https://pklavc.com/images/lavc.webp?v=5e84850f26">
+    <meta name="twitter:image:alt" content="Brand portrait of backend engineer and automation specialist Patrick Araujo">
+    <meta name="twitter:site" content="@PkLavc">
+    <meta name="twitter:creator" content="@PkLavc">
+    <link rel="icon" type="image/svg+xml" href="https://pklavc.com/images/favicon.svg?v=d15fe4e492">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Monoton&family=Poppins:wght@500;600;700&family=Raleway:wght@300&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Monoton&family=Poppins:wght@500;600;700&family=Raleway:wght@300&display=swap"></noscript>
+    <link rel="stylesheet" href="/css/global.css?v=d2afcaae08">
+    <link rel="stylesheet" href="/css/blog.css?v=69e51c2923">
+    <link rel="stylesheet" href="/css/projects.css?v=03a688de1d">
+    <script type="application/ld+json">{
+        "@context": "https://schema.org",
+        "@graph": [
+                {
+                        "@type": "BlogPosting",
+                        "headline": "Como estruturo integrações de APIs com Python, SQL e GitHub Actions",
+                        "description": "Um padrão conciso para integrações de APIs: fronteira de credenciais, ingestão bruta, identificadores idempotentes, jobs agendados, modelagem SQL e relatórios operacionais.",
+                        "image": "https://pklavc.com/images/lavc.webp?v=5e84850f26",
+                        "datePublished": "2026-06-30",
+                        "dateModified": "2026-06-30",
+                        "author": {
+                                "@type": "Person",
+                                "name": "Patrick Araujo"
+                        },
+                        "publisher": {
+                                "@type": "Person",
+                                "name": "Patrick Araujo"
+                        },
+                        "mainEntityOfPage": "https://pklavc.com/pt/blog/api-integrations-python-sql-github-actions/",
+                        "url": "https://pklavc.com/pt/blog/api-integrations-python-sql-github-actions/",
+                        "keywords": [
+                                "API Integration",
+                                "Backend Engineering",
+                                "Python",
+                                "FastAPI",
+                                "API integrations",
+                                "LLM",
+                                "RAG"
+                        ]
+                },
+                {
+                        "@type": "BreadcrumbList",
+                        "itemListElement": [
+                                {
+                                        "@type": "ListItem",
+                                        "position": 1,
+                                        "name": "Início",
+                                        "item": "https://pklavc.com/pt/"
+                                },
+                                {
+                                        "@type": "ListItem",
+                                        "position": 2,
+                                        "name": "Blog",
+                                        "item": "https://pklavc.com/pt/blog/"
+                                },
+                                {
+                                        "@type": "ListItem",
+                                        "position": 3,
+                                        "name": "Como estruturo integrações de APIs com Python, SQL e GitHub Actions",
+                                        "item": "https://pklavc.com/pt/blog/api-integrations-python-sql-github-actions/"
+                                }
+                        ]
+                }
+        ]
+}</script>
+</head>
+<body class="blog-layout seo-layout">
+    <div id="breaker"></div>
+    <div id="breaker-two"></div>
+    <div id="all">
+        <div class="cursor"></div>
+        <div id="navigation-content" role="navigation" aria-label="Início navigation">
+            <div class="logo"></div>
+            <div class="navigation-links">
+                <a href="/pt/" data-text="INÍCIO" id="home-link">INÍCIO</a>
+                <a href="/pt/sobre/" data-text="SOBRE" id="about-link">SOBRE</a>
+                <a href="/pt/projetos/" data-text="PROJETOS" id="projects-link">PROJETOS</a>
+                <a href="/pt/blog/" data-text="BLOG" id="blog-link">BLOG</a>
+            </div>
+        </div>
+        <div id="navigation-bar">
+            <div class="menubar">
+                <span class="first-span"></span>
+                <span class="second-span"></span>
+                <span class="third-span"></span>
+            </div>
+        </div>
+        <main class="blog-shell" role="main">
+            <div class="blog-columns">
+                <div>
+                    <article class="blog-post-hero">
+                        <div class="blog-breadcrumb" aria-label="Breadcrumb">
+                            <a href="/pt/">Início</a>
+                            <span>/</span>
+                            <a href="/pt/blog/">Blog</a>
+                            <span>/</span>
+                            <span aria-current="page">Como estruturo integrações de APIs com Python, SQL e GitHub Actions</span>
+                        </div>
+                        <span class="blog-kicker">Integração de APIs</span>
+                        <h1>Como estruturo integrações de APIs com Python, SQL e GitHub Actions</h1>
+                        <p>Um padrão conciso para integrações de APIs: fronteira de credenciais, ingestão bruta, identificadores idempotentes, jobs agendados, modelagem SQL e relatórios operacionais.</p>
+                        <div class="blog-post-meta">
+                            <span>Publicado em 30 de junho de 2026</span>
+                            <span>7 min de leitura</span>
+                            <span>Integração de APIs</span>
+                        </div>
+                    </article>
+                    <article class="blog-article">
+                        <h2>Comece pela fronteira</h2>
+                        <p>Uma integração deve ter um lugar claro para credenciais, um para chamadas ao provedor e outro para modelagem downstream. Misturar essas responsabilidades dificulta retries e auditoria.</p>
+
+                        <h2>Preserve payloads brutos</h2>
+                        <p>A camada raw guarda respostas do provedor antes que regras de negócio as transformem. Views SQL e tabelas modeladas podem evoluir sem perder o formato original da API.</p>
+
+                        <h2>Use IDs idempotentes</h2>
+                        <p>Janelas repetidas de coleta são normais. IDs externos, upserts e logs controlados permitem replay sem duplicar registros ou esconder falhas parciais.</p>
+
+                        <h2>Por que GitHub Actions funciona</h2>
+                        <p>Para ingestão leve e agendada, GitHub Actions oferece histórico, execução manual, secrets e previsibilidade sem manter um worker permanente.</p>
+
+                        <h2>APIs de provedores são contratos instáveis</h2>
+                        <p>Mesmo APIs bem documentadas mudam comportamento em detalhes pequenos: campos opcionais desaparecem, limites de taxa mudam, paginação se comporta de outro jeito e tokens expiram em horários ruins. Uma boa integração espera esse desvio. O código deve isolar clients do provedor, normalizar erros, registrar metadados de resposta e deixar claro qual parte do pipeline falhou. Essa é a diferença entre um script que funciona hoje e uma integração que pode ser mantida no mês seguinte.</p>
+
+                        <h2>Agendamento precisa de memória operacional</h2>
+                        <p>Um job agendado precisa de mais do que uma expressão cron. Ele precisa lembrar qual janela coletou, quais registros inseriu, quais ignorou e se uma nova tentativa é segura. GitHub Actions ajuda com histórico de execução e disparo manual, mas o pipeline ainda precisa de logs e armazenamento idempotente. Sem isso, um retry pode criar duplicidade ou esconder o motivo de um relatório incompleto.</p>
+
+                        <h2>SQL deixa regras de negócio visíveis</h2>
+                        <p>Quando a resposta bruta da API é salva primeiro, as regras de negócio podem ir para modelos SQL, onde ficam mais fáceis de inspecionar. Joins, filtros, janelas de data e definições de status ficam explícitos em vez de enterrados em transformações Python. Isso também facilita mudanças de regra. Se a definição de um relatório muda, a integração não precisa coletar todos os payloads de novo; a camada modelada evolui a partir da mesma fonte auditável.</p>
+                        <div class="blog-callout">
+                            Evidência relacionada: <a href="/pt/projetos/raw-api-ingestion-pipeline/">Pipeline de Integração de APIs com SQL, Supabase e GitHub Actions</a>. Continue pela trilha técnica em <a href="/pt/projetos/integracoes-api/">Portfólio para Integração de APIs</a> ou entre em contato diretamente.
+                        </div>
+                    </article>
+                </div>
+                <aside class="blog-article-grid">
+                    <section class="blog-sidebar-card">
+                        <h2>Continue explorando</h2>
+                        <ul>
+                            <li><a href="/pt/projetos/integracoes-api/">Portfólio para Integração de APIs</a></li>
+                            <li><a href="/pt/projetos/raw-api-ingestion-pipeline/">Pipeline de Integração de APIs com SQL, Supabase e GitHub Actions</a></li>
+                            <li><a href="mailto:contact@pklavc.com">Contato</a></li>
+                        </ul>
+                    </section>
+                    <section class="blog-sidebar-card">
+                        <h2>Posts relacionados</h2>
+                        <ul>
+                            <li><a href="/pt/blog/ai-kanban-fastapi-rag-agents/">Como criei uma plataforma Kanban com IA usando FastAPI, RAG e agentes</a></li>
+                            <li><a href="/pt/blog/llms-internal-systems-critical-decisions/">Como uso LLMs em sistemas internos sem deixar a IA tomar decisões críticas</a></li>
+                            <li><a href="/pt/blog/fastapi-backends-logs-queues-traceability/">Como construir backends FastAPI com logs, filas e rastreabilidade</a></li>
+                        </ul>
+                    </section>
+                </aside>
+            </div>
+        </main>
+    </div>
+    <footer class="footer-minimal">
+        <div class="footer-container">
+            <div class="footer-link-list" aria-label="Footer links">
+                <a class="footer-link-pill" href="https://github.com/PkLavc" target="_blank" rel="noopener noreferrer">GitHub</a>
+                <a class="footer-link-pill" href="https://www.linkedin.com/in/pklavc/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+                <a class="footer-link-pill" href="mailto:contact@pklavc.com">E-mail</a>
+            </div>
+            <p>&copy; <span data-current-year></span> Patrick Araujo</p>
+        </div>
+    </footer>
+    <script>
+        (function() {
+            document.querySelectorAll('[data-current-year]').forEach(function(node) {
+                node.textContent = String(new Date().getFullYear());
+            });
+        }());
+    </script>
+    <script src="/js/i18n.js?v=02a6baa07c" defer></script>
+    <script src="/js/jquery.min.js?v=91e8044a4b" defer></script>
+    <script src="/js/index.js?v=e3b8c67480" defer></script>
+</body>
+</html>

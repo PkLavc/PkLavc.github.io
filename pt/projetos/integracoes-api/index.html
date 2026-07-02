@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Patrick Araujo">
+    <title>Projetos de Integração de APIs | ETL, Webhooks, SQL e Automação</title>
+    <meta name="description" content="Projetos de integração com foco em APIs, webhooks, ETL, GitHub Actions, Zoho, Hablla, Zenvia, SIGE, Omie, Google Sheets, Supabase, SQL, idempotência e dados operacionais.">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://pklavc.com/pt/projetos/integracoes-api/">
+    <link rel="alternate" href="https://pklavc.com/projects/api-integrations/" hreflang="en">
+    <link rel="alternate" href="https://pklavc.com/pt/projetos/integracoes-api/" hreflang="pt-BR">
+    <link rel="alternate" href="https://pklavc.com/es/proyectos/integraciones-api/" hreflang="es">
+    <link rel="alternate" href="https://pklavc.com/projects/api-integrations/" hreflang="x-default">
+    <meta property="og:title" content="Projetos de Integração de APIs | ETL, Webhooks, SQL e Automação">
+    <meta property="og:description" content="Projetos de integração com foco em APIs, webhooks, ETL, GitHub Actions, Zoho, Hablla, Zenvia, SIGE, Omie, Google Sheets, Supabase, SQL, idempotência e dados operacionais.">
+    <meta property="og:url" content="https://pklavc.com/pt/projetos/integracoes-api/">
+    <meta property="og:type" content="website">
+    
+    <meta property="og:image" content="https://pklavc.com/images/lavc.webp?v=5e84850f26">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Brand portrait of backend engineer and automation specialist Patrick Araujo">
+    <meta property="og:site_name" content="Patrick Araujo">
+    <meta property="og:locale" content="pt_BR">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Projetos de Integração de APIs | ETL, Webhooks, SQL e Automação">
+    <meta name="twitter:description" content="Projetos de integração com foco em APIs, webhooks, ETL, GitHub Actions, Zoho, Hablla, Zenvia, SIGE, Omie, Google Sheets, Supabase, SQL, idempotência e dados operacionais.">
+    <meta name="twitter:image" content="https://pklavc.com/images/lavc.webp?v=5e84850f26">
+    <meta name="twitter:image:alt" content="Brand portrait of backend engineer and automation specialist Patrick Araujo">
+    <meta name="twitter:site" content="@PkLavc">
+    <meta name="twitter:creator" content="@PkLavc">
+    <link rel="icon" type="image/svg+xml" href="https://pklavc.com/images/favicon.svg?v=d15fe4e492">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Monoton&family=Poppins:wght@500;600;700&family=Raleway:wght@300&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Monoton&family=Poppins:wght@500;600;700&family=Raleway:wght@300&display=swap"></noscript>
+    <link rel="stylesheet" href="/css/global.css?v=d2afcaae08">
+    <link rel="stylesheet" href="/css/blog.css?v=69e51c2923">
+    <link rel="stylesheet" href="/css/projects.css?v=03a688de1d">
+    <script type="application/ld+json">{
+        "@context": "https://schema.org",
+        "@graph": [
+                {
+                        "@type": "CollectionPage",
+                        "name": "Projetos de Integração de APIs | ETL, Webhooks, SQL e Automação",
+                        "description": "Projetos de integração com foco em APIs, webhooks, ETL, GitHub Actions, Zoho, Hablla, Zenvia, SIGE, Omie, Google Sheets, Supabase, SQL, idempotência e dados operacionais.",
+                        "url": "https://pklavc.com/pt/projetos/integracoes-api/",
+                        "about": [
+                                "REST APIs",
+                                "Webhooks",
+                                "ETL",
+                                "GitHub Actions",
+                                "Supabase",
+                                "PostgreSQL",
+                                "SQL",
+                                "OAuth",
+                                "Google Sheets",
+                                "Idempotency"
+                        ],
+                        "mainEntity": [
+                                {
+                                        "@type": "CreativeWork",
+                                        "name": "Pipeline de Integração de APIs com SQL, Supabase e GitHub Actions",
+                                        "url": "https://pklavc.com/pt/projetos/raw-api-ingestion-pipeline/",
+                                        "description": "Coleta, normalização e armazenamento de dados operacionais vindos de APIs externas para relatórios e análises reproduzíveis."
+                                },
+                                {
+                                        "@type": "CreativeWork",
+                                        "name": "Worker OAuth Google para disparo seguro de integrações",
+                                        "url": "https://pklavc.com/pt/projetos/google-auth-worker/",
+                                        "description": "Camada de orquestração de credenciais que emite tokens Google e dispara jobs de integração sem duplicar lógica de autenticação."
+                                },
+                                {
+                                        "@type": "CreativeWork",
+                                        "name": "Worker de Integração Zoho Creator para Relatórios Operacionais",
+                                        "url": "https://pklavc.com/pt/projetos/zoho-integration-worker/",
+                                        "description": "Extração de dados do Zoho Creator, normalização de campos e publicação de datasets operacionais estruturados para relatórios."
+                                },
+                                {
+                                        "@type": "CreativeWork",
+                                        "name": "Worker de Integração Hablla para Dados Operacionais",
+                                        "url": "https://pklavc.com/pt/projetos/hablla-integration-worker/",
+                                        "description": "Worker que agrega registros da Hablla, deduplica dados e exporta datasets limpos para relatórios operacionais."
+                                },
+                                {
+                                        "@type": "CreativeWork",
+                                        "name": "Worker de Integração Zenvia Voice para Dados de Chamadas e Dashboards",
+                                        "url": "https://pklavc.com/pt/projetos/zenvia-integration-worker/",
+                                        "description": "Worker de ingestão que filtra registros de chamadas Zenvia em datasets prontos para análise e dashboards."
+                                },
+                                {
+                                        "@type": "CreativeWork",
+                                        "name": "Integração SIGE ERP para Fluxos Financeiros e Operacionais",
+                                        "url": "https://pklavc.com/pt/projetos/sige-integration-worker/",
+                                        "description": "Lógica de sincronização que extrai pedidos do SIGE ERP, transforma campos de faturamento e prepara datasets consolidados."
+                                },
+                                {
+                                        "@type": "CreativeWork",
+                                        "name": "Integração Omie ERP para Dados Financeiros e Operacionais",
+                                        "url": "https://pklavc.com/pt/projetos/omie-integration-worker/",
+                                        "description": "Integração ERP conectando APIs de vendas e produtos da Omie a relatórios e fluxos operacionais."
+                                }
+                        ]
+                },
+                {
+                        "@type": "BreadcrumbList",
+                        "itemListElement": [
+                                {
+                                        "@type": "ListItem",
+                                        "position": 1,
+                                        "name": "Início",
+                                        "item": "https://pklavc.com/pt/"
+                                },
+                                {
+                                        "@type": "ListItem",
+                                        "position": 2,
+                                        "name": "Projetos",
+                                        "item": "https://pklavc.com/pt/projetos/"
+                                },
+                                {
+                                        "@type": "ListItem",
+                                        "position": 3,
+                                        "name": "Integração de APIs",
+                                        "item": "https://pklavc.com/pt/projetos/integracoes-api/"
+                                }
+                        ]
+                }
+        ]
+}</script>
+</head>
+<body class="blog-layout seo-layout">
+    <div id="breaker"></div>
+    <div id="breaker-two"></div>
+    <div id="all">
+        <div class="cursor"></div>
+        <div id="navigation-content" role="navigation" aria-label="Início navigation">
+            <div class="logo"></div>
+            <div class="navigation-links">
+                <a href="/pt/" data-text="INÍCIO" id="home-link">INÍCIO</a>
+                <a href="/pt/sobre/" data-text="SOBRE" id="about-link">SOBRE</a>
+                <a href="/pt/projetos/" data-text="PROJETOS" id="projects-link">PROJETOS</a>
+                <a href="/pt/blog/" data-text="BLOG" id="blog-link">BLOG</a>
+            </div>
+        </div>
+        <div id="navigation-bar">
+            <div class="menubar">
+                <span class="first-span"></span>
+                <span class="second-span"></span>
+                <span class="third-span"></span>
+            </div>
+        </div>
+        <main class="blog-shell" role="main">
+            <div class="blog-columns role-page-columns">
+                <div>
+                    <article class="blog-post-hero">
+                        <div class="blog-breadcrumb" aria-label="Breadcrumb">
+                            <a href="/pt/">Início</a>
+                            <span>/</span>
+                            <a href="/pt/projetos/">Projetos</a>
+                            <span>/</span>
+                            <span aria-current="page">Integração de APIs</span>
+                        </div>
+                        <span class="blog-kicker">Projetos de Integração de APIs</span>
+                        <h1>Integração de APIs</h1>
+                        <p>Projetos de integração com foco em APIs, webhooks, ETL, GitHub Actions, Zoho, Hablla, Zenvia, SIGE, Omie, Google Sheets, Supabase, SQL, idempotência e dados operacionais.</p>
+                        <div class="blog-post-meta">
+                            <span>Vagas remotas</span>
+                            <span>Python</span>
+                            <span>Sistemas backend</span>
+                        </div>
+                    </article>
+                    <section class="blog-section">
+                        <h2>Foco profissional</h2>
+                        <p>Esta área é prática por desenho: credenciais, retries, janelas de coleta, retenção de payload bruto, datasets normalizados para relatórios e auditabilidade operacional.</p>
+                        <div class="role-tech-list">
+                            <span>REST APIs</span>
+                            <span>Webhooks</span>
+                            <span>ETL</span>
+                            <span>GitHub Actions</span>
+                            <span>Supabase</span>
+                            <span>PostgreSQL</span>
+                            <span>SQL</span>
+                            <span>OAuth</span>
+                            <span>Google Sheets</span>
+                            <span>Idempotency</span>
+                        </div>
+                    </section>
+                    <section class="blog-section">
+                        <h2>Projetos relacionados</h2>
+                        <div class="blog-related-grid">
+                            <article class="blog-related-card role-project-card">
+        <h3><a href="/pt/projetos/raw-api-ingestion-pipeline/">Pipeline de Integração de APIs com SQL, Supabase e GitHub Actions</a></h3>
+        <p>Coleta, normalização e armazenamento de dados operacionais vindos de APIs externas para relatórios e análises reproduzíveis.</p>
+        <div class="blog-tag-row">
+            <span>Node.js</span>
+            <span>GitHub Actions</span>
+            <span>Supabase</span>
+        </div>
+    </article>
+<article class="blog-related-card role-project-card">
+        <h3><a href="/pt/projetos/google-auth-worker/">Worker OAuth Google para disparo seguro de integrações</a></h3>
+        <p>Camada de orquestração de credenciais que emite tokens Google e dispara jobs de integração sem duplicar lógica de autenticação.</p>
+        <div class="blog-tag-row">
+            <span>JavaScript</span>
+            <span>GitHub Actions</span>
+            <span>OAuth</span>
+        </div>
+    </article>
+<article class="blog-related-card role-project-card">
+        <h3><a href="/pt/projetos/zoho-integration-worker/">Worker de Integração Zoho Creator para Relatórios Operacionais</a></h3>
+        <p>Extração de dados do Zoho Creator, normalização de campos e publicação de datasets operacionais estruturados para relatórios.</p>
+        <div class="blog-tag-row">
+            <span>JavaScript</span>
+            <span>GitHub Actions</span>
+            <span>Zoho Creator</span>
+        </div>
+    </article>
+<article class="blog-related-card role-project-card">
+        <h3><a href="/pt/projetos/hablla-integration-worker/">Worker de Integração Hablla para Dados Operacionais</a></h3>
+        <p>Worker que agrega registros da Hablla, deduplica dados e exporta datasets limpos para relatórios operacionais.</p>
+        <div class="blog-tag-row">
+            <span>JavaScript</span>
+            <span>GitHub Actions</span>
+            <span>Hablla API</span>
+        </div>
+    </article>
+<article class="blog-related-card role-project-card">
+        <h3><a href="/pt/projetos/zenvia-integration-worker/">Worker de Integração Zenvia Voice para Dados de Chamadas e Dashboards</a></h3>
+        <p>Worker de ingestão que filtra registros de chamadas Zenvia em datasets prontos para análise e dashboards.</p>
+        <div class="blog-tag-row">
+            <span>JavaScript</span>
+            <span>GitHub Actions</span>
+            <span>Zenvia Voice</span>
+        </div>
+    </article>
+<article class="blog-related-card role-project-card">
+        <h3><a href="/pt/projetos/sige-integration-worker/">Integração SIGE ERP para Fluxos Financeiros e Operacionais</a></h3>
+        <p>Lógica de sincronização que extrai pedidos do SIGE ERP, transforma campos de faturamento e prepara datasets consolidados.</p>
+        <div class="blog-tag-row">
+            <span>JavaScript</span>
+            <span>GitHub Actions</span>
+            <span>SIGE ERP</span>
+        </div>
+    </article>
+<article class="blog-related-card role-project-card">
+        <h3><a href="/pt/projetos/omie-integration-worker/">Integração Omie ERP para Dados Financeiros e Operacionais</a></h3>
+        <p>Integração ERP conectando APIs de vendas e produtos da Omie a relatórios e fluxos operacionais.</p>
+        <div class="blog-tag-row">
+            <span>JavaScript</span>
+            <span>GitHub Actions</span>
+            <span>Omie ERP</span>
+        </div>
+    </article>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </main>
+    </div>
+    <footer class="footer-minimal">
+        <div class="footer-container">
+            <div class="footer-link-list" aria-label="Footer links">
+                <a class="footer-link-pill" href="https://github.com/PkLavc" target="_blank" rel="noopener noreferrer">GitHub</a>
+                <a class="footer-link-pill" href="https://www.linkedin.com/in/pklavc/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+                <a class="footer-link-pill" href="mailto:contact@pklavc.com">E-mail</a>
+            </div>
+            <p>&copy; <span data-current-year></span> Patrick Araujo</p>
+        </div>
+    </footer>
+    <script>
+        (function() {
+            document.querySelectorAll('[data-current-year]').forEach(function(node) {
+                node.textContent = String(new Date().getFullYear());
+            });
+        }());
+    </script>
+    <script src="/js/i18n.js?v=02a6baa07c" defer></script>
+    <script src="/js/jquery.min.js?v=91e8044a4b" defer></script>
+    <script src="/js/index.js?v=e3b8c67480" defer></script>
+</body>
+</html>

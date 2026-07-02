@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Patrick Araujo">
+    <title>Building FastAPI backends with logs, queues and traceability</title>
+    <meta name="description" content="FastAPI backends become easier to operate when requests, jobs, queues, task state, and logs are designed as one traceable workflow.">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://pklavc.com/blog/fastapi-backends-logs-queues-traceability/">
+    <link rel="alternate" href="https://pklavc.com/blog/fastapi-backends-logs-queues-traceability/" hreflang="en">
+    <link rel="alternate" href="https://pklavc.com/pt/blog/fastapi-backends-logs-queues-traceability/" hreflang="pt-BR">
+    <link rel="alternate" href="https://pklavc.com/es/blog/fastapi-backends-logs-queues-traceability/" hreflang="es">
+    <link rel="alternate" href="https://pklavc.com/blog/fastapi-backends-logs-queues-traceability/" hreflang="x-default">
+    <meta property="og:title" content="Building FastAPI backends with logs, queues and traceability">
+    <meta property="og:description" content="FastAPI backends become easier to operate when requests, jobs, queues, task state, and logs are designed as one traceable workflow.">
+    <meta property="og:url" content="https://pklavc.com/blog/fastapi-backends-logs-queues-traceability/">
+    <meta property="og:type" content="article">
+    <meta property="article:published_time" content="2026-06-30">
+    <meta property="article:modified_time" content="2026-06-30">
+    <meta property="article:author" content="Patrick Araujo">
+    <meta property="og:image" content="https://pklavc.com/images/lavc.webp?v=5e84850f26">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Brand portrait of backend engineer and automation specialist Patrick Araujo">
+    <meta property="og:site_name" content="Patrick Araujo">
+    <meta property="og:locale" content="en_US">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Building FastAPI backends with logs, queues and traceability">
+    <meta name="twitter:description" content="FastAPI backends become easier to operate when requests, jobs, queues, task state, and logs are designed as one traceable workflow.">
+    <meta name="twitter:image" content="https://pklavc.com/images/lavc.webp?v=5e84850f26">
+    <meta name="twitter:image:alt" content="Brand portrait of backend engineer and automation specialist Patrick Araujo">
+    <meta name="twitter:site" content="@PkLavc">
+    <meta name="twitter:creator" content="@PkLavc">
+    <link rel="icon" type="image/svg+xml" href="https://pklavc.com/images/favicon.svg?v=d15fe4e492">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Monoton&family=Poppins:wght@500;600;700&family=Raleway:wght@300&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Monoton&family=Poppins:wght@500;600;700&family=Raleway:wght@300&display=swap"></noscript>
+    <link rel="stylesheet" href="/css/global.css?v=d2afcaae08">
+    <link rel="stylesheet" href="/css/blog.css?v=69e51c2923">
+    <link rel="stylesheet" href="/css/projects.css?v=03a688de1d">
+    <script type="application/ld+json">{
+        "@context": "https://schema.org",
+        "@graph": [
+                {
+                        "@type": "BlogPosting",
+                        "headline": "Building FastAPI backends with logs, queues and traceability",
+                        "description": "FastAPI backends become easier to operate when requests, jobs, queues, task state, and logs are designed as one traceable workflow.",
+                        "image": "https://pklavc.com/images/lavc.webp?v=5e84850f26",
+                        "datePublished": "2026-06-30",
+                        "dateModified": "2026-06-30",
+                        "author": {
+                                "@type": "Person",
+                                "name": "Patrick Araujo"
+                        },
+                        "publisher": {
+                                "@type": "Person",
+                                "name": "Patrick Araujo"
+                        },
+                        "mainEntityOfPage": "https://pklavc.com/blog/fastapi-backends-logs-queues-traceability/",
+                        "url": "https://pklavc.com/blog/fastapi-backends-logs-queues-traceability/",
+                        "keywords": [
+                                "Backend Engineering",
+                                "Backend Engineering",
+                                "Python",
+                                "FastAPI",
+                                "API integrations",
+                                "LLM",
+                                "RAG"
+                        ]
+                },
+                {
+                        "@type": "BreadcrumbList",
+                        "itemListElement": [
+                                {
+                                        "@type": "ListItem",
+                                        "position": 1,
+                                        "name": "Home",
+                                        "item": "https://pklavc.com/"
+                                },
+                                {
+                                        "@type": "ListItem",
+                                        "position": 2,
+                                        "name": "Blog",
+                                        "item": "https://pklavc.com/blog/"
+                                },
+                                {
+                                        "@type": "ListItem",
+                                        "position": 3,
+                                        "name": "Building FastAPI backends with logs, queues and traceability",
+                                        "item": "https://pklavc.com/blog/fastapi-backends-logs-queues-traceability/"
+                                }
+                        ]
+                }
+        ]
+}</script>
+</head>
+<body class="blog-layout seo-layout">
+    <div id="breaker"></div>
+    <div id="breaker-two"></div>
+    <div id="all">
+        <div class="cursor"></div>
+        <div id="navigation-content" role="navigation" aria-label="Home navigation">
+            <div class="logo"></div>
+            <div class="navigation-links">
+                <a href="/" data-text="HOME" id="home-link">HOME</a>
+                <a href="/about/" data-text="ABOUT" id="about-link">ABOUT</a>
+                <a href="/projects/" data-text="PROJECTS" id="projects-link">PROJECTS</a>
+                <a href="/blog/" data-text="BLOG" id="blog-link">BLOG</a>
+            </div>
+        </div>
+        <div id="navigation-bar">
+            <div class="menubar">
+                <span class="first-span"></span>
+                <span class="second-span"></span>
+                <span class="third-span"></span>
+            </div>
+        </div>
+        <main class="blog-shell" role="main">
+            <div class="blog-columns">
+                <div>
+                    <article class="blog-post-hero">
+                        <div class="blog-breadcrumb" aria-label="Breadcrumb">
+                            <a href="/">Home</a>
+                            <span>/</span>
+                            <a href="/blog/">Blog</a>
+                            <span>/</span>
+                            <span aria-current="page">Building FastAPI backends with logs, queues and traceability</span>
+                        </div>
+                        <span class="blog-kicker">Backend Engineering</span>
+                        <h1>Building FastAPI backends with logs, queues and traceability</h1>
+                        <p>FastAPI backends become easier to operate when requests, jobs, queues, task state, and logs are designed as one traceable workflow.</p>
+                        <div class="blog-post-meta">
+                            <span>Published June 30, 2026</span>
+                            <span>7 min read</span>
+                            <span>Backend Engineering</span>
+                        </div>
+                    </article>
+                    <article class="blog-article">
+                        <h2>Routes are not the whole system</h2>
+                        <p>A route starts work; it should not hide the full lifecycle. For longer tasks, the API should create a durable record, enqueue work, and expose status.</p>
+
+                        <h2>Logs need structure</h2>
+                        <p>Useful logs explain which task ran, which provider or subsystem was called, what failed, and what can be retried without leaking credentials or full payloads.</p>
+
+                        <h2>Queues create control</h2>
+                        <p>A queue gives the backend a place to apply priority, backoff, retries, and cancellation. It also makes the UI easier to explain because state changes are explicit.</p>
+
+                        <h2>Traceability supports trust</h2>
+                        <p>When the user can see request, job, logs, output, and next action, the backend becomes understandable instead of opaque.</p>
+
+                        <h2>Traceability starts at request creation</h2>
+                        <p>The first useful design decision is to create a stable identifier as soon as work enters the system. That identifier should follow the request, queue item, worker logs, provider calls, generated output, and final status. Without it, debugging becomes a search problem across unrelated logs. With it, the backend can answer simple operational questions: what started, what ran, what failed, what retried, and what the user can do next.</p>
+
+                        <h2>Queues make failures easier to reason about</h2>
+                        <p>A queue is not only for scale. It gives the backend a controlled place to pause, retry, cancel, and prioritize work. If a provider is down, the system can back off. If a task is no longer relevant, it can be cancelled. If two jobs compete for the same resource, priority can be explicit. That control is difficult when every route tries to do long-running work synchronously.</p>
+
+                        <h2>Logs should be useful without being dangerous</h2>
+                        <p>Operational logs should help a developer understand behavior without exposing credentials, private payloads, or full model prompts. The useful pattern is structured logging with task IDs, subsystem names, status codes, timing, and short error summaries. Sensitive data stays out of the log line, while enough context remains for diagnosis. This balance is especially important in systems that call third-party APIs or local AI services.</p>
+                        <div class="blog-callout">
+                            Related project evidence: <a href="/projects/lavc-systems/">AI Kanban with RAG and agents using FastAPI</a>. Continue with the technical path at <a href="/projects/backend-python/">Backend Python Engineer portfolio</a> or contact me directly.
+                        </div>
+                    </article>
+                </div>
+                <aside class="blog-article-grid">
+                    <section class="blog-sidebar-card">
+                        <h2>Continue exploring</h2>
+                        <ul>
+                            <li><a href="/projects/backend-python/">Backend Python Engineer portfolio</a></li>
+                            <li><a href="/projects/lavc-systems/">AI Kanban with RAG and agents using FastAPI</a></li>
+                            <li><a href="mailto:contact@pklavc.com">Contact</a></li>
+                        </ul>
+                    </section>
+                    <section class="blog-sidebar-card">
+                        <h2>Related posts</h2>
+                        <ul>
+                            <li><a href="/blog/ai-kanban-fastapi-rag-agents/">How I built an AI Kanban platform with FastAPI, RAG and agents</a></li>
+                            <li><a href="/blog/api-integrations-python-sql-github-actions/">How I structure API integrations with Python, SQL and GitHub Actions</a></li>
+                            <li><a href="/blog/llms-internal-systems-critical-decisions/">How I use LLMs in internal systems without letting AI control critical decisions</a></li>
+                        </ul>
+                    </section>
+                </aside>
+            </div>
+        </main>
+    </div>
+    <footer class="footer-minimal">
+        <div class="footer-container">
+            <div class="footer-link-list" aria-label="Footer links">
+                <a class="footer-link-pill" href="https://github.com/PkLavc" target="_blank" rel="noopener noreferrer">GitHub</a>
+                <a class="footer-link-pill" href="https://www.linkedin.com/in/pklavc/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+                <a class="footer-link-pill" href="mailto:contact@pklavc.com">Email</a>
+            </div>
+            <p>&copy; <span data-current-year></span> Patrick Araujo</p>
+        </div>
+    </footer>
+    <script>
+        (function() {
+            document.querySelectorAll('[data-current-year]').forEach(function(node) {
+                node.textContent = String(new Date().getFullYear());
+            });
+        }());
+    </script>
+    <script src="/js/i18n.js?v=02a6baa07c" defer></script>
+    <script src="/js/jquery.min.js?v=91e8044a4b" defer></script>
+    <script src="/js/index.js?v=e3b8c67480" defer></script>
+</body>
+</html>

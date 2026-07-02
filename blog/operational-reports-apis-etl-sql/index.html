@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Patrick Araujo">
+    <title>Automating operational reports with APIs, ETL and SQL</title>
+    <meta name="description" content="A practical reporting pipeline starts with reliable API collection, keeps raw data auditable, and moves business logic into SQL models that can evolve.">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://pklavc.com/blog/operational-reports-apis-etl-sql/">
+    <link rel="alternate" href="https://pklavc.com/blog/operational-reports-apis-etl-sql/" hreflang="en">
+    <link rel="alternate" href="https://pklavc.com/pt/blog/operational-reports-apis-etl-sql/" hreflang="pt-BR">
+    <link rel="alternate" href="https://pklavc.com/es/blog/operational-reports-apis-etl-sql/" hreflang="es">
+    <link rel="alternate" href="https://pklavc.com/blog/operational-reports-apis-etl-sql/" hreflang="x-default">
+    <meta property="og:title" content="Automating operational reports with APIs, ETL and SQL">
+    <meta property="og:description" content="A practical reporting pipeline starts with reliable API collection, keeps raw data auditable, and moves business logic into SQL models that can evolve.">
+    <meta property="og:url" content="https://pklavc.com/blog/operational-reports-apis-etl-sql/">
+    <meta property="og:type" content="article">
+    <meta property="article:published_time" content="2026-06-30">
+    <meta property="article:modified_time" content="2026-06-30">
+    <meta property="article:author" content="Patrick Araujo">
+    <meta property="og:image" content="https://pklavc.com/images/lavc.webp?v=5e84850f26">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Brand portrait of backend engineer and automation specialist Patrick Araujo">
+    <meta property="og:site_name" content="Patrick Araujo">
+    <meta property="og:locale" content="en_US">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Automating operational reports with APIs, ETL and SQL">
+    <meta name="twitter:description" content="A practical reporting pipeline starts with reliable API collection, keeps raw data auditable, and moves business logic into SQL models that can evolve.">
+    <meta name="twitter:image" content="https://pklavc.com/images/lavc.webp?v=5e84850f26">
+    <meta name="twitter:image:alt" content="Brand portrait of backend engineer and automation specialist Patrick Araujo">
+    <meta name="twitter:site" content="@PkLavc">
+    <meta name="twitter:creator" content="@PkLavc">
+    <link rel="icon" type="image/svg+xml" href="https://pklavc.com/images/favicon.svg?v=d15fe4e492">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Monoton&family=Poppins:wght@500;600;700&family=Raleway:wght@300&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Monoton&family=Poppins:wght@500;600;700&family=Raleway:wght@300&display=swap"></noscript>
+    <link rel="stylesheet" href="/css/global.css?v=d2afcaae08">
+    <link rel="stylesheet" href="/css/blog.css?v=69e51c2923">
+    <link rel="stylesheet" href="/css/projects.css?v=03a688de1d">
+    <script type="application/ld+json">{
+        "@context": "https://schema.org",
+        "@graph": [
+                {
+                        "@type": "BlogPosting",
+                        "headline": "Automating operational reports with APIs, ETL and SQL",
+                        "description": "A practical reporting pipeline starts with reliable API collection, keeps raw data auditable, and moves business logic into SQL models that can evolve.",
+                        "image": "https://pklavc.com/images/lavc.webp?v=5e84850f26",
+                        "datePublished": "2026-06-30",
+                        "dateModified": "2026-06-30",
+                        "author": {
+                                "@type": "Person",
+                                "name": "Patrick Araujo"
+                        },
+                        "publisher": {
+                                "@type": "Person",
+                                "name": "Patrick Araujo"
+                        },
+                        "mainEntityOfPage": "https://pklavc.com/blog/operational-reports-apis-etl-sql/",
+                        "url": "https://pklavc.com/blog/operational-reports-apis-etl-sql/",
+                        "keywords": [
+                                "Data Automation",
+                                "Backend Engineering",
+                                "Python",
+                                "FastAPI",
+                                "API integrations",
+                                "LLM",
+                                "RAG"
+                        ]
+                },
+                {
+                        "@type": "BreadcrumbList",
+                        "itemListElement": [
+                                {
+                                        "@type": "ListItem",
+                                        "position": 1,
+                                        "name": "Home",
+                                        "item": "https://pklavc.com/"
+                                },
+                                {
+                                        "@type": "ListItem",
+                                        "position": 2,
+                                        "name": "Blog",
+                                        "item": "https://pklavc.com/blog/"
+                                },
+                                {
+                                        "@type": "ListItem",
+                                        "position": 3,
+                                        "name": "Automating operational reports with APIs, ETL and SQL",
+                                        "item": "https://pklavc.com/blog/operational-reports-apis-etl-sql/"
+                                }
+                        ]
+                }
+        ]
+}</script>
+</head>
+<body class="blog-layout seo-layout">
+    <div id="breaker"></div>
+    <div id="breaker-two"></div>
+    <div id="all">
+        <div class="cursor"></div>
+        <div id="navigation-content" role="navigation" aria-label="Home navigation">
+            <div class="logo"></div>
+            <div class="navigation-links">
+                <a href="/" data-text="HOME" id="home-link">HOME</a>
+                <a href="/about/" data-text="ABOUT" id="about-link">ABOUT</a>
+                <a href="/projects/" data-text="PROJECTS" id="projects-link">PROJECTS</a>
+                <a href="/blog/" data-text="BLOG" id="blog-link">BLOG</a>
+            </div>
+        </div>
+        <div id="navigation-bar">
+            <div class="menubar">
+                <span class="first-span"></span>
+                <span class="second-span"></span>
+                <span class="third-span"></span>
+            </div>
+        </div>
+        <main class="blog-shell" role="main">
+            <div class="blog-columns">
+                <div>
+                    <article class="blog-post-hero">
+                        <div class="blog-breadcrumb" aria-label="Breadcrumb">
+                            <a href="/">Home</a>
+                            <span>/</span>
+                            <a href="/blog/">Blog</a>
+                            <span>/</span>
+                            <span aria-current="page">Automating operational reports with APIs, ETL and SQL</span>
+                        </div>
+                        <span class="blog-kicker">Data Automation</span>
+                        <h1>Automating operational reports with APIs, ETL and SQL</h1>
+                        <p>A practical reporting pipeline starts with reliable API collection, keeps raw data auditable, and moves business logic into SQL models that can evolve.</p>
+                        <div class="blog-post-meta">
+                            <span>Published June 30, 2026</span>
+                            <span>7 min read</span>
+                            <span>Data Automation</span>
+                        </div>
+                    </article>
+                    <article class="blog-article">
+                        <h2>Reports fail upstream</h2>
+                        <p>A dashboard is only as reliable as the collection layer behind it. Most reporting issues start with missing records, duplicated payloads, expired tokens, or unclear collection windows.</p>
+
+                        <h2>ETL should be replayable</h2>
+                        <p>A job should be able to run again for the same window without changing the meaning of the dataset. This requires external IDs, upserts, and stored raw responses.</p>
+
+                        <h2>SQL is the modeling layer</h2>
+                        <p>Once raw payloads are stored, SQL can express joins, filters, and operational definitions without calling the provider again.</p>
+
+                        <h2>Automation is reliability work</h2>
+                        <p>The goal is not just saving manual effort. The stronger result is a repeatable process with logs, clear failure modes, and data that can be audited.</p>
+
+                        <h2>A report is a contract, not a screenshot</h2>
+                        <p>Operational reporting should be treated as a repeatable contract. The same input window should produce the same interpreted result, or the system should explain why it changed. This means the pipeline needs collection logs, raw payload storage, transformation rules, and clear definitions for business fields. A static dashboard can look finished while the underlying data path remains fragile. The engineering work is making the path explainable.</p>
+
+                        <h2>Reconciliation belongs in the pipeline</h2>
+                        <p>Many report problems appear when totals do not match between a provider portal, an internal database, and a dashboard. The pipeline should include reconciliation checks that compare counts, totals, missing IDs, and date ranges. These checks do not need to be fancy to be valuable. Even a simple mismatch table can save hours because it points directly to the broken window or provider response instead of forcing manual inspection.</p>
+
+                        <h2>Automation should leave room for change</h2>
+                        <p>Reports evolve because the business evolves. New statuses appear, old categories stop mattering, and managers ask different questions. A useful ETL design keeps collection separate from modeling so those changes do not require rewriting the whole pipeline. Python handles collection and repeatable jobs; SQL handles interpretation; the dashboard consumes a stable modeled surface. That separation keeps automation useful after the first version.</p>
+                        <div class="blog-callout">
+                            Related project evidence: <a href="/projects/raw-api-ingestion-pipeline/">API Integration Pipeline with SQL, Supabase and GitHub Actions</a>. Continue with the technical path at <a href="/projects/python-automation/">Python Automation portfolio</a> or contact me directly.
+                        </div>
+                    </article>
+                </div>
+                <aside class="blog-article-grid">
+                    <section class="blog-sidebar-card">
+                        <h2>Continue exploring</h2>
+                        <ul>
+                            <li><a href="/projects/python-automation/">Python Automation portfolio</a></li>
+                            <li><a href="/projects/raw-api-ingestion-pipeline/">API Integration Pipeline with SQL, Supabase and GitHub Actions</a></li>
+                            <li><a href="mailto:contact@pklavc.com">Contact</a></li>
+                        </ul>
+                    </section>
+                    <section class="blog-sidebar-card">
+                        <h2>Related posts</h2>
+                        <ul>
+                            <li><a href="/blog/ai-kanban-fastapi-rag-agents/">How I built an AI Kanban platform with FastAPI, RAG and agents</a></li>
+                            <li><a href="/blog/api-integrations-python-sql-github-actions/">How I structure API integrations with Python, SQL and GitHub Actions</a></li>
+                            <li><a href="/blog/llms-internal-systems-critical-decisions/">How I use LLMs in internal systems without letting AI control critical decisions</a></li>
+                        </ul>
+                    </section>
+                </aside>
+            </div>
+        </main>
+    </div>
+    <footer class="footer-minimal">
+        <div class="footer-container">
+            <div class="footer-link-list" aria-label="Footer links">
+                <a class="footer-link-pill" href="https://github.com/PkLavc" target="_blank" rel="noopener noreferrer">GitHub</a>
+                <a class="footer-link-pill" href="https://www.linkedin.com/in/pklavc/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+                <a class="footer-link-pill" href="mailto:contact@pklavc.com">Email</a>
+            </div>
+            <p>&copy; <span data-current-year></span> Patrick Araujo</p>
+        </div>
+    </footer>
+    <script>
+        (function() {
+            document.querySelectorAll('[data-current-year]').forEach(function(node) {
+                node.textContent = String(new Date().getFullYear());
+            });
+        }());
+    </script>
+    <script src="/js/i18n.js?v=02a6baa07c" defer></script>
+    <script src="/js/jquery.min.js?v=91e8044a4b" defer></script>
+    <script src="/js/index.js?v=e3b8c67480" defer></script>
+</body>
+</html>

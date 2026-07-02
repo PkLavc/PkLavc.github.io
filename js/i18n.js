@@ -60,6 +60,13 @@
         'zoho-deluge-developer': 'desenvolvedor-zoho-deluge',
         'api-integration-engineer': 'engenheiro-integracao-api',
         'backend-automation': 'automacao-backend'
+      },
+      projects: {
+        'backend-python': 'backend-python',
+        'ai-engineer': 'engenheiro-ia',
+        'llm-rag': 'llm-rag',
+        'api-integrations': 'integracoes-api',
+        'python-automation': 'automacao-python'
       }
     },
     es: {
@@ -76,6 +83,13 @@
         'zoho-deluge-developer': 'desarrollador-zoho-deluge',
         'api-integration-engineer': 'ingeniero-integracion-api',
         'backend-automation': 'automatizacion-backend'
+      },
+      projects: {
+        'backend-python': 'backend-python',
+        'ai-engineer': 'ingeniero-ia',
+        'llm-rag': 'llm-rag',
+        'api-integrations': 'integraciones-api',
+        'python-automation': 'automatizacion-python'
       }
     }
   };
@@ -390,6 +404,7 @@
     document.querySelectorAll('#blog-link').forEach(function(link) {
       setNavigationLink(link, labels.blog, getLocalizedRoute('/blog/', locale));
     });
+
   }
 
   function updateLanguageLinks(container) {

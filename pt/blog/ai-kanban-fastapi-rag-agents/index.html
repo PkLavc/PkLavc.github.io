@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Patrick Araujo">
+    <title>Como criei uma plataforma Kanban com IA usando FastAPI, RAG e agentes</title>
+    <meta name="description" content="Notas de arquitetura do Lavc Systems: backend FastAPI, UI React, LLMs locais, RAG, memória vetorial, agentes, observabilidade WebSocket e orquestração de tarefas.">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://pklavc.com/pt/blog/ai-kanban-fastapi-rag-agents/">
+    <link rel="alternate" href="https://pklavc.com/blog/ai-kanban-fastapi-rag-agents/" hreflang="en">
+    <link rel="alternate" href="https://pklavc.com/pt/blog/ai-kanban-fastapi-rag-agents/" hreflang="pt-BR">
+    <link rel="alternate" href="https://pklavc.com/es/blog/ai-kanban-fastapi-rag-agents/" hreflang="es">
+    <link rel="alternate" href="https://pklavc.com/blog/ai-kanban-fastapi-rag-agents/" hreflang="x-default">
+    <meta property="og:title" content="Como criei uma plataforma Kanban com IA usando FastAPI, RAG e agentes">
+    <meta property="og:description" content="Notas de arquitetura do Lavc Systems: backend FastAPI, UI React, LLMs locais, RAG, memória vetorial, agentes, observabilidade WebSocket e orquestração de tarefas.">
+    <meta property="og:url" content="https://pklavc.com/pt/blog/ai-kanban-fastapi-rag-agents/">
+    <meta property="og:type" content="article">
+    <meta property="article:published_time" content="2026-06-30">
+    <meta property="article:modified_time" content="2026-06-30">
+    <meta property="article:author" content="Patrick Araujo">
+    <meta property="og:image" content="https://pklavc.com/images/lavc.webp?v=5e84850f26">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Brand portrait of backend engineer and automation specialist Patrick Araujo">
+    <meta property="og:site_name" content="Patrick Araujo">
+    <meta property="og:locale" content="pt_BR">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Como criei uma plataforma Kanban com IA usando FastAPI, RAG e agentes">
+    <meta name="twitter:description" content="Notas de arquitetura do Lavc Systems: backend FastAPI, UI React, LLMs locais, RAG, memória vetorial, agentes, observabilidade WebSocket e orquestração de tarefas.">
+    <meta name="twitter:image" content="https://pklavc.com/images/lavc.webp?v=5e84850f26">
+    <meta name="twitter:image:alt" content="Brand portrait of backend engineer and automation specialist Patrick Araujo">
+    <meta name="twitter:site" content="@PkLavc">
+    <meta name="twitter:creator" content="@PkLavc">
+    <link rel="icon" type="image/svg+xml" href="https://pklavc.com/images/favicon.svg?v=d15fe4e492">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Monoton&family=Poppins:wght@500;600;700&family=Raleway:wght@300&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Monoton&family=Poppins:wght@500;600;700&family=Raleway:wght@300&display=swap"></noscript>
+    <link rel="stylesheet" href="/css/global.css?v=d2afcaae08">
+    <link rel="stylesheet" href="/css/blog.css?v=69e51c2923">
+    <link rel="stylesheet" href="/css/projects.css?v=03a688de1d">
+    <script type="application/ld+json">{
+        "@context": "https://schema.org",
+        "@graph": [
+                {
+                        "@type": "BlogPosting",
+                        "headline": "Como criei uma plataforma Kanban com IA usando FastAPI, RAG e agentes",
+                        "description": "Notas de arquitetura do Lavc Systems: backend FastAPI, UI React, LLMs locais, RAG, memória vetorial, agentes, observabilidade WebSocket e orquestração de tarefas.",
+                        "image": "https://pklavc.com/images/lavc.webp?v=5e84850f26",
+                        "datePublished": "2026-06-30",
+                        "dateModified": "2026-06-30",
+                        "author": {
+                                "@type": "Person",
+                                "name": "Patrick Araujo"
+                        },
+                        "publisher": {
+                                "@type": "Person",
+                                "name": "Patrick Araujo"
+                        },
+                        "mainEntityOfPage": "https://pklavc.com/pt/blog/ai-kanban-fastapi-rag-agents/",
+                        "url": "https://pklavc.com/pt/blog/ai-kanban-fastapi-rag-agents/",
+                        "keywords": [
+                                "AI Platform",
+                                "Backend Engineering",
+                                "Python",
+                                "FastAPI",
+                                "API integrations",
+                                "LLM",
+                                "RAG"
+                        ]
+                },
+                {
+                        "@type": "BreadcrumbList",
+                        "itemListElement": [
+                                {
+                                        "@type": "ListItem",
+                                        "position": 1,
+                                        "name": "Início",
+                                        "item": "https://pklavc.com/pt/"
+                                },
+                                {
+                                        "@type": "ListItem",
+                                        "position": 2,
+                                        "name": "Blog",
+                                        "item": "https://pklavc.com/pt/blog/"
+                                },
+                                {
+                                        "@type": "ListItem",
+                                        "position": 3,
+                                        "name": "Como criei uma plataforma Kanban com IA usando FastAPI, RAG e agentes",
+                                        "item": "https://pklavc.com/pt/blog/ai-kanban-fastapi-rag-agents/"
+                                }
+                        ]
+                }
+        ]
+}</script>
+</head>
+<body class="blog-layout seo-layout">
+    <div id="breaker"></div>
+    <div id="breaker-two"></div>
+    <div id="all">
+        <div class="cursor"></div>
+        <div id="navigation-content" role="navigation" aria-label="Início navigation">
+            <div class="logo"></div>
+            <div class="navigation-links">
+                <a href="/pt/" data-text="INÍCIO" id="home-link">INÍCIO</a>
+                <a href="/pt/sobre/" data-text="SOBRE" id="about-link">SOBRE</a>
+                <a href="/pt/projetos/" data-text="PROJETOS" id="projects-link">PROJETOS</a>
+                <a href="/pt/blog/" data-text="BLOG" id="blog-link">BLOG</a>
+            </div>
+        </div>
+        <div id="navigation-bar">
+            <div class="menubar">
+                <span class="first-span"></span>
+                <span class="second-span"></span>
+                <span class="third-span"></span>
+            </div>
+        </div>
+        <main class="blog-shell" role="main">
+            <div class="blog-columns">
+                <div>
+                    <article class="blog-post-hero">
+                        <div class="blog-breadcrumb" aria-label="Breadcrumb">
+                            <a href="/pt/">Início</a>
+                            <span>/</span>
+                            <a href="/pt/blog/">Blog</a>
+                            <span>/</span>
+                            <span aria-current="page">Como criei uma plataforma Kanban com IA usando FastAPI, RAG e agentes</span>
+                        </div>
+                        <span class="blog-kicker">Plataforma de IA</span>
+                        <h1>Como criei uma plataforma Kanban com IA usando FastAPI, RAG e agentes</h1>
+                        <p>Notas de arquitetura do Lavc Systems: backend FastAPI, UI React, LLMs locais, RAG, memória vetorial, agentes, observabilidade WebSocket e orquestração de tarefas.</p>
+                        <div class="blog-post-meta">
+                            <span>Publicado em 30 de junho de 2026</span>
+                            <span>7 min de leitura</span>
+                            <span>Plataforma de IA</span>
+                        </div>
+                    </article>
+                    <article class="blog-article">
+                        <h2>O limite do produto</h2>
+                        <p>A plataforma não é um chatbot acoplado a um quadro. O Kanban é a superfície operacional e o sistema de agentes é a camada de execução por trás dele. Tarefas, logs, contexto e status precisam ficar conectados para o usuário entender o que o sistema está fazendo.</p>
+
+                        <h2>FastAPI como plano de controle</h2>
+                        <p>O FastAPI concentra a fronteira de API, criação de tarefas, chamadas de agentes, acesso a documentos e eventos WebSocket. Isso mantém chamadas de modelo, memória e estado de UI atrás de rotas explícitas de backend.</p>
+
+                        <h2>RAG e memória</h2>
+                        <p>RAG só é útil quando a recuperação é bem delimitada e auditável. O Lavc Systems separa registros estruturados em SQLite da busca semântica no ChromaDB, usando embeddings locais e Ollama para manter contexto interno na máquina.</p>
+
+                        <h2>O que isso demonstra</h2>
+                        <p>O projeto demonstra engenharia de IA aplicada, design backend, orquestração com LLM local, observabilidade de tarefas e separação prática entre sugestões geradas e ações do sistema.</p>
+
+                        <h2>Por que Kanban funciona como interface de IA</h2>
+                        <p>Um quadro Kanban dá forma concreta ao fluxo dos agentes. Em vez de pedir que o usuário confie em uma cadeia invisível de prompts, cada tarefa pode mostrar intenção, status atual, bloqueios, notas geradas e saída final. Isso importa porque trabalhos com IA costumam falhar no meio do caminho, não apenas na resposta. Uma tarefa pode estar aguardando recuperação de contexto, resultado de ferramenta, informação ausente ou revisão humana. Modelar esses estados no produto torna o comportamento dos agentes inspecionável.</p>
+
+                        <h2>Agentes como workers de backend</h2>
+                        <p>O padrão mais seguro é tratar agentes como workers de backend com responsabilidades estreitas. Um agente de planejamento pode quebrar o trabalho, uma etapa de recuperação pode carregar contexto e uma etapa de síntese pode preparar a resposta, mas a API continua responsável por persistência, permissões, logs e transições de estado. Assim o modelo não vira a aplicação inteira. Isso também facilita testes, porque o fluxo pode ser validado por entradas, saídas, eventos e falhas, não apenas por snapshots de prompt.</p>
+
+                        <h2>Observabilidade muda a experiência</h2>
+                        <p>Atualizações via WebSocket não são só conveniência técnica. Elas permitem que a UI mostre o que mudou sem obrigar o usuário a atualizar a página ou adivinhar se o sistema travou. Quando logs, estado de tarefa e eventos de agentes caminham juntos, o produto fica mais tranquilo de operar. O usuário enxerga que a busca terminou, uma chamada de modelo está rodando, uma validação falhou ou uma resposta final está pronta. Essa transparência faz o sistema de IA parecer software de verdade, não uma caixa preta.</p>
+                        <div class="blog-callout">
+                            Evidência relacionada: <a href="/pt/projetos/lavc-systems/">Kanban com IA, RAG e agentes usando FastAPI</a>. Continue pela trilha técnica em <a href="/pt/projetos/engenheiro-ia/">Portfólio para AI Engineer</a> ou entre em contato diretamente.
+                        </div>
+                    </article>
+                </div>
+                <aside class="blog-article-grid">
+                    <section class="blog-sidebar-card">
+                        <h2>Continue explorando</h2>
+                        <ul>
+                            <li><a href="/pt/projetos/engenheiro-ia/">Portfólio para AI Engineer</a></li>
+                            <li><a href="/pt/projetos/lavc-systems/">Kanban com IA, RAG e agentes usando FastAPI</a></li>
+                            <li><a href="mailto:contact@pklavc.com">Contato</a></li>
+                        </ul>
+                    </section>
+                    <section class="blog-sidebar-card">
+                        <h2>Posts relacionados</h2>
+                        <ul>
+                            <li><a href="/pt/blog/api-integrations-python-sql-github-actions/">Como estruturo integrações de APIs com Python, SQL e GitHub Actions</a></li>
+                            <li><a href="/pt/blog/llms-internal-systems-critical-decisions/">Como uso LLMs em sistemas internos sem deixar a IA tomar decisões críticas</a></li>
+                            <li><a href="/pt/blog/fastapi-backends-logs-queues-traceability/">Como construir backends FastAPI com logs, filas e rastreabilidade</a></li>
+                        </ul>
+                    </section>
+                </aside>
+            </div>
+        </main>
+    </div>
+    <footer class="footer-minimal">
+        <div class="footer-container">
+            <div class="footer-link-list" aria-label="Footer links">
+                <a class="footer-link-pill" href="https://github.com/PkLavc" target="_blank" rel="noopener noreferrer">GitHub</a>
+                <a class="footer-link-pill" href="https://www.linkedin.com/in/pklavc/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+                <a class="footer-link-pill" href="mailto:contact@pklavc.com">E-mail</a>
+            </div>
+            <p>&copy; <span data-current-year></span> Patrick Araujo</p>
+        </div>
+    </footer>
+    <script>
+        (function() {
+            document.querySelectorAll('[data-current-year]').forEach(function(node) {
+                node.textContent = String(new Date().getFullYear());
+            });
+        }());
+    </script>
+    <script src="/js/i18n.js?v=02a6baa07c" defer></script>
+    <script src="/js/jquery.min.js?v=91e8044a4b" defer></script>
+    <script src="/js/index.js?v=e3b8c67480" defer></script>
+</body>
+</html>

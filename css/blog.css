@@ -420,6 +420,12 @@ body.blog-layout::before {
     gap: 28px;
 }
 
+.role-page-columns {
+    grid-template-columns: minmax(0, 1fr);
+    max-width: 1100px;
+    margin-inline: auto;
+}
+
 .blog-columns > *,
 .blog-article-grid,
 .blog-related-grid,
@@ -802,6 +808,91 @@ body.blog-layout::before {
 .blog-button:hover {
     background: var(--clr-primary);
     color: #050505;
+}
+
+.role-tech-list,
+.role-link-grid,
+.hire-cta-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.role-tech-list span,
+.role-link-grid a,
+.hire-cta-grid a {
+    display: flex;
+    align-items: center;
+    min-height: 48px;
+    padding: 12px 14px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.035);
+    color: #d7e3ea;
+    text-decoration: none;
+    line-height: 1.35;
+}
+
+.role-link-grid a,
+.hire-cta-grid a {
+    color: var(--clr-primary);
+    font-weight: 700;
+}
+
+.role-link-grid a:hover,
+.hire-cta-grid a:hover {
+    border-color: rgba(0, 209, 255, 0.34);
+    color: #ffffff;
+}
+
+.role-internal-links-section {
+    max-width: 640px;
+    margin-right: auto;
+}
+
+.role-internal-links-section .role-link-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+}
+
+.role-internal-links-section .role-link-grid a {
+    min-height: 54px;
+    justify-content: flex-start;
+    padding: 14px 16px;
+    border-color: rgba(0, 209, 255, 0.18);
+    background: rgba(11, 18, 22, 0.66);
+}
+
+.role-project-card {
+    min-height: 100%;
+}
+
+.role-project-card h3 {
+    min-height: 0;
+}
+
+.role-project-card p {
+    margin-top: 8px;
+}
+
+.compact-article-list {
+    display: grid;
+    gap: 14px;
+    margin-top: 16px;
+}
+
+.compact-article-list article {
+    padding: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.compact-article-list h3 {
+    color: #ffffff;
+    margin-bottom: 8px;
+    font-size: 1.08rem;
 }
 
 .contact.blog-contact {
