@@ -1278,17 +1278,17 @@ function aboutProjectCarousel(localeKey) {
   const labels = {
     en: {
       title: "Explore project paths",
-      text: "Open curated entry points for AI projects, Backend Python, LLM/RAG systems, API integrations, and Python automation.",
+      text: "Open curated entry points for AI systems, LLM/RAG, backend architecture, system integration, and Python automation.",
       action: "Open path"
     },
     pt: {
       title: "Explore trilhas de projetos",
-      text: "Entre por recortes tecnicos de projetos de IA, Backend Python, LLM/RAG, integracoes de APIs e automacao Python.",
+      text: "Entre por recortes técnicos de IA, LLM/RAG, arquitetura backend, integrações e automação Python.",
       action: "Abrir trilha"
     },
     es: {
       title: "Explora rutas de proyectos",
-      text: "Abre entradas curadas para proyectos de IA, Backend Python, LLM/RAG, integraciones de APIs y automatizacion Python.",
+      text: "Abre rutas para IA, LLM/RAG, arquitectura backend, integraciones y automatización Python.",
       action: "Abrir ruta"
     }
   }[localeKey];
