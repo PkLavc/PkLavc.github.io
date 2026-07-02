@@ -436,17 +436,13 @@ function setupAboutProjectCarouselDrag() {
         return;
       }
 
-      setOffset(getCurrentTranslateX());
-
       dragState = {
         pointerId: event.pointerId,
         startX: event.clientX,
-        startOffset: offset,
-        moved: false
+        startOffset: getCurrentTranslateX(),
+        moved: false,
+        captured: false
       };
-
-      carousel.classList.add('is-dragging');
-      carousel.setPointerCapture(event.pointerId);
     });
 
     carousel.addEventListener('pointermove', function(event) {
@@ -458,28 +454,53 @@ function setupAboutProjectCarouselDrag() {
 
       deltaX = event.clientX - dragState.startX;
 
-      if (Math.abs(deltaX) > 4) {
+      if (!dragState.moved && Math.abs(deltaX) <= 6) {
+        return;
+      }
+
+      if (!dragState.moved) {
         dragState.moved = true;
+        dragState.startOffset = getCurrentTranslateX() - deltaX;
+        setOffset(dragState.startOffset + deltaX);
+        carousel.classList.add('is-dragging');
+
+        if (typeof carousel.setPointerCapture === 'function') {
+          try {
+            carousel.setPointerCapture(event.pointerId);
+            dragState.captured = true;
+          } catch (error) {
+            dragState.captured = false;
+          }
+        }
       }
 
       setOffset(dragState.startOffset + deltaX);
-
-      if (dragState.moved) {
-        event.preventDefault();
-      }
+      event.preventDefault();
     });
 
     function endDrag() {
       var moved;
+      var captured;
+      var pointerId;
 
       if (!dragState) {
         return;
       }
 
       moved = dragState.moved;
+      captured = dragState.captured;
+      pointerId = dragState.pointerId;
       dragState = null;
       carousel.classList.remove('is-dragging');
       setOffset(normalizeOffset(offset));
+
+      if (captured && typeof carousel.releasePointerCapture === 'function') {
+        try {
+          carousel.releasePointerCapture(pointerId);
+        } catch (error) {
+          // Pointer capture may already have been released by the browser.
+        }
+      }
 
       if (moved) {
         suppressClick = true;
@@ -492,6 +513,16 @@ function setupAboutProjectCarouselDrag() {
     carousel.addEventListener('pointerup', endDrag);
     carousel.addEventListener('pointercancel', endDrag);
     carousel.addEventListener('lostpointercapture', endDrag);
+    window.addEventListener('pointerup', function(event) {
+      if (dragState && dragState.pointerId === event.pointerId) {
+        endDrag();
+      }
+    }, true);
+    window.addEventListener('pointercancel', function(event) {
+      if (dragState && dragState.pointerId === event.pointerId) {
+        endDrag();
+      }
+    }, true);
 
     window.addEventListener('resize', function() {
       setOffset(normalizeOffset(offset));
