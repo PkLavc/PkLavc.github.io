@@ -353,11 +353,28 @@ function setupAboutProjectCarouselDrag() {
     carousel.dataset.dragReady = 'true';
 
     function getLoopWidth() {
+      var firstCard = track.querySelector('.about-project-carousel-card:not(.is-carousel-clone)');
+      var firstClone = track.querySelector('.about-project-carousel-card.is-carousel-clone');
+
+      if (firstCard && firstClone) {
+        return firstClone.offsetLeft - firstCard.offsetLeft;
+      }
+
       return track.scrollWidth / 2;
     }
 
-    function normalizeOffset(value) {
+    function syncLoopWidth() {
       var loopWidth = getLoopWidth();
+
+      if (loopWidth) {
+        track.style.setProperty('--about-carousel-loop-distance', Math.round(loopWidth * 100) / 100 + 'px');
+      }
+
+      return loopWidth;
+    }
+
+    function normalizeOffset(value) {
+      var loopWidth = syncLoopWidth();
 
       if (!loopWidth) {
         return value;
@@ -373,8 +390,36 @@ function setupAboutProjectCarouselDrag() {
     }
 
     function setOffset(value) {
-      offset = value;
+      offset = normalizeOffset(value);
       track.style.setProperty('--about-carousel-drag-offset', Math.round(offset * 100) / 100 + 'px');
+      track.style.setProperty('--about-carousel-drag-position', Math.round(offset * 100) / 100 + 'px');
+    }
+
+    function getCurrentTranslateX() {
+      var transform = window.getComputedStyle(track).transform;
+      var match;
+
+      if (!transform || transform === 'none') {
+        return offset;
+      }
+
+      if (typeof window.DOMMatrixReadOnly === 'function') {
+        return new window.DOMMatrixReadOnly(transform).m41;
+      }
+
+      match = transform.match(/^matrix\((.+)\)$/);
+
+      if (match) {
+        return parseFloat(match[1].split(',')[4]) || offset;
+      }
+
+      match = transform.match(/^matrix3d\((.+)\)$/);
+
+      if (match) {
+        return parseFloat(match[1].split(',')[12]) || offset;
+      }
+
+      return offset;
     }
 
     carousel.addEventListener('click', function(event) {
@@ -390,6 +435,8 @@ function setupAboutProjectCarouselDrag() {
       if (event.pointerType === 'mouse' && event.button !== 0) {
         return;
       }
+
+      setOffset(getCurrentTranslateX());
 
       dragState = {
         pointerId: event.pointerId,
@@ -438,7 +485,7 @@ function setupAboutProjectCarouselDrag() {
         suppressClick = true;
         window.setTimeout(function() {
           suppressClick = false;
-        }, 0);
+        }, 120);
       }
     }
 
@@ -449,6 +496,8 @@ function setupAboutProjectCarouselDrag() {
     window.addEventListener('resize', function() {
       setOffset(normalizeOffset(offset));
     }, { passive: true });
+
+    syncLoopWidth();
   });
 }
 
