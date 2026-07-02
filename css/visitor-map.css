@@ -41,11 +41,11 @@ body.visitor-map-layout {
 .visitor-map-main {
     width: min(1520px, calc(100% - 48px));
     margin: 0 auto;
-    padding: 128px 0 84px;
+    padding: 88px 0 84px;
 }
 
 .visitor-map-hero {
-    min-height: 360px;
+    min-height: 300px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -100,7 +100,7 @@ body.visitor-map-layout {
 
 .visitor-map-hero h1 {
     max-width: 980px;
-    margin: 25px 0 20px;
+    margin: 0 0 18px;
     color: #f6fbff;
     font: 600 clamp(3.2rem, 7.4vw, 7.6rem)/1.02 Inter, sans-serif;
     letter-spacing: -0.052em;
@@ -131,39 +131,60 @@ body.visitor-map-layout {
 }
 
 .visitor-map-orbit-core {
-    width: 88px;
-    height: 88px;
+    width: 112px;
+    height: 112px;
+    position: relative;
+    z-index: 3;
+    overflow: hidden;
     border-radius: 50%;
     background:
-        radial-gradient(circle at 35% 30%, #e9fbff 0 3%, #00d1ff 8%, #174a73 30%, #0b1221 70%);
+        radial-gradient(circle at 30% 24%, rgba(255, 255, 255, 0.88) 0 4%, rgba(172, 247, 255, 0.76) 6%, transparent 18%),
+        radial-gradient(circle at 72% 68%, rgba(1, 21, 51, 0.84), transparent 60%),
+        linear-gradient(135deg, #5deaff 0%, #0eb0e5 46%, #0b559f 100%);
     box-shadow:
-        inset -14px -12px 28px rgba(0, 0, 0, 0.52),
+        inset -18px -16px 30px rgba(0, 0, 0, 0.48),
+        inset 10px 8px 24px rgba(255, 255, 255, 0.16),
         0 0 45px rgba(0, 209, 255, 0.34),
-        0 0 95px rgba(139, 92, 246, 0.18);
+        0 0 90px rgba(139, 92, 246, 0.16);
+}
+
+.visitor-map-orbit-core::before {
+    display: none;
+}
+
+.visitor-map-orbit-core::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background:
+        radial-gradient(circle at 28% 24%, rgba(255, 255, 255, 0.34), transparent 23%),
+        radial-gradient(circle at 74% 70%, rgba(0, 0, 0, 0.38), transparent 56%);
+    pointer-events: none;
 }
 
 .visitor-map-orbit-ring {
-    position: absolute;
-    inset: 32px;
-    border: 1px solid rgba(0, 209, 255, 0.22);
-    border-radius: 50%;
-    transform: rotateX(66deg) rotateZ(-18deg);
+    display: none;
 }
 
 .visitor-map-orbit-ring-two {
-    inset: 4px;
-    border-color: rgba(255, 42, 170, 0.16);
-    transform: rotateY(62deg) rotateZ(22deg);
+    display: none;
 }
 
 .visitor-map-orbit-node {
     position: absolute;
-    width: 8px;
-    height: 8px;
+    top: 50%;
+    left: 50%;
+    z-index: 2;
+    width: 11px;
+    height: 11px;
+    margin: -5.5px 0 0 -5.5px;
     border-radius: 50%;
     background: var(--visitor-magenta);
     box-shadow: 0 0 16px var(--visitor-magenta), 0 0 28px rgba(255, 42, 170, 0.34);
-    animation: visitorOrbitOne 7s linear infinite;
+    animation: visitorMoonPass 8.4s linear infinite;
+    pointer-events: none;
+    will-change: transform, opacity;
 }
 
 .visitor-map-stats {
@@ -192,6 +213,10 @@ body.visitor-map-layout {
     overflow: hidden;
 }
 
+.visitor-stat-card[data-stat-clone="true"] {
+    display: none;
+}
+
 .visitor-stat-card::after {
     content: "";
     position: absolute;
@@ -204,8 +229,8 @@ body.visitor-map-layout {
     filter: blur(8px);
 }
 
-.visitor-stat-card:nth-child(2)::after,
-.visitor-stat-card:nth-child(4)::after {
+.visitor-stat-card:nth-child(4n + 2)::after,
+.visitor-stat-card:nth-child(4n)::after {
     background: rgba(255, 42, 170, 0.08);
 }
 
@@ -640,14 +665,62 @@ body.visitor-map-layout {
     72%, 100% { opacity: 0; transform: scale(2.2); }
 }
 
-@keyframes visitorOrbitOne {
-    from { transform: rotate(0deg) translateX(102px) rotate(0deg); }
-    to { transform: rotate(360deg) translateX(102px) rotate(-360deg); }
-}
-
-@keyframes visitorOrbitTwo {
-    from { transform: rotate(120deg) translateX(128px) rotate(-120deg); }
-    to { transform: rotate(480deg) translateX(128px) rotate(-480deg); }
+@keyframes visitorMoonPass {
+    0% {
+        z-index: 2;
+        opacity: 0.62;
+        transform: translate3d(-96px, -1px, 0) scale(0.82);
+    }
+    12.5% {
+        z-index: 2;
+        opacity: 0.28;
+        transform: translate3d(-68px, -25px, 0) scale(0.66);
+    }
+    25% {
+        z-index: 2;
+        opacity: 0.1;
+        transform: translate3d(0, -35px, 0) scale(0.54);
+    }
+    37.5% {
+        z-index: 2;
+        opacity: 0.28;
+        transform: translate3d(68px, -25px, 0) scale(0.66);
+    }
+    49% {
+        z-index: 2;
+        opacity: 0.62;
+        transform: translate3d(96px, -1px, 0) scale(0.82);
+    }
+    50% {
+        z-index: 5;
+        opacity: 0.62;
+        transform: translate3d(96px, -1px, 0) scale(0.82);
+    }
+    62.5% {
+        z-index: 5;
+        opacity: 0.92;
+        transform: translate3d(68px, 27px, 0) scale(1.02);
+    }
+    75% {
+        z-index: 5;
+        opacity: 1;
+        transform: translate3d(0, 37px, 0) scale(1.14);
+    }
+    87.5% {
+        z-index: 5;
+        opacity: 0.92;
+        transform: translate3d(-68px, 27px, 0) scale(1.02);
+    }
+    99% {
+        z-index: 5;
+        opacity: 0.62;
+        transform: translate3d(-96px, -1px, 0) scale(0.82);
+    }
+    100% {
+        z-index: 2;
+        opacity: 0.62;
+        transform: translate3d(-96px, -1px, 0) scale(0.82);
+    }
 }
 
 @media (max-width: 1180px) {
@@ -666,12 +739,12 @@ body.visitor-map-layout {
 
 @media (max-width: 880px) {
     .visitor-map-main {
-        padding-top: 105px;
+        padding-top: 78px;
     }
 
     .visitor-map-hero {
         min-height: auto;
-        padding: 54px 0 48px;
+        padding: 30px 0 34px;
     }
 
     .visitor-map-orbit {
@@ -719,9 +792,9 @@ body.visitor-map-layout {
         margin-right: -10px;
         padding: 0 10px 10px 0;
         overflow-x: auto;
-        scroll-snap-type: x mandatory;
         -webkit-overflow-scrolling: touch;
         scrollbar-width: none;
+        scroll-behavior: auto;
     }
 
     .visitor-map-stats::-webkit-scrollbar {
@@ -731,7 +804,10 @@ body.visitor-map-layout {
     .visitor-stat-card {
         flex: 0 0 min(82vw, 285px);
         min-height: 125px;
-        scroll-snap-align: start;
+    }
+
+    .visitor-stat-card[data-stat-clone="true"] {
+        display: block;
     }
 
     .visitor-map-actions {

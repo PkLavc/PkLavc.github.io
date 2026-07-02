@@ -1071,44 +1071,118 @@ body {
 }
 
 .selene-orbit-core {
-    width: 92px;
-    height: 92px;
+    width: 112px;
+    height: 112px;
+    position: relative;
+    z-index: 3;
+    overflow: hidden;
     border-radius: 50%;
     background:
-        radial-gradient(circle at 35% 30%, #e9fbff 0 3%, #00d1ff 8%, #174a73 30%, #0b1221 70%);
+        radial-gradient(circle at 30% 24%, rgba(255, 255, 255, 0.88) 0 4%, rgba(172, 247, 255, 0.76) 6%, transparent 18%),
+        radial-gradient(circle at 72% 68%, rgba(1, 21, 51, 0.84), transparent 60%),
+        linear-gradient(135deg, #5deaff 0%, #0eb0e5 46%, #0b559f 100%);
     box-shadow:
-        inset -14px -12px 28px rgba(0, 0, 0, 0.52),
+        inset -18px -16px 30px rgba(0, 0, 0, 0.48),
+        inset 10px 8px 24px rgba(255, 255, 255, 0.16),
         0 0 45px rgba(0, 209, 255, 0.34),
-        0 0 95px rgba(139, 92, 246, 0.18);
+        0 0 90px rgba(139, 92, 246, 0.16);
+}
+
+.selene-orbit-core::before {
+    display: none;
+}
+
+.selene-orbit-core::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background:
+        radial-gradient(circle at 28% 24%, rgba(255, 255, 255, 0.34), transparent 23%),
+        radial-gradient(circle at 74% 70%, rgba(0, 0, 0, 0.38), transparent 56%);
+    pointer-events: none;
 }
 
 .selene-orbit-ring {
-    position: absolute;
-    inset: 30px;
-    border: 1px solid rgba(0, 209, 255, 0.24);
-    border-radius: 50%;
-    transform: rotateX(66deg) rotateZ(-18deg);
+    display: none;
 }
 
 .selene-orbit-ring-two {
-    inset: 4px;
-    border-color: rgba(255, 42, 170, 0.18);
-    transform: rotateY(62deg) rotateZ(22deg);
+    display: none;
 }
 
 .selene-orbit-node {
     position: absolute;
-    width: 8px;
-    height: 8px;
+    top: 50%;
+    left: 50%;
+    z-index: 2;
+    width: 11px;
+    height: 11px;
+    margin: -5.5px 0 0 -5.5px;
     border-radius: 50%;
     background: #ff2aaa;
     box-shadow: 0 0 16px #ff2aaa, 0 0 28px rgba(255, 42, 170, 0.34);
-    animation: seleneOrbit 7s linear infinite;
+    animation: seleneMoonPass 8.4s linear infinite;
+    pointer-events: none;
+    will-change: transform, opacity;
 }
 
-@keyframes seleneOrbit {
-    from { transform: rotate(0deg) translateX(92px) rotate(0deg); }
-    to { transform: rotate(360deg) translateX(92px) rotate(-360deg); }
+@keyframes seleneMoonPass {
+    0% {
+        z-index: 2;
+        opacity: 0.62;
+        transform: translate3d(-96px, -1px, 0) scale(0.82);
+    }
+    12.5% {
+        z-index: 2;
+        opacity: 0.28;
+        transform: translate3d(-68px, -25px, 0) scale(0.66);
+    }
+    25% {
+        z-index: 2;
+        opacity: 0.1;
+        transform: translate3d(0, -35px, 0) scale(0.54);
+    }
+    37.5% {
+        z-index: 2;
+        opacity: 0.28;
+        transform: translate3d(68px, -25px, 0) scale(0.66);
+    }
+    49% {
+        z-index: 2;
+        opacity: 0.62;
+        transform: translate3d(96px, -1px, 0) scale(0.82);
+    }
+    50% {
+        z-index: 5;
+        opacity: 0.62;
+        transform: translate3d(96px, -1px, 0) scale(0.82);
+    }
+    62.5% {
+        z-index: 5;
+        opacity: 0.92;
+        transform: translate3d(68px, 27px, 0) scale(1.02);
+    }
+    75% {
+        z-index: 5;
+        opacity: 1;
+        transform: translate3d(0, 37px, 0) scale(1.14);
+    }
+    87.5% {
+        z-index: 5;
+        opacity: 0.92;
+        transform: translate3d(-68px, 27px, 0) scale(1.02);
+    }
+    99% {
+        z-index: 5;
+        opacity: 0.62;
+        transform: translate3d(-96px, -1px, 0) scale(0.82);
+    }
+    100% {
+        z-index: 2;
+        opacity: 0.62;
+        transform: translate3d(-96px, -1px, 0) scale(0.82);
+    }
 }
 
 @media (max-width: 768px) {
@@ -1138,8 +1212,8 @@ body {
     }
 
     .selene-orbit-core {
-        width: 96px;
-        height: 96px;
+        width: 116px;
+        height: 116px;
     }
 }
 
