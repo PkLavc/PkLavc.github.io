@@ -961,6 +961,7 @@ body {
 
 .global-reach-section {
     position: relative;
+    isolation: isolate;
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(170px, 230px);
     align-items: center;
@@ -968,7 +969,7 @@ body {
     width: min(100%, 760px);
     margin-right: auto;
     padding: 22px;
-    overflow: hidden;
+    overflow: visible;
     border: 1px solid rgba(0, 209, 255, 0.2);
     border-radius: 8px;
     background:
@@ -989,12 +990,12 @@ body {
     background-size: 34px 34px;
     transform: perspective(440px) rotateX(62deg) translateY(-32px);
     transform-origin: top;
+    z-index: 0;
 }
 
-.global-reach-copy,
-.global-reach-visual {
+.global-reach-copy {
     position: relative;
-    z-index: 1;
+    z-index: 2;
 }
 
 .global-reach-kicker {
@@ -1047,15 +1048,15 @@ body {
 }
 
 .global-reach-visual {
+    position: relative;
+    z-index: 1;
     display: grid;
     place-items: center;
-    min-height: 188px;
-    overflow: hidden;
-    border: 1px solid rgba(255, 255, 255, 0.11);
-    border-radius: 8px;
-    background:
-        repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.045) 0 1px, transparent 1px 24px),
-        linear-gradient(180deg, rgba(0, 209, 255, 0.06), rgba(255, 42, 170, 0.045));
+    min-height: 208px;
+    overflow: visible;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
     text-decoration: none;
 }
 
@@ -1068,15 +1069,15 @@ body {
 }
 
 .global-reach-visual::before {
-    width: 78%;
+    width: min(310px, 138%);
     aspect-ratio: 1;
     border: 1px solid rgba(0, 209, 255, 0.26);
     animation: global-reach-orbit 8s linear infinite;
 }
 
 .global-reach-visual::after {
-    width: 92%;
-    height: 34%;
+    width: min(360px, 160%);
+    height: 38%;
     border: 1px solid rgba(255, 42, 170, 0.2);
     transform: rotate(-18deg);
     animation: global-reach-tilt 5s ease-in-out infinite alternate;
@@ -1115,16 +1116,23 @@ body {
 
     .global-reach-section {
         grid-template-columns: 1fr;
+        min-height: 260px;
         padding: 18px;
     }
 
     .global-reach-visual {
-        min-height: 156px;
+        position: absolute;
+        inset: 50% auto auto 60%;
+        width: min(118vw, 440px);
+        min-height: 240px;
+        opacity: 0.24;
+        pointer-events: none;
+        transform: translate(-50%, -50%);
     }
 
     .global-reach-globe {
-        width: 150px;
-        height: 150px;
+        width: 172px;
+        height: 172px;
     }
 }
 
