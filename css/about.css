@@ -969,7 +969,7 @@ body {
     width: min(100%, 760px);
     margin-right: auto;
     padding: 22px;
-    overflow: visible;
+    overflow: hidden;
     border: 1px solid rgba(0, 209, 255, 0.2);
     border-radius: 8px;
     background:
@@ -1060,53 +1060,55 @@ body {
     text-decoration: none;
 }
 
-.global-reach-visual::before,
-.global-reach-visual::after {
-    content: "";
-    position: absolute;
-    pointer-events: none;
-    border-radius: 50%;
-}
-
-.global-reach-visual::before {
-    width: min(310px, 138%);
-    aspect-ratio: 1;
-    border: 1px solid rgba(0, 209, 255, 0.26);
-    animation: global-reach-orbit 8s linear infinite;
-}
-
-.global-reach-visual::after {
-    width: min(360px, 160%);
-    height: 38%;
-    border: 1px solid rgba(255, 42, 170, 0.2);
-    transform: rotate(-18deg);
-    animation: global-reach-tilt 5s ease-in-out infinite alternate;
-}
-
-.global-reach-globe {
+.selene-orbit {
+    width: 230px;
+    height: 230px;
     position: relative;
-    z-index: 1;
-    width: min(172px, 36vw);
-    height: min(172px, 36vw);
-    filter: drop-shadow(0 0 18px rgba(0, 209, 255, 0.18));
+    display: grid;
+    place-items: center;
+    overflow: visible;
+    pointer-events: none;
 }
 
-@keyframes global-reach-orbit {
-    0% {
-        transform: rotate(0deg) scaleX(1.34);
-    }
-    100% {
-        transform: rotate(360deg) scaleX(1.34);
-    }
+.selene-orbit-core {
+    width: 92px;
+    height: 92px;
+    border-radius: 50%;
+    background:
+        radial-gradient(circle at 35% 30%, #e9fbff 0 3%, #00d1ff 8%, #174a73 30%, #0b1221 70%);
+    box-shadow:
+        inset -14px -12px 28px rgba(0, 0, 0, 0.52),
+        0 0 45px rgba(0, 209, 255, 0.34),
+        0 0 95px rgba(139, 92, 246, 0.18);
 }
 
-@keyframes global-reach-tilt {
-    0% {
-        transform: rotate(-18deg) scaleX(1);
-    }
-    100% {
-        transform: rotate(18deg) scaleX(0.9);
-    }
+.selene-orbit-ring {
+    position: absolute;
+    inset: 30px;
+    border: 1px solid rgba(0, 209, 255, 0.24);
+    border-radius: 50%;
+    transform: rotateX(66deg) rotateZ(-18deg);
+}
+
+.selene-orbit-ring-two {
+    inset: 4px;
+    border-color: rgba(255, 42, 170, 0.18);
+    transform: rotateY(62deg) rotateZ(22deg);
+}
+
+.selene-orbit-node {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #ff2aaa;
+    box-shadow: 0 0 16px #ff2aaa, 0 0 28px rgba(255, 42, 170, 0.34);
+    animation: seleneOrbit 7s linear infinite;
+}
+
+@keyframes seleneOrbit {
+    from { transform: rotate(0deg) translateX(92px) rotate(0deg); }
+    to { transform: rotate(360deg) translateX(92px) rotate(-360deg); }
 }
 
 @media (max-width: 768px) {
@@ -1130,15 +1132,19 @@ body {
         transform: translate(-50%, -50%);
     }
 
-    .global-reach-globe {
-        width: 172px;
-        height: 172px;
+    .selene-orbit {
+        width: 260px;
+        height: 260px;
+    }
+
+    .selene-orbit-core {
+        width: 96px;
+        height: 96px;
     }
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .global-reach-visual::before,
-    .global-reach-visual::after {
+    .selene-orbit-node {
         animation: none;
     }
 }
