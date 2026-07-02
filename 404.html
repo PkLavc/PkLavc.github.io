@@ -265,6 +265,39 @@
             box-shadow: 0 8px 20px rgba(0, 209, 255, 0.18);
         }
 
+        .footer-minimal {
+            padding: 24px 16px 34px;
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .footer-link-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .footer-link-pill {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 34px;
+            padding: 0 13px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 999px;
+            color: #c4ccd1;
+            text-decoration: none;
+            font-size: 12px;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .footer-link-pill:hover {
+            color: var(--clr-primary);
+            border-color: rgba(0, 209, 255, 0.35);
+        }
+
         @media (max-width: 600px) {
             .error-page-card {
                 padding: 28px 18px;
@@ -312,6 +345,13 @@
                 <p class="error-page-help">If you entered the URL manually, please check the spelling and try again.</p>
             </section>
         </main>
+        <footer class="footer-minimal">
+            <div class="footer-link-list" aria-label="Footer legal links">
+                <a class="footer-link-pill footer-legal-link" href="/privacy-policy/">Privacy Policy</a>
+                <a class="footer-link-pill footer-legal-link" href="/terms-of-use/">Terms of Use</a>
+                <a class="footer-link-pill footer-legal-link" href="/editorial-policy/">Editorial Policy</a>
+            </div>
+        </footer>
     </div>
     <script>
         (function() {

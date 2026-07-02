@@ -1,0 +1,52 @@
+.policy-page .blog-shell {
+    max-width: 1040px;
+}
+
+.policy-page .blog-post-hero h1 {
+    max-width: 14ch;
+}
+
+.policy-page .blog-article {
+    max-width: 880px;
+    margin: 0 auto;
+}
+
+.policy-page .blog-article p + p {
+    margin-top: 12px;
+}
+
+.policy-page .policy-summary {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    margin: 22px 0 4px;
+}
+
+.policy-page .policy-summary span {
+    display: block;
+    min-height: 84px;
+    padding: 14px;
+    border: 1px solid rgba(0, 209, 255, 0.15);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.035);
+    color: #dbe8ef;
+    font-size: 0.88rem;
+    line-height: 1.55;
+}
+
+.blog-ad-slot-wrapper {
+    margin: 34px 0;
+    padding: 18px 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.blog-ad-slot {
+    min-height: 120px;
+}
+
+@media (max-width: 720px) {
+    .policy-page .policy-summary {
+        grid-template-columns: 1fr;
+    }
+}

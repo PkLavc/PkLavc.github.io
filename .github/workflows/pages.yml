@@ -3,6 +3,16 @@ name: Deploy GitHub Pages
 on:
   push:
     branches: [main]
+    paths-ignore:
+      - ".github/workflows/about-me-bot.yml"
+      - ".github/workflows/chatbot-ci.yml"
+      - ".github/workflows/deploy-cloudflare-worker.yml"
+      - ".github/workflows/sitemap-maintenance.yml"
+      - "src/**"
+      - "README.md"
+      - "LICENSE.txt"
+      - "BLOG_BACKLOG_EN.md"
+      - "portfolio-rag.txt"
   workflow_dispatch:
 
 permissions:
@@ -24,13 +34,27 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Build Pages artifact
+        run: node scripts/build-pages-artifact.mjs
+        env:
+          ADSENSE_CLIENT_ID: ${{ vars.ADSENSE_CLIENT_ID || secrets.ADSENSE_CLIENT_ID }}
+          ADSENSE_BLOG_SLOT_ID: ${{ vars.ADSENSE_BLOG_SLOT_ID || secrets.ADSENSE_BLOG_SLOT_ID }}
+
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
       - name: Upload static site artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: .
+          path: .pages-dist
 
       - name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v4
+        with:
+          timeout: 1800000
+          reporting_interval: 15000

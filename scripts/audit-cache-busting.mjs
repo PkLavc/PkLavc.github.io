@@ -19,10 +19,25 @@ const ASSET_EXTENSIONS = new Set([
   ".webp",
 ]);
 const CONTENT_EXTENSIONS = new Set([".css", ".html", ".js"]);
-const SITE_DIRECTORIES = new Set(["about", "blog", "collections", "css", "es", "js", "projects", "pt", "skyler-assistant", "stacks"]);
+const SITE_DIRECTORIES = new Set([
+  "about",
+  "blog",
+  "collections",
+  "css",
+  "editorial-policy",
+  "es",
+  "js",
+  "privacy-policy",
+  "projects",
+  "pt",
+  "skyler-assistant",
+  "stacks",
+  "terms-of-use",
+  "visitors",
+]);
 const ROOT_CONTENT_FILES = new Set(["404.html", "index.html"]);
 const ASSET_PATTERN =
-  /(["'])([^"'\\<>]*?\.(?:avif|css|gif|ico|jpe?g|js|json|mjs|png|svg|webmanifest|webp)(?:\?[^"'\\<>]*)?(?:#[^"'\\<>]*)?)\1/gi;
+  /(["'])([^"'\\<>\s]*?\.(?:avif|css|gif|ico|jpe?g|js|json|mjs|png|svg|webmanifest|webp)(?:\?[^"'\\<>\s]*)?(?:#[^"'\\<>\s]*)?)\1/gi;
 const CSS_URL_PATTERN =
   /url\(\s*(["']?)([^"')\s]+?\.(?:avif|gif|ico|jpe?g|png|svg|webp)(?:\?[^"')\s]*)?(?:#[^"')\s]*)?)\1\s*\)/gi;
 
