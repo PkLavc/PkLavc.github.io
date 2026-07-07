@@ -22,20 +22,26 @@ const CONTENT_EXTENSIONS = new Set([".css", ".html", ".js"]);
 const SITE_DIRECTORIES = new Set([
   "about",
   "blog",
+  "changelog",
   "collections",
   "css",
   "editorial-policy",
   "es",
   "js",
+  "maintenance",
+  "now",
   "privacy-policy",
   "projects",
   "pt",
+  "resume",
   "skyler-assistant",
+  "status",
   "stacks",
   "terms-of-use",
+  "uses",
   "visitors",
 ]);
-const ROOT_CONTENT_FILES = new Set(["404.html", "index.html"]);
+const ROOT_CONTENT_FILES = new Set(["404.html", "410.html", "503.html", "index.html"]);
 const ASSET_PATTERN =
   /(["'])([^"'\\<>\s]*?\.(?:avif|css|gif|ico|jpe?g|js|json|mjs|png|svg|webmanifest|webp)(?:\?[^"'\\<>\s]*)?(?:#[^"'\\<>\s]*)?)\1/gi;
 const CSS_URL_PATTERN =

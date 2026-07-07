@@ -7,14 +7,34 @@ const outDir = path.join(root, ".pages-dist");
 
 const publicEntries = [
   "404.html",
+  "410.html",
+  "503.html",
+  ".well-known",
   "ads.txt",
+  "apple-touch-icon.png",
+  "browserconfig.xml",
   "CNAME",
+  "changelog",
   "editorial-policy",
+  "favicon-16.png",
+  "favicon-32.png",
+  "favicon.ico",
+  "favicon.svg",
+  "feed.xml",
+  "humans.txt",
+  "icon-192.png",
+  "icon-512.png",
   "index.html",
+  "maintenance",
+  "manifest.webmanifest",
+  "now",
   "privacy-policy",
+  "resume",
   "robots.txt",
   "sitemap.xml",
+  "status",
   "terms-of-use",
+  "uses",
   "about",
   "blog",
   "collections",
@@ -41,10 +61,11 @@ const assetExtensions = new Set([
   ".gif",
   ".ico",
   ".json",
+  ".webmanifest",
 ]);
 
 const localAssetPattern =
-  /(?<prefix>["'(=\s])(?<url>https:\/\/pklavc\.com\/[^"'\s<>?#)]+\.(?:css|js|svg|webp|png|jpg|jpeg|gif|ico|json)|(?:\/|\.\.?\/|[A-Za-z0-9_.-]+\/)[^"'\s<>?#)]+\.(?:css|js|svg|webp|png|jpg|jpeg|gif|ico|json))(\?v=(?<version>[A-Za-z0-9._-]+))?/gi;
+  /(?<prefix>["'(=\s])(?<url>https:\/\/pklavc\.com\/[^"'\s<>?#)]+\.(?:css|js|svg|webp|png|jpg|jpeg|gif|ico|json|webmanifest)|(?:\/|\.\.?\/|[A-Za-z0-9_.-]+\/)[^"'\s<>?#)]+\.(?:css|js|svg|webp|png|jpg|jpeg|gif|ico|json|webmanifest))(\?v=(?<version>[A-Za-z0-9._-]+))?/gi;
 
 const adsenseClientId = (process.env.ADSENSE_CLIENT_ID || "").trim();
 const adsenseBlogSlotId = (process.env.ADSENSE_BLOG_SLOT_ID || "").trim();
