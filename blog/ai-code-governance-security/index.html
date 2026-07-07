@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="author" content="Patrick Araujo">
     <title>Governance and Security for AI-Generated Code: Protecting Production from Agent Output</title>
-    <meta name="description" content="Security practices, governance frameworks, and validation pipelines for AI-generated code â€” how to prevent insecure, unvetted agent output from reaching production systems.">
+    <meta name="description" content="Security practices, governance frameworks, and validation pipelines for AI-generated code — how to prevent insecure, unvetted agent output from reaching production systems.">
     <meta name="keywords" content="AI code governance, AI-generated code security, code review AI, security scanning, Claude Code security, Codex governance, Cursor security, agent output validation, supply chain security, AI code audit">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://pklavc.com/blog/ai-code-governance-security/">
@@ -17,7 +17,7 @@
 
 
 <meta property="og:title" content="Governance and Security for AI-Generated Code: Protecting Production from Agent Output">
-    <meta property="og:description" content="Security practices and governance frameworks for AI-generated code â€” validation pipelines, audit trails, and defense-in-depth for agent output.">
+    <meta property="og:description" content="Security practices and governance frameworks for AI-generated code — validation pipelines, audit trails, and defense-in-depth for agent output.">
     <meta property="og:url" content="https://pklavc.com/blog/ai-code-governance-security/">
     <meta property="og:type" content="article">
     <meta property="article:published_time" content="2026-05-28">
@@ -28,7 +28,7 @@
     <meta property="article:tag" content="AI-generated code security">
     <meta property="article:tag" content="agent output validation">
     <meta property="article:tag" content="code audit">
-    <meta property="og:image" content="https://pklavc.com/images/lavc.webp?v=5e84850f26">
+    <meta property="og:image" content="https://pklavc.com/images/brand/lavc.webp?v=5e84850f26">
     <meta property="og:image:width" content="1024">
     <meta property="og:image:height" content="1024">
     <meta property="og:site_name" content="Patrick Araujo">
@@ -38,7 +38,7 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="AI Code Governance: Security for Agent-Generated Code">
     <meta name="twitter:description" content="Governance frameworks and security validation for code produced by AI agents in production engineering workflows.">
-    <meta name="twitter:image" content="https://pklavc.com/images/lavc.webp?v=5e84850f26">
+    <meta name="twitter:image" content="https://pklavc.com/images/brand/lavc.webp?v=5e84850f26">
     <meta name="twitter:image:alt" content="Brand portrait of backend engineer and automation specialist Patrick Araujo">
     <meta name="twitter:site" content="@PkLavc">
     <meta name="twitter:creator" content="@PkLavc">
@@ -59,8 +59,8 @@
             {
                 "@type": "BlogPosting",
                 "headline": "Governance and Security for AI-Generated Code: Protecting Production from Agent Output",
-                "description": "Security practices, governance frameworks, and validation pipelines for AI-generated code â€” how to prevent insecure, unvetted agent output from reaching production systems.",
-                "image": "https://pklavc.com/images/lavc.webp?v=5e84850f26",
+                "description": "Security practices, governance frameworks, and validation pipelines for AI-generated code — how to prevent insecure, unvetted agent output from reaching production systems.",
+                "image": "https://pklavc.com/images/brand/lavc.webp?v=5e84850f26",
                 "datePublished": "2026-05-28",
                 "dateModified": "2026-05-28",
                 "author": {
@@ -111,6 +111,7 @@
         ]
     }
     </script>
+    <link rel="search" type="application/opensearchdescription+xml" title="PkLavc" href="/opensearch.xml">
 </head>
 <body class="blog-layout seo-layout">
     <div id="breaker"></div>
@@ -158,7 +159,7 @@
                     <article class="blog-article">
                         <h2>The governance gap</h2>
                         <p>Traditional code governance assumes a human author who understands security implications, follows organizational policies, and can be held accountable for their code. AI agents break these assumptions. They produce code without understanding organizational context, security requirements, or compliance obligations unless explicitly told.</p>
-                        <p>The governance gap is not that AI produces bad code â€” it is that AI produces code at a speed and volume that can overwhelm review processes designed for human-speed output. An agent that generates ten PRs per day requires ten times the review capacity. Without automated governance pipelines, unreviewed code reaches production.</p>
+                        <p>The governance gap is not that AI produces bad code — it is that AI produces code at a speed and volume that can overwhelm review processes designed for human-speed output. An agent that generates ten PRs per day requires ten times the review capacity. Without automated governance pipelines, unreviewed code reaches production.</p>
 
                         <div class="blog-callout">
                             The speed of AI code generation is only an advantage if your security and review processes can keep pace. Otherwise, speed becomes the vector for introducing vulnerabilities at scale.
@@ -181,12 +182,12 @@
                         <p>This applies to MCP servers too: an MCP server that gives an agent database access should scope that access to specific schemas, read-only by default, with explicit write permissions granted per-task. The principle of least privilege applies to AI agents exactly as it applies to human operators.</p>
 
                         <h2>Security scanning as a first-class workflow step</h2>
-                        <p>In AI-native engineering, security scanning is not an afterthought â€” it is a gate. Every agent-generated change runs through CodeQL, Semgrep, or equivalent SAST tools before merge. Dependency additions trigger SCA scans. Infrastructure changes trigger policy-as-code validation. These are not optional checks â€” they are blocking gates.</p>
+                        <p>In AI-native engineering, security scanning is not an afterthought — it is a gate. Every agent-generated change runs through CodeQL, Semgrep, or equivalent SAST tools before merge. Dependency additions trigger SCA scans. Infrastructure changes trigger policy-as-code validation. These are not optional checks — they are blocking gates.</p>
                         <p>Claude Code, Codex, and Cursor all produce code that should go through the same security pipeline. The tool that generated the code does not affect the security requirements. Production-bound code needs validation regardless of whether a human or an agent wrote it.</p>
 
                         <h2>Governance frameworks for teams</h2>
                         <p>Organizational governance for AI-generated code includes: policies defining which tasks agents can handle autonomously versus which require human implementation, review requirements scaled to risk (agent-generated auth code needs senior review, agent-generated documentation does not), approved agent configurations with security constraints baked in, and incident response procedures that account for AI-generated code as a potential vulnerability source.</p>
-                        <p>The framework should be living documentation â€” updated as teams learn which patterns produce secure output and which require additional gates. Governance that never adapts becomes either too restrictive (slowing agents to uselessness) or too permissive (allowing unreviewed code through).</p>
+                        <p>The framework should be living documentation — updated as teams learn which patterns produce secure output and which require additional gates. Governance that never adapts becomes either too restrictive (slowing agents to uselessness) or too permissive (allowing unreviewed code through).</p>
 
                         <h2>The supply chain dimension</h2>
                         <p>AI agents introduce a new supply chain risk: the model itself. Training data influences suggest patterns. Model updates change output characteristics. Prompt injection through malicious context can steer agent output toward insecure patterns. Teams need to consider the AI model as part of their supply chain and manage it accordingly.</p>
@@ -205,7 +206,7 @@
                                 <p>Understanding agent capabilities to design appropriate governance boundaries.</p>
                             </article>
                             <article class="blog-related-card">
-                                <h3><a href="/blog/model-context-protocol-mcp/">MCP â€” Model Context Protocol</a></h3>
+                                <h3><a href="/blog/model-context-protocol-mcp/">MCP — Model Context Protocol</a></h3>
                                 <p>Security implications of AI agent tool access through MCP servers.</p>
                             </article>
                         </div>
@@ -225,10 +226,10 @@
                     <section class="blog-sidebar-card">
                         <h2>Governance layers</h2>
                         <ul>
-                            <li>SAST â€” static vulnerability analysis</li>
-                            <li>SCA â€” dependency scanning</li>
-                            <li>Secret detection â€” credential leak prevention</li>
-                            <li>Access control â€” scoped agent permissions</li>
+                            <li>SAST — static vulnerability analysis</li>
+                            <li>SCA — dependency scanning</li>
+                            <li>Secret detection — credential leak prevention</li>
+                            <li>Access control — scoped agent permissions</li>
                         </ul>
                     </section>
                     <section class="blog-sidebar-card">
@@ -265,7 +266,7 @@
     </script>
         <script src="/js/i18n.js?v=02a6baa07c" defer></script>
     <script src="/js/jquery.min.js?v=91e8044a4b" defer></script>
-    <script src="/js/index.js?v=e65a1f3e01" defer></script>
+    <script src="/js/index.js?v=4bade455ea" defer></script>
 
     <div class="visually-hidden">
         <p>AI code governance and security article covering AI-generated code validation, security scanning pipelines, SAST and SCA for agent output, audit trails, access control for AI agents, supply chain security, Claude Code security, Codex governance, Cursor security, MCP access control, and governance frameworks for engineering teams.</p>

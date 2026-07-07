@@ -102,6 +102,7 @@
         ]
     }
     </script>
+    <link rel="search" type="application/opensearchdescription+xml" title="PkLavc" href="/opensearch.xml">
 </head>
 <body class="blog-layout seo-layout">
     <div id="breaker"></div>
@@ -159,9 +160,9 @@
                         <h2>Code execution APIs require explicit sandbox design</h2>
                         <p>A backend API that executes user-submitted code needs a threat model before a line is written. The risks are different from a data API: arbitrary code execution can escape a process boundary, consume unbounded resources, or exfiltrate host environment information. Sandbox design choices include:</p>
                         <ul>
-                            <li><strong>Process isolation</strong> â€” each execution spawns an isolated child process or container with no access to host resources outside the sandbox.</li>
-                            <li><strong>Resource limits</strong> â€” CPU time, memory allocation, and file descriptor limits enforced at the OS level rather than in application code, which can be bypassed.</li>
-                            <li><strong>Output truncation</strong> â€” execution output is capped to prevent exfiltration of large data or abuse of the response as a side channel.</li>
+                            <li><strong>Process isolation</strong> — each execution spawns an isolated child process or container with no access to host resources outside the sandbox.</li>
+                            <li><strong>Resource limits</strong> — CPU time, memory allocation, and file descriptor limits enforced at the OS level rather than in application code, which can be bypassed.</li>
+                            <li><strong>Output truncation</strong> — execution output is capped to prevent exfiltration of large data or abuse of the response as a side channel.</li>
                         </ul>
 
                         <div class="blog-callout">
@@ -174,7 +175,7 @@
 
                         <h2>Achieving 85%+ QA coverage without coverage theater</h2>
                         <p>Coverage thresholds are useful as a floor, not a ceiling. A project that writes low-value tests to hit a threshold has the metric but not the protection. High-coverage suites that actually protect against regressions cover the execution paths that matter: edge cases, error handling branches, and boundary conditions.</p>
-                        <p>For an execution API, meaningful coverage targets the code paths that execute, truncate, timeout, and reject user input â€” not just the happy path. The 85%+ threshold in CodePulse reflects coverage of these critical paths rather than nominal file coverage.</p>
+                        <p>For an execution API, meaningful coverage targets the code paths that execute, truncate, timeout, and reject user input — not just the happy path. The 85%+ threshold in CodePulse reflects coverage of these critical paths rather than nominal file coverage.</p>
 
                         <h2>Frontend and backend sharing a repository boundary</h2>
                         <p>When the frontend and backend live in the same repository, API contract testing becomes straightforward: the test can import the actual server handler and the actual client code and verify they agree on request and response shapes. This is harder to maintain when the packages live in separate repositories and the contract is implicit.</p>
@@ -243,6 +244,6 @@
     </script>
         <script src="/js/i18n.js?v=02a6baa07c" defer></script>
     <script src="/js/jquery.min.js?v=91e8044a4b" defer></script>
-    <script src="/js/index.js?v=e65a1f3e01" defer></script>
+    <script src="/js/index.js?v=4bade455ea" defer></script>
 </body>
 </html>

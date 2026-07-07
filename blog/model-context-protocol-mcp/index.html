@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="author" content="Patrick Araujo">
-    <title>MCP â€” Model Context Protocol: The Standard Interface for AI Agent Tooling</title>
+    <title>MCP — Model Context Protocol: The Standard Interface for AI Agent Tooling</title>
     <meta name="description" content="What Model Context Protocol (MCP) is, why it matters for AI agent interoperability, and how it standardizes how coding agents access tools, data sources, and external systems in real workflows.">
     <meta name="keywords" content="Model Context Protocol, MCP, AI agent tooling, agent interoperability, Claude Code MCP, Cursor MCP, context engineering, AI tool integration, RAG, agent automation">
     <meta name="robots" content="index, follow">
@@ -16,8 +16,8 @@
 
 
 
-<meta property="og:title" content="MCP â€” Model Context Protocol: The Standard Interface for AI Agent Tooling">
-    <meta property="og:description" content="How MCP standardizes AI agent access to tools, databases, APIs, and file systems â€” and why it matters for production agentic workflows.">
+<meta property="og:title" content="MCP — Model Context Protocol: The Standard Interface for AI Agent Tooling">
+    <meta property="og:description" content="How MCP standardizes AI agent access to tools, databases, APIs, and file systems — and why it matters for production agentic workflows.">
     <meta property="og:url" content="https://pklavc.com/blog/model-context-protocol-mcp/">
     <meta property="og:type" content="article">
     <meta property="article:published_time" content="2026-05-28">
@@ -28,7 +28,7 @@
     <meta property="article:tag" content="MCP">
     <meta property="article:tag" content="AI agent tooling">
     <meta property="article:tag" content="context engineering">
-    <meta property="og:image" content="https://pklavc.com/images/lavc.webp?v=5e84850f26">
+    <meta property="og:image" content="https://pklavc.com/images/brand/lavc.webp?v=5e84850f26">
     <meta property="og:image:width" content="1024">
     <meta property="og:image:height" content="1024">
     <meta property="og:site_name" content="Patrick Araujo">
@@ -36,9 +36,9 @@
     <meta property="og:image:alt" content="Brand portrait of backend engineer and automation specialist Patrick Araujo">
 
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="MCP â€” Model Context Protocol: AI Agent Tooling Standard">
+    <meta name="twitter:title" content="MCP — Model Context Protocol: AI Agent Tooling Standard">
     <meta name="twitter:description" content="How Model Context Protocol standardizes AI agent access to tools, databases, and external systems for production workflows.">
-    <meta name="twitter:image" content="https://pklavc.com/images/lavc.webp?v=5e84850f26">
+    <meta name="twitter:image" content="https://pklavc.com/images/brand/lavc.webp?v=5e84850f26">
     <meta name="twitter:image:alt" content="Brand portrait of backend engineer and automation specialist Patrick Araujo">
     <meta name="twitter:site" content="@PkLavc">
     <meta name="twitter:creator" content="@PkLavc">
@@ -58,9 +58,9 @@
         "@graph": [
             {
                 "@type": "BlogPosting",
-                "headline": "MCP â€” Model Context Protocol: The Standard Interface for AI Agent Tooling",
+                "headline": "MCP — Model Context Protocol: The Standard Interface for AI Agent Tooling",
                 "description": "What Model Context Protocol (MCP) is, why it matters for AI agent interoperability, and how it standardizes how coding agents access tools, data sources, and external systems in real workflows.",
-                "image": "https://pklavc.com/images/lavc.webp?v=5e84850f26",
+                "image": "https://pklavc.com/images/brand/lavc.webp?v=5e84850f26",
                 "datePublished": "2026-05-28",
                 "dateModified": "2026-05-28",
                 "author": {
@@ -111,6 +111,7 @@
         ]
     }
     </script>
+    <link rel="search" type="application/opensearchdescription+xml" title="PkLavc" href="/opensearch.xml">
 </head>
 <body class="blog-layout seo-layout">
     <div id="breaker"></div>
@@ -146,7 +147,7 @@
                             <span aria-current="page">Model Context Protocol</span>
                         </div>
                         <span class="blog-kicker">AI Engineering</span>
-                        <h1>MCP â€” Model Context Protocol: The Standard Interface for AI Agent Tooling</h1>
+                        <h1>MCP — Model Context Protocol: The Standard Interface for AI Agent Tooling</h1>
                         <p>Model Context Protocol (MCP) is becoming the standard way AI agents connect to external tools, databases, and services. Instead of hardcoding integrations, MCP provides a uniform interface that lets any compliant agent access any compliant tool server.</p>
                         <div class="blog-post-meta">
                             <span>Published May 28, 2026</span>
@@ -158,27 +159,27 @@
                     <article class="blog-article">
                         <h2>The integration problem MCP solves</h2>
                         <p>Before MCP, every AI tool had its own way of connecting to external systems. Cursor had plugins. Claude had tool definitions. Each IDE built custom adapters. If you wanted your agent to access a database, a file system, a GitHub repo, and a documentation source, you needed separate integrations for each tool and each agent.</p>
-                        <p>MCP standardizes this. It defines a protocol â€” JSON-RPC over stdio or HTTP â€” that lets any AI agent discover and invoke tools from any MCP server. One server can expose GitHub operations, another can expose database queries, another can provide RAG over your documentation. The agent connects to all of them through the same interface.</p>
+                        <p>MCP standardizes this. It defines a protocol — JSON-RPC over stdio or HTTP — that lets any AI agent discover and invoke tools from any MCP server. One server can expose GitHub operations, another can expose database queries, another can provide RAG over your documentation. The agent connects to all of them through the same interface.</p>
 
                         <div class="blog-callout">
                             MCP is to AI agents what REST was to web services: a shared contract that makes interoperability the default instead of a custom integration project.
                         </div>
 
                         <h2>How MCP works in practice</h2>
-                        <p>An MCP server exposes tools, resources, and prompts. Tools are functions the agent can call â€” like "search code," "run query," or "create file." Resources are data the agent can read â€” like documentation, schemas, or configuration. Prompts are reusable templates that guide agent behavior for specific tasks.</p>
+                        <p>An MCP server exposes tools, resources, and prompts. Tools are functions the agent can call — like "search code," "run query," or "create file." Resources are data the agent can read — like documentation, schemas, or configuration. Prompts are reusable templates that guide agent behavior for specific tasks.</p>
                         <p>The agent connects to MCP servers at startup, discovers available capabilities through a handshake, and then invokes tools as part of its reasoning loop. Claude Code connects to MCP servers configured in your project. Cursor reads MCP configuration from your workspace settings. The agent treats MCP tools the same way it treats built-in capabilities.</p>
 
                         <h2>MCP and context engineering</h2>
-                        <p>Context engineering â€” giving the agent the right information at the right time â€” is the key to useful agent output. MCP makes context engineering systematic. Instead of manually copying documentation into prompts, you expose it through an MCP resource server. Instead of describing your database schema in text, you let the agent query it through an MCP tool.</p>
+                        <p>Context engineering — giving the agent the right information at the right time — is the key to useful agent output. MCP makes context engineering systematic. Instead of manually copying documentation into prompts, you expose it through an MCP resource server. Instead of describing your database schema in text, you let the agent query it through an MCP tool.</p>
                         <p>This also enables RAG patterns natively. An MCP server can implement semantic search over your codebase, documentation, or knowledge base. The agent queries it dynamically during execution, pulling in relevant context exactly when needed rather than front-loading everything into the initial prompt.</p>
 
                         <h2>MCP in real agentic workflows</h2>
                         <p>In production workflows, MCP servers provide: GitHub repository access for reading code and creating PRs, database connections for schema introspection and query execution, documentation search for pulling in relevant architecture context, CI/CD integration for checking build status and test results, and project management access for reading tickets and updating status.</p>
-                        <p>The power is composability. An agent working on a bug can read the issue from GitHub, search the codebase for relevant files, query the database schema, check recent CI failures, and propose a fix â€” all through MCP without any custom glue code.</p>
+                        <p>The power is composability. An agent working on a bug can read the issue from GitHub, search the codebase for relevant files, query the database schema, check recent CI failures, and propose a fix — all through MCP without any custom glue code.</p>
 
                         <h2>Building MCP servers</h2>
                         <p>MCP servers are straightforward to build. The specification is open, SDKs exist for TypeScript and Python, and a server is just a process that implements the JSON-RPC protocol. You can wrap any existing API, database, or service as an MCP server in a few hundred lines of code.</p>
-                        <p>This means teams can expose their internal tools â€” deployment systems, monitoring dashboards, configuration management â€” to AI agents through MCP without waiting for vendor support. The protocol is the bridge between your custom infrastructure and general-purpose agents.</p>
+                        <p>This means teams can expose their internal tools — deployment systems, monitoring dashboards, configuration management — to AI agents through MCP without waiting for vendor support. The protocol is the bridge between your custom infrastructure and general-purpose agents.</p>
 
                         <h2>Security and access control</h2>
                         <p>MCP introduces real security considerations. An MCP server that exposes database write access or deployment triggers needs the same access control you would apply to any API. The protocol supports transport-level security, but authorization and scoping are the server implementor's responsibility.</p>
@@ -217,10 +218,10 @@
                     <section class="blog-sidebar-card">
                         <h2>MCP capabilities</h2>
                         <ul>
-                            <li>Tools â€” callable functions for agents</li>
-                            <li>Resources â€” readable data and context</li>
-                            <li>Prompts â€” reusable task templates</li>
-                            <li>RAG â€” semantic search over knowledge</li>
+                            <li>Tools — callable functions for agents</li>
+                            <li>Resources — readable data and context</li>
+                            <li>Prompts — reusable task templates</li>
+                            <li>RAG — semantic search over knowledge</li>
                         </ul>
                     </section>
                     <section class="blog-sidebar-card">
@@ -257,7 +258,7 @@
     </script>
         <script src="/js/i18n.js?v=02a6baa07c" defer></script>
     <script src="/js/jquery.min.js?v=91e8044a4b" defer></script>
-    <script src="/js/index.js?v=e65a1f3e01" defer></script>
+    <script src="/js/index.js?v=4bade455ea" defer></script>
 
     <div class="visually-hidden">
         <p>Model Context Protocol MCP article covering AI agent tooling standard, agent interoperability, context engineering, RAG integration, MCP servers, tool discovery, Claude Code MCP, Cursor MCP configuration, and secure AI agent access to external systems and databases.</p>

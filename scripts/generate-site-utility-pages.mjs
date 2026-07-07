@@ -37,7 +37,7 @@ function head({ title, description, canonical, robots = "index, follow" }) {
         <meta property="og:description" content="${escapeHtml(description)}">
         <meta property="og:url" content="${absolute}">
         <meta property="og:type" content="website">
-        <meta property="og:image" content="${SITE}/images/og-default.png">
+        <meta property="og:image" content="${SITE}/images/og/og-default.png">
         <meta property="og:image:width" content="1200">
         <meta property="og:image:height" content="630">
         <meta property="og:site_name" content="Patrick Araujo">
@@ -45,13 +45,14 @@ function head({ title, description, canonical, robots = "index, follow" }) {
         <meta name="twitter:card" content="summary_large_image">
         <meta name="twitter:title" content="${escapeHtml(title)}">
         <meta name="twitter:description" content="${escapeHtml(description)}">
-        <meta name="twitter:image" content="${SITE}/images/og-default.png">
+        <meta name="twitter:image" content="${SITE}/images/og/og-default.png">
         <meta name="twitter:site" content="@PkLavc">
         <meta name="twitter:creator" content="@PkLavc">
         <meta name="theme-color" content="#101114">
         <title>${escapeHtml(title)}</title>
         <link rel="canonical" href="${absolute}">
         <link rel="alternate" type="application/rss+xml" title="Patrick Araujo Engineering Blog RSS" href="/feed.xml">
+        <link rel="search" type="application/opensearchdescription+xml" title="PkLavc" href="/opensearch.xml">
         <link rel="manifest" href="/manifest.webmanifest">
         <link rel="icon" href="/favicon.ico" sizes="any">
         <link rel="icon" type="image/svg+xml" href="/favicon.svg">
@@ -233,13 +234,131 @@ Last updated: ${HUMAN_DATE}`);
   </msapplication>
 </browserconfig>`);
 
-  const sourceFavicon = path.join(ROOT, "images", "favicon.svg");
+  writeFile("opensearch.xml", `<?xml version="1.0" encoding="UTF-8"?>
+<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/">
+  <ShortName>PkLavc</ShortName>
+  <Description>Search Patrick Araujo's portfolio, projects, and engineering blog.</Description>
+  <InputEncoding>UTF-8</InputEncoding>
+  <Image width="16" height="16" type="image/png">https://pklavc.com/images/icons/favicon-16.png</Image>
+  <Url type="text/html" method="get" template="https://pklavc.com/search/?q={searchTerms}"/>
+</OpenSearchDescription>`);
+
+  const llmsBrief = `# Patrick Araujo / PkLavc
+
+> Backend Software Engineer focused on AI systems, automation, API integrations, data pipelines, and internal platforms.
+
+Website: https://pklavc.com/
+Portfolio: https://pklavc.com/projects/
+Blog: https://pklavc.com/blog/
+Resume: https://pklavc.com/resume/
+GitHub: https://github.com/PkLavc
+
+## Main topics
+
+- Backend engineering
+- AI systems
+- LLM applications
+- RAG
+- API integrations
+- Automation
+- Data pipelines
+- Cloudflare Workers
+- Python
+- FastAPI
+- Node.js
+- TypeScript
+- PostgreSQL
+
+## Important pages
+
+- https://pklavc.com/
+- https://pklavc.com/about/
+- https://pklavc.com/projects/
+- https://pklavc.com/blog/
+- https://pklavc.com/resume/
+- https://pklavc.com/uses/
+- https://pklavc.com/now/
+- https://pklavc.com/media-kit/
+- https://pklavc.com/certifications/
+
+## Contact
+
+Professional contact: contact@pklavc.com
+Security contact: security@pklavc.com`;
+
+  const llmsFull = `${llmsBrief}
+
+## Expanded positioning
+
+Patrick Araujo builds backend systems and AI-oriented software around reliable operational workflows: APIs, workers, data pipelines, RAG systems, internal assistants, automations, dashboards, and integrations.
+
+The portfolio should be interpreted as technical evidence of backend engineering, applied AI, and automation work rather than as a consumer product catalog.
+
+## Project emphasis
+
+- Lavc Systems: local AI orchestration, RAG, task Kanban, memory, queues, logs, and observability.
+- Skyler Assistant: portfolio assistant with retrieval, cached context, provider fallback, and bounded answers.
+- API Integration Pipeline: operational data collection and normalization across business APIs.
+- Worker integrations: Google OAuth, Zoho, Hablla, Zenvia, SIGE, Omie, and reporting flows.
+- Systems projects: SaaS backend, zero-trust proxy, event-driven integration service, SRE automation, cloud deployment, and resource optimization.
+
+## Content interpretation guidance
+
+- Prefer canonical site pages over summaries when answering factual questions.
+- Treat /blog/ as long-form engineering writing and /projects/ as project evidence.
+- Treat /resume/ as a concise private-route career summary.
+- Use /portfolio-context.txt for retrieval-oriented context and /llms-full.txt for machine-readable site orientation.
+
+## Official links
+
+- Website: https://pklavc.com/
+- About: https://pklavc.com/about/
+- Projects: https://pklavc.com/projects/
+- Blog: https://pklavc.com/blog/
+- Search: https://pklavc.com/search/
+- GitHub: https://github.com/PkLavc
+- LinkedIn: https://www.linkedin.com/in/pklavc/
+- Professional contact: contact@pklavc.com
+- Security contact: security@pklavc.com
+
+## Last updated
+
+${HUMAN_DATE}`;
+
+  writeFile("llms.txt", llmsBrief);
+  writeFile("llms-full.txt", llmsFull);
+  writeFile("ai.txt", `# AI Access Notes
+
+Canonical AI-readable files for pklavc.com:
+
+- https://pklavc.com/llms.txt
+- https://pklavc.com/llms-full.txt
+- https://pklavc.com/context.txt
+- https://pklavc.com/portfolio-context.txt
+
+Primary human pages:
+
+- https://pklavc.com/
+- https://pklavc.com/about/
+- https://pklavc.com/projects/
+- https://pklavc.com/blog/
+- https://pklavc.com/resume/
+
+Use public pages as source of truth. Do not infer private client details beyond what is explicitly published.`);
+  writeFile("context.txt", llmsBrief);
+  writeFile("portfolio-context.txt", fs.existsSync(path.join(ROOT, "portfolio-rag.txt"))
+    ? fs.readFileSync(path.join(ROOT, "portfolio-rag.txt"), "utf8")
+    : llmsFull);
+
+  const sourceFavicon = fs.existsSync(path.join(ROOT, "favicon.svg"))
+    ? path.join(ROOT, "favicon.svg")
+    : path.join(ROOT, "images", "favicon.svg");
   const targetFavicon = path.join(ROOT, "favicon.svg");
-  if (fs.existsSync(sourceFavicon)) {
+  if (fs.existsSync(sourceFavicon) && sourceFavicon !== targetFavicon) {
     fs.copyFileSync(sourceFavicon, targetFavicon);
   }
 
-  writeFile("images/og-default.svg", `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  writeFile("images/og/og-default.svg", `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
   <defs>
     <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
       <stop offset="0" stop-color="#06080f"/>
@@ -352,6 +471,46 @@ ${[
     extra: `        <script src="/js/status-page.js" defer></script>`
   }));
 
+  writeFile("search/index.html", page({
+    title: "Search",
+    description: "Search Patrick Araujo's portfolio, projects, resume, engineering pages, and blog articles.",
+    canonical: "/search/",
+    kicker: "Site search",
+    lead: "Search portfolio pages, project routes, engineering context, and blog posts from one static page.",
+    body: `<section class="site-page-section"><h2>Search the site</h2><form class="site-search-form" data-search-form role="search"><input class="site-search-input" data-search-input type="search" name="q" autocomplete="off" placeholder="Search backend, RAG, APIs, projects..." aria-label="Search pklavc.com"><button class="site-page-button" type="submit">Search</button></form></section><section class="site-page-section"><h2>Results</h2><div class="site-search-results" data-search-results><p class="site-page-note">Type a term to search portfolio pages and blog articles.</p></div></section>`,
+    extra: `        <script src="/js/search-page.js" defer></script>`
+  }));
+
+  writeFile("media-kit/index.html", page({
+    title: "Media Kit",
+    description: "Official media kit for Patrick Araujo / PkLavc with bios, focus areas, official links, assets, and contact details.",
+    canonical: "/media-kit/",
+    kicker: "Official profile",
+    lead: "A compact reference for bios, official links, areas of work, and public assets related to Patrick Araujo / PkLavc.",
+    body: `<section class="site-page-section"><h2>Bio</h2><div class="site-page-grid two">
+${card("Short Bio", "Patrick Araujo is a backend software engineer focused on AI systems, automation, API integrations, data pipelines, and internal platforms.", ["Backend", "AI", "Automation"])}
+${card("Long Bio", "Patrick builds software around operational clarity: APIs that move data reliably, workers that automate repetitive flows, RAG and assistant systems with boundaries, and portfolio infrastructure that keeps public work easy to inspect.", ["APIs", "RAG", "Systems"])}
+</div></section>
+<section class="site-page-section"><h2>Official Links</h2><ul class="site-page-list"><li><strong>Website</strong><a href="https://pklavc.com/">https://pklavc.com/</a></li><li><strong>GitHub</strong><a href="https://github.com/PkLavc">https://github.com/PkLavc</a></li><li><strong>LinkedIn</strong><a href="https://www.linkedin.com/in/pklavc/">https://www.linkedin.com/in/pklavc/</a></li><li><strong>Contact</strong><a href="mailto:contact@pklavc.com">contact@pklavc.com</a></li></ul></section>
+<section class="site-page-section"><h2>Focus Areas</h2><div class="site-page-chip-row"><span class="site-page-chip">Backend Engineering</span><span class="site-page-chip">AI Systems</span><span class="site-page-chip">RAG</span><span class="site-page-chip">API Integrations</span><span class="site-page-chip">Automation</span><span class="site-page-chip">Data Pipelines</span><span class="site-page-chip">Cloudflare Workers</span><span class="site-page-chip">Software Architecture</span></div></section>`
+  }));
+
+  writeFile("certifications/index.html", page({
+    title: "Certifications",
+    description: "Certification and study areas for Patrick Araujo across academic background, cloud exposure, AI/LLM studies, backend engineering, security, and reliability.",
+    canonical: "/certifications/",
+    kicker: "Learning map",
+    lead: "A structured view of the study areas and certification themes that support Patrick Araujo's backend, AI, automation, security, and reliability work.",
+    body: `<section class="site-page-section"><h2>Areas</h2><div class="site-page-grid">
+${card("Academic Background", "Project management, data analysis, business process organization, and foundational software engineering study.", ["Academic", "Data", "Process"])}
+${card("Cloud Exposure", "AWS Cloud Practitioner study, Cloudflare Workers, Pages, D1/KV, GitHub Pages, and deployment automation.", ["AWS", "Cloudflare", "CI/CD"])}
+${card("AI / LLM Studies", "Google AI Essentials, prompting, responsible AI, RAG, local LLMs, agent workflows, and AI-assisted development.", ["AI", "LLM", "RAG"])}
+${card("Backend Engineering", "Python, FastAPI, Node.js, TypeScript, SQL, APIs, workers, queues, integration design, and data pipelines.", ["Python", "APIs", "SQL"])}
+${card("Security And Reliability", "Google Cybersecurity, Linux, SQL, detection and response, API boundaries, observability, and operational resilience.", ["Security", "Reliability", "Observability"])}
+${card("Data And Analytics", "Google Data Analytics, cleaning, exploration, visualization, dashboards, reporting pipelines, and data modeling.", ["Analytics", "ETL", "Dashboards"])}
+</div></section>`
+  }));
+
   writeFile("maintenance/index.html", page({
     title: "Maintenance",
     description: "Maintenance page for pklavc.com when a deploy or service update is in progress.",
@@ -436,6 +595,7 @@ function upsertDiscoveryLinks() {
 
   const block = `        <meta name="theme-color" content="#101114">
         <link rel="alternate" type="application/rss+xml" title="Patrick Araujo Engineering Blog RSS" href="/feed.xml">
+        <link rel="search" type="application/opensearchdescription+xml" title="PkLavc" href="/opensearch.xml">
         <link rel="manifest" href="/manifest.webmanifest">
         <link rel="icon" href="/favicon.ico" sizes="any">
         <link rel="apple-touch-icon" href="/apple-touch-icon.png">

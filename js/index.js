@@ -1476,7 +1476,7 @@ function loadSkylerWidgetAssets() {
   if (!document.getElementById('skyler-widget-script')) {
     var script = document.createElement('script');
     script.id = 'skyler-widget-script';
-    script.src = '/js/skyler-widget.js?v=41164c80e9';
+    script.src = '/js/skyler-widget.js?v=119543ea38';
     script.defer = true;
     document.body.appendChild(script);
   }

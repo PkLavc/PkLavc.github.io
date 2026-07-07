@@ -1,4 +1,4 @@
-import crypto from "node:crypto";
+﻿import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 
@@ -952,7 +952,7 @@ function headCommon({ localeKey, title, description, canonical, ogType = "websit
     <meta property="og:url" content="${canonical}">
     <meta property="og:type" content="${ogType}">
     ${article ? `<meta property="article:published_time" content="${TODAY}">\n    <meta property="article:modified_time" content="${TODAY}">\n    <meta property="article:author" content="Patrick Araujo">` : ""}
-    <meta property="og:image" content="${absoluteAssetUrl("images/lavc.webp")}">
+    <meta property="og:image" content="${absoluteAssetUrl("images/brand/lavc.webp")}">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta property="og:image:alt" content="Brand portrait of backend engineer and automation specialist Patrick Araujo">
@@ -961,7 +961,7 @@ function headCommon({ localeKey, title, description, canonical, ogType = "websit
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="${escapeHtml(title)}">
     <meta name="twitter:description" content="${escapeHtml(description)}">
-    <meta name="twitter:image" content="${absoluteAssetUrl("images/lavc.webp")}">
+    <meta name="twitter:image" content="${absoluteAssetUrl("images/brand/lavc.webp")}">
     <meta name="twitter:image:alt" content="Brand portrait of backend engineer and automation specialist Patrick Araujo">
     <meta name="twitter:site" content="@PkLavc">
     <meta name="twitter:creator" content="@PkLavc">
@@ -1123,7 +1123,7 @@ function renderBlogPost(post, localeKey) {
         "@type": "BlogPosting",
         "headline": title,
         "description": description,
-        "image": absoluteAssetUrl("images/lavc.webp"),
+        "image": absoluteAssetUrl("images/brand/lavc.webp"),
         "datePublished": TODAY,
         "dateModified": TODAY,
         "author": { "@type": "Person", "name": "Patrick Araujo" },

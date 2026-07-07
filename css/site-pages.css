@@ -258,6 +258,64 @@ body.site-page-layout {
     line-height: 1.6;
 }
 
+.site-search-form {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 10px;
+    margin-top: 26px;
+    max-width: 760px;
+}
+
+.site-search-input {
+    min-height: 46px;
+    width: 100%;
+    border: 1px solid rgba(0, 209, 255, 0.28);
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.32);
+    color: #fff;
+    padding: 0 14px;
+    font: 600 1rem/1.2 Inter, sans-serif;
+    outline: none;
+}
+
+.site-search-input:focus {
+    border-color: rgba(0, 209, 255, 0.68);
+    box-shadow: 0 0 0 3px rgba(0, 209, 255, 0.12);
+}
+
+.site-search-results {
+    display: grid;
+    gap: 12px;
+}
+
+.site-search-result {
+    border: 1px solid rgba(0, 209, 255, 0.16);
+    border-radius: 8px;
+    background: rgba(8, 12, 16, 0.76);
+    padding: 18px;
+}
+
+.site-search-result h2 {
+    margin: 0 0 8px;
+    color: #fff;
+    font: 800 1.05rem/1.25 Inter, sans-serif;
+}
+
+.site-search-result p {
+    margin: 0;
+    color: rgba(244, 247, 251, 0.76);
+    line-height: 1.6;
+}
+
+.site-search-result a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.site-search-result a:hover {
+    color: #00d1ff;
+}
+
 .maintenance-orbit {
     position: absolute;
     right: clamp(20px, 7vw, 90px);
@@ -325,6 +383,10 @@ body.site-page-layout {
 
     .status-pill {
         width: 100%;
+    }
+
+    .site-search-form {
+        grid-template-columns: 1fr;
     }
 
     .maintenance-orbit {

@@ -40,7 +40,7 @@
         "name": "Patrick Araujo",
         "jobTitle": "Backend Software Engineer",
         "url": "https://pklavc.com",
-        "image": "https://pklavc.com/images/lavc.webp?v=5e84850f26",
+        "image": "https://pklavc.com/images/brand/lavc.webp?v=5e84850f26",
         "sameAs": [
             "https://github.com/PkLavc",
             "https://www.linkedin.com/in/pklavc/"
@@ -198,6 +198,8 @@
     <link rel="preload" as="style" href="/css/github-markdown-local.css?v=457298c04b">
     <link rel="stylesheet" href="/css/github-markdown-local.css?v=457298c04b" media="print" onload="this.media='all'">
     <noscript><link rel="stylesheet" href="/css/github-markdown-local.css?v=457298c04b"></noscript>
+    <script type="application/ld+json" data-schema="software-source-code">{"@context":"https://schema.org","@type":"SoftwareSourceCode","name":"EquipTrack | Equipment Inventory &amp; Rental Management | Patrick Araujo","description":"Open-source inventory and rental management system for event companies. Tracks audio, video, and lighting equipment across events with guest mode, theme customization, and Cloudflare Workers backend.","url":"https://pklavc.com/projects/equiptrack/","author":{"@type":"Person","name":"Patrick Araujo","url":"https://pklavc.com/about/"},"creator":{"@type":"Person","name":"Patrick Araujo"},"programmingLanguage":["JavaScript","Node.js","SQL"],"codeRepository":"https://github.com/sponsors/PkLavc"}</script>
+    <link rel="search" type="application/opensearchdescription+xml" title="PkLavc" href="/opensearch.xml">
 </head>
 <body>
     <div id="breaker"></div>
@@ -232,14 +234,14 @@
             <section class="project-hero">
                 <span class="project-category-badge">Full-Stack Web App</span>
                 <h1>EquipTrack</h1>
-                <p style="color: #aaa; font-size: 1.1rem; margin-top: 15px; max-width: 680px; margin-left: auto; margin-right: auto;">Equipment inventory and rental management system for event companies. Tracks audio, video, lighting, and furniture across concurrent events â€” fully customizable per company via theme, logo, and favicon. Deployed on Cloudflare Workers + D1.</p>
+                <p style="color: #aaa; font-size: 1.1rem; margin-top: 15px; max-width: 680px; margin-left: auto; margin-right: auto;">Equipment inventory and rental management system for event companies. Tracks audio, video, lighting, and furniture across concurrent events — fully customizable per company via theme, logo, and favicon. Deployed on Cloudflare Workers + D1.</p>
             </section>
 
             <!-- Context -->
             <section class="project-context-section" aria-label="Project context">
                 <div class="project-context-container">
                     <h2>What is EquipTrack?</h2>
-                    <p>EquipTrack is a web-based inventory and rental control system for event companies. It manages the full equipment rental lifecycle: creating events, assigning equipment, checking items in and out, logging maintenance, and tracking damage. The customization features â€” swappable logo, favicon, and full color theming â€” are built in precisely so any company can adopt it as their own.</p>
+                    <p>EquipTrack is a web-based inventory and rental control system for event companies. It manages the full equipment rental lifecycle: creating events, assigning equipment, checking items in and out, logging maintenance, and tracking damage. The customization features — swappable logo, favicon, and full color theming — are built in precisely so any company can adopt it as their own.</p>
                     <p>The system started as an internal tool by <a href="https://github.com/arthurperico" target="_blank" rel="noopener noreferrer">Arthur Perico</a>, who designed and built the core platform and migrated it to Cloudflare Workers + D1 for edge deployment. I later joined the project and introduced a set of improvements ranging from UI/UX enhancements to CI/CD automation.</p>
                     <h3 style="margin-top:28px;">Technical Scope</h3>
                     <ul>
@@ -256,7 +258,7 @@
                     <h2 style="color: #fff; margin-bottom: 20px;">System Overview</h2>
                     <article class="markdown-body">
 
-<h2>EquipTrack â€” Sistema de Estoque para Eventos</h2>
+<h2>EquipTrack — Sistema de Estoque para Eventos</h2>
 
 <p>
   <img src="https://img.shields.io/badge/Backend-Cloudflare_Workers-orange?logo=cloudflare" alt="Backend: Cloudflare Workers">
@@ -266,7 +268,7 @@
   <img src="https://img.shields.io/badge/License-MIT-brightgreen" alt="License: MIT">
 </p>
 
-<p>A complete inventory and rental management system for event companies. Manages audio systems, cameras, lighting rigs, video boards, and event furniture across concurrent events â€” with full branding customization so any company can deploy it as their own tool.</p>
+<p>A complete inventory and rental management system for event companies. Manages audio systems, cameras, lighting rigs, video boards, and event furniture across concurrent events — with full branding customization so any company can deploy it as their own tool.</p>
 
 <h2>Core Modules</h2>
 <table>
@@ -285,38 +287,38 @@
 <h2>Architecture</h2>
 
 <pre><code>Browser (Client)
-  â””â”€ public/
-       â”œâ”€ login/index.html      â† Login + guest mode toggle
-       â”œâ”€ index.html            â† Main SPA (all modules as sections)
-       â”œâ”€ css/                  â† Modular styles: app.css, theme.css, login.css, event.css
-       â”œâ”€ js/                   â† app.js, login.js, event.js, storage.js
-       â””â”€ assets/images/        â† Logo, favicon (WebP)
+  └─ public/
+       ├─ login/index.html      ← Login + guest mode toggle
+       ├─ index.html            ← Main SPA (all modules as sections)
+       ├─ css/                  ← Modular styles: app.css, theme.css, login.css, event.css
+       ├─ js/                   ← app.js, login.js, event.js, storage.js
+       └─ assets/images/        ← Logo, favicon (WebP)
 
 Cloudflare Worker (Edge)
-  â””â”€ src/worker.mjs
-       â”œâ”€ Page routing          â† Redirects authenticated users away from login
-       â”œâ”€ /api/login POST       â† bcrypt session authentication
-       â”œâ”€ /api/logout POST      â† Session invalidation
-       â”œâ”€ /api/auth/status GET  â† Auth check (guest detection)
-       â”œâ”€ /api/events           â† CRUD for events
-       â”œâ”€ /api/equipments       â† CRUD for equipment
-       â”œâ”€ /api/cables           â† CRUD for cables
-       â”œâ”€ /api/others           â† CRUD for generic items
-       â”œâ”€ /api/rentals          â† Rental movements per event
-       â”œâ”€ /api/maintenance      â† Damage and repair records
-       â”œâ”€ /api/history          â† Full movement log
-       â””â”€ /api/users            â† Admin-only user management
+  └─ src/worker.mjs
+       ├─ Page routing          ← Redirects authenticated users away from login
+       ├─ /api/login POST       ← bcrypt session authentication
+       ├─ /api/logout POST      ← Session invalidation
+       ├─ /api/auth/status GET  ← Auth check (guest detection)
+       ├─ /api/events           ← CRUD for events
+       ├─ /api/equipments       ← CRUD for equipment
+       ├─ /api/cables           ← CRUD for cables
+       ├─ /api/others           ← CRUD for generic items
+       ├─ /api/rentals          ← Rental movements per event
+       ├─ /api/maintenance      ← Damage and repair records
+       ├─ /api/history          ← Full movement log
+       └─ /api/users            ← Admin-only user management
 
 Cloudflare D1 (SQLite)
-  â””â”€ migrations/0001_initial.sql
-       â”œâ”€ users
-       â”œâ”€ events
-       â”œâ”€ equipments
-       â”œâ”€ cables
-       â”œâ”€ other_items
-       â”œâ”€ rentals
-       â”œâ”€ maintenance
-       â””â”€ history
+  └─ migrations/0001_initial.sql
+       ├─ users
+       ├─ events
+       ├─ equipments
+       ├─ cables
+       ├─ other_items
+       ├─ rentals
+       ├─ maintenance
+       └─ history
 </code></pre>
 
 <h2>Guest Mode</h2>
@@ -329,13 +331,13 @@ Cloudflare D1 (SQLite)
 <p>The original system used emoji characters as menu icons. These were replaced with custom inline SVGs whose <code>stroke</code> color inherits <code>currentColor</code>, allowing them to automatically adapt to the active theme color set via the CSS <code>--primary</code> variable. This makes the entire icon set theme-aware with zero JavaScript overhead.</p>
 
 <h2>Sidebar Toggle</h2>
-<p>A collapsible sidebar was added via a toggle button (<code>#sidebarToggle</code>). When collapsed, the sidebar slides out of view and the main content area expands â€” useful on smaller screens and for focused work sessions.</p>
+<p>A collapsible sidebar was added via a toggle button (<code>#sidebarToggle</code>). When collapsed, the sidebar slides out of view and the main content area expands — useful on smaller screens and for focused work sessions.</p>
 
 <h2>Automatic Versioning &amp; Cache Busting (GitHub Actions)</h2>
 <p>Two GitHub Actions workflows automate the deployment pipeline:</p>
 <ul>
-<li><strong>deploy-pages.yml</strong> â€” On push to <code>main</code>, checks out the repo, injects the short Git commit SHA into all <code>__BUILD_VERSION__</code> placeholders in HTML files (used in <code>?v=__BUILD_VERSION__</code> CSS/JS links), then deploys <code>public/</code> to GitHub Pages.</li>
-<li><strong>sync-docs.yml</strong> â€” Whenever <code>public/</code> changes, automatically copies it to <code>docs/</code>, injects the same build version token, commits, and pushes â€” keeping the <code>docs/</code> folder in sync for alternative GitHub Pages hosting.</li>
+<li><strong>deploy-pages.yml</strong> — On push to <code>main</code>, checks out the repo, injects the short Git commit SHA into all <code>__BUILD_VERSION__</code> placeholders in HTML files (used in <code>?v=__BUILD_VERSION__</code> CSS/JS links), then deploys <code>public/</code> to GitHub Pages.</li>
+<li><strong>sync-docs.yml</strong> — Whenever <code>public/</code> changes, automatically copies it to <code>docs/</code>, injects the same build version token, commits, and pushes — keeping the <code>docs/</code> folder in sync for alternative GitHub Pages hosting.</li>
 </ul>
 
 <h2>Cloudflare D1 Deployment</h2>
@@ -374,12 +376,12 @@ npm run dev:worker    # Wrangler local emulation
             <section class="project-context-section" aria-label="Authorship and contributions" style="background: rgba(255,255,255,0.025);">
                 <div class="project-context-container">
                     <h2>Authorship &amp; Contributions</h2>
-                    <p style="margin-bottom: 20px;">The original system was designed and built by <a href="https://github.com/arthurperico" target="_blank" rel="noopener noreferrer">Arthur Perico</a>. I joined the project and introduced a set of targeted improvements â€” listed separately below to reflect accurate attribution.</p>
+                    <p style="margin-bottom: 20px;">The original system was designed and built by <a href="https://github.com/arthurperico" target="_blank" rel="noopener noreferrer">Arthur Perico</a>. I joined the project and introduced a set of targeted improvements — listed separately below to reflect accurate attribution.</p>
 
                     <div class="contributions-grid">
                         <!-- Original author -->
                         <div class="contrib-card original">
-                            <h3>&#x25C6; Original System â€” Arthur Perico</h3>
+                            <h3>&#x25C6; Original System — Arthur Perico</h3>
                             <ul>
                                 <li>Core system design and full business logic</li>
                                 <li>Equipment, event, cable, maintenance, and history modules</li>
@@ -395,18 +397,18 @@ npm run dev:worker    # Wrangler local emulation
 
                         <!-- Fork contributions -->
                         <div class="contrib-card fork">
-                            <h3>&#x25C6; My Contributions â€” Patrick Araujo</h3>
+                            <h3>&#x25C6; My Contributions — Patrick Araujo</h3>
                             <ul>
                                 <li>Full SEO refactor: meta description, Open Graph, Twitter Cards, JSON-LD structured data on all pages</li>
                                 <li>Collapsible sidebar with toggle button and animated chevron icon</li>
-                                <li>Custom color picker system â€” accent colors persisted to <code>localStorage</code>, applied via CSS variables</li>
+                                <li>Custom color picker system — accent colors persisted to <code>localStorage</code>, applied via CSS variables</li>
                                 <li>Custom logo and favicon upload, stored as base64 in <code>localStorage</code></li>
-                                <li>Replaced emoji menu icons with inline SVG icons â€” color-adaptive via CSS <code>currentColor</code></li>
+                                <li>Replaced emoji menu icons with inline SVG icons — color-adaptive via CSS <code>currentColor</code></li>
                                 <li>Guest mode: <code>DataStorage</code> class transparently switches between API and <code>localStorage</code></li>
                                 <li>Button and visual bug fixes</li>
                                 <li>Automatic versioning via GitHub Actions (deploy-pages + sync-docs workflows)</li>
                                 <li>Cache busting with <code>?v=__BUILD_VERSION__</code> injected at deploy time</li>
-                                <li>Project file reorganization: flat <code>public/</code> â†’ structured <code>css/</code>, <code>js/</code>, <code>assets/</code> directories</li>
+                                <li>Project file reorganization: flat <code>public/</code> → structured <code>css/</code>, <code>js/</code>, <code>assets/</code> directories</li>
                                 <li>Asset conversion: logo and favicon from PNG to WebP</li>
                             </ul>
                             <a class="author-link" href="https://github.com/PkLavc" target="_blank" rel="noopener noreferrer">github.com/PkLavc</a>
@@ -494,6 +496,6 @@ npm run dev:worker    # Wrangler local emulation
     </script>
         <script src="/js/i18n.js?v=02a6baa07c" defer></script>
     <script src="/js/jquery.min.js?v=91e8044a4b" defer></script>
-    <script src="/js/index.js?v=e65a1f3e01" defer></script>
+    <script src="/js/index.js?v=4bade455ea" defer></script>
 </body>
 </html>

@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="author" content="Patrick Araujo">
-    <title>Patrones de implementaciÃ³n en la nube: orquestaciÃ³n de contenedores, CI/CD e infraestructura como cÃ³digo</title>
-    <meta name="description" content="CÃ³mo diseÃ±ar implementaciones en la nube listas para producciÃ³n con orquestaciÃ³n de contenedores Docker, canales de CI/CD e infraestructura como cÃ³digo para sistemas backend escalables API.">
+    <title>Patrones de implementación en la nube: orquestación de contenedores, CI/CD e infraestructura como código</title>
+    <meta name="description" content="Cómo diseñar implementaciones en la nube listas para producción con orquestación de contenedores Docker, canales de CI/CD e infraestructura como código para sistemas backend escalables API.">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://pklavc.com/es/blog/cloud-deployment-patterns/">
     <link rel="alternate" href="https://pklavc.com/blog/cloud-deployment-patterns/" hreflang="en">
@@ -15,8 +15,8 @@
 
 
 
-<meta property="og:title" content="Patrones de implementaciÃ³n en la nube: orquestaciÃ³n de contenedores, CI/CD e infraestructura como cÃ³digo">
-    <meta property="og:description" content="Patrones prÃ¡cticos para implementaciones de producciÃ³n en la nube: orquestaciÃ³n de contenedores Docker, canales de automatizaciÃ³n de CI/CD e infraestructura como cÃ³digo para backends escalables API.">
+<meta property="og:title" content="Patrones de implementación en la nube: orquestación de contenedores, CI/CD e infraestructura como código">
+    <meta property="og:description" content="Patrones prácticos para implementaciones de producción en la nube: orquestación de contenedores Docker, canales de automatización de CI/CD e infraestructura como código para backends escalables API.">
     <meta property="og:url" content="https://pklavc.com/es/blog/cloud-deployment-patterns/">
     <meta property="og:type" content="article">
     <meta property="article:published_time" content="2026-04-24">
@@ -24,16 +24,16 @@
     <meta property="article:author" content="Patrick Araujo">
     <meta property="article:section" content="Cloud Engineering">
     <meta property="article:tag" content="estibador">
-    <meta property="article:tag" content="tuberÃ­a ci/cd">
-    <meta property="article:tag" content="infraestructura como cÃ³digo">
-    <meta property="article:tag" content="orquestaciÃ³n de contenedores">
-    <meta property="og:image" content="https://pklavc.com/images/lavc.webp?v=5e84850f26">
+    <meta property="article:tag" content="tubería ci/cd">
+    <meta property="article:tag" content="infraestructura como código">
+    <meta property="article:tag" content="orquestación de contenedores">
+    <meta property="og:image" content="https://pklavc.com/images/brand/lavc.webp?v=5e84850f26">
     <meta property="og:site_name" content="Patrick Araujo">
     <meta property="og:locale" content="es_ES">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Patrones de implementaciÃ³n en la nube: orquestaciÃ³n de contenedores, CI/CD e infraestructura como cÃ³digo">
-    <meta name="twitter:description" content="DiseÃ±o de implementaciÃ³n de producciÃ³n en la nube: orquestaciÃ³n de Docker, automatizaciÃ³n de CI/CD e infraestructura como cÃ³digo para backends escalables API.">
-    <meta name="twitter:image" content="https://pklavc.com/images/lavc.webp?v=5e84850f26">
+    <meta name="twitter:title" content="Patrones de implementación en la nube: orquestación de contenedores, CI/CD e infraestructura como código">
+    <meta name="twitter:description" content="Diseño de implementación de producción en la nube: orquestación de Docker, automatización de CI/CD e infraestructura como código para backends escalables API.">
+    <meta name="twitter:image" content="https://pklavc.com/images/brand/lavc.webp?v=5e84850f26">
     <meta name="twitter:site" content="@PkLavc">
     <meta name="twitter:creator" content="@PkLavc">
     <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=d15fe4e492">
@@ -97,13 +97,14 @@
         ]
     }
     </script>
+    <link rel="search" type="application/opensearchdescription+xml" title="PkLavc" href="/opensearch.xml">
 </head>
 <body class="blog-layout seo-layout">
     <div id="breaker"></div>
     <div id="breaker-two"></div>
     <div id="all">
         <div class="cursor"></div>
-        <div id="navigation-content" role="navigation" aria-label="NavegaciÃ³n primaria">
+        <div id="navigation-content" role="navigation" aria-label="Navegación primaria">
             <div class="logo"></div>
             <div class="navigation-links">
                 <a href="/es/" data-text="INICIO" id="home-link">INICIO</a>
@@ -129,48 +130,48 @@
                             <span>/</span>
                             <a href="/es/blog/">Blog</a>
                             <span>/</span>
-                            <span aria-current="page">Patrones de implementaciÃ³n de la nube</span>
+                            <span aria-current="page">Patrones de implementación de la nube</span>
                         </div>
-                        <span class="blog-kicker">IngenierÃ­a en la nube</span>
-                        <h1>Patrones de implementaciÃ³n en la nube: orquestaciÃ³n de contenedores, CI/CD e infraestructura como cÃ³digo</h1>
-                        <p>Un sistema backend que funciona localmente pero que no tiene una ruta de implementaciÃ³n definida no estÃ¡ listo para producciÃ³n. La infraestructura de implementaciÃ³n (cÃ³mo se empaqueta, promueve y escala el sistema) es una parte tan importante del diseÃ±o como el cÃ³digo de la aplicaciÃ³n. Tratar la infraestructura como una ocurrencia tardÃ­a produce entornos que varÃ­an, implementaciones que requieren pasos manuales e incidentes que se remontan a diferencias de configuraciÃ³n entre entornos.</p>
+                        <span class="blog-kicker">Ingeniería en la nube</span>
+                        <h1>Patrones de implementación en la nube: orquestación de contenedores, CI/CD e infraestructura como código</h1>
+                        <p>Un sistema backend que funciona localmente pero que no tiene una ruta de implementación definida no está listo para producción. La infraestructura de implementación (cómo se empaqueta, promueve y escala el sistema) es una parte tan importante del diseño como el código de la aplicación. Tratar la infraestructura como una ocurrencia tardía produce entornos que varían, implementaciones que requieren pasos manuales e incidentes que se remontan a diferencias de configuración entre entornos.</p>
                         <div class="blog-post-meta">
                             <span>Publicado el 24 de abril de 2026</span>
                             <span>8 minutos de lectura</span>
-                            <span>IngenierÃ­a en la nube</span>
+                            <span>Ingeniería en la nube</span>
                         </div>
                     </article>
 
                     <article class="blog-article">
-                        <h2>ImÃ¡genes de contenedores como unidades de implementaciÃ³n</h2>
-                        <p>Los contenedores Docker empaquetan una aplicaciÃ³n con sus dependencias de tiempo de ejecuciÃ³n en una unidad portÃ¡til e inmutable. La misma imagen que se transmite en un entorno de desarrollo local se transmite en la puesta en escena y la producciÃ³n. La configuraciÃ³n especÃ­fica del entorno se inyecta en tiempo de ejecuciÃ³n a travÃ©s de variables de entorno o secretos montados, no integrada en la imagen.</p>
-                        <p>Esta inmutabilidad es la base de las implementaciones reproducibles: si una implementaciÃ³n falla, volver a la imagen anterior es determinista. el <a href="/es/proyectos/cloud-deployment-showcase/">Cloud Deployment Showcase</a> demuestra este patrÃ³n con imÃ¡genes de contenedores que se pueden promocionar a travÃ©s de entornos sin modificaciones.</p>
+                        <h2>Imágenes de contenedores como unidades de implementación</h2>
+                        <p>Los contenedores Docker empaquetan una aplicación con sus dependencias de tiempo de ejecución en una unidad portátil e inmutable. La misma imagen que se transmite en un entorno de desarrollo local se transmite en la puesta en escena y la producción. La configuración específica del entorno se inyecta en tiempo de ejecución a través de variables de entorno o secretos montados, no integrada en la imagen.</p>
+                        <p>Esta inmutabilidad es la base de las implementaciones reproducibles: si una implementación falla, volver a la imagen anterior es determinista. el <a href="/es/proyectos/cloud-deployment-showcase/">Cloud Deployment Showcase</a> demuestra este patrón con imágenes de contenedores que se pueden promocionar a través de entornos sin modificaciones.</p>
 
-                        <h2>CI/CD como puerta de promociÃ³n automatizada</h2>
-                        <p>Un proceso de CI/CD no es una conveniencia: es un mecanismo de cumplimiento. El cÃ³digo que no pasa las pruebas no llega a la etapa de preparaciÃ³n. Las imÃ¡genes que pasan los controles de calidad de puesta en escena se promocionan a producciÃ³n. El proceso elimina el punto de decisiÃ³n humana que crea inconsistencia.</p>
+                        <h2>CI/CD como puerta de promoción automatizada</h2>
+                        <p>Un proceso de CI/CD no es una conveniencia: es un mecanismo de cumplimiento. El código que no pasa las pruebas no llega a la etapa de preparación. Las imágenes que pasan los controles de calidad de puesta en escena se promocionan a producción. El proceso elimina el punto de decisión humana que crea inconsistencia.</p>
                         <p>CI/CD efectivo para APIs basados en contenedores incluye:</p>
                         <ul>
-                            <li><strong>VerificaciÃ³n de creaciÃ³n de imagen</strong> â€” la compilaciÃ³n falla temprano si no se pueden resolver las dependencias o no se puede construir la imagen.</li>
-                            <li><strong>EjecuciÃ³n de pruebas automatizada</strong> â€” Las pruebas unitarias y de integraciÃ³n se ejecutan en el contenedor construido, no en un Ã¡rbol de fuentes local.</li>
-                            <li><strong>Escaneo de imÃ¡genes</strong> â€” el escaneo de vulnerabilidades en la imagen creada antes de la promociÃ³n evita el envÃ­o de CVE conocidos a producciÃ³n.</li>
-                            <li><strong>Puertas de promociÃ³n del medio ambiente.</strong> â€” Las comprobaciones de estado confirman la implementaciÃ³n exitosa antes de que el trÃ¡fico pase a la nueva versiÃ³n.</li>
+                            <li><strong>Verificación de creación de imagen</strong> — la compilación falla temprano si no se pueden resolver las dependencias o no se puede construir la imagen.</li>
+                            <li><strong>Ejecución de pruebas automatizada</strong> — Las pruebas unitarias y de integración se ejecutan en el contenedor construido, no en un árbol de fuentes local.</li>
+                            <li><strong>Escaneo de imágenes</strong> — el escaneo de vulnerabilidades en la imagen creada antes de la promoción evita el envío de CVE conocidos a producción.</li>
+                            <li><strong>Puertas de promoción del medio ambiente.</strong> — Las comprobaciones de estado confirman la implementación exitosa antes de que el tráfico pase a la nueva versión.</li>
                         </ul>
 
                         <div class="blog-callout">
-                            Una pipeline de CI que crea pero no prueba la imagen no es una puerta de calidad. Es un registro de compilaciÃ³n. La etapa de prueba debe ejecutarse contra el artefacto que se implementarÃ¡, no solo contra el cÃ³digo fuente.
+                            Una pipeline de CI que crea pero no prueba la imagen no es una puerta de calidad. Es un registro de compilación. La etapa de prueba debe ejecutarse contra el artefacto que se implementará, no solo contra el código fuente.
                         </div>
 
-                        <h2>La infraestructura como cÃ³digo evita la deriva del entorno</h2>
-                        <p>La infraestructura de la nube definida en el cÃ³digo tiene versiones, es revisable y repetible. La infraestructura definida haciendo clic en las consolas de la nube no es ninguna de esas cosas. La desviaciÃ³n del entorno (cuando la puesta en escena y la producciÃ³n difieren en la configuraciÃ³n) es una de las fuentes mÃ¡s comunes de incidentes de producciÃ³n que no se reproducen en las pruebas.</p>
-                        <p>Las herramientas de infraestructura como cÃ³digo aplican la misma disciplina de gestiÃ³n de cambios a la infraestructura que el control de versiones aplica al cÃ³digo de la aplicaciÃ³n. Un cambio en una regla de grupo de seguridad, un parÃ¡metro de base de datos o una configuraciÃ³n de equilibrador de carga pasa por revisiÃ³n antes de llegar a producciÃ³n, tal como lo hacen los cambios en el cÃ³digo de la aplicaciÃ³n.</p>
+                        <h2>La infraestructura como código evita la deriva del entorno</h2>
+                        <p>La infraestructura de la nube definida en el código tiene versiones, es revisable y repetible. La infraestructura definida haciendo clic en las consolas de la nube no es ninguna de esas cosas. La desviación del entorno (cuando la puesta en escena y la producción difieren en la configuración) es una de las fuentes más comunes de incidentes de producción que no se reproducen en las pruebas.</p>
+                        <p>Las herramientas de infraestructura como código aplican la misma disciplina de gestión de cambios a la infraestructura que el control de versiones aplica al código de la aplicación. Un cambio en una regla de grupo de seguridad, un parámetro de base de datos o una configuración de equilibrador de carga pasa por revisión antes de llegar a producción, tal como lo hacen los cambios en el código de la aplicación.</p>
 
-                        <h2>Controles de estado y estrategias de reversiÃ³n</h2>
-                        <p>La implementaciÃ³n no estÃ¡ completa cuando se inicia el contenedor. EstÃ¡ completo cuando la aplicaciÃ³n pasa las comprobaciones de estado que confirman que estÃ¡ atendiendo las solicitudes correctamente. El diseÃ±o de la verificaciÃ³n de estado es importante: una verificaciÃ³n que solo prueba que el proceso se estÃ¡ ejecutando no detecta fallas a nivel de aplicaciÃ³n. Una prueba de actividad que devuelve 200 mientras el grupo de conexiones de la base de datos estÃ¡ agotado genera una confianza falsa.</p>
-                        <p>La estrategia de reversiÃ³n debe definirse antes de la implementaciÃ³n, no despuÃ©s de un incidente. Las implementaciones azul-verde mantienen la versiÃ³n anterior disponible para una transiciÃ³n inmediata. Las implementaciones continuas permiten un cambio gradual del trÃ¡fico con reversiÃ³n automÃ¡tica si las tasas de error exceden un umbral durante la ventana de implementaciÃ³n.</p>
+                        <h2>Controles de estado y estrategias de reversión</h2>
+                        <p>La implementación no está completa cuando se inicia el contenedor. Está completo cuando la aplicación pasa las comprobaciones de estado que confirman que está atendiendo las solicitudes correctamente. El diseño de la verificación de estado es importante: una verificación que solo prueba que el proceso se está ejecutando no detecta fallas a nivel de aplicación. Una prueba de actividad que devuelve 200 mientras el grupo de conexiones de la base de datos está agotado genera una confianza falsa.</p>
+                        <p>La estrategia de reversión debe definirse antes de la implementación, no después de un incidente. Las implementaciones azul-verde mantienen la versión anterior disponible para una transición inmediata. Las implementaciones continuas permiten un cambio gradual del tráfico con reversión automática si las tasas de error exceden un umbral durante la ventana de implementación.</p>
 
-                        <h2>Escalado y asignaciÃ³n de recursos en implementaciones orquestadas</h2>
-                        <p>La orquestaciÃ³n de contenedores permite el escalado horizontal, pero escalar correctamente requiere saber quÃ© limitaciones de recursos tiene realmente la aplicaciÃ³n. Los lÃ­mites de memoria demasiado bajos provocan muertes de OOM. Los lÃ­mites de CPU demasiado bajos provocan limitaciones. Establecer perfiles de recursos precisos mediante pruebas de carga antes de establecer lÃ­mites de producciÃ³n evita tanto el aprovisionamiento excesivo como el insuficiente.</p>
-                        <p>Esto se conecta con el trabajo de visibilidad del desempeÃ±o en <a href="/es/blog/infrastructure-anomaly-detection/">DetecciÃ³n de anomalÃ­as de infraestructura</a> â€” las mÃ©tricas de recursos recopiladas durante los flujos de trabajo de recuperaciÃ³n automatizados informan directamente las decisiones de asignaciÃ³n de recursos tomadas durante la configuraciÃ³n de la implementaciÃ³n.</p>
+                        <h2>Escalado y asignación de recursos en implementaciones orquestadas</h2>
+                        <p>La orquestación de contenedores permite el escalado horizontal, pero escalar correctamente requiere saber qué limitaciones de recursos tiene realmente la aplicación. Los límites de memoria demasiado bajos provocan muertes de OOM. Los límites de CPU demasiado bajos provocan limitaciones. Establecer perfiles de recursos precisos mediante pruebas de carga antes de establecer límites de producción evita tanto el aprovisionamiento excesivo como el insuficiente.</p>
+                        <p>Esto se conecta con el trabajo de visibilidad del desempeño en <a href="/es/blog/infrastructure-anomaly-detection/">Detección de anomalías de infraestructura</a> — las métricas de recursos recopiladas durante los flujos de trabajo de recuperación automatizados informan directamente las decisiones de asignación de recursos tomadas durante la configuración de la implementación.</p>
                     </article>
 
                     <section aria-labelledby="cloud-related-title">
@@ -178,15 +179,15 @@
                         <div class="blog-related-grid">
                             <article class="blog-related-card">
                                 <h3><a href="/es/proyectos/cloud-deployment-showcase/">Cloud Deployment Showcase</a></h3>
-                                <p>Infraestructura lista para producciÃ³n con orquestaciÃ³n Docker, automatizaciÃ³n CI/CD e infraestructura como cÃ³digo.</p>
+                                <p>Infraestructura lista para producción con orquestación Docker, automatización CI/CD e infraestructura como código.</p>
                             </article>
                             <article class="blog-related-card">
-                                <h3><a href="/es/blog/infrastructure-anomaly-detection/">DetecciÃ³n de anomalÃ­as de infraestructura</a></h3>
-                                <p>Monitoreo del tiempo de ejecuciÃ³n y patrones de autorreparaciÃ³n que complementan el diseÃ±o del proceso de implementaciÃ³n.</p>
+                                <h3><a href="/es/blog/infrastructure-anomaly-detection/">Detección de anomalías de infraestructura</a></h3>
+                                <p>Monitoreo del tiempo de ejecución y patrones de autorreparación que complementan el diseño del proceso de implementación.</p>
                             </article>
                             <article class="blog-related-card">
                                 <h3><a href="/es/blog/multi-tenant-saas-architecture/">Arquitectura SaaS multi-tenant</a></h3>
-                                <p>Consideraciones de implementaciÃ³n y escalamiento para sistemas backend multi-tenant.</p>
+                                <p>Consideraciones de implementación y escalamiento para sistemas backend multi-tenant.</p>
                             </article>
                         </div>
                     </section>
@@ -196,10 +197,10 @@
                     <section class="blog-sidebar-card">
                         <h2>Conclusiones principales</h2>
                         <ul>
-                            <li>Las imÃ¡genes de contenedor son unidades de implementaciÃ³n inmutables: la configuraciÃ³n se inyecta en tiempo de ejecuciÃ³n.</li>
+                            <li>Las imágenes de contenedor son unidades de implementación inmutables: la configuración se inyecta en tiempo de ejecución.</li>
                             <li>Los pipelines de CI deben probar el artefacto creado, no solo la fuente.</li>
-                            <li>La infraestructura como cÃ³digo evita la deriva del entorno.</li>
-                            <li>Defina la estrategia de reversiÃ³n antes de la implementaciÃ³n, no durante la respuesta a incidentes.</li>
+                            <li>La infraestructura como código evita la deriva del entorno.</li>
+                            <li>Defina la estrategia de reversión antes de la implementación, no durante la respuesta a incidentes.</li>
                         </ul>
                     </section>
                     <section class="blog-sidebar-card">
@@ -217,10 +218,10 @@
     </div>
     <footer class="footer-minimal">
         <div class="footer-container">
-            <div class="footer-link-list" aria-label="Enlaces de pie de pÃ¡gina">
+            <div class="footer-link-list" aria-label="Enlaces de pie de página">
                 <a class="footer-link-pill" href="https://github.com/PkLavc" target="_blank" rel="noopener noreferrer">GitHub</a>
                 <a class="footer-link-pill" href="https://www.linkedin.com/in/pklavc/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
-                <a class="footer-link-pill" href="mailto:contact@pklavc.com">Correo electrÃ³nico</a>
+                <a class="footer-link-pill" href="mailto:contact@pklavc.com">Correo electrónico</a>
                 <a class="footer-link-pill footer-link-pill-accent" href="https://github.com/sponsors/PkLavc" target="_blank" rel="noopener noreferrer">Apoyar en GitHub</a>
             </div>
             <p class="footer-meta"><span class="footer-copyright-line">&copy; <span data-current-year></span> Patrick Araujo</span> <span class="footer-meta-separator">&bull;</span><span class="footer-legal-inline" aria-label="Legal links"><a class="footer-legal-link" href="/es/politica-de-privacidad/">Pol&iacute;tica de Privacidad</a><span aria-hidden="true">/</span><a class="footer-legal-link" href="/es/terminos-de-uso/">T&eacute;rminos de Uso</a><span aria-hidden="true">/</span><a class="footer-legal-link" href="/es/politica-editorial/">Pol&iacute;tica Editorial</a></span></p>
@@ -235,6 +236,6 @@
     </script>
         <script src="/js/i18n.js?v=02a6baa07c" defer></script>
     <script src="/js/jquery.min.js?v=91e8044a4b" defer></script>
-    <script src="/js/index.js?v=e65a1f3e01" defer></script>
+    <script src="/js/index.js?v=4bade455ea" defer></script>
 </body>
 </html>
