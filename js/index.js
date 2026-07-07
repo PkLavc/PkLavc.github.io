@@ -632,12 +632,23 @@ function setupNativeScrollProjectCarousel(carousel, track, getLoopWidth) {
   var speed = 0.038;
   var isPaused = false;
   var isNormalizing = false;
+  var reduceMotionQuery = typeof window.matchMedia === 'function' ?
+    window.matchMedia('(prefers-reduced-motion: reduce)') :
+    null;
 
   function clearResumeTimer() {
     if (resumeTimer) {
       window.clearTimeout(resumeTimer);
       resumeTimer = null;
     }
+  }
+
+  function shouldAutoplay() {
+    return !reduceMotionQuery || !reduceMotionQuery.matches;
+  }
+
+  function setAutoplaying(isAutoplaying) {
+    carousel.classList.toggle('is-auto-scrolling', isAutoplaying && shouldAutoplay());
   }
 
   function normalizeScrollPosition() {
@@ -664,6 +675,13 @@ function setupNativeScrollProjectCarousel(carousel, track, getLoopWidth) {
   function tick(timestamp) {
     var delta;
 
+    if (!shouldAutoplay()) {
+      setAutoplaying(false);
+      lastTimestamp = timestamp;
+      animationFrame = window.requestAnimationFrame(tick);
+      return;
+    }
+
     if (!lastTimestamp) {
       lastTimestamp = timestamp;
     }
@@ -672,8 +690,11 @@ function setupNativeScrollProjectCarousel(carousel, track, getLoopWidth) {
     lastTimestamp = timestamp;
 
     if (!isPaused && !document.hidden) {
+      setAutoplaying(true);
       track.scrollLeft += delta * speed;
       normalizeScrollPosition();
+    } else {
+      setAutoplaying(false);
     }
 
     animationFrame = window.requestAnimationFrame(tick);
@@ -682,6 +703,7 @@ function setupNativeScrollProjectCarousel(carousel, track, getLoopWidth) {
   function pause() {
     isPaused = true;
     carousel.classList.add('is-user-paused');
+    setAutoplaying(false);
     clearResumeTimer();
   }
 
@@ -690,6 +712,7 @@ function setupNativeScrollProjectCarousel(carousel, track, getLoopWidth) {
     resumeTimer = window.setTimeout(function() {
       isPaused = false;
       carousel.classList.remove('is-user-paused');
+      setAutoplaying(true);
       lastTimestamp = 0;
       resumeTimer = null;
     }, 2400);
@@ -697,12 +720,17 @@ function setupNativeScrollProjectCarousel(carousel, track, getLoopWidth) {
 
   function start() {
     normalizeScrollPosition();
+    setAutoplaying(!isPaused);
     if (!animationFrame) {
       animationFrame = window.requestAnimationFrame(tick);
     }
   }
 
   track.addEventListener('scroll', normalizeScrollPosition, { passive: true });
+  track.addEventListener('wheel', function() {
+    pause();
+    resumeSoon();
+  }, { passive: true });
   track.addEventListener('touchstart', pause, { passive: true });
   track.addEventListener('touchmove', normalizeScrollPosition, { passive: true });
   track.addEventListener('touchend', resumeSoon, { passive: true });
@@ -712,6 +740,23 @@ function setupNativeScrollProjectCarousel(carousel, track, getLoopWidth) {
   track.addEventListener('pointercancel', resumeSoon, { passive: true });
   track.addEventListener('focusin', pause);
   track.addEventListener('focusout', resumeSoon);
+  document.addEventListener('visibilitychange', function() {
+    if (document.hidden) {
+      setAutoplaying(false);
+      return;
+    }
+
+    lastTimestamp = 0;
+    if (!isPaused) {
+      setAutoplaying(true);
+    }
+  });
+  if (reduceMotionQuery && typeof reduceMotionQuery.addEventListener === 'function') {
+    reduceMotionQuery.addEventListener('change', function() {
+      setAutoplaying(!isPaused);
+      lastTimestamp = 0;
+    });
+  }
   window.addEventListener('resize', normalizeScrollPosition, { passive: true });
 
   start();
