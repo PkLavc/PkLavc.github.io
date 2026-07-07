@@ -29,7 +29,13 @@
                 '/projects': '/projects/',
                 '/projects.html': '/projects/',
                 '/blog': '/blog/',
-                '/blog.html': '/blog/'
+                '/blog.html': '/blog/',
+                '/pt/sobre': '/pt/sobre/',
+                '/pt/projetos': '/pt/projetos/',
+                '/pt/blog': '/pt/blog/',
+                '/es/sobre': '/es/sobre/',
+                '/es/proyectos': '/es/proyectos/',
+                '/es/blog': '/es/blog/'
             };
 
             if (redirects[path]) {
@@ -38,6 +44,7 @@
         })();
     </script>
     <link rel="icon" type="image/svg+xml" href="https://pklavc.com/images/favicon.svg?v=d15fe4e492">
+    <link rel="stylesheet" href="/css/global.css?v=a15b34be71">
     <style>
         :root {
             --clr-primary: #00d1ff;
@@ -69,93 +76,6 @@
         #all {
             min-height: 100vh;
             position: relative;
-        }
-
-        #navigation-content {
-            position: fixed;
-            inset: 0;
-            z-index: 1000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-            background: rgba(5, 8, 12, 0.96);
-            transform: translateY(-100%);
-            transition: transform 0.24s ease;
-            pointer-events: none;
-        }
-
-        #navigation-content.is-open {
-            transform: translateY(0);
-            pointer-events: auto;
-        }
-
-        .navigation-links {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            align-items: center;
-        }
-
-        .navigation-links a {
-            color: #e8f8ff;
-            text-decoration: none;
-            letter-spacing: 0.04em;
-            font-size: clamp(1.35rem, 2.3vw, 1.9rem);
-            opacity: 0.88;
-            transition: opacity 0.2s ease, color 0.2s ease;
-        }
-
-        .navigation-links a:hover {
-            opacity: 1;
-            color: var(--clr-primary);
-        }
-
-        #navigation-bar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 84px;
-            z-index: 1100;
-        }
-
-        .menubar {
-            position: absolute;
-            top: 24px;
-            right: 26px;
-            cursor: pointer;
-            padding: 8px;
-            opacity: 0.9;
-        }
-
-        .menubar span {
-            display: block;
-            width: 38px;
-            height: 2px;
-            margin: 8px 0;
-            border-radius: 2px;
-            background: transparent;
-            position: relative;
-        }
-
-        .menubar span::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            right: 0;
-            height: 100%;
-            background: var(--clr-primary);
-            border-radius: 2px;
-        }
-
-        .menubar .first-span::before { width: 52%; }
-        .menubar .second-span::before { width: 76%; }
-        .menubar .third-span::before { width: 100%; }
-
-        .menubar:hover .first-span::before,
-        .menubar:hover .second-span::before {
-            width: 100%;
         }
 
         .error-page-main {
@@ -265,63 +185,27 @@
             box-shadow: 0 8px 20px rgba(0, 209, 255, 0.18);
         }
 
-        .footer-minimal {
-            padding: 24px 16px 34px;
-            text-align: center;
-            border-top: 1px solid rgba(255, 255, 255, 0.06);
-        }
-
-        .footer-link-list {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 10px;
-        }
-
-        .footer-link-pill {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 34px;
-            padding: 0 13px;
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            border-radius: 999px;
-            color: #c4ccd1;
-            text-decoration: none;
-            font-size: 12px;
-            letter-spacing: 0.05em;
-            text-transform: uppercase;
-        }
-
-        .footer-link-pill:hover {
-            color: var(--clr-primary);
-            border-color: rgba(0, 209, 255, 0.35);
-        }
-
         @media (max-width: 600px) {
             .error-page-card {
                 padding: 28px 18px;
             }
-
-            .menubar {
-                right: 14px;
-                top: 15px;
-            }
         }
     </style>
 </head>
-<body>
+<body class="seo-layout error-page-layout">
     <div id="all">
+        <div class="cursor"></div>
         <div id="navigation-content" role="navigation" aria-label="Primary navigation">
             <div class="logo"></div>
             <div class="navigation-links">
-                <a href="/">HOME</a>
-                <a href="/about/">ABOUT</a>
-                <a href="/projects/">PROJECTS</a>
+                <a href="/" data-text="HOME" id="home-link">HOME</a>
+                <a href="/about/" data-text="ABOUT" id="about-link">ABOUT</a>
+                <a href="/projects/" data-text="PROJECTS" id="projects-link">PROJECTS</a>
+                <a href="/blog/" data-text="BLOG" id="blog-link">BLOG</a>
             </div>
         </div>
         <div id="navigation-bar">
-            <div class="menubar">
+            <div class="menubar" role="button" tabindex="0" aria-label="Open navigation">
                 <span class="first-span"></span>
                 <span class="second-span"></span>
                 <span class="third-span"></span>
@@ -330,57 +214,171 @@
         <main role="main" class="error-page-main">
             <section class="error-page-card">
                 <h1 class="error-page-code">404</h1>
-                <h2 class="error-page-title">Page Not Found</h2>
-                <p class="error-page-description">The page you are looking for may have been removed, had its name changed, or is temporarily unavailable. Return to the portfolio to explore systems architecture, API integration, and intelligent automation solutions.</p>
+                <h2 class="error-page-title" data-error-copy="title">Page Not Found</h2>
+                <p class="error-page-description" data-error-copy="description">The page you are looking for may have been removed, had its name changed, or is temporarily unavailable. Return to the portfolio to explore systems architecture, API integration, and intelligent automation solutions.</p>
                 <div class="error-page-actions">
-                    <a href="/" class="error-page-link error-page-link-primary">Back to Home</a>
-                    <a href="/about/" class="error-page-link error-page-link-secondary">About</a>
-                    <a href="/projects/" class="error-page-link error-page-link-secondary">View Projects</a>
+                    <a href="/" class="error-page-link error-page-link-primary" data-error-link="home">Back to Home</a>
+                    <a href="/about/" class="error-page-link error-page-link-secondary" data-error-link="about">About</a>
+                    <a href="/projects/" class="error-page-link error-page-link-secondary" data-error-link="projects">View Projects</a>
+                    <a href="/blog/" class="error-page-link error-page-link-secondary" data-error-link="blog">Blog</a>
                 </div>
                 <div class="error-page-social" aria-label="Contact links">
                     <a class="error-page-social-link" href="https://github.com/PkLavc" target="_blank" rel="noopener noreferrer">GitHub</a>
                     <a class="error-page-social-link" href="https://www.linkedin.com/in/pklavc/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
-                    <a class="error-page-social-link" href="mailto:contact@pklavc.com">Email</a>
+                    <a class="error-page-social-link" href="mailto:contact@pklavc.com" data-error-copy="email">Email</a>
                 </div>
-                <p class="error-page-help">If you entered the URL manually, please check the spelling and try again.</p>
+                <p class="error-page-help" data-error-copy="help">If you entered the URL manually, please check the spelling and try again.</p>
             </section>
         </main>
         <footer class="footer-minimal">
-        <p class="footer-meta"><span class="footer-legal-inline" aria-label="Legal links"><a class="footer-legal-link" href="/privacy-policy/">Privacy Policy</a><span aria-hidden="true">/</span><a class="footer-legal-link" href="/terms-of-use/">Terms of Use</a><span aria-hidden="true">/</span><a class="footer-legal-link" href="/editorial-policy/">Editorial Policy</a></span></p></footer>
+            <div class="footer-container">
+                <div class="footer-link-list" aria-label="Footer links">
+                    <a class="footer-link-pill" href="https://github.com/PkLavc" target="_blank" rel="noopener noreferrer">GitHub</a>
+                    <a class="footer-link-pill" href="https://www.linkedin.com/in/pklavc/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+                    <a class="footer-link-pill" href="mailto:contact@pklavc.com" data-footer-copy="email">Email</a>
+                    <a class="footer-link-pill footer-link-pill-accent" href="https://github.com/sponsors/PkLavc" target="_blank" rel="noopener noreferrer" data-footer-copy="sponsor">Sponsor me</a>
+                </div>
+                <p class="footer-meta"><span class="footer-copyright-line">&copy; <span data-current-year></span> Patrick Araujo</span> <span class="footer-meta-separator">&bull;</span><span class="footer-legal-inline" aria-label="Legal links"><a class="footer-legal-link" href="/privacy-policy/" data-footer-legal="privacy">Privacy Policy</a><span aria-hidden="true">/</span><a class="footer-legal-link" href="/terms-of-use/" data-footer-legal="terms">Terms of Use</a><span aria-hidden="true">/</span><a class="footer-legal-link" href="/editorial-policy/" data-footer-legal="editorial">Editorial Policy</a></span></p>
+            </div>
+        </footer>
     </div>
     <script>
         (function() {
-            var nav = document.getElementById('navigation-content');
-            var menu = document.querySelector('.menubar');
+            var path = window.location.pathname.toLowerCase();
+            var locale = path.indexOf('/pt/') === 0 || path === '/pt' ? 'pt' : (path.indexOf('/es/') === 0 || path === '/es' ? 'es' : 'en');
+            var copy = {
+                en: {
+                    lang: 'en',
+                    pageTitle: '404 | Page Not Found | Patrick Araujo',
+                    description: 'The page you are looking for cannot be found. Return to Patrick Araujo\'s portfolio to explore backend projects, articles, and professional contact options.',
+                    navAria: 'Primary navigation',
+                    menuAria: 'Open navigation',
+                    contactAria: 'Contact links',
+                    footerAria: 'Footer links',
+                    legalAria: 'Legal links',
+                    nav: { home: 'HOME', about: 'ABOUT', projects: 'PROJECTS', blog: 'BLOG' },
+                    routes: { home: '/', about: '/about/', projects: '/projects/', blog: '/blog/' },
+                    title: 'Page Not Found',
+                    message: 'The page you are looking for may have been removed, had its name changed, or is temporarily unavailable. Return to the portfolio to explore systems architecture, API integration, and intelligent automation solutions.',
+                    actions: { home: 'Back to Home', about: 'About', projects: 'View Projects', blog: 'Blog' },
+                    help: 'If you entered the URL manually, please check the spelling and try again.',
+                    email: 'Email',
+                    sponsor: 'Sponsor me',
+                    legal: {
+                        privacy: ['Privacy Policy', '/privacy-policy/'],
+                        terms: ['Terms of Use', '/terms-of-use/'],
+                        editorial: ['Editorial Policy', '/editorial-policy/']
+                    }
+                },
+                pt: {
+                    lang: 'pt-BR',
+                    pageTitle: '404 | P\u00e1gina n\u00e3o encontrada | Patrick Araujo',
+                    description: 'A p\u00e1gina que voc\u00ea procura n\u00e3o foi encontrada. Volte ao portf\u00f3lio de Patrick Araujo para explorar projetos backend, artigos e formas de contato profissional.',
+                    navAria: 'Navega\u00e7\u00e3o principal',
+                    menuAria: 'Abrir navega\u00e7\u00e3o',
+                    contactAria: 'Links de contato',
+                    footerAria: 'Links de rodap\u00e9',
+                    legalAria: 'Links legais',
+                    nav: { home: 'IN\u00cdCIO', about: 'SOBRE', projects: 'PROJETOS', blog: 'BLOG' },
+                    routes: { home: '/pt/', about: '/pt/sobre/', projects: '/pt/projetos/', blog: '/pt/blog/' },
+                    title: 'P\u00e1gina n\u00e3o encontrada',
+                    message: 'A p\u00e1gina que voc\u00ea procura pode ter sido removida, renomeada ou estar temporariamente indispon\u00edvel. Volte ao portf\u00f3lio para explorar arquitetura de sistemas, integra\u00e7\u00f5es de APIs e automa\u00e7\u00f5es inteligentes.',
+                    actions: { home: 'Voltar ao in\u00edcio', about: 'Sobre', projects: 'Ver projetos', blog: 'Blog' },
+                    help: 'Se voc\u00ea digitou a URL manualmente, confira o endere\u00e7o e tente novamente.',
+                    email: 'E-mail',
+                    sponsor: 'Apoiar no GitHub',
+                    legal: {
+                        privacy: ['Pol\u00edtica de Privacidade', '/pt/politica-de-privacidade/'],
+                        terms: ['Termos de Uso', '/pt/termos-de-uso/'],
+                        editorial: ['Pol\u00edtica Editorial', '/pt/politica-editorial/']
+                    }
+                },
+                es: {
+                    lang: 'es',
+                    pageTitle: '404 | P\u00e1gina no encontrada | Patrick Araujo',
+                    description: 'La p\u00e1gina que buscas no se encontr\u00f3. Vuelve al portafolio de Patrick Araujo para explorar proyectos backend, art\u00edculos y opciones de contacto profesional.',
+                    navAria: 'Navegaci\u00f3n principal',
+                    menuAria: 'Abrir navegaci\u00f3n',
+                    contactAria: 'Enlaces de contacto',
+                    footerAria: 'Enlaces de pie de p\u00e1gina',
+                    legalAria: 'Enlaces legales',
+                    nav: { home: 'INICIO', about: 'SOBRE', projects: 'PROYECTOS', blog: 'BLOG' },
+                    routes: { home: '/es/', about: '/es/sobre/', projects: '/es/proyectos/', blog: '/es/blog/' },
+                    title: 'P\u00e1gina no encontrada',
+                    message: 'La p\u00e1gina que buscas puede haber sido eliminada, renombrada o estar temporalmente no disponible. Vuelve al portafolio para explorar arquitectura de sistemas, integraciones de APIs y automatizaciones inteligentes.',
+                    actions: { home: 'Volver al inicio', about: 'Sobre', projects: 'Ver proyectos', blog: 'Blog' },
+                    help: 'Si escribiste la URL manualmente, revisa la direcci\u00f3n e int\u00e9ntalo de nuevo.',
+                    email: 'Correo',
+                    sponsor: 'Apoyar en GitHub',
+                    legal: {
+                        privacy: ['Pol\u00edtica de Privacidad', '/es/politica-de-privacidad/'],
+                        terms: ['T\u00e9rminos de Uso', '/es/terminos-de-uso/'],
+                        editorial: ['Pol\u00edtica Editorial', '/es/politica-editorial/']
+                    }
+                }
+            };
+            var text = copy[locale] || copy.en;
 
-            if (!nav || !menu) {
-                return;
+            function setText(selector, value) {
+                var node = document.querySelector(selector);
+                if (node) node.textContent = value;
             }
 
-            function closeMenu() {
-                nav.classList.remove('is-open');
+            function setMeta(selector, value) {
+                var node = document.querySelector(selector);
+                if (node) node.setAttribute('content', value);
             }
 
-            menu.addEventListener('click', function(event) {
-                event.preventDefault();
-                event.stopPropagation();
-                nav.classList.toggle('is-open');
+            function setRoute(link, label, href) {
+                if (!link) return;
+                link.href = href;
+                link.textContent = label;
+                link.setAttribute('data-text', label);
+            }
+
+            document.documentElement.lang = text.lang;
+            document.title = text.pageTitle;
+            setMeta('meta[name="description"]', text.description);
+            setMeta('meta[property="og:title"]', text.pageTitle);
+            setMeta('meta[property="og:description"]', text.description);
+            setMeta('meta[name="twitter:title"]', text.pageTitle);
+            setMeta('meta[name="twitter:description"]', text.description);
+            setText('[data-error-copy="title"]', text.title);
+            setText('[data-error-copy="description"]', text.message);
+            setText('[data-error-copy="help"]', text.help);
+            setText('[data-error-copy="email"]', text.email);
+            setText('[data-footer-copy="email"]', text.email);
+            setText('[data-footer-copy="sponsor"]', text.sponsor);
+
+            setRoute(document.getElementById('home-link'), text.nav.home, text.routes.home);
+            setRoute(document.getElementById('about-link'), text.nav.about, text.routes.about);
+            setRoute(document.getElementById('projects-link'), text.nav.projects, text.routes.projects);
+            setRoute(document.getElementById('blog-link'), text.nav.blog, text.routes.blog);
+            setRoute(document.querySelector('[data-error-link="home"]'), text.actions.home, text.routes.home);
+            setRoute(document.querySelector('[data-error-link="about"]'), text.actions.about, text.routes.about);
+            setRoute(document.querySelector('[data-error-link="projects"]'), text.actions.projects, text.routes.projects);
+            setRoute(document.querySelector('[data-error-link="blog"]'), text.actions.blog, text.routes.blog);
+
+            document.querySelector('#navigation-content').setAttribute('aria-label', text.navAria);
+            document.querySelector('.menubar').setAttribute('aria-label', text.menuAria);
+            document.querySelector('.error-page-social').setAttribute('aria-label', text.contactAria);
+            document.querySelector('.footer-link-list').setAttribute('aria-label', text.footerAria);
+            document.querySelector('.footer-legal-inline').setAttribute('aria-label', text.legalAria);
+
+            Object.keys(text.legal).forEach(function(key) {
+                var link = document.querySelector('[data-footer-legal="' + key + '"]');
+                if (!link) return;
+                link.textContent = text.legal[key][0];
+                link.href = text.legal[key][1];
             });
 
-            document.addEventListener('click', function(event) {
-                if (!nav.classList.contains('is-open')) {
-                    return;
-                }
-
-                if (!nav.contains(event.target) && !menu.contains(event.target)) {
-                    closeMenu();
-                }
-            });
-
-            nav.querySelectorAll('a').forEach(function(link) {
-                link.addEventListener('click', closeMenu);
+            document.querySelectorAll('[data-current-year]').forEach(function(node) {
+                node.textContent = String(new Date().getFullYear());
             });
         })();
     </script>
+    <script src="/js/i18n.js?v=02a6baa07c" defer></script>
+    <script src="/js/jquery.min.js?v=91e8044a4b" defer></script>
+    <script src="/js/index.js?v=e40ffee4ba" defer></script>
 </body>
 </html>
