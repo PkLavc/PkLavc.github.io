@@ -866,7 +866,9 @@ body {
     overflow: hidden;
     padding: 2px 0 12px;
     cursor: grab;
-    touch-action: pan-y pinch-zoom;
+    touch-action: pan-y;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
 }
 
 .about-project-carousel-track {
@@ -908,7 +910,9 @@ body {
     color: #ffffff;
     text-decoration: none;
     user-select: none;
+    -webkit-user-select: none;
     -webkit-user-drag: none;
+    touch-action: pan-y;
     transition: border-color .22s ease, background .22s ease, transform .22s ease;
 }
 

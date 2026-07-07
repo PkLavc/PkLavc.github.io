@@ -444,6 +444,61 @@ function setupAboutProjectCarouselDrag() {
       return offset;
     }
 
+    function beginDrag(clientX, clientY, pointerId, isTouchFallback) {
+      clearResumeTimer();
+      dragState = {
+        pointerId: pointerId,
+        startX: clientX,
+        startY: clientY,
+        startOffset: getCurrentTranslateX(),
+        moved: false,
+        captured: false,
+        isTouchFallback: Boolean(isTouchFallback)
+      };
+    }
+
+    function moveDrag(clientX, clientY, event) {
+      var deltaX;
+      var deltaY;
+
+      if (!dragState) {
+        return;
+      }
+
+      deltaX = clientX - dragState.startX;
+      deltaY = clientY - dragState.startY;
+
+      if (!dragState.moved) {
+        if (Math.abs(deltaX) <= 6) {
+          return;
+        }
+
+        if (dragState.isTouchFallback && Math.abs(deltaY) > Math.abs(deltaX)) {
+          return;
+        }
+
+        dragState.moved = true;
+        dragState.startOffset = getCurrentTranslateX() - deltaX;
+        pauseCarouselAt(dragState.startOffset + deltaX);
+        carousel.classList.add('is-dragging');
+
+        if (!dragState.isTouchFallback && typeof carousel.setPointerCapture === 'function') {
+          try {
+            carousel.setPointerCapture(dragState.pointerId);
+            dragState.captured = true;
+          } catch (error) {
+            dragState.captured = false;
+          }
+        }
+      }
+
+      setOffset(dragState.startOffset + deltaX);
+
+      if (event && typeof event.preventDefault === 'function') {
+        event.preventDefault();
+      }
+    }
+
     carousel.addEventListener('click', function(event) {
       if (!suppressClick) {
         return;
@@ -458,47 +513,15 @@ function setupAboutProjectCarouselDrag() {
         return;
       }
 
-      clearResumeTimer();
-      dragState = {
-        pointerId: event.pointerId,
-        startX: event.clientX,
-        startOffset: getCurrentTranslateX(),
-        moved: false,
-        captured: false
-      };
+      beginDrag(event.clientX, event.clientY, event.pointerId, false);
     });
 
     carousel.addEventListener('pointermove', function(event) {
-      var deltaX;
-
       if (!dragState || dragState.pointerId !== event.pointerId) {
         return;
       }
 
-      deltaX = event.clientX - dragState.startX;
-
-      if (!dragState.moved && Math.abs(deltaX) <= 6) {
-        return;
-      }
-
-      if (!dragState.moved) {
-        dragState.moved = true;
-        dragState.startOffset = getCurrentTranslateX() - deltaX;
-        pauseCarouselAt(dragState.startOffset + deltaX);
-        carousel.classList.add('is-dragging');
-
-        if (typeof carousel.setPointerCapture === 'function') {
-          try {
-            carousel.setPointerCapture(event.pointerId);
-            dragState.captured = true;
-          } catch (error) {
-            dragState.captured = false;
-          }
-        }
-      }
-
-      setOffset(dragState.startOffset + deltaX);
-      event.preventDefault();
+      moveDrag(event.clientX, event.clientY, event);
     });
 
     function endDrag() {
@@ -530,7 +553,7 @@ function setupAboutProjectCarouselDrag() {
         scheduleCarouselResume();
         window.setTimeout(function() {
           suppressClick = false;
-        }, 120);
+        }, 420);
       } else if (carousel.classList.contains('is-user-paused')) {
         scheduleCarouselResume();
       }
@@ -549,6 +572,40 @@ function setupAboutProjectCarouselDrag() {
         endDrag();
       }
     }, true);
+
+    carousel.addEventListener('touchstart', function(event) {
+      var touch;
+
+      if (dragState || event.touches.length !== 1) {
+        return;
+      }
+
+      touch = event.touches[0];
+      beginDrag(touch.clientX, touch.clientY, 'touch', true);
+    }, { passive: true });
+
+    carousel.addEventListener('touchmove', function(event) {
+      var touch;
+
+      if (!dragState || !dragState.isTouchFallback || event.touches.length !== 1) {
+        return;
+      }
+
+      touch = event.touches[0];
+      moveDrag(touch.clientX, touch.clientY, event);
+    }, { passive: false });
+
+    carousel.addEventListener('touchend', function() {
+      if (dragState && dragState.isTouchFallback) {
+        endDrag();
+      }
+    }, { passive: true });
+
+    carousel.addEventListener('touchcancel', function() {
+      if (dragState && dragState.isTouchFallback) {
+        endDrag();
+      }
+    }, { passive: true });
 
     window.addEventListener('resize', function() {
       setOffset(normalizeOffset(offset));
