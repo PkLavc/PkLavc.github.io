@@ -215,6 +215,99 @@ body.site-page-layout {
     margin: 0;
 }
 
+.resume-metric-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.resume-metric-card {
+    min-height: 132px;
+    border: 1px solid rgba(0, 209, 255, 0.2);
+    border-radius: 8px;
+    background:
+        linear-gradient(135deg, rgba(0, 209, 255, 0.09), transparent 52%),
+        rgba(8, 12, 16, 0.74);
+    padding: 18px;
+}
+
+.resume-metric-card strong {
+    display: block;
+    color: #00d1ff;
+    font: 900 clamp(1.5rem, 4vw, 2.4rem)/1 Inter, sans-serif;
+    letter-spacing: 0;
+}
+
+.resume-metric-card span {
+    display: block;
+    margin-top: 10px;
+    color: rgba(244, 247, 251, 0.78);
+    font-size: 0.92rem;
+    line-height: 1.5;
+}
+
+.resume-experience-list {
+    display: grid;
+    gap: 16px;
+}
+
+.resume-bullets {
+    display: grid;
+    gap: 8px;
+    margin-top: 12px;
+    padding-left: 18px;
+}
+
+.resume-bullets li {
+    color: rgba(244, 247, 251, 0.76);
+    line-height: 1.62;
+}
+
+.resume-stack-list {
+    display: grid;
+    gap: 12px;
+    list-style: none;
+}
+
+.resume-stack-list li {
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.04);
+    padding: 16px;
+    color: rgba(244, 247, 251, 0.76);
+    line-height: 1.6;
+}
+
+.resume-stack-list strong {
+    display: block;
+    margin-bottom: 4px;
+    color: #fff;
+}
+
+.credential-list {
+    display: grid;
+    gap: 8px;
+    margin-top: 12px;
+    padding-left: 18px;
+}
+
+.credential-list li {
+    color: rgba(244, 247, 251, 0.76);
+    line-height: 1.58;
+}
+
+.credential-list strong {
+    color: #fff;
+    font-weight: 800;
+}
+
+.credential-note {
+    margin-top: 16px;
+    color: rgba(244, 247, 251, 0.64);
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
 .status-grid {
     display: grid;
     gap: 12px;
@@ -363,7 +456,8 @@ body.site-page-layout {
     }
 
     .site-page-grid,
-    .site-page-grid.two {
+    .site-page-grid.two,
+    .resume-metric-grid {
         grid-template-columns: 1fr;
     }
 

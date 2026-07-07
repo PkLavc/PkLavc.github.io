@@ -425,20 +425,51 @@ ${card("Systems Portfolio", "Supporting projects around SaaS backends, zero-trus
 
   writeFile("resume/index.html", page({
     title: "Resume",
-    description: "Resume-style summary for Patrick Araujo, covering backend engineering, AI systems, automation, API integrations, and software architecture.",
+    description: "Public resume for Patrick Araujo, Backend Software Engineer focused on applied AI, API integrations, automation, data pipelines, and internal platforms.",
     canonical: "/resume/",
-    kicker: "Private route",
-    lead: "Backend and AI-oriented software engineer focused on automation, API integrations, operational data pipelines, RAG workflows, and production-minded web systems.",
-    body: `<section class="site-page-section"><h2>Experience</h2><div class="site-page-grid two">
-<article class="site-page-card"><div class="resume-role"><h2>Temporary Contracts</h2><span class="resume-period">Backend / Automation</span></div><p>Built API integrations, scheduled data collection jobs, reporting automations, OAuth dispatch flows, and SQL-backed operational datasets across CRM, ERP, call, and service systems.</p></article>
-<article class="site-page-card"><div class="resume-role"><h2>Independent Engineering Projects</h2><span class="resume-period">AI / Software</span></div><p>Developed public and local systems involving RAG, AI assistants, multi-agent orchestration, backend architecture, visitor analytics, project documentation, and static site infrastructure.</p></article>
+    kicker: "Career profile",
+    lead: "Backend Software Engineer focused on applied AI, API integrations, automation, data pipelines, and scalable internal platforms. I build systems that reduce manual work, improve data reliability, and keep operational workflows traceable.",
+    actions: `<div class="site-page-actions"><a class="site-page-button" href="/projects/">View projects</a><a class="site-page-button secondary" href="/about/">About</a><a class="site-page-button secondary" href="mailto:contact@pklavc.com">Professional contact</a></div>`,
+    body: `<section class="site-page-section"><h2>Impact Snapshot</h2><div class="resume-metric-grid">
+<article class="resume-metric-card"><strong>3h/day</strong><span>Manual operational and financial reporting work removed per analyst through scheduled automations.</span></article>
+<article class="resume-metric-card"><strong>35-40%</strong><span>API response time improvement from backend optimization, caching, validation, and execution control.</span></article>
+<article class="resume-metric-card"><strong>40%</strong><span>Reduction in data processing time across operational routines and reporting pipelines.</span></article>
+<article class="resume-metric-card"><strong>25+</strong><span>Internal tools delivered for operations, support, inventory, data analysis, and process control.</span></article>
 </div></section>
-<section class="site-page-section"><h2>Strengths</h2><ul class="site-page-list">
-<li><strong>Backend Engineering</strong>API design, workers, queues, data modeling, integrations, auth boundaries, and operational reporting.</li>
-<li><strong>AI Systems</strong>RAG, prompt boundaries, context loading, agent workflows, local model experimentation, and evaluation-aware design.</li>
-<li><strong>Software Delivery</strong>Static deployments, cache-busting, GitHub Actions, Cloudflare Workers, observability, and privacy-aware telemetry.</li>
+<section class="site-page-section"><h2>Professional Summary</h2><div class="site-page-grid two">
+${card("Engineering Focus", "I combine backend engineering, applied AI, automation, data, cloud, and software architecture to build internal platforms that make business operations faster, more reliable, and easier to audit.", ["Backend", "AI", "Automation"])}
+${card("System Shape", "My work covers RAG assistants, internal AI platforms, API integrations, ETL pipelines, data synchronization, operational dashboards, reprocessing flows, logs, permissions, and traceable workflows.", ["RAG", "ETL", "Traceability"])}
+</div></section>
+<section class="site-page-section"><h2>Core Stack</h2><ul class="resume-stack-list">
+<li><strong>Languages</strong>Python, JavaScript, TypeScript, SQL, Deluge, and C#.</li>
+<li><strong>Backend &amp; APIs</strong>FastAPI, Node.js, REST APIs, Webhooks, system design, API integrations, asynchronous processing, caching, business rules, and backend validations.</li>
+<li><strong>Data &amp; BI</strong>PostgreSQL, Supabase, SQL, ETL pipelines, data modeling, Looker Studio, Power BI, dashboards, operational reporting, and data analysis.</li>
+<li><strong>Cloud &amp; DevOps</strong>AWS EC2, S3, Lambda, RDS, Google Cloud, Cloudflare Workers, D1, KV, Docker, GitHub Actions, and CI/CD.</li>
+<li><strong>Automation &amp; Integration</strong>Zoho Creator, Deluge, Omie, SIGE, Hablla, Zenvia Voice, Google Sheets, scheduled routines, integration pipelines, and data auditing.</li>
+<li><strong>AI Systems</strong>RAG, LLM integrations, ChromaDB, Ollama, LangGraph-style orchestration, vector memory, internal assistants, AI automation, and prompt engineering.</li>
 </ul></section>
-<section class="site-page-section"><h2>Technology</h2><div class="site-page-chip-row"><span class="site-page-chip">Python</span><span class="site-page-chip">JavaScript</span><span class="site-page-chip">TypeScript</span><span class="site-page-chip">SQL</span><span class="site-page-chip">FastAPI</span><span class="site-page-chip">Node.js</span><span class="site-page-chip">Cloudflare Workers</span><span class="site-page-chip">Supabase</span><span class="site-page-chip">PostgreSQL</span><span class="site-page-chip">RAG</span><span class="site-page-chip">GitHub Actions</span></div></section>`
+<section class="site-page-section"><h2>Experience</h2><div class="resume-experience-list">
+<article class="site-page-card"><div class="resume-role"><h2>Backend Software Engineer - Applied AI, APIs &amp; Systems Integration</h2><span class="resume-period">Loja do Sapo / Hybrid / Sep 2025 - Present</span></div><ul class="resume-bullets"><li>Develop backend platforms, internal systems, corporate automations, API integrations, ETL pipelines, dashboards, and applied AI solutions for operational, financial, and administrative workflows.</li><li>Designed an internal AI-powered operational platform with FastAPI, React, task Kanban, multi-agent orchestration, RAG, vector memory, execution queues, logs, traceability, and real-time observability.</li><li>Developed an internal AI assistant using Cloudflare Workers, TypeScript, D1, KV, caching, sessions, manual RAG, intent recognition, and fallback between LLM providers.</li><li>Built REST API integrations across more than 6 business systems connecting Zoho, Google Cloud, AWS, financial data, operational reports, third-party services, and internal platforms.</li><li>Supported systems handling 8K to 12K daily transactions while improving API response times by roughly 35% to 40% and reducing data processing time by roughly 40%.</li></ul></article>
+<article class="site-page-card"><div class="resume-role"><h2>Solutions Engineer - Systems Integration, Data &amp; Cloud</h2><span class="resume-period">iCaiu / Remote / Mar 2025 - Present</span></div><ul class="resume-bullets"><li>Work on systems integration, REST APIs, ETL, backend automation, cloud, databases, BI, data governance, and solution architecture to replace manual processes with automated workflows.</li><li>Designed integration architecture across CRM, ERP, telephony, financial, inventory, customer service, and operational systems.</li><li>Built backend pipelines and integration workers executed locally or through GitHub Actions for collecting, normalizing, transforming, persisting, and synchronizing operational data.</li><li>Persisted data in Supabase PostgreSQL using raw tables, idempotent external IDs, reproducible collection windows, sanitized logs, cron scheduling, workflow_dispatch, and SQL reporting layers.</li><li>Worked on serverless backend and full-stack solutions for inventory control, authentication, permissions, operational CRUD, movement history, maintenance, automated deployment, and CI/CD.</li></ul></article>
+<article class="site-page-card"><div class="resume-role"><h2>Zoho Creator, Automation &amp; Web Dashboards Developer</h2><span class="resume-period">Federico Nacucchio y Asociados / Remote LATAM / May 2026 - Jun 2026</span></div><ul class="resume-bullets"><li>Developed Zoho Creator solutions, Deluge scripts, custom HTML/CSS/JavaScript components, dashboards, reports, forms, permissions, mobile layouts, and automations for legal and administrative workflows.</li><li>Created embedded HTML dashboards and internal pages to improve KPI visualization, demand tracking, data organization, and decision-making support.</li><li>Implemented Deluge automations connecting forms, reports, tasks, file records, scheduled sending routines, and email-based operational reports.</li></ul></article>
+<article class="site-page-card"><div class="resume-role"><h2>Software Developer - Data, Workflows &amp; Automation</h2><span class="resume-period">Loja do Sapo / Hybrid / Oct 2024 - Aug 2025</span></div><ul class="resume-bullets"><li>Developed automations, workflows, business rules, validations, and operational reports using Python, Deluge, JavaScript, Zoho Creator, Zoho Analytics, Google Sheets, Looker Studio, REST APIs, SQL, and internal integrations.</li><li>Implemented more than 20 automated workflows to reduce repetitive tasks, standardize administrative processes, validate operational data, and improve report consistency.</li><li>Created data extraction, processing, and organization routines for dashboards, indicators, monitoring panels, and management reports.</li></ul></article>
+<article class="site-page-card"><div class="resume-role"><h2>Operations, Automation &amp; Technical Support Specialist</h2><span class="resume-period">WR Auto Pecas / Nov 2015 - Feb 2026</span></div><ul class="resume-bullets"><li>Worked in technical operations, process automation, systems support, inventory control, data organization, and internal tool development for administrative, tax, logistics, and customer service routines.</li><li>Developed more than 25 internal tools using Python, JavaScript, HTML, CSS, and automated spreadsheets for operational control, data analysis, inventory, deliveries, tax documents, and process organization.</li><li>Created automations that saved approximately 30 to 35 hours per week in manual tasks and maintained websites, web tools, local servers, cloud backups, support routines, tax systems, and critical operational information.</li></ul></article>
+</div></section>
+<section class="site-page-section"><h2>Selected Engineering Themes</h2><div class="site-page-grid two">
+${card("AI Platforms & Assistants", "Internal assistants, contextual search, RAG retrieval, vector memory, prompt boundaries, provider fallback, execution logs, and controlled tool usage.", ["RAG", "Assistants", "Memory"])}
+${card("Integration Pipelines", "Workers and scheduled jobs for Zoho, Omie, SIGE, Hablla, Zenvia Voice, Supabase, AWS, Google Cloud, spreadsheets, and internal platforms.", ["APIs", "ETL", "Sync"])}
+${card("Reliable Operations", "Audit-friendly data flows with raw ingestion, SQL layers, idempotency, replay windows, sanitized logs, validation, reprocessing, and observability.", ["Audit", "Logs", "Reprocess"])}
+${card("Internal Tooling", "Operational CRUD systems, dashboards, permissions, automations, reporting layers, deployment flows, and support tools that reduce manual work.", ["Tools", "Dashboards", "CI/CD"])}
+</div></section>
+<section class="site-page-section"><h2>Education &amp; Certifications</h2><div class="site-page-grid two">
+<article class="site-page-card"><h2>Computer Engineering</h2><p>Bachelor of Engineering, Centro Universitario Newton Paiva. Ongoing degree focused on programming, algorithms, data structures, applied mathematics, computer systems, databases, software engineering, automation, cloud, and systems architecture.</p></article>
+<article class="site-page-card"><h2>Selected Certifications</h2><ul class="credential-list"><li><strong>Google</strong> Cybersecurity Professional Certificate, Data Analytics Professional Certificate, AI Essentials, Prompting Essentials, Linux and SQL, and Automate Cybersecurity Tasks with Python.</li><li><strong>Cloud and observability</strong> AWS Cloud Quest: Cloud Practitioner and Datadog Foundation.</li><li><strong>Programming and BI</strong> Python from Santander Open Academy, C# Complete: Object-Oriented Programming + Projects, Python with RPA, algorithms and programming logic, and Power BI training.</li><li><strong>Business and communication</strong> Project management foundations, English Fundamentals, Business English, leadership, people management, recruiting, finance, ethics, and integrity.</li></ul><p class="credential-note"><a href="/certifications/">View the certification map</a> for the broader grouped list.</p></article>
+</div></section>
+<section class="site-page-section"><h2>Languages</h2><ul class="site-page-list">
+<li><strong>Portuguese</strong>Native.</li>
+<li><strong>English</strong>Intermediate, focused on technical reading, documentation, professional writing, and asynchronous communication.</li>
+<li><strong>Spanish</strong>Intermediate for written communication and operational interaction with translation support.</li>
+</ul></section>`
   }));
 
   const changes = changelogEntries().map((entry) => `<li><span class="changelog-date">${escapeHtml(entry.date)}${entry.hash ? ` / ${escapeHtml(entry.hash)}` : ""}</span><strong>${escapeHtml(changelogLabel(entry.message))}</strong></li>`).join("\n");
@@ -497,18 +528,37 @@ ${card("Long Bio", "Patrick builds software around operational clarity: APIs tha
 
   writeFile("certifications/index.html", page({
     title: "Certifications",
-    description: "Certification and study areas for Patrick Araujo across academic background, cloud exposure, AI/LLM studies, backend engineering, security, and reliability.",
+    description: "Curated certification map for Patrick Araujo across Google AI, cybersecurity, data analytics, cloud, observability, backend programming, BI, business, and languages.",
     canonical: "/certifications/",
-    kicker: "Learning map",
-    lead: "A structured view of the study areas and certification themes that support Patrick Araujo's backend, AI, automation, security, and reliability work.",
-    body: `<section class="site-page-section"><h2>Areas</h2><div class="site-page-grid">
-${card("Academic Background", "Project management, data analysis, business process organization, and foundational software engineering study.", ["Academic", "Data", "Process"])}
-${card("Cloud Exposure", "AWS Cloud Practitioner study, Cloudflare Workers, Pages, D1/KV, GitHub Pages, and deployment automation.", ["AWS", "Cloudflare", "CI/CD"])}
-${card("AI / LLM Studies", "Google AI Essentials, prompting, responsible AI, RAG, local LLMs, agent workflows, and AI-assisted development.", ["AI", "LLM", "RAG"])}
-${card("Backend Engineering", "Python, FastAPI, Node.js, TypeScript, SQL, APIs, workers, queues, integration design, and data pipelines.", ["Python", "APIs", "SQL"])}
-${card("Security And Reliability", "Google Cybersecurity, Linux, SQL, detection and response, API boundaries, observability, and operational resilience.", ["Security", "Reliability", "Observability"])}
-${card("Data And Analytics", "Google Data Analytics, cleaning, exploration, visualization, dashboards, reporting pipelines, and data modeling.", ["Analytics", "ETL", "Dashboards"])}
-</div></section>`
+    kicker: "Credential map",
+    lead: "A curated public view of the certificates and study tracks behind my backend, AI, automation, data, security, cloud, and software engineering work.",
+    actions: `<div class="site-page-actions"><a class="site-page-button" href="/resume/">Resume</a><a class="site-page-button secondary" href="/projects/">Projects</a></div>`,
+    body: `<section class="site-page-section"><h2>Primary Credentials</h2><div class="site-page-grid two">
+${card("Google Cybersecurity Professional Certificate", "Security foundations, risk management, networks, Linux, SQL, assets, threats, vulnerabilities, detection, response, and Python-based cybersecurity automation.", ["Google", "Security", "Python"])}
+${card("Google Data Analytics Professional Certificate", "Data foundations, business questions, preparation, cleaning, processing, visualization, capstone work, and Python-based data analysis.", ["Google", "Analytics", "BI"])}
+${card("Google AI Essentials & Prompting Essentials", "Responsible AI, everyday AI tooling, prompt design, creative and expert-partner workflows, productivity, and presentation-building with AI.", ["Google", "AI", "Prompting"])}
+${card("Cloud & Observability", "AWS Cloud Quest: Cloud Practitioner and Datadog Foundation, supporting cloud fluency, monitoring vocabulary, and operational reliability work.", ["AWS", "Datadog", "Reliability"])}
+</div></section>
+<section class="site-page-section"><h2>Google AI &amp; Prompting</h2><div class="site-page-grid two">
+<article class="site-page-card"><h2>Applied AI</h2><ul class="credential-list"><li>Google AI Essentials</li><li>Introduction to AI</li><li>Maximize Productivity With AI Tools</li><li>Use AI Responsibly</li><li>Use AI as a Creative or Expert Partner</li><li>Stay Ahead of the AI Curve</li><li>Accelerate Your Job Search with AI</li></ul></article>
+<article class="site-page-card"><h2>Prompting</h2><ul class="credential-list"><li>Google Prompting Essentials</li><li>Discover the Art of Prompting</li><li>Design Prompts for Everyday Work Tasks</li><li>Start Writing Prompts Like a Pro</li><li>Speed Up Data Analysis and Presentation Building</li></ul></article>
+</div></section>
+<section class="site-page-section"><h2>Google Cybersecurity</h2><div class="site-page-grid two">
+<article class="site-page-card"><h2>Security Foundations</h2><ul class="credential-list"><li>Foundations of Cybersecurity</li><li>Play It Safe: Manage Security Risks</li><li>Connect and Protect: Networks and Network Security</li><li>Assets, Threats, and Vulnerabilities</li></ul></article>
+<article class="site-page-card"><h2>Operational Security</h2><ul class="credential-list"><li>Tools of the Trade: Linux and SQL</li><li>Sound the Alarm: Detection and Response</li><li>Automate Cybersecurity Tasks with Python</li><li>Put It to Work: Prepare for Cybersecurity Jobs</li></ul></article>
+</div></section>
+<section class="site-page-section"><h2>Google Data &amp; Analytics</h2><div class="site-page-grid two">
+<article class="site-page-card"><h2>Analytics Core</h2><ul class="credential-list"><li>Foundations: Data, Data, Everywhere</li><li>Ask Questions to Make Data-Driven Decisions</li><li>Prepare Data for Exploration</li><li>Process Data from Dirty to Clean</li><li>Share Data Through the Art of Visualization</li></ul></article>
+<article class="site-page-card"><h2>Analysis Practice</h2><ul class="credential-list"><li>Google Data Analytics Capstone: Complete a Case Study</li><li>Introduction to Data Analysis Using Python</li><li>Fundamentals of Project Management</li><li>Project Initiation: Starting a Successful Project</li></ul></article>
+</div></section>
+<section class="site-page-section"><h2>Programming, Backend &amp; BI</h2><div class="site-page-grid two">
+<article class="site-page-card"><h2>Programming</h2><ul class="credential-list"><li>Python, Santander Open Academy</li><li>C# Complete: Object-Oriented Programming + Projects, Udemy</li><li>Algorithms and Programming Logic, Udemy</li><li>Python with RPA and Real Projects, Udemy</li><li>Cedaspy foundational computing and Game Maker training</li></ul></article>
+<article class="site-page-card"><h2>BI and Tools</h2><ul class="credential-list"><li>Power BI training, Udemy</li><li>Info-office and Power BI training</li><li>Datadog Foundation</li><li>GitHub academic extension activity</li><li>Newton Paiva extension and career development activities</li></ul></article>
+</div></section>
+<section class="site-page-section"><h2>Business, Languages &amp; Leadership</h2><div class="site-page-grid two">
+<article class="site-page-card"><h2>Business Operations</h2><ul class="credential-list"><li>People Management, Sebrae</li><li>Leadership: Developing High-Performance Teams, Sebrae</li><li>Recruiting and Selection, Sebrae</li><li>Financial Management, Sebrae</li><li>Ethics and Integrity, Sebrae</li></ul></article>
+<article class="site-page-card"><h2>Languages and Communication</h2><ul class="credential-list"><li>English Fundamentals: Boost Your Job Search and CV, Santander</li><li>Business English, Parts 1, 2, and 3, Santander</li><li>English studies, Kultive</li><li>Accelerated learning, Kultive</li><li>Resume and job-market training, Newton Paiva</li></ul></article>
+</div><p class="credential-note">This page groups the most relevant public credentials from the local certificate archive. Older or less relevant certificates are kept as supporting records instead of being listed as primary technical signals.</p></section>`
   }));
 
   writeFile("maintenance/index.html", page({
