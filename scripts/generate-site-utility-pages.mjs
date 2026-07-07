@@ -25,15 +25,24 @@ function escapeHtml(value) {
     .replace(/"/g, "&quot;");
 }
 
-function head({ title, description, canonical, robots = "index, follow" }) {
+function jsonLdScripts(structuredData = []) {
+  const blocks = Array.isArray(structuredData) ? structuredData : [structuredData];
+  if (!blocks.length) return "";
+  return "\n" + blocks
+    .map((data) => `        <script type="application/ld+json">${JSON.stringify(data).replace(/</g, "\\u003c")}</script>`)
+    .join("\n");
+}
+
+function head({ title, description, canonical, robots = "index, follow", ogTitle = title, twitterTitle = ogTitle, structuredData = [] }) {
   const absolute = canonical.startsWith("http") ? canonical : `${SITE}${canonical}`;
+  const jsonLd = jsonLdScripts(structuredData);
   return `    <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="author" content="Patrick Araujo">
         <meta name="description" content="${escapeHtml(description)}">
         <meta name="robots" content="${robots}">
-        <meta property="og:title" content="${escapeHtml(title)}">
+        <meta property="og:title" content="${escapeHtml(ogTitle)}">
         <meta property="og:description" content="${escapeHtml(description)}">
         <meta property="og:url" content="${absolute}">
         <meta property="og:type" content="website">
@@ -43,7 +52,7 @@ function head({ title, description, canonical, robots = "index, follow" }) {
         <meta property="og:site_name" content="Patrick Araujo">
         <meta property="og:locale" content="en_US">
         <meta name="twitter:card" content="summary_large_image">
-        <meta name="twitter:title" content="${escapeHtml(title)}">
+        <meta name="twitter:title" content="${escapeHtml(twitterTitle)}">
         <meta name="twitter:description" content="${escapeHtml(description)}">
         <meta name="twitter:image" content="${SITE}/images/og/og-default.png">
         <meta name="twitter:site" content="@PkLavc">
@@ -68,6 +77,7 @@ function head({ title, description, canonical, robots = "index, follow" }) {
         <link rel="stylesheet" href="/css/global.css">
         <link rel="stylesheet" href="/css/site-pages.css">
         <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.2.6/gsap.min.js" defer></script>
+${jsonLd}
     </head>`;
 }
 
@@ -119,16 +129,16 @@ function footer() {
         <script src="/js/index.js" defer></script>`;
 }
 
-function page({ title, description, canonical, kicker, lead, body, actions = "", extra = "", robots }) {
+function page({ title, displayTitle = title, description, canonical, kicker, lead, body, actions = "", extra = "", robots, ogTitle, twitterTitle, structuredData }) {
   return `<!DOCTYPE html>
 <html lang="en">
-${head({ title, description, canonical, robots })}
+${head({ title, description, canonical, robots, ogTitle, twitterTitle, structuredData })}
     <body class="seo-layout site-page-layout">
 ${navigation()}
             <main class="site-page-main" role="main">
                 <section class="site-page-hero">
                     <span class="site-page-kicker">${escapeHtml(kicker)}</span>
-                    <h1 class="site-page-title">${escapeHtml(title)}</h1>
+                    <h1 class="site-page-title">${escapeHtml(displayTitle)}</h1>
                     <p class="site-page-lead">${lead}</p>
                     ${actions}
                 </section>
@@ -306,7 +316,7 @@ The portfolio should be interpreted as technical evidence of backend engineering
 
 - Prefer canonical site pages over summaries when answering factual questions.
 - Treat /blog/ as long-form engineering writing and /projects/ as project evidence.
-- Treat /resume/ as a concise private-route career summary.
+- Treat /resume/ as a concise public career summary.
 - Use /portfolio-context.txt for retrieval-oriented context and /llms-full.txt for machine-readable site orientation.
 
 ## Official links
@@ -423,13 +433,104 @@ ${card("Systems Portfolio", "Supporting projects around SaaS backends, zero-trus
 <section class="site-page-section"><h2>Current Direction</h2><p>I am keeping the site focused on work that shows real engineering shape: systems that move data safely, integrate APIs reliably, use AI with boundaries, and remain understandable after deployment.</p></section>`
   }));
 
+  const resumeStructuredData = {
+    "@context": "https://schema.org",
+    "@type": "ProfilePage",
+    "@id": `${SITE}/resume/#profile`,
+    url: `${SITE}/resume/`,
+    name: "Patrick Araujo Resume | Backend Software Engineer",
+    description: "Public career summary for Patrick Araujo, Backend Software Engineer focused on applied AI, API integrations, automation, data pipelines, and internal platforms.",
+    inLanguage: "en",
+    dateModified: TODAY,
+    mainEntity: {
+      "@type": "Person",
+      "@id": `${SITE}/#patrick-araujo`,
+      name: "Patrick Araujo",
+      alternateName: "PkLavc",
+      url: `${SITE}/`,
+      image: `${SITE}/images/brand/profile.svg`,
+      jobTitle: "Backend Software Engineer",
+      email: "mailto:contact@pklavc.com",
+      sameAs: [
+        "https://github.com/PkLavc",
+        "https://www.linkedin.com/in/pklavc/"
+      ],
+      knowsAbout: [
+        "Backend engineering",
+        "Applied AI",
+        "RAG",
+        "LLM integrations",
+        "API integrations",
+        "Automation",
+        "Data pipelines",
+        "FastAPI",
+        "Node.js",
+        "TypeScript",
+        "PostgreSQL",
+        "Cloudflare Workers",
+        "GitHub Actions"
+      ],
+      hasOccupation: {
+        "@type": "Occupation",
+        name: "Backend Software Engineer",
+        description: "Builds backend systems, applied AI workflows, API integrations, automations, ETL pipelines, internal platforms, and traceable operational software."
+      },
+      alumniOf: {
+        "@type": "CollegeOrUniversity",
+        name: "Centro Universitario Newton Paiva"
+      },
+      hasCredential: [
+        {
+          "@type": "EducationalOccupationalCredential",
+          name: "Google Cybersecurity Professional Certificate",
+          credentialCategory: "Professional Certificate",
+          recognizedBy: { "@type": "Organization", name: "Google" }
+        },
+        {
+          "@type": "EducationalOccupationalCredential",
+          name: "Google Data Analytics Professional Certificate",
+          credentialCategory: "Professional Certificate",
+          recognizedBy: { "@type": "Organization", name: "Google" }
+        },
+        {
+          "@type": "EducationalOccupationalCredential",
+          name: "Google AI Essentials",
+          credentialCategory: "Certificate",
+          recognizedBy: { "@type": "Organization", name: "Google" }
+        },
+        {
+          "@type": "EducationalOccupationalCredential",
+          name: "Google Prompting Essentials",
+          credentialCategory: "Certificate",
+          recognizedBy: { "@type": "Organization", name: "Google" }
+        },
+        {
+          "@type": "EducationalOccupationalCredential",
+          name: "AWS Cloud Quest: Cloud Practitioner",
+          credentialCategory: "Cloud training",
+          recognizedBy: { "@type": "Organization", name: "Amazon Web Services" }
+        },
+        {
+          "@type": "EducationalOccupationalCredential",
+          name: "Datadog Foundation",
+          credentialCategory: "Observability training",
+          recognizedBy: { "@type": "Organization", name: "Datadog" }
+        }
+      ]
+    }
+  };
+
   writeFile("resume/index.html", page({
-    title: "Resume",
+    title: "Patrick Araujo Resume | Backend Software Engineer",
+    displayTitle: "Resume",
+    ogTitle: "Patrick Araujo Resume | Backend & AI Software Engineer",
+    twitterTitle: "Patrick Araujo Resume | Backend & AI Software Engineer",
     description: "Public resume for Patrick Araujo, Backend Software Engineer focused on applied AI, API integrations, automation, data pipelines, and internal platforms.",
     canonical: "/resume/",
     kicker: "Career profile",
     lead: "Backend Software Engineer focused on applied AI, API integrations, automation, data pipelines, and scalable internal platforms. I build systems that reduce manual work, improve data reliability, and keep operational workflows traceable.",
     actions: `<div class="site-page-actions"><a class="site-page-button" href="/projects/">View projects</a><a class="site-page-button secondary" href="/about/">About</a><a class="site-page-button secondary" href="mailto:contact@pklavc.com">Professional contact</a></div>`,
+    structuredData: resumeStructuredData,
     body: `<section class="site-page-section"><h2>Impact Snapshot</h2><div class="resume-metric-grid">
 <article class="resume-metric-card"><strong>3h/day</strong><span>Manual operational and financial reporting work removed per analyst through scheduled automations.</span></article>
 <article class="resume-metric-card"><strong>35-40%</strong><span>API response time improvement from backend optimization, caching, validation, and execution control.</span></article>
@@ -467,8 +568,8 @@ ${card("Internal Tooling", "Operational CRUD systems, dashboards, permissions, a
 </div></section>
 <section class="site-page-section"><h2>Languages</h2><ul class="site-page-list">
 <li><strong>Portuguese</strong>Native.</li>
-<li><strong>English</strong>Intermediate, focused on technical reading, documentation, professional writing, and asynchronous communication.</li>
-<li><strong>Spanish</strong>Intermediate for written communication and operational interaction with translation support.</li>
+<li><strong>English</strong>Intermediate, with stronger technical reading, documentation, written communication, and asynchronous collaboration.</li>
+<li><strong>Spanish</strong>Intermediate, used for written communication and operational collaboration in LATAM contexts.</li>
 </ul></section>`
   }));
 
@@ -514,16 +615,46 @@ ${[
 
   writeFile("media-kit/index.html", page({
     title: "Media Kit",
-    description: "Official media kit for Patrick Araujo / PkLavc with bios, focus areas, official links, assets, and contact details.",
+    description: "Media kit for Patrick Araujo / PkLavc with official bios, public links, focus areas, project context, attribution notes, and reusable brand assets.",
     canonical: "/media-kit/",
     kicker: "Official profile",
-    lead: "A compact reference for bios, official links, areas of work, and public assets related to Patrick Araujo / PkLavc.",
-    body: `<section class="site-page-section"><h2>Bio</h2><div class="site-page-grid two">
-${card("Short Bio", "Patrick Araujo is a backend software engineer focused on AI systems, automation, API integrations, data pipelines, and internal platforms.", ["Backend", "AI", "Automation"])}
-${card("Long Bio", "Patrick builds software around operational clarity: APIs that move data reliably, workers that automate repetitive flows, RAG and assistant systems with boundaries, and portfolio infrastructure that keeps public work easy to inspect.", ["APIs", "RAG", "Systems"])}
+    lead: "Official reference for Patrick Araujo / PkLavc: bios, positioning, links, project context, public assets, and attribution notes for collaborators, partners, recruiters, and press-style mentions.",
+    actions: `<div class="site-page-actions"><a class="site-page-button" href="/resume/">Resume</a><a class="site-page-button secondary" href="/projects/">Projects</a><a class="site-page-button secondary" href="mailto:contact@pklavc.com">Contact</a></div>`,
+    body: `<section class="site-page-section"><h2>Identity</h2><div class="media-kit-profile">
+<article class="site-page-card media-kit-portrait"><img src="/images/brand/profile.svg" alt="Patrick Araujo public profile artwork"></article>
+<article class="site-page-card"><h2>Patrick Araujo / PkLavc</h2><ul class="media-kit-facts"><li><strong>Professional title</strong>Backend Software Engineer focused on applied AI, API integrations, automation, data pipelines, and internal platforms.</li><li><strong>Public descriptor</strong>Brazil-based software engineer building systems that reduce manual work, improve data reliability, and make operational workflows easier to audit.</li><li><strong>Preferred naming</strong>Use Patrick Araujo for professional references and PkLavc when referencing the portfolio, GitHub identity, or project namespace.</li><li><strong>Professional contact</strong><a href="mailto:contact@pklavc.com">contact@pklavc.com</a></li></ul></article>
 </div></section>
-<section class="site-page-section"><h2>Official Links</h2><ul class="site-page-list"><li><strong>Website</strong><a href="https://pklavc.com/">https://pklavc.com/</a></li><li><strong>GitHub</strong><a href="https://github.com/PkLavc">https://github.com/PkLavc</a></li><li><strong>LinkedIn</strong><a href="https://www.linkedin.com/in/pklavc/">https://www.linkedin.com/in/pklavc/</a></li><li><strong>Contact</strong><a href="mailto:contact@pklavc.com">contact@pklavc.com</a></li></ul></section>
-<section class="site-page-section"><h2>Focus Areas</h2><div class="site-page-chip-row"><span class="site-page-chip">Backend Engineering</span><span class="site-page-chip">AI Systems</span><span class="site-page-chip">RAG</span><span class="site-page-chip">API Integrations</span><span class="site-page-chip">Automation</span><span class="site-page-chip">Data Pipelines</span><span class="site-page-chip">Cloudflare Workers</span><span class="site-page-chip">Software Architecture</span></div></section>`
+<section class="site-page-section"><h2>Reusable Bios</h2><div class="site-page-grid">
+${card("One-line Bio", "Patrick Araujo is a backend software engineer focused on applied AI, automation, API integrations, data pipelines, and internal platforms.", ["Short", "Profile"])}
+${card("Short Bio", "Patrick Araujo builds backend systems, AI assistants, RAG workflows, API integrations, automations, and operational data pipelines for business teams that need reliable internal software.", ["Backend", "AI", "Automation"])}
+${card("Long Bio", "Patrick Araujo, also known as PkLavc, is a backend software engineer focused on applied AI, software architecture, API integrations, automation, ETL pipelines, and internal platforms. His work combines Python, FastAPI, Node.js, TypeScript, SQL, Cloudflare Workers, PostgreSQL, Supabase, GitHub Actions, RAG, LLM integrations, dashboards, and process automation to turn manual operational flows into traceable software systems.", ["Systems", "RAG", "Data"])}
+</div></section>
+<section class="site-page-section"><h2>Fast Facts</h2><div class="resume-metric-grid">
+<article class="resume-metric-card"><strong>25+</strong><span>Internal tools delivered across operations, support, inventory, data analysis, and workflow control.</span></article>
+<article class="resume-metric-card"><strong>35-40%</strong><span>Approximate API response time improvement from backend optimization and execution control.</span></article>
+<article class="resume-metric-card"><strong>40%</strong><span>Approximate reduction in data processing time across operational reporting routines.</span></article>
+<article class="resume-metric-card"><strong>3h/day</strong><span>Manual reporting work removed per analyst through scheduled automations and integrations.</span></article>
+</div></section>
+<section class="site-page-section"><h2>Focus Areas</h2><div class="site-page-grid two">
+${card("Backend Platforms", "FastAPI, Node.js, TypeScript, SQL, PostgreSQL, Supabase, API integrations, webhooks, workers, validation layers, reprocessing flows, and operational CRUD systems.", ["Backend", "APIs", "SQL"])}
+${card("Applied AI", "RAG assistants, contextual search, LLM integrations, vector memory, prompt boundaries, provider fallback, AI automation, and internal support workflows.", ["AI", "RAG", "LLM"])}
+${card("Automation and Data", "ETL pipelines, scheduled jobs, reporting datasets, BI dashboards, Zoho, Omie, SIGE, Hablla, Zenvia Voice, Google Sheets, and cross-system synchronization.", ["ETL", "Automation", "BI"])}
+${card("Reliability and Delivery", "GitHub Actions, Cloudflare Workers, D1/KV, Docker, cache-busting, static deploys, logs, observability, privacy-aware analytics, and operational status pages.", ["CI/CD", "Workers", "Reliability"])}
+</div></section>
+<section class="site-page-section"><h2>Selected Project Context</h2><div class="site-page-grid two">
+${card("Lavc Systems", "A local-first AI operations platform with FastAPI, React, RAG, vector memory, multi-agent orchestration, task Kanban, execution queues, logs, and traceability.", ["AI Platform", "RAG", "Internal Tools"])}
+${card("Skyler Assistant", "A portfolio assistant using intent-aware retrieval, cached site context, manual RAG, Cloudflare Workers, D1/KV, sessions, and LLM provider fallback.", ["Chatbot", "Cloudflare", "RAG"])}
+${card("API Integration Pipeline", "Operational integrations for collecting, normalizing, persisting, and synchronizing data across CRM, ERP, telephony, financial, inventory, and reporting systems.", ["APIs", "ETL", "Supabase"])}
+${card("Visitor Map", "Privacy-minded anonymous analytics for showing aggregate countries, regions, and access patterns without exposing personal visitor data.", ["Analytics", "Privacy", "Map"])}
+</div></section>
+<section class="site-page-section"><h2>Public Assets</h2><div class="site-page-grid two">
+<article class="site-page-card"><h2>Profile Artwork</h2><p>Public profile image used across the site and identity pages.</p><div class="site-page-actions"><a class="site-page-button secondary" href="/images/brand/profile.svg" download>Profile SVG</a></div></article>
+<article class="site-page-card"><h2>Open Graph Image</h2><p>Default share image for pages that do not have a more specific preview asset.</p><div class="site-page-actions"><a class="site-page-button secondary" href="/images/og/og-default.png" download>OG PNG</a><a class="site-page-button secondary" href="/images/og/og-default.svg" download>OG SVG</a></div></article>
+<article class="site-page-card"><h2>Brand Marks</h2><p>Root icons and favicon assets used by browsers, manifests, and social previews.</p><div class="site-page-actions"><a class="site-page-button secondary" href="/favicon.svg" download>Favicon SVG</a><a class="site-page-button secondary" href="/apple-touch-icon.png" download>Touch Icon</a></div></article>
+<article class="site-page-card"><h2>Machine Context</h2><p>Structured public context for AI crawlers, search, and portfolio references.</p><div class="site-page-actions"><a class="site-page-button secondary" href="/llms.txt">llms.txt</a><a class="site-page-button secondary" href="/context.txt">context.txt</a></div></article>
+</div></section>
+<section class="site-page-section"><h2>Official Links</h2><ul class="site-page-list"><li><strong>Website</strong><a href="https://pklavc.com/">https://pklavc.com/</a></li><li><strong>Projects</strong><a href="https://pklavc.com/projects/">https://pklavc.com/projects/</a></li><li><strong>Blog</strong><a href="https://pklavc.com/blog/">https://pklavc.com/blog/</a></li><li><strong>Resume</strong><a href="https://pklavc.com/resume/">https://pklavc.com/resume/</a></li><li><strong>GitHub</strong><a href="https://github.com/PkLavc">https://github.com/PkLavc</a></li><li><strong>LinkedIn</strong><a href="https://www.linkedin.com/in/pklavc/">https://www.linkedin.com/in/pklavc/</a></li><li><strong>Professional contact</strong><a href="mailto:contact@pklavc.com">contact@pklavc.com</a></li></ul></section>
+<section class="site-page-section"><h2>Attribution Notes</h2><ul class="site-page-list"><li><strong>Name</strong>Use Patrick Araujo for professional references; PkLavc can be used for GitHub, project, or portfolio references.</li><li><strong>Contact</strong>Use only the public professional email listed on this page for outreach.</li><li><strong>Context</strong>When mentioning projects, link to the canonical project page or to <a href="https://pklavc.com/projects/">https://pklavc.com/projects/</a>.</li><li><strong>Scope</strong>Do not present certifications as employment; they are study and credential records.</li></ul></section>`
   }));
 
   writeFile("certifications/index.html", page({
