@@ -345,6 +345,7 @@ function setupAboutProjectCarouselDrag() {
     var offset = 0;
     var dragState = null;
     var suppressClick = false;
+    var resumeTimer = null;
 
     if (!track) {
       return;
@@ -395,6 +396,27 @@ function setupAboutProjectCarouselDrag() {
       track.style.setProperty('--about-carousel-drag-position', Math.round(offset * 100) / 100 + 'px');
     }
 
+    function clearResumeTimer() {
+      if (resumeTimer) {
+        window.clearTimeout(resumeTimer);
+        resumeTimer = null;
+      }
+    }
+
+    function pauseCarouselAt(value) {
+      clearResumeTimer();
+      setOffset(value);
+      carousel.classList.add('is-user-paused');
+    }
+
+    function scheduleCarouselResume() {
+      clearResumeTimer();
+      resumeTimer = window.setTimeout(function() {
+        carousel.classList.remove('is-user-paused');
+        resumeTimer = null;
+      }, 2600);
+    }
+
     function getCurrentTranslateX() {
       var transform = window.getComputedStyle(track).transform;
       var match;
@@ -436,6 +458,7 @@ function setupAboutProjectCarouselDrag() {
         return;
       }
 
+      clearResumeTimer();
       dragState = {
         pointerId: event.pointerId,
         startX: event.clientX,
@@ -461,7 +484,7 @@ function setupAboutProjectCarouselDrag() {
       if (!dragState.moved) {
         dragState.moved = true;
         dragState.startOffset = getCurrentTranslateX() - deltaX;
-        setOffset(dragState.startOffset + deltaX);
+        pauseCarouselAt(dragState.startOffset + deltaX);
         carousel.classList.add('is-dragging');
 
         if (typeof carousel.setPointerCapture === 'function') {
@@ -504,9 +527,12 @@ function setupAboutProjectCarouselDrag() {
 
       if (moved) {
         suppressClick = true;
+        scheduleCarouselResume();
         window.setTimeout(function() {
           suppressClick = false;
         }, 120);
+      } else if (carousel.classList.contains('is-user-paused')) {
+        scheduleCarouselResume();
       }
     }
 

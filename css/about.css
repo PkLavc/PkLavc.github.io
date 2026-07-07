@@ -866,7 +866,7 @@ body {
     overflow: hidden;
     padding: 2px 0 12px;
     cursor: grab;
-    touch-action: pan-y;
+    touch-action: pan-y pinch-zoom;
 }
 
 .about-project-carousel-track {
@@ -880,8 +880,7 @@ body {
     will-change: transform;
 }
 
-.about-project-carousel:hover .about-project-carousel-track,
-.about-project-carousel:focus-within .about-project-carousel-track,
+.about-project-carousel.is-user-paused .about-project-carousel-track,
 .about-project-carousel.is-dragging .about-project-carousel-track {
     animation-play-state: paused;
 }
@@ -890,6 +889,7 @@ body {
     cursor: grabbing;
 }
 
+.about-project-carousel.is-user-paused .about-project-carousel-track,
 .about-project-carousel.is-dragging .about-project-carousel-track {
     animation: none;
     transform: translate3d(var(--about-carousel-drag-position, var(--about-carousel-drag-offset, 0px)), 0, 0);
