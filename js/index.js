@@ -353,6 +353,11 @@ function setupAboutProjectCarouselDrag() {
 
     carousel.dataset.dragReady = 'true';
 
+    function isNativeScrollMode() {
+      return typeof window.matchMedia === 'function' &&
+        window.matchMedia('(max-width: 768px), (pointer: coarse)').matches;
+    }
+
     function getLoopWidth() {
       var firstCard = track.querySelector('.about-project-carousel-card:not(.is-carousel-clone)');
       var firstClone = track.querySelector('.about-project-carousel-card.is-carousel-clone');
@@ -362,6 +367,11 @@ function setupAboutProjectCarouselDrag() {
       }
 
       return track.scrollWidth / 2;
+    }
+
+    if (isNativeScrollMode()) {
+      setupNativeScrollProjectCarousel(carousel, track, getLoopWidth);
+      return;
     }
 
     function syncLoopWidth() {
@@ -613,6 +623,98 @@ function setupAboutProjectCarouselDrag() {
 
     syncLoopWidth();
   });
+}
+
+function setupNativeScrollProjectCarousel(carousel, track, getLoopWidth) {
+  var resumeTimer = null;
+  var animationFrame = 0;
+  var lastTimestamp = 0;
+  var speed = 0.038;
+  var isPaused = false;
+  var isNormalizing = false;
+
+  function clearResumeTimer() {
+    if (resumeTimer) {
+      window.clearTimeout(resumeTimer);
+      resumeTimer = null;
+    }
+  }
+
+  function normalizeScrollPosition() {
+    var loopWidth;
+
+    if (isNormalizing) {
+      return;
+    }
+
+    loopWidth = getLoopWidth();
+    if (!loopWidth) {
+      return;
+    }
+
+    isNormalizing = true;
+    if (track.scrollLeft >= loopWidth) {
+      track.scrollLeft -= loopWidth;
+    } else if (track.scrollLeft < 0) {
+      track.scrollLeft += loopWidth;
+    }
+    isNormalizing = false;
+  }
+
+  function tick(timestamp) {
+    var delta;
+
+    if (!lastTimestamp) {
+      lastTimestamp = timestamp;
+    }
+
+    delta = timestamp - lastTimestamp;
+    lastTimestamp = timestamp;
+
+    if (!isPaused && !document.hidden) {
+      track.scrollLeft += delta * speed;
+      normalizeScrollPosition();
+    }
+
+    animationFrame = window.requestAnimationFrame(tick);
+  }
+
+  function pause() {
+    isPaused = true;
+    carousel.classList.add('is-user-paused');
+    clearResumeTimer();
+  }
+
+  function resumeSoon() {
+    clearResumeTimer();
+    resumeTimer = window.setTimeout(function() {
+      isPaused = false;
+      carousel.classList.remove('is-user-paused');
+      lastTimestamp = 0;
+      resumeTimer = null;
+    }, 2400);
+  }
+
+  function start() {
+    normalizeScrollPosition();
+    if (!animationFrame) {
+      animationFrame = window.requestAnimationFrame(tick);
+    }
+  }
+
+  track.addEventListener('scroll', normalizeScrollPosition, { passive: true });
+  track.addEventListener('touchstart', pause, { passive: true });
+  track.addEventListener('touchmove', normalizeScrollPosition, { passive: true });
+  track.addEventListener('touchend', resumeSoon, { passive: true });
+  track.addEventListener('touchcancel', resumeSoon, { passive: true });
+  track.addEventListener('pointerdown', pause, { passive: true });
+  track.addEventListener('pointerup', resumeSoon, { passive: true });
+  track.addEventListener('pointercancel', resumeSoon, { passive: true });
+  track.addEventListener('focusin', pause);
+  track.addEventListener('focusout', resumeSoon);
+  window.addEventListener('resize', normalizeScrollPosition, { passive: true });
+
+  start();
 }
 
 $(window).on('load', function() {

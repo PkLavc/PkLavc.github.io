@@ -1185,8 +1185,44 @@ body {
 }
 
 @media (max-width: 768px) {
+    .about-project-carousel {
+        margin-inline: -12px;
+        overflow: visible;
+        padding-bottom: 0;
+        cursor: auto;
+        touch-action: pan-x pan-y;
+    }
+
+    .about-project-carousel-track {
+        width: auto;
+        gap: 14px;
+        padding: 2px 46px 18px;
+        overflow-x: auto;
+        overflow-y: hidden;
+        scroll-snap-type: x mandatory;
+        scroll-padding-inline: 46px;
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
+        animation: none !important;
+        transform: none !important;
+        will-change: scroll-position;
+        touch-action: pan-x pan-y;
+    }
+
+    .about-project-carousel-track::-webkit-scrollbar {
+        display: none;
+    }
+
+    .about-project-carousel.is-user-paused .about-project-carousel-track,
+    .about-project-carousel.is-dragging .about-project-carousel-track {
+        animation: none !important;
+        transform: none !important;
+    }
+
     .about-project-carousel-card {
-        flex-basis: min(82vw, 310px);
+        flex: 0 0 min(82vw, 310px);
+        scroll-snap-align: center;
+        touch-action: pan-x pan-y;
     }
 
     .global-reach-section {
