@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -36,7 +36,7 @@
     <meta name="twitter:image" content="https://pklavc.com/images/lavc.webp?v=5e84850f26">
     <meta name="twitter:site" content="@PkLavc">
     <meta name="twitter:creator" content="@PkLavc">
-    <link rel="icon" type="image/svg+xml" href="https://pklavc.com/images/favicon.svg?v=d15fe4e492">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=d15fe4e492">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Monoton&family=Poppins:wght@500;600;700&family=Raleway:wght@300&display=swap" onload="this.onload=null;this.rel='stylesheet'">
@@ -153,9 +153,9 @@
                         <h2>Self-healing recovery workflows</h2>
                         <p>Self-healing is automated remediation triggered by confirmed anomalies. The recovery workflow should be designed as a sequence of escalating actions rather than a single hard intervention:</p>
                         <ul>
-                            <li><strong>Soft recovery</strong> — cache flush, connection pool reset, graceful restart of a worker process. Low risk, fast, reversible.</li>
-                            <li><strong>Service recovery</strong> — restart the affected service, re-queue failed jobs, restore from a last-known-good checkpoint.</li>
-                            <li><strong>Escalation</strong> — when automated recovery fails after a defined number of attempts, escalate to human operators with structured incident context rather than continuing to retry.</li>
+                            <li><strong>Soft recovery</strong> â€” cache flush, connection pool reset, graceful restart of a worker process. Low risk, fast, reversible.</li>
+                            <li><strong>Service recovery</strong> â€” restart the affected service, re-queue failed jobs, restore from a last-known-good checkpoint.</li>
+                            <li><strong>Escalation</strong> â€” when automated recovery fails after a defined number of attempts, escalate to human operators with structured incident context rather than continuing to retry.</li>
                         </ul>
 
                         <div class="blog-callout">
@@ -163,7 +163,7 @@
                         </div>
 
                         <h2>Structured logging enables post-incident analysis</h2>
-                        <p>Anomaly detection systems that log in free-text format make post-incident investigation painful. Structured logs with consistent fields — anomaly type, metric values, timestamps, recovery action taken, outcome — allow queries that answer specific questions: how long did recovery take, which services have the highest anomaly frequency, which recovery actions succeed most reliably.</p>
+                        <p>Anomaly detection systems that log in free-text format make post-incident investigation painful. Structured logs with consistent fields â€” anomaly type, metric values, timestamps, recovery action taken, outcome â€” allow queries that answer specific questions: how long did recovery take, which services have the highest anomaly frequency, which recovery actions succeed most reliably.</p>
                         <p>This structured observability connects directly to the privacy controls in <a href="/blog/api-proxy-security-design/">API Proxy Security Design</a>: the audit trail that captures anomaly and recovery events should never include sensitive infrastructure secrets or credential values.</p>
 
                         <h2>Resilient operations design as a system property</h2>

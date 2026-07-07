@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -36,7 +36,7 @@
     <meta name="twitter:image" content="https://pklavc.com/images/lavc.webp?v=5e84850f26">
     <meta name="twitter:site" content="@PkLavc">
     <meta name="twitter:creator" content="@PkLavc">
-    <link rel="icon" type="image/svg+xml" href="https://pklavc.com/images/favicon.svg?v=d15fe4e492">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=d15fe4e492">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Monoton&family=Poppins:wght@500;600;700&family=Raleway:wght@300&display=swap" onload="this.onload=null;this.rel='stylesheet'">
@@ -133,7 +133,7 @@
                         </div>
                         <span class="blog-kicker">Cloud Engineering</span>
                         <h1>Cloud Deployment Patterns: Container Orchestration, CI/CD, and Infrastructure as Code</h1>
-                        <p>A backend system that works locally but has no defined deployment path is not production-ready. The deployment infrastructure — how the system is packaged, promoted, and scaled — is as much a part of the design as the application code. Treating infrastructure as an afterthought produces environments that drift, deployments that require manual steps, and incidents that trace back to configuration differences between environments.</p>
+                        <p>A backend system that works locally but has no defined deployment path is not production-ready. The deployment infrastructure â€” how the system is packaged, promoted, and scaled â€” is as much a part of the design as the application code. Treating infrastructure as an afterthought produces environments that drift, deployments that require manual steps, and incidents that trace back to configuration differences between environments.</p>
                         <div class="blog-post-meta">
                             <span>Published Apr 24, 2026</span>
                             <span>8 min read</span>
@@ -147,13 +147,13 @@
                         <p>This immutability is the foundation of reproducible deployments: if a deployment fails, rolling back to the previous image is deterministic. The <a href="/projects/cloud-deployment-showcase/">Cloud Deployment Showcase</a> demonstrates this pattern with container images that can be promoted through environments without modification.</p>
 
                         <h2>CI/CD as an automated promotion gate</h2>
-                        <p>A CI/CD pipeline is not a convenience — it is an enforcement mechanism. Code that fails tests does not reach staging. Images that pass staging quality gates are promoted to production. The pipeline removes the human decision point that creates inconsistency.</p>
+                        <p>A CI/CD pipeline is not a convenience â€” it is an enforcement mechanism. Code that fails tests does not reach staging. Images that pass staging quality gates are promoted to production. The pipeline removes the human decision point that creates inconsistency.</p>
                         <p>Effective CI/CD for container-based APIs includes:</p>
                         <ul>
-                            <li><strong>Image build verification</strong> — the build fails early if dependencies cannot be resolved or the image cannot be constructed.</li>
-                            <li><strong>Automated test execution</strong> — unit and integration tests run against the built container, not against a local source tree.</li>
-                            <li><strong>Image scanning</strong> — vulnerability scanning on the built image before promotion prevents shipping known CVEs to production.</li>
-                            <li><strong>Environment promotion gates</strong> — health checks confirm successful deployment before traffic is shifted to the new version.</li>
+                            <li><strong>Image build verification</strong> â€” the build fails early if dependencies cannot be resolved or the image cannot be constructed.</li>
+                            <li><strong>Automated test execution</strong> â€” unit and integration tests run against the built container, not against a local source tree.</li>
+                            <li><strong>Image scanning</strong> â€” vulnerability scanning on the built image before promotion prevents shipping known CVEs to production.</li>
+                            <li><strong>Environment promotion gates</strong> â€” health checks confirm successful deployment before traffic is shifted to the new version.</li>
                         </ul>
 
                         <div class="blog-callout">
@@ -161,7 +161,7 @@
                         </div>
 
                         <h2>Infrastructure as Code prevents environment drift</h2>
-                        <p>Cloud infrastructure defined in code is versioned, reviewable, and repeatable. Infrastructure defined by clicking through cloud consoles is none of those things. Environment drift — when staging and production diverge in configuration — is one of the most common sources of production incidents that do not reproduce in testing.</p>
+                        <p>Cloud infrastructure defined in code is versioned, reviewable, and repeatable. Infrastructure defined by clicking through cloud consoles is none of those things. Environment drift â€” when staging and production diverge in configuration â€” is one of the most common sources of production incidents that do not reproduce in testing.</p>
                         <p>Infrastructure as Code tools apply the same change management discipline to infrastructure that version control applies to application code. A change to a security group rule, a database parameter, or a load balancer configuration goes through review before it reaches production, just as application code changes do.</p>
 
                         <h2>Health checks and rollback strategies</h2>
@@ -170,7 +170,7 @@
 
                         <h2>Scaling and resource allocation in orchestrated deployments</h2>
                         <p>Container orchestration enables horizontal scaling, but scaling correctly requires knowing what resource constraints the application actually has. Memory limits that are too low cause OOM kills. CPU limits that are too low cause throttling. Establishing accurate resource profiles through load testing before setting production limits prevents both over-provisioning and under-provisioning.</p>
-                        <p>This connects to the performance visibility work in <a href="/blog/infrastructure-anomaly-detection/">Infrastructure Anomaly Detection</a> — resource metrics collected during automated recovery workflows directly inform the resource allocation decisions made during deployment configuration.</p>
+                        <p>This connects to the performance visibility work in <a href="/blog/infrastructure-anomaly-detection/">Infrastructure Anomaly Detection</a> â€” resource metrics collected during automated recovery workflows directly inform the resource allocation decisions made during deployment configuration.</p>
                     </article>
 
                     <section aria-labelledby="cloud-related-title">
@@ -196,7 +196,7 @@
                     <section class="blog-sidebar-card">
                         <h2>Core takeaways</h2>
                         <ul>
-                            <li>Container images are immutable deployment units — config is injected at runtime.</li>
+                            <li>Container images are immutable deployment units â€” config is injected at runtime.</li>
                             <li>CI pipelines must test the built artifact, not just the source.</li>
                             <li>Infrastructure as Code prevents environment drift.</li>
                             <li>Define rollback strategy before deployment, not during incident response.</li>

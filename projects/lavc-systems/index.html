@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -8,7 +8,7 @@
 
     <meta name="description" content="Lavc Systems: local desktop/web platform for multi-agent AI orchestration, corporate automation, RAG knowledge base, Kanban operations, and real-time observability built with FastAPI, React, Ollama, LangGraph, and ChromaDB.">
     <meta property="og:title" content="Lavc Systems | Local AI Orchestration Platform | Patrick Araujo">
-    <meta property="og:description" content="Local platform for AI agent orchestration, RAG, hybrid memory, autonomous goals, and Kanban-driven task management — running fully on your machine with Ollama.">
+    <meta property="og:description" content="Local platform for AI agent orchestration, RAG, hybrid memory, autonomous goals, and Kanban-driven task management â€” running fully on your machine with Ollama.">
     <meta property="og:url" content="https://pklavc.com/projects/lavc-systems/">
     <meta property="og:type" content="website">
     <meta property="og:image" content="https://pklavc.com/projects/lavc-systems/assets/lavc-ai-operation-dashboard.webp?v=8081b617f4">
@@ -30,7 +30,7 @@
 
 <meta name="robots" content="index, follow">
 
-    <link rel="icon" type="image/svg+xml" href="https://pklavc.com/images/favicon.svg?v=d15fe4e492">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=d15fe4e492">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Monoton&family=Poppins:wght@500&family=Raleway:wght@300&display=swap" onload="this.onload=null;this.rel='stylesheet'">
@@ -277,16 +277,16 @@
 
                         <p>
                             <strong>Lavc Systems</strong> is a local desktop/web platform for orchestrating AI agents, managing corporate automation, storing RAG knowledge, and tracking operational work through a Kanban interface.
-                            The system runs a <strong>FastAPI</strong> backend, a <strong>React/Vite</strong> frontend, and a set of local agents connected to <strong>Ollama</strong> — all on your own machine, with no external AI service required.
+                            The system runs a <strong>FastAPI</strong> backend, a <strong>React/Vite</strong> frontend, and a set of local agents connected to <strong>Ollama</strong> â€” all on your own machine, with no external AI service required.
                         </p>
 
                         <div class="meta-grid">
                             <div class="meta-item"><strong>Backend</strong>FastAPI, Python 3.14, Uvicorn</div>
                             <div class="meta-item"><strong>Frontend</strong>React 18, TypeScript, Tailwind CSS, Vite</div>
                             <div class="meta-item"><strong>State</strong>Zustand</div>
-                            <div class="meta-item"><strong>LLM Runtime</strong>Ollama · default <code>qwen2.5-coder:7b</code></div>
-                            <div class="meta-item"><strong>Orchestration</strong>LangGraph · multi-agent queue</div>
-                            <div class="meta-item"><strong>RAG &amp; Memory</strong>ChromaDB · HuggingFace embeddings · HybridMemory</div>
+                            <div class="meta-item"><strong>LLM Runtime</strong>Ollama Â· default <code>qwen2.5-coder:7b</code></div>
+                            <div class="meta-item"><strong>Orchestration</strong>LangGraph Â· multi-agent queue</div>
+                            <div class="meta-item"><strong>RAG &amp; Memory</strong>ChromaDB Â· HuggingFace embeddings Â· HybridMemory</div>
                             <div class="meta-item"><strong>Database</strong>SQLite, SQLAlchemy</div>
                             <div class="meta-item"><strong>Real-time</strong>WebSocket</div>
                             <div class="meta-item"><strong>Scheduler</strong>APScheduler + scheduler.db</div>
@@ -299,24 +299,24 @@
                         <div class="flowchart" aria-label="Lavc Systems high-level architecture flowchart">
                             <div class="flow-lane">
                                 <span class="flow-step">React Frontend (Vite)</span>
-                                <span class="flow-arrow">→</span>
+                                <span class="flow-arrow">â†’</span>
                                 <span class="flow-step">FastAPI Routers</span>
-                                <span class="flow-arrow">→</span>
+                                <span class="flow-arrow">â†’</span>
                                 <span class="flow-step">Task Queue</span>
                             </div>
                             <div class="flow-lane">
                                 <span class="flow-step">Coordinator Agent</span>
-                                <span class="flow-arrow">→</span>
+                                <span class="flow-arrow">â†’</span>
                                 <span class="flow-step">LangGraph Pipeline</span>
-                                <span class="flow-arrow">→</span>
+                                <span class="flow-arrow">â†’</span>
                                 <span class="flow-step">Specialist Agents</span>
                             </div>
                             <div class="flow-lane">
                                 <span class="flow-step">HybridMemory + ChromaDB</span>
-                                <span class="flow-arrow">→</span>
+                                <span class="flow-arrow">â†’</span>
                                 <span class="flow-step">Ollama (local LLM)</span>
-                                <span class="flow-arrow">→</span>
-                                <span class="flow-step">WebSocket Events → UI</span>
+                                <span class="flow-arrow">â†’</span>
+                                <span class="flow-step">WebSocket Events â†’ UI</span>
                             </div>
                         </div>
 
@@ -324,19 +324,19 @@
                         <div class="flowchart" aria-label="Task execution flow">
                             <div class="flow-lane">
                                 <span class="flow-step">User creates task</span>
-                                <span class="flow-arrow">→</span>
+                                <span class="flow-arrow">â†’</span>
                                 <span class="flow-step">Kanban + queue</span>
-                                <span class="flow-arrow">→</span>
+                                <span class="flow-arrow">â†’</span>
                                 <span class="flow-step">Coordinator picks pipeline</span>
                             </div>
                             <div class="flow-lane">
                                 <span class="flow-step">Agents use memory, RAG &amp; tools</span>
-                                <span class="flow-arrow">→</span>
+                                <span class="flow-arrow">â†’</span>
                                 <span class="flow-step">Logs + artefacts on task detail</span>
                             </div>
                             <div class="flow-lane">
                                 <span class="flow-step">Operational trace</span>
-                                <span class="flow-arrow">→</span>
+                                <span class="flow-arrow">â†’</span>
                                 <span class="flow-step">Auditable: intent / context / action / next step</span>
                             </div>
                         </div>
@@ -385,7 +385,7 @@
                         <p>
                             Skyler is the floating AI assistant embedded in the system. In Lavc Systems, Skyler operates at a significantly more advanced level than the public portfolio version:
                             she can query system health, read task data, create and execute tasks, read uploaded files, save API credentials to the local vault, and display an auditable operational trace for each response.
-                            The system does not record raw model reasoning — what surfaces is a structured summary: detected intent, context consulted, tool or action used, and next step.
+                            The system does not record raw model reasoning â€” what surfaces is a structured summary: detected intent, context consulted, tool or action used, and next step.
                         </p>
                         <p>
                             The public portfolio Skyler at <a href="/skyler-assistant/">/skyler-assistant/</a> is a lighter, cloud-deployed version intended for external visitors.

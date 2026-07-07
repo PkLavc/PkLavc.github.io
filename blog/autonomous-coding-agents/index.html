@@ -1,11 +1,11 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="author" content="Patrick Araujo">
     <title>Autonomous Coding Agents: How Claude Code, Codex, and Cursor Are Changing Engineering</title>
-    <meta name="description" content="How autonomous coding agents like Claude Code, Codex, Cursor, and Windsurf work in practice — covering multi-step execution, terminal agents, context engineering, and what real agentic workflows look like in production.">
+    <meta name="description" content="How autonomous coding agents like Claude Code, Codex, Cursor, and Windsurf work in practice â€” covering multi-step execution, terminal agents, context engineering, and what real agentic workflows look like in production.">
     <meta name="keywords" content="autonomous coding agents, Claude Code, Codex, Cursor, Windsurf, terminal agents, multi-step agents, agentic engineering, context engineering, AI coding tools">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://pklavc.com/blog/autonomous-coding-agents/">
@@ -17,7 +17,7 @@
 
 
 <meta property="og:title" content="Autonomous Coding Agents: How Claude Code, Codex, and Cursor Are Changing Engineering">
-    <meta property="og:description" content="Practical engineering perspective on autonomous coding agents — multi-step execution, terminal agents, and what agentic workflows actually look like beyond the demos.">
+    <meta property="og:description" content="Practical engineering perspective on autonomous coding agents â€” multi-step execution, terminal agents, and what agentic workflows actually look like beyond the demos.">
     <meta property="og:url" content="https://pklavc.com/blog/autonomous-coding-agents/">
     <meta property="og:type" content="article">
     <meta property="article:published_time" content="2026-05-28">
@@ -43,7 +43,7 @@
     <meta name="twitter:site" content="@PkLavc">
     <meta name="twitter:creator" content="@PkLavc">
 
-    <link rel="icon" type="image/svg+xml" href="https://pklavc.com/images/favicon.svg?v=d15fe4e492">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=d15fe4e492">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Monoton&family=Poppins:wght@500;600;700&family=Raleway:wght@300&display=swap" onload="this.onload=null;this.rel='stylesheet'">
@@ -59,7 +59,7 @@
             {
                 "@type": "BlogPosting",
                 "headline": "Autonomous Coding Agents: How Claude Code, Codex, and Cursor Are Changing Engineering",
-                "description": "How autonomous coding agents like Claude Code, Codex, Cursor, and Windsurf work in practice — covering multi-step execution, terminal agents, context engineering, and what real agentic workflows look like in production.",
+                "description": "How autonomous coding agents like Claude Code, Codex, Cursor, and Windsurf work in practice â€” covering multi-step execution, terminal agents, context engineering, and what real agentic workflows look like in production.",
                 "image": "https://pklavc.com/images/lavc.webp?v=5e84850f26",
                 "datePublished": "2026-05-28",
                 "dateModified": "2026-05-28",
@@ -157,7 +157,7 @@
 
                     <article class="blog-article">
                         <h2>From autocomplete to autonomous execution</h2>
-                        <p>The first generation of AI coding tools — Copilot suggestions, inline completions — worked at the line level. The engineer wrote intent, the model predicted continuation. That was useful but limited: every suggestion required human validation before the cursor moved forward.</p>
+                        <p>The first generation of AI coding tools â€” Copilot suggestions, inline completions â€” worked at the line level. The engineer wrote intent, the model predicted continuation. That was useful but limited: every suggestion required human validation before the cursor moved forward.</p>
                         <p>Autonomous coding agents operate differently. Claude Code runs in the terminal, reads your codebase, writes files, executes commands, observes output, and iterates. Cursor's agent mode plans multi-file changes, runs linters, and fixes errors in a loop. Codex operates asynchronously on entire tasks: you describe what you want, it branches, codes, tests, and returns a pull request. Windsurf combines IDE integration with agentic flows that span multiple files and terminal sessions.</p>
 
                         <div class="blog-callout">
@@ -169,11 +169,11 @@
                         <p>This changes the unit of work. Instead of reviewing line-by-line suggestions, engineers review completed implementations. The feedback loop moves from "does this line look right" to "does this PR solve the problem correctly and safely."</p>
 
                         <h2>Terminal agents and why they matter</h2>
-                        <p>Claude Code and similar terminal agents run where engineers already work. They have access to git, package managers, test runners, linters, and the full filesystem. This is not a constrained sandbox with a chat interface — it is a tool that operates with the same capabilities a developer has in their terminal session.</p>
+                        <p>Claude Code and similar terminal agents run where engineers already work. They have access to git, package managers, test runners, linters, and the full filesystem. This is not a constrained sandbox with a chat interface â€” it is a tool that operates with the same capabilities a developer has in their terminal session.</p>
                         <p>Terminal-native execution means the agent can discover context that chat-based tools miss: build errors, type mismatches across modules, test output patterns, and runtime behavior. It also means the agent can validate its own changes immediately rather than handing unverified code back to the human.</p>
 
                         <h2>Context engineering is the real skill</h2>
-                        <p>The bottleneck in agentic coding is not model capability — it is context. An agent that starts with a clean slate will make assumptions about your architecture, conventions, and constraints. An agent that starts with well-structured context — specs, architecture docs, test patterns, style guides — produces code that fits your system.</p>
+                        <p>The bottleneck in agentic coding is not model capability â€” it is context. An agent that starts with a clean slate will make assumptions about your architecture, conventions, and constraints. An agent that starts with well-structured context â€” specs, architecture docs, test patterns, style guides â€” produces code that fits your system.</p>
                         <p>Context engineering means curating what the agent sees: relevant files, project conventions, existing patterns, and explicit constraints. Tools like Cursor rules files, Claude Code's CLAUDE.md conventions, and Codex's setup steps are all mechanisms for context engineering. The engineers who get the best results from agents are the ones who invest in making their codebase legible to machines.</p>
 
                         <h2>Cursor, Claude Code, Codex, Windsurf: different models of agency</h2>
@@ -182,7 +182,7 @@
 
                         <h2>What changes in engineering practice</h2>
                         <p>When agents can execute multi-step plans autonomously, engineering shifts toward specification, review, and architecture. The engineer's job becomes: define the problem precisely, provide the right context, review the output critically, and maintain the system's integrity over time.</p>
-                        <p>This does not eliminate engineering skill — it amplifies it. A clear spec produces better agent output. A well-architected codebase is easier for agents to extend correctly. Good test coverage gives agents a verification loop. The fundamentals matter more, not less.</p>
+                        <p>This does not eliminate engineering skill â€” it amplifies it. A clear spec produces better agent output. A well-architected codebase is easier for agents to extend correctly. Good test coverage gives agents a verification loop. The fundamentals matter more, not less.</p>
 
                         <h2>Real constraints in production</h2>
                         <p>Autonomous agents are not magic. They hallucinate APIs, introduce subtle bugs, miss edge cases, and sometimes produce code that passes tests but violates architectural boundaries. In production systems, every agent output still needs human review for security implications, performance characteristics, and design coherence.</p>
@@ -221,10 +221,10 @@
                     <section class="blog-sidebar-card">
                         <h2>Tools covered</h2>
                         <ul>
-                            <li>Claude Code — terminal-native agent</li>
-                            <li>Codex — async cloud-based agent</li>
-                            <li>Cursor — IDE-integrated agent mode</li>
-                            <li>Windsurf — multi-file agentic IDE</li>
+                            <li>Claude Code â€” terminal-native agent</li>
+                            <li>Codex â€” async cloud-based agent</li>
+                            <li>Cursor â€” IDE-integrated agent mode</li>
+                            <li>Windsurf â€” multi-file agentic IDE</li>
                         </ul>
                     </section>
                     <section class="blog-sidebar-card">

@@ -1,12 +1,12 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="author" content="Patrick Araujo">
-    <title>Integración de APIs con Hablla, Zoho, SIGE y Zenvia: GitHub Actions y Supabase</title>
-    <meta name="description" content="Cómo los workers de Node.js y GitHub Actions recopilan payloads de Hablla, Zoho Creator, Zenvia Voice y la API de SIGE ERP en tablas de Supabase SQL, que cubren la recopilación programada, los IDs idempotentes y modelado analítico posterior.">
-    <meta name="keywords" content="API Integration Pipeline, Hablla integración de APIs, API de Zoho Creator, API de SIGE ERP, API de Zenvia Voice, Supabase SQL, GitHub Actions ETL, Node.js integración de APIs, arquitectura de datos, pipelines de datos idempotentes">
+    <title>IntegraciÃ³n de APIs con Hablla, Zoho, SIGE y Zenvia: GitHub Actions y Supabase</title>
+    <meta name="description" content="CÃ³mo los workers de Node.js y GitHub Actions recopilan payloads de Hablla, Zoho Creator, Zenvia Voice y la API de SIGE ERP en tablas de Supabase SQL, que cubren la recopilaciÃ³n programada, los IDs idempotentes y modelado analÃ­tico posterior.">
+    <meta name="keywords" content="API Integration Pipeline, Hablla integraciÃ³n de APIs, API de Zoho Creator, API de SIGE ERP, API de Zenvia Voice, Supabase SQL, GitHub Actions ETL, Node.js integraciÃ³n de APIs, arquitectura de datos, pipelines de datos idempotentes">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://pklavc.com/es/blog/raw-api-ingestion-supabase-sql/">
     <link rel="alternate" href="https://pklavc.com/blog/raw-api-ingestion-supabase-sql/" hreflang="en">
@@ -16,34 +16,34 @@
 
 
 
-<meta property="og:title" content="Integración de APIs con Hablla, Zoho, SIGE y Zenvia: GitHub Actions y Supabase">
-    <meta property="og:description" content="Notas de arquitectura sobre la recopilación de payloads de Hablla, Zoho Creator, Zenvia Voice y API de SIGE ERP en tablas de Supabase SQL para análisis reproducibles.">
+<meta property="og:title" content="IntegraciÃ³n de APIs con Hablla, Zoho, SIGE y Zenvia: GitHub Actions y Supabase">
+    <meta property="og:description" content="Notas de arquitectura sobre la recopilaciÃ³n de payloads de Hablla, Zoho Creator, Zenvia Voice y API de SIGE ERP en tablas de Supabase SQL para anÃ¡lisis reproducibles.">
     <meta property="og:url" content="https://pklavc.com/es/blog/raw-api-ingestion-supabase-sql/">
     <meta property="og:type" content="article">
     <meta property="article:published_time" content="2026-05-15">
     <meta property="article:modified_time" content="2026-05-15">
     <meta property="article:author" content="Patrick Araujo">
     <meta property="article:section" content="Data Engineering">
-    <meta property="article:tag" content="ingestión de API cruda">
+    <meta property="article:tag" content="ingestiÃ³n de API cruda">
     <meta property="article:tag" content="supabase sql">
     <meta property="article:tag" content="acciones de github etl">
-    <meta property="article:tag" content="arquitectura de integración de APIs">
+    <meta property="article:tag" content="arquitectura de integraciÃ³n de APIs">
     <meta property="og:image" content="https://pklavc.com/images/lavc.webp?v=5e84850f26">
     <meta property="og:image:width" content="1024">
     <meta property="og:image:height" content="1024">
     <meta property="og:site_name" content="Patrick Araujo">
     <meta property="og:locale" content="es_ES">
-    <meta property="og:image:alt" content="Retrato de marca del ingeniero backend y especialista en automatización Patrick Araujo">
+    <meta property="og:image:alt" content="Retrato de marca del ingeniero backend y especialista en automatizaciÃ³n Patrick Araujo">
 
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Arquitectura de integración de APIs: Hablla, Zoho, SIGE y Zenvia">
-    <meta name="twitter:description" content="GitHub Actions, Node.js workers, Supabase SQL y API diseño de integración para Hablla, Zoho Creator, SIGE ERP y Zenvia Voice.">
+    <meta name="twitter:title" content="Arquitectura de integraciÃ³n de APIs: Hablla, Zoho, SIGE y Zenvia">
+    <meta name="twitter:description" content="GitHub Actions, Node.js workers, Supabase SQL y API diseÃ±o de integraciÃ³n para Hablla, Zoho Creator, SIGE ERP y Zenvia Voice.">
     <meta name="twitter:image" content="https://pklavc.com/images/lavc.webp?v=5e84850f26">
-    <meta name="twitter:image:alt" content="Retrato de marca del ingeniero backend y especialista en automatización Patrick Araujo">
+    <meta name="twitter:image:alt" content="Retrato de marca del ingeniero backend y especialista en automatizaciÃ³n Patrick Araujo">
     <meta name="twitter:site" content="@PkLavc">
     <meta name="twitter:creator" content="@PkLavc">
 
-    <link rel="icon" type="image/svg+xml" href="https://pklavc.com/images/favicon.svg?v=d15fe4e492">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=d15fe4e492">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Monoton&amp;family=Poppins:wght@500;600;700&amp;family=Raleway:wght@300&amp;display=swap" onload="this.onload=null;this.rel='stylesheet'">
@@ -117,7 +117,7 @@
     <div id="breaker-two"></div>
     <div id="all">
         <div class="cursor"></div>
-        <div id="navigation-content" role="navigation" aria-label="Navegación primaria">
+        <div id="navigation-content" role="navigation" aria-label="NavegaciÃ³n primaria">
             <div class="logo"></div>
             <div class="navigation-links">
                 <a href="/es/" data-text="INICIO" id="home-link">INICIO</a>
@@ -145,9 +145,9 @@
                             <span>/</span>
                             <span aria-current="page">API Integration Pipeline</span>
                         </div>
-                        <span class="blog-kicker">Ingeniería de datos</span>
-                        <h1>Integración de APIs con Hablla, Zoho, SIGE y Zenvia: GitHub Actions y Supabase</h1>
-                        <p>Integrar múltiples API de terceros en una capa de datos coherente es un desafío de diseño. API Integration Pipeline conecta Hablla, Zoho Creator, Zenvia Voice y API de SIGE ERP a las tablas de Supabase SQL, lo que permite que las capas de análisis e informes evolucionen sin tener que volver a buscar los mismos datos de los proveedores.</p>
+                        <span class="blog-kicker">IngenierÃ­a de datos</span>
+                        <h1>IntegraciÃ³n de APIs con Hablla, Zoho, SIGE y Zenvia: GitHub Actions y Supabase</h1>
+                        <p>Integrar mÃºltiples API de terceros en una capa de datos coherente es un desafÃ­o de diseÃ±o. API Integration Pipeline conecta Hablla, Zoho Creator, Zenvia Voice y API de SIGE ERP a las tablas de Supabase SQL, lo que permite que las capas de anÃ¡lisis e informes evolucionen sin tener que volver a buscar los mismos datos de los proveedores.</p>
                         <div class="blog-post-meta">
                             <span>Publicado el 15 de mayo de 2026</span>
                             <span>10 minutos de lectura</span>
@@ -156,55 +156,55 @@
                     </article>
 
                     <article class="blog-article">
-                        <h2>El límite de ingestión importa</h2>
-                        <p>Muchos proyectos de integración de APIs comienzan mapeando los datos del proveedor directamente en un formulario de informe. Esto parece eficiente al principio, pero combina la recolección con la cuestión comercial actual. Cuando el tablero cambia, la forma de API cambia o se necesita un nuevo modelo SQL, es posible que el sistema tenga que extraer datos antiguos nuevamente del proveedor.</p>
-                        <p><a href="/es/proyectos/raw-api-ingestion-pipeline/">API Integration Pipeline</a> adopta el enfoque opuesto. Los workers recopilan payloads de Hablla, Zoho Creator, Zenvia Voice y API de SIGE ERP, luego las almacenan en las tablas SQL de Supabase/PostgreSQL. La capa de ingesta solo envuelve la payload con metadatos operativos como <code>external_id</code>, tabla de destino, ventana de ejecución y marcas de tiempo.</p>
+                        <h2>El lÃ­mite de ingestiÃ³n importa</h2>
+                        <p>Muchos proyectos de integraciÃ³n de APIs comienzan mapeando los datos del proveedor directamente en un formulario de informe. Esto parece eficiente al principio, pero combina la recolecciÃ³n con la cuestiÃ³n comercial actual. Cuando el tablero cambia, la forma de API cambia o se necesita un nuevo modelo SQL, es posible que el sistema tenga que extraer datos antiguos nuevamente del proveedor.</p>
+                        <p><a href="/es/proyectos/raw-api-ingestion-pipeline/">API Integration Pipeline</a> adopta el enfoque opuesto. Los workers recopilan payloads de Hablla, Zoho Creator, Zenvia Voice y API de SIGE ERP, luego las almacenan en las tablas SQL de Supabase/PostgreSQL. La capa de ingesta solo envuelve la payload con metadatos operativos como <code>external_id</code>, tabla de destino, ventana de ejecuciÃ³n y marcas de tiempo.</p>
 
                         <div class="blog-callout">
                             Una tabla en bruto debe preservar la evidencia. No es el modelo de negocio final; es la fuente reproducible que permite que los futuros modelos SQL sigan siendo honestos.
                         </div>
 
-                        <h2>Por qué las tablas raw_* SQL son útiles</h2>
-                        <p>Supabase hace que PostgreSQL esté disponible como una capa de almacenamiento operativo, por lo que cada integración puede aterrizar en un espacio de nombres SQL predecible. Tablas como <code>raw_contact_hablla</code>, <code>raw_events_hablla</code>, <code>raw_contact_telefonia</code>, <code>raw_events_faturado</code>, <code>raw_contact_site</code>, y <code>raw_events_agendamento</code> están intencionalmente orientados a la fuente.</p>
-                        <p>Esto le da al sistema tres ventajas. En primer lugar, los payloads antiguos se pueden reprocesar en nuevas tablas de informes. En segundo lugar, las uniones y enriquecimientos de SQL se pueden probar sin volver a pedirle a la API externa los mismos datos. En tercer lugar, la deriva del esquema se vuelve visible en la capa sin procesar en lugar de ser silenciosamente aplanada por la lógica de mapeo inicial.</p>
+                        <h2>Por quÃ© las tablas raw_* SQL son Ãºtiles</h2>
+                        <p>Supabase hace que PostgreSQL estÃ© disponible como una capa de almacenamiento operativo, por lo que cada integraciÃ³n puede aterrizar en un espacio de nombres SQL predecible. Tablas como <code>raw_contact_hablla</code>, <code>raw_events_hablla</code>, <code>raw_contact_telefonia</code>, <code>raw_events_faturado</code>, <code>raw_contact_site</code>, y <code>raw_events_agendamento</code> estÃ¡n intencionalmente orientados a la fuente.</p>
+                        <p>Esto le da al sistema tres ventajas. En primer lugar, los payloads antiguos se pueden reprocesar en nuevas tablas de informes. En segundo lugar, las uniones y enriquecimientos de SQL se pueden probar sin volver a pedirle a la API externa los mismos datos. En tercer lugar, la deriva del esquema se vuelve visible en la capa sin procesar en lugar de ser silenciosamente aplanada por la lÃ³gica de mapeo inicial.</p>
 
-                        <h2>Las identificaciones externas idempotentes hacen que la reproducción sea segura</h2>
-                        <p>La ingestión programada casi siempre repite ventanas. Un worker puede recuperar los últimos cinco días de los pedidos de SIGE, los últimos siete días de las tarjetas Hablla, el mes actual y anterior de los registros de programación de Zoho o una ventana reciente de llamadas de Zenvia. La repetición es saludable porque detecta actualizaciones tardías, pero solo si las escrituras son idempotentes.</p>
-                        <p>Raw API Ingestion Pipeline utiliza identificadores estables derivados de fuente, como <code>client-{id}</code>, <code>card-{id}</code>, <code>pedido-{Codigo}</code>, <code>lead-{ID}</code>, y <code>agendamento-{ID}</code>. Con la semántica upsert, la misma ventana puede volver a ejecutarse sin duplicar filas. Ésa es la diferencia entre un sistema de ingesta reproducible y una stack cada vez mayor de registros duplicados.</p>
+                        <h2>Las identificaciones externas idempotentes hacen que la reproducciÃ³n sea segura</h2>
+                        <p>La ingestiÃ³n programada casi siempre repite ventanas. Un worker puede recuperar los Ãºltimos cinco dÃ­as de los pedidos de SIGE, los Ãºltimos siete dÃ­as de las tarjetas Hablla, el mes actual y anterior de los registros de programaciÃ³n de Zoho o una ventana reciente de llamadas de Zenvia. La repeticiÃ³n es saludable porque detecta actualizaciones tardÃ­as, pero solo si las escrituras son idempotentes.</p>
+                        <p>Raw API Ingestion Pipeline utiliza identificadores estables derivados de fuente, como <code>client-{id}</code>, <code>card-{id}</code>, <code>pedido-{Codigo}</code>, <code>lead-{ID}</code>, y <code>agendamento-{ID}</code>. Con la semÃ¡ntica upsert, la misma ventana puede volver a ejecutarse sin duplicar filas. Ã‰sa es la diferencia entre un sistema de ingesta reproducible y una stack cada vez mayor de registros duplicados.</p>
 
-                        <h2>GitHub Actions es suficiente para una recopilación de datos ligera</h2>
-                        <p>Un servidor permanente no siempre es la opción correcta. Para esta carga de trabajo, GitHub Actions proporciona ejecución programada y repeticiones manuales a través de <code>workflow_dispatch</code>, secretos centralizados y registros de ejecución sin mantener una máquina virtual, una plataforma de contenedores o un worker siempre activo.</p>
-                        <p>El diseño de la programación es práctico: las ventanas pequeñas y recientes se ejecutan con más frecuencia, mientras que las sincronizaciones más grandes o más intensas se ejecutan diariamente. Esto reduce la presión del límite de tarifas del proveedor y reduce la posibilidad de superposición del flujo de trabajo. También hace que el modelo operativo sea fácil de auditar porque cada fuente tiene su propio flujo de trabajo e historial de ejecución.</p>
+                        <h2>GitHub Actions es suficiente para una recopilaciÃ³n de datos ligera</h2>
+                        <p>Un servidor permanente no siempre es la opciÃ³n correcta. Para esta carga de trabajo, GitHub Actions proporciona ejecuciÃ³n programada y repeticiones manuales a travÃ©s de <code>workflow_dispatch</code>, secretos centralizados y registros de ejecuciÃ³n sin mantener una mÃ¡quina virtual, una plataforma de contenedores o un worker siempre activo.</p>
+                        <p>El diseÃ±o de la programaciÃ³n es prÃ¡ctico: las ventanas pequeÃ±as y recientes se ejecutan con mÃ¡s frecuencia, mientras que las sincronizaciones mÃ¡s grandes o mÃ¡s intensas se ejecutan diariamente. Esto reduce la presiÃ³n del lÃ­mite de tarifas del proveedor y reduce la posibilidad de superposiciÃ³n del flujo de trabajo. TambiÃ©n hace que el modelo operativo sea fÃ¡cil de auditar porque cada fuente tiene su propio flujo de trabajo e historial de ejecuciÃ³n.</p>
 
-                        <h2>Opciones de colección específicas de API</h2>
-                        <p>La ingestión cruda no significa que todas las fuentes sean tratadas de manera idéntica. Hablla los asistentes se recopilan día a día porque los endpoints de resumen se pueden agregar por período. Zoho tiene trabajos completos y recientes para que el sistema pueda actualizar los registros recientes con frecuencia sin tener que volver a ejecutar ventanas pesadas durante todo el día. Zenvia los datos de llamadas a menudo tienen más sentido como recopilación diaria de cierre del día. Los datos de facturación de SIGE también se recopilan día a día durante períodos ERP predecibles.</p>
-                        <p>Esas opciones son decisiones de arquitectura, no trivialidades de implementación. El worker debe respetar la semántica de cada API y al mismo tiempo producir un sobre de almacenamiento sin formato consistente.</p>
+                        <h2>Opciones de colecciÃ³n especÃ­ficas de API</h2>
+                        <p>La ingestiÃ³n cruda no significa que todas las fuentes sean tratadas de manera idÃ©ntica. Hablla los asistentes se recopilan dÃ­a a dÃ­a porque los endpoints de resumen se pueden agregar por perÃ­odo. Zoho tiene trabajos completos y recientes para que el sistema pueda actualizar los registros recientes con frecuencia sin tener que volver a ejecutar ventanas pesadas durante todo el dÃ­a. Zenvia los datos de llamadas a menudo tienen mÃ¡s sentido como recopilaciÃ³n diaria de cierre del dÃ­a. Los datos de facturaciÃ³n de SIGE tambiÃ©n se recopilan dÃ­a a dÃ­a durante perÃ­odos ERP predecibles.</p>
+                        <p>Esas opciones son decisiones de arquitectura, no trivialidades de implementaciÃ³n. El worker debe respetar la semÃ¡ntica de cada API y al mismo tiempo producir un sobre de almacenamiento sin formato consistente.</p>
 
-                        <h2>El SQL descendente permanece separado de la ingestión</h2>
-                        <p>El trabajo más valioso de SQL generalmente ocurre después del almacenamiento sin formato: uniones entre tarjetas Hablla y personas, derivación de cronogramas de contacto, vistas de facturación de SIGE, atribución de clientes potenciales de Zoho o métricas de telefonía operativa de Zenvia. Mantener esas transformaciones en sentido descendente significa que cada modelo SQL se puede versionar, probar y reemplazar sin debilitar la confiabilidad de la recopilación.</p>
-                        <p>Esto también hace que el proyecto sea una continuación natural del antiguo patrón de integración de workers que se muestra en <a href="/es/blog/integration-worker-etl-pipelines/">Pipelines ETL en workers de integración de APIs</a>. La diferencia es que API Integration Pipeline mueve el límite de almacenamiento duradero de Google Sheets a las tablas de Supabase SQL.</p>
+                        <h2>El SQL descendente permanece separado de la ingestiÃ³n</h2>
+                        <p>El trabajo mÃ¡s valioso de SQL generalmente ocurre despuÃ©s del almacenamiento sin formato: uniones entre tarjetas Hablla y personas, derivaciÃ³n de cronogramas de contacto, vistas de facturaciÃ³n de SIGE, atribuciÃ³n de clientes potenciales de Zoho o mÃ©tricas de telefonÃ­a operativa de Zenvia. Mantener esas transformaciones en sentido descendente significa que cada modelo SQL se puede versionar, probar y reemplazar sin debilitar la confiabilidad de la recopilaciÃ³n.</p>
+                        <p>Esto tambiÃ©n hace que el proyecto sea una continuaciÃ³n natural del antiguo patrÃ³n de integraciÃ³n de workers que se muestra en <a href="/es/blog/integration-worker-etl-pipelines/">Pipelines ETL en workers de integraciÃ³n de APIs</a>. La diferencia es que API Integration Pipeline mueve el lÃ­mite de almacenamiento duradero de Google Sheets a las tablas de Supabase SQL.</p>
 
-                        <h2>Seguridad: registros útiles sin filtrar payloads</h2>
-                        <p>Los registros de flujo de trabajo públicos o semipúblicos nunca deben contener tokens, respuestas API completas, cuerpos de error completos o volcados de payload sin procesar. Raw API Ingestion Pipeline mantiene los registros operativos: código de estado, mensaje de error resumido, contexto del proveedor y resultado de la ejecución. Esto es suficiente para diagnosticar la mayoría de las fallas sin exponer datos confidenciales de credenciales o clientes.</p>
+                        <h2>Seguridad: registros Ãºtiles sin filtrar payloads</h2>
+                        <p>Los registros de flujo de trabajo pÃºblicos o semipÃºblicos nunca deben contener tokens, respuestas API completas, cuerpos de error completos o volcados de payload sin procesar. Raw API Ingestion Pipeline mantiene los registros operativos: cÃ³digo de estado, mensaje de error resumido, contexto del proveedor y resultado de la ejecuciÃ³n. Esto es suficiente para diagnosticar la mayorÃ­a de las fallas sin exponer datos confidenciales de credenciales o clientes.</p>
 
-                        <h2>Por qué la arquitectura escala limpiamente</h2>
-                        <p>Agregar otra integración sigue una ruta repetible: crear un worker, definir la tabla sin procesar de destino, elegir la ventana de recopilación, conservar el payload sin procesar, definir una ID externa estable, agregar secretos, crear un flujo de trabajo y desinfectar registros. La arquitectura escala porque cada fuente tiene complejidad local, pero el contrato de almacenamiento sigue siendo consistente.</p>
+                        <h2>Por quÃ© la arquitectura escala limpiamente</h2>
+                        <p>Agregar otra integraciÃ³n sigue una ruta repetible: crear un worker, definir la tabla sin procesar de destino, elegir la ventana de recopilaciÃ³n, conservar el payload sin procesar, definir una ID externa estable, agregar secretos, crear un flujo de trabajo y desinfectar registros. La arquitectura escala porque cada fuente tiene complejidad local, pero el contrato de almacenamiento sigue siendo consistente.</p>
                     </article>
 
                     <section aria-labelledby="raw-ingestion-related-title">
                         <h2 id="raw-ingestion-related-title">Lectura relacionada</h2>
                         <div class="blog-related-grid">
                             <article class="blog-related-card">
-                                <h3><a href="/es/proyectos/raw-api-ingestion-pipeline/">Proyecto de pipeline de integración de APIs</a></h3>
-                                <p>Página completa del proyecto con lista de integración, modelo de programación, estrategia de tabla sin procesar y contexto Supabase SQL.</p>
+                                <h3><a href="/es/proyectos/raw-api-ingestion-pipeline/">Proyecto de pipeline de integraciÃ³n de APIs</a></h3>
+                                <p>PÃ¡gina completa del proyecto con lista de integraciÃ³n, modelo de programaciÃ³n, estrategia de tabla sin procesar y contexto Supabase SQL.</p>
                             </article>
                             <article class="blog-related-card">
-                                <h3><a href="/es/blog/integration-worker-etl-pipelines/">Pipelines ETL en workers de integración de APIs</a></h3>
-                                <p>Patrones de extracción, normalización y sincronización entre CRM y workers de integración ERP.</p>
+                                <h3><a href="/es/blog/integration-worker-etl-pipelines/">Pipelines ETL en workers de integraciÃ³n de APIs</a></h3>
+                                <p>Patrones de extracciÃ³n, normalizaciÃ³n y sincronizaciÃ³n entre CRM y workers de integraciÃ³n ERP.</p>
                             </article>
                             <article class="blog-related-card">
-                                <h3><a href="/es/stacks/ingeniero-integracion-api/">Stack de ingeniería de integración de APIs</a></h3>
-                                <p>Contexto de stack técnico para la automatización de backend, APIs, SQL y arquitectura de integración.</p>
+                                <h3><a href="/es/stacks/ingeniero-integracion-api/">Stack de ingenierÃ­a de integraciÃ³n de APIs</a></h3>
+                                <p>Contexto de stack tÃ©cnico para la automatizaciÃ³n de backend, APIs, SQL y arquitectura de integraciÃ³n.</p>
                             </article>
                         </div>
                     </section>
@@ -221,10 +221,10 @@
                         </ul>
                     </section>
                     <section class="blog-sidebar-card">
-                        <h2>APIestá cubierto</h2>
+                        <h2>APIestÃ¡ cubierto</h2>
                         <ul>
                             <li>Hablla resumen de personas, tarjetas y servicios</li>
-                            <li>Zoho Clientes potenciales de creadores e informes de programación</li>
+                            <li>Zoho Clientes potenciales de creadores e informes de programaciÃ³n</li>
                             <li>Zenvia Informes de llamadas de voz</li>
                             <li>SIGE ERP pedidos facturados</li>
                         </ul>
@@ -233,8 +233,8 @@
                         <h2>Continuar explorando</h2>
                         <ul>
                             <li><a href="/es/proyectos/raw-api-ingestion-pipeline/">API Integration Pipeline</a></li>
-                            <li><a href="/es/colecciones/proyectos-integracion-api/">Proyectos de integración de APIs</a></li>
-                            <li><a href="/es/colecciones/proyectos-automatizacion/">Proyectos de Automatización</a></li>
+                            <li><a href="/es/colecciones/proyectos-integracion-api/">Proyectos de integraciÃ³n de APIs</a></li>
+                            <li><a href="/es/colecciones/proyectos-automatizacion/">Proyectos de AutomatizaciÃ³n</a></li>
                         </ul>
                     </section>
                 </aside>
@@ -244,10 +244,10 @@
 
     <footer class="footer-minimal">
         <div class="footer-container">
-            <div class="footer-link-list" aria-label="Enlaces de pie de página">
+            <div class="footer-link-list" aria-label="Enlaces de pie de pÃ¡gina">
                 <a class="footer-link-pill" href="https://github.com/PkLavc" target="_blank" rel="noopener noreferrer">GitHub</a>
                 <a class="footer-link-pill" href="https://www.linkedin.com/in/pklavc/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
-                <a class="footer-link-pill" href="mailto:contact@pklavc.com">Correo electrónico</a>
+                <a class="footer-link-pill" href="mailto:contact@pklavc.com">Correo electrÃ³nico</a>
                 <a class="footer-link-pill footer-link-pill-accent" href="https://github.com/sponsors/PkLavc" target="_blank" rel="noopener noreferrer">Apoyar en GitHub</a>
             </div>
             <p class="footer-meta"><span class="footer-copyright-line">&copy; <span data-current-year></span> Patrick Araujo</span> <span class="footer-meta-separator">&bull;</span><span class="footer-legal-inline" aria-label="Legal links"><a class="footer-legal-link" href="/es/politica-de-privacidad/">Pol&iacute;tica de Privacidad</a><span aria-hidden="true">/</span><a class="footer-legal-link" href="/es/terminos-de-uso/">T&eacute;rminos de Uso</a><span aria-hidden="true">/</span><a class="footer-legal-link" href="/es/politica-editorial/">Pol&iacute;tica Editorial</a></span></p>
@@ -266,7 +266,7 @@
     <script src="/js/index.js?v=e65a1f3e01" defer></script>
 
     <div class="visually-hidden">
-        <p>Artículo de pipeline de ingesta bruta de APIs sobre la ingesta bruta de APIs, workers de Node.js, tablas sin procesar de GitHub Actions ETL, Supabase SQL, arquitectura de PostgreSQL, API de Hablla, API de Zoho Creator, API de Zenvia Voice, API de SIGE ERP, IDs externos idempotentes, pipelines de datos reproducibles y modelado de análisis descendente.</p>
+        <p>ArtÃ­culo de pipeline de ingesta bruta de APIs sobre la ingesta bruta de APIs, workers de Node.js, tablas sin procesar de GitHub Actions ETL, Supabase SQL, arquitectura de PostgreSQL, API de Hablla, API de Zoho Creator, API de Zenvia Voice, API de SIGE ERP, IDs externos idempotentes, pipelines de datos reproducibles y modelado de anÃ¡lisis descendente.</p>
     </div>
 </body>
 </html>

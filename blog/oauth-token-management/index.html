@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -36,7 +36,7 @@
     <meta name="twitter:image" content="https://pklavc.com/images/lavc.webp?v=5e84850f26">
     <meta name="twitter:site" content="@PkLavc">
     <meta name="twitter:creator" content="@PkLavc">
-    <link rel="icon" type="image/svg+xml" href="https://pklavc.com/images/favicon.svg?v=d15fe4e492">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=d15fe4e492">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Monoton&family=Poppins:wght@500;600;700&family=Raleway:wght@300&display=swap" onload="this.onload=null;this.rel='stylesheet'">
@@ -149,9 +149,9 @@
                         <h2>The OAuth lifecycle has three distinct problems</h2>
                         <p>Token management in production covers more than the initial handshake. The three areas that require explicit design are:</p>
                         <ul>
-                            <li><strong>Acquisition</strong> — service account flows, authorization code exchange, and client credential grants each have different requirements and failure modes.</li>
-                            <li><strong>Distribution</strong> — how other services receive valid tokens without directly holding credentials. Secure distribution may use short-lived tokens, scoped access, or a token relay pattern.</li>
-                            <li><strong>Refresh and rotation</strong> — access tokens expire. The system needs to detect expiry before the call fails rather than after. Background refresh with overlap windows is safer than reactive refresh on 401 responses.</li>
+                            <li><strong>Acquisition</strong> â€” service account flows, authorization code exchange, and client credential grants each have different requirements and failure modes.</li>
+                            <li><strong>Distribution</strong> â€” how other services receive valid tokens without directly holding credentials. Secure distribution may use short-lived tokens, scoped access, or a token relay pattern.</li>
+                            <li><strong>Refresh and rotation</strong> â€” access tokens expire. The system needs to detect expiry before the call fails rather than after. Background refresh with overlap windows is safer than reactive refresh on 401 responses.</li>
                         </ul>
 
                         <div class="blog-callout">
@@ -166,7 +166,7 @@
 
                         <h2>Auth failures require explicit retry policy</h2>
                         <p>Authentication errors are not all equivalent. A network timeout during token acquisition is a candidate for retry. An invalid scope or revoked credential is not. Workers should distinguish between transient auth failures worth retrying and permanent auth failures worth escalating. Silent retry on a revoked token wastes queue capacity and delays incident detection.</p>
-                        <p>This connects to the broader retry discipline described in <a href="/blog/event-driven-api-integrations/">Event-Driven API Integrations</a> — the same controlled retry model applies to credential flows.</p>
+                        <p>This connects to the broader retry discipline described in <a href="/blog/event-driven-api-integrations/">Event-Driven API Integrations</a> â€” the same controlled retry model applies to credential flows.</p>
 
                         <h2>Auth workers as infrastructure dependencies</h2>
                         <p>When a dedicated auth worker feeds multiple integration workers, it becomes an upstream dependency with its own availability and reliability requirements. That means monitoring token generation latency, alerting on consecutive acquisition failures, and designing consumers to fail gracefully when the auth service is temporarily unavailable rather than entering undefined retry loops.</p>

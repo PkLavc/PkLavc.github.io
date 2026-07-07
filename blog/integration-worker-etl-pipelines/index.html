@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -36,7 +36,7 @@
     <meta name="twitter:image" content="https://pklavc.com/images/lavc.webp?v=5e84850f26">
     <meta name="twitter:site" content="@PkLavc">
     <meta name="twitter:creator" content="@PkLavc">
-    <link rel="icon" type="image/svg+xml" href="https://pklavc.com/images/favicon.svg?v=d15fe4e492">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=d15fe4e492">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Monoton&family=Poppins:wght@500;600;700&family=Raleway:wght@300&display=swap" onload="this.onload=null;this.rel='stylesheet'">
@@ -143,15 +143,15 @@
 
                     <article class="blog-article">
                         <h2>Why integration workers need a shared normalization contract</h2>
-                        <p>When multiple workers each extract data from a different source — Zoho Creator, Omie ERP, SIGE, Hablla, Zenvia — the downstream reporting system should not need to know which worker produced which record. A shared normalization contract defines the output shape that all workers produce, so the reporting layer can consume any worker's output through the same interface.</p>
+                        <p>When multiple workers each extract data from a different source â€” Zoho Creator, Omie ERP, SIGE, Hablla, Zenvia â€” the downstream reporting system should not need to know which worker produced which record. A shared normalization contract defines the output shape that all workers produce, so the reporting layer can consume any worker's output through the same interface.</p>
                         <p>This is the structural pattern across the integration worker cluster: <a href="/projects/zoho-integration-worker/">Zoho Integration Worker</a>, <a href="/projects/omie-integration-worker/">Omie Integration Worker</a>, <a href="/projects/sige-integration-worker/">SIGE Integration Worker</a>, <a href="/projects/hablla-integration-worker/">Hablla Integration Worker</a>, and <a href="/projects/zenvia-integration-worker/">Zenvia Integration Worker</a> all extract from different APIs and normalize into a consistent payload structure before syncing to reporting targets.</p>
 
                         <h2>Extraction strategies for API-backed data sources</h2>
                         <p>API extraction is not the same as database query extraction. APIs impose rate limits, paginate results differently, and may not support full bulk retrieval. Effective extraction strategies address three areas:</p>
                         <ul>
-                            <li><strong>Pagination handling</strong> — cursor-based and offset-based pagination both require correct implementation to avoid duplicate or missing records across page boundaries.</li>
-                            <li><strong>Incremental extraction</strong> — fetching only records modified since the last run rather than full re-extraction on every cycle reduces API consumption and extraction time.</li>
-                            <li><strong>Rate limit awareness</strong> — workers that ignore rate limits produce cascading failures. Explicit delay logic and retry-after header handling are minimum requirements for production extractors.</li>
+                            <li><strong>Pagination handling</strong> â€” cursor-based and offset-based pagination both require correct implementation to avoid duplicate or missing records across page boundaries.</li>
+                            <li><strong>Incremental extraction</strong> â€” fetching only records modified since the last run rather than full re-extraction on every cycle reduces API consumption and extraction time.</li>
+                            <li><strong>Rate limit awareness</strong> â€” workers that ignore rate limits produce cascading failures. Explicit delay logic and retry-after header handling are minimum requirements for production extractors.</li>
                         </ul>
 
                         <div class="blog-callout">
@@ -159,7 +159,7 @@
                         </div>
 
                         <h2>Payload normalization: field mapping vs. data contracts</h2>
-                        <p>Field mapping — renaming sourceField to targetField — is the minimal form of normalization. A proper normalization layer also handles type coercion, null handling, computed fields, and format standardization. A date field extracted from one API as an ISO string and from another as a Unix timestamp needs to arrive at the reporting layer in a consistent format regardless of source.</p>
+                        <p>Field mapping â€” renaming sourceField to targetField â€” is the minimal form of normalization. A proper normalization layer also handles type coercion, null handling, computed fields, and format standardization. A date field extracted from one API as an ISO string and from another as a Unix timestamp needs to arrive at the reporting layer in a consistent format regardless of source.</p>
                         <p>Data contracts formalize this: they define the expected output shape, required and optional fields, and acceptable value ranges. Workers that violate their output contract fail at normalization validation rather than producing malformed records silently downstream.</p>
 
                         <h2>Reporting sync: Google Sheets as a structured reporting target</h2>

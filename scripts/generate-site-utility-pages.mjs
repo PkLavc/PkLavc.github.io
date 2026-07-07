@@ -1,4 +1,4 @@
-import { execFileSync } from "node:child_process";
+﻿import { execFileSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
 
@@ -197,10 +197,10 @@ function writeRootFiles() {
     background_color: "#101114",
     theme_color: "#00d1ff",
     icons: [
-      { src: "/favicon-16.png", sizes: "16x16", type: "image/png" },
-      { src: "/favicon-32.png", sizes: "32x32", type: "image/png" },
-      { src: "/icon-192.png", sizes: "192x192", type: "image/png", purpose: "any maskable" },
-      { src: "/icon-512.png", sizes: "512x512", type: "image/png", purpose: "any maskable" }
+      { src: "/images/icons/favicon-16.png", sizes: "16x16", type: "image/png" },
+      { src: "/images/icons/favicon-32.png", sizes: "32x32", type: "image/png" },
+      { src: "/images/icons/icon-192.png", sizes: "192x192", type: "image/png", purpose: "any maskable" },
+      { src: "/images/icons/icon-512.png", sizes: "512x512", type: "image/png", purpose: "any maskable" }
     ],
     categories: ["portfolio", "developer", "business", "technology"]
   }, null, 2));
@@ -227,7 +227,7 @@ Last updated: ${HUMAN_DATE}`);
 <browserconfig>
   <msapplication>
     <tile>
-      <square150x150logo src="/icon-192.png"/>
+      <square150x150logo src="/images/icons/icon-192.png"/>
       <TileColor>#101114</TileColor>
     </tile>
   </msapplication>

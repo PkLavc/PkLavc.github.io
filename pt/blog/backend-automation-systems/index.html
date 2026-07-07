@@ -1,11 +1,11 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="author" content="Patrick Araujo">
-    <title>Sistemas de automação de backend: reduza as operações manuais sem quebrar a confiabilidade</title>
-    <meta name="description" content="Saiba como os sistemas de automação de backend reduzem operações repetitivas com workers em fila, auditabilidade, novas tentativas e tratamento seguro de falhas em ambientes de produção.">
+    <title>Sistemas de automaÃ§Ã£o de backend: reduza as operaÃ§Ãµes manuais sem quebrar a confiabilidade</title>
+    <meta name="description" content="Saiba como os sistemas de automaÃ§Ã£o de backend reduzem operaÃ§Ãµes repetitivas com workers em fila, auditabilidade, novas tentativas e tratamento seguro de falhas em ambientes de produÃ§Ã£o.">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://pklavc.com/pt/blog/backend-automation-systems/">
     <link rel="alternate" href="https://pklavc.com/blog/backend-automation-systems/" hreflang="en">
@@ -15,27 +15,27 @@
 
 
 
-<meta property="og:title" content="Sistemas de automação de backend: reduza as operações manuais sem quebrar a confiabilidade">
-    <meta property="og:description" content="Um artigo prático sobre design de automação de backend, execução baseada em filas, observabilidade e segurança de sistema para fluxos de trabalho operacionais.">
+<meta property="og:title" content="Sistemas de automaÃ§Ã£o de backend: reduza as operaÃ§Ãµes manuais sem quebrar a confiabilidade">
+    <meta property="og:description" content="Um artigo prÃ¡tico sobre design de automaÃ§Ã£o de backend, execuÃ§Ã£o baseada em filas, observabilidade e seguranÃ§a de sistema para fluxos de trabalho operacionais.">
     <meta property="og:url" content="https://pklavc.com/pt/blog/backend-automation-systems/">
     <meta property="og:type" content="article">
     <meta property="article:published_time" content="2026-04-24">
     <meta property="article:modified_time" content="2026-04-24">
     <meta property="article:author" content="Patrick Araujo">
     <meta property="article:section" content="Backend Automation">
-    <meta property="article:tag" content="automação de backend">
-    <meta property="article:tag" content="orquestração de fluxo de trabalho">
+    <meta property="article:tag" content="automaÃ§Ã£o de backend">
+    <meta property="article:tag" content="orquestraÃ§Ã£o de fluxo de trabalho">
     <meta property="article:tag" content="workers da fila">
     <meta property="og:image" content="https://pklavc.com/images/lavc.webp?v=5e84850f26">
     <meta property="og:site_name" content="Patrick Araujo">
     <meta property="og:locale" content="pt_BR">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Sistemas de automação de backend: reduza as operações manuais sem quebrar a confiabilidade">
-    <meta name="twitter:description" content="Como projetar sistemas de automação de backend com confiabilidade, novas tentativas, auditabilidade e segurança operacional.">
+    <meta name="twitter:title" content="Sistemas de automaÃ§Ã£o de backend: reduza as operaÃ§Ãµes manuais sem quebrar a confiabilidade">
+    <meta name="twitter:description" content="Como projetar sistemas de automaÃ§Ã£o de backend com confiabilidade, novas tentativas, auditabilidade e seguranÃ§a operacional.">
     <meta name="twitter:image" content="https://pklavc.com/images/lavc.webp?v=5e84850f26">
     <meta name="twitter:site" content="@PkLavc">
     <meta name="twitter:creator" content="@PkLavc">
-    <link rel="icon" type="image/svg+xml" href="https://pklavc.com/images/favicon.svg?v=d15fe4e492">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=d15fe4e492">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Monoton&amp;family=Poppins:wght@500;600;700&amp;family=Raleway:wght@300&amp;display=swap" onload="this.onload=null;this.rel='stylesheet'">
@@ -102,10 +102,10 @@
     <div id="breaker-two"></div>
     <div id="all">
         <div class="cursor"></div>
-        <div id="navigation-content" role="navigation" aria-label="Navegação primária">
+        <div id="navigation-content" role="navigation" aria-label="NavegaÃ§Ã£o primÃ¡ria">
             <div class="logo"></div>
             <div class="navigation-links">
-                <a href="/pt/" data-text="INÍCIO" id="home-link">INÍCIO</a>
+                <a href="/pt/" data-text="INÃCIO" id="home-link">INÃCIO</a>
                 <a href="/pt/sobre/" data-text="SOBRE" id="about-link">SOBRE</a>
                 <a href="/pt/projetos/" data-text="PROJETOS" id="projects-link">PROJETOS</a>
                 <a href="/pt/blog/" data-text="BLOG" id="blog-link">BLOG</a>
@@ -120,15 +120,15 @@
         </div>
 
         <section class="contact blog-contact" aria-labelledby="automation-techstack-title">
-            <h2 id="automation-techstack-title" class="visually-hidden">Tecnologias de automação</h2>
+            <h2 id="automation-techstack-title" class="visually-hidden">Tecnologias de automaÃ§Ã£o</h2>
             <div class="techstack-carousel" aria-hidden="true">
                 <div class="techstack-track">
-                    <img src="https://pklavc.com/images/techstack/python-icon.svg?v=95facd8537" alt="ícone Python" class="contactpic">
-                    <img src="https://pklavc.com/images/techstack/js-icon.svg?v=e95bbae48e" alt="ícone JavaScript" class="contactpic">
-                    <img src="https://pklavc.com/images/techstack/mysql-icon.svg?v=4cb9db2172" alt="ícone SQL" class="contactpic">
-                    <img src="https://pklavc.com/images/techstack/restapi-icon.svg?v=dd9cef94b6" alt="Ícone REST API" class="contactpic">
-                    <img src="https://pklavc.com/images/techstack/github-icon.svg?v=d6684c42e4" alt="ícone GitHub" class="contactpic">
-                    <img src="https://pklavc.com/images/techstack/aws-icon.svg?v=3b4bac8811" alt="ícone AWS" class="contactpic">
+                    <img src="https://pklavc.com/images/techstack/python-icon.svg?v=95facd8537" alt="Ã­cone Python" class="contactpic">
+                    <img src="https://pklavc.com/images/techstack/js-icon.svg?v=e95bbae48e" alt="Ã­cone JavaScript" class="contactpic">
+                    <img src="https://pklavc.com/images/techstack/mysql-icon.svg?v=4cb9db2172" alt="Ã­cone SQL" class="contactpic">
+                    <img src="https://pklavc.com/images/techstack/restapi-icon.svg?v=dd9cef94b6" alt="Ãcone REST API" class="contactpic">
+                    <img src="https://pklavc.com/images/techstack/github-icon.svg?v=d6684c42e4" alt="Ã­cone GitHub" class="contactpic">
+                    <img src="https://pklavc.com/images/techstack/aws-icon.svg?v=3b4bac8811" alt="Ã­cone AWS" class="contactpic">
                     <img src="https://pklavc.com/images/techstack/python-icon.svg?v=95facd8537" alt="" class="contactpic" aria-hidden="true">
                     <img src="https://pklavc.com/images/techstack/js-icon.svg?v=e95bbae48e" alt="" class="contactpic" aria-hidden="true">
                     <img src="https://pklavc.com/images/techstack/mysql-icon.svg?v=4cb9db2172" alt="" class="contactpic" aria-hidden="true">
@@ -143,77 +143,77 @@
             <div class="blog-columns">
                 <div>
                     <article class="blog-post-hero">
-                        <div class="blog-breadcrumb" aria-label="Pão ralado">
-                            <a href="/pt/">Página inicial</a>
+                        <div class="blog-breadcrumb" aria-label="PÃ£o ralado">
+                            <a href="/pt/">PÃ¡gina inicial</a>
                             <span>/</span>
                             <a href="/pt/blog/">Blogue</a>
                             <span>/</span>
-                            <span aria-current="page">Sistemas de automação de backend</span>
+                            <span aria-current="page">Sistemas de automaÃ§Ã£o de backend</span>
                         </div>
-                        <span class="blog-kicker">Automação de backend</span>
-                        <h1>Sistemas de automação de backend: como reduzir operações manuais sem quebrar a confiabilidade</h1>
-                        <p>A automação operacional só tem valor quando elimina o trabalho repetitivo sem criar uma nova classe de falhas ocultas. O objetivo não é apenas velocidade. O objetivo é o rendimento seguro, a execução repetível e a responsabilidade clara quando algo dá errado.</p>
+                        <span class="blog-kicker">AutomaÃ§Ã£o de backend</span>
+                        <h1>Sistemas de automaÃ§Ã£o de backend: como reduzir operaÃ§Ãµes manuais sem quebrar a confiabilidade</h1>
+                        <p>A automaÃ§Ã£o operacional sÃ³ tem valor quando elimina o trabalho repetitivo sem criar uma nova classe de falhas ocultas. O objetivo nÃ£o Ã© apenas velocidade. O objetivo Ã© o rendimento seguro, a execuÃ§Ã£o repetÃ­vel e a responsabilidade clara quando algo dÃ¡ errado.</p>
                         <div class="blog-post-meta">
                             <span>Publicado em 24 de abril de 2026</span>
                             <span>8 minutos de leitura</span>
-                            <span>Arquitetura de Automação</span>
+                            <span>Arquitetura de AutomaÃ§Ã£o</span>
                         </div>
                     </article>
 
                     <article class="blog-article">
-                        <h2>Comece com dor operacional repetitiva, não com ferramentas</h2>
-                        <p>Os candidatos mais fortes à automação são tarefas que acontecem com frequência, seguem regras de negócios estáveis e já consomem a atenção humana em uma sequência repetida. Consolidação de relatórios, sincronização via API, exportações de faturamento, fluxos de atualização de credenciais e envio de workers downstream são bons exemplos porque geralmente têm etapas determinísticas e resultados mensuráveis.</p>
-                        <p>Esse padrão aparece em diversas implementações de portfólio, incluindo <a href="/pt/projetos/google-auth-worker/">Google Auth Worker</a>, <a href="/pt/projetos/zoho-integration-worker/">Zoho Integration Worker</a> e <a href="/pt/projetos/sige-integration-worker/">SIGE Integration Worker</a>. O valor prático da automação nesses casos não é abstrato. É menor carga de trabalho manual, menos atualizações perdidas e resultados mais confiáveis ​​para equipes financeiras e operacionais.</p>
+                        <h2>Comece com dor operacional repetitiva, nÃ£o com ferramentas</h2>
+                        <p>Os candidatos mais fortes Ã  automaÃ§Ã£o sÃ£o tarefas que acontecem com frequÃªncia, seguem regras de negÃ³cios estÃ¡veis e jÃ¡ consomem a atenÃ§Ã£o humana em uma sequÃªncia repetida. ConsolidaÃ§Ã£o de relatÃ³rios, sincronizaÃ§Ã£o via API, exportaÃ§Ãµes de faturamento, fluxos de atualizaÃ§Ã£o de credenciais e envio de workers downstream sÃ£o bons exemplos porque geralmente tÃªm etapas determinÃ­sticas e resultados mensurÃ¡veis.</p>
+                        <p>Esse padrÃ£o aparece em diversas implementaÃ§Ãµes de portfÃ³lio, incluindo <a href="/pt/projetos/google-auth-worker/">Google Auth Worker</a>, <a href="/pt/projetos/zoho-integration-worker/">Zoho Integration Worker</a> e <a href="/pt/projetos/sige-integration-worker/">SIGE Integration Worker</a>. O valor prÃ¡tico da automaÃ§Ã£o nesses casos nÃ£o Ã© abstrato. Ã‰ menor carga de trabalho manual, menos atualizaÃ§Ãµes perdidas e resultados mais confiÃ¡veis â€‹â€‹para equipes financeiras e operacionais.</p>
 
                         <div class="blog-callout">
-                            A automação deve eliminar o esforço do operador e, ao mesmo tempo, preservar a visibilidade. Se um fluxo de trabalho se tornar mais rápido, mas mais difícil de depurar, o sistema ainda terá um problema de confiabilidade.
+                            A automaÃ§Ã£o deve eliminar o esforÃ§o do operador e, ao mesmo tempo, preservar a visibilidade. Se um fluxo de trabalho se tornar mais rÃ¡pido, mas mais difÃ­cil de depurar, o sistema ainda terÃ¡ um problema de confiabilidade.
                         </div>
 
-                        <h2>Orquestração separada do trabalho de transformação</h2>
-                        <p>Um erro comum de design é colocar autenticação, extração, mapeamento, desduplicação e publicação em um grande caminho de execução. Isso torna as tentativas perigosas e a recuperação cara. Um design mais limpo separa as preocupações em unidades distintas:</p>
+                        <h2>OrquestraÃ§Ã£o separada do trabalho de transformaÃ§Ã£o</h2>
+                        <p>Um erro comum de design Ã© colocar autenticaÃ§Ã£o, extraÃ§Ã£o, mapeamento, desduplicaÃ§Ã£o e publicaÃ§Ã£o em um grande caminho de execuÃ§Ã£o. Isso torna as tentativas perigosas e a recuperaÃ§Ã£o cara. Um design mais limpo separa as preocupaÃ§Ãµes em unidades distintas:</p>
                         <ul>
-                            <li>aquisição de credenciais ou tokens</li>
-                            <li>expedição de trabalhos e filas</li>
-                            <li>extração de dados do sistema de origem</li>
-                            <li>mapeamento e normalização</li>
-                            <li>publicação ou sincronização com o sistema de destino</li>
+                            <li>aquisiÃ§Ã£o de credenciais ou tokens</li>
+                            <li>expediÃ§Ã£o de trabalhos e filas</li>
+                            <li>extraÃ§Ã£o de dados do sistema de origem</li>
+                            <li>mapeamento e normalizaÃ§Ã£o</li>
+                            <li>publicaÃ§Ã£o ou sincronizaÃ§Ã£o com o sistema de destino</li>
                         </ul>
-                        <p>Essa separação é parte da razão pela qual os workers apoiados em fila são eficazes. Você pode tentar novamente apenas a fatia com falha, inspecionar cada estágio de forma independente e manter o sistema geral mais fácil de raciocinar.</p>
+                        <p>Essa separaÃ§Ã£o Ã© parte da razÃ£o pela qual os workers apoiados em fila sÃ£o eficazes. VocÃª pode tentar novamente apenas a fatia com falha, inspecionar cada estÃ¡gio de forma independente e manter o sistema geral mais fÃ¡cil de raciocinar.</p>
 
-                        <h2>Os sistemas de filas não servem apenas para escala</h2>
-                        <p>As filas são importantes mesmo em ambientes de volume moderado porque criam limites de execução. Eles ajudam a absorver cargas de trabalho intermitentes, suavizar a instabilidade do provedor e tornar tarefas de longa duração menos frágeis do que cadeias de solicitações síncronas. Eles também criam uma superfície de auditoria: quando um trabalho foi criado, qual carga ele recebeu, quantas vezes ele tentou novamente e qual estado final atingiu.</p>
-                        <p>Essa mesma lógica de design suporta um trabalho de backend mais amplo em <a href="/pt/projetos/event-driven-integration-service/">Event-Driven Integration Service</a> e <a href="/pt/projetos/multi-tenant-saas-platform/">Multi-Tenant SaaS Platform</a>, onde o processamento assíncrono faz parte da segurança do sistema, não apenas uma otimização de desempenho.</p>
+                        <h2>Os sistemas de filas nÃ£o servem apenas para escala</h2>
+                        <p>As filas sÃ£o importantes mesmo em ambientes de volume moderado porque criam limites de execuÃ§Ã£o. Eles ajudam a absorver cargas de trabalho intermitentes, suavizar a instabilidade do provedor e tornar tarefas de longa duraÃ§Ã£o menos frÃ¡geis do que cadeias de solicitaÃ§Ãµes sÃ­ncronas. Eles tambÃ©m criam uma superfÃ­cie de auditoria: quando um trabalho foi criado, qual carga ele recebeu, quantas vezes ele tentou novamente e qual estado final atingiu.</p>
+                        <p>Essa mesma lÃ³gica de design suporta um trabalho de backend mais amplo em <a href="/pt/projetos/event-driven-integration-service/">Event-Driven Integration Service</a> e <a href="/pt/projetos/multi-tenant-saas-platform/">Multi-Tenant SaaS Platform</a>, onde o processamento assÃ­ncrono faz parte da seguranÃ§a do sistema, nÃ£o apenas uma otimizaÃ§Ã£o de desempenho.</p>
 
-                        <h2>A confiabilidade depende da estratégia de falha explícita</h2>
-                        <p>Um trabalho automatizado que falha silenciosamente costuma ser pior do que um fluxo de trabalho manual. A automação da produção precisa de tratamento deliberado para falhas parciais, desvios inesperados de esquema, expiração de autenticação e limites de taxa do provedor. No mínimo, o sistema deve suportar regras de repetição, tratamento de mensagens mortas ou escalonamento equivalente, registros com registro de data e hora e contexto suficiente para reconstruir o motivo da falha de uma execução.</p>
+                        <h2>A confiabilidade depende da estratÃ©gia de falha explÃ­cita</h2>
+                        <p>Um trabalho automatizado que falha silenciosamente costuma ser pior do que um fluxo de trabalho manual. A automaÃ§Ã£o da produÃ§Ã£o precisa de tratamento deliberado para falhas parciais, desvios inesperados de esquema, expiraÃ§Ã£o de autenticaÃ§Ã£o e limites de taxa do provedor. No mÃ­nimo, o sistema deve suportar regras de repetiÃ§Ã£o, tratamento de mensagens mortas ou escalonamento equivalente, registros com registro de data e hora e contexto suficiente para reconstruir o motivo da falha de uma execuÃ§Ã£o.</p>
                         <ul>
-                            <li>Use gravações idempotentes quando o mesmo evento puder ser repetido.</li>
+                            <li>Use gravaÃ§Ãµes idempotentes quando o mesmo evento puder ser repetido.</li>
                             <li>Identificadores persistentes que permitem correlacionar registros de origem e registros de destino.</li>
-                            <li>Registre resultados de negócios, não apenas exceções técnicas.</li>
-                            <li>Alerta sobre padrões de falha repetidos, não apenas sobre falhas únicas.</li>
+                            <li>Registre resultados de negÃ³cios, nÃ£o apenas exceÃ§Ãµes tÃ©cnicas.</li>
+                            <li>Alerta sobre padrÃµes de falha repetidos, nÃ£o apenas sobre falhas Ãºnicas.</li>
                         </ul>
 
-                        <h2>A vinculação interna deve refletir o contexto real de execução</h2>
-                        <p>Para SEO e para clareza técnica, o conteúdo de automação tem melhor desempenho quando vinculado a sistemas reais em vez de resumos genéricos. Este artigo fica naturalmente ao lado <a href="/pt/colecoes/projetos-automacao/">Projetos de Automação</a>, <a href="/pt/colecoes/projetos-integracao-api/">Projetos de Integração de APIs</a> e <a href="/pt/stacks/automacao-backend/">Automação de backend</a>. Esse estrutura interna de links informa aos usuários e aos mecanismos de pesquisa que o tópico de automação tem profundidade de implementação no site.</p>
+                        <h2>A vinculaÃ§Ã£o interna deve refletir o contexto real de execuÃ§Ã£o</h2>
+                        <p>Para SEO e para clareza tÃ©cnica, o conteÃºdo de automaÃ§Ã£o tem melhor desempenho quando vinculado a sistemas reais em vez de resumos genÃ©ricos. Este artigo fica naturalmente ao lado <a href="/pt/colecoes/projetos-automacao/">Projetos de AutomaÃ§Ã£o</a>, <a href="/pt/colecoes/projetos-integracao-api/">Projetos de IntegraÃ§Ã£o de APIs</a> e <a href="/pt/stacks/automacao-backend/">AutomaÃ§Ã£o de backend</a>. Esse estrutura interna de links informa aos usuÃ¡rios e aos mecanismos de pesquisa que o tÃ³pico de automaÃ§Ã£o tem profundidade de implementaÃ§Ã£o no site.</p>
 
-                        <h2>Qual é geralmente a aparência de uma arquitetura de automação forte</h2>
-                        <p>Na prática, sistemas fortes de automação de backend compartilham as mesmas características: responsabilidades restritas por worker, novas tentativas previsíveis, resultados normalizados e observabilidade operacional. O valor é cumulativo. Com o tempo, as equipes obtêm relatórios mais rápidos, menos reconciliações manuais e movimentação de dados entre sistemas mais confiável.</p>
+                        <h2>Qual Ã© geralmente a aparÃªncia de uma arquitetura de automaÃ§Ã£o forte</h2>
+                        <p>Na prÃ¡tica, sistemas fortes de automaÃ§Ã£o de backend compartilham as mesmas caracterÃ­sticas: responsabilidades restritas por worker, novas tentativas previsÃ­veis, resultados normalizados e observabilidade operacional. O valor Ã© cumulativo. Com o tempo, as equipes obtÃªm relatÃ³rios mais rÃ¡pidos, menos reconciliaÃ§Ãµes manuais e movimentaÃ§Ã£o de dados entre sistemas mais confiÃ¡vel.</p>
                     </article>
 
                     <section class="blog-related-card" aria-labelledby="automation-related-title">
                         <h2 id="automation-related-title">Leitura relacionada</h2>
                         <div class="blog-related-grid">
                             <article class="blog-related-card">
-                                <h3><a href="/pt/blog/event-driven-api-integrations/">Integrações orientadas a eventos API</a></h3>
-                                <p>Projetando novas tentativas, idempotência e rastreabilidade para serviços de integração.</p>
+                                <h3><a href="/pt/blog/event-driven-api-integrations/">IntegraÃ§Ãµes orientadas a eventos API</a></h3>
+                                <p>Projetando novas tentativas, idempotÃªncia e rastreabilidade para serviÃ§os de integraÃ§Ã£o.</p>
                             </article>
                             <article class="blog-related-card">
                                 <h3><a href="/pt/projetos/google-auth-worker/">Google Auth Worker</a></h3>
-                                <p>Orquestração de autenticação que alimenta trabalhos de automação downstream.</p>
+                                <p>OrquestraÃ§Ã£o de autenticaÃ§Ã£o que alimenta trabalhos de automaÃ§Ã£o downstream.</p>
                             </article>
                             <article class="blog-related-card">
-                                <h3><a href="/pt/colecoes/projetos-automacao/">Projetos de Automação</a></h3>
-                                <p>Cluster de portfólio para automação de fluxo de trabalho e trabalho de confiabilidade operacional.</p>
+                                <h3><a href="/pt/colecoes/projetos-automacao/">Projetos de AutomaÃ§Ã£o</a></h3>
+                                <p>Cluster de portfÃ³lio para automaÃ§Ã£o de fluxo de trabalho e trabalho de confiabilidade operacional.</p>
                             </article>
                         </div>
                     </section>
@@ -221,12 +221,12 @@
 
                 <aside class="blog-article-grid">
                     <section class="blog-sidebar-card">
-                        <h2>Conclusões principais</h2>
+                        <h2>ConclusÃµes principais</h2>
                         <ul>
-                            <li>Automatize o trabalho repetível com regras de negócios explícitas.</li>
-                            <li>Orquestração separada de transformação e publicação.</li>
+                            <li>Automatize o trabalho repetÃ­vel com regras de negÃ³cios explÃ­citas.</li>
+                            <li>OrquestraÃ§Ã£o separada de transformaÃ§Ã£o e publicaÃ§Ã£o.</li>
                             <li>Use filas para controle, auditabilidade e isolamento de falhas.</li>
-                            <li>Meça a confiabilidade por meio de resultados rastreáveis.</li>
+                            <li>MeÃ§a a confiabilidade por meio de resultados rastreÃ¡veis.</li>
                         </ul>
                     </section>
                     <section class="blog-sidebar-card">
@@ -234,7 +234,7 @@
                         <ul>
                             <li><a href="/pt/projetos/zoho-integration-worker/">Zoho Integration Worker</a></li>
                             <li><a href="/pt/projetos/sige-integration-worker/">SIGE Integration Worker</a></li>
-                            <li><a href="/pt/stacks/engenheiro-integracao-api/">Engenheiro de Integração de APIs</a></li>
+                            <li><a href="/pt/stacks/engenheiro-integracao-api/">Engenheiro de IntegraÃ§Ã£o de APIs</a></li>
                             <li><a href="/pt/sobre/">Sobre Patrick Araujo</a></li>
                         </ul>
                     </section>
@@ -244,7 +244,7 @@
     </div>
     <footer class="footer-minimal">
         <div class="footer-container">
-            <div class="footer-link-list" aria-label="Links de rodapé">
+            <div class="footer-link-list" aria-label="Links de rodapÃ©">
                 <a class="footer-link-pill" href="https://github.com/PkLavc" target="_blank" rel="noopener noreferrer">GitHub</a>
                 <a class="footer-link-pill" href="https://www.linkedin.com/in/pklavc/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
                 <a class="footer-link-pill" href="mailto:contact@pklavc.com">E-mail</a>
@@ -264,7 +264,7 @@
     <script src="/js/jquery.min.js?v=91e8044a4b" defer></script>
     <script src="/js/index.js?v=e65a1f3e01" defer></script>
     <div class="visually-hidden">
-        <p>Artigo sobre automação de backend sobre orquestração de fluxo de trabalho, workers de filas, confiabilidade operacional, pipelines de relatórios e observabilidade do sistema.</p>
+        <p>Artigo sobre automaÃ§Ã£o de backend sobre orquestraÃ§Ã£o de fluxo de trabalho, workers de filas, confiabilidade operacional, pipelines de relatÃ³rios e observabilidade do sistema.</p>
     </div>
 </body>
 </html>

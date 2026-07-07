@@ -1,19 +1,19 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="author" content="Patrick Araujo">
-    <title>Cómo construí una plataforma Kanban con IA usando FastAPI, RAG y agentes</title>
-    <meta name="description" content="Notas de arquitectura de Lavc Systems: backend FastAPI, UI React, LLMs locales, RAG, memoria vectorial, agentes, observabilidad WebSocket y orquestación de tareas.">
+    <title>CÃ³mo construÃ­ una plataforma Kanban con IA usando FastAPI, RAG y agentes</title>
+    <meta name="description" content="Notas de arquitectura de Lavc Systems: backend FastAPI, UI React, LLMs locales, RAG, memoria vectorial, agentes, observabilidad WebSocket y orquestaciÃ³n de tareas.">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://pklavc.com/es/blog/ai-kanban-fastapi-rag-agents/">
     <link rel="alternate" href="https://pklavc.com/blog/ai-kanban-fastapi-rag-agents/" hreflang="en">
     <link rel="alternate" href="https://pklavc.com/pt/blog/ai-kanban-fastapi-rag-agents/" hreflang="pt-BR">
     <link rel="alternate" href="https://pklavc.com/es/blog/ai-kanban-fastapi-rag-agents/" hreflang="es">
     <link rel="alternate" href="https://pklavc.com/blog/ai-kanban-fastapi-rag-agents/" hreflang="x-default">
-    <meta property="og:title" content="Cómo construí una plataforma Kanban con IA usando FastAPI, RAG y agentes">
-    <meta property="og:description" content="Notas de arquitectura de Lavc Systems: backend FastAPI, UI React, LLMs locales, RAG, memoria vectorial, agentes, observabilidad WebSocket y orquestación de tareas.">
+    <meta property="og:title" content="CÃ³mo construÃ­ una plataforma Kanban con IA usando FastAPI, RAG y agentes">
+    <meta property="og:description" content="Notas de arquitectura de Lavc Systems: backend FastAPI, UI React, LLMs locales, RAG, memoria vectorial, agentes, observabilidad WebSocket y orquestaciÃ³n de tareas.">
     <meta property="og:url" content="https://pklavc.com/es/blog/ai-kanban-fastapi-rag-agents/">
     <meta property="og:type" content="article">
     <meta property="article:published_time" content="2026-06-30">
@@ -26,13 +26,13 @@
     <meta property="og:site_name" content="Patrick Araujo">
     <meta property="og:locale" content="es_ES">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Cómo construí una plataforma Kanban con IA usando FastAPI, RAG y agentes">
-    <meta name="twitter:description" content="Notas de arquitectura de Lavc Systems: backend FastAPI, UI React, LLMs locales, RAG, memoria vectorial, agentes, observabilidad WebSocket y orquestación de tareas.">
+    <meta name="twitter:title" content="CÃ³mo construÃ­ una plataforma Kanban con IA usando FastAPI, RAG y agentes">
+    <meta name="twitter:description" content="Notas de arquitectura de Lavc Systems: backend FastAPI, UI React, LLMs locales, RAG, memoria vectorial, agentes, observabilidad WebSocket y orquestaciÃ³n de tareas.">
     <meta name="twitter:image" content="https://pklavc.com/images/lavc.webp?v=5e84850f26">
     <meta name="twitter:image:alt" content="Brand portrait of backend engineer and automation specialist Patrick Araujo">
     <meta name="twitter:site" content="@PkLavc">
     <meta name="twitter:creator" content="@PkLavc">
-    <link rel="icon" type="image/svg+xml" href="https://pklavc.com/images/favicon.svg?v=d15fe4e492">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=d15fe4e492">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Monoton&family=Poppins:wght@500;600;700&family=Raleway:wght@300&display=swap" onload="this.onload=null;this.rel='stylesheet'">
@@ -45,8 +45,8 @@
         "@graph": [
                 {
                         "@type": "BlogPosting",
-                        "headline": "Cómo construí una plataforma Kanban con IA usando FastAPI, RAG y agentes",
-                        "description": "Notas de arquitectura de Lavc Systems: backend FastAPI, UI React, LLMs locales, RAG, memoria vectorial, agentes, observabilidad WebSocket y orquestación de tareas.",
+                        "headline": "CÃ³mo construÃ­ una plataforma Kanban con IA usando FastAPI, RAG y agentes",
+                        "description": "Notas de arquitectura de Lavc Systems: backend FastAPI, UI React, LLMs locales, RAG, memoria vectorial, agentes, observabilidad WebSocket y orquestaciÃ³n de tareas.",
                         "image": "https://pklavc.com/images/lavc.webp?v=5e84850f26",
                         "datePublished": "2026-06-30",
                         "dateModified": "2026-06-30",
@@ -88,7 +88,7 @@
                                 {
                                         "@type": "ListItem",
                                         "position": 3,
-                                        "name": "Cómo construí una plataforma Kanban con IA usando FastAPI, RAG y agentes",
+                                        "name": "CÃ³mo construÃ­ una plataforma Kanban con IA usando FastAPI, RAG y agentes",
                                         "item": "https://pklavc.com/es/blog/ai-kanban-fastapi-rag-agents/"
                                 }
                         ]
@@ -126,11 +126,11 @@
                             <span>/</span>
                             <a href="/es/blog/">Blog</a>
                             <span>/</span>
-                            <span aria-current="page">Cómo construí una plataforma Kanban con IA usando FastAPI, RAG y agentes</span>
+                            <span aria-current="page">CÃ³mo construÃ­ una plataforma Kanban con IA usando FastAPI, RAG y agentes</span>
                         </div>
                         <span class="blog-kicker">Plataforma de IA</span>
-                        <h1>Cómo construí una plataforma Kanban con IA usando FastAPI, RAG y agentes</h1>
-                        <p>Notas de arquitectura de Lavc Systems: backend FastAPI, UI React, LLMs locales, RAG, memoria vectorial, agentes, observabilidad WebSocket y orquestación de tareas.</p>
+                        <h1>CÃ³mo construÃ­ una plataforma Kanban con IA usando FastAPI, RAG y agentes</h1>
+                        <p>Notas de arquitectura de Lavc Systems: backend FastAPI, UI React, LLMs locales, RAG, memoria vectorial, agentes, observabilidad WebSocket y orquestaciÃ³n de tareas.</p>
                         <div class="blog-post-meta">
                             <span>Publicado el 30 de junio de 2026</span>
                             <span>7 min de lectura</span>
@@ -138,34 +138,34 @@
                         </div>
                     </article>
                     <article class="blog-article">
-                        <h2>El límite del producto</h2>
-                        <p>La plataforma no es un chatbot pegado a un tablero. El Kanban es la superficie operativa y el sistema de agentes es la capa de ejecución detrás. Tareas, logs, contexto y estado deben quedar conectados para que el usuario entienda qué hace el sistema.</p>
+                        <h2>El lÃ­mite del producto</h2>
+                        <p>La plataforma no es un chatbot pegado a un tablero. El Kanban es la superficie operativa y el sistema de agentes es la capa de ejecuciÃ³n detrÃ¡s. Tareas, logs, contexto y estado deben quedar conectados para que el usuario entienda quÃ© hace el sistema.</p>
 
                         <h2>FastAPI como plano de control</h2>
-                        <p>FastAPI concentra la frontera de API, creación de tareas, llamadas a agentes, acceso a documentos y eventos WebSocket. Esto mantiene modelo, memoria y estado de UI detrás de rutas explícitas de backend.</p>
+                        <p>FastAPI concentra la frontera de API, creaciÃ³n de tareas, llamadas a agentes, acceso a documentos y eventos WebSocket. Esto mantiene modelo, memoria y estado de UI detrÃ¡s de rutas explÃ­citas de backend.</p>
 
                         <h2>RAG y memoria</h2>
-                        <p>RAG solo es útil cuando la recuperación está delimitada y es auditable. Lavc Systems separa registros estructurados en SQLite de búsqueda semántica en ChromaDB, usando embeddings locales y Ollama para mantener contexto interno en la máquina.</p>
+                        <p>RAG solo es Ãºtil cuando la recuperaciÃ³n estÃ¡ delimitada y es auditable. Lavc Systems separa registros estructurados en SQLite de bÃºsqueda semÃ¡ntica en ChromaDB, usando embeddings locales y Ollama para mantener contexto interno en la mÃ¡quina.</p>
 
-                        <h2>Qué demuestra</h2>
-                        <p>El proyecto demuestra ingeniería de IA aplicada, diseño backend, orquestación con LLM local, observabilidad de tareas y separación práctica entre sugerencias generadas y acciones del sistema.</p>
+                        <h2>QuÃ© demuestra</h2>
+                        <p>El proyecto demuestra ingenierÃ­a de IA aplicada, diseÃ±o backend, orquestaciÃ³n con LLM local, observabilidad de tareas y separaciÃ³n prÃ¡ctica entre sugerencias generadas y acciones del sistema.</p>
 
-                        <h2>Por qué Kanban funciona como interfaz de IA</h2>
-                        <p>Un tablero Kanban da una forma concreta al flujo de agentes. En vez de pedir al usuario que confíe en una cadena invisible de prompts, cada tarea puede mostrar intención, estado actual, bloqueos, notas generadas y salida final. Eso importa porque los trabajos con IA suelen fallar en el medio, no solo en la respuesta. Una tarea puede estar esperando recuperación de contexto, resultado de herramienta, información faltante o revisión humana. Modelar esos estados vuelve inspeccionable el comportamiento de los agentes.</p>
+                        <h2>Por quÃ© Kanban funciona como interfaz de IA</h2>
+                        <p>Un tablero Kanban da una forma concreta al flujo de agentes. En vez de pedir al usuario que confÃ­e en una cadena invisible de prompts, cada tarea puede mostrar intenciÃ³n, estado actual, bloqueos, notas generadas y salida final. Eso importa porque los trabajos con IA suelen fallar en el medio, no solo en la respuesta. Una tarea puede estar esperando recuperaciÃ³n de contexto, resultado de herramienta, informaciÃ³n faltante o revisiÃ³n humana. Modelar esos estados vuelve inspeccionable el comportamiento de los agentes.</p>
 
                         <h2>Agentes como workers de backend</h2>
-                        <p>El patrón más seguro es tratar los agentes como workers de backend con responsabilidades estrechas. Un agente de planificación puede dividir el trabajo, una etapa de recuperación puede cargar contexto y una etapa de síntesis puede preparar la respuesta, pero la API sigue controlando persistencia, permisos, logs y transiciones de estado. Así el modelo no se convierte en toda la aplicación. También facilita pruebas, porque el flujo se valida por entradas, salidas, eventos y fallas, no solo por snapshots de prompt.</p>
+                        <p>El patrÃ³n mÃ¡s seguro es tratar los agentes como workers de backend con responsabilidades estrechas. Un agente de planificaciÃ³n puede dividir el trabajo, una etapa de recuperaciÃ³n puede cargar contexto y una etapa de sÃ­ntesis puede preparar la respuesta, pero la API sigue controlando persistencia, permisos, logs y transiciones de estado. AsÃ­ el modelo no se convierte en toda la aplicaciÃ³n. TambiÃ©n facilita pruebas, porque el flujo se valida por entradas, salidas, eventos y fallas, no solo por snapshots de prompt.</p>
 
                         <h2>La observabilidad cambia la experiencia</h2>
-                        <p>Las actualizaciones por WebSocket no son solo una comodidad técnica. Permiten que la UI muestre qué cambió sin obligar al usuario a refrescar o adivinar si el sistema quedó detenido. Cuando logs, estado de tarea y eventos de agentes avanzan juntos, el producto se vuelve más tranquilo de operar. El usuario ve que la recuperación terminó, una llamada al modelo está corriendo, una validación falló o una respuesta final está lista. Esa transparencia hace que el sistema de IA se sienta como software real, no como una caja negra.</p>
+                        <p>Las actualizaciones por WebSocket no son solo una comodidad tÃ©cnica. Permiten que la UI muestre quÃ© cambiÃ³ sin obligar al usuario a refrescar o adivinar si el sistema quedÃ³ detenido. Cuando logs, estado de tarea y eventos de agentes avanzan juntos, el producto se vuelve mÃ¡s tranquilo de operar. El usuario ve que la recuperaciÃ³n terminÃ³, una llamada al modelo estÃ¡ corriendo, una validaciÃ³n fallÃ³ o una respuesta final estÃ¡ lista. Esa transparencia hace que el sistema de IA se sienta como software real, no como una caja negra.</p>
                         <div class="blog-callout">
-                            Evidencia relacionada: <a href="/es/proyectos/lavc-systems/">Kanban con IA, RAG y agentes usando FastAPI</a>. Continua por la ruta técnica en <a href="/es/proyectos/ingeniero-ia/">Portafolio para AI Engineer</a> o entra en contacto directamente.
+                            Evidencia relacionada: <a href="/es/proyectos/lavc-systems/">Kanban con IA, RAG y agentes usando FastAPI</a>. Continua por la ruta tÃ©cnica en <a href="/es/proyectos/ingeniero-ia/">Portafolio para AI Engineer</a> o entra en contacto directamente.
                         </div>
                     </article>
                 </div>
                 <aside class="blog-article-grid">
                     <section class="blog-sidebar-card">
-                        <h2>Continúa explorando</h2>
+                        <h2>ContinÃºa explorando</h2>
                         <ul>
                             <li><a href="/es/proyectos/ingeniero-ia/">Portafolio para AI Engineer</a></li>
                             <li><a href="/es/proyectos/lavc-systems/">Kanban con IA, RAG y agentes usando FastAPI</a></li>
@@ -175,9 +175,9 @@
                     <section class="blog-sidebar-card">
                         <h2>Posts relacionados</h2>
                         <ul>
-                            <li><a href="/es/blog/api-integrations-python-sql-github-actions/">Cómo estructuro integraciones de APIs con Python, SQL y GitHub Actions</a></li>
-                            <li><a href="/es/blog/llms-internal-systems-critical-decisions/">Cómo uso LLMs en sistemas internos sin dejar que la IA controle decisiones críticas</a></li>
-                            <li><a href="/es/blog/fastapi-backends-logs-queues-traceability/">Cómo construir backends FastAPI con logs, colas y trazabilidad</a></li>
+                            <li><a href="/es/blog/api-integrations-python-sql-github-actions/">CÃ³mo estructuro integraciones de APIs con Python, SQL y GitHub Actions</a></li>
+                            <li><a href="/es/blog/llms-internal-systems-critical-decisions/">CÃ³mo uso LLMs en sistemas internos sin dejar que la IA controle decisiones crÃ­ticas</a></li>
+                            <li><a href="/es/blog/fastapi-backends-logs-queues-traceability/">CÃ³mo construir backends FastAPI con logs, colas y trazabilidad</a></li>
                         </ul>
                     </section>
                 </aside>
