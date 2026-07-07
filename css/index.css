@@ -506,7 +506,7 @@ For devices with smaller width like mobile phone
     .social-media-links{
         width: 100%;
         left: 0;
-        bottom: 0;
+        bottom: var(--index-social-footer-offset, 0px);
         position: fixed;
         padding: 8px 10px calc(8px + env(safe-area-inset-bottom));
         height: auto;
@@ -529,6 +529,16 @@ For devices with smaller width like mobile phone
         opacity: 0;
         visibility: hidden;
         pointer-events: none;
+    }
+    body.page-index #header {
+        height: calc(var(--app-viewport-height) + clamp(120px, 22vh, 210px));
+        min-height: calc(var(--app-viewport-height) + clamp(120px, 22vh, 210px));
+    }
+    body.page-index .header-content {
+        top: 0;
+        left: 0;
+        height: var(--app-viewport-height);
+        min-height: var(--app-viewport-height);
     }
     .header-content-box{
         padding-left: 0px;
@@ -555,6 +565,10 @@ For devices with smaller width like mobile phone
         height: 100vh;
         height: var(--app-viewport-height);
         animation: breakeranimatetwo 1s linear;
+    }
+    .page-index .footer-minimal {
+        margin-top: 0;
+        padding-bottom: calc(28px + env(safe-area-inset-bottom));
     }
     @keyframes breakeranimate{
        0%{ transform : translateX(-100%)}

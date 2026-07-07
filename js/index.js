@@ -1297,12 +1297,49 @@ function loadSkylerWidgetAssets() {
   }
 }
 
+function syncIndexSocialFooterOffset() {
+  if (!document.body || !document.body.classList.contains('page-index')) {
+    return;
+  }
+
+  var footer = document.querySelector('.footer-minimal');
+  var socialLinks = document.querySelector('.social-media-links');
+
+  if (!footer || !socialLinks || typeof window.matchMedia !== 'function' || !window.matchMedia('(max-width: 550px)').matches) {
+    document.documentElement.style.setProperty('--index-social-footer-offset', '0px');
+    return;
+  }
+
+  var rect = footer.getBoundingClientRect();
+  var viewportHeight = window.innerHeight || document.documentElement.clientHeight || 0;
+  var socialHeight = socialLinks.offsetHeight || 0;
+  var footerGap = 18;
+  var maxOffset = Math.max(0, viewportHeight - socialHeight - 12);
+  var offset = Math.max(0, Math.min(Math.ceil(viewportHeight - rect.top + footerGap), maxOffset));
+
+  document.documentElement.style.setProperty('--index-social-footer-offset', offset + 'px');
+}
+
+function initIndexFooterAwareSocialLinks() {
+  syncIndexSocialFooterOffset();
+  window.addEventListener('scroll', syncIndexSocialFooterOffset, { passive: true });
+  window.addEventListener('resize', syncIndexSocialFooterOffset, { passive: true });
+  window.addEventListener('orientationchange', syncIndexSocialFooterOffset, { passive: true });
+
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', syncIndexSocialFooterOffset, { passive: true });
+    window.visualViewport.addEventListener('scroll', syncIndexSocialFooterOffset, { passive: true });
+  }
+}
+
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', initSpaceReveals, { once: true });
   document.addEventListener('DOMContentLoaded', ensureLottiePlayerAssets, { once: true });
   document.addEventListener('DOMContentLoaded', loadSkylerWidgetAssets, { once: true });
+  document.addEventListener('DOMContentLoaded', initIndexFooterAwareSocialLinks, { once: true });
 } else {
   initSpaceReveals();
   ensureLottiePlayerAssets();
   loadSkylerWidgetAssets();
+  initIndexFooterAwareSocialLinks();
 }
