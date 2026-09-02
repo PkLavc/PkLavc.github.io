@@ -155,7 +155,7 @@ const projects = {
       es: "Plataforma interna con Python/FastAPI, React, WebSocket, RAG, memoria vectorial, agentes y LLMs locales para orquestación de tareas y visibilidad operativa."
     }
   },
-  "skyler-assistant": {
+  "skylet-assistant": {
     stack: "Cloudflare Workers, JavaScript, manual RAG, LLM fallback, Web Speech API",
     roles: "AI Engineer, LLM/RAG Engineer, Backend Software Engineer",
     category: { en: "AI Assistant", pt: "Assistente de IA", es: "Asistente de IA" },
@@ -406,7 +406,7 @@ const roles = {
     }
   },
   "ai-engineer": {
-    projects: ["lavc-systems", "skyler-assistant", "codepulse-monorepo", "aegis-sentinel"],
+    projects: ["lavc-systems", "skylet-assistant", "codepulse-monorepo", "aegis-sentinel"],
     title: {
       en: "AI Engineer Python Projects | LLMs, Agents and Applied AI",
       pt: "Projetos AI Engineer Python | LLMs, Agentes e IA Aplicada",
@@ -430,7 +430,7 @@ const roles = {
     }
   },
   "llm-rag": {
-    projects: ["lavc-systems", "skyler-assistant", "codepulse-monorepo"],
+    projects: ["lavc-systems", "skylet-assistant", "codepulse-monorepo"],
     title: {
       en: "LLM and RAG Engineer Projects | Ollama, LangGraph and ChromaDB",
       pt: "Projetos LLM e RAG | Ollama, LangGraph e ChromaDB",
@@ -579,7 +579,7 @@ const blogPosts = [
   {
     slug: "llms-internal-systems-critical-decisions",
     role: "llm-rag",
-    project: "skyler-assistant",
+    project: "skylet-assistant",
     category: { en: "LLM Systems", pt: "Sistemas com LLM", es: "Sistemas con LLM" },
     title: {
       en: "How I use LLMs in internal systems without letting AI control critical decisions",
@@ -787,7 +787,7 @@ const caseDetails = {
       es: "Una plataforma FastAPI y React combina Kanban, LLMs locales, RAG, memoria vectorial, orquestación de agentes, scheduler y observabilidad vía WebSocket."
     }
   },
-  "skyler-assistant": {
+  "skylet-assistant": {
     problem: {
       en: "Visitors need fast answers about projects, stack, and experience without reading every portfolio page.",
       pt: "Visitantes precisam de respostas rápidas sobre projetos, stack e experiência sem ler todas as páginas do portfólio.",

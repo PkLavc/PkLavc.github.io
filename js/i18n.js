@@ -11,7 +11,7 @@
       blog: 'blog',
       collections: 'colecoes',
       stacks: 'stacks',
-      'skyler-assistant': 'skyler-assistant'
+      'skylet-assistant': 'skylet-assistant'
     },
     es: {
       about: 'sobre',
@@ -20,7 +20,7 @@
       blog: 'blog',
       collections: 'colecciones',
       stacks: 'stacks',
-      'skyler-assistant': 'skyler-assistant'
+      'skylet-assistant': 'skylet-assistant'
     }
   };
 
@@ -32,7 +32,7 @@
       blog: 'blog',
       colecoes: 'collections',
       stacks: 'stacks',
-      'skyler-assistant': 'skyler-assistant'
+      'skylet-assistant': 'skylet-assistant'
     },
     es: {
       sobre: 'about',
@@ -41,7 +41,7 @@
       blog: 'blog',
       colecciones: 'collections',
       stacks: 'stacks',
-      'skyler-assistant': 'skyler-assistant'
+      'skylet-assistant': 'skylet-assistant'
     }
   };
 

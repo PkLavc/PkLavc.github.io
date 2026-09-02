@@ -46,8 +46,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Monoton&amp;family=Poppins:wght@500;600;700&amp;family=Raleway:wght@300&amp;display=swap" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Monoton&amp;family=Poppins:wght@500;600;700&amp;family=Raleway:wght@300&amp;display=swap"></noscript>
-    <link rel="stylesheet" href="/css/global.css?v=a15b34be71">
-    <link rel="stylesheet" href="/css/blog.css?v=69e51c2923">
+    <link rel="stylesheet" href="/css/global.css?v=6d8a856a8a">
+    <link rel="stylesheet" href="/css/blog.css?v=1feca1bd2e">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.2.6/gsap.min.js" defer></script>
     <script type="application/ld+json">
     {
@@ -222,10 +222,10 @@
                         <p>Uma plataforma que armazena credenciais de API, executa tarefas de forma autônoma e se conecta a ferramentas externas precisa de um modelo de segurança coerente, mesmo quando executada localmente. Lavc Systems inclui gerenciamento de usuários e empresas com acesso com escopo definido, um log de auditoria que registra quem fez o quê e quando, e um cofre de credenciais locais para armazenar chaves e segredos API usados ​​por ferramentas e plug-ins.</p>
                         <p>O cofre não é intencionalmente um gerenciador de segredos da nuvem. Armazenar credenciais localmente em um cofre que a camada do agente possa ler em tempo de execução mantém os segredos fora de qualquer serviço externo, ao mesmo tempo que permite a automação que os exige. A desvantagem é que a segurança do cofre local é tão forte quanto a máquina em que ele é executado – o que é um limite aceitável para um sistema projetado explicitamente para operação local.</p>
 
-                        <h2>Skyler: o mesmo assistente, um ambiente de execução diferente</h2>
-                        <p>Skyler aparece em dois lugares no portfólio Lavc. A versão pública - <a href="/pt/skyler-assistant/">Skyler Assistant</a> — roda em Cloudflare Workers com RAG manual, fallback de provedor e um modelo de orquestração leve projetado para visitantes de portfólio público. Ele responde a perguntas sobre o trabalho, a stack e a experiência de Patrick. Não tem acesso a dados privados. Não executa tarefas. É uma interface conversacional somente leitura em uma base de conhecimento fixa.</p>
-                        <p>Skyler dentro de Lavc Systems é uma implementação diferente na mesma função conceitual. Ela é executada dentro do backend FastAPI, tem acesso ao banco de dados SQLite, pode consultar ChromaDB, pode criar tarefas, ler arquivos carregados, gravar credenciais no cofre local e gerar um rastreamento operacional de suas próprias respostas. O rastreamento não é uma prosa gerada pelo modelo sobre o que o modelo pensou — é um registro estruturado das transições de estado reais executadas durante a resposta: intenção detectada, fonte de contexto consultada, ação tomada, próxima etapa recomendada.</p>
-                        <p>A lição arquitetônica de ambas as versões é que a qualidade de um assistente de IA não é determinada principalmente pelo modelo. É determinado pelos dados que o assistente pode obter, pelas ações que lhe é permitido tomar e pela transparência do seu raciocínio para as pessoas que nele dependem. O público Skyler é útil porque possui a base de conhecimento correta e regras de resposta claras. O sistema Skyler é mais capaz porque tem acesso a todo o contexto operacional da plataforma em que vive.</p>
+                        <h2>Skylet: o mesmo assistente, um ambiente de execução diferente</h2>
+                        <p>Skylet aparece em dois lugares no portfólio Lavc. A versão pública - <a href="/pt/skylet-assistant/">Skylet Assistant</a> — roda em Cloudflare Workers com RAG manual, fallback de provedor e um modelo de orquestração leve projetado para visitantes de portfólio público. Ele responde a perguntas sobre o trabalho, a stack e a experiência de Patrick. Não tem acesso a dados privados. Não executa tarefas. É uma interface conversacional somente leitura em uma base de conhecimento fixa.</p>
+                        <p>Skylet dentro de Lavc Systems é uma implementação diferente na mesma função conceitual. Ela é executada dentro do backend FastAPI, tem acesso ao banco de dados SQLite, pode consultar ChromaDB, pode criar tarefas, ler arquivos carregados, gravar credenciais no cofre local e gerar um rastreamento operacional de suas próprias respostas. O rastreamento não é uma prosa gerada pelo modelo sobre o que o modelo pensou — é um registro estruturado das transições de estado reais executadas durante a resposta: intenção detectada, fonte de contexto consultada, ação tomada, próxima etapa recomendada.</p>
+                        <p>A lição arquitetônica de ambas as versões é que a qualidade de um assistente de IA não é determinada principalmente pelo modelo. É determinado pelos dados que o assistente pode obter, pelas ações que lhe é permitido tomar e pela transparência do seu raciocínio para as pessoas que nele dependem. O público Skylet é útil porque possui a base de conhecimento correta e regras de resposta claras. O sistema Skylet é mais capaz porque tem acesso a todo o contexto operacional da plataforma em que vive.</p>
 
                         <div class="blog-callout">
                             Atualizar um assistente de IA não é um problema de atualização de modelo. É um problema de acesso e contexto. O mesmo design de assistente torna-se mais valioso à medida que você expande o que ele pode observar e o que é permitido agir – ao mesmo tempo que mantém o traço dessa ação legível para os humanos.
@@ -241,8 +241,8 @@
                         <h2 id="lavc-related-title">Leitura relacionada</h2>
                         <div class="blog-related-grid">
                             <article class="blog-related-card">
-                                <h3><a href="/pt/projetos/skyler-assistant/">Skyler Assistant</a></h3>
-                                <p>A versão do portfólio público de Skyler — um Cloudflare Worker com RAG manual, provedor substituto e suporte de voz. O irmão mais leve do assistente empresarial incorporado em Lavc Systems.</p>
+                                <h3><a href="/pt/projetos/skylet-assistant/">Skylet Assistant</a></h3>
+                                <p>A versão do portfólio público de Skylet — um Cloudflare Worker com RAG manual, provedor substituto e suporte de voz. O irmão mais leve do assistente empresarial incorporado em Lavc Systems.</p>
                             </article>
                             <article class="blog-related-card">
                                 <h3><a href="/pt/blog/backend-automation-systems/">Sistemas de automação de backend</a></h3>
@@ -274,7 +274,7 @@
                         <h2>Continue explorando</h2>
                         <ul>
                             <li><a href="/pt/projetos/lavc-systems/">Lavc Systems página do projeto</a></li>
-                            <li><a href="/pt/skyler-assistant/">Skyler Assistant (versão pública)</a></li>
+                            <li><a href="/pt/skylet-assistant/">Skylet Assistant (versão pública)</a></li>
                             <li><a href="/pt/blog/backend-automation-systems/">Sistemas de automação de backend</a></li>
                             <li><a href="/pt/blog/multi-tenant-saas-architecture/">Arquitetura SaaS multilocatário</a></li>
                             <li><a href="/pt/sobre/">Sobre Patrick Araujo</a></li>
@@ -302,8 +302,8 @@
             });
         }());
     </script>
-        <script src="/js/i18n.js?v=02a6baa07c" defer></script>
-    <script src="/js/jquery.min.js?v=91e8044a4b" defer></script>
-    <script src="/js/index.js?v=668365f8c9" defer></script>
+        <script src="/js/i18n.js?v=397fd68aed" defer></script>
+    <script src="/js/jquery.min.js?v=d482871a5e" defer></script>
+    <script src="/js/index.js?v=9816b7386d" defer></script>
 </body>
 </html>

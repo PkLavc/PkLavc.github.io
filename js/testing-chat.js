@@ -14,8 +14,8 @@
       userLabel: "You",
       voiceOn: "Voice on",
       voiceOff: "Voice off",
-      closeContext: "Close Skyler context menu",
-      openContext: "Open Skyler context menu",
+      closeContext: "Close Skylet context menu",
+      openContext: "Open Skylet context menu",
       speechUnavailable: "Speech recognition is not available in this browser.",
       listening: "Listening...",
       voiceInputError: "Voice input could not start.",
@@ -29,7 +29,7 @@
       voiceEnabled: "Voice output enabled.",
       voiceDisabled: "Voice output disabled.",
       contextOnline: "Portfolio context online: projects, stack, blog posts, and architecture notes.",
-      intro: "**Hi, I am Skyler.** Ask about Patrick's projects, backend systems, integrations, or technical tradeoffs.",
+      intro: "**Hi, I am Skylet.** Ask about Patrick's projects, backend systems, integrations, or technical tradeoffs.",
       links: {
         email: "Send Email",
         linkedin: "Open LinkedIn",
@@ -40,8 +40,8 @@
         blog: "Read Blog",
         about: "About Patrick",
         lavc: "View Lavc Systems",
-        skylerProject: "View Skyler Assistant",
-        skylerApp: "Open Skyler Assistant",
+        skyletProject: "View Skylet Assistant",
+        skyletApp: "Open Skylet Assistant",
         codepulse: "View CodePulse",
         googleAuth: "View Google Auth Worker",
         zoho: "View Zoho Worker",
@@ -66,8 +66,8 @@
       userLabel: "Você",
       voiceOn: "Voz ativada",
       voiceOff: "Voz desativada",
-      closeContext: "Fechar menu de contexto da Skyler",
-      openContext: "Abrir menu de contexto da Skyler",
+      closeContext: "Fechar menu de contexto da Skylet",
+      openContext: "Abrir menu de contexto da Skylet",
       speechUnavailable: "O reconhecimento de voz não está disponível neste navegador.",
       listening: "Ouvindo...",
       voiceInputError: "Não foi possível iniciar a entrada de voz.",
@@ -81,7 +81,7 @@
       voiceEnabled: "Saída de voz ativada.",
       voiceDisabled: "Saída de voz desativada.",
       contextOnline: "Contexto do portfólio online: projetos, stack, artigos do blog e notas de arquitetura.",
-      intro: "**Oi, eu sou a Skyler.** Pergunte sobre os projetos, sistemas backend, integrações ou decisões técnicas do Patrick.",
+      intro: "**Oi, eu sou a Skylet.** Pergunte sobre os projetos, sistemas backend, integrações ou decisões técnicas do Patrick.",
       links: {
         email: "Enviar e-mail",
         linkedin: "Abrir LinkedIn",
@@ -92,8 +92,8 @@
         blog: "Ler blog",
         about: "Sobre Patrick",
         lavc: "Ver Lavc Systems",
-        skylerProject: "Ver Skyler Assistant",
-        skylerApp: "Abrir Skyler Assistant",
+        skyletProject: "Ver Skylet Assistant",
+        skyletApp: "Abrir Skylet Assistant",
         codepulse: "Ver CodePulse",
         googleAuth: "Ver Google Auth Worker",
         zoho: "Ver Zoho Worker",
@@ -118,8 +118,8 @@
       userLabel: "Tú",
       voiceOn: "Voz activada",
       voiceOff: "Voz desactivada",
-      closeContext: "Cerrar menú contextual de Skyler",
-      openContext: "Abrir menú contextual de Skyler",
+      closeContext: "Cerrar menú contextual de Skylet",
+      openContext: "Abrir menú contextual de Skylet",
       speechUnavailable: "El reconocimiento de voz no está disponible en este navegador.",
       listening: "Escuchando...",
       voiceInputError: "No se pudo iniciar la entrada de voz.",
@@ -133,7 +133,7 @@
       voiceEnabled: "Salida de voz activada.",
       voiceDisabled: "Salida de voz desactivada.",
       contextOnline: "Contexto del portafolio en línea: proyectos, stack, artículos del blog y notas de arquitectura.",
-      intro: "**Hola, soy Skyler.** Pregunta sobre los proyectos, sistemas backend, integraciones o decisiones técnicas de Patrick.",
+      intro: "**Hola, soy Skylet.** Pregunta sobre los proyectos, sistemas backend, integraciones o decisiones técnicas de Patrick.",
       links: {
         email: "Enviar correo",
         linkedin: "Abrir LinkedIn",
@@ -144,8 +144,8 @@
         blog: "Leer blog",
         about: "Sobre Patrick",
         lavc: "Ver Lavc Systems",
-        skylerProject: "Ver Skyler Assistant",
-        skylerApp: "Abrir Skyler Assistant",
+        skyletProject: "Ver Skylet Assistant",
+        skyletApp: "Abrir Skylet Assistant",
         codepulse: "Ver CodePulse",
         googleAuth: "Ver Google Auth Worker",
         zoho: "Ver Zoho Worker",
@@ -195,10 +195,10 @@
     els.voiceInputBtn = document.getElementById("voice-input-btn");
     els.resetBtn = document.getElementById("reset-btn");
     els.chatLog = document.getElementById("chat-log");
-    els.contextToggle = document.getElementById("skyler-context-toggle");
-    els.contextPanel = document.getElementById("skyler-context-panel");
-    els.threatField = document.querySelector(".skyler-threat-field");
-    els.chatPanel = document.querySelector(".skyler-chat-panel");
+    els.contextToggle = document.getElementById("skylet-context-toggle");
+    els.contextPanel = document.getElementById("skylet-context-panel");
+    els.threatField = document.querySelector(".skylet-threat-field");
+    els.chatPanel = document.querySelector(".skylet-chat-panel");
   }
 
   function saveSession() {
@@ -244,8 +244,8 @@
     "https://pklavc.com/blog/": "blog",
     "https://pklavc.com/about/": "about",
     "https://pklavc.com/projects/lavc-systems/": "lavc",
-    "https://pklavc.com/projects/skyler-assistant/": "skylerProject",
-    "https://pklavc.com/skyler-assistant/": "skylerApp",
+    "https://pklavc.com/projects/skylet-assistant/": "skyletProject",
+    "https://pklavc.com/skylet-assistant/": "skyletApp",
     "https://pklavc.com/projects/codepulse-monorepo/": "codepulse",
     "https://pklavc.com/projects/google-auth-worker/": "googleAuth",
     "https://pklavc.com/projects/zoho-integration-worker/": "zoho",
@@ -281,11 +281,11 @@
     var out = md;
 
     out = out.replace(/```(?:\w*)\n?([\s\S]*?)```/g, function (_, code) {
-      return '<pre class="skyler-pre"><code>' + code.replace(/^[\n]+|[\n]+$/g, "") + "</code></pre>";
+      return '<pre class="skylet-pre"><code>' + code.replace(/^[\n]+|[\n]+$/g, "") + "</code></pre>";
     });
 
-    out = out.replace(/`([^`\n]+)`/g, '<code class="skyler-code">$1</code>');
-    out = out.replace(/^#{1,6}\s+(.+)$/gm, '<strong class="skyler-heading">$1</strong>');
+    out = out.replace(/`([^`\n]+)`/g, '<code class="skylet-code">$1</code>');
+    out = out.replace(/^#{1,6}\s+(.+)$/gm, '<strong class="skylet-heading">$1</strong>');
     out = out.replace(/\*\*([^*\n]+?)\*\*/g, '<strong>$1</strong>');
     out = out.replace(/__([^_\n]+?)__/g, '<strong>$1</strong>');
     out = out.replace(/\*([^*\n]+?)\*/g, '<em>$1</em>');
@@ -296,14 +296,14 @@
       var items = block.trim().split("\n").map(function (line) {
         return "<li>" + line.replace(/^[*\-+] /, "") + "</li>";
       });
-      return '<ul class="skyler-ul">' + items.join("") + "</ul>";
+      return '<ul class="skylet-ul">' + items.join("") + "</ul>";
     });
 
     out = out.replace(/((?:^\d+\.\s+.+$\n?)+)/gm, function (block) {
       var items = block.trim().split("\n").map(function (line) {
         return "<li>" + line.replace(/^\d+\.\s+/, "") + "</li>";
       });
-      return '<ol class="skyler-ol">' + items.join("") + "</ol>";
+      return '<ol class="skylet-ol">' + items.join("") + "</ol>";
     });
 
     out = out.replace(/\n/g, "<br>");
@@ -327,7 +327,7 @@
     html = html.replace(/([a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,})/g, function (email) {
       var href = "mailto:" + email;
       if (trackHref(href)) buttons.push(href);
-      return '<a href="' + escapeHtml(href) + '" class="skyler-inline-link">' + email + "</a>";
+      return '<a href="' + escapeHtml(href) + '" class="skylet-inline-link">' + email + "</a>";
     });
 
     html = html.replace(/(https?:\/\/[^\s<>"']+)/g, function (raw) {
@@ -337,7 +337,7 @@
       return (
         '<a href="' +
         escapeHtml(clean) +
-        '" class="skyler-inline-link" target="_blank" rel="noopener noreferrer">' +
+        '" class="skylet-inline-link" target="_blank" rel="noopener noreferrer">' +
         clean +
         "</a>" +
         (tail ? escapeHtml(tail) : "")
@@ -360,13 +360,13 @@
         return true;
       }) : buttons;
 
-      html += '<div class="skyler-action-btns">';
+      html += '<div class="skylet-action-btns">';
       displayButtons.forEach(function (href) {
         var isExternal = !href.startsWith("mailto:") && !href.includes("pklavc.com");
         html +=
           '<a href="' +
           escapeHtml(href) +
-          '" class="skyler-action-btn"' +
+          '" class="skylet-action-btn"' +
           (isExternal ? ' target="_blank" rel="noopener noreferrer"' : "") +
           ">" +
           escapeHtml(getLinkLabel(href)) +
@@ -398,7 +398,7 @@
     }
 
     var card = document.createElement("article");
-    var who = role === "assistant" ? "Skyler" : getCopy().userLabel;
+    var who = role === "assistant" ? "Skylet" : getCopy().userLabel;
     card.className = "chat-card chat-card-" + role;
     card.innerHTML = '<span class="chat-card-label">' + who + '</span><div class="chat-card-content"></div>';
     setMessageContent(card, text, rawText || role !== "assistant");
@@ -412,7 +412,7 @@
       return;
     }
 
-    els.authStatus.innerHTML = '<span class="skyler-status-dot" aria-hidden="true"></span>' + escapeHtml(text);
+    els.authStatus.innerHTML = '<span class="skylet-status-dot" aria-hidden="true"></span>' + escapeHtml(text);
   }
 
   function syncApiBase() {
@@ -451,7 +451,7 @@
       els.sendBtn.disabled = isBusy;
     }
 
-    document.querySelectorAll(".skyler-prompt-chip").forEach(function (button) {
+    document.querySelectorAll(".skylet-prompt-chip").forEach(function (button) {
       button.disabled = isBusy;
     });
   }
@@ -466,7 +466,7 @@
     }
 
     var shouldOpen = !!isOpen && isMobileContextLayout();
-    document.body.classList.toggle("is-skyler-context-open", shouldOpen);
+    document.body.classList.toggle("is-skylet-context-open", shouldOpen);
     els.contextToggle.textContent = shouldOpen ? "<" : ">";
     els.contextToggle.setAttribute("aria-expanded", shouldOpen ? "true" : "false");
     els.contextToggle.setAttribute("aria-label", shouldOpen ? getCopy().closeContext : getCopy().openContext);
@@ -479,14 +479,14 @@
     }
 
     if (!isMobileContextLayout()) {
-      document.body.classList.remove("is-skyler-context-open");
+      document.body.classList.remove("is-skylet-context-open");
       els.contextToggle.textContent = ">";
       els.contextToggle.setAttribute("aria-expanded", "false");
       els.contextPanel.setAttribute("aria-hidden", "false");
       return;
     }
 
-    setContextOpen(document.body.classList.contains("is-skyler-context-open"));
+    setContextOpen(document.body.classList.contains("is-skylet-context-open"));
   }
 
   function bindThreatReveal() {
@@ -505,21 +505,21 @@
     }
 
     function clearReveal() {
-      document.body.classList.remove("is-skyler-scanning");
+      document.body.classList.remove("is-skylet-scanning");
       lastEvent = null;
     }
 
     function writePosition(event) {
-      els.threatField.style.setProperty("--skyler-scan-x", event.clientX + "px");
-      els.threatField.style.setProperty("--skyler-scan-y", event.clientY + "px");
+      els.threatField.style.setProperty("--skylet-scan-x", event.clientX + "px");
+      els.threatField.style.setProperty("--skylet-scan-y", event.clientY + "px");
 
       if (els.chatPanel) {
         var rect = els.chatPanel.getBoundingClientRect();
-        els.chatPanel.style.setProperty("--skyler-chat-scan-x", (event.clientX - rect.left) + "px");
-        els.chatPanel.style.setProperty("--skyler-chat-scan-y", (event.clientY - rect.top) + "px");
+        els.chatPanel.style.setProperty("--skylet-chat-scan-x", (event.clientX - rect.left) + "px");
+        els.chatPanel.style.setProperty("--skylet-chat-scan-y", (event.clientY - rect.top) + "px");
       }
 
-      document.body.classList.add("is-skyler-scanning");
+      document.body.classList.add("is-skylet-scanning");
 
       window.clearTimeout(idleTimer);
       idleTimer = window.setTimeout(clearReveal, 900);
@@ -864,7 +864,7 @@
       });
     }
 
-    document.querySelectorAll(".skyler-prompt-chip").forEach(function (button) {
+    document.querySelectorAll(".skylet-prompt-chip").forEach(function (button) {
       button.addEventListener("click", function () {
         if (!els.chatInput || state.isBusy) {
           return;
@@ -879,7 +879,7 @@
 
     if (els.contextToggle) {
       els.contextToggle.addEventListener("click", function () {
-        setContextOpen(!document.body.classList.contains("is-skyler-context-open"));
+        setContextOpen(!document.body.classList.contains("is-skylet-context-open"));
       });
     }
 

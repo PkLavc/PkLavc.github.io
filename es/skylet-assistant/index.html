@@ -1,65 +1,65 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="author" content="Patrick Araujo">
-    <title>Skyler Assistant | Patrick Araujo</title>
-    <meta name="description" content="Interactive Skyler Assistant for portfolio questions about projects, backend architecture, integrations, and professional experience.">
+    <title>Skylet Assistant | Patrick Araujo</title>
+    <meta name="description" content="Skylet Assistant interactivo para preguntas de portafolio sobre proyectos, arquitectura backend, integraciones y experiencia profesional.">
     <meta name="robots" content="index, follow">
-    <link rel="canonical" href="https://pklavc.com/skyler-assistant/">
-    <link rel="alternate" href="https://pklavc.com/skyler-assistant/" hreflang="en">
-    <link rel="alternate" href="https://pklavc.com/pt/skyler-assistant/" hreflang="pt-BR">
-    <link rel="alternate" href="https://pklavc.com/es/skyler-assistant/" hreflang="es">
-    <link rel="alternate" href="https://pklavc.com/skyler-assistant/" hreflang="x-default">
+    <link rel="canonical" href="https://pklavc.com/es/skylet-assistant/">
+    <link rel="alternate" href="https://pklavc.com/skylet-assistant/" hreflang="en">
+    <link rel="alternate" href="https://pklavc.com/pt/skylet-assistant/" hreflang="pt-BR">
+    <link rel="alternate" href="https://pklavc.com/es/skylet-assistant/" hreflang="es">
+    <link rel="alternate" href="https://pklavc.com/skylet-assistant/" hreflang="x-default">
 
 
 
-<meta property="og:title" content="Skyler Assistant | Patrick Araujo">
-    <meta property="og:description" content="Public AI assistant for portfolio context, projects, stack, and architecture topics.">
-    <meta property="og:url" content="https://pklavc.com/skyler-assistant/">
+<meta property="og:title" content="Skylet Assistant | Patrick Araujo">
+    <meta property="og:description" content="Asistente de IA pública para temas de contexto de portafolio, proyectos, stack y arquitectura.">
+    <meta property="og:url" content="https://pklavc.com/es/skylet-assistant/">
     <meta property="og:type" content="website">
     <meta property="og:image" content="https://pklavc.com/images/brand/lavc.webp?v=5e84850f26">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Skyler Assistant | Patrick Araujo">
-    <meta name="twitter:description" content="Try Skyler and ask about Patrick's projects, skills, architecture, and experience.">
+    <meta name="twitter:title" content="Skylet Assistant | Patrick Araujo">
+    <meta name="twitter:description" content="Pruebe Skylet y pregunte sobre los proyectos, habilidades, arquitectura y experiencia de Patrick.">
     <meta name="twitter:image" content="https://pklavc.com/images/brand/lavc.webp?v=5e84850f26">
     <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=d15fe4e492">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Monoton&family=Poppins:wght@500;600;700&family=Raleway:wght@300&display=swap" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Monoton&family=Poppins:wght@500;600;700&family=Raleway:wght@300&display=swap"></noscript>
-    <link rel="stylesheet" href="/css/global.css?v=a15b34be71">
-    <link rel="stylesheet" href="/css/blog.css?v=69e51c2923">
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Monoton&amp;family=Poppins:wght@500;600;700&amp;family=Raleway:wght@300&amp;display=swap" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Monoton&amp;family=Poppins:wght@500;600;700&amp;family=Raleway:wght@300&amp;display=swap"></noscript>
+    <link rel="stylesheet" href="/css/global.css?v=6d8a856a8a">
+    <link rel="stylesheet" href="/css/blog.css?v=1feca1bd2e">
     <style>
-        body.skyler-page {
-            --skyler-ink: #050508;
-            --skyler-panel: rgba(9, 9, 16, 0.9);
-            --skyler-panel-strong: rgba(13, 10, 22, 0.96);
-            --skyler-line: rgba(0, 231, 255, 0.18);
-            --skyler-line-hot: rgba(255, 42, 169, 0.24);
-            --skyler-cyan: #00e7ff;
-            --skyler-cyan-soft: #8cf4ff;
-            --skyler-pink: #ff2aa9;
-            --skyler-hot: #ff235c;
-            --skyler-violet: #8a5cff;
-            --skyler-text: #f3f8ff;
-            --skyler-muted: #9bb3c1;
+        body.skylet-page {
+            --skylet-ink: #050508;
+            --skylet-panel: rgba(9, 9, 16, 0.9);
+            --skylet-panel-strong: rgba(13, 10, 22, 0.96);
+            --skylet-line: rgba(0, 231, 255, 0.18);
+            --skylet-line-hot: rgba(255, 42, 169, 0.24);
+            --skylet-cyan: #00e7ff;
+            --skylet-cyan-soft: #8cf4ff;
+            --skylet-pink: #ff2aa9;
+            --skylet-hot: #ff235c;
+            --skylet-violet: #8a5cff;
+            --skylet-text: #f3f8ff;
+            --skylet-muted: #9bb3c1;
             background: #050508;
             color: #e7ecef;
             font-family: 'Inter', sans-serif;
         }
 
-        body.skyler-page #all {
+        body.skylet-page #all {
             position: relative;
             min-height: 100vh;
         }
 
-        body.skyler-page .footer-minimal {
+        body.skylet-page .footer-minimal {
             position: relative;
         }
 
-        .skyler-threat-field {
+        .skylet-threat-field {
             position: fixed;
             inset: 0;
             z-index: 0;
@@ -70,17 +70,17 @@
                 repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.025) 0 1px, transparent 1px 7px);
         }
 
-        .skyler-threat-field::before,
-        .skyler-threat-field::after,
-        .skyler-threat-horizon,
-        .skyler-threat-reveal,
-        .skyler-threat-reticle {
+        .skylet-threat-field::before,
+        .skylet-threat-field::after,
+        .skylet-threat-horizon,
+        .skylet-threat-reveal,
+        .skylet-threat-reticle {
             content: "";
             position: absolute;
             pointer-events: none;
         }
 
-        .skyler-threat-field::before {
+        .skylet-threat-field::before {
             left: -22%;
             right: -22%;
             bottom: -18%;
@@ -92,10 +92,10 @@
                 linear-gradient(90deg, rgba(0, 231, 255, 0.22) 1px, transparent 1px),
                 linear-gradient(0deg, rgba(255, 42, 169, 0.18) 1px, transparent 1px);
             background-size: 72px 72px;
-            animation: skylerThreatGrid 18s linear infinite;
+            animation: skyletThreatGrid 18s linear infinite;
         }
 
-        .skyler-threat-field::after {
+        .skylet-threat-field::after {
             inset: 0;
             opacity: 0.28;
             background:
@@ -104,7 +104,7 @@
             mix-blend-mode: screen;
         }
 
-        .skyler-threat-horizon {
+        .skylet-threat-horizon {
             left: -8%;
             right: -8%;
             bottom: 18%;
@@ -115,13 +115,13 @@
                 repeating-linear-gradient(90deg, transparent 0 42px, rgba(255, 255, 255, 0.2) 42px 43px, transparent 43px 84px);
             clip-path: polygon(0 54%, 9% 45%, 18% 56%, 28% 43%, 39% 52%, 50% 40%, 61% 53%, 72% 44%, 83% 55%, 100% 47%, 100% 59%, 83% 62%, 72% 55%, 61% 64%, 50% 54%, 39% 65%, 28% 55%, 18% 63%, 9% 53%, 0 62%);
             filter: drop-shadow(0 0 16px rgba(255, 42, 169, 0.34)) drop-shadow(0 0 18px rgba(0, 231, 255, 0.22));
-            animation: skylerThreatHorizon 7s ease-in-out infinite alternate;
+            animation: skyletThreatHorizon 7s ease-in-out infinite alternate;
         }
 
-        .skyler-threat-reveal {
+        .skylet-threat-reveal {
             inset: 0;
             opacity: 0;
-            clip-path: circle(var(--skyler-scan-radius, 0px) at var(--skyler-scan-x, 50%) var(--skyler-scan-y, 50%));
+            clip-path: circle(var(--skylet-scan-radius, 0px) at var(--skylet-scan-x, 50%) var(--skylet-scan-y, 50%));
             background:
                 repeating-linear-gradient(90deg, rgba(0, 231, 255, 0.16) 0 1px, transparent 1px 19px),
                 repeating-linear-gradient(0deg, rgba(255, 42, 169, 0.16) 0 1px, transparent 1px 23px),
@@ -130,9 +130,9 @@
             transition: clip-path 0.2s ease, opacity 0.2s ease;
         }
 
-        .skyler-threat-reticle {
-            left: var(--skyler-scan-x, 50%);
-            top: var(--skyler-scan-y, 50%);
+        .skylet-threat-reticle {
+            left: var(--skylet-scan-x, 50%);
+            top: var(--skylet-scan-y, 50%);
             width: 92px;
             height: 92px;
             opacity: 0;
@@ -145,21 +145,21 @@
             transition: opacity 0.16s ease, transform 0.16s ease;
         }
 
-        .skyler-threat-reticle::before,
-        .skyler-threat-reticle::after {
+        .skylet-threat-reticle::before,
+        .skylet-threat-reticle::after {
             content: "";
             position: absolute;
             background: linear-gradient(90deg, transparent, rgba(0, 231, 255, 0.76), rgba(255, 42, 169, 0.72), transparent);
         }
 
-        .skyler-threat-reticle::before {
+        .skylet-threat-reticle::before {
             left: 12px;
             right: 12px;
             top: calc(50% - 1px);
             height: 1px;
         }
 
-        .skyler-threat-reticle::after {
+        .skylet-threat-reticle::after {
             top: 12px;
             bottom: 12px;
             left: calc(50% - 1px);
@@ -167,17 +167,17 @@
             transform: rotate(90deg);
         }
 
-        body.is-skyler-scanning .skyler-threat-reveal {
-            --skyler-scan-radius: 240px;
+        body.is-skylet-scanning .skylet-threat-reveal {
+            --skylet-scan-radius: 240px;
             opacity: 0.86;
         }
 
-        body.is-skyler-scanning .skyler-threat-reticle {
+        body.is-skylet-scanning .skylet-threat-reticle {
             opacity: 0.72;
             transform: translate(-50%, -50%) scale(1);
         }
 
-        .skyler-shell {
+        .skylet-shell {
             position: relative;
             z-index: 1;
             width: min(1420px, calc(100% - 24px));
@@ -185,18 +185,18 @@
             margin: 68px auto 24px;
         }
 
-        .skyler-app {
+        .skylet-app {
             display: grid;
             grid-template-columns: minmax(220px, 280px) minmax(0, 1fr);
             gap: 14px;
             align-items: start;
         }
 
-        .skyler-panel {
+        .skylet-panel {
             min-width: 0;
-            border: 1px solid var(--skyler-line);
+            border: 1px solid var(--skylet-line);
             border-radius: 8px;
-            background: var(--skyler-panel);
+            background: var(--skylet-panel);
             box-shadow:
                 0 24px 70px rgba(0, 0, 0, 0.38),
                 0 0 34px rgba(255, 42, 169, 0.07),
@@ -204,7 +204,7 @@
             backdrop-filter: blur(10px);
         }
 
-        .skyler-presence {
+        .skylet-presence {
             min-width: 0;
             padding: 18px;
             display: flex;
@@ -214,13 +214,13 @@
             overflow: hidden;
         }
 
-        .skyler-brand {
+        .skylet-brand {
             display: flex;
             align-items: center;
             gap: 12px;
         }
 
-        .skyler-avatar {
+        .skylet-avatar {
             width: 74px;
             height: 74px;
             object-fit: contain;
@@ -228,17 +228,17 @@
             filter: drop-shadow(0 12px 24px rgba(0, 0, 0, 0.38));
         }
 
-        .skyler-eyebrow,
-        .skyler-section-label,
+        .skylet-eyebrow,
+        .skylet-section-label,
         .chat-card-label {
-            color: var(--skyler-cyan-soft);
+            color: var(--skylet-cyan-soft);
             font-size: 0.72rem;
             font-weight: 700;
             letter-spacing: 0.12em;
             text-transform: uppercase;
         }
 
-        .skyler-brand h1 {
+        .skylet-brand h1 {
             margin: 2px 0 0;
             color: #fff;
             font-family: 'Poppins', sans-serif;
@@ -247,14 +247,14 @@
             text-shadow: 0 0 18px rgba(255, 42, 169, 0.34), 0 0 20px rgba(0, 231, 255, 0.18);
         }
 
-        .skyler-lede {
+        .skylet-lede {
             margin: 14px 0 0;
             color: #ced7e2;
             font-size: 0.95rem;
             line-height: 1.62;
         }
 
-        .skyler-system-note {
+        .skylet-system-note {
             margin-top: 16px;
             padding: 12px;
             border: 1px solid rgba(255, 42, 169, 0.34);
@@ -265,30 +265,30 @@
             line-height: 1.5;
         }
 
-        .skyler-prompt-group {
+        .skylet-prompt-group {
             display: grid;
             gap: 10px;
             margin-top: 8px;
         }
 
-        .skyler-prompt-list {
+        .skylet-prompt-list {
             display: grid;
             gap: 8px;
         }
 
-        body.skyler-page .skyler-prompt-chip,
-        body.skyler-page .skyler-tool-btn,
-        body.skyler-page .skyler-send-btn {
+        body.skylet-page .skylet-prompt-chip,
+        body.skylet-page .skylet-tool-btn,
+        body.skylet-page .skylet-send-btn {
             border: 1px solid #2b2b2b !important;
             border-radius: 8px !important;
             background: rgba(16, 13, 25, 0.92) !important;
-            color: var(--skyler-text) !important;
+            color: var(--skylet-text) !important;
             font: inherit;
             cursor: pointer;
             transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease, transform 0.2s ease;
         }
 
-        body.skyler-page .skyler-prompt-chip {
+        body.skylet-page .skylet-prompt-chip {
             width: 100%;
             min-height: 50px;
             padding: 12px 13px;
@@ -296,9 +296,9 @@
             line-height: 1.35;
         }
 
-        body.skyler-page .skyler-prompt-chip:hover,
-        body.skyler-page .skyler-tool-btn:hover,
-        body.skyler-page .skyler-send-btn:hover {
+        body.skylet-page .skylet-prompt-chip:hover,
+        body.skylet-page .skylet-tool-btn:hover,
+        body.skylet-page .skylet-send-btn:hover {
             border-color: #66e0ff !important;
             background: rgba(26, 17, 36, 0.98) !important;
             color: #fff !important;
@@ -306,14 +306,14 @@
             box-shadow: 0 0 18px rgba(255, 42, 169, 0.08);
         }
 
-        .skyler-link-row {
+        .skylet-link-row {
             display: flex;
             flex-wrap: wrap;
             gap: 8px;
             margin-top: auto;
         }
 
-        .skyler-link-row a {
+        .skylet-link-row a {
             display: inline-flex;
             align-items: center;
             min-height: 34px;
@@ -326,12 +326,12 @@
             font-weight: 700;
         }
 
-        .skyler-link-row a:hover {
+        .skylet-link-row a:hover {
             border-color: rgba(0, 231, 255, 0.52);
-            color: var(--skyler-cyan-soft);
+            color: var(--skylet-cyan-soft);
         }
 
-        .skyler-chat-panel {
+        .skylet-chat-panel {
             position: relative;
             isolation: isolate;
             min-width: 0;
@@ -343,18 +343,18 @@
             overflow: hidden;
         }
 
-        .skyler-chat-panel::before,
-        .skyler-chat-panel::after {
+        .skylet-chat-panel::before,
+        .skylet-chat-panel::after {
             content: "";
             position: absolute;
             pointer-events: none;
         }
 
-        .skyler-chat-panel::before {
+        .skylet-chat-panel::before {
             inset: 0;
             z-index: 0;
             opacity: 0;
-            clip-path: circle(var(--skyler-chat-scan-radius, 0px) at var(--skyler-chat-scan-x, 50%) var(--skyler-chat-scan-y, 50%));
+            clip-path: circle(var(--skylet-chat-scan-radius, 0px) at var(--skylet-chat-scan-x, 50%) var(--skylet-chat-scan-y, 50%));
             background:
                 repeating-linear-gradient(90deg, rgba(0, 231, 255, 0.24) 0 1px, transparent 1px 16px),
                 repeating-linear-gradient(0deg, rgba(255, 42, 169, 0.22) 0 1px, transparent 1px 20px),
@@ -363,9 +363,9 @@
             transition: clip-path 0.2s ease, opacity 0.2s ease;
         }
 
-        .skyler-chat-panel::after {
-            left: var(--skyler-chat-scan-x, 50%);
-            top: var(--skyler-chat-scan-y, 50%);
+        .skylet-chat-panel::after {
+            left: var(--skylet-chat-scan-x, 50%);
+            top: var(--skylet-chat-scan-y, 50%);
             z-index: 2;
             width: 118px;
             height: 118px;
@@ -383,21 +383,21 @@
             transition: opacity 0.16s ease, transform 0.16s ease;
         }
 
-        body.is-skyler-scanning .skyler-chat-panel::before {
-            --skyler-chat-scan-radius: 280px;
+        body.is-skylet-scanning .skylet-chat-panel::before {
+            --skylet-chat-scan-radius: 280px;
             opacity: 0.68;
         }
 
-        body.is-skyler-scanning .skyler-chat-panel::after {
+        body.is-skylet-scanning .skylet-chat-panel::after {
             opacity: 0.34;
             transform: translate(-50%, -50%) scale(1);
         }
 
-        .skyler-context-toggle {
+        .skylet-context-toggle {
             display: none;
         }
 
-        .skyler-chat-top {
+        .skylet-chat-top {
             position: relative;
             z-index: 1;
             display: flex;
@@ -405,15 +405,15 @@
             justify-content: space-between;
             gap: 16px;
             padding: 18px 20px;
-            border-bottom: 1px solid var(--skyler-line);
+            border-bottom: 1px solid var(--skylet-line);
             background: rgba(13, 10, 22, 0.92);
         }
 
-        .skyler-chat-heading {
+        .skylet-chat-heading {
             min-width: 0;
         }
 
-        .skyler-chat-heading h2 {
+        .skylet-chat-heading h2 {
             margin: 0 0 6px;
             color: #fff;
             font-family: 'Poppins', sans-serif;
@@ -422,7 +422,7 @@
             text-shadow: 0 0 16px rgba(0, 231, 255, 0.18);
         }
 
-        .skyler-status-text {
+        .skylet-status-text {
             display: inline-flex;
             align-items: center;
             gap: 8px;
@@ -432,16 +432,16 @@
             line-height: 1.4;
         }
 
-        .skyler-status-dot {
+        .skylet-status-dot {
             width: 8px;
             height: 8px;
             border-radius: 50%;
-            background: var(--skyler-cyan);
+            background: var(--skylet-cyan);
             box-shadow: 0 0 0 4px rgba(0, 231, 255, 0.13), 0 0 16px rgba(255, 42, 169, 0.24);
             flex: 0 0 auto;
         }
 
-        .skyler-toolbar {
+        .skylet-toolbar {
             display: flex;
             align-items: center;
             justify-content: flex-end;
@@ -449,14 +449,14 @@
             flex-wrap: wrap;
         }
 
-        body.skyler-page .skyler-tool-btn {
+        body.skylet-page .skylet-tool-btn {
             min-height: 38px;
             padding: 0 12px;
             font-size: 0.84rem;
             font-weight: 700;
         }
 
-        body.skyler-page .skyler-tool-btn.is-active {
+        body.skylet-page .skylet-tool-btn.is-active {
             border-color: rgba(255, 42, 169, 0.5) !important;
             background: rgba(255, 42, 169, 0.13) !important;
             color: #ffd7f2 !important;
@@ -514,7 +514,7 @@
             white-space: normal;
         }
 
-        .skyler-composer {
+        .skylet-composer {
             position: relative;
             z-index: 1;
             display: grid;
@@ -522,11 +522,11 @@
             gap: 10px;
             align-items: end;
             padding: 16px;
-            border-top: 1px solid var(--skyler-line);
+            border-top: 1px solid var(--skylet-line);
             background: rgba(13, 10, 22, 0.94);
         }
 
-        .skyler-input-wrap {
+        .skylet-input-wrap {
             min-width: 0;
             border: 1px solid rgba(0, 231, 255, 0.16);
             border-radius: 8px;
@@ -534,7 +534,7 @@
             overflow: hidden;
         }
 
-        .skyler-input-wrap:focus-within {
+        .skylet-input-wrap:focus-within {
             border-color: rgba(255, 42, 169, 0.64);
             box-shadow: 0 0 0 2px rgba(255, 42, 169, 0.08);
         }
@@ -559,13 +559,13 @@
             color: #7e898f;
         }
 
-        body.skyler-page .skyler-send-btn {
+        body.skylet-page .skylet-send-btn {
             width: 54px;
             min-width: 54px;
             min-height: 54px;
             padding: 0;
             border-color: transparent !important;
-            background: linear-gradient(135deg, var(--skyler-cyan), var(--skyler-pink)) !important;
+            background: linear-gradient(135deg, var(--skylet-cyan), var(--skylet-pink)) !important;
             color: #050510 !important;
             font-weight: 800;
             display: inline-flex;
@@ -573,7 +573,7 @@
             justify-content: center;
         }
 
-        body.skyler-page .skyler-send-icon {
+        body.skylet-page .skylet-send-icon {
             width: 22px;
             height: 22px;
             stroke: currentColor;
@@ -583,24 +583,24 @@
             fill: none;
         }
 
-        body.skyler-page .skyler-send-btn:disabled,
-        body.skyler-page .skyler-tool-btn:disabled {
+        body.skylet-page .skylet-send-btn:disabled,
+        body.skylet-page .skylet-tool-btn:disabled {
             opacity: 0.54;
             cursor: not-allowed;
             transform: none;
         }
 
-        .skyler-inline-link {
+        .skylet-inline-link {
             color: #66e0ff;
             text-decoration: underline;
             word-break: break-all;
         }
 
-        .skyler-inline-link:hover {
+        .skylet-inline-link:hover {
             color: #a8efff;
         }
 
-        .skyler-action-btns {
+        .skylet-action-btns {
             display: flex;
             flex-wrap: wrap;
             gap: 7px;
@@ -608,7 +608,7 @@
             white-space: normal;
         }
 
-        .skyler-action-btn {
+        .skylet-action-btn {
             display: inline-flex;
             align-items: center;
             min-height: 32px;
@@ -622,7 +622,7 @@
             text-decoration: none;
         }
 
-        .skyler-action-btn:hover {
+        .skylet-action-btn:hover {
             border-color: rgba(0, 231, 255, 0.62);
             background: rgba(0, 231, 255, 0.12);
             color: #d7f8ff;
@@ -642,14 +642,14 @@
             text-decoration: line-through;
         }
 
-        .chat-card-content .skyler-heading {
+        .chat-card-content .skylet-heading {
             display: block;
             margin: 4px 0 6px;
             font-weight: 800;
             color: #fff;
         }
 
-        .chat-card-content code.skyler-code {
+        .chat-card-content code.skylet-code {
             padding: 2px 5px;
             border-radius: 4px;
             background: rgba(255, 42, 169, 0.13);
@@ -658,7 +658,7 @@
             font-size: 0.86em;
         }
 
-        .chat-card-content pre.skyler-pre {
+        .chat-card-content pre.skylet-pre {
             margin: 9px 0;
             padding: 10px 12px;
             border: 1px solid rgba(0, 231, 255, 0.18);
@@ -668,14 +668,14 @@
             white-space: pre;
         }
 
-        .chat-card-content pre.skyler-pre code {
+        .chat-card-content pre.skylet-pre code {
             padding: 0;
             background: none;
             color: #e9eff1;
         }
 
-        .chat-card-content ul.skyler-ul,
-        .chat-card-content ol.skyler-ol {
+        .chat-card-content ul.skylet-ul,
+        .chat-card-content ol.skylet-ol {
             margin: 7px 0 7px 19px;
             padding: 0;
         }
@@ -685,17 +685,17 @@
         }
 
         @media (max-width: 980px) {
-            .skyler-shell {
+            .skylet-shell {
                 width: min(100% - 20px, 760px);
                 min-height: calc(100dvh - 92px);
                 margin-top: 72px;
             }
 
-            .skyler-app {
+            .skylet-app {
                 display: block;
             }
 
-            .skyler-presence {
+            .skylet-presence {
                 position: fixed;
                 left: 10px;
                 top: 10px;
@@ -707,16 +707,16 @@
                 transition: transform 0.22s ease;
             }
 
-            body.is-skyler-context-open .skyler-presence {
+            body.is-skylet-context-open .skylet-presence {
                 transform: translateX(0);
             }
 
-            .skyler-chat-panel {
+            .skylet-chat-panel {
                 height: calc(100dvh - 92px);
                 min-height: 0;
             }
 
-            .skyler-context-toggle {
+            .skylet-context-toggle {
                 position: fixed;
                 left: 8px;
                 top: 50%;
@@ -729,7 +729,7 @@
                 border: 1px solid rgba(255, 42, 169, 0.42) !important;
                 border-radius: 0 8px 8px 0 !important;
                 background: rgba(16, 13, 25, 0.96) !important;
-                color: var(--skyler-pink) !important;
+                color: var(--skylet-pink) !important;
                 font: 800 1.4rem/1 'Inter', sans-serif;
                 cursor: pointer;
                 transform: translateY(-50%);
@@ -737,44 +737,44 @@
                 transition: left 0.22s ease, background 0.2s ease, color 0.2s ease;
             }
 
-            .skyler-context-toggle:hover {
+            .skylet-context-toggle:hover {
                 background: rgba(26, 17, 36, 0.98) !important;
-                color: var(--skyler-cyan-soft) !important;
+                color: var(--skylet-cyan-soft) !important;
             }
 
-            body.is-skyler-context-open .skyler-context-toggle {
+            body.is-skylet-context-open .skylet-context-toggle {
                 left: min(328px, calc(100vw - 48px));
             }
         }
 
         @media (max-width: 640px) {
-            .skyler-shell {
+            .skylet-shell {
                 width: calc(100% - 20px);
                 margin: 72px auto 28px;
             }
 
-            .skyler-presence,
-            .skyler-chat-top,
+            .skylet-presence,
+            .skylet-chat-top,
             .chat-log,
-            .skyler-composer {
+            .skylet-composer {
                 padding: 14px;
             }
 
-            .skyler-brand {
+            .skylet-brand {
                 align-items: flex-start;
             }
 
-            .skyler-avatar {
+            .skylet-avatar {
                 width: 68px;
                 height: 68px;
             }
 
-            .skyler-chat-top {
+            .skylet-chat-top {
                 align-items: flex-start;
                 flex-direction: column;
             }
 
-            .skyler-toolbar {
+            .skylet-toolbar {
                 width: 100%;
                 justify-content: flex-start;
             }
@@ -783,16 +783,16 @@
                 max-width: 94%;
             }
 
-            .skyler-composer {
+            .skylet-composer {
                 grid-template-columns: 1fr;
             }
 
-            body.skyler-page .skyler-send-btn {
+            body.skylet-page .skylet-send-btn {
                 width: 100%;
             }
         }
 
-        @keyframes skylerThreatGrid {
+        @keyframes skyletThreatGrid {
             from {
                 background-position: 0 0, 0 0;
             }
@@ -802,7 +802,7 @@
             }
         }
 
-        @keyframes skylerThreatHorizon {
+        @keyframes skyletThreatHorizon {
             0% {
                 transform: translate3d(-1.5%, 0, 0) scaleY(0.9);
                 background-position: 0% 50%, 0 0;
@@ -815,112 +815,112 @@
         }
 
         @media (max-width: 1024px), (hover: none), (pointer: coarse) {
-            .skyler-threat-reveal,
-            .skyler-threat-reticle {
+            .skylet-threat-reveal,
+            .skylet-threat-reticle {
                 display: none;
             }
         }
 
         @media (prefers-reduced-motion: reduce) {
-            .skyler-threat-field::before,
-            .skyler-threat-horizon {
+            .skylet-threat-field::before,
+            .skylet-threat-horizon {
                 animation: none;
             }
 
-            .skyler-threat-reveal,
-            .skyler-threat-reticle {
+            .skylet-threat-reveal,
+            .skylet-threat-reticle {
                 display: none;
             }
         }
     </style>
     <link rel="search" type="application/opensearchdescription+xml" title="PkLavc" href="/opensearch.xml">
 </head>
-<body class="blog-layout seo-layout skyler-page">
+<body class="blog-layout seo-layout skylet-page">
     <div id="breaker"></div>
     <div id="breaker-two"></div>
-    <div class="skyler-threat-field" aria-hidden="true">
-        <div class="skyler-threat-horizon"></div>
-        <div class="skyler-threat-reveal"></div>
-        <div class="skyler-threat-reticle"></div>
+    <div class="skylet-threat-field" aria-hidden="true">
+        <div class="skylet-threat-horizon"></div>
+        <div class="skylet-threat-reveal"></div>
+        <div class="skylet-threat-reticle"></div>
     </div>
     <div id="all">
         <div class="cursor"></div>
 
-        <div id="navigation-content" role="navigation" aria-label="Primary navigation">
+        <div id="navigation-content" role="navigation" aria-label="Navegación primaria">
             <div class="logo"></div>
             <div class="navigation-links">
-                <a href="/" data-text="HOME" id="home-link">HOME</a>
-                <a href="/about/" data-text="ABOUT" id="about-link">ABOUT</a>
-                <a href="/projects/" data-text="PROJECTS" id="projects-link">PROJECTS</a>
-                <a href="/blog/" data-text="BLOG" id="blog-link">BLOG</a>
+                <a href="/es/" data-text="INICIO" id="home-link">INICIO</a>
+                <a href="/es/sobre/" data-text="SOBRE" id="about-link">SOBRE</a>
+                <a href="/es/proyectos/" data-text="PROYECTOS" id="projects-link">PROYECTOS</a>
+                <a href="/es/blog/" data-text="BLOG" id="blog-link">BLOG</a>
             </div>
         </div>
 
         <div id="navigation-bar">
-            <div class="menubar" aria-label="Toggle navigation" role="button" tabindex="0">
+            <div class="menubar" aria-label="Alternar navegación" role="button" tabindex="0">
                 <span class="first-span"></span>
                 <span class="second-span"></span>
                 <span class="third-span"></span>
             </div>
         </div>
 
-        <main class="skyler-shell" role="main" aria-label="Skyler assistant">
+        <main class="skylet-shell" role="main" aria-label="Skylet asistente">
             <input id="api-base" type="hidden" value="https://api.pklavc.com">
             <input id="stream-toggle" type="checkbox" checked hidden aria-hidden="true">
-            <button id="skyler-context-toggle" class="skyler-context-toggle" type="button" aria-controls="skyler-context-panel" aria-expanded="false" aria-label="Open Skyler context menu">></button>
+            <button id="skylet-context-toggle" class="skylet-context-toggle" type="button" aria-controls="skylet-context-panel" aria-expanded="false" aria-label="Abrir el menú contextual Skylet">></button>
 
-            <section class="skyler-app">
-                <aside id="skyler-context-panel" class="skyler-panel skyler-presence" aria-label="Skyler context">
+            <section class="skylet-app">
+                <aside id="skylet-context-panel" class="skylet-panel skylet-presence" aria-label="Skylet contexto">
                     <div>
-                        <div class="skyler-brand">
-                            <img class="skyler-avatar" src="/images/brand/icon_skyler.webp?v=4b80b918a0" alt="Skyler" width="92" height="92" loading="eager" decoding="async">
+                        <div class="skylet-brand">
+                            <img class="skylet-avatar" src="/images/brand/icon_skylet.webp?v=feecb6b1c7" alt="Skylet" width="92" height="92" loading="eager" decoding="async">
                             <div>
-                                <span class="skyler-eyebrow">Portfolio AI</span>
-                                <h1>Skyler</h1>
+                                <span class="skylet-eyebrow">Portafolio de IA</span>
+                                <h1>Skylet</h1>
                             </div>
                         </div>
-                        <p class="skyler-lede">Ask about Patrick's backend work, integrations, automation, architecture, and project tradeoffs.</p>
-                        <p id="upload-status" class="skyler-system-note">Portfolio context online.</p>
+                        <p class="skylet-lede">Pregunte sobre el trabajo backend, las integraciones, la automatización, la arquitectura y las compensaciones del proyecto de Patrick.</p>
+                        <p id="upload-status" class="skylet-system-note">Contexto de el portafolio en línea.</p>
                     </div>
 
-                    <div class="skyler-prompt-group" aria-label="Suggested prompts">
-                        <span class="skyler-section-label">Try asking</span>
-                        <div class="skyler-prompt-list">
-                            <button class="skyler-prompt-chip" type="button" data-prompt="What projects best show Patrick's backend architecture experience?">Best architecture projects</button>
-                            <button class="skyler-prompt-chip" type="button" data-prompt="Summarize Patrick's experience with API integrations and automation.">API integrations summary</button>
-                            <button class="skyler-prompt-chip" type="button" data-prompt="Which stack would Patrick use for a scalable worker or ETL pipeline?">Stack for worker pipelines</button>
-                            <button class="skyler-prompt-chip" type="button" data-prompt="Share links to Patrick's strongest backend projects.">Backend project links</button>
+                    <div class="skylet-prompt-group" aria-label="Indicaciones sugeridas">
+                        <span class="skylet-section-label">Intenta preguntar</span>
+                        <div class="skylet-prompt-list">
+                            <button class="skylet-prompt-chip" type="button" data-prompt="¿Qué proyectos muestran mejor la experiencia de Patrick con arquitectura backend?">Mejores proyectos de arquitectura</button>
+                            <button class="skylet-prompt-chip" type="button" data-prompt="Resume la experiencia de Patrick con integraciones de API y automatización.">Resumen de integraciones vía API</button>
+                            <button class="skylet-prompt-chip" type="button" data-prompt="¿Qué stack usaría Patrick para un worker escalable o un pipeline ETL?">Stack para workers y pipelines</button>
+                            <button class="skylet-prompt-chip" type="button" data-prompt="Comparte enlaces de los proyectos backend más fuertes de Patrick.">Enlaces de proyectos backend</button>
                         </div>
                     </div>
 
-                    <div class="skyler-link-row" aria-label="Related links">
-                        <a href="/projects/skyler-assistant/">Project details</a>
-                        <a href="/projects/">Projects</a>
-                        <a href="/about/">About</a>
+                    <div class="skylet-link-row" aria-label="Enlaces relacionados">
+                        <a href="/es/proyectos/skylet-assistant/">Detalles del proyecto</a>
+                        <a href="/es/proyectos/">Proyectos</a>
+                        <a href="/es/sobre/">Acerca de</a>
                     </div>
                 </aside>
 
-                <section class="skyler-panel skyler-chat-panel" aria-label="Chat with Skyler">
-                    <header class="skyler-chat-top">
-                        <div class="skyler-chat-heading">
-                            <h2>Talk to Skyler</h2>
-                            <p id="auth-status" class="skyler-status-text"><span class="skyler-status-dot" aria-hidden="true"></span>Ready for portfolio questions.</p>
+                <section class="skylet-panel skylet-chat-panel" aria-label="Chatea con Skylet">
+                    <header class="skylet-chat-top">
+                        <div class="skylet-chat-heading">
+                            <h2>Habla con Skylet</h2>
+                            <p id="auth-status" class="skylet-status-text"><span class="skylet-status-dot" aria-hidden="true"></span>Listo para preguntas sobre el portafolio.</p>
                         </div>
-                        <div class="skyler-toolbar" aria-label="Conversation controls">
-                            <button id="voice-input-btn" class="skyler-tool-btn" type="button">Voice input</button>
-                            <button id="voice-toggle" class="skyler-tool-btn" type="button" aria-pressed="false">Voice off</button>
-                            <button id="reset-btn" class="skyler-tool-btn" type="button">Reset</button>
+                        <div class="skylet-toolbar" aria-label="Controles de conversación">
+                            <button id="voice-input-btn" class="skylet-tool-btn" type="button">Entrada de voz</button>
+                            <button id="voice-toggle" class="skylet-tool-btn" type="button" aria-pressed="false">voz apagada</button>
+                            <button id="reset-btn" class="skylet-tool-btn" type="button">Reiniciar</button>
                         </div>
                     </header>
 
                     <div id="chat-log" class="chat-log" aria-live="polite"></div>
 
-                    <form id="chat-form" class="skyler-composer">
-                        <div class="skyler-input-wrap">
-                            <label class="visually-hidden" for="chat-input">Message</label>
-                            <textarea id="chat-input" placeholder="Ask about projects, companies, courses, architecture, or backend work..."></textarea>
+                    <form id="chat-form" class="skylet-composer">
+                        <div class="skylet-input-wrap">
+                            <label class="visually-hidden" for="chat-input">Mensaje</label>
+                            <textarea id="chat-input" placeholder="Pregunta por proyectos, empresas, cursos, arquitectura o trabajos backend..."></textarea>
                         </div>
-                        <button id="send-btn" class="skyler-send-btn" type="submit" aria-label="Send message" title="Send message"><svg class="skyler-send-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h8"></path><path d="m12 5 7 7-7 7"></path></svg></button>
+                        <button id="send-btn" class="skylet-send-btn" type="submit" aria-label="enviar mensaje" title="enviar mensaje"><svg class="skylet-send-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h8"></path><path d="m12 5 7 7-7 7"></path></svg></button>
                     </form>
                 </section>
             </section>
@@ -929,13 +929,13 @@
 
     <footer class="footer-minimal">
         <div class="footer-container">
-            <div class="footer-link-list" aria-label="Footer links">
+            <div class="footer-link-list" aria-label="Enlaces de pie de página">
                 <a class="footer-link-pill" href="https://github.com/PkLavc" target="_blank" rel="noopener noreferrer">GitHub</a>
                 <a class="footer-link-pill" href="https://www.linkedin.com/in/pklavc/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
-                <a class="footer-link-pill" href="mailto:contact@pklavc.com">Email</a>
-                <a class="footer-link-pill footer-link-pill-accent" href="/projects/skyler-assistant/">Project details</a>
+                <a class="footer-link-pill" href="mailto:contact@pklavc.com">Correo electrónico</a>
+                <a class="footer-link-pill footer-link-pill-accent" href="/es/proyectos/skylet-assistant/">Detalles del proyecto</a>
             </div>
-            <p class="footer-meta"><span class="footer-copyright-line">&copy; <span data-current-year></span> Patrick Araujo</span> <span class="footer-meta-separator">&bull;</span><span class="footer-legal-inline" aria-label="Legal links"><a class="footer-legal-link" href="/privacy-policy/">Privacy Policy</a><span aria-hidden="true">/</span><a class="footer-legal-link" href="/terms-of-use/">Terms of Use</a><span aria-hidden="true">/</span><a class="footer-legal-link" href="/editorial-policy/">Editorial Policy</a></span></p>
+            <p class="footer-meta"><span class="footer-copyright-line">&copy; <span data-current-year></span> Patrick Araujo</span> <span class="footer-meta-separator">&bull;</span><span class="footer-legal-inline" aria-label="Legal links"><a class="footer-legal-link" href="/es/politica-de-privacidad/">Pol&iacute;tica de Privacidad</a><span aria-hidden="true">/</span><a class="footer-legal-link" href="/es/terminos-de-uso/">T&eacute;rminos de Uso</a><span aria-hidden="true">/</span><a class="footer-legal-link" href="/es/politica-editorial/">Pol&iacute;tica Editorial</a></span></p>
         </div>
     </footer>
 
@@ -947,9 +947,9 @@
         }());
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
-        <script src="/js/i18n.js?v=02a6baa07c" defer></script>
-    <script src="/js/jquery.min.js?v=91e8044a4b" defer></script>
-    <script src="/js/index.js?v=668365f8c9" defer></script>
-    <script src="/js/testing-chat.js?v=46ab654716" defer></script>
+        <script src="/js/i18n.js?v=397fd68aed" defer></script>
+    <script src="/js/jquery.min.js?v=d482871a5e" defer></script>
+    <script src="/js/index.js?v=9816b7386d" defer></script>
+    <script src="/js/testing-chat.js?v=f13cdb5e65" defer></script>
 </body>
 </html>

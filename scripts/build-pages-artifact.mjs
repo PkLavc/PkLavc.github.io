@@ -51,7 +51,7 @@ const publicEntries = [
   "js",
   "projects",
   "pt",
-  "skyler-assistant",
+  "skylet-assistant",
   "stacks",
   "visitors",
 ];

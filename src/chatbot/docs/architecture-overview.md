@@ -7,7 +7,7 @@ The chatbot stack combines a Cloudflare Worker backend with a static portfolio f
 - Worker API: `src/chatbot/worker/src/index.ts`
 - Manual knowledge base: `src/chatbot/worker/src/manual-rag.ts`
 - Scripts: `src/chatbot/scripts/*.mjs`
-- Frontend widget: `js/skyler-widget.js`, `css/skyler-widget.css`
+- Frontend widget: `js/skylet-widget.js`, `css/skylet-widget.css`
 
 ## Runtime Flow
 1. Client sends chat message to the Worker.

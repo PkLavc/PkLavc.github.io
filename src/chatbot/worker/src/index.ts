@@ -77,8 +77,8 @@ const SITE_RAG_CACHE_KEY = "site_rag_cache:v2";
 const SITE_RAG_META_KEY = "site_rag_cache_meta:v2";
 const SITE_RAG_CACHE_TTL_SECONDS = 3600;
 const SITE_RAG_SOURCE_PATHS = ["/", "/about/", "/pt/sobre/", "/es/sobre/", "/projects/", "/projects/lavc-systems/", "/projects/raw-api-ingestion-pipeline/", "/projects/zoho-integration-worker/", "/stacks/zoho-deluge-developer/", "/blog/", "/blog/raw-api-ingestion-supabase-sql/"];
-const AGENT_NAME = "Skyler";
-const AGENT_PROFILE = "Skyler is a female AI assistant.";
+const AGENT_NAME = "Skylet";
+const AGENT_PROFILE = "Skylet is a female AI assistant.";
 const INTERNAL_PORTFOLIO_CONTEXT = [
   "Name: Patrick Araujo.",
   "Role focus: Backend Software Engineer, API Integration Engineer, and Zoho Creator & Automation Developer.",
@@ -973,7 +973,7 @@ async function buildPrompt(
     .first<{ version: string; prompt_template: string }>();
 
   const promptTemplate = activePrompt?.prompt_template ||
-    "You are Skyler. Provide concise technical answers based on portfolio RAG context.";
+    "You are Skylet. Provide concise technical answers based on portfolio RAG context.";
 
   const memoryBlock = memory.map((item) => `${item.role}: ${item.content}`).join("\n");
   const ragBlock = rag.length ? rag.join("\n---\n") : "No RAG docs found.";
@@ -1479,7 +1479,7 @@ function greetingReply(lang: "pt" | "en" | "es"): string {
 function isSpecificNamedEntityQuery(text: string): boolean {
   // Matches specific project names, integration worker names, or blog-related specifics.
   // These queries need the LLM + full RAG context for accurate answers.
-  return /\b(lavc|skyler|raw api|raw data|supabase|codepulse|code ?pulse|cipher|aegis|sentinel|zenvia|hablla|sige|omie|zoho|google auth|os resource|multi.?tenant|event.?driven|cloud deployment|gta|aaa|oauth|etl|monorepo|anomaly|pipeline)\b/.test(text);
+  return /\b(lavc|skylet|raw api|raw data|supabase|codepulse|code ?pulse|cipher|aegis|sentinel|zenvia|hablla|sige|omie|zoho|google auth|os resource|multi.?tenant|event.?driven|cloud deployment|gta|aaa|oauth|etl|monorepo|anomaly|pipeline)\b/.test(text);
 }
 
 function isSpecificProjectRequest(text: string): boolean {

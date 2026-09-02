@@ -9,9 +9,9 @@
 
   var COPY = {
     en: {
-      launcherLabel: "Open or close Skyler chat",
-      launcherAlt: "Skyler chat icon",
-      widgetLabel: "Skyler chat widget",
+      launcherLabel: "Open or close Skylet chat",
+      launcherAlt: "Skylet chat icon",
+      widgetLabel: "Skylet chat widget",
       subtitle: "Portfolio assistant",
       voiceOn: "Voice on",
       voiceOff: "Voice off",
@@ -24,7 +24,7 @@
       unavailableMessage: "I could not answer right now.",
       unavailableStatus: "Chat temporarily unavailable.",
       voiceEnabledStatus: "Voice mode enabled.",
-      intro: "Hi, I am Skyler. Ask about Patrick's experience, projects, stack, or architecture work.",
+      intro: "Hi, I am Skylet. Ask about Patrick's experience, projects, stack, or architecture work.",
       links: {
         email: "Send Email",
         linkedin: "Open LinkedIn",
@@ -35,8 +35,8 @@
         blog: "Read Blog",
         about: "About Patrick",
         lavc: "View Lavc Systems",
-        skylerProject: "View Skyler Assistant",
-        skylerApp: "Open Skyler Assistant",
+        skyletProject: "View Skylet Assistant",
+        skyletApp: "Open Skylet Assistant",
         codepulse: "View CodePulse",
         googleAuth: "View Google Auth Worker",
         zoho: "View Zoho Worker",
@@ -58,9 +58,9 @@
       }
     },
     pt: {
-      launcherLabel: "Abrir ou fechar chat da Skyler",
-      launcherAlt: "Ícone do chat da Skyler",
-      widgetLabel: "Widget de chat da Skyler",
+      launcherLabel: "Abrir ou fechar chat da Skylet",
+      launcherAlt: "Ícone do chat da Skylet",
+      widgetLabel: "Widget de chat da Skylet",
       subtitle: "Assistente de portfólio",
       voiceOn: "Voz ativada",
       voiceOff: "Voz desativada",
@@ -73,7 +73,7 @@
       unavailableMessage: "Não consegui responder agora.",
       unavailableStatus: "Chat temporariamente indisponível.",
       voiceEnabledStatus: "Modo de voz ativado.",
-      intro: "Oi, eu sou a Skyler. Pergunte sobre a experiência, os projetos, a stack ou o trabalho de arquitetura do Patrick.",
+      intro: "Oi, eu sou a Skylet. Pergunte sobre a experiência, os projetos, a stack ou o trabalho de arquitetura do Patrick.",
       links: {
         email: "Enviar e-mail",
         linkedin: "Abrir LinkedIn",
@@ -84,8 +84,8 @@
         blog: "Ler blog",
         about: "Sobre Patrick",
         lavc: "Ver Lavc Systems",
-        skylerProject: "Ver Skyler Assistant",
-        skylerApp: "Abrir Skyler Assistant",
+        skyletProject: "Ver Skylet Assistant",
+        skyletApp: "Abrir Skylet Assistant",
         codepulse: "Ver CodePulse",
         googleAuth: "Ver Google Auth Worker",
         zoho: "Ver Zoho Worker",
@@ -107,9 +107,9 @@
       }
     },
     es: {
-      launcherLabel: "Abrir o cerrar el chat de Skyler",
-      launcherAlt: "Ícono del chat de Skyler",
-      widgetLabel: "Widget de chat de Skyler",
+      launcherLabel: "Abrir o cerrar el chat de Skylet",
+      launcherAlt: "Ícono del chat de Skylet",
+      widgetLabel: "Widget de chat de Skylet",
       subtitle: "Asistente de portafolio",
       voiceOn: "Voz activada",
       voiceOff: "Voz desactivada",
@@ -122,7 +122,7 @@
       unavailableMessage: "No pude responder ahora.",
       unavailableStatus: "Chat temporalmente no disponible.",
       voiceEnabledStatus: "Modo de voz activado.",
-      intro: "Hola, soy Skyler. Pregunta sobre la experiencia, los proyectos, el stack o el trabajo de arquitectura de Patrick.",
+      intro: "Hola, soy Skylet. Pregunta sobre la experiencia, los proyectos, el stack o el trabajo de arquitectura de Patrick.",
       links: {
         email: "Enviar correo",
         linkedin: "Abrir LinkedIn",
@@ -133,8 +133,8 @@
         blog: "Leer blog",
         about: "Sobre Patrick",
         lavc: "Ver Lavc Systems",
-        skylerProject: "Ver Skyler Assistant",
-        skylerApp: "Abrir Skyler Assistant",
+        skyletProject: "Ver Skylet Assistant",
+        skyletApp: "Abrir Skylet Assistant",
         codepulse: "Ver CodePulse",
         googleAuth: "Ver Google Auth Worker",
         zoho: "Ver Zoho Worker",
@@ -174,7 +174,7 @@
 
   function shouldRunWidget() {
     var path = window.location.pathname || "/";
-    return !/^\/(?:(?:pt|es)\/)?skyler-assistant\/?$/i.test(path);
+    return !/^\/(?:(?:pt|es)\/)?skylet-assistant\/?$/i.test(path);
   }
 
   function getVoiceToggleMarkup(isEnabled) {
@@ -210,7 +210,7 @@
     launcher.setAttribute("aria-controls", "about-chat-widget");
     launcher.setAttribute("aria-expanded", "false");
     launcher.setAttribute("aria-label", copy.launcherLabel);
-    launcher.innerHTML = '<img src="/images/brand/icon_skyler.webp?v=4b80b918a0" alt="' + copy.launcherAlt + '" width="56" height="56" loading="eager" decoding="async">';
+    launcher.innerHTML = '<img src="/images/brand/icon_skylet.webp?v=feecb6b1c7" alt="' + copy.launcherAlt + '" width="56" height="56" loading="eager" decoding="async">';
 
     var widget = document.createElement("section");
     widget.id = "about-chat-widget";
@@ -221,7 +221,7 @@
     widget.innerHTML = [
       '<header class="about-chat-header">',
       '  <div class="about-chat-title">',
-      '    <strong>Skyler</strong>',
+      '    <strong>Skylet</strong>',
       '    <span>' + copy.subtitle + '</span>',
       '  </div>',
       '  <div class="about-chat-actions">',
@@ -350,8 +350,8 @@
     els.log.insertBefore(backdrop, els.log.firstChild);
     syncChatBackdrop();
 
-    if (!els.log.dataset.skylerBackdropBound) {
-      els.log.dataset.skylerBackdropBound = "true";
+    if (!els.log.dataset.skyletBackdropBound) {
+      els.log.dataset.skyletBackdropBound = "true";
       els.log.addEventListener("scroll", syncChatBackdrop, { passive: true });
     }
   }
@@ -397,8 +397,8 @@
     "https://pklavc.com/blog/": "blog",
     "https://pklavc.com/about/": "about",
     "https://pklavc.com/projects/lavc-systems/": "lavc",
-    "https://pklavc.com/projects/skyler-assistant/": "skylerProject",
-    "https://pklavc.com/skyler-assistant/": "skylerApp",
+    "https://pklavc.com/projects/skylet-assistant/": "skyletProject",
+    "https://pklavc.com/skylet-assistant/": "skyletApp",
     "https://pklavc.com/projects/codepulse-monorepo/": "codepulse",
     "https://pklavc.com/projects/google-auth-worker/": "googleAuth",
     "https://pklavc.com/projects/zoho-integration-worker/": "zoho",
@@ -434,12 +434,12 @@
     var out = md;
     // 1. Fenced code blocks
     out = out.replace(/```(?:\w*)\n?([\s\S]*?)```/g, function (_, code) {
-      return '<pre class="skyler-pre"><code>' + code.replace(/^[\n]+|[\n]+$/g, "") + "</code></pre>";
+      return '<pre class="skylet-pre"><code>' + code.replace(/^[\n]+|[\n]+$/g, "") + "</code></pre>";
     });
     // 2. Inline code
-    out = out.replace(/`([^`\n]+)`/g, '<code class="skyler-code">$1</code>');
+    out = out.replace(/`([^`\n]+)`/g, '<code class="skylet-code">$1</code>');
     // 3. Headers → bold block
-    out = out.replace(/^#{1,6}\s+(.+)$/gm, '<strong class="skyler-heading">$1</strong>');
+    out = out.replace(/^#{1,6}\s+(.+)$/gm, '<strong class="skylet-heading">$1</strong>');
     // 4. Bold
     out = out.replace(/\*\*([^*\n]+?)\*\*/g, '<strong>$1</strong>');
     out = out.replace(/__([^_\n]+?)__/g, '<strong>$1</strong>');
@@ -453,14 +453,14 @@
       var items = block.trim().split("\n").map(function (line) {
         return "<li>" + line.replace(/^[*\-+] /, "") + "</li>";
       });
-      return '<ul class="skyler-ul">' + items.join("") + "</ul>";
+      return '<ul class="skylet-ul">' + items.join("") + "</ul>";
     });
     // 8. Ordered lists
     out = out.replace(/((?:^\d+\.\s+.+$\n?)+)/gm, function (block) {
       var items = block.trim().split("\n").map(function (line) {
         return "<li>" + line.replace(/^\d+\.\s+/, "") + "</li>";
       });
-      return '<ol class="skyler-ol">' + items.join("") + "</ol>";
+      return '<ol class="skylet-ol">' + items.join("") + "</ol>";
     });
     // 9. Newlines to <br>
     out = out.replace(/\n/g, "<br>");
@@ -488,7 +488,7 @@
     html = html.replace(/([a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,})/g, function (email) {
       var href = "mailto:" + email;
       if (trackHref(href)) buttons.push(href);
-      return '<a href="' + href + '" class="skyler-inline-link">' + email + "</a>";
+      return '<a href="' + href + '" class="skylet-inline-link">' + email + "</a>";
     });
 
     // Replace https URLs (strip trailing punctuation)
@@ -497,7 +497,7 @@
       var tail = raw.slice(clean.length);
       if (trackHref(clean)) buttons.push(clean);
       return (
-        '<a href="' + clean + '" class="skyler-inline-link" target="_blank" rel="noopener noreferrer">' +
+        '<a href="' + clean + '" class="skylet-inline-link" target="_blank" rel="noopener noreferrer">' +
         clean +
         "</a>" +
         (tail ? escapeHtml(tail) : "")
@@ -517,14 +517,14 @@
         }
         return true;
       }) : buttons;
-      html += '<div class="skyler-action-btns">';
+      html += '<div class="skylet-action-btns">';
       displayButtons.forEach(function (href) {
         var isExternal = !href.startsWith("mailto:") && !href.includes("pklavc.com");
         var label = getLinkLabel(href);
         html +=
           '<a href="' +
           href +
-          '" class="skyler-action-btn"' +
+          '" class="skylet-action-btn"' +
           (isExternal ? ' target="_blank" rel="noopener noreferrer"' : "") +
           ">" +
           escapeHtml(label) +
@@ -843,8 +843,8 @@
 
   function initAndExpose() {
     init();
-    window.openSkylerWidget = openWidget;
-    window.closeSkylerWidget = closeWidget;
+    window.openSkyletWidget = openWidget;
+    window.closeSkyletWidget = closeWidget;
   }
 
   if (document.readyState === "loading") {

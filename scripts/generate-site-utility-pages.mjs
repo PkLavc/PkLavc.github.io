@@ -307,7 +307,7 @@ The portfolio should be interpreted as technical evidence of backend engineering
 ## Project emphasis
 
 - Lavc Systems: local AI orchestration, RAG, task Kanban, memory, queues, logs, and observability.
-- Skyler Assistant: portfolio assistant with retrieval, cached context, provider fallback, and bounded answers.
+- Skylet Assistant: portfolio assistant with retrieval, cached context, provider fallback, and bounded answers.
 - API Integration Pipeline: operational data collection and normalization across business APIs.
 - Worker integrations: Google OAuth, Zoho, Hablla, Zenvia, SIGE, Omie, and reporting flows.
 - Systems projects: SaaS backend, zero-trust proxy, event-driven integration service, SRE automation, cloud deployment, and resource optimization.
@@ -424,7 +424,7 @@ ${card("Operations", "Cloudflare, GitHub Pages, API health endpoints, cache-bust
     lead: "Inspired by Derek Sivers' now-page idea: a compact view of the projects and technical themes that are active in my work without turning the portfolio into a timeline.",
     body: `<section class="site-page-section"><h2>Main Project Tracks</h2><div class="site-page-grid">
 ${card("Lavc Systems", "A local multi-agent AI platform built around FastAPI, React, Ollama, LangGraph-style workflows, ChromaDB RAG, memory, task orchestration, and observability.", ["AI Platform", "RAG", "Local-first"])}
-${card("Skyler Assistant", "A public portfolio assistant with intent-aware retrieval, cached site context, provider fallback, and careful answer boundaries.", ["Chatbot", "RAG", "API"])}
+${card("Skylet Assistant", "A public portfolio assistant with intent-aware retrieval, cached site context, provider fallback, and careful answer boundaries.", ["Chatbot", "RAG", "API"])}
 ${card("API Integration Pipeline", "Operational integrations that collect Hablla, Zoho, Zenvia, SIGE, Omie, and related payloads into replayable reporting datasets.", ["ETL", "Supabase", "GitHub Actions"])}
 ${card("Visitor Map", "Privacy-minded anonymous analytics for showing countries, regions, and aggregate access patterns without exposing personal visitor data.", ["Analytics", "Privacy", "Map"])}
 ${card("Engineering Blog", "Writing about AI systems, backend architecture, automation, cloud constraints, compliance, and software design tradeoffs.", ["Writing", "Architecture", "RSS"])}
@@ -643,7 +643,7 @@ ${card("Reliability and Delivery", "GitHub Actions, Cloudflare Workers, D1/KV, D
 </div></section>
 <section class="site-page-section"><h2>Selected Project Context</h2><div class="site-page-grid two">
 ${card("Lavc Systems", "A local-first AI operations platform with FastAPI, React, RAG, vector memory, multi-agent orchestration, task Kanban, execution queues, logs, and traceability.", ["AI Platform", "RAG", "Internal Tools"])}
-${card("Skyler Assistant", "A portfolio assistant using intent-aware retrieval, cached site context, manual RAG, Cloudflare Workers, D1/KV, sessions, and LLM provider fallback.", ["Chatbot", "Cloudflare", "RAG"])}
+${card("Skylet Assistant", "A portfolio assistant using intent-aware retrieval, cached site context, manual RAG, Cloudflare Workers, D1/KV, sessions, and LLM provider fallback.", ["Chatbot", "Cloudflare", "RAG"])}
 ${card("API Integration Pipeline", "Operational integrations for collecting, normalizing, persisting, and synchronizing data across CRM, ERP, telephony, financial, inventory, and reporting systems.", ["APIs", "ETL", "Supabase"])}
 ${card("Visitor Map", "Privacy-minded anonymous analytics for showing aggregate countries, regions, and access patterns without exposing personal visitor data.", ["Analytics", "Privacy", "Map"])}
 </div></section>

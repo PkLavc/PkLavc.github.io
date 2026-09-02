@@ -38,7 +38,7 @@ const SITE_DIRECTORIES = new Set([
   "pt",
   "resume",
   "search",
-  "skyler-assistant",
+  "skylet-assistant",
   "status",
   "stacks",
   "terms-of-use",

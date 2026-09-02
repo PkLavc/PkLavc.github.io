@@ -1465,9 +1465,9 @@ function initSpaceReveals() {
   });
 }
 
-function isSkylerAssistantPage() {
+function isSkyletAssistantPage() {
   var path = window.location.pathname || '/';
-  return /^\/(?:(?:pt|es)\/)?skyler-assistant\/?$/i.test(path);
+  return /^\/(?:(?:pt|es)\/)?skylet-assistant\/?$/i.test(path);
 }
 
 function loadLottiePlayerAssets(forceReload) {
@@ -1505,23 +1505,23 @@ function ensureLottiePlayerAssets() {
   }, 1800);
 }
 
-function loadSkylerWidgetAssets() {
-  if (isSkylerAssistantPage()) {
+function loadSkyletWidgetAssets() {
+  if (isSkyletAssistantPage()) {
     return;
   }
 
-  if (!document.getElementById('skyler-widget-style')) {
+  if (!document.getElementById('skylet-widget-style')) {
     var link = document.createElement('link');
-    link.id = 'skyler-widget-style';
+    link.id = 'skylet-widget-style';
     link.rel = 'stylesheet';
-    link.href = '/css/skyler-widget.css?v=617c8e37ab';
+    link.href = '/css/skylet-widget.css?v=b6f515f624';
     document.head.appendChild(link);
   }
 
-  if (!document.getElementById('skyler-widget-script')) {
+  if (!document.getElementById('skylet-widget-script')) {
     var script = document.createElement('script');
-    script.id = 'skyler-widget-script';
-    script.src = '/js/skyler-widget.js?v=119543ea38';
+    script.id = 'skylet-widget-script';
+    script.src = '/js/skylet-widget.js?v=4dd513481f';
     script.defer = true;
     document.body.appendChild(script);
   }
@@ -1565,11 +1565,11 @@ function initIndexFooterAwareSocialLinks() {
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', initSpaceReveals, { once: true });
   document.addEventListener('DOMContentLoaded', ensureLottiePlayerAssets, { once: true });
-  document.addEventListener('DOMContentLoaded', loadSkylerWidgetAssets, { once: true });
+  document.addEventListener('DOMContentLoaded', loadSkyletWidgetAssets, { once: true });
   document.addEventListener('DOMContentLoaded', initIndexFooterAwareSocialLinks, { once: true });
 } else {
   initSpaceReveals();
   ensureLottiePlayerAssets();
-  loadSkylerWidgetAssets();
+  loadSkyletWidgetAssets();
   initIndexFooterAwareSocialLinks();
 }

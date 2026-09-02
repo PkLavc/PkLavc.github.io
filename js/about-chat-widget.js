@@ -97,8 +97,8 @@
     els.log.insertBefore(backdrop, els.log.firstChild);
     syncChatBackdrop();
 
-    if (!els.log.dataset.skylerBackdropBound) {
-      els.log.dataset.skylerBackdropBound = "true";
+    if (!els.log.dataset.skyletBackdropBound) {
+      els.log.dataset.skyletBackdropBound = "true";
       els.log.addEventListener("scroll", syncChatBackdrop, { passive: true });
     }
   }
@@ -275,7 +275,7 @@
     els.input.value = "";
     autoResizeInput();
     appendMessage("user", text);
-    setStatus("Skyler is thinking...");
+    setStatus("Skylet is thinking...");
     var thinking = appendMessage("assistant", "Thinking...");
 
     try {
@@ -379,7 +379,7 @@
     ensureChatBackdrop();
     bindEvents();
     autoResizeInput();
-    appendMessage("assistant", "Hi, I am Skyler. Ask about Patrick's experience, projects, stack, or architecture work.");
+    appendMessage("assistant", "Hi, I am Skylet. Ask about Patrick's experience, projects, stack, or architecture work.");
     setStatus(state.voiceEnabled ? "Voice mode enabled." : "");
 
     if ("speechSynthesis" in window) {
