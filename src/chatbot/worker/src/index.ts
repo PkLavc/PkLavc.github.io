@@ -4,6 +4,7 @@ export interface Env {
   DB: D1Database;
   SESSIONS: KVNamespace;
   CACHE: KVNamespace;
+  AI?: Ai;
   UPLOADS?: R2Bucket;
   APP_NAME: string;
   ALLOWED_ORIGINS: string;
@@ -1191,7 +1192,7 @@ export async function runProviderChat(
   task: string,
   fallbackText?: string,
 ): Promise<{ text: string; provider: string; fallback: boolean; promptVersion: string; stream?: ReadableStream<Uint8Array> }> {
-  const providerList = ["groq", "openrouter"] as const;
+  const providerList = ["groq", "openrouter", "cloudflare"] as const;
   let lastError = "";
   const modelChoice = pickModelForTask(env, task);
 
@@ -1203,8 +1204,12 @@ export async function runProviderChat(
           const result = await callGroq(prompt, env, stream, modelChoice.groq, task);
           return { ...result, provider: "groq", fallback: i > 0, promptVersion: env.PROMPT_VERSION };
         }
-        const result = await callOpenRouter(prompt, env, stream, modelChoice.openrouter, task);
-        return { ...result, provider: "openrouter", fallback: i > 0, promptVersion: env.PROMPT_VERSION };
+        if (provider === "openrouter") {
+          const result = await callOpenRouter(prompt, env, stream, modelChoice.openrouter, task);
+          return { ...result, provider: "openrouter", fallback: i > 0, promptVersion: env.PROMPT_VERSION };
+        }
+        const result = await callCloudflareAi(prompt, env, stream, task);
+        return { ...result, provider: "cloudflare", fallback: i > 0, promptVersion: env.PROMPT_VERSION };
       } catch (error) {
         lastError = error instanceof Error ? error.message : "provider_error";
         if (attempt < 2) {
@@ -1291,6 +1296,33 @@ async function callOpenRouter(prompt: string, env: Env, stream: boolean, model: 
 
   const data = await response.json<any>();
   const text = data.choices?.[0]?.message?.content || "";
+  return { text };
+}
+
+async function callCloudflareAi(prompt: string, env: Env, stream: boolean, task: string) {
+  if (!env.AI) {
+    throw new Error("missing_cloudflare_ai_binding");
+  }
+
+  const result = await env.AI.run("@cf/meta/llama-3.1-8b-instruct-fast", {
+    prompt,
+    stream,
+    max_tokens: 900,
+    temperature: task === "classification" || task === "lead_scoring" ? 0.1 : 0.3,
+  }) as unknown;
+
+  if (stream) {
+    if (result instanceof ReadableStream) {
+      return { text: "", stream: result as ReadableStream<Uint8Array> };
+    }
+    throw new Error("cloudflare_stream_unavailable");
+  }
+
+  const payload = result as { response?: string } | string;
+  const text = typeof payload === "string" ? payload : payload.response || "";
+  if (!text) {
+    throw new Error("cloudflare_empty_response");
+  }
   return { text };
 }
 

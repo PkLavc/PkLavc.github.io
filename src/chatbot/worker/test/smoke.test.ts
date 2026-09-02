@@ -25,4 +25,23 @@ describe("worker scaffold", () => {
     expect(result.text).toContain("Lavc Systems");
     expect(result.text).toContain("Raw API Ingestion Pipeline");
   });
+
+  it("uses the Cloudflare AI binding when API-key providers are unavailable", async () => {
+    const result = await runProviderChat(
+      "provider prompt",
+      {
+        PROMPT_VERSION: "test",
+        AI: {
+          run: async () => ({ response: "Cloudflare response" }),
+        },
+      } as never,
+      false,
+      "chat",
+      "local fallback",
+    );
+
+    expect(result.provider).toBe("cloudflare");
+    expect(result.fallback).toBe(true);
+    expect(result.text).toBe("Cloudflare response");
+  });
 });
