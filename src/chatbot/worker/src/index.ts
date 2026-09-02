@@ -532,7 +532,7 @@ async function handleChat(payload: ChatPayload, user: AuthUser, env: Env, traceI
     ? `${basePrompt}\n\nReturn strict JSON only. No markdown, no prose.`
     : basePrompt;
 
-  const llm = await runProviderChat(prompt, env, false, task);
+  const llm = await runProviderChat(prompt, env, false, task, buildProviderFallbackReply(sanitized, task));
   const filteredOutput = sanitizeOutput(maskPii(llm.text, env));
   await storeMessage(env, conversationId, "assistant", filteredOutput);
 
@@ -647,7 +647,7 @@ async function handleChatStream(payload: ChatPayload, user: AuthUser, env: Env, 
     ? `${basePrompt}\n\nReturn strict JSON only. No markdown, no prose.`
     : basePrompt;
 
-  const providerResponse = await runProviderChat(prompt, env, true, task);
+  const providerResponse = await runProviderChat(prompt, env, true, task, buildProviderFallbackReply(sanitized, task));
 
   const stream = new ReadableStream({
     async start(controller) {
@@ -1184,11 +1184,12 @@ async function retrieveRagContext(env: Env, userId: number, question: string, li
   return scored.slice(0, limit).map((item) => item.chunk);
 }
 
-async function runProviderChat(
+export async function runProviderChat(
   prompt: string,
   env: Env,
   stream: boolean,
   task: string,
+  fallbackText?: string,
 ): Promise<{ text: string; provider: string; fallback: boolean; promptVersion: string; stream?: ReadableStream<Uint8Array> }> {
   const providerList = ["groq", "openrouter"] as const;
   let lastError = "";
@@ -1211,6 +1212,16 @@ async function runProviderChat(
         }
       }
     }
+  }
+
+  if (fallbackText) {
+    console.log(JSON.stringify({ level: "warn", event: "provider_fallback_local", reason: lastError }));
+    return {
+      text: fallbackText,
+      provider: "local",
+      fallback: true,
+      promptVersion: env.PROMPT_VERSION,
+    };
   }
 
   throw new Error(`all_providers_failed:${lastError}`);
@@ -1510,6 +1521,32 @@ function formatManualSectionReply(section: { content: string[]; contentPt?: stri
     return ["Aquí tienes un resumen rápido:", ...content].join("\n");
   }
   return ["Here is a quick summary:", ...content].join("\n");
+}
+
+export function buildProviderFallbackReply(text: string, task: string): string | undefined {
+  if (task !== "chat") {
+    return undefined;
+  }
+
+  const clean = sanitizeInput(text).toLowerCase();
+  const lang = detectLanguage(clean);
+  const directSection = selectManualRagSection(clean);
+  const projectSection = isSpecificNamedEntityQuery(clean)
+    ? MANUAL_RAG_SECTIONS.find((section) => section.key === "projects") || null
+    : null;
+  const section = directSection || projectSection;
+
+  if (section) {
+    return formatManualSectionReply(section, lang);
+  }
+
+  if (lang === "pt") {
+    return "Posso responder com o contexto local do portfólio. Pergunte sobre projetos, experiência profissional, stack, integrações, automação ou formas de contato.";
+  }
+  if (lang === "es") {
+    return "Puedo responder con el contexto local del portafolio. Pregunta sobre proyectos, experiencia profesional, stack, integraciones, automatización o formas de contacto.";
+  }
+  return "I can answer from the local portfolio context. Ask about projects, professional experience, stack, integrations, automation, or contact details.";
 }
 
 function validateJsonResponse(text: string, requiredKeys: string[], schema: Record<string, string> | null) {
