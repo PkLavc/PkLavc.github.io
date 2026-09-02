@@ -26,13 +26,15 @@ describe("worker scaffold", () => {
     expect(result.text).toContain("Raw API Ingestion Pipeline");
   });
 
-  it("uses the Cloudflare AI binding when API-key providers are unavailable", async () => {
+  it("uses the Cloudflare AI binding as the primary provider", async () => {
     const result = await runProviderChat(
       "provider prompt",
       {
         PROMPT_VERSION: "test",
         AI: {
-          run: async () => ({ response: "Cloudflare response" }),
+          run: async () => ({
+            response: "Reply:\nCloudflare response\n\nConversation memory:\ninternal prompt content",
+          }),
         },
       } as never,
       false,
@@ -41,7 +43,7 @@ describe("worker scaffold", () => {
     );
 
     expect(result.provider).toBe("cloudflare");
-    expect(result.fallback).toBe(true);
+    expect(result.fallback).toBe(false);
     expect(result.text).toBe("Cloudflare response");
   });
 });
