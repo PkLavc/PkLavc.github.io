@@ -1,23 +1,309 @@
-<!doctype html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Omnichannel | Plataforma Multiagente de Atendimento | Patrick Araujo</title>
-  <meta name="description" content="Plataforma open source e multiempresa de atendimento com agentes especialistas de IA, RAG, Chatwoot, PostgreSQL, importação de conversas e transferência humana.">
-  <meta name="robots" content="index, follow"><link rel="canonical" href="https://pklavc.com/pt/projetos/omnichannel/">
-  <link rel="alternate" hreflang="en" href="https://pklavc.com/projects/omnichannel/"><link rel="alternate" hreflang="pt-BR" href="https://pklavc.com/pt/projetos/omnichannel/"><link rel="alternate" hreflang="es" href="https://pklavc.com/es/proyectos/omnichannel/"><link rel="alternate" hreflang="x-default" href="https://pklavc.com/projects/omnichannel/">
-  <meta property="og:type" content="website"><meta property="og:title" content="Omnichannel | Plataforma Multiagente de Atendimento"><meta property="og:description" content="Agentes especialistas, RAG por empresa, Chatwoot e transferência humana auditável em uma plataforma portátil e auto-hospedada."><meta property="og:url" content="https://pklavc.com/pt/projetos/omnichannel/">
-  <link rel="icon" href="/favicon.svg?v=d15fe4e492" type="image/svg+xml"><link rel="stylesheet" href="/css/global.css?v=6d8a856a8a"><link rel="stylesheet" href="/css/projects.css?v=40b82e0f27">
-  <style>.omni{max-width:1040px;margin:auto;padding:48px 22px 72px;color:#dbe7f5}.omni nav{display:flex;justify-content:space-between;gap:16px;margin-bottom:54px}.omni nav a,.actions a{color:#8dd8ff;text-decoration:none}.hero{padding:46px;border:1px solid #28425d;border-radius:24px;background:linear-gradient(140deg,#101e31,#0b1321)}.badge{display:inline-block;padding:7px 12px;border:1px solid #20c99788;border-radius:999px;color:#73e6bd}.hero h1{font-size:clamp(2.6rem,7vw,5rem);margin:18px 0 12px}.lead{font-size:1.18rem;max-width:780px;color:#aec0d5}.actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}.actions a{padding:12px 18px;border:1px solid #3b678a;border-radius:10px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin:36px 0}.card,section{border:1px solid #263d55;border-radius:16px;background:#0e1929;padding:24px}.card h2,section h2{margin-top:0;color:#fff}section{margin-top:18px}li{margin:.55rem 0;color:#b9c9da}code{color:#7ee2bf}.flow{display:flex;flex-wrap:wrap;gap:9px;align-items:center}.flow span{padding:9px 11px;border-radius:8px;background:#152a40}.note{border-left:4px solid #20c997}.footer{text-align:center;color:#8094aa;margin-top:46px}@media(max-width:620px){.hero{padding:28px}.omni nav{margin-bottom:28px}}</style>
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareSourceCode","name":"Omnichannel","description":"Plataforma multiempresa de atendimento com agentes especialistas de IA, RAG e Chatwoot.","url":"https://pklavc.com/pt/projetos/omnichannel/","codeRepository":"https://github.com/PkLavc/omnichannel","author":{"@type":"Person","name":"Patrick Araujo"},"programmingLanguage":["TypeScript","JavaScript","SQL","PowerShell"]}</script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="PkLavc" />
+    <title>Omnichannel | Plataforma multiempresa de atendimento | Patrick Araujo</title>
+
+    <meta name="description" content="Plataforma portátil e multiempresa de atendimento construída com Chatwoot, agentes especialistas de IA, conhecimento RAG isolado, transferência auditável e dados privados exportáveis.">
+    <meta property="og:title" content="Omnichannel | Plataforma multiempresa de atendimento | Patrick Araujo">
+    <meta property="og:description" content="Atendimento multicanal com Chatwoot, agentes especialistas de IA, conhecimento isolado por empresa e dados privados portáteis.">
+    <meta property="og:url" content="https://pklavc.com/pt/projetos/omnichannel/">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Omnichannel | Plataforma multiempresa de atendimento | Patrick Araujo">
+    <meta name="twitter:description" content="Atendimento multicanal com Chatwoot, agentes especialistas de IA, conhecimento isolado por empresa e dados privados portáteis.">
+    <link rel="canonical" href="https://pklavc.com/pt/projetos/omnichannel/">
+    <link rel="alternate" href="https://pklavc.com/projects/omnichannel/" hreflang="en">
+    <link rel="alternate" href="https://pklavc.com/pt/projetos/omnichannel/" hreflang="pt-BR">
+    <link rel="alternate" href="https://pklavc.com/es/proyectos/omnichannel/" hreflang="es">
+    <link rel="alternate" href="https://pklavc.com/projects/omnichannel/" hreflang="x-default">
+
+
+<meta name="robots" content="index, follow">
+
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=d15fe4e492">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Monoton&amp;family=Poppins:wght@500&amp;family=Raleway:wght@300&amp;display=swap" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Monoton&amp;family=Poppins:wght@500&amp;family=Raleway:wght@300&amp;display=swap"></noscript>
+    <link rel="stylesheet" href="/css/global.css?v=6d8a856a8a">
+    <link rel="stylesheet" href="/css/projects.css?v=40b82e0f27">
+    <link rel="preload" as="style" href="/css/github-markdown-local.css?v=01d37f05ee">
+    <link rel="stylesheet" href="/css/github-markdown-local.css?v=01d37f05ee" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="/css/github-markdown-local.css?v=01d37f05ee"></noscript>
+
+    <style>.project-hero {
+            padding: 60px 20px;
+            text-align: center;
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.12), rgba(0, 0, 0, 0.05));
+        }.project-hero h1 {
+            font-size: 2.5rem;
+            margin: 20px 0;
+            color: #fff;
+        }.project-category-badge {
+            display: inline-block;
+            background: rgba(120, 80, 255, 0.2);
+            border: 1px solid rgba(120, 80, 255, 0.5);
+            color: #a88bff;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }.full-readme-section {
+            padding: 50px 20px;
+            background: rgba(255, 255, 255, 0.02);
+        }.full-readme-container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }.full-readme-container.markdown-body {
+            background: #0d1117;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 10px;
+            padding: 24px;
+        }.meta-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 10px;
+            margin: 16px 0 24px;
+        }.meta-item {
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 10px;
+            padding: 10px 12px;
+            background: rgba(255, 255, 255, 0.02);
+        }.meta-item strong {
+            display: block;
+            color: #fff;
+            margin-bottom: 4px;
+            font-size: 0.9rem;
+        }.flowchart {
+            margin: 14px 0 24px;
+            padding: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            background: rgba(7, 12, 20, 0.8);
+        }.flow-lane {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 8px;
+            margin: 6px 0;
+        }.flow-step {
+            border: 1px solid rgba(168, 139, 255, 0.4);
+            border-radius: 8px;
+            padding: 8px 10px;
+            background: rgba(168, 139, 255, 0.08);
+            color: #e2d9ff;
+            font-size: 0.9rem;
+        }.flow-arrow {
+            color: #a88bff;
+            font-weight: 700;
+            font-size: 1rem;
+            padding: 0 2px;
+        }.section-spacer {
+            margin-top: 26px;
+        }.stack-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 14px 0 24px;
+            font-size: 0.92rem;
+        }.stack-table th,.stack-table td {
+            padding: 10px 14px;
+            text-align: left;
+            border: 1px solid rgba(255,255,255,0.1);
+        }.stack-table th {
+            background: rgba(168, 139, 255, 0.12);
+            color: #c4aeff;
+            font-weight: 600;
+        }.stack-table td {
+            color: #ccc;
+        }.stack-table tr:hover td {
+            background: rgba(255,255,255,0.02);
+        }.project-visual-section {
+            padding: 36px 20px;
+            background: rgba(255, 255, 255, 0.02);
+        }.project-visual-container {
+            max-width: 1040px;
+            margin: 0 auto;
+        }.project-visual-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 16px;
+        }.project-visual-grid-secondary {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 16px;
+        }.project-visual-card {
+            margin: 0;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 10px;
+            overflow: hidden;
+            background: #0d1117;
+        }.project-visual-card img {
+            display: block;
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+        }.project-visual-card figcaption {
+            padding: 12px 14px;
+            color: #bfcbd3;
+            line-height: 1.6;
+            font-size: 0.92rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        @media (max-width: 860px) {.project-visual-grid-secondary {
+                grid-template-columns: 1fr;
+            }
+        }.cta-section {
+            padding: 40px 20px 60px;
+            text-align: center;
+        }.cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #a88bff, #7c3aed);
+            color: #fff;
+            padding: 14px 34px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }.cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(168, 139, 255, 0.3);
+        }
+    </style>
+    <script type="application/ld+json" data-schema="software-source-code">{"@context":"https://schema.org","@type":"SoftwareSourceCode","name":"Omnichannel | Plataforma multiempresa de atendimento | Patrick Araujo","description":"Plataforma portátil e multiempresa de atendimento construída com Chatwoot, agentes especialistas de IA, conhecimento RAG isolado, transferência auditável e dados privados exportáveis.","url":"https://pklavc.com/pt/projetos/omnichannel/","author":{"@type":"Person","name":"Patrick Araujo","url":"https://pklavc.com/about/"},"creator":{"@type":"Person","name":"Patrick Araujo"},"programmingLanguage":["JavaScript","TypeScript","Node.js","SQL"],"codeRepository":"https://github.com/PkLavc/omnichannel"}</script>
+    <link rel="search" type="application/opensearchdescription+xml" title="PkLavc" href="/opensearch.xml">
 </head>
-<body><main class="omni">
-  <nav><a href="/pt/projetos/">← Projetos</a><span><a href="/projects/omnichannel/">EN</a> · <a href="/es/proyectos/omnichannel/">ES</a></span></nav>
-  <header class="hero"><span class="badge">Open source · auto-hospedado</span><h1>Omnichannel</h1><p class="lead">Uma plataforma portátil de atendimento em que agentes especialistas de IA compartilham uma conversa controlada, enquanto conhecimento, clientes, credenciais e histórico permanecem isolados por empresa.</p><div class="actions"><a href="https://github.com/PkLavc/omnichannel" target="_blank" rel="noopener noreferrer">Ver código no GitHub</a><a href="#arquitetura">Explorar arquitetura</a></div></header>
-  <div class="grid"><article class="card"><h2>Agentes especialistas</h2><p>Comercial, suporte técnico, garantia e atendimento atuam sob um orquestrador, em vez de depender de um único prompt gigante.</p></article><article class="card"><h2>Conhecimento isolado</h2><p>Documentos RAG, mensagens rápidas e regras operacionais são selecionados por empresa e canal, sem misturar contextos.</p></article><article class="card"><h2>Operação humana</h2><p>O Chatwoot centraliza conversas, contatos, cartões, atribuição e a transferência responsável para atendentes.</p></article></div>
-  <section id="arquitetura"><h2>Arquitetura</h2><div class="flow"><span>Canais</span> → <span>Gateway de IA</span> → <span>Orquestrador</span> → <span>Agente especialista</span> → <span>RAG e ferramentas</span> → <span>Chatwoot / humano</span></div><p>O gateway em TypeScript controla empresa, política de mensagens, chamadas de ferramentas e persistência. PostgreSQL com pgvector armazena registros e embeddings; Redis coordena o runtime; Chatwoot oferece o ambiente dos atendentes; n8n permite integrações externas.</p></section>
-  <section><h2>Construído para atendimento real</h2><ul><li>Importações de conversas retomam do ponto salvo e preservam origem e canal.</li><li>Cartões acumulam nome, telefone, aparelho, serviço, unidade e estado da transferência.</li><li>O conhecimento pode ser visualizado, editado, exportado e versionado.</li><li>Mudanças de prompt e candidatos de aprendizado seguem aprovação e auditoria.</li><li>O acesso público funciona enquanto o host local está ativo e mostra uma página offline neutra quando não está.</li></ul></section>
-  <section><h2>Portátil sem vazar dados privados</h2><p>O repositório público contém apenas o sistema e exemplos fictícios. Os dados de cada implantação ficam em <code>omnichannel-data</code>: bancos, clientes, conversas, fontes RAG, cartões, segredos de ambiente e backups não entram no histórico do Git.</p></section>
-  <section class="note"><h2>Operação manual por projeto</h2><p>O aplicativo não instala tarefas agendadas nem itens de inicialização. No Windows, o operador inicia explicitamente pelo <code>Omnichannel.bat</code>; sem essa ação manual, a plataforma e seus túneis públicos ficam parados.</p></section>
-  <p class="footer">© <span id="year"></span> Patrick Araujo · <a href="/pt/">Portfólio</a></p>
-</main><script>document.getElementById('year').textContent=new Date().getFullYear()</script></body></html>
+<body>
+    <div id="breaker"></div>
+    <div id="breaker-two"></div>
+    <div id="all">
+        <div id="navigation-content" role="navigation" aria-label="Navegação primária">
+            <div class="logo"></div>
+            <div class="navigation-links">
+                <a href="/pt/" data-text="INÍCIO">INÍCIO</a>
+                <a href="/pt/sobre/" data-text="SOBRE">SOBRE</a>
+                <a href="/pt/projetos/" data-text="PROJETOS">PROJETOS</a>
+            </div>
+        </div>
+        <div id="navigation-bar">
+            <div class="menubar">
+                <span class="first-span"></span>
+                <span class="second-span"></span>
+                <span class="third-span"></span>
+            </div>
+        </div>
+
+        <main role="main">
+            <section class="project-hero">
+                <span class="project-category-badge">IA e Atendimento</span>
+                <div class="project-hero-title">
+                    <h1>Omnichannel</h1>
+                </div>
+                <p style="color: #aaa; font-size: 1.1rem; margin-top: 15px;">Plataforma portátil e multiempresa de atendimento com Chatwoot, agentes especialistas, conhecimento isolado, transferência humana e dados privados exportáveis.</p>
+            </section>
+
+            <section class="full-readme-section" aria-label="Documentação do Omnichannel">
+                <div class="full-readme-container">
+                    <h2 style="color:#fff; margin-bottom:20px;">Leia mais sobre o projeto</h2>
+                    <article class="markdown-body">
+                        <h2>Omnichannel</h2>
+                        <p>
+                            <img src="https://img.shields.io/badge/Inbox-Chatwoot-1f93ff" alt="Chatwoot">
+                            <img src="https://img.shields.io/badge/Runtime-Docker%20Compose-2496ed" alt="Docker Compose">
+                            <img src="https://img.shields.io/badge/AI-Multi--agent-7c3aed" alt="Multi-agent AI">
+                            <img src="https://img.shields.io/badge/Knowledge-RAG-f59e0b" alt="RAG">
+                            <img src="https://img.shields.io/badge/Data-Tenant%20isolated-22c55e" alt="Tenant-isolated data">
+                        </p>
+                        <p><strong>Omnichannel</strong> é uma plataforma auto-hospedada de atendimento que conecta o Chatwoot a um gateway de agentes especialistas de IA. Identidade, prompts, conhecimento RAG, conversas, contatos, cartões de atendimento e integrações de negócio permanecem isolados por empresa.</p>
+
+                        <div class="meta-grid">
+                            <div class="meta-item"><strong>Canais</strong>Inboxes de WhatsApp, Instagram, Facebook, site e API pelo Chatwoot</div>
+                            <div class="meta-item"><strong>Orquestração</strong>Coordenador e agentes especialistas para Comercial, SAC e Pós-venda</div>
+                            <div class="meta-item"><strong>Conhecimento</strong>Documentos RAG editáveis, regras, mensagens rápidas e conversas históricas</div>
+                            <div class="meta-item"><strong>Persistência</strong>PostgreSQL e uma pasta separada e portátil de dados privados</div>
+                            <div class="meta-item"><strong>Operação</strong>Transferência humana, contexto do cliente, cartões e trilhas de auditoria</div>
+                            <div class="meta-item"><strong>Publicação</strong>Docker Compose com uma camada estável de acesso pela Cloudflare</div>
+                        </div>
+
+                        <h3>Arquitetura do sistema</h3>
+                        <p>A camada pública de acesso permanece estável enquanto os serviços operacionais podem mudar entre computadores autorizados. O gateway identifica empresa e canal, consulta somente o contexto daquele tenant, encaminha ao especialista adequado e devolve a resposta pelo Chatwoot.</p>
+                        <div class="flowchart" aria-label="Arquitetura do sistema">
+                            <div class="flow-lane">
+                                <span class="flow-step">Canal do cliente</span>
+                                <span class="flow-arrow">→</span>
+                                <span class="flow-step">Chatwoot</span>
+                                <span class="flow-arrow">→</span>
+                                <span class="flow-step">Gateway de IA</span>
+                                <span class="flow-arrow">→</span>
+                                <span class="flow-step">Coordenador</span>
+                                <span class="flow-arrow">→</span>
+                                <span class="flow-step">Agente especialista</span>
+                            </div>
+                            <div class="flow-lane">
+                                <span class="flow-step">RAG e regras da empresa</span>
+                                <span class="flow-arrow">→</span>
+                                <span class="flow-step">Contexto do cliente e serviço</span>
+                                <span class="flow-arrow">→</span>
+                                <span class="flow-step">Resposta ou transferência humana</span>
+                            </div>
+                        </div>
+
+                        <h3>Módulos principais</h3>
+                        <table class="stack-table" aria-label="Módulos principais">
+                            <thead><tr><th>Módulo</th><th>Finalidade</th></tr></thead>
+                            <tbody>
+                                <tr><td><strong>Chatwoot</strong></td><td>Caixa de entrada unificada, atendentes, equipes, contatos e histórico.</td></tr>
+                                <tr><td><strong>Gateway de IA</strong></td><td>Identificação do tenant, roteamento de especialistas, consulta ao RAG, ferramentas e política de resposta.</td></tr>
+                                <tr><td><strong>Administração</strong></td><td>Empresas, canais, providers, prompts, conhecimento, cartões e revisão de aprendizado.</td></tr>
+                                <tr><td><strong>Pasta de dados privados</strong></td><td>Configuração, exportações, importações, conversas e estado portátil fora do repositório público.</td></tr>
+                                <tr><td><strong>Acesso pela nuvem</strong></td><td>Endereços estáveis que informam disponibilidade sem expor instruções internas de desenvolvimento.</td></tr>
+                            </tbody>
+                        </table>
+
+                        <h3>Isolamento e portabilidade</h3>
+                        <ul>
+                            <li>O repositório público contém o sistema reutilizável, sem identidade de empresa pré-configurada.</li>
+                            <li>Cada tenant possui seus próprios prompts, regras, canais, RAG, conversas, contatos e cartões.</li>
+                            <li>Credenciais de providers podem ser globais, com escopo de empresas permitido de forma explícita.</li>
+                            <li>A pasta privada pode ser exportada, copiada e restaurada independentemente do código da aplicação.</li>
+                        </ul>
+
+                        <h3>Modelo operacional</h3>
+                        <p>A stack é iniciada somente por uma ação explícita do operador. Enquanto o backend está online, usuários autorizados acessam o endereço web estável; quando está indisponível, a página pública exibe apenas um estado neutro do serviço. Não há inicialização automática no Windows.</p>
+                    </article>
+                </div>
+            </section>
+
+            <section class="cta-section" aria-label="Código do projeto">
+                <a class="cta-button" href="https://github.com/PkLavc/omnichannel" target="_blank" rel="noopener noreferrer">Ver código no GitHub</a>
+            </section>
+        </main>
+    </div>
+
+    <footer class="footer-minimal">
+        <div class="footer-container">
+            <div class="footer-link-list" aria-label="Links de rodapé">
+                <a class="footer-link-pill" href="https://github.com/PkLavc" target="_blank" rel="noopener noreferrer">GitHub</a>
+                <a class="footer-link-pill" href="https://www.linkedin.com/in/pklavc/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+                <a class="footer-link-pill" href="mailto:contact@pklavc.com">E-mail</a>
+                <a class="footer-link-pill footer-link-pill-accent" href="https://github.com/sponsors/PkLavc" target="_blank" rel="noopener noreferrer">Apoiar no GitHub</a>
+            </div>
+            <p class="footer-meta"><span class="footer-copyright-line">&copy; <span data-current-year></span> Patrick Araujo</span> <span class="footer-meta-separator">&bull;</span><span class="footer-legal-inline" aria-label="Legal links"><a class="footer-legal-link" href="/pt/politica-de-privacidade/">Pol&iacute;tica de Privacidade</a><span aria-hidden="true">/</span><a class="footer-legal-link" href="/pt/termos-de-uso/">Termos de Uso</a><span aria-hidden="true">/</span><a class="footer-legal-link" href="/pt/politica-editorial/">Pol&iacute;tica Editorial</a></span></p>
+        </div>
+    </footer>
+
+    <script>
+        (function() {
+            document.querySelectorAll('[data-current-year]').forEach(function(node) {
+                node.textContent = String(new Date().getFullYear());
+            });
+        }());
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.2.6/gsap.min.js" defer></script>
+        <script src="/js/i18n.js?v=397fd68aed" defer></script>
+    <script src="/js/jquery.min.js?v=d482871a5e" defer></script>
+    <script src="/js/index.js?v=9816b7386d" defer></script>
+</body>
+</html>
