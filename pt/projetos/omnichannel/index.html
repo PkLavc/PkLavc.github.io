@@ -30,6 +30,7 @@
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Monoton&amp;family=Poppins:wght@500&amp;family=Raleway:wght@300&amp;display=swap"></noscript>
     <link rel="stylesheet" href="/css/global.css?v=6d8a856a8a">
     <link rel="stylesheet" href="/css/projects.css?v=40b82e0f27">
+    <link rel="stylesheet" href="/css/omnichannel-case-study.css?v=c663924895">
     <link rel="preload" as="style" href="/css/github-markdown-local.css?v=01d37f05ee">
     <link rel="stylesheet" href="/css/github-markdown-local.css?v=01d37f05ee" media="print" onload="this.media='all'">
     <noscript><link rel="stylesheet" href="/css/github-markdown-local.css?v=01d37f05ee"></noscript>
@@ -194,92 +195,80 @@
                 <span class="third-span"></span>
             </div>
         </div>
+        <main role="main" class="omni-case">
+    <section class="project-hero">
+      <span class="project-category-badge">IA e Atendimento</span>
+      <div class="project-hero-title"><h1>Omnichannel</h1></div>
+      <p style="color:#aaa;font-size:1.1rem;margin-top:15px;">Um sistema operacional de atendimento multiempresa: canais, agentes especialistas, RAG, Tools, cartões, aprendizado governado e equipes humanas trabalhando como uma única operação.</p>
+    </section>
+    <section class="full-readme-section" aria-label="Estudo de caso visual do Omnichannel"><div class="full-readme-container">
+      <h2 style="color:#fff;margin-bottom:20px;">Arquitetura, módulos e mapa de interações</h2>
+      <article class="markdown-body">
+        <h2>Omnichannel</h2><p class="omni-intro"><strong>Omnichannel</strong> vai muito além de um chatbot. É uma operação portátil de atendimento construída sobre Chatwoot e um Gateway de IA, com cinco papéis especialistas, fontes de negócio verificadas, contexto estruturado do cliente, transferência humana auditável e melhoria contínua sob controle humano.</p>
+        <div class="omni-legend"><span class="omni-chip" style="--chip:#69b7ff">Chatwoot</span><span class="omni-chip" style="--chip:#a88bff">IA multiagente</span><span class="omni-chip" style="--chip:#58d6a9">RAG + Tools</span><span class="omni-chip" style="--chip:#f4c86a">Humano no circuito</span></div>
+        <div class="omni-kpis"><div class="omni-kpi"><strong>5</strong><span>papéis de agentes especialistas</span></div><div class="omni-kpi"><strong>5+</strong><span>famílias de canais</span></div><div class="omni-kpi"><strong>6</strong><span>formatos aceitos no RAG</span></div><div class="omni-kpi"><strong>384D</strong><span>embeddings isolados por tenant</span></div></div>
 
-        <main role="main">
-            <section class="project-hero">
-                <span class="project-category-badge">IA e Atendimento</span>
-                <div class="project-hero-title">
-                    <h1>Omnichannel</h1>
-                </div>
-                <p style="color: #aaa; font-size: 1.1rem; margin-top: 15px;">Plataforma portátil e multiempresa de atendimento com Chatwoot, agentes especialistas, conhecimento isolado, transferência humana e dados privados exportáveis.</p>
-            </section>
+        <section class="omni-section"><div class="omni-section-heading"><div><span class="omni-label">Mapa do sistema</span><h3>O ecossistema completo de atendimento</h3></div><p>Cada interação recebida é vinculada à empresa e ao canal antes de acessar memória, conhecimento, Tools ou um provider de IA. A resposta retorna pelo mesmo canal ou vira uma transferência humana qualificada.</p></div>
+          <figure class="omni-stage"><div class="omni-stage-title"><span>Arquitetura ponta a ponta</span><span class="omni-stage-dots" aria-hidden="true"><i></i><i></i><i></i></span></div><div class="omni-architecture">
+            <div class="omni-arch-column"><span class="omni-arch-title">Canais do cliente</span><div class="omni-node"><strong>WhatsApp</strong></div><div class="omni-node"><strong>Instagram / Facebook</strong></div><div class="omni-node"><strong>Site / API</strong></div></div><div class="omni-arrow-column" aria-hidden="true">→</div>
+            <div class="omni-arch-column"><div class="omni-node omni-node--core"><strong>Chatwoot</strong><small>Inbox unificada, contatos, equipes e atendentes</small></div><div class="omni-node omni-node--core"><strong>Gateway de IA</strong><small>Tenant, estado, políticas e orquestração</small></div><div class="omni-node "><strong>Roteador especialista</strong><small>Intenção + contexto mantido</small></div><div class="omni-node "><strong>Quality Gate</strong><small>Fontes e segurança</small></div><div class="omni-node "><strong>Log de auditoria</strong><small>Provider, latência, custo e fontes</small></div></div><div class="omni-arrow-column" aria-hidden="true">↔</div>
+            <div class="omni-arch-column"><div class="omni-node omni-node--data"><strong>PostgreSQL + pgvector</strong><small>Conversas, prompts, RAG e métricas</small></div><div class="omni-node omni-node--data"><strong>Tools / APIs de negócio</strong><small>Cliente, estoque, garantia, OS e agenda</small></div><div class="omni-node omni-node--data"><strong>Pasta privada</strong><small>Exportações, importações, anexos e estado portátil</small></div></div>
+          </div><figcaption class="omni-caption">Canal → tenant autenticado → orquestração especialista → fontes verificadas → resposta ou transferência humana.</figcaption></figure>
+        </section>
 
-            <section class="full-readme-section" aria-label="Documentação do Omnichannel">
-                <div class="full-readme-container">
-                    <h2 style="color:#fff; margin-bottom:20px;">Leia mais sobre o projeto</h2>
-                    <article class="markdown-body">
-                        <h2>Omnichannel</h2>
-                        <p>
-                            <img src="https://img.shields.io/badge/Inbox-Chatwoot-1f93ff" alt="Chatwoot">
-                            <img src="https://img.shields.io/badge/Runtime-Docker%20Compose-2496ed" alt="Docker Compose">
-                            <img src="https://img.shields.io/badge/AI-Multi--agent-7c3aed" alt="Multi-agent AI">
-                            <img src="https://img.shields.io/badge/Knowledge-RAG-f59e0b" alt="RAG">
-                            <img src="https://img.shields.io/badge/Data-Tenant%20isolated-22c55e" alt="Tenant-isolated data">
-                        </p>
-                        <p><strong>Omnichannel</strong> é uma plataforma auto-hospedada de atendimento que conecta o Chatwoot a um gateway de agentes especialistas de IA. Identidade, prompts, conhecimento RAG, conversas, contatos, cartões de atendimento e integrações de negócio permanecem isolados por empresa.</p>
+        <section class="omni-section"><div class="omni-section-heading"><div><span class="omni-label">Execução</span><h3>O que acontece com uma mensagem do cliente</h3></div><p>Identidade e evidência seguem um caminho determinístico; a IA atua somente dentro de limites controlados.</p></div>
+          <div class="omni-stage"><div class="omni-stage-title"><span>O que acontece com uma mensagem do cliente</span><span class="omni-stage-dots" aria-hidden="true"><i></i><i></i><i></i></span></div><div class="omni-sequence"><div class="omni-sequence-step"><strong>Receber</strong><span>O Chatwoot emite o webhook message_created.</span></div><div class="omni-sequence-step"><strong>Validar</strong><span>ID do tenant, segredo, conta e inbox são conferidos.</span></div><div class="omni-sequence-step"><strong>Serializar</strong><span>Mensagens da mesma conversa entram em uma fila ordenada.</span></div><div class="omni-sequence-step"><strong>Rotear</strong><span>A intenção seleciona Triagem, Comercial, SAC ou Técnico.</span></div><div class="omni-sequence-step"><strong>Enriquecer</strong><span>Campos confirmados, Tools e RAG do tenant montam o contexto.</span></div><div class="omni-sequence-step"><strong>Gerar</strong><span>Providers permitidos rodam por prioridade e fallback sequencial.</span></div><div class="omni-sequence-step"><strong>Proteger</strong><span>O Quality Gate bloqueia fatos sem fonte e promessas inseguras.</span></div><div class="omni-sequence-step"><strong>Entregar</strong><span>Responde no canal original ou transfere com o cartão preenchido.</span></div></div></div>
+        </section>
 
-                        <div class="meta-grid">
-                            <div class="meta-item"><strong>Canais</strong>Inboxes de WhatsApp, Instagram, Facebook, site e API pelo Chatwoot</div>
-                            <div class="meta-item"><strong>Orquestração</strong>Coordenador e agentes especialistas para Comercial, SAC e Pós-venda</div>
-                            <div class="meta-item"><strong>Conhecimento</strong>Documentos RAG editáveis, regras, mensagens rápidas e conversas históricas</div>
-                            <div class="meta-item"><strong>Persistência</strong>PostgreSQL e uma pasta separada e portátil de dados privados</div>
-                            <div class="meta-item"><strong>Operação</strong>Transferência humana, contexto do cliente, cartões e trilhas de auditoria</div>
-                            <div class="meta-item"><strong>Publicação</strong>Docker Compose com uma camada estável de acesso pela Cloudflare</div>
-                        </div>
+        <section class="omni-section"><div class="omni-section-heading"><div><span class="omni-label">Grafo de agentes</span><h3>Um bot, cinco especialidades internas</h3></div><p>O cliente percebe uma identidade contínua. Internamente, o roteamento determinístico preserva o contexto e só muda de especialidade quando a intenção explícita muda.</p></div>
+          <figure class="omni-stage"><div class="omni-stage-title"><span>Um bot, cinco especialidades internas</span><span class="omni-stage-dots" aria-hidden="true"><i></i><i></i><i></i></span></div><div class="omni-agent-scroll"><svg class="omni-agent-svg" viewBox="0 0 1000 540" role="img" aria-labelledby="agent-title-pt-BR"><title id="agent-title-pt-BR">Um bot, cinco especialidades internas</title>
+    <line x1="500" y1="260" x2="190" y2="100" class="link"/><line x1="500" y1="260" x2="190" y2="430" class="link"/>
+    <line x1="500" y1="260" x2="810" y2="100" class="link"/><line x1="500" y1="260" x2="810" y2="430" class="link"/>
+    <line x1="500" y1="310" x2="500" y2="435" class="link link--quality"/>
+    <rect x="370" y="205" width="260" height="110" rx="16" class="agent-box agent-box--hub"/><text x="500" y="242" class="agent-name">Coordenador da conversa</text><text x="500" y="267" class="agent-desc">Tenant + contexto ativo</text>
+    <rect x="55" y="50" width="270" height="95" rx="16" class="agent-box "/><text x="190" y="87" class="agent-name">Triagem</text><text x="190" y="112" class="agent-desc">Coleta mínima de dados</text><rect x="55" y="382" width="270" height="95" rx="16" class="agent-box "/><text x="190" y="419" class="agent-name">Comercial</text><text x="190" y="444" class="agent-desc">Produtos e próximo passo</text>
+    <rect x="675" y="50" width="270" height="95" rx="16" class="agent-box "/><text x="810" y="87" class="agent-name">SAC</text><text x="810" y="112" class="agent-desc">Pedidos, garantia e reclamações</text><rect x="675" y="382" width="270" height="95" rx="16" class="agent-box "/><text x="810" y="419" class="agent-name">Assistência técnica</text><text x="810" y="444" class="agent-desc">Triagem segura de sintomas</text>
+    <rect x="370" y="430" width="260" height="90" rx="16" class="agent-box agent-box--quality"/><text x="500" y="467" class="agent-name">Qualidade</text><text x="500" y="492" class="agent-desc">Somente revisão interna</text>
+  </svg></div><figcaption class="omni-caption">Qualidade é um papel somente interno: o texto do cliente não consegue se rotear para o agente revisor.</figcaption></figure>
+        </section>
 
-                        <h3>Arquitetura do sistema</h3>
-                        <p>A camada pública de acesso permanece estável enquanto os serviços operacionais podem mudar entre computadores autorizados. O gateway identifica empresa e canal, consulta somente o contexto daquele tenant, encaminha ao especialista adequado e devolve a resposta pelo Chatwoot.</p>
-                        <div class="flowchart" aria-label="Arquitetura do sistema">
-                            <div class="flow-lane">
-                                <span class="flow-step">Canal do cliente</span>
-                                <span class="flow-arrow">→</span>
-                                <span class="flow-step">Chatwoot</span>
-                                <span class="flow-arrow">→</span>
-                                <span class="flow-step">Gateway de IA</span>
-                                <span class="flow-arrow">→</span>
-                                <span class="flow-step">Coordenador</span>
-                                <span class="flow-arrow">→</span>
-                                <span class="flow-step">Agente especialista</span>
-                            </div>
-                            <div class="flow-lane">
-                                <span class="flow-step">RAG e regras da empresa</span>
-                                <span class="flow-arrow">→</span>
-                                <span class="flow-step">Contexto do cliente e serviço</span>
-                                <span class="flow-arrow">→</span>
-                                <span class="flow-step">Resposta ou transferência humana</span>
-                            </div>
-                        </div>
+        <section class="omni-section"><div class="omni-section-heading"><div><span class="omni-label">Conhecimento</span><h3>Ingestão e recuperação RAG</h3></div><p>A mesma base do tenant atende todos os providers autorizados. O versionamento do corpus invalida automaticamente caches antigos.</p></div>
+          <div class="omni-stage"><div class="omni-stage-title"><span>Ingestão e recuperação RAG</span><span class="omni-stage-dots" aria-hidden="true"><i></i><i></i><i></i></span></div><div class="omni-dual-flow"><div class="omni-flow-panel"><h4>Pipeline de ingestão</h4><div class="omni-pipeline"><span>XLSX / PDF / DOCX / MD / TXT / HTML</span><b aria-hidden="true">→</b><span>Loader</span><b aria-hidden="true">→</b><span>Normalização</span><b aria-hidden="true">→</b><span>Chunks sobrepostos</span><b aria-hidden="true">→</b><span>Embeddings 384D</span><b aria-hidden="true">→</b><span>pgvector + versão do corpus</span></div></div><div class="omni-flow-panel"><h4>Pipeline de consulta</h4><div class="omni-pipeline"><span>Hash + embedding da pergunta</span><b aria-hidden="true">→</b><span>Cache semântico</span><b aria-hidden="true">→</b><span>Candidatos HNSW</span><b aria-hidden="true">→</b><span>Reranker híbrido</span><b aria-hidden="true">→</b><span>Context Builder</span><b aria-hidden="true">→</b><span>Provider ativo</span></div><div class="omni-note">O ranking híbrido combina 72% de similaridade vetorial com 28% de sinais lexicais. Toda consulta, chave de cache, documento, chunk e embedding inclui o tenant.</div></div></div></div>
+        </section>
 
-                        <h3>Módulos principais</h3>
-                        <table class="stack-table" aria-label="Módulos principais">
-                            <thead><tr><th>Módulo</th><th>Finalidade</th></tr></thead>
-                            <tbody>
-                                <tr><td><strong>Chatwoot</strong></td><td>Caixa de entrada unificada, atendentes, equipes, contatos e histórico.</td></tr>
-                                <tr><td><strong>Gateway de IA</strong></td><td>Identificação do tenant, roteamento de especialistas, consulta ao RAG, ferramentas e política de resposta.</td></tr>
-                                <tr><td><strong>Administração</strong></td><td>Empresas, canais, providers, prompts, conhecimento, cartões e revisão de aprendizado.</td></tr>
-                                <tr><td><strong>Pasta de dados privados</strong></td><td>Configuração, exportações, importações, conversas e estado portátil fora do repositório público.</td></tr>
-                                <tr><td><strong>Acesso pela nuvem</strong></td><td>Endereços estáveis que informam disponibilidade sem expor instruções internas de desenvolvimento.</td></tr>
-                            </tbody>
-                        </table>
+        <section class="omni-section"><div class="omni-section-heading"><div><span class="omni-label">Melhoria governada</span><h3>Aprendizado sem autoalteração descontrolada</h3></div><p>Conversas reais viram evidências, não instruções imediatas. Comportamentos só evoluem após consolidação e revisão explícita; fatos continuam exigindo fonte oficial.</p></div>
+          <figure class="omni-stage"><div class="omni-stage-title"><span>Aprendizado sem autoalteração descontrolada</span><span class="omni-stage-dots" aria-hidden="true"><i></i><i></i><i></i></span></div><div class="omni-learning"><div class="omni-learning-step "><em>01</em><strong>Conversa</strong><span>Mensagens e especialidade ativa</span></div><div class="omni-learning-step "><em>02</em><strong>Evidência</strong><span>Resultado, pedido ou pagamento verificado</span></div><div class="omni-learning-step "><em>03</em><strong>Avaliação</strong><span>Feedback humano + rubrica determinística</span></div><div class="omni-learning-step "><em>04</em><strong>Candidato</strong><span>Sinais consolidados por tática e especialidade</span></div><div class="omni-learning-step omni-learning-step--gate "><em>05</em><strong>Bloqueio de fonte</strong><span>Fatos comerciais exigem Tool, regra ou RAG</span></div><div class="omni-learning-step omni-learning-step--gate "><em>06</em><strong>Revisão humana</strong><span>Aprovar, rejeitar ou reabrir</span></div><div class="omni-learning-step "><em>07</em><strong>Dataset</strong><span>PII removida, deduplicado e versionado</span></div><div class="omni-learning-step "><em>08</em><strong>Prompt candidato</strong><span>Bundle Sistema, Comercial, SAC e Pós-venda</span></div><div class="omni-learning-step omni-learning-step--release"><em>09</em><strong>Canário</strong><span>Bucket determinístico por conversa</span></div><div class="omni-learning-step omni-learning-step--release"><em>10</em><strong>Promover / rollback</strong><span>Controle auditado de release</span></div></div><div class="omni-thresholds"><div class="omni-threshold"><strong>8</strong><span>conversas</span></div><div class="omni-threshold"><strong>5</strong><span>clientes distintos</span></div><div class="omni-threshold"><strong>3</strong><span>resultados verificados</span></div><div class="omni-threshold"><strong>4</strong><span>evidências favoráveis</span></div><div class="omni-threshold"><strong>72%</strong><span>confiança mínima</span></div><div class="omni-threshold"><strong>≤25%</strong><span>contradição</span></div></div><figcaption class="omni-caption">A plataforma não treina modelos dos providers automaticamente e nunca permite que repetição de conversa valide preço, desconto, garantia ou política.</figcaption></figure>
+        </section>
 
-                        <h3>Isolamento e portabilidade</h3>
-                        <ul>
-                            <li>O repositório público contém o sistema reutilizável, sem identidade de empresa pré-configurada.</li>
-                            <li>Cada tenant possui seus próprios prompts, regras, canais, RAG, conversas, contatos e cartões.</li>
-                            <li>Credenciais de providers podem ser globais, com escopo de empresas permitido de forma explícita.</li>
-                            <li>A pasta privada pode ser exportada, copiada e restaurada independentemente do código da aplicação.</li>
-                        </ul>
+        <section class="omni-section"><div class="omni-section-heading"><div><span class="omni-label">Multiempresa</span><h3>Capacidade compartilhada, contexto isolado</h3></div><p>A infraestrutura é compartilhada de forma deliberada. Identidade e dados de negócio nunca se tornam globais.</p></div>
+          <figure class="omni-stage"><div class="omni-stage-title"><span>Capacidade compartilhada, contexto isolado</span><span class="omni-stage-dots" aria-hidden="true"><i></i><i></i><i></i></span></div><div class="omni-tenants"><div class="omni-shared"><h4>Plataforma compartilhada</h4><ul><li>Gateway e Admin</li><li>Infraestrutura Chatwoot</li><li>Configurações de providers</li><li>Escopo ALL ou SELECTED</li></ul></div><div class="omni-tenant"><h4>Tenant A</h4><ul><li>Identidade e bot</li><li>Canais e credenciais</li><li>RAG, regras e prompts</li><li>Conversas e cartões</li><li>Logs, resultados e datasets</li></ul></div><div class="omni-tenant omni-tenant--b"><h4>Tenant B</h4><ul><li>Identidade e bot</li><li>Canais e credenciais</li><li>RAG, regras e prompts</li><li>Conversas e cartões</li><li>Logs, resultados e datasets</li></ul></div></div><figcaption class="omni-caption">Alterar um header no navegador não concede acesso. O backend resolve a relação entre usuário autenticado e tenant e nega por padrão IDs desconhecidos, inativos ou não autorizados.</figcaption></figure>
+        </section>
 
-                        <h3>Modelo operacional</h3>
-                        <p>A stack é iniciada somente por uma ação explícita do operador. Enquanto o backend está online, usuários autorizados acessam o endereço web estável; quando está indisponível, a página pública exibe apenas um estado neutro do serviço. Não há inicialização automática no Windows.</p>
-                    </article>
-                </div>
-            </section>
+        <section class="omni-section"><div class="omni-section-heading"><div><span class="omni-label">Integrações de negócio</span><h3>Tools transformam respostas em operações verificadas</h3></div><p>Adapters normalizam sistemas externos sem embutir regras da empresa no modelo. Timeout e contrato de resposta impedem que uma integração indisponível vire uma resposta inventada.</p></div>
+          <div class="omni-stage"><div class="omni-stage-title"><span>Tools transformam respostas em operações verificadas</span><span class="omni-stage-dots" aria-hidden="true"><i></i><i></i><i></i></span></div><div class="omni-tool-grid"><div class="omni-tool"><strong>Consulta de clientes</strong><span>Reconhece clientes recorrentes e recupera contexto permitido.</span></div><div class="omni-tool"><strong>Produtos e estoque</strong><span>Confirma catálogo, disponibilidade e condições.</span></div><div class="omni-tool"><strong>Garantia</strong><span>Verifica cobertura e política oficial.</span></div><div class="omni-tool"><strong>Ordens de serviço</strong><span>Consulta status e histórico recente.</span></div><div class="omni-tool"><strong>Agendamento</strong><span>Consulta disponibilidade e qualifica o pedido antes da transferência.</span></div><div class="omni-tool"><strong>Pedidos e pagamentos</strong><span>Vincula evidência comercial verificada aos resultados.</span></div></div><div class="omni-source-order"><div class="omni-source"><strong>1. Tool</strong><small>Dado vivo e verificado</small></div><div class="omni-source-arrow" aria-hidden="true">→</div><div class="omni-source"><strong>2. RAG do tenant</strong><small>Conhecimento oficial indexado</small></div><div class="omni-source-arrow" aria-hidden="true">→</div><div class="omni-source"><strong>3. Resposta limitada</strong><small>Somente o que a evidência sustenta</small></div></div></div>
+        </section>
 
-            <section class="cta-section" aria-label="Código do projeto">
-                <a class="cta-button" href="https://github.com/PkLavc/omnichannel" target="_blank" rel="noopener noreferrer">Ver código no GitHub</a>
-            </section>
-        </main>
+        <section class="omni-section"><div class="omni-section-heading"><div><span class="omni-label">Maquetes de interface</span><h3>Controle operacional e experiência do cliente</h3></div><p>O Admin explica o que o sistema conhece e por quê. O Chatwoot mantém o atendente em uma inbox familiar enquanto a IA enriquece a conversa em segundo plano.</p></div>
+          <div class="omni-mockups">
+            <figure class="omni-window"><div class="omni-window-bar"><span>Admin Omnichannel</span><span class="omni-stage-dots"><i></i><i></i><i></i></span></div><div class="omni-window-body"><aside class="omni-mock-sidebar"><div class="omni-mock-brand">OMNI</div><div class="omni-mock-nav"><span class="">Visão geral</span><span class="">Bots / empresas</span><span class="active">IA e providers</span><span class="">Conhecimento / RAG</span><span class="">Conversas</span><span class="">Melhoria contínua</span></div></aside><div class="omni-mock-main"><div class="omni-mock-title"><span>Admin Omnichannel</span><span class="omni-mock-pill">Tenant Alpha</span></div><div class="omni-mock-grid"><div class="omni-mock-stat"><b>12</b><small>conversas ativas</small></div><div class="omni-mock-stat"><b>94%</b><small>respostas com fonte</small></div><div class="omni-mock-stat"><b>3</b><small>providers saudáveis</small></div></div><div class="omni-mock-table"><div class="omni-mock-row"><span>Fonte</span><span>Status</span><span>Chunks</span></div><div class="omni-mock-row"><span>Catálogo de serviços</span><span>Pronto</span><span>428</span></div><div class="omni-mock-row"><span>Políticas</span><span>Pronto</span><span>96</span></div><div class="omni-mock-row"><span>Mensagens rápidas</span><span>Pronto</span><span>184</span></div></div></div></div></figure>
+            <figure class="omni-window omni-chat-window"><div class="omni-window-bar"><span>Chatwoot</span><span>● online</span></div><div class="omni-window-body"><div class="omni-chat-area"><div class="omni-chat-head">Conversa com cliente</div><div class="omni-chat-messages"><div class="omni-bubble ">Olá, preciso de ajuda com meu aparelho.</div><div class="omni-bubble omni-bubble--bot">Claro. Qual é o modelo e qual sintoma ele apresenta?</div><div class="omni-bubble ">É um celular que parou de carregar.</div><div class="omni-bubble omni-bubble--bot">Obrigado. Registrei o sintoma; informe o modelo exato para eu continuar com segurança.</div></div><div class="omni-chat-input">Digite uma mensagem…</div></div></div></figure>
+          </div>
+        </section>
+
+        <section class="omni-section"><div class="omni-section-heading"><div><span class="omni-label">Cartão de atendimento</span><h3>A conversa preenche uma transferência estruturada</h3></div><p>Os dados confirmados acumulam sem obrigar o cliente a repetir informações. Quando há intenção de agendamento, os campos ausentes são coletados antes de um humano receber o caso.</p></div>
+          <div class="omni-card-layout"><div class="omni-service-card"><div class="omni-service-card-head"><strong>Cartão de atendimento #8421</strong><span class="omni-status">Coletando dados</span></div><div class="omni-fields"><div class="omni-field"><small>ID da conversa</small><b>#8421</b></div><div class="omni-field"><small>Nome</small><b>Confirmado</b></div><div class="omni-field"><small>Telefone</small><b>Confirmado</b></div><div class="omni-field"><small>CPF / e-mail</small><b>Quando necessário</b></div><div class="omni-field"><small>Aparelho / modelo</small><b>Coletado</b></div><div class="omni-field"><small>Serviço / sintoma</small><b>Coletado</b></div><div class="omni-field"><small>Unidade desejada</small><b>Pendente</b></div><div class="omni-field"><small>Data e horário</small><b>Pendente</b></div><div class="omni-field"><small>ID do agendamento</small><b>Após integração</b></div><div class="omni-field"><small>Status</small><b>Em atendimento</b></div></div></div><aside class="omni-checklist"><h4>Transferência qualificada</h4><div class="omni-check">Contexto da conversa preservado</div><div class="omni-check">Especialidade ativa registrada</div><div class="omni-check">Campos ausentes identificados</div><div class="omni-check">Equipe do Chatwoot escolhida por setor</div><div class="omni-check">Humano recebe o cartão completo</div></aside></div>
+        </section>
+
+        <section class="omni-section"><div class="omni-section-heading"><div><span class="omni-label">Persistência</span><h3>Aplicação portátil, dados privados separados</h3></div><p>O código reutilizável pode ser distribuído sem identidade empresarial. Configurações, arquivos dos tenants e estado dos bancos ficam em uma raiz privada irmã, exportável e restaurável.</p></div>
+          <figure class="omni-stage"><div class="omni-stage-title"><span>Aplicação portátil, dados privados separados</span><span class="omni-stage-dots" aria-hidden="true"><i></i><i></i><i></i></span></div><div class="omni-data-map"><div class="omni-data-stack"><h4>Repositório da aplicação</h4><div class="omni-data-box"><strong>Gateway</strong><small>Runtime e integrações</small></div><div class="omni-data-box"><strong>Admin</strong><small>Interface de configuração</small></div><div class="omni-data-box"><strong>Compose</strong><small>Serviços e rede</small></div><div class="omni-data-box"><strong>Docs e testes</strong><small>Contratos e validação</small></div></div><div class="omni-data-arrow" aria-hidden="true">⇄</div><div class="omni-data-stack"><h4>Raiz de dados privados</h4><div class="omni-data-box"><strong>config</strong><small>Segredos de infraestrutura</small></div><div class="omni-data-box"><strong>tenants</strong><small>RAG, regras, contatos, cartões e datasets</small></div><div class="omni-data-box"><strong>imports / exports</strong><small>Grandes arquivos de conversas</small></div><div class="omni-data-box"><strong>state / backups</strong><small>Bancos e volumes portáteis</small></div></div></div><figcaption class="omni-caption">A inicialização manual pode baixar o estado privado; a parada segura pode gerar o snapshot. Nada precisa iniciar automaticamente com o Windows.</figcaption></figure>
+        </section>
+
+        <section class="omni-section"><div class="omni-section-heading"><div><span class="omni-label">Confiança e observabilidade</span><h3>Controles em torno de cada decisão</h3></div><p>A plataforma registra evidência operacional suficiente para investigar uma resposta sem expor segredos nem raciocínio bruto do modelo.</p></div><div class="omni-safety-grid"><div class="omni-safety"><strong>Segurança de prompt</strong><span>Texto do cliente e histórico são higienizados e tratados como dados, nunca como instrução de sistema.</span></div><div class="omni-safety"><strong>Idempotência</strong><span>Tenant mais IDs externos evitam duplicação de conversas, mensagens e vínculos verificados.</span></div><div class="omni-safety"><strong>Fallback de providers</strong><span>Somente configurações habilitadas e autorizadas para o tenant participam, por prioridade.</span></div><div class="omni-safety"><strong>Grounding</strong><span>Tools e RAG oficial têm precedência; afirmações sem fonte podem ser bloqueadas.</span></div><div class="omni-safety"><strong>Auditoria</strong><span>Provider, modelo, versão do prompt, fontes RAG, latência, tokens, custo e erros pertencem ao tenant.</span></div><div class="omni-safety"><strong>Controle humano</strong><span>Transferências, aprovação de aprendizado, publicação de dataset, promoção de canário e rollback são ações explícitas.</span></div></div></section>
+        <section class="omni-section"><h3>Construído como sistema operacional de atendimento, não como um bot isolado</h3><p class="omni-intro">O resultado é uma base modular que pode ser copiada limpa para outra organização e configurada por seus dados privados e integrações—sem carregar identidade, conversas ou conhecimento de outra empresa.</p></section>
+      </article>
+    </div></section>
+    <section class="cta-section" aria-label="Código do projeto"><a class="cta-button" href="https://github.com/PkLavc/omnichannel" target="_blank" rel="noopener noreferrer">Ver código no GitHub</a></section>
+  </main>
     </div>
 
     <footer class="footer-minimal">
