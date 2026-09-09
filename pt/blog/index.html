@@ -41,7 +41,6 @@
     <link rel="stylesheet" href="/css/global.css?v=6d8a856a8a">
     <link rel="stylesheet" href="/css/blog.css?v=1feca1bd2e">
     <link rel="stylesheet" href="/css/space-reveal.css?v=601db46cac">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.2.6/gsap.min.js" defer></script>
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
@@ -50,7 +49,7 @@
                 "@type": "Blog",
                 "@id": "https://pklavc.com/pt/blog/#blog/",
                 "url": "https://pklavc.com/pt/blog/",
-                "name": "Patrick Araujo Backend Engineering Blog",
+                "name": "Blog de Engenharia de Patrick Araujo",
                 "description": "Artigos técnicos sobre engenharia backend, fluxos de automação, integrações de APIs e arquitetura de sistemas escaláveis.",
                 "publisher": {
                     "@id": "https://pklavc.com/#person"
@@ -564,56 +563,26 @@
         </section>
 
         <main class="blog-shell" role="main">
-            <section class="blog-hero space-reveal" aria-label="Introdução ao blog">
-                <div class="blog-hero-reveal-layer space-reveal-layer" aria-hidden="true">
-                    <div class="blog-hero-reveal-scene space-reveal-scene">
-                        <div class="blog-hero-reveal-horizon space-reveal-horizon"></div>
-                        <div class="blog-hero-reveal-copy space-reveal-copy">
-                            <span>Camada editorial</span>
-                            <strong>Notas da maquinaria oculta por trás de sistemas reais.</strong>
-                        </div>
+            <section class="blog-horizon" aria-label="Introdução ao blog de engenharia">
+                <div class="blog-horizon-stage hero-container cosmos-style">
+                    <canvas class="hero-canvas" data-horizon-canvas aria-hidden="true"></canvas>
+                    <button class="side-menu side-menu-posts" type="button" data-skip-to-posts style="visibility:hidden">POSTAGENS</button>
+                    <article class="blog-horizon-copy hero-content cosmos-content">
+                        <span class="blog-horizon-kicker">Notas de Engenharia</span>
+                        <h1 class="hero-title" style="visibility:hidden">Blog de engenharia</h1>
+                        <div class="hero-subtitle cosmos-subtitle" style="visibility:hidden"><p class="subtitle-line">Artigos técnicos sobre arquitetura de automação, integrações de APIs, fluxos de trabalho de agentes de IA, design de backend SaaS e design prático de sistema — escritos a partir de experiência real de produção.</p></div>
+                        <div class="blog-horizon-tags" aria-label="Temas do blog"><span>Agentes de IA</span><span>Sistemas de APIs</span><span>Notas de campo</span></div>
+                    </article>
+                    <div class="scroll-sections" aria-hidden="true">
+                        <section class="content-section" data-horizon-section><h2>ARQUITETURA</h2><p>Sistemas confiáveis começam com decisões claras,<br>limites bem definidos e código preparado para evoluir.</p></section>
+                        <section class="content-section" data-horizon-section><h2>PRODUÇÃO</h2><p>Da automação à observabilidade,<br>cada artigo transforma experiência real em engenharia aplicável.</p></section>
                     </div>
                 </div>
-                <article class="blog-hero-panel">
-                    <span class="blog-kicker">Notas de Engenharia</span>
-                    <div class="blog-hero-signal" aria-hidden="true">
-                        <span>Agentes de IA</span>
-                        <span>Sistemas de APIs</span>
-                        <span>Notas de campo</span>
-                    </div>
-                    <h1>Blog de engenharia de backend</h1>
-                    <p>Artigos técnicos sobre arquitetura de automação, integrações de APIs, fluxos de trabalho de agentes de IA, design de backend SaaS e design prático de sistema - escrito a partir de experiência real de produção.</p>
-                    <div class="blog-hero-metrics">
-                        <div class="blog-metric">
-                            <strong>Análises técnicas</strong>
-                            <span>Baseadas em produção</span>
-                        </div>
-                        <div class="blog-metric">
-                            <strong>Temas conectados</strong>
-                            <span>Backend, IA e APIs</span>
-                        </div>
-                        <div class="blog-metric">
-                            <strong>Contínuo</strong>
-                            <span>Sempre evoluindo</span>
-                        </div>
-                    </div>
-                </article>
-
-                <aside class="blog-highlight-panel" aria-label="Foco editorial">
-                    <div>
-                        <h2>O foco deste blog</h2>
-                        <ul class="blog-highlight-list">
-                            <li><span>Engenharia de IA</span> Orquestração multiagente, LLMs locais, RAG pipelines e assistentes de IA aplicados construídos em infraestrutura real.</li>
-                            <li><span>Automação</span> Orquestração de fluxo de trabalho, pipelines de relatórios, tarefas agendadas e confiabilidade de processos em escala.</li>
-                            <li><span>APIs e integrações</span> Fluxos OAuth, ingestão de webhook, estratégias de repetição, sincronização ETL e observabilidade em serviços de terceiros.</li>
-                            <li><span>Arquitetura SaaS</span> Multi-tenant, RBAC, execução baseada em fila e padrões de design de backend escaláveis.</li>
-                            <li><span>Infraestrutura</span> Implantação em nuvem, detecção de anomalias, sistemas de autocorreção e design de proxy de confiança zero.</li>
-                        </ul>
-                    </div>
-                </aside>
             </section>
-            
-            <section class="blog-section" aria-labelledby="blog-posts-title">
+            <section class="blog-featured-carousel" data-blog-carousel aria-label="Artigos de engenharia">
+                <div class="blog-carousel-track" aria-label="Artigos técnicos recentes"></div>
+            </section>
+            <section class="blog-section blog-library" aria-labelledby="blog-posts-title" hidden>
                 <h2 id="blog-posts-title">Postagens em destaque</h2>
                 <p>Artigos t&eacute;cnicos sobre backend, automa&ccedil;&atilde;o, APIs, cloud, dados, integra&ccedil;&otilde;es e IA aplicada a sistemas reais.</p>
                 <div class="blog-grid">
@@ -1871,38 +1840,7 @@
 
                 </div>
             </section>
-
-            <section class="blog-cta-stack" aria-label="Chamada para ação do blog">
-                <article class="blog-cta">
-                    <div>
-                        <h2>Ver projetos</h2>
-                        <p>Vá direto para as páginas de implementação com arquitetura e contexto de entrega.</p>
-                    </div>
-                    <a class="blog-button" href="/pt/projetos/">Procure projetos</a>
-                </article>
-                <article class="blog-cta">
-                    <div>
-                        <h2>Escolha coleções</h2>
-                        <p>Procure domínios agrupados por espaço de problema e tipo de solução.</p>
-                    </div>
-                    <a class="blog-button" href="/pt/colecoes/">Navegar pelas coleções</a>
-                </article>
-                <article class="blog-cta">
-                    <div>
-                        <h2>Ver stacks</h2>
-                        <p>Explore cursos de especialização organizados por foco em tecnologia e engenharia.</p>
-                    </div>
-                    <a class="blog-button" href="/pt/stacks/">Navegar nas stacks</a>
-                </article>
-                <article class="blog-cta">
-                    <div>
-                        <h2>Sobre mim</h2>
-                        <p>Veja a formação profissional e o contexto por trás do trabalho neste site.</p>
-                    </div>
-                    <a class="blog-button" href="/pt/sobre/">Navegar sobre</a>
-                </article>
-            </section>
-        </main>
+</main>
     </div>
 
     <footer class="footer-minimal">
@@ -1927,9 +1865,21 @@
         <script src="/js/i18n.js?v=397fd68aed" defer></script>
     <script src="/js/jquery.min.js?v=d482871a5e" defer></script>
     <script src="/js/index.js?v=9816b7386d" defer></script>
+    <script src="/js/vendor/three/three.min.js" defer></script>
+    <script src="/js/vendor/three/shaders/CopyShader.js" defer></script>
+    <script src="/js/vendor/three/shaders/LuminosityHighPassShader.js" defer></script>
+    <script src="/js/vendor/three/postprocessing/Pass.js" defer></script>
+    <script src="/js/vendor/three/postprocessing/ShaderPass.js" defer></script>
+    <script src="/js/vendor/three/postprocessing/MaskPass.js" defer></script>
+    <script src="/js/vendor/three/postprocessing/EffectComposer.js" defer></script>
+    <script src="/js/vendor/three/postprocessing/RenderPass.js" defer></script>
+    <script src="/js/vendor/three/postprocessing/UnrealBloomPass.js" defer></script>
+    <script src="/js/vendor/gsap/gsap.min.js" defer></script>
+    <script src="/js/vendor/gsap/ScrollTrigger.min.js" defer></script>
+    <script src="/js/blog-horizon.js" defer></script>
 
     <div class="visually-hidden">
-        <p>Blog de engenharia de backend sobre fluxos de trabalho de agentes de IA, agentes de codificação autônomos, protocolo MCP, orquestração multiagente, sistemas de automação, integrações de APIs, arquitetura de backend Node.js, fluxos de trabalho Python, sistemas orientados a eventos, design de plataforma SaaS, software automotivo incorporado e padrões de implantação em nuvem.</p>
+        <p>Blog de engenharia sobre fluxos de trabalho de agentes de IA, agentes de codificação autônomos, protocolo MCP, orquestração multiagente, sistemas de automação, integrações de APIs, arquitetura de backend Node.js, fluxos de trabalho Python, sistemas orientados a eventos, design de plataforma SaaS, software automotivo incorporado e padrões de implantação em nuvem.</p>
     </div>
 </body>
 </html>

@@ -195,6 +195,7 @@
         </style>
         <link rel="preload" href="/css/about.css?v=f8be4070cb" as="style">
         <link rel="stylesheet" href="/css/about.css?v=f8be4070cb">
+        <link rel="stylesheet" href="/css/interactive-globe.css">
         <link rel="preload" href="/css/space-reveal.css?v=601db46cac" as="style">
         <link rel="stylesheet" href="/css/space-reveal.css?v=601db46cac">
         <meta name="theme-color" content="#101114">
@@ -400,8 +401,11 @@
     </div>
 
     <div class="about-profile-img">
-        <div class="img-border">
-            <img src="/images/brand/profile.svg?v=8be4a58fa8" alt="Patrick Araujo avatar de perfil para ingeniero de software backend y especialista en integración" width="250" height="250" loading="eager" fetchpriority="high" decoding="async">
+        <div class="about-profile-singularity" tabindex="0" aria-label="Retrato de perfil interactivo">
+            <canvas class="black-hole-effect" data-black-hole-canvas aria-hidden="true"></canvas>
+            <div class="img-border">
+                <img src="/images/brand/profile.svg?v=8be4a58fa8" alt="Patrick Araujo avatar de perfil para ingeniero de software backend y especialista en integración" width="250" height="250" loading="eager" fetchpriority="high" decoding="async">
+            </div>
         </div>
     </div>
 
@@ -782,12 +786,7 @@
         <a class="global-reach-link" href="/es/visitantes/">Abrir mapa</a>
     </div>
     <a class="global-reach-visual" href="/es/visitantes/" aria-label="Abrir mapa anónimo de visitas">
-        <span class="selene-orbit" aria-hidden="true">
-            <span class="selene-orbit-core"></span>
-            <span class="selene-orbit-ring selene-orbit-ring-one"></span>
-            <span class="selene-orbit-ring selene-orbit-ring-two"></span>
-            <span class="selene-orbit-node"></span>
-        </span>
+        <span class="about-globe-frame" data-interactive-globe data-about-globe aria-hidden="true"></span>
     </a>
 </section>
 <div class="skills-section contact-inquiries-section">
@@ -1582,6 +1581,9 @@
 
         <script src="/js/jquery.min.js?v=d482871a5e" defer></script>
         <script src="/js/index.js?v=9816b7386d" defer></script>
+        <script src="/js/interactive-globe.js" defer></script>
+        <script src="/js/about-effects.js" defer></script>
+        <script type="module" src="/js/black-hole.js?v=20260909d"></script>
         <script id="skylet-widget-script" src="/js/skylet-widget.js?v=4dd513481f" defer></script>
 <footer class="footer-minimal">
     <div class="footer-container">

@@ -317,7 +317,7 @@ body {
     display: block;
     border-radius: 50%;
     border: 1px solid whitesmoke;
-    background: transparent;
+    background: #171717;
     pointer-events: none;
     position: fixed;
     top: 0;
@@ -2211,4 +2211,60 @@ body {
     .education-date {
         font-size: 0.92rem;
     }
+}
+/* Interactive visitor globe and profile singularity */
+.global-reach-visual .about-globe-frame { margin: auto; }
+.about-profile-img { position: relative; }
+.about-profile-singularity {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 390px;
+    height: 300px;
+    overflow: visible;
+    isolation: isolate;
+    cursor: crosshair;
+    background: transparent;
+}
+.black-hole-effect {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    z-index: 2;
+    display: block;
+    width: 540px;
+    max-width: none;
+    height: 246px;
+    pointer-events: none;
+    opacity: 0;
+    background: #171717;
+    -webkit-mask-image: radial-gradient(ellipse 54% 48% at center, #000 0 42%, rgba(0,0,0,.94) 60%, transparent 84%);
+    mask-image: radial-gradient(ellipse 54% 48% at center, #000 0 42%, rgba(0,0,0,.94) 60%, transparent 84%);
+    transform: translate(-50%, -50%) scale(.38);
+    transition: opacity .3s ease .18s, transform 1s cubic-bezier(.18,.82,.12,1);
+}
+.about-profile-singularity .img-border {
+    position: relative;
+    z-index: 3;
+    transition: transform .9s cubic-bezier(.18,.82,.12,1), filter .72s ease, opacity .66s ease;
+}
+.about-profile-singularity:hover .img-border,
+.about-profile-singularity:focus-within .img-border {
+    transform: scale(.025) rotate(2.2turn);
+    filter: blur(10px) brightness(1.7) saturate(1.5);
+    opacity: 0;
+}
+.about-profile-singularity:hover .black-hole-effect,
+.about-profile-singularity:focus-within .black-hole-effect {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translate(-50%, -50%) scale(1);
+}
+@media (max-width: 640px) {
+    .about-profile-singularity { width: 300px; height: 260px; }
+    .black-hole-effect { width: 390px; height: 178px; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .about-profile-singularity:hover .img-border,
+    .about-profile-singularity:focus-within .img-border { transform: scale(.1); filter: none; opacity: .15; }
 }

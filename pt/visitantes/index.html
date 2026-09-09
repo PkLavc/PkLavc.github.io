@@ -25,6 +25,7 @@
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Poppins:wght@500;600;700&amp;family=Raleway:wght@300;400;500&amp;display=swap"></noscript>
     <link rel="stylesheet" href="/css/global.css?v=6d8a856a8a">
     <link rel="stylesheet" href="/css/visitor-map.css?v=0d3c7c3671">
+    <link rel="stylesheet" href="/css/interactive-globe.css">
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
@@ -73,12 +74,7 @@
                     <h1 id="visitor-map-title">Onde o portfólio<br><span>está sendo acessado.</span></h1>
                     <p>Cada brilho representa uma visita anônima agregada por país e região. Nenhum endereço IP, coordenada precisa, cookie ou perfil pessoal é armazenado.</p>
                 </div>
-                <div class="visitor-map-orbit" aria-hidden="true">
-                    <div class="visitor-map-orbit-core"></div>
-                    <span class="visitor-map-orbit-ring visitor-map-orbit-ring-one"></span>
-                    <span class="visitor-map-orbit-ring visitor-map-orbit-ring-two"></span>
-                    <span class="visitor-map-orbit-node visitor-map-orbit-node-one"></span>
-                </div>
+                <div class="visitor-map-orbit visitor-hero-globe" data-interactive-globe data-about-globe aria-hidden="true"></div>
             </section>
 
             <section class="visitor-map-stats" aria-label="Resumo das visitas">
@@ -125,8 +121,8 @@
                     <div class="visitor-map-shell" id="visitor-map-shell">
                         <div class="visitor-map-grid" aria-hidden="true"></div>
                         <svg id="visitor-world-map" viewBox="0 0 1200 620" role="img" aria-labelledby="visitor-map-svg-title visitor-map-svg-description">
-                            <title id="visitor-map-svg-title">Mapa-múndi das visitas anônimas ao portfólio</title>
-                            <desc id="visitor-map-svg-description">Os países são destacados de acordo com o número de visitas registradas.</desc>
+                            <title id="visitor-map-svg-title">Mapa mundial de visitas anônimas ao portfólio</title>
+                            <desc id="visitor-map-svg-description">Os países são destacados conforme o número de visitas registradas.</desc>
                         </svg>
                         <div class="visitor-map-loading" id="visitor-map-loading">
                             <span class="visitor-map-loader" aria-hidden="true"></span>
@@ -187,6 +183,8 @@
     <script src="/js/i18n.js?v=397fd68aed" defer></script>
     <script src="/js/jquery.min.js?v=d482871a5e" defer></script>
     <script src="/js/index.js?v=9816b7386d" defer></script>
+    <script src="/js/interactive-globe.js" defer></script>
+    <script src="/js/about-effects.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/topojson-client@3.1.0/dist/topojson-client.min.js" defer></script>
     <script src="/js/visitor-map.js?v=e38aa8ab93" defer></script>
