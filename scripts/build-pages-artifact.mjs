@@ -58,6 +58,7 @@ const publicEntries = [
   "skylet-assistant",
   "stacks",
   "visitors",
+  "ags",
 ];
 
 const textExtensions = new Set([".html", ".css", ".js"]);
