@@ -1,0 +1,44 @@
+name: Configure Cloudflare AI Discovery
+
+on:
+  workflow_dispatch:
+    inputs:
+      apply:
+        description: Disable the AI bot blocking toggle after verifying pklavc.com; preserve other security settings
+        type: boolean
+        default: false
+        required: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: configure-cloudflare-discovery
+  cancel-in-progress: false
+
+jobs:
+  configure:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Verify configuration safeguards
+        run: node --test scripts/configure-cloudflare-discovery.test.mjs
+      - name: Audit Cloudflare discovery
+        if: ${{ !inputs.apply }}
+        run: node scripts/configure-cloudflare-discovery.mjs
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      - name: Apply and verify Cloudflare discovery
+        if: ${{ inputs.apply }}
+        run: node scripts/configure-cloudflare-discovery.mjs --apply
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}

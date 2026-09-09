@@ -1,6 +1,9 @@
 import crypto from "node:crypto";
+import { execFileSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
+import { normalizeSeoDirectory } from "./normalize-seo.mjs";
+import { generateDiscovery } from "./generate-discovery.mjs";
 
 const root = process.cwd();
 const outDir = path.join(root, ".pages-dist");
@@ -25,6 +28,7 @@ const publicEntries = [
   "humans.txt",
   "llms-full.txt",
   "llms.txt",
+  "indexnow-key.txt",
   "index.html",
   "maintenance",
   "manifest.webmanifest",
@@ -78,6 +82,9 @@ const adsenseClientId = (process.env.ADSENSE_CLIENT_ID || "").trim();
 const adsenseBlogSlotId = (process.env.ADSENSE_BLOG_SLOT_ID || "").trim();
 
 function removeDirectory(target) {
+  if (path.resolve(target) !== path.join(root, ".pages-dist") || (fs.existsSync(target) && fs.lstatSync(target).isSymbolicLink())) {
+    throw new Error("Refusing to clean an unexpected Pages output directory.");
+  }
   fs.rmSync(target, { recursive: true, force: true });
 }
 
@@ -231,6 +238,17 @@ function main() {
   for (const entry of publicEntries) {
     copyEntry(path.join(root, entry), path.join(outDir, entry));
   }
+
+  // Generate discovery from the exact HTML that will be deployed on every build.
+  const seoStats = normalizeSeoDirectory(outDir);
+  console.log(`SEO normalization: ${seoStats.updated} of ${seoStats.pages} HTML files updated.`);
+  for (const generator of ["generate-sitemaps.mjs", "generate-rss.mjs"]) {
+    execFileSync(process.execPath, [path.join(root, "scripts", generator), "--root", outDir], { cwd: root, stdio: "inherit" });
+  }
+  generateDiscovery(outDir);
+  const commit = execFileSync("git", ["rev-parse", "HEAD"], { cwd: root, encoding: "utf8" }).trim();
+  fs.mkdirSync(path.join(outDir, ".well-known"), { recursive: true });
+  fs.writeFileSync(path.join(outDir, ".well-known", "site-deployment.json"), JSON.stringify({ commit }) + "\n");
 
   const files = walkFiles(outDir);
   const totalBytes = files.reduce((sum, file) => sum + fs.statSync(file).size, 0);

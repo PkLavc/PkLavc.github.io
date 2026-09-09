@@ -15,19 +15,23 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 24
 
-      - name: Update sitemap
-        run: node scripts/generate-sitemaps.mjs
+      - name: Update sitemap and RSS
+        run: |
+          node scripts/generate-sitemaps.mjs
+          node scripts/generate-rss.mjs
 
       - name: Detect changes
         id: changes
         run: |
-          if git diff --quiet sitemap.xml sitemap-index.xml sitemaps; then
+          if git diff --quiet sitemap.xml sitemap-index.xml sitemaps feed.xml; then
             echo "changed=false" >> $GITHUB_OUTPUT
           else
             echo "changed=true" >> $GITHUB_OUTPUT
@@ -38,6 +42,6 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add sitemap.xml sitemap-index.xml sitemaps
-          git commit -m "chore: auto-update sitemap"
+          git add sitemap.xml sitemap-index.xml sitemaps feed.xml
+          git commit -m "chore: auto-update sitemap and RSS"
           git push

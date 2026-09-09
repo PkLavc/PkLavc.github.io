@@ -33,6 +33,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -44,6 +46,12 @@ jobs:
         env:
           ADSENSE_CLIENT_ID: ${{ vars.ADSENSE_CLIENT_ID || secrets.ADSENSE_CLIENT_ID }}
           ADSENSE_BLOG_SLOT_ID: ${{ vars.ADSENSE_BLOG_SLOT_ID || secrets.ADSENSE_BLOG_SLOT_ID }}
+
+      - name: Test SEO normalization
+        run: node --test scripts/normalize-seo.test.mjs scripts/indexnow.test.mjs
+
+      - name: Validate SEO and preserve visual content
+        run: python3 scripts/audit-seo.py --root .pages-dist --compare-source . --strict-links --allow-adsense-injection
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
@@ -58,3 +66,13 @@ jobs:
         with:
           timeout: 1800000
           reporting_interval: 15000
+
+      - name: Notify participating search engines after publication
+        env:
+          INDEXNOW_BEFORE: ${{ github.event.before }}
+        run: |
+          if [ -n "$INDEXNOW_BEFORE" ]; then
+            node scripts/indexnow.mjs --root .pages-dist --since "$INDEXNOW_BEFORE"
+          else
+            node scripts/indexnow.mjs --root .pages-dist --all
+          fi
