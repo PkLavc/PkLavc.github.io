@@ -1136,7 +1136,7 @@ body.blog-layout::before {
 }
 .blog-featured-carousel.is-in-scene {
     position: absolute;
-    inset: 0 0 clamp(62px, 8vh, 76px);
+    inset: 0;
     z-index: 12;
     display: flex;
     flex-direction: column;
@@ -1144,7 +1144,7 @@ body.blog-layout::before {
     width: 100%;
     max-width: none;
     margin: 0;
-    padding: 0 clamp(24px, 6vw, 110px);
+    padding: 0 clamp(24px, 6vw, 110px) clamp(72px, 9vh, 86px);
     box-sizing: border-box;
     background: linear-gradient(180deg, rgba(3, 5, 18, .74), rgba(6, 6, 20, .82));
     backdrop-filter: blur(4px);
@@ -1164,12 +1164,16 @@ body.blog-layout::before {
     width: 100%;
     min-height: 300px;
     overflow: visible;
-    cursor: default;
+    cursor: grab;
     perspective: 1200px;
     perspective-origin: 50% 48%;
     transform-style: preserve-3d;
     touch-action: pan-y;
+    user-select: none;
+    -webkit-user-select: none;
 }
+.blog-carousel-track.is-dragging { cursor: grabbing; }
+.blog-carousel-track.is-dragging .blog-carousel-card { transition: none; }
 .blog-carousel-card {
     --coverflow-x: 0px;
     --coverflow-z: 0px;
@@ -1188,7 +1192,7 @@ body.blog-layout::before {
     transform-style: preserve-3d;
     opacity: var(--coverflow-opacity);
     box-shadow: 0 26px 60px rgba(0, 0, 0, .52);
-    transition: transform .62s cubic-bezier(.2, .72, .18, 1), opacity .48s ease, border-color .35s ease, box-shadow .35s ease;
+    transition: transform .82s cubic-bezier(.2, .72, .16, 1), opacity .68s ease, border-color .55s ease, box-shadow .55s ease;
     will-change: transform, opacity;
 }
 .blog-carousel-card.is-active {
@@ -1228,7 +1232,8 @@ body.blog-layout::before {
     width: 100%;
     margin: 0;
     padding: 0;
-    background: rgba(3, 5, 16, .94);
+    border-top: 0;
+    background: rgba(3, 5, 18, .94);
     backdrop-filter: blur(12px);
     opacity: 0;
     transform: translateY(100%);
@@ -1240,8 +1245,8 @@ body.blog-layout::before {
     transform: translateY(0);
     pointer-events: auto;
 }
-.blog-footer-overlay .footer-container { padding: 5px 10px; }
-.blog-footer-overlay .footer-link-list { gap: 7px; margin: 3px 0; }
+.blog-footer-overlay .footer-container { padding: 6px 10px; }
+.blog-footer-overlay .footer-link-list { gap: 7px; margin: 3px 0 11px; }
 .blog-footer-overlay .footer-link-pill { min-height: 27px; padding: 0 10px; font-size: 10px; }
 .blog-footer-overlay .footer-meta { gap: 5px; margin: 0; font-size: 10px; line-height: 1.3; }
 .blog-footer-overlay .footer-legal-inline { gap: 5px; }
@@ -1266,7 +1271,7 @@ body.blog-layout::before {
     .content-section p { max-width: 84vw; margin-top: 24px; font-size: clamp(.84rem, 3.7vw, 1rem); line-height: 1.5; }
     .hero-subtitle.cosmos-subtitle { width: 84vw; margin-top: clamp(22px, 4svh, 34px); }
     .hero-subtitle .subtitle-line { font-size: clamp(.82rem, 3.65vw, 1rem); line-height: 1.5; }
-    .blog-featured-carousel.is-in-scene { bottom: 84px; padding: 0 8px; }
+    .blog-featured-carousel.is-in-scene { bottom: 0; padding: 0 8px 96px; }
     .blog-carousel-track { min-height: 0; height: 100%; }
     .blog-carousel-card { width: min(76vw, 280px); height: min(76vw, 280px); padding: 16px; gap: 9px; }
     .blog-carousel-card h3 { font-size: clamp(.94rem, 4.3vw, 1.08rem); line-height: 1.24; }
@@ -1274,7 +1279,7 @@ body.blog-layout::before {
     .blog-carousel-card .blog-card-meta span,
     .blog-carousel-card .blog-tag-row span { padding: 4px 7px; font-size: .58rem; }
     .blog-carousel-card .blog-link { font-size: .72rem; }
-    .blog-footer-overlay .footer-container { padding: 5px 8px; }
+    .blog-footer-overlay .footer-container { padding: 6px 8px; }
 }
 @media (prefers-reduced-motion: reduce) {
     .blog-horizon { min-height: 200vh; }

@@ -17,9 +17,14 @@
     var source = library ? library.querySelectorAll('.blog-card') : [];
     var cards = [];
     var activeCard = 0;
-    var hoverTimer = 0;
-    var hoverCandidate = -1;
-    var hoverLockedUntil = 0;
+    var autoplayTimer = 0;
+    var autoplayDelay = 8000;
+    var dragPointer = null;
+    var dragStartX = 0;
+    var dragOffset = 0;
+    var dragBaseCard = 0;
+    var dragMoved = false;
+    var suppressClickUntil = 0;
     var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     var totalSections = 2;
 
@@ -48,102 +53,128 @@
       library.remove();
     }
 
-    function renderCoverflow(offset) {
+    function renderCoverflow(position) {
       if (!cards.length) return;
-      var spacing = Math.min(window.innerWidth * 0.22, 290);
+      var spacing = Math.max(86, Math.min(window.innerWidth * 0.22, 290));
+      var visualPosition = position == null ? activeCard : position;
       cards.forEach(function (card, index) {
-        var relative = index - activeCard;
+        var relative = index - visualPosition;
+        if (cards.length > 2) {
+          while (relative > cards.length / 2) relative -= cards.length;
+          while (relative < -cards.length / 2) relative += cards.length;
+        }
         var distance = Math.abs(relative);
-        var direction = relative < 0 ? -1 : 1;
-        var visible = distance <= 3;
-        var x = relative * spacing + (offset || 0) * Math.max(0.18, 1 - distance * 0.16);
-        var rotate = relative === 0 ? 0 : direction * -56;
+        var direction = relative < 0 ? -1 : relative > 0 ? 1 : 0;
+        var visible = distance <= 3.5;
+        var isActive = index === activeCard;
+        var x = relative * spacing;
+        var rotate = direction * -56 * Math.min(1, distance);
         card.style.setProperty('--coverflow-x', x.toFixed(1) + 'px');
         card.style.setProperty('--coverflow-z', (-distance * 105).toFixed(1) + 'px');
         card.style.setProperty('--coverflow-rotate', rotate + 'deg');
         card.style.setProperty('--coverflow-scale', Math.max(0.72, 1 - distance * 0.1).toFixed(3));
-        card.style.setProperty('--coverflow-opacity', visible ? Math.max(0.2, 1 - distance * 0.22).toFixed(3) : '0');
+        card.style.setProperty('--coverflow-opacity', visible ? Math.max(0.08, 1 - distance * 0.24).toFixed(3) : '0');
         card.style.zIndex = String(100 - distance);
         card.style.visibility = visible ? 'visible' : 'hidden';
-        card.classList.toggle('is-active', relative === 0);
-        card.setAttribute('aria-hidden', relative === 0 ? 'false' : 'true');
+        card.classList.toggle('is-active', isActive);
+        card.setAttribute('aria-hidden', isActive ? 'false' : 'true');
         card.querySelectorAll('a, button').forEach(function (control) {
-          control.tabIndex = relative === 0 ? 0 : -1;
+          control.tabIndex = isActive ? 0 : -1;
         });
       });
       track.dataset.activeIndex = String(activeCard);
     }
 
     function setActiveCard(index) {
-      activeCard = Math.max(0, Math.min(cards.length - 1, index));
-      renderCoverflow(0);
+      if (!cards.length) return;
+      activeCard = ((index % cards.length) + cards.length) % cards.length;
+      renderCoverflow(activeCard);
     }
+
+    function scheduleAutoplay(delay) {
+      window.clearTimeout(autoplayTimer);
+      if (reduced || cards.length < 2 || document.hidden || !stage.classList.contains('show-carousel')) return;
+      autoplayTimer = window.setTimeout(function advanceCarousel() {
+        if (dragPointer !== null || track.matches(':focus-within')) {
+          scheduleAutoplay(autoplayDelay);
+          return;
+        }
+        setActiveCard(activeCard + 1);
+        scheduleAutoplay(autoplayDelay);
+      }, delay == null ? autoplayDelay : delay);
+    }
+
     if (track) {
       track.tabIndex = 0;
       track.addEventListener('keydown', function (event) {
-        if (event.key === 'ArrowLeft') { event.preventDefault(); setActiveCard(activeCard - 1); }
-        if (event.key === 'ArrowRight') { event.preventDefault(); setActiveCard(activeCard + 1); }
+        if (event.key === 'ArrowLeft') { event.preventDefault(); setActiveCard(activeCard - 1); scheduleAutoplay(autoplayDelay); }
+        if (event.key === 'ArrowRight') { event.preventDefault(); setActiveCard(activeCard + 1); scheduleAutoplay(autoplayDelay); }
       });
-      track.addEventListener('mousemove', function (event) {
-        if (Date.now() < hoverLockedUntil) return;
-        var activeRect = cards[activeCard] && cards[activeCard].getBoundingClientRect();
-        if (activeRect && event.clientX >= activeRect.left && event.clientX <= activeRect.right && event.clientY >= activeRect.top && event.clientY <= activeRect.bottom) {
-          hoverCandidate = -1;
-          window.clearTimeout(hoverTimer);
+      track.addEventListener('pointerdown', function (event) {
+        if (!event.isPrimary || (event.pointerType === 'mouse' && event.button !== 0)) return;
+        dragPointer = event.pointerId;
+        dragStartX = event.clientX;
+        dragOffset = 0;
+        dragBaseCard = activeCard;
+        dragMoved = false;
+        window.clearTimeout(autoplayTimer);
+        track.classList.add('is-dragging');
+        track.setPointerCapture(event.pointerId);
+      });
+      track.addEventListener('pointermove', function (event) {
+        if (event.pointerId !== dragPointer) return;
+        dragOffset = event.clientX - dragStartX;
+        if (Math.abs(dragOffset) > 6) dragMoved = true;
+        var spacing = Math.max(86, Math.min(window.innerWidth * 0.22, 290));
+        var visualPosition = dragBaseCard - dragOffset / spacing;
+        activeCard = ((Math.round(visualPosition) % cards.length) + cards.length) % cards.length;
+        renderCoverflow(visualPosition);
+      });
+      track.addEventListener('dragstart', function (event) { event.preventDefault(); });
+      function finishDrag(event) {
+        if (event.pointerId !== dragPointer) return;
+        if (track.hasPointerCapture(event.pointerId)) track.releasePointerCapture(event.pointerId);
+        track.classList.remove('is-dragging');
+        if (dragMoved) suppressClickUntil = Date.now() + 350;
+        dragPointer = null;
+        dragOffset = 0;
+        void track.offsetWidth;
+        renderCoverflow(activeCard);
+        scheduleAutoplay(autoplayDelay);
+      }
+      track.addEventListener('pointerup', finishDrag);
+      track.addEventListener('pointercancel', finishDrag);
+      track.addEventListener('click', function (event) {
+        if (Date.now() < suppressClickUntil) {
+          event.preventDefault();
+          event.stopPropagation();
           return;
         }
-        var candidate = cards.findIndex(function (card, index) {
-          if (index === activeCard || card.style.visibility === 'hidden') return false;
-          var rect = card.getBoundingClientRect();
-          return event.clientX >= rect.left && event.clientX <= rect.right && event.clientY >= rect.top && event.clientY <= rect.bottom;
-        });
-        if (candidate < 0 || candidate === hoverCandidate) return;
-        hoverCandidate = candidate;
-        window.clearTimeout(hoverTimer);
-        hoverTimer = window.setTimeout(function () {
-          if (hoverCandidate < 0 || hoverCandidate === activeCard) return;
-          setActiveCard(hoverCandidate);
-          hoverLockedUntil = Date.now() + 650;
-          hoverCandidate = -1;
-        }, 120);
+        var card = event.target.closest('.blog-carousel-card');
+        if (!card) return;
+        var index = cards.indexOf(card);
+        if (index !== activeCard) {
+          event.preventDefault();
+          setActiveCard(index);
+          scheduleAutoplay(autoplayDelay);
+          return;
+        }
+        if (!event.target.closest('a')) {
+          var link = card.querySelector('h3 a');
+          if (link) window.location.assign(link.href);
+        }
       });
-      track.addEventListener('mouseleave', function () {
-        hoverCandidate = -1;
-        window.clearTimeout(hoverTimer);
-      });
-      track.addEventListener('click', function (event) {
-        if (event.target !== track) return;
-        var candidate = cards.findIndex(function (card, index) {
-          if (index === activeCard || card.style.visibility === 'hidden') return false;
-          var rect = card.getBoundingClientRect();
-          return event.clientX >= rect.left && event.clientX <= rect.right && event.clientY >= rect.top && event.clientY <= rect.bottom;
-        });
-        if (candidate >= 0) setActiveCard(candidate);
-      });
-      cards.forEach(function (card, index) {
-        card.addEventListener('mouseenter', function () {
-          if (index === activeCard) return;
-          window.clearTimeout(hoverTimer);
-          hoverTimer = window.setTimeout(function () {
-            if (card.matches(':hover')) setActiveCard(index);
-          }, 120);
-        });
-        card.addEventListener('mouseleave', function () { window.clearTimeout(hoverTimer); });
-        card.addEventListener('click', function (event) {
-          if (index !== activeCard) {
-            event.preventDefault();
-            setActiveCard(index);
-            return;
-          }
-          if (!event.target.closest('a')) {
-            var link = card.querySelector('h3 a');
-            if (link) window.location.assign(link.href);
-          }
-        });
-      });
+      track.addEventListener('focusin', function () { window.clearTimeout(autoplayTimer); });
+      track.addEventListener('focusout', function () { scheduleAutoplay(autoplayDelay); });
+      document.addEventListener('visibilitychange', function () { scheduleAutoplay(autoplayDelay); });
+      new MutationObserver(function () {
+        if (stage.classList.contains('show-carousel')) scheduleAutoplay(autoplayDelay);
+        else window.clearTimeout(autoplayTimer);
+      }).observe(stage, { attributes: true, attributeFilter: ['class'] });
     }
-    renderCoverflow(0);
-    window.addEventListener('resize', function () { renderCoverflow(0); });
+    renderCoverflow(activeCard);
+    scheduleAutoplay(autoplayDelay);
+    window.addEventListener('resize', function () { renderCoverflow(activeCard); });
 
     if (skipButton) skipButton.addEventListener('click', function () {
       var horizonTop = horizon.getBoundingClientRect().top + window.scrollY;
@@ -156,6 +187,7 @@
       return;
     }
     var THREE = window.THREE;
+    var compactViewport = window.matchMedia && window.matchMedia('(max-width: 760px)').matches;
     if (window.ScrollTrigger) window.gsap.registerPlugin(window.ScrollTrigger);
 
     var refs = {
@@ -167,7 +199,7 @@
     var scrollProgress = 0;
 
     refs.scene.fog = new THREE.FogExp2(0x000000, 0.00025);
-    refs.camera = new THREE.PerspectiveCamera(75, 1, 0.1, 2000);
+    refs.camera = new THREE.PerspectiveCamera(compactViewport ? 84 : 75, 1, 0.1, 2000);
     refs.camera.position.set(0, 20, 100);
     try {
       refs.renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
@@ -181,11 +213,11 @@
     if (THREE.EffectComposer && THREE.RenderPass && THREE.UnrealBloomPass) {
       refs.composer = new THREE.EffectComposer(refs.renderer);
       refs.composer.addPass(new THREE.RenderPass(refs.scene, refs.camera));
-      refs.composer.addPass(new THREE.UnrealBloomPass(new THREE.Vector2(1, 1), 0.8, 0.4, 0.85));
+      refs.composer.addPass(new THREE.UnrealBloomPass(new THREE.Vector2(1, 1), compactViewport ? 0.48 : 0.8, compactViewport ? 0.28 : 0.4, compactViewport ? 0.92 : 0.85));
     }
 
     function createStarField() {
-      var starCount = 5000;
+      var starCount = compactViewport ? 2200 : 5000;
       for (var layer = 0; layer < 3; layer += 1) {
         var geometry = new THREE.BufferGeometry();
         var positions = new Float32Array(starCount * 3);
@@ -200,6 +232,14 @@
           positions[index * 3] = radius * Math.sin(phi) * Math.cos(theta);
           positions[index * 3 + 1] = radius * Math.sin(phi) * Math.sin(theta);
           positions[index * 3 + 2] = radius * Math.cos(phi);
+          var pathX = positions[index * 3];
+          var pathY = positions[index * 3 + 1] - 40;
+          var pathDistance = Math.max(0.001, Math.hypot(pathX, pathY));
+          var pathClearance = compactViewport ? 115 : 70;
+          if (pathDistance < pathClearance) {
+            positions[index * 3] = pathX * pathClearance / pathDistance;
+            positions[index * 3 + 1] = 40 + pathY * pathClearance / pathDistance;
+          }
           if (colorChoice < 0.7) color.setHSL(0, 0, 0.8 + Math.random() * 0.2);
           else if (colorChoice < 0.9) color.setHSL(0.08, 0.5, 0.8);
           else color.setHSL(0.6, 0.5, 0.8);
@@ -214,18 +254,21 @@
         var material = new THREE.ShaderMaterial({
           uniforms: { time: { value: 0 }, depth: { value: layer } },
           vertexShader: [
-            'attribute float size;', 'attribute vec3 color;', 'varying vec3 vColor;',
+            'attribute float size;', 'attribute vec3 color;', 'varying vec3 vColor;', 'varying float vVisible;',
             'uniform float time;', 'uniform float depth;', 'void main() {',
             'vColor = color; vec3 pos = position;',
             'float angle = time * 0.05 * (1.0 - depth * 0.3);',
             'mat2 rot = mat2(cos(angle), -sin(angle), sin(angle), cos(angle));',
             'pos.xy = rot * pos.xy;',
             'vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);',
-            'gl_PointSize = size * (300.0 / -mvPosition.z);',
+            'vVisible = step(mvPosition.z, -2.0);',
+            'float depthScale = clamp(240.0 / max(24.0, -mvPosition.z), 0.35, 2.4);',
+            'gl_PointSize = clamp(size * depthScale, 0.65, 4.2);',
             'gl_Position = projectionMatrix * mvPosition;', '}'
           ].join('\n'),
           fragmentShader: [
-            'varying vec3 vColor;', 'void main() {',
+            'varying vec3 vColor;', 'varying float vVisible;', 'void main() {',
+            'if (vVisible < 0.5) discard;',
             'float dist = length(gl_PointCoord - vec2(0.5));', 'if (dist > 0.5) discard;',
             'float opacity = 1.0 - smoothstep(0.0, 0.5, dist);',
             'gl_FragColor = vec4(vColor, opacity);', '}'
