@@ -53,6 +53,7 @@ const publicEntries = [
   "es",
   "images",
   "js",
+  "lab",
   "projects",
   "pt",
   "skylet-assistant",
