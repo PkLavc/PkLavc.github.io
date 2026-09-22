@@ -56,7 +56,7 @@ const publicEntries = [
   "lab",
   "projects",
   "pt",
-  "skylet-assistant",
+  "ia",
   "stacks",
   "visitors",
   "ags",

@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -223,7 +223,7 @@
                         <p>La bóveda no es intencionalmente un administrador de secretos en la nube. El almacenamiento de credenciales localmente en una bóveda que la capa del agente puede leer en tiempo de ejecución mantiene los secretos fuera de cualquier servicio externo y al mismo tiempo permite la automatización que los requiere. La desventaja es que la seguridad de la bóveda local es tan sólida como la máquina en la que se ejecuta, lo cual es un límite aceptable para un sistema diseñado explícitamente para el funcionamiento local.</p>
 
                         <h2>Skylet: el mismo asistente, un entorno de ejecución diferente</h2>
-                        <p>Skylet aparece en dos lugares del portafolio Lavc. La versión pública <a href="/es/skylet-assistant/">Skylet Assistant</a> — se ejecuta en Cloudflare Workers con RAG manual, fallback de proveedor y un modelo de orquestación liviano diseñado para visitantes de portafolio público. Responde preguntas sobre el trabajo, el stack y la experiencia de Patrick. No tiene acceso a datos privados. No ejecuta tareas. Es una interfaz conversacional de sólo lectura sobre una base de conocimientos fija.</p>
+                        <p>Skylet aparece en dos lugares del portafolio Lavc. La versión pública <a href="/es/ia/">Skylet Assistant</a> — se ejecuta en Cloudflare Workers con RAG manual, fallback de proveedor y un modelo de orquestación liviano diseñado para visitantes de portafolio público. Responde preguntas sobre el trabajo, el stack y la experiencia de Patrick. No tiene acceso a datos privados. No ejecuta tareas. Es una interfaz conversacional de sólo lectura sobre una base de conocimientos fija.</p>
                         <p>Skylet dentro de Lavc Systems es una implementación diferente en el mismo rol conceptual. Se ejecuta dentro del backend de FastAPI, tiene acceso a la base de datos SQLite, puede consultar ChromaDB, puede crear tareas, leer archivos cargados, escribir credenciales en la bóveda local y generar un seguimiento operativo de sus propias respuestas. El seguimiento no es una prosa generada por el modelo sobre lo que pensó el modelo; es un registro estructurado de las transiciones de estado reales ejecutadas durante la respuesta: intención detectada, fuente de contexto consultada, acción tomada, siguiente paso recomendado.</p>
                         <p>La lección arquitectónica de ambas versiones es que la calidad de un asistente de IA no está determinada principalmente por el modelo. Está determinado por los datos a los que puede acceder el asistente, qué acciones puede realizar y qué tan transparente es su razonamiento para las personas que confían en él. El Skylet público es útil porque tiene la base de conocimientos adecuada y reglas de respuesta claras. El sistema Skylet es más capaz porque tiene acceso al contexto operativo completo de la plataforma en la que vive.</p>
 
@@ -274,7 +274,7 @@
                         <h2>Continuar explorando</h2>
                         <ul>
                             <li><a href="/es/proyectos/lavc-systems/">Lavc Systems página del proyecto</a></li>
-                            <li><a href="/es/skylet-assistant/">Skylet Assistant (versión pública)</a></li>
+                            <li><a href="/es/ia/">Skylet Assistant (versión pública)</a></li>
                             <li><a href="/es/blog/backend-automation-systems/">Sistemas de automatización backend</a></li>
                             <li><a href="/es/blog/multi-tenant-saas-architecture/">Arquitectura SaaS multi-tenant</a></li>
                             <li><a href="/es/sobre/">Acerca de Patrick Araujo</a></li>
@@ -304,6 +304,6 @@
     </script>
         <script src="/js/i18n.js?v=397fd68aed" defer></script>
     <script src="/js/jquery.min.js?v=d482871a5e" defer></script>
-    <script src="/js/index.js?v=9816b7386d" defer></script>
+    <script src="/js/index.js?v=20260922b" defer></script>
 </body>
 </html>

@@ -155,10 +155,12 @@ function animateElementY(selector, duration, yValue, onComplete) {
 
 function getParticlesConfig() {
   var mobilePointer = isTouchOrMobile();
+  var reducedVisualBudget = (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) ||
+    (navigator.connection && (navigator.connection.saveData || /2g/.test(navigator.connection.effectiveType || '')));
   var config = {
     particles: {
       number: {
-        value: 72,
+        value: reducedVisualBudget ? 28 : 56,
         density: {
           enable: true,
           value_area: 860
@@ -262,7 +264,7 @@ function getParticlesConfig() {
   };
 
   if (mobilePointer) {
-    config.particles.number.value = 58;
+    config.particles.number.value = reducedVisualBudget ? 22 : 40;
     config.particles.number.density.value_area = 420;
     config.particles.line_linked.distance = 128;
     config.particles.line_linked.opacity = 0.28;
@@ -762,7 +764,9 @@ function setupNativeScrollProjectCarousel(carousel, track, getLoopWidth) {
   start();
 }
 
-$(window).on('load', function() {
+var pageVisualsInitialized = false;
+
+function initializeCriticalPageUi() {
   document.body.classList.add('ready');
   if ($('#all').length) {
     setElementDisplay('#all', 'block');
@@ -774,12 +778,35 @@ $(window).on('load', function() {
     $('#navigation-content').removeClass('is-open');
     setElementDisplay('#navigation-content', 'none');
   }
+}
+
+function initializeDeferredPageVisuals() {
+  if (pageVisualsInitialized) return;
+  pageVisualsInitialized = true;
 
   initParticles();
   applyParticlesFallback();
   stabilizeMarkdownBadges();
   setupAboutProjectCarouselDrag();
-});
+}
+
+function scheduleDeferredPageVisuals() {
+  if ('requestIdleCallback' in window) {
+    window.requestIdleCallback(initializeDeferredPageVisuals, { timeout: 1400 });
+  } else {
+    window.setTimeout(initializeDeferredPageVisuals, 300);
+  }
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', function() {
+    initializeCriticalPageUi();
+    scheduleDeferredPageVisuals();
+  }, { once: true });
+} else {
+  initializeCriticalPageUi();
+  scheduleDeferredPageVisuals();
+}
 $(function(){
   $(".color-panel").on("click",function(e) {
     e.preventDefault();
@@ -1252,7 +1279,7 @@ function setupCreditDetails() {
       var type = button.getAttribute('data-credit-detail');
 
       if (type === 'vfx') {
-        button.outerHTML = '<span class="credits-detail-text">' + copy.particles + ' <a href="https://github.com/VincentGarreau/particles.js" target="_blank" rel="noopener noreferrer">Vincent Garreau</a></span>';
+        button.outerHTML = '<span class="credits-detail-text">' + copy.particles + ' <a href="https://21st.dev/" target="_blank" rel="noopener noreferrer">21st.dev</a></span>';
       } else if (type === 'icons') {
         button.outerHTML = '<span class="credits-detail-text">' + copy.icons + ' <a href="https://lordicon.com/" target="_blank" rel="noopener noreferrer">Lordicon</a></span>';
       }
@@ -1467,7 +1494,7 @@ function initSpaceReveals() {
 
 function isSkyletAssistantPage() {
   var path = window.location.pathname || '/';
-  return /^\/(?:(?:pt|es)\/)?skylet-assistant\/?$/i.test(path);
+  return /^\/(?:(?:pt|es)\/)?ia\/?$/i.test(path);
 }
 
 function loadLottiePlayerAssets(forceReload) {

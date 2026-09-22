@@ -11,7 +11,6 @@
       blog: 'blog',
       collections: 'colecoes',
       stacks: 'stacks',
-      'skylet-assistant': 'skylet-assistant'
     },
     es: {
       about: 'sobre',
@@ -20,7 +19,6 @@
       blog: 'blog',
       collections: 'colecciones',
       stacks: 'stacks',
-      'skylet-assistant': 'skylet-assistant'
     }
   };
 
@@ -32,7 +30,6 @@
       blog: 'blog',
       colecoes: 'collections',
       stacks: 'stacks',
-      'skylet-assistant': 'skylet-assistant'
     },
     es: {
       sobre: 'about',
@@ -41,7 +38,6 @@
       blog: 'blog',
       colecciones: 'collections',
       stacks: 'stacks',
-      'skylet-assistant': 'skylet-assistant'
     }
   };
 
@@ -200,12 +196,21 @@
       }
     }
 
+    if (segments.length === 1 && segments[0] === 'ia') {
+      return '/ia/';
+    }
+
     return '/' + segments.join('/') + '/';
   }
 
   function getLocalizedRoute(englishRoute, locale) {
     var route = getEnglishRoute(englishRoute);
     var segments = splitPath(route);
+
+    // Skylet uses the same final /ia slug in every localized route.
+    if (route === '/ia/') {
+      return locale === 'en' ? '/ia/' : '/' + locale + '/ia/';
+    }
 
     if (locale === 'en') {
       return route;

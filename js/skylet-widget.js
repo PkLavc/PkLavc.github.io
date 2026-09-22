@@ -1,4 +1,4 @@
-﻿(function () {
+(function () {
   var state = {
     apiBase: "https://api.pklavc.com",
     conversationId: "",
@@ -174,7 +174,7 @@
 
   function shouldRunWidget() {
     var path = window.location.pathname || "/";
-    return !/^\/(?:(?:pt|es)\/)?skylet-assistant\/?$/i.test(path);
+    return !/^\/(?:(?:pt|es)\/)?ia\/?$/i.test(path);
   }
 
   function getVoiceToggleMarkup(isEnabled) {
@@ -398,7 +398,9 @@
     "https://pklavc.com/about/": "about",
     "https://pklavc.com/projects/lavc-systems/": "lavc",
     "https://pklavc.com/projects/skylet-assistant/": "skyletProject",
-    "https://pklavc.com/skylet-assistant/": "skyletApp",
+    "https://pklavc.com/ia/": "skyletApp",
+    "https://pklavc.com/pt/ia/": "skyletApp",
+    "https://pklavc.com/es/ia/": "skyletApp",
     "https://pklavc.com/projects/codepulse-monorepo/": "codepulse",
     "https://pklavc.com/projects/google-auth-worker/": "googleAuth",
     "https://pklavc.com/projects/zoho-integration-worker/": "zoho",

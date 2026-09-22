@@ -1,4 +1,4 @@
-import { createRenderer } from '/js/black-hole-utils/renderer.js?v=20260909d';
+import { createRenderer } from '/js/black-hole-utils/renderer.js?v=20260922b';
 
 const renderers = [];
 
@@ -45,15 +45,50 @@ async function drawLocalFallback(canvas) {
 }
 
 document.querySelectorAll('[data-black-hole-canvas]').forEach(canvas => {
-  const renderer = createRenderer({ canvas });
-  renderers.push(renderer);
-  renderer.ready.then(() => {
+  const singularity = canvas.closest('.about-profile-singularity');
+  let renderer;
+  let started = false;
+  let active = false;
+
+  function markReady() {
     canvas.classList.add('is-ready');
-  }).catch(error => {
-    canvas.classList.add('uses-fallback');
-    canvas.dataset.blackHoleError = error && error.message ? error.message : 'Black hole renderer failed';
-    drawLocalFallback(canvas).catch(() => {});
-  });
+    if (singularity) singularity.classList.add('black-hole-ready');
+  }
+
+  function startRenderer() {
+    if (started) return;
+    started = true;
+    renderer = createRenderer({ canvas });
+    renderers.push(renderer);
+    renderer.ready.then(() => {
+      markReady();
+      renderer.setActive(active);
+    }).catch(error => {
+      canvas.classList.add('uses-fallback');
+      canvas.dataset.blackHoleError = error && error.message ? error.message : 'Black hole renderer failed';
+      drawLocalFallback(canvas).then(markReady).catch(() => {});
+    });
+  }
+
+  function activate() {
+    active = true;
+    startRenderer();
+    renderer?.setActive(true);
+  }
+
+  function deactivate() {
+    active = false;
+    renderer?.setActive(false);
+  }
+
+  singularity?.addEventListener('pointerenter', activate);
+  singularity?.addEventListener('pointerleave', deactivate);
+  singularity?.addEventListener('focusin', activate);
+  singularity?.addEventListener('focusout', deactivate);
+
+  const prewarm = () => startRenderer();
+  if ('requestIdleCallback' in window) window.requestIdleCallback(prewarm, { timeout: 2200 });
+  else window.setTimeout(prewarm, 900);
 });
 
 window.addEventListener('pagehide', () => {

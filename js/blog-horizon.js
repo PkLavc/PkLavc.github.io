@@ -34,13 +34,14 @@
       stage.appendChild(carousel);
       carousel.classList.add('is-in-scene');
       carousel.setAttribute('aria-hidden', 'true');
-      carousel.inert = true;
+      // The carousel is visually and pointer-event hidden until its scene is
+      // active. Do not use `inert` here: it remains active after the scene is
+      // revealed and makes every article link unclickable.
     }
     if (footer) {
       stage.appendChild(footer);
       footer.classList.add('blog-footer-overlay');
       footer.setAttribute('aria-hidden', 'true');
-      footer.inert = true;
     }
 
     if (track && source.length && !track.children.length) {
@@ -119,7 +120,6 @@
         dragMoved = false;
         window.clearTimeout(autoplayTimer);
         track.classList.add('is-dragging');
-        track.setPointerCapture(event.pointerId);
       });
       track.addEventListener('pointermove', function (event) {
         if (event.pointerId !== dragPointer) return;
@@ -133,7 +133,6 @@
       track.addEventListener('dragstart', function (event) { event.preventDefault(); });
       function finishDrag(event) {
         if (event.pointerId !== dragPointer) return;
-        if (track.hasPointerCapture(event.pointerId)) track.releasePointerCapture(event.pointerId);
         track.classList.remove('is-dragging');
         if (dragMoved) suppressClickUntil = Date.now() + 350;
         dragPointer = null;
@@ -159,9 +158,10 @@
           scheduleAutoplay(autoplayDelay);
           return;
         }
-        if (!event.target.closest('a')) {
-          var link = card.querySelector('h3 a');
-          if (link) window.location.assign(link.href);
+        var link = card.querySelector('h3 a');
+        if (link) {
+          event.preventDefault();
+          window.location.assign(link.href);
         }
       });
       track.addEventListener('focusin', function () { window.clearTimeout(autoplayTimer); });
@@ -411,8 +411,6 @@
       stage.classList.toggle('show-carousel', finalStage);
       if (carousel) carousel.setAttribute('aria-hidden', finalStage ? 'false' : 'true');
       if (footer) footer.setAttribute('aria-hidden', finalStage ? 'false' : 'true');
-      if (carousel) carousel.inert = !finalStage;
-      if (footer) footer.inert = !finalStage;
     }
 
     function animate() {

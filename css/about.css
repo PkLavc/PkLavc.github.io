@@ -2248,14 +2248,14 @@ body {
     z-index: 3;
     transition: transform .9s cubic-bezier(.18,.82,.12,1), filter .72s ease, opacity .66s ease;
 }
-.about-profile-singularity:hover .img-border,
-.about-profile-singularity:focus-within .img-border {
+.about-profile-singularity.black-hole-ready:hover .img-border,
+.about-profile-singularity.black-hole-ready:focus-within .img-border {
     transform: scale(.025) rotate(2.2turn);
     filter: blur(10px) brightness(1.7) saturate(1.5);
     opacity: 0;
 }
-.about-profile-singularity:hover .black-hole-effect,
-.about-profile-singularity:focus-within .black-hole-effect {
+.about-profile-singularity.black-hole-ready:hover .black-hole-effect,
+.about-profile-singularity.black-hole-ready:focus-within .black-hole-effect {
     opacity: 1;
     pointer-events: auto;
     transform: translate(-50%, -50%) scale(1);
@@ -2265,6 +2265,6 @@ body {
     .black-hole-effect { width: 390px; height: 178px; }
 }
 @media (prefers-reduced-motion: reduce) {
-    .about-profile-singularity:hover .img-border,
-    .about-profile-singularity:focus-within .img-border { transform: scale(.1); filter: none; opacity: .15; }
+    .about-profile-singularity.black-hole-ready:hover .img-border,
+    .about-profile-singularity.black-hole-ready:focus-within .img-border { transform: scale(.1); filter: none; opacity: .15; }
 }

@@ -1,5 +1,5 @@
 const SHADER_ROOT = '/js/black-hole-utils/shaders/';
-const ASSET_VERSION = '20260909d';
+const ASSET_VERSION = '20260922b';
 const CLEAR = { r: 0, g: 0, b: 0, a: 1 };
 const BLURS = [
   { direction: [1, 0], radius: 1 },
@@ -31,7 +31,7 @@ struct VertexOutput {
 async function loadShaders() {
   const names = ['black-hole.wgsl', 'bright-pass.wgsl', 'blur.wgsl', 'composite.wgsl'];
   const sources = await Promise.all(names.map(async name => {
-    const response = await fetch(SHADER_ROOT + name + '?v=' + ASSET_VERSION, { credentials: 'same-origin', cache: 'no-cache' });
+    const response = await fetch(SHADER_ROOT + name + '?v=' + ASSET_VERSION, { credentials: 'same-origin', cache: 'force-cache' });
     if (!response.ok) throw new Error(`Unable to load ${name}: ${response.status}`);
     return response.text();
   }));
@@ -124,6 +124,7 @@ export function createRenderer({ canvas }) {
   let input;
   let startTime = performance.now();
   let canvasFormat;
+  let active = false;
 
   function disposeTargets() {
     if (!resources) return;
@@ -231,7 +232,7 @@ export function createRenderer({ canvas }) {
     });
     drawPass(encoder, context.getCurrentTexture().createView(), pipelines.composite, resources.compositeBindGroup);
     device.queue.submit([encoder.finish()]);
-    animationFrame = requestAnimationFrame(render);
+    animationFrame = active ? requestAnimationFrame(render) : 0;
   }
 
   async function initialize() {
@@ -261,7 +262,7 @@ export function createRenderer({ canvas }) {
     observer?.observe(canvas);
     resize();
     startTime = performance.now();
-    animationFrame = requestAnimationFrame(render);
+    render(performance.now());
   }
 
   function dispose() {
@@ -281,5 +282,15 @@ export function createRenderer({ canvas }) {
     dispose();
     throw error;
   });
-  return { ready, resize: requestResize, dispose };
+  function setActive(nextActive) {
+    active = Boolean(nextActive);
+    if (!active) {
+      cancelAnimationFrame(animationFrame);
+      animationFrame = 0;
+      return;
+    }
+    if (!animationFrame && resources) animationFrame = requestAnimationFrame(render);
+  }
+
+  return { ready, resize: requestResize, setActive, dispose };
 }
