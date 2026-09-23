@@ -124,9 +124,9 @@
       track.addEventListener('pointermove', function (event) {
         var hoveredCard = event.target.closest && event.target.closest('.blog-carousel-card');
         if (hoveredCard) {
-          var rect = hoveredCard.getBoundingClientRect();
-          hoveredCard.style.setProperty('--spotlight-x', (event.clientX - rect.left).toFixed(1) + 'px');
-          hoveredCard.style.setProperty('--spotlight-y', (event.clientY - rect.top).toFixed(1) + 'px');
+          hoveredCard.style.setProperty('--spotlight-x', event.clientX.toFixed(1) + 'px');
+          hoveredCard.style.setProperty('--spotlight-y', event.clientY.toFixed(1) + 'px');
+          hoveredCard.style.setProperty('--spotlight-hue', (188 + (event.clientX / window.innerWidth) * 138).toFixed(1));
         }
         if (event.pointerId !== dragPointer) return;
         dragOffset = event.clientX - dragStartX;

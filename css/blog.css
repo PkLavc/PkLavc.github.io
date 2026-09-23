@@ -1197,43 +1197,47 @@ body.blog-layout::before {
 }
 @media (hover: hover) and (pointer: fine) {
     .blog-carousel-card {
-        --spotlight-x: 50%;
-        --spotlight-y: 50%;
+        --spotlight-x: 0px;
+        --spotlight-y: 0px;
+        --spotlight-hue: 192;
+        --spotlight-size: 200px;
         isolation: isolate;
     }
-    .blog-carousel-card::before,
-    .blog-carousel-card::after {
+    .blog-carousel-card::before {
         content: "";
         position: absolute;
-        z-index: 3;
+        z-index: 0;
         pointer-events: none;
+        inset: 0;
         border-radius: inherit;
         opacity: 0;
         transition: opacity .24s ease;
-    }
-    .blog-carousel-card::before {
-        inset: -1px;
-        padding: 1.5px;
-        background: radial-gradient(180px circle at var(--spotlight-x) var(--spotlight-y), rgba(71, 227, 255, .98), rgba(255, 76, 177, .82) 38%, rgba(255, 76, 177, 0) 73%);
-        -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-        -webkit-mask-composite: xor;
-        mask-composite: exclude;
+        background: radial-gradient(calc(var(--spotlight-size) * .75) calc(var(--spotlight-size) * .75) at var(--spotlight-x) var(--spotlight-y), hsl(var(--spotlight-hue) 100% 57% / 1), transparent 100%);
+        background-attachment: fixed;
+        background-size: 100% 100%;
+        background-position: 50% 50%;
+        filter: brightness(1.75) saturate(1.3);
     }
     .blog-carousel-card::after {
-        z-index: -1;
-        inset: -12px;
-        background: radial-gradient(150px circle at var(--spotlight-x) var(--spotlight-y), rgba(45, 218, 255, .28), rgba(255, 68, 169, .18) 42%, transparent 74%);
-        filter: blur(14px);
+        content: "";
+        position: absolute;
+        z-index: 1;
+        pointer-events: none;
+        inset: 3px;
+        border-radius: calc(22px - 3px);
+        background: linear-gradient(180deg, rgba(17, 24, 32, .92), rgba(10, 14, 20, .96));
     }
-    .blog-carousel-card:hover::before,
-    .blog-carousel-card:hover::after,
-    .blog-carousel-card.is-active::before {
+    .blog-carousel-card > * {
+        position: relative;
+        z-index: 2;
+    }
+    .blog-carousel-card:hover::before {
         opacity: 1;
     }
 }
 .blog-carousel-card.is-active {
-    border-color: rgba(255, 89, 184, .7);
-    box-shadow: 0 30px 80px rgba(0, 0, 0, .62), 0 0 42px rgba(255, 75, 170, .2), inset 0 0 32px rgba(31, 220, 255, .04);
+    border-color: rgba(255, 255, 255, .14);
+    box-shadow: 0 30px 80px rgba(0, 0, 0, .62);
 }
 .blog-carousel-card:hover {
     transform: translate(-50%, -50%) translateX(var(--coverflow-x)) translateZ(var(--coverflow-z)) rotateY(var(--coverflow-rotate)) scale(var(--coverflow-scale));

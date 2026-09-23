@@ -47,6 +47,7 @@ const publicEntries = [
   "terms-of-use",
   "uses",
   "about",
+  "assets",
   "blog",
   "collections",
   "css",
@@ -75,10 +76,12 @@ const assetExtensions = new Set([
   ".ico",
   ".json",
   ".webmanifest",
+  ".glb",
+  ".wasm",
 ]);
 
 const localAssetPattern =
-  /(?<prefix>["'(=\s])(?<url>https:\/\/pklavc\.com\/[^"'\s<>?#)]+\.(?:css|js|svg|webp|png|jpg|jpeg|gif|ico|json|webmanifest)|(?:\/|\.\.?\/|[A-Za-z0-9_.-]+\/)[^"'\s<>?#)]+\.(?:css|js|svg|webp|png|jpg|jpeg|gif|ico|json|webmanifest))(\?v=(?<version>[A-Za-z0-9._-]+))?/gi;
+  /(?<prefix>["'(=\s])(?<url>https:\/\/pklavc\.com\/[^"'\s<>?#)]+\.(?:css|js|svg|webp|png|jpg|jpeg|gif|ico|json|webmanifest|glb|wasm)|(?:\/|\.\.?\/|[A-Za-z0-9_.-]+\/)[^"'\s<>?#)]+\.(?:css|js|svg|webp|png|jpg|jpeg|gif|ico|json|webmanifest|glb|wasm))(\?v=(?<version>[A-Za-z0-9._-]+))?/gi;
 
 const adsenseClientId = (process.env.ADSENSE_CLIENT_ID || "").trim();
 const adsenseBlogSlotId = (process.env.ADSENSE_BLOG_SLOT_ID || "").trim();
