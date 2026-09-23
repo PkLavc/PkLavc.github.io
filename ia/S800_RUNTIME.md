@@ -20,6 +20,7 @@ ao visualizador em `/lab/t800/`, sem carregar o modelo até o comando secreto.
 1. A página `/ia/` não baixa Three.js, Draco nem o GLB ao abrir.
 2. Ao enviar uma mensagem cujo conteúdo seja somente `1997`, `skylet-chat.js`
    chama `window.S800Background.reveal()`.
+   Esse comando termina localmente e não envia `1997` à API da assistente.
 3. O runtime importa Three.js, GLTFLoader e DRACOLoader, baixa o GLB e cria o
    canvas dentro de `[data-s800-background]`.
 4. O host informa o estado por atributos para diagnóstico:
@@ -54,6 +55,9 @@ Os ossos usados são `L_j_eyeball_endo`, `R_j_eyeball_endo`, `j_head`,
   não o centro geométrico da tela.
 - O movimento real do ponteiro é capturado em `window` antes dos controles do
   chat, pois o canvas fica atrás da interface e não recebe eventos diretamente.
+- A normalização vertical usa a área entre o topo da tela e o compositor. Essa
+  é a equivalência do `#viewport` do Lab, que termina antes do console, e evita
+  que campo de mensagem e rodapé desloquem o alvo dos olhos.
 - Os olhos usam o alvo do cursor, suavização `0.2` e limite de rotação `0.62`.
 - Cabeça e pescoço seguem mais lentamente, com suavização `0.075` e as mesmas
   sensibilidades do Lab.

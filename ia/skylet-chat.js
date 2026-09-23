@@ -30,7 +30,13 @@
     const message = input.value.trim();
     if (!message) return;
     input.value = ''; autoResize(); appendMessage('user', message);
-    if (message === '1997') { document.body.classList.add('is-s800-revealed'); window.S800Background?.reveal(); }
+    if (message === '1997') {
+      document.body.classList.add('is-s800-revealed');
+      await window.S800Background?.reveal();
+      log.scrollTop = log.scrollHeight;
+      input.focus();
+      return;
+    }
     const waiting = appendMessage('assistant', '...', true);
     try {
       const response = await fetch(`${apiBase}/chat`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message, conversation_id: conversationId, voice_reply: voiceOutput }) });

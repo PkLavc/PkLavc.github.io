@@ -1,4 +1,5 @@
 const host = document.querySelector('[data-s800-background]');
+const composer = document.querySelector('.skylet-composer');
 let loadPromise = null;
 
 function reveal() {
@@ -83,8 +84,10 @@ async function loadScene() {
     }
     function updatePointer(event) {
       const rect = host.getBoundingClientRect();
+      const composerTop = composer?.getBoundingClientRect().top ?? rect.bottom;
+      const interactionHeight = Math.max(1, Math.min(rect.height, composerTop - rect.top));
       const pointerX = ((event.clientX - rect.left) / rect.width) * 2 - 1;
-      const pointerY = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+      const pointerY = -((event.clientY - rect.top) / interactionHeight) * 2 + 1;
       // Use the same current-world-matrix sequence as the Lab runtime before
       // projecting the true midpoint between the two eye bones.
       character?.updateMatrixWorld(true);
