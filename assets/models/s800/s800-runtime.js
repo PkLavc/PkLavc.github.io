@@ -22,7 +22,7 @@ async function loadScene() {
     const { DRACOLoader } = dracoModule;
     const base = new URL('.', import.meta.url);
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(28, 1, .01, 100);
+    const camera = new THREE.PerspectiveCamera(26, 1, .01, 100);
     const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, powerPreference: 'high-performance' });
     const loader = new GLTFLoader().setDRACOLoader(new DRACOLoader().setDecoderPath(new URL('./vendor/three/draco/', base).href));
     const targetLook = new THREE.Vector2();
@@ -39,14 +39,14 @@ async function loadScene() {
     let mouthOpen = 0;
     let speech = { active: false, energy: 0, lastBoundary: 0 };
 
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.35;
+    renderer.toneMappingExposure = 1.15;
     host.replaceChildren(renderer.domElement);
-    scene.add(new THREE.HemisphereLight('#dbe8d8', '#0a100d', 3.2));
-    const key = new THREE.DirectionalLight('#e6f5dd', 4.1); key.position.set(2, 4, 4); scene.add(key);
-    const rim = new THREE.PointLight('#a8ffb7', 9, 8); rim.position.set(-3, 2, -2); scene.add(rim);
+    scene.add(new THREE.HemisphereLight('#dbe8d8', '#111715', 2.2));
+    const key = new THREE.DirectionalLight('#e6f5dd', 3.2); key.position.set(2, 4, 4); scene.add(key);
+    const rim = new THREE.PointLight('#a8ffb7', 7, 8); rim.position.set(-3, 2, -2); scene.add(rim);
 
     const findBone = patterns => rig?.skeleton?.bones.find(bone => patterns.some(pattern => pattern.test(bone.name))) || null;
     function resize() {
@@ -57,8 +57,8 @@ async function loadScene() {
       const visibleHead = root.getObjectByName('S800Endo-Head') || root;
       const box = new THREE.Box3().setFromObject(visibleHead);
       const size = box.getSize(new THREE.Vector3()), center = box.getCenter(new THREE.Vector3());
-      center.y += size.y * .05;
-      camera.position.set(center.x, center.y, center.z + size.y / (2 * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * .72));
+      center.y += size.y * .1;
+      camera.position.set(center.x, center.y, center.z + size.y / (2 * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * .95));
       camera.lookAt(center);
     }
     function discoverRig() {

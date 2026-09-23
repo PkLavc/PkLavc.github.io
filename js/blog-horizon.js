@@ -72,10 +72,17 @@
 
     function syncGlowPointer(event) {
       cards.forEach(function (card) {
-        card.style.setProperty('--x', event.clientX.toFixed(2));
-        card.style.setProperty('--xp', (event.clientX / window.innerWidth).toFixed(2));
-        card.style.setProperty('--y', event.clientY.toFixed(2));
-        card.style.setProperty('--yp', (event.clientY / window.innerHeight).toFixed(2));
+        // GlowCard's default fixed backdrop is useful in a grid, but in a
+        // coverflow it makes every card share one spotlight. Convert the
+        // pointer to this card's own coordinate space so each edge reacts on
+        // its own as the pointer reaches it.
+        var rect = card.getBoundingClientRect();
+        var x = event.clientX - rect.left;
+        var y = event.clientY - rect.top;
+        card.style.setProperty('--x', x.toFixed(2));
+        card.style.setProperty('--xp', (x / Math.max(rect.width, 1)).toFixed(2));
+        card.style.setProperty('--y', y.toFixed(2));
+        card.style.setProperty('--yp', (y / Math.max(rect.height, 1)).toFixed(2));
       });
     }
     document.addEventListener('pointermove', syncGlowPointer, { passive: true });
