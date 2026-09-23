@@ -1,27 +1,43 @@
-:root { color-scheme: dark; --sky-bg: #080b0d; --sky-panel: rgba(10, 14, 19, .78); --sky-line: rgba(181, 236, 249, .17); --sky-text: #f2f7f8; --sky-muted: #93a3aa; --sky-cyan: #89f3ff; }
-body.skylet-page { min-width: 320px; margin: 0; color: var(--sky-text); background: radial-gradient(circle at 50% 20%, #182324, #080b0d 58%); font: 16px/1.5 Inter, ui-sans-serif, system-ui, sans-serif; }
+:root { color-scheme: dark; --s800-ink: #eef2ed; --s800-line: rgba(220, 230, 220, .28); --s800-cyan: #00d8ff; }
+
+html { scroll-behavior: smooth; }
+body.skylet-page { margin: 0; color: var(--s800-ink); background: #080b0b; font-family: ui-monospace, Consolas, monospace; user-select: auto; }
 body.skylet-page #all { min-height: 100svh; }
-.sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; }
-.skylet-screen { position: relative; isolation: isolate; min-height: 100svh; display: flex; flex-direction: column; overflow: clip; }
-.s800-background { position: fixed; z-index: -2; inset: 0; opacity: 0; pointer-events: none; transition: opacity 900ms ease; background: #080b0d; }
-.s800-background::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(8,11,13,.24), rgba(8,11,13,.02) 50%, rgba(8,11,13,.26)), linear-gradient(0deg, rgba(8,11,13,.2), transparent 62%); }
-.s800-background canvas { width: 100%; height: 100%; display: block; }
-.is-s800-revealed .s800-background { opacity: 1; }
-.chat-log { width: min(100% - 32px, 840px); flex: 1; min-height: 0; margin: 0 auto; padding: max(92px, 12vh) 0 170px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: rgba(137,243,255,.42) transparent; }
-.chat-message { display: flex; margin: 0 0 14px; animation: message-in .24s ease-out; }
-.chat-message--user { justify-content: flex-end; }
-.chat-message__bubble { max-width: min(84%, 620px); padding: 12px 15px; border: 1px solid var(--sky-line); border-radius: 16px; background: rgba(7, 12, 16, .81); box-shadow: 0 12px 32px rgba(0,0,0,.2); backdrop-filter: blur(16px); white-space: normal; overflow-wrap: anywhere; }
-.chat-message--user .chat-message__bubble { color: #062126; border-color: rgba(137,243,255,.78); background: linear-gradient(135deg, #8ff6ff, #65cfde); }
-.chat-message--assistant .chat-message__bubble { border-top-left-radius: 4px; }
-.is-pending .chat-message__bubble { color: var(--sky-muted); letter-spacing: .16em; }
-.skylet-composer { position: fixed; z-index: 5; bottom: 18px; left: 50%; display: flex; gap: 10px; width: min(calc(100% - 24px), 864px); padding: 10px; border: 1px solid var(--sky-line); border-radius: 18px; background: rgba(7, 11, 14, .84); box-shadow: 0 16px 42px rgba(0,0,0,.32); backdrop-filter: blur(20px); transform: translateX(-50%); }
-.skylet-composer:focus-within { border-color: rgba(137,243,255,.55); }
-#chat-input { flex: 1; min-height: 46px; max-height: 168px; resize: none; border: 0; outline: 0; color: var(--sky-text); background: transparent; padding: 12px; font: inherit; line-height: 1.38; }
-#chat-input::placeholder { color: #809098; }
-.send-button, .voice-button { width: 48px; height: 48px; flex: 0 0 48px; align-self: flex-end; border-radius: 12px; cursor: pointer; font: 700 20px/1 system-ui; }
-.send-button { border: 0; color: #052126; background: var(--sky-cyan); }
-.voice-button { border: 1px solid var(--sky-line); color: var(--sky-text); background: rgba(7, 11, 14, .8); }
-.voice-button.is-active { color: #052126; border-color: var(--sky-cyan); background: var(--sky-cyan); }
-.send-button:hover, .send-button:focus-visible, .voice-button:hover, .voice-button:focus-visible { filter: brightness(1.12); }
-@keyframes message-in { from { opacity: 0; transform: translateY(7px); } to { opacity: 1; transform: none; } }
-@media (max-width: 600px) { .chat-log { width: min(100% - 20px, 840px); padding-top: 82px; } .skylet-composer { width: calc(100% - 16px); bottom: 8px; } .chat-message__bubble { max-width: 90%; } }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+
+.skylet-stage { position: relative; display: grid; grid-template-rows: minmax(0, 1fr) auto; height: 100svh; min-height: 560px; overflow: hidden; isolation: isolate; background: radial-gradient(ellipse at 50% 38%, #26372f 0%, #101714 47%, #080b0b 82%); }
+.s800-viewport { position: relative; min-height: 0; overflow: hidden; }
+.s800-viewport canvas { display: block; width: 100%; height: 100%; }
+.s800-viewport:not(.is-s800-revealed) canvas { visibility: hidden; }
+.s800-loading, .s800-error { position: absolute; z-index: 5; inset: 50% auto auto 50%; transform: translate(-50%, -50%); color: var(--s800-cyan); font: 600 11px/1.5 ui-monospace, Consolas, monospace; letter-spacing: .12em; }
+.s800-error { width: min(90%, 620px); padding: 18px; border: 1px solid #ff7b63; color: #ff9a86; background: rgba(40, 10, 7, .92); line-height: 1.7; }
+
+.s800-chat-log { position: absolute; z-index: 5; inset: 22px max(22px, calc((100% - 980px) / 2)) 22px; display: flex; flex-direction: column; justify-content: flex-end; gap: 12px; overflow: auto; pointer-events: none; scrollbar-width: none; }
+.s800-chat-log::-webkit-scrollbar { display: none; }
+.s800-chat-message { display: flex; animation: s800-message-in .24s ease-out; }
+.s800-chat-message--user { justify-content: flex-end; }
+.s800-chat-bubble { max-width: min(78%, 760px); padding: 11px 14px; border: 1px solid rgba(112, 143, 145, .32); border-radius: 15px; color: #eef2ed; background: rgba(6, 11, 12, .84); box-shadow: 0 10px 28px rgba(0, 0, 0, .24); font: 500 15px/1.5 system-ui, sans-serif; overflow-wrap: anywhere; backdrop-filter: blur(10px); }
+.s800-chat-message--user .s800-chat-bubble { color: #071012; border-color: #7ee5f1; background: #7ee5f1; }
+.s800-chat-message.is-pending .s800-chat-bubble { opacity: .68; }
+@keyframes s800-message-in { from { opacity: 0; transform: translateY(7px); } to { opacity: 1; transform: none; } }
+
+.s800-console { position: relative; z-index: 6; width: min(100%, 1100px); margin: 0 auto; padding: 12px 6vw 24px; }
+.s800-chat-form { display: flex; align-items: stretch; gap: 10px; }
+.s800-chat-form textarea { min-width: 0; min-height: 50px; max-height: 132px; flex: 1; resize: none; border: 1px solid rgba(96, 225, 245, .48); border-radius: 16px; padding: 13px 15px; outline: 0; color: #eef2ed; background: rgba(5, 10, 12, .9); font: 500 17px/1.4 system-ui, sans-serif; }
+.s800-chat-form textarea::placeholder { color: rgba(200, 220, 226, .58); }
+.s800-chat-form textarea:focus { border-color: var(--s800-cyan); }
+.s800-chat-form button { min-width: 54px; border: 1px solid var(--s800-cyan); border-radius: 16px; padding: 0 16px; color: #031014; background: var(--s800-cyan); cursor: pointer; font: 700 21px/1 system-ui, sans-serif; }
+.s800-chat-form button:hover, .s800-chat-form button:focus-visible { filter: brightness(1.12); }
+.s800-chat-form .s800-voice-button.is-active { color: #081008; border-color: #caff55; background: #caff55; }
+
+body.skylet-page .skylet-footer { margin-top: 0; background: #05080a; }
+
+@media (max-width: 640px) {
+  .skylet-stage { min-height: 500px; }
+  .s800-chat-log { inset: 14px 14px 10px; }
+  .s800-chat-bubble { max-width: 88%; font-size: 14px; }
+  .s800-console { padding: 10px 12px 16px; }
+  .s800-chat-form { gap: 7px; }
+  .s800-chat-form textarea { font-size: 16px; }
+  .s800-chat-form button { min-width: 48px; padding-inline: 13px; }
+}
