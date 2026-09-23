@@ -1,3 +1,8 @@
+/* Compatibility entry point; the runtime stays in a separately cache-busted module. */
+import './s800-runtime.js';
+
+/* Retained only as a local reference while the new lazy runtime is active. */
+if (false) {
 /* S-800 scene: dependencies and model download only after explicit reveal. */
 const host = document.querySelector('[data-s800-background]');
 let loadPromise = null;
@@ -94,3 +99,4 @@ async function loadScene() {
 }
 
 window.S800Background = { reveal, hide };
+}

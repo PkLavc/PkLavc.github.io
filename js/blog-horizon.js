@@ -47,12 +47,38 @@
     if (track && source.length && !track.children.length) {
       Array.prototype.slice.call(source).forEach(function (card) {
         card.classList.add('blog-carousel-card');
+        card.setAttribute('data-glow', '');
+        card.style.setProperty('--base', '188');
+        card.style.setProperty('--spread', '150');
+        card.style.setProperty('--radius', '22');
+        card.style.setProperty('--border', '3');
+        card.style.setProperty('--backdrop', 'hsl(222 26% 8% / .96)');
+        card.style.setProperty('--backup-border', 'var(--backdrop)');
+        card.style.setProperty('--size', '200');
+        card.style.setProperty('--outer', '1');
+        card.style.setProperty('--border-size', 'calc(var(--border, 2) * 1px)');
+        card.style.setProperty('--spotlight-size', 'calc(var(--size, 150) * 1px)');
+        card.style.setProperty('--hue', 'calc(var(--base) + (var(--xp, 0) * var(--spread, 0)))');
+        var glowLayer = document.createElement('div');
+        glowLayer.setAttribute('data-glow', '');
+        glowLayer.setAttribute('aria-hidden', 'true');
+        card.prepend(glowLayer);
         card.querySelectorAll('[id]').forEach(function (node) { node.removeAttribute('id'); });
         track.appendChild(card);
       });
       cards = Array.prototype.slice.call(track.querySelectorAll('.blog-carousel-card'));
       library.remove();
     }
+
+    function syncGlowPointer(event) {
+      cards.forEach(function (card) {
+        card.style.setProperty('--x', event.clientX.toFixed(2));
+        card.style.setProperty('--xp', (event.clientX / window.innerWidth).toFixed(2));
+        card.style.setProperty('--y', event.clientY.toFixed(2));
+        card.style.setProperty('--yp', (event.clientY / window.innerHeight).toFixed(2));
+      });
+    }
+    document.addEventListener('pointermove', syncGlowPointer, { passive: true });
 
     function renderCoverflow(position) {
       if (!cards.length) return;
@@ -122,12 +148,6 @@
         track.classList.add('is-dragging');
       });
       track.addEventListener('pointermove', function (event) {
-        var hoveredCard = event.target.closest && event.target.closest('.blog-carousel-card');
-        if (hoveredCard) {
-          hoveredCard.style.setProperty('--spotlight-x', event.clientX.toFixed(1) + 'px');
-          hoveredCard.style.setProperty('--spotlight-y', event.clientY.toFixed(1) + 'px');
-          hoveredCard.style.setProperty('--spotlight-hue', (188 + (event.clientX / window.innerWidth) * 138).toFixed(1));
-        }
         if (event.pointerId !== dragPointer) return;
         dragOffset = event.clientX - dragStartX;
         if (Math.abs(dragOffset) > 6) dragMoved = true;

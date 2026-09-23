@@ -43,7 +43,7 @@
       const reply = data.reply || copy.unavailable;
       waiting.classList.remove('is-pending');
       waiting.querySelector('.chat-message__bubble').innerHTML = escapeHtml(reply).replace(/\n/g, '<br>');
-      if (voiceOutput && 'speechSynthesis' in window) { speechSynthesis.cancel(); const utterance = new SpeechSynthesisUtterance(reply); utterance.lang = locale === 'pt' ? 'pt-BR' : locale === 'es' ? 'es-ES' : 'en-US'; speechSynthesis.speak(utterance); }
+      if (voiceOutput && 'speechSynthesis' in window) { const language = locale === 'pt' ? 'pt-BR' : locale === 'es' ? 'es-ES' : 'en-US'; if (window.S800Background?.speak) window.S800Background.speak(reply, language); else { speechSynthesis.cancel(); const utterance = new SpeechSynthesisUtterance(reply); utterance.lang = language; speechSynthesis.speak(utterance); } }
     } catch (error) {
       waiting.classList.remove('is-pending');
       waiting.querySelector('.chat-message__bubble').textContent = copy.unavailable;

@@ -1195,48 +1195,56 @@ body.blog-layout::before {
     transition: transform .82s cubic-bezier(.2, .72, .16, 1), opacity .68s ease, border-color .55s ease, box-shadow .55s ease;
     will-change: transform, opacity;
 }
-@media (hover: hover) and (pointer: fine) {
-    .blog-carousel-card {
-        --spotlight-x: 0px;
-        --spotlight-y: 0px;
-        --spotlight-hue: 192;
-        --spotlight-size: 200px;
-        isolation: isolate;
-    }
-    .blog-carousel-card::before {
-        content: "";
-        position: absolute;
-        z-index: 0;
-        pointer-events: none;
-        inset: 0;
-        border-radius: inherit;
-        opacity: 0;
-        transition: opacity .24s ease;
-        background: radial-gradient(calc(var(--spotlight-size) * .75) calc(var(--spotlight-size) * .75) at var(--spotlight-x) var(--spotlight-y), hsl(var(--spotlight-hue) 100% 57% / 1), transparent 100%);
-        background-attachment: fixed;
-        background-size: 100% 100%;
-        background-position: 50% 50%;
-        filter: brightness(1.75) saturate(1.3);
-    }
-    .blog-carousel-card::after {
-        content: "";
-        position: absolute;
-        z-index: 1;
-        pointer-events: none;
-        inset: 3px;
-        border-radius: calc(22px - 3px);
-        background: linear-gradient(180deg, rgba(17, 24, 32, .92), rgba(10, 14, 20, .96));
-    }
-    .blog-carousel-card > * {
-        position: relative;
-        z-index: 2;
-    }
-    .blog-carousel-card:hover::before {
-        opacity: 1;
-    }
+.blog-carousel-card[data-glow] {
+    background-image: radial-gradient(var(--spotlight-size) var(--spotlight-size) at calc(var(--x, 0) * 1px) calc(var(--y, 0) * 1px), hsl(var(--hue, 210) 100% 70% / .1), transparent);
+    background-color: var(--backdrop, transparent);
+    background-size: calc(100% + (2 * var(--border-size))) calc(100% + (2 * var(--border-size)));
+    background-position: 50% 50%;
+    background-attachment: fixed;
+    border: var(--border-size) solid var(--backup-border);
+    position: absolute;
+    touch-action: none;
+}
+.blog-carousel-card[data-glow]::before,
+.blog-carousel-card[data-glow]::after {
+    pointer-events: none;
+    content: "";
+    position: absolute;
+    inset: calc(var(--border-size) * -1);
+    border: var(--border-size) solid transparent;
+    border-radius: calc(var(--radius) * 1px);
+    background-attachment: fixed;
+    background-size: calc(100% + (2 * var(--border-size))) calc(100% + (2 * var(--border-size)));
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    mask: linear-gradient(transparent, transparent), linear-gradient(white, white);
+    mask-clip: padding-box, border-box;
+    mask-composite: intersect;
+}
+.blog-carousel-card[data-glow]::before {
+    background-image: radial-gradient(calc(var(--spotlight-size) * .75) calc(var(--spotlight-size) * .75) at calc(var(--x, 0) * 1px) calc(var(--y, 0) * 1px), hsl(var(--hue, 210) 100% 56% / 1), transparent 100%);
+    filter: brightness(2);
+}
+.blog-carousel-card[data-glow]::after {
+    background-image: radial-gradient(calc(var(--spotlight-size) * .5) calc(var(--spotlight-size) * .5) at calc(var(--x, 0) * 1px) calc(var(--y, 0) * 1px), hsl(0 100% 100% / .92), transparent 100%);
+}
+.blog-carousel-card[data-glow] [data-glow] {
+    position: absolute;
+    inset: 0;
+    will-change: filter;
+    opacity: var(--outer, 1);
+    border-radius: calc(var(--radius) * 1px);
+    border-width: calc(var(--border-size) * 20);
+    filter: blur(calc(var(--border-size) * 10));
+    background: none;
+    pointer-events: none;
+    border: none;
+}
+.blog-carousel-card[data-glow] > [data-glow]::before {
+    inset: -10px;
+    border-width: 10px;
 }
 .blog-carousel-card.is-active {
-    border-color: rgba(255, 255, 255, .14);
     box-shadow: 0 30px 80px rgba(0, 0, 0, .62);
 }
 .blog-carousel-card:hover {
