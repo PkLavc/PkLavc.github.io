@@ -71,6 +71,8 @@ async function loadScene() {
       jaw = findBone([/^j_jaw_endo$/i, /^j_jaw$/i, /jaw/i, /mandible/i]);
       headBase = head?.quaternion.clone(); neckBase = neck?.quaternion.clone(); jawBase = jaw?.quaternion.clone();
       [eyes.left, eyes.right].filter(Boolean).forEach(eye => eyeBase.set(eye, eye.quaternion.clone()));
+      rig.userData.controls = { eyes, head, neck };
+      window.__s800Controls = rig.userData.controls;
     }
     function cacheEyeAim() {
       [eyes.left, eyes.right].filter(Boolean).forEach(eye => {
@@ -131,7 +133,10 @@ async function loadScene() {
     scene.add(character); resize(); frame(character); character.updateMatrixWorld(true); discoverRig(); cacheEyeAim();
     host.dataset.s800Controls = `eyes:${Number(Boolean(eyes.left && eyes.right))},head:${Number(Boolean(head && neck))},jaw:${Number(Boolean(jaw))}`;
     host.dataset.s800Ready = 'true';
-    document.addEventListener('pointermove', updatePointer, { passive: true }); new ResizeObserver(resize).observe(host);
+    // The IA canvas sits behind interactive chat controls. Listen during the
+    // capture phase on window so menus, inputs and custom cursor handlers
+    // cannot stop the real pointer event before it reaches the S-800.
+    window.addEventListener('pointermove', updatePointer, { passive: true, capture: true }); new ResizeObserver(resize).observe(host);
     let previousTime = performance.now();
     (function draw(now) {
       requestAnimationFrame(draw);

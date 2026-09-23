@@ -27,6 +27,8 @@ ao visualizador em `/lab/t800/`, sem carregar o modelo até o comando secreto.
    - `data-s800-ready="true"` quando o canvas está ativo;
    - `data-s800-controls="eyes:1,head:1,jaw:1"` quando os três controles
      foram encontrados no rig.
+   - `window.__s800Controls` expõe os mesmos ossos de olhos, cabeça e pescoço
+     usados pelo Lab para diagnóstico no navegador.
 
 ## Modelo e qualidade visual
 
@@ -50,6 +52,8 @@ Os ossos usados são `L_j_eyeball_endo`, `R_j_eyeball_endo`, `j_head`,
 
 - O ponto neutro do olhar é a projeção do ponto médio entre os olhos reais,
   não o centro geométrico da tela.
+- O movimento real do ponteiro é capturado em `window` antes dos controles do
+  chat, pois o canvas fica atrás da interface e não recebe eventos diretamente.
 - Os olhos usam o alvo do cursor, suavização `0.2` e limite de rotação `0.62`.
 - Cabeça e pescoço seguem mais lentamente, com suavização `0.075` e as mesmas
   sensibilidades do Lab.
