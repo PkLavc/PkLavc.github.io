@@ -43,7 +43,7 @@ test("repository and language markup uses project evidence and preserves coautho
 test("preview dimensions match the existing image and intentional noindex survives", () => {
   assert.match(normalize(read("about/index.html")), /property="og:image:width" content="1024"/);
   assert.match(normalize(read("about/index.html")), /max-image-preview:large/);
-  for (const file of ["search/index.html", "status/index.html", "visitors/index.html", "pt/visitantes/index.html", "es/visitantes/index.html", "projects/ia/demo/index.html"]) {
+  for (const file of ["search/index.html", "status/index.html", "visitors/index.html", "pt/visitantes/index.html", "es/visitantes/index.html", "projects/skylet-assistant/demo/index.html"]) {
     assert.match(normalize(read(file)), /name="robots" content="noindex, follow"/, file);
   }
 });

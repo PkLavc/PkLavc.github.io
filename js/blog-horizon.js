@@ -122,6 +122,12 @@
         track.classList.add('is-dragging');
       });
       track.addEventListener('pointermove', function (event) {
+        var hoveredCard = event.target.closest && event.target.closest('.blog-carousel-card');
+        if (hoveredCard) {
+          var rect = hoveredCard.getBoundingClientRect();
+          hoveredCard.style.setProperty('--spotlight-x', (event.clientX - rect.left).toFixed(1) + 'px');
+          hoveredCard.style.setProperty('--spotlight-y', (event.clientY - rect.top).toFixed(1) + 'px');
+        }
         if (event.pointerId !== dragPointer) return;
         dragOffset = event.clientX - dragStartX;
         if (Math.abs(dragOffset) > 6) dragMoved = true;

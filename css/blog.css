@@ -1195,6 +1195,42 @@ body.blog-layout::before {
     transition: transform .82s cubic-bezier(.2, .72, .16, 1), opacity .68s ease, border-color .55s ease, box-shadow .55s ease;
     will-change: transform, opacity;
 }
+@media (hover: hover) and (pointer: fine) {
+    .blog-carousel-card {
+        --spotlight-x: 50%;
+        --spotlight-y: 50%;
+        isolation: isolate;
+    }
+    .blog-carousel-card::before,
+    .blog-carousel-card::after {
+        content: "";
+        position: absolute;
+        z-index: 3;
+        pointer-events: none;
+        border-radius: inherit;
+        opacity: 0;
+        transition: opacity .24s ease;
+    }
+    .blog-carousel-card::before {
+        inset: -1px;
+        padding: 1.5px;
+        background: radial-gradient(180px circle at var(--spotlight-x) var(--spotlight-y), rgba(71, 227, 255, .98), rgba(255, 76, 177, .82) 38%, rgba(255, 76, 177, 0) 73%);
+        -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+    }
+    .blog-carousel-card::after {
+        z-index: -1;
+        inset: -12px;
+        background: radial-gradient(150px circle at var(--spotlight-x) var(--spotlight-y), rgba(45, 218, 255, .28), rgba(255, 68, 169, .18) 42%, transparent 74%);
+        filter: blur(14px);
+    }
+    .blog-carousel-card:hover::before,
+    .blog-carousel-card:hover::after,
+    .blog-carousel-card.is-active::before {
+        opacity: 1;
+    }
+}
 .blog-carousel-card.is-active {
     border-color: rgba(255, 89, 184, .7);
     box-shadow: 0 30px 80px rgba(0, 0, 0, .62), 0 0 42px rgba(255, 75, 170, .2), inset 0 0 32px rgba(31, 220, 255, .04);
