@@ -83,6 +83,10 @@ async function loadScene() {
       const rect = host.getBoundingClientRect();
       const pointerX = ((event.clientX - rect.left) / rect.width) * 2 - 1;
       const pointerY = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+      // Use the same current-world-matrix sequence as the Lab runtime before
+      // projecting the true midpoint between the two eye bones.
+      character?.updateMatrixWorld(true);
+      camera.updateMatrixWorld(true);
       const visibleEyes = [eyes.left, eyes.right].filter(Boolean), anchor = new THREE.Vector3();
       if (visibleEyes.length) { visibleEyes.forEach(eye => anchor.add(eye.getWorldPosition(new THREE.Vector3()))); anchor.multiplyScalar(1 / visibleEyes.length).project(camera); }
       targetLook.set(THREE.MathUtils.clamp(pointerX - anchor.x, -1, 1), THREE.MathUtils.clamp(pointerY - anchor.y, -1, 1));
@@ -94,6 +98,7 @@ async function loadScene() {
         const baseQuaternion = eyeBase.get(eye), localForward = eyeForwards.get(eye);
         if (!baseQuaternion || !localForward) return;
         eye.quaternion.copy(baseQuaternion); eye.parent.updateWorldMatrix(true, false);
+        eye.updateWorldMatrix(false, false);
         const neutralWorld = eye.getWorldQuaternion(new THREE.Quaternion());
         const neutralForward = localForward.clone().applyQuaternion(neutralWorld).normalize();
         const turn = new THREE.Quaternion().setFromUnitVectors(neutralForward, worldTarget.clone().sub(eye.getWorldPosition(new THREE.Vector3())).normalize());
@@ -131,7 +136,7 @@ async function loadScene() {
     (function draw(now) {
       requestAnimationFrame(draw);
       const delta = Math.min((now - previousTime) / 1000, .05); previousTime = now;
-      eyeLook.lerp(targetLook, .2); headLook.lerp(targetLook, .055);
+      eyeLook.lerp(targetLook, .2); headLook.lerp(targetLook, .075);
       if (head && headBase) head.quaternion.copy(headBase).multiply(new THREE.Quaternion().setFromAxisAngle(axisX, headLook.x * .38)).multiply(new THREE.Quaternion().setFromAxisAngle(axisZ, -headLook.y * .22));
       if (neck && neckBase) neck.quaternion.copy(neckBase).multiply(new THREE.Quaternion().setFromAxisAngle(axisX, headLook.x * .12)).multiply(new THREE.Quaternion().setFromAxisAngle(axisZ, -headLook.y * .07));
       character.updateMatrixWorld(true); applyEyes(); animateMouth(delta); renderer.render(scene, camera);
