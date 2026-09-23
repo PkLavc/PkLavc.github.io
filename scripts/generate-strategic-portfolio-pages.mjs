@@ -155,6 +155,21 @@ const projects = {
       es: "Plataforma interna con Python/FastAPI, React, WebSocket, RAG, memoria vectorial, agentes y LLMs locales para orquestación de tareas y visibilidad operativa."
     }
   },
+  "skylet-assistant": {
+    stack: "Cloudflare Workers, JavaScript, manual RAG, LLM fallback, Web Speech API",
+    roles: "AI Engineer, LLM/RAG Engineer, Backend Software Engineer",
+    category: { en: "AI Assistant", pt: "Assistente de IA", es: "Asistente de IA" },
+    title: {
+      en: "AI assistant with RAG for portfolio and contextual search",
+      pt: "Assistente IA com RAG para portfólio e consulta contextual",
+      es: "Asistente IA con RAG para portafolio y consulta contextual"
+    },
+    summary: {
+      en: "Multilingual assistant with Cloudflare Workers, manual RAG, provider fallback, and contextual answers about experience, projects, and stack.",
+      pt: "Assistente multilíngue com Cloudflare Workers, RAG manual, fallback de LLM e consulta sobre experiência, projetos e stack.",
+      es: "Asistente multilingüe con Cloudflare Workers, RAG manual, fallback de LLM y consulta sobre experiencia, proyectos y stack."
+    }
+  },
   "codepulse-monorepo": {
     repo: "PkLavc/codepulse-monorepo",
     stack: "Node.js, JavaScript, HTML, CSS, Playwright, Render",
@@ -391,7 +406,7 @@ const roles = {
     }
   },
   "ai-engineer": {
-    projects: ["lavc-systems", "codepulse-monorepo", "aegis-sentinel"],
+    projects: ["lavc-systems", "skylet-assistant", "codepulse-monorepo", "aegis-sentinel"],
     title: {
       en: "AI Engineer Python Projects | LLMs, Agents and Applied AI",
       pt: "Projetos AI Engineer Python | LLMs, Agentes e IA Aplicada",
@@ -415,7 +430,7 @@ const roles = {
     }
   },
   "llm-rag": {
-    projects: ["lavc-systems", "codepulse-monorepo"],
+    projects: ["lavc-systems", "skylet-assistant", "codepulse-monorepo"],
     title: {
       en: "LLM and RAG Engineer Projects | Ollama, LangGraph and ChromaDB",
       pt: "Projetos LLM e RAG | Ollama, LangGraph e ChromaDB",
@@ -492,7 +507,7 @@ const blogPosts = [
   {
     slug: "ai-kanban-fastapi-rag-agents",
     role: "ai-engineer",
-    project: "lavc-systems",
+    project: "skylet-assistant",
     category: { en: "AI Platform", pt: "Plataforma de IA", es: "Plataforma de IA" },
     title: {
       en: "How I built an AI Kanban platform with FastAPI, RAG and agents",
@@ -770,6 +785,18 @@ const caseDetails = {
       en: "A FastAPI and React platform combines Kanban, local LLMs, RAG, vector memory, agent orchestration, scheduler, and WebSocket observability.",
       pt: "Uma plataforma FastAPI e React combina Kanban, LLMs locais, RAG, memória vetorial, orquestração de agentes, scheduler e observabilidade via WebSocket.",
       es: "Una plataforma FastAPI y React combina Kanban, LLMs locales, RAG, memoria vectorial, orquestación de agentes, scheduler y observabilidad vía WebSocket."
+    }
+  },
+  "skylet-assistant": {
+    problem: {
+      en: "Visitors need fast answers about projects, stack, and experience without reading every portfolio page.",
+      pt: "Visitantes precisam de respostas rápidas sobre projetos, stack e experiência sem ler todas as páginas do portfólio.",
+      es: "Visitantes necesitan respuestas rápidas sobre proyectos, stack y experiencia sin leer todas las páginas del portafolio."
+    },
+    solution: {
+      en: "A Cloudflare Worker assistant uses manual RAG, multilingual answer rules, fallback behavior, and constrained context about the portfolio.",
+      pt: "Um assistente em Cloudflare Worker usa RAG manual, regras multilíngues de resposta, fallback e contexto controlado sobre o portfólio.",
+      es: "Un asistente en Cloudflare Worker usa RAG manual, reglas multilingües de respuesta, fallback y contexto controlado sobre el portafolio."
     }
   },
   "raw-api-ingestion-pipeline": {
