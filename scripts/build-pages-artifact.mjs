@@ -47,6 +47,7 @@ const publicEntries = [
   "terms-of-use",
   "uses",
   "about",
+  "adm",
   "ads",
   "assets",
   "blog",

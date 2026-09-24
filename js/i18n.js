@@ -466,6 +466,17 @@
     toggle.setAttribute('aria-label', labels.languageSettings);
     toggle.setAttribute('title', labels.languageSettings);
 
+    var adminLink = nav.querySelector('.adm-navigation-link');
+    if (!adminLink) {
+      adminLink = document.createElement('a');
+      adminLink.className = 'adm-navigation-link';
+      adminLink.href = '/adm/';
+      adminLink.textContent = 'ADM';
+      adminLink.setAttribute('aria-label', 'Open admin panel');
+      adminLink.title = 'Admin';
+      toggle.insertAdjacentElement('afterend', adminLink);
+    }
+
     if (!options) {
       options = document.createElement('div');
       options.className = 'navigation-language-options';

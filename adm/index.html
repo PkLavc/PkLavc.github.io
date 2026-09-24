@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#070910">
+  <title>ADM | PkLavc</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/admin.css">
+  <script src="/js/admin.js" defer></script>
+</head>
+<body class="admin-page">
+  <main class="login-screen" data-login-screen>
+    <a class="admin-brand" href="/" aria-label="Voltar ao site"><span class="brand-mark">P</span><span>PKLAVC<span class="brand-dot">.</span>COM</span></a>
+    <section class="login-card" aria-labelledby="login-title">
+      <div class="eyebrow"><span class="status-dot"></span> ÁREA ADMINISTRATIVA</div>
+      <h1 id="login-title">Bem-vindo de volta<span>.</span></h1>
+      <p class="login-description">Entre para acessar o painel de gerenciamento do site.</p>
+      <form data-login-form>
+        <label for="admin-email">E-mail</label>
+        <input id="admin-email" name="email" type="email" autocomplete="username" placeholder="voce@exemplo.com">
+        <label for="admin-password">Senha</label>
+        <input id="admin-password" name="password" type="password" autocomplete="current-password" placeholder="Sua senha">
+        <button class="primary-button" type="submit">Entrar <span aria-hidden="true">→</span></button>
+      </form>
+      <p class="prototype-note"><span aria-hidden="true">ⓘ</span> Protótipo de interface: o acesso e as alterações ainda não estão conectados a autenticação ou publicação.</p>
+      <a class="back-link" href="/">← Voltar ao site</a>
+    </section>
+    <div class="login-orb login-orb-cyan" aria-hidden="true"></div>
+    <div class="login-orb login-orb-pink" aria-hidden="true"></div>
+  </main>
+
+  <main class="admin-shell" data-admin-shell hidden>
+    <aside class="admin-sidebar">
+      <a class="admin-brand sidebar-brand" href="/"><span class="brand-mark">P</span><span>PKLAVC<span class="brand-dot">.</span>COM</span></a>
+      <div class="sidebar-label">PAINEL</div>
+      <nav class="admin-nav" aria-label="Seções administrativas">
+        <button class="admin-nav-item is-active" type="button" data-section="overview"><span>◫</span> Visão geral</button>
+        <button class="admin-nav-item" type="button" data-section="ads"><span>▧</span> Publicidade <i>4 posições</i></button>
+        <button class="admin-nav-item" type="button" data-section="users"><span>♙</span> Usuários</button>
+      </nav>
+      <div class="sidebar-bottom"><span class="status-dot"></span> Modo demonstração <button type="button" data-logout>Sair</button></div>
+    </aside>
+
+    <section class="admin-main">
+      <header class="admin-topbar"><div><span class="breadcrumb">Administração <span>/</span> <b data-current-section>Visão geral</b></span><h1 data-page-title>Visão geral</h1></div><a href="/" class="view-site-link" target="_blank" rel="noopener">Ver site ↗</a></header>
+      <div class="demo-banner"><span>◈</span><div><strong>Ambiente de demonstração</strong><p>Você pode navegar pelo painel, mas salvar, editar anúncios e gerenciar usuários estão desativados.</p></div><span class="demo-badge">SOMENTE VISUALIZAÇÃO</span></div>
+
+      <section class="admin-section is-visible" data-panel="overview">
+        <div class="section-heading"><div><h2>Olá, Patrick</h2><p>Resumo da estrutura de gerenciamento planejada para o site.</p></div></div>
+        <div class="overview-grid">
+          <article class="overview-card"><span class="overview-icon cyan-icon">▧</span><span class="overview-label">Posições de publicidade</span><strong>4</strong><small>Lateral, dentro do artigo, inferior e mobile</small></article>
+          <article class="overview-card"><span class="overview-icon pink-icon">◎</span><span class="overview-label">Segmentação</span><strong>Ativa no site</strong><small>Idioma, país, região e regra padrão</small></article>
+          <article class="overview-card"><span class="overview-icon violet-icon">⟳</span><span class="overview-label">Rodízio de campanhas</span><strong>Configurável</strong><small>Intervalo por posição e campanha</small></article>
+        </div>
+        <article class="content-card"><div class="card-heading"><div><h3>Próximas etapas</h3><p>O gerenciamento visual está preparado para conectar futuramente.</p></div><span class="pill-muted">INTEGRAÇÃO DESATIVADA</span></div><div class="roadmap-row"><span class="roadmap-number">01</span><div><strong>Conectar autenticação segura</strong><p>Validar usuários no servidor; nunca enviar secrets ao navegador.</p></div><span class="roadmap-state">PENDENTE</span></div><div class="roadmap-row"><span class="roadmap-number">02</span><div><strong>Aplicar alterações de anúncios</strong><p>Revisão e publicação controladas via GitHub Actions.</p></div><span class="roadmap-state">PENDENTE</span></div></article>
+      </section>
+
+      <section class="admin-section" data-panel="ads" hidden>
+        <div class="section-heading"><div><h2>Publicidade</h2><p>Prévia das posições já suportadas pelo sistema de anúncios do blog.</p></div><button class="disabled-button" type="button" disabled>＋ Nova campanha</button></div>
+        <div class="ads-position-grid">
+          <article class="position-card"><div class="position-top"><span class="placement-icon">▥</span><span class="pill-live">CONFIGURADO</span></div><h3>Lateral</h3><p>Exibida na coluna lateral em telas desktop.</p><div class="position-meta"><span>🖥 Desktop</span><span>EN · PT · ES</span></div><button class="text-button" type="button" disabled>Editar posição →</button></article>
+          <article class="position-card"><div class="position-top"><span class="placement-icon pink-icon">▤</span><span class="pill-live">CONFIGURADO</span></div><h3>Dentro do artigo</h3><p>Inserida entre os blocos de conteúdo do post.</p><div class="position-meta"><span>▤ Artigo</span><span>EN · PT · ES</span></div><button class="text-button" type="button" disabled>Editar posição →</button></article>
+          <article class="position-card"><div class="position-top"><span class="placement-icon">▰</span><span class="pill-live">CONFIGURADO</span></div><h3>Inferior</h3><p>Exibida depois do conteúdo do artigo.</p><div class="position-meta"><span>↧ Final do post</span><span>EN · PT · ES</span></div><button class="text-button" type="button" disabled>Editar posição →</button></article>
+          <article class="position-card"><div class="position-top"><span class="placement-icon pink-icon">▱</span><span class="pill-live">CONFIGURADO</span></div><h3>Mobile</h3><p>Posição dedicada para telas compactas.</p><div class="position-meta"><span>▯ Mobile</span><span>EN · PT · ES</span></div><button class="text-button" type="button" disabled>Editar posição →</button></article>
+        </div>
+        <article class="content-card future-controls"><div class="card-heading"><div><h3>Segmentação e rodízio</h3><p>Controles planejados — somente leitura neste protótipo.</p></div></div><div class="form-preview"><label>Idioma<select disabled><option>Todos os idiomas</option></select></label><label>País ou região<input disabled placeholder="Ex.: BR · BR-SP"></label><label>Intervalo do rodízio<input disabled placeholder="Ex.: 30 segundos"></label><label>Tipo de campanha<select disabled><option>Imagem, Google Ads ou HTML</option></select></label></div><p class="saved-notice">Sem campanha para uma posição/segmento, o site permanece normal, sem espaço vazio.</p></article>
+      </section>
+
+      <section class="admin-section" data-panel="users" hidden>
+        <div class="section-heading"><div><h2>Usuários</h2><p>O gerenciamento de contas está desativado enquanto a autenticação não estiver conectada.</p></div><button class="disabled-button" type="button" disabled>＋ Convidar usuário</button></div>
+        <article class="content-card empty-state"><span class="empty-icon">♙</span><h3>Gerenciamento ainda não conectado</h3><p>Não há contas editáveis neste protótipo. Credenciais não são armazenadas neste site estático.</p><span class="pill-muted">SECRETS NÃO PUBLICADOS NO FRONT-END</span></article>
+      </section>
+      <footer class="admin-footer">PKLAVC.COM <span>•</span> PAINEL ADMINISTRATIVO <span class="footer-right">Protótipo sem alterações em produção</span></footer>
+    </section>
+  </main>
+</body>
+</html>

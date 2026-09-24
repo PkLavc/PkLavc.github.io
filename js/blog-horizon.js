@@ -257,7 +257,8 @@
     var refs = {
       scene: new THREE.Scene(), camera: null, renderer: null, composer: null,
       stars: [], nebula: null, mountains: [], atmosphere: null, locations: [],
-      animationId: null, targetCameraX: 0, targetCameraY: 30, targetCameraZ: 300
+      animationId: null, targetCameraX: 0, targetCameraY: 30, targetCameraZ: 300,
+      sceneVisible: null, lastFrameTime: 0, resizeObserver: null
     };
     var smoothCameraPos = { x: 0, y: 30, z: 100 };
 
@@ -270,17 +271,17 @@
       showFallback();
       return;
     }
-    refs.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
+    refs.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, compactViewport ? 1.15 : 1.5));
     refs.renderer.toneMapping = THREE.ACESFilmicToneMapping;
     refs.renderer.toneMappingExposure = 0.5;
-    if (THREE.EffectComposer && THREE.RenderPass && THREE.UnrealBloomPass) {
+    if (!compactViewport && THREE.EffectComposer && THREE.RenderPass && THREE.UnrealBloomPass) {
       refs.composer = new THREE.EffectComposer(refs.renderer);
       refs.composer.addPass(new THREE.RenderPass(refs.scene, refs.camera));
       refs.composer.addPass(new THREE.UnrealBloomPass(new THREE.Vector2(1, 1), compactViewport ? 0.48 : 0.8, compactViewport ? 0.28 : 0.4, compactViewport ? 0.92 : 0.85));
     }
 
     function createStarField() {
-      var starCount = compactViewport ? 1100 : 2200;
+      var starCount = compactViewport ? 700 : 2200;
       for (var layer = 0; layer < 3; layer += 1) {
         var geometry = new THREE.BufferGeometry();
         var positions = new Float32Array(starCount * 3);
@@ -435,6 +436,9 @@
       var height = Math.max(1, bounds.height);
       refs.camera.aspect = width / height;
       refs.camera.updateProjectionMatrix();
+      if (refs.viewportWidth === width && refs.viewportHeight === height) return;
+      refs.viewportWidth = width;
+      refs.viewportHeight = height;
       refs.renderer.setSize(width, height, false);
       if (refs.composer) refs.composer.setSize(width, height);
     }
@@ -477,10 +481,12 @@
       if (footer) footer.setAttribute('aria-hidden', finalStage ? 'false' : 'true');
     }
 
-    function animate() {
+    function animate(frameTime) {
       refs.animationId = 0;
       if (document.hidden || !stage.isConnected || (refs.sceneVisible === false)) return;
       refs.animationId = window.requestAnimationFrame(animate);
+      if (compactViewport && frameTime - refs.lastFrameTime < 1000 / 30) return;
+      refs.lastFrameTime = frameTime;
       var time = Date.now() * 0.001;
       refs.stars.forEach(function (starField) { starField.material.uniforms.time.value = reduced ? 0 : time; });
       refs.nebula.material.uniforms.time.value = reduced ? 0 : time * 0.5;
@@ -551,6 +557,10 @@
     if (subtitle) timeline.from(subtitle.querySelectorAll('.subtitle-line'), { y: 50, opacity: 0, duration: 1, stagger: 0.2, ease: 'power3.out' }, '-=0.8');
     window.addEventListener('resize', resize);
     window.addEventListener('scroll', updateScroll, { passive: true });
+    if ('ResizeObserver' in window) {
+      refs.resizeObserver = new ResizeObserver(resize);
+      refs.resizeObserver.observe(stage);
+    }
     }
 
     var dependencies = window.PkLavcBlogHorizonReady || Promise.resolve(false);

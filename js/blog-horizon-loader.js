@@ -3,13 +3,9 @@
 
   function prefersLightExperience() {
     var connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
-    var reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    var touchDevice = window.matchMedia && window.matchMedia('(hover: none), (pointer: coarse)').matches;
-    var narrowScreen = window.matchMedia && window.matchMedia('(max-width: 760px)').matches;
-    var lowMemory = typeof navigator.deviceMemory === 'number' && navigator.deviceMemory <= 2;
-    var lowCpu = typeof navigator.hardwareConcurrency === 'number' && navigator.hardwareConcurrency <= 2;
-    var saveData = connection && (connection.saveData || /^(slow-2g|2g|3g)$/.test(connection.effectiveType || ''));
-    return reducedMotion || touchDevice || narrowScreen || lowMemory || lowCpu || saveData;
+    var lowMemory = typeof navigator.deviceMemory === 'number' && navigator.deviceMemory <= 1;
+    var saveData = connection && (connection.saveData || /^(slow-2g|2g)$/.test(connection.effectiveType || ''));
+    return lowMemory || saveData;
   }
 
   function loadScript(source) {
@@ -23,7 +19,7 @@
     });
   }
 
-  var dependencies = [
+  var desktopDependencies = [
     '/js/vendor/three/three.min.js',
     '/js/vendor/three/shaders/CopyShader.js',
     '/js/vendor/three/shaders/LuminosityHighPassShader.js',
@@ -34,6 +30,13 @@
     '/js/vendor/three/postprocessing/UnrealBloomPass.js',
     '/js/vendor/gsap/ScrollTrigger.min.js'
   ];
+  var mobileExperience = window.matchMedia && (
+    window.matchMedia('(max-width: 760px)').matches ||
+    window.matchMedia('(pointer: coarse)').matches
+  );
+  var dependencies = mobileExperience
+    ? ['/js/vendor/three/three.min.js']
+    : desktopDependencies;
 
   if (prefersLightExperience() || !window.WebGLRenderingContext) {
     window.PkLavcBlogHorizonReady = Promise.resolve(false);

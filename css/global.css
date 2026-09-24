@@ -230,6 +230,26 @@ body.navigation-open {
     opacity: .82;
     transition: opacity .3s ease, color .3s ease, transform .3s ease;
 }
+.adm-navigation-link {
+    position: absolute;
+    top: max(31px, calc(env(safe-area-inset-top) + 9px));
+    left: max(66px, calc(4% + 48px + env(safe-area-inset-left)));
+    z-index: 2;
+    padding: 7px 11px;
+    border: 1px solid rgba(0, 209, 255, .48);
+    border-radius: 999px;
+    color: rgba(255,255,255,.84);
+    font: 600 11px/1 'Poppins', 'Inter', sans-serif;
+    letter-spacing: .12em;
+    text-decoration: none;
+    transition: color .2s ease, border-color .2s ease, box-shadow .2s ease;
+}
+.adm-navigation-link:hover,
+.adm-navigation-link:focus-visible {
+    color: #fff;
+    border-color: #ff2aaa;
+    box-shadow: 0 0 16px rgba(255,42,170,.25);
+}
 .navigation-language-gear-icon {
     width: 24px;
     height: 24px;
