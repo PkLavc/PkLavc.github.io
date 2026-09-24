@@ -52,6 +52,4 @@ def collect(root: Path) -> tuple[list[dict], list[str]]:
             print(f"Fonte indisponível: {feed['name']} ({type(exc).__name__})")
     print("Fontes verificadas: " + (", ".join(checked) if checked else "nenhuma"))
     print(f"Itens coletados dos feeds: {len(candidates)}")
-    for item in candidates:
-        print(f"Fonte candidata #{item['id']} [{safe_log(item['publisher'])}] {item['published_date']}: {safe_log(item['title'])} ({safe_log(item['url'])})")
     return candidates, checked

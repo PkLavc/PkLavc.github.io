@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import os
+import time
 import urllib.request
 import urllib.error
 
@@ -17,8 +18,17 @@ def call(prompt: str, *, search: bool = False) -> tuple[str, list[str]]:
     req = urllib.request.Request(
         f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent",
         data=json.dumps(payload).encode("utf-8"), headers={"Content-Type": "application/json", "x-goog-api-key": key}, method="POST")
-    with urllib.request.urlopen(req, timeout=120) as response:
-        data = json.loads(response.read().decode("utf-8"))
+    for attempt in range(4):
+        try:
+            with urllib.request.urlopen(req, timeout=120) as response:
+                data = json.loads(response.read().decode("utf-8"))
+            break
+        except urllib.error.HTTPError as exc:
+            if exc.code not in {429, 500, 502, 503, 504} or attempt == 3:
+                raise RuntimeError(f"Gemini API HTTP {exc.code}; see model availability and quota settings.") from None
+            delay = 2 ** (attempt + 1)
+            print(f"Gemini temporariamente indisponível (HTTP {exc.code}); nova tentativa em {delay}s ({attempt + 1}/3).")
+            time.sleep(delay)
     candidate = data.get("candidates", [{}])[0]
     text = "".join(part.get("text", "") for part in candidate.get("content", {}).get("parts", []))
     sources = []
