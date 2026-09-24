@@ -1,0 +1,62 @@
+name: Daily English Blog Automation
+
+on:
+  schedule:
+    - cron: "15 15 * * *"
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Generate and validate without changing the repository"
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: daily-blog-automation
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Collect, select, generate and validate
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_MODEL: ${{ vars.GEMINI_MODEL || 'gemini-2.5-flash' }}
+          DRY_RUN: ${{ inputs.dry_run || false }}
+        run: python3 -m scripts.blog_automation.run --root .
+      - name: Check whether a story was published
+        id: changes
+        if: inputs.dry_run != true
+        run: |
+          if git diff --quiet; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Commit and push the validated article
+        if: steps.changes.outputs.changed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add blog blog/index.html blog/automation-sitemap.xml sitemap.xml sitemap-index.xml sitemaps feed.xml scripts/blog_automation/used_stories.json
+          git commit -m "blog: publish daily engineering story"
+          git push
+      - name: Trigger the existing Pages deployment
+        if: steps.changes.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run pages.yml --ref "${GITHUB_REF_NAME}"

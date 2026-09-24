@@ -31,7 +31,7 @@ jobs:
       - name: Detect changes
         id: changes
         run: |
-          if git diff --quiet sitemap.xml sitemap-index.xml sitemaps feed.xml; then
+          if git diff --quiet sitemap.xml sitemap-index.xml sitemaps feed.xml blog/automation-sitemap.xml; then
             echo "changed=false" >> $GITHUB_OUTPUT
           else
             echo "changed=true" >> $GITHUB_OUTPUT
@@ -42,6 +42,6 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add sitemap.xml sitemap-index.xml sitemaps feed.xml
+          git add sitemap.xml sitemap-index.xml sitemaps feed.xml blog/automation-sitemap.xml
           git commit -m "chore: auto-update sitemap and RSS"
           git push

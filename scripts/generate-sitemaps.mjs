@@ -132,10 +132,12 @@ ${body}
 
 const dates = gitLastmods();
 const pages = new Map();
+const autoPostUrls = new Set();
 let excluded = 0;
 for (const filePath of walk(ROOT)) {
   const route = routeFromFile(filePath);
-  const metadata = pageMetadata(fs.readFileSync(filePath, "utf8"), route);
+  const sourceHtml = fs.readFileSync(filePath, "utf8");
+  const metadata = pageMetadata(sourceHtml, route);
   // Canonical aliases must not duplicate URLs or overwrite the target's metadata.
   if (utilityRoutes.has(route) || metadata.blocked || metadata.redirect || metadata.loc !== `${SITE}${route}`) {
     excluded += 1;
@@ -143,6 +145,7 @@ for (const filePath of walk(ROOT)) {
   }
   if (pages.has(metadata.loc)) throw new Error(`Duplicate sitemap URL: ${metadata.loc}`);
   pages.set(metadata.loc, { ...metadata, lastmod: dates.get(toPosix(path.relative(ROOT, filePath))) });
+  if (/\bdata-auto-post=["']true["']/i.test(sourceHtml)) autoPostUrls.add(metadata.loc);
 }
 
 let excludedAlternates = 0;
@@ -170,18 +173,25 @@ for (const [name, entries] of Object.entries(groups)) {
 // Keep the primary sitemap at the domain root so its scope covers the whole site.
 // Group files remain available for Search Console reporting; the compatibility index
 // references the root sitemap, without guessing its file-modification timestamp.
-const allPages = [...pages.values()].sort((a, b) => a.loc.localeCompare(b.loc));
+const autoPosts = [...pages.values()].filter((page) => autoPostUrls.has(page.loc)).sort((a, b) => a.loc.localeCompare(b.loc));
+const allPages = [...pages.values()].filter((page) => !autoPostUrls.has(page.loc)).sort((a, b) => a.loc.localeCompare(b.loc));
 if (allPages.length > 50000) throw new Error("Root sitemap exceeds 50,000 URLs; split into root-level sitemap files.");
 const sitemap = renderUrlset(allPages);
 if (Buffer.byteLength(sitemap, "utf8") > 50 * 1024 * 1024) throw new Error("Root sitemap exceeds 50 MB.");
 fs.writeFileSync(path.join(ROOT, "sitemap.xml"), sitemap, "utf8");
+const autoSitemapPath = path.join(ROOT, "blog", "automation-sitemap.xml");
+fs.writeFileSync(autoSitemapPath, renderUrlset(autoPosts), "utf8");
 fs.writeFileSync(path.join(ROOT, "sitemap-index.xml"), `<?xml version="1.0" encoding="UTF-8"?>
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <sitemap>
     <loc>${SITE}/sitemap.xml</loc>
   </sitemap>
+  <sitemap>
+    <loc>${SITE}/blog/automation-sitemap.xml</loc>
+  </sitemap>
 </sitemapindex>
 `, "utf8");
 
-console.log(`Generated sitemap.xml with ${pages.size} canonical URLs (${excluded} excluded pages, ${excludedAlternates} excluded alternates).`);
+console.log(`Generated sitemap.xml with ${allPages.length} canonical URLs (${excluded} excluded pages, ${excludedAlternates} excluded alternates).`);
+console.log(`Generated blog/automation-sitemap.xml with ${autoPosts.length} automated blog URLs.`);
 for (const [name, entries] of Object.entries(groups)) console.log(`- sitemaps/${name}.xml: ${entries.length} URLs`);
