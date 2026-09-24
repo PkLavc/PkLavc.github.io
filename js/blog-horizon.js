@@ -512,6 +512,7 @@
     resize();
     updateScroll();
     animate();
+    stage.classList.add('horizon-scene-ready');
     if ('IntersectionObserver' in window) {
       var sceneObserver = new IntersectionObserver(function (entries) {
         refs.sceneVisible = entries[0].isIntersecting;
