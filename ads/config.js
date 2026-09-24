@@ -1,16 +1,23 @@
 (function () {
   'use strict';
 
-  // Assign a campaign ID by region (BR-SP), country (BR), then default.
-  // The sample campaign stays the same everywhere and changes its creative by page language.
+  // Each position can be disabled, targeted by language/country/region, or rotated.
+  // An empty list ([]) explicitly leaves the position without an ad.
   window.PKLAVC_BLOG_ADS = {
     geoEndpoint: 'https://api.pklavc.com/ads/geo',
     geoTimeoutMs: 1500,
     placements: {
-      sidebar: { default: 'pklavc', countries: {}, regions: {} },
-      inline: { default: 'pklavc', countries: {}, regions: {} },
-      bottom: { default: 'pklavc', countries: {}, regions: {} },
-      mobile: { default: 'pklavc', countries: {}, regions: {} }
+      sidebar: { enabled: true, default: 'pklavc', countries: {}, regions: {}, locales: {} },
+      inline: {
+        enabled: true,
+        default: ['pklavc', 'pklavc_projects'],
+        countries: {},
+        regions: {},
+        locales: {},
+        rotateEverySeconds: 15
+      },
+      bottom: { enabled: true, default: 'pklavc', countries: {}, regions: {}, locales: {} },
+      mobile: { enabled: true, default: 'pklavc', countries: {}, regions: {}, locales: {} }
     },
     campaigns: {
       pklavc: {
@@ -39,6 +46,26 @@
             inline: { title: 'Del artículo a la arquitectura', body: 'Mira estas ideas en sistemas e integraciones funcionales.', cta: 'Explorar proyectos', href: '/es/proyectos/' },
             bottom: { title: 'Construyamos algo confiable', body: 'Conoce el portafolio y el enfoque de ingeniería detrás de él.', cta: 'Conocer a Patrick', href: '/es/sobre/' },
             mobile: { title: 'Backend e IA en la práctica', body: 'Proyectos, sistemas y automatización en una visita rápida.', cta: 'Ver proyectos', href: '/es/proyectos/' }
+          }
+        }
+      },
+      pklavc_projects: {
+        type: 'image',
+        locales: {
+          en: {
+            image: '/ads/banners/projects-en.svg',
+            imageAlt: 'PKLAVC — real projects and practical engineering',
+            inline: { title: 'See the engineering in action', body: 'Explore real projects, integrations and AI systems.', cta: 'Browse projects', href: '/projects/' }
+          },
+          pt: {
+            image: '/ads/banners/projects-pt.svg',
+            imageAlt: 'PKLAVC — projetos reais e engenharia prática',
+            inline: { title: 'Veja a engenharia em ação', body: 'Explore projetos reais, integrações e sistemas de IA.', cta: 'Conhecer projetos', href: '/pt/projetos/' }
+          },
+          es: {
+            image: '/ads/banners/projects-es.svg',
+            imageAlt: 'PKLAVC — proyectos reales e ingeniería práctica',
+            inline: { title: 'Mira la ingeniería en acción', body: 'Explora proyectos reales, integraciones y sistemas de IA.', cta: 'Ver proyectos', href: '/es/proyectos/' }
           }
         }
       }

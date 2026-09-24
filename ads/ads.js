@@ -63,13 +63,30 @@
     });
   }
 
-  function campaignFor(placement, geo) {
-    var rule = config.placements[placement];
-    if (!rule) return null;
+  function own(object, key) {
+    return object && Object.prototype.hasOwnProperty.call(object, key);
+  }
+
+  function matchCampaigns(rule, geo) {
     var regionKey = geo.country && geo.region ? geo.country + '-' + geo.region : '';
-    var id = (regionKey && rule.regions && rule.regions[regionKey]) ||
-      (geo.country && rule.countries && rule.countries[geo.country]) || rule.default;
-    return config.campaigns[id] || config.campaigns[rule.default] || null;
+    if (regionKey && own(rule.regions, regionKey)) return rule.regions[regionKey];
+    if (geo.country && own(rule.countries, geo.country)) return rule.countries[geo.country];
+    if (own(rule, 'default')) return rule.default;
+    return undefined;
+  }
+
+  function placementSelection(placement, geo) {
+    var rule = config.placements[placement];
+    if (!rule || rule.enabled === false) return null;
+    var localized = rule.locales && rule.locales[locale];
+    if (localized === false || (localized && localized.enabled === false)) return null;
+    var selected = localized && matchCampaigns(localized, geo);
+    if (selected === undefined) selected = matchCampaigns(rule, geo);
+    var ids = (Array.isArray(selected) ? selected : [selected]).filter(function (id, index, list) {
+      return typeof id === 'string' && id.length > 0 && list.indexOf(id) === index;
+    });
+    var seconds = localized && own(localized, 'rotateEverySeconds') ? localized.rotateEverySeconds : rule.rotateEverySeconds;
+    return { ids: ids, rotateEverySeconds: Number(seconds) || 0 };
   }
 
   function createShell(placement, campaign) {
@@ -86,7 +103,7 @@
   }
 
   function imageAd(campaign, placement) {
-    var creative = campaign.locales && (campaign.locales[locale] || campaign.locales.en);
+    var creative = campaign.locales && campaign.locales[locale];
     var copy = creative && creative[placement];
     if (!creative || !copy) return null;
     var imageUrl = safeUrl(creative.image);
@@ -203,13 +220,75 @@
     return shell;
   }
 
-  function createAd(placement, geo) {
-    var campaign = campaignFor(placement, geo);
+  function createAd(id, placement, geo) {
+    var campaign = config.campaigns[id];
     if (!campaign) return null;
-    if (campaign.type === 'image') return imageAd(campaign, placement);
-    if (campaign.type === 'adsense') return adsenseAd(campaign, placement);
-    if (campaign.type === 'iframe') return iframeAd(campaign, placement);
-    if (campaign.type === 'custom') return customAd(campaign, placement, geo);
+    var ad = null;
+    if (campaign.type === 'image') ad = imageAd(campaign, placement);
+    if (campaign.type === 'adsense') ad = adsenseAd(campaign, placement);
+    if (campaign.type === 'iframe') ad = iframeAd(campaign, placement);
+    if (campaign.type === 'custom') ad = customAd(campaign, placement, geo);
+    if (ad) ad.dataset.adCampaign = id;
+    return ad;
+  }
+
+  function preloadImage(ad) {
+    return new Promise(function (resolve) {
+      var nextImage = ad.querySelector('img');
+      var preload = new Image();
+      var timer = setTimeout(function () { finish(false); }, 8000);
+      function finish(loaded) {
+        clearTimeout(timer);
+        preload.onload = null;
+        preload.onerror = null;
+        resolve(loaded);
+      }
+      preload.onload = function () { finish(true); };
+      preload.onerror = function () { finish(false); };
+      preload.src = nextImage.src;
+      if (preload.complete) finish(preload.naturalWidth > 0);
+    });
+  }
+
+  function rotateImages(ad, ids, seconds, placement, geo) {
+    // AdSense and third-party units must not be automatically refreshed.
+    if (!Number.isFinite(seconds) || seconds < 2 ||
+        !ids.every(function (id) { return config.campaigns[id] && config.campaigns[id].type === 'image'; })) return;
+    ids = ids.filter(function (id) {
+      var creative = config.campaigns[id].locales && config.campaigns[id].locales[locale];
+      var copy = creative && creative[placement];
+      return creative && copy && safeUrl(creative.image) && safeUrl(copy.href);
+    });
+    if (ids.length < 2) return;
+    var current = ad;
+    var index = ids.indexOf(ad.dataset.adCampaign);
+    var busy = false;
+    var timer = setInterval(function () {
+      if (!current.isConnected) { clearInterval(timer); return; }
+      if (busy || document.hidden || current.contains(document.activeElement)) return;
+      var bounds = current.getBoundingClientRect();
+      if (!bounds.width || !bounds.height || bounds.bottom <= 0 || bounds.top >= window.innerHeight) return;
+      var nextIndex = (index + 1) % ids.length;
+      var next = createAd(ids[nextIndex], placement, geo);
+      if (!next) { index = nextIndex; return; }
+      busy = true;
+      preloadImage(next).then(function (loaded) {
+        if (loaded && current.isConnected) {
+          current.replaceWith(next);
+          current = next;
+          index = nextIndex;
+        }
+      }).finally(function () { busy = false; });
+    }, seconds * 1000);
+  }
+
+  function placementAd(placement, geo) {
+    var selection = placementSelection(placement, geo);
+    if (!selection || !selection.ids.length) return null;
+    for (var i = 0; i < selection.ids.length; i += 1) {
+      var ad = createAd(selection.ids[i], placement, geo);
+      if (ad) return { ad: ad, selection: selection };
+    }
     return null;
   }
 
@@ -220,24 +299,29 @@
     if (!article || !columns || article.dataset.blogAdsReady === 'true') return;
 
     var paragraphs = article.querySelectorAll(':scope > p');
-    var sideAd = sidebar && createAd('sidebar', geo);
-    var inlineAd = createAd('inline', geo);
-    var bottomAd = createAd('bottom', geo);
-    var mobileAd = createAd('mobile', geo);
+    var side = sidebar && placementAd('sidebar', geo);
+    var inline = placementAd('inline', geo);
+    var bottom = placementAd('bottom', geo);
+    var mobile = placementAd('mobile', geo);
 
-    if (sideAd) {
-      if (sidebar.firstElementChild) sidebar.firstElementChild.insertAdjacentElement('afterend', sideAd);
-      else sidebar.appendChild(sideAd);
+    if (side) {
+      if (sidebar.firstElementChild) sidebar.firstElementChild.insertAdjacentElement('afterend', side.ad);
+      else sidebar.appendChild(side.ad);
     }
-    if (inlineAd) {
-      if (paragraphs.length) paragraphs[Math.min(4, paragraphs.length - 1)].insertAdjacentElement('afterend', inlineAd);
-      else article.appendChild(inlineAd);
+    if (inline) {
+      if (paragraphs.length) paragraphs[Math.min(4, paragraphs.length - 1)].insertAdjacentElement('afterend', inline.ad);
+      else article.appendChild(inline.ad);
     }
-    if (mobileAd) {
-      if (paragraphs.length) paragraphs[Math.min(1, paragraphs.length - 1)].insertAdjacentElement('afterend', mobileAd);
-      else article.prepend(mobileAd);
+    if (mobile) {
+      if (paragraphs.length) paragraphs[Math.min(1, paragraphs.length - 1)].insertAdjacentElement('afterend', mobile.ad);
+      else article.prepend(mobile.ad);
     }
-    if (bottomAd) columns.insertAdjacentElement('afterend', bottomAd);
+    if (bottom) columns.insertAdjacentElement('afterend', bottom.ad);
+    [side, inline, bottom, mobile].forEach(function (item, index) {
+      if (!item) return;
+      rotateImages(item.ad, item.selection.ids, item.selection.rotateEverySeconds,
+        ['sidebar', 'inline', 'bottom', 'mobile'][index], geo);
+    });
     article.dataset.blogAdsReady = 'true';
   }
 
