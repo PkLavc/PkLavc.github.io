@@ -281,7 +281,10 @@
     }
 
     function createStarField() {
-      var starCount = compactViewport ? 700 : 2200;
+      // Mobile GPUs were producing visible point trails/banding on real devices.
+      // Keep the rest of the 3D scene and remove only the star particles there.
+      if (compactViewport) return;
+      var starCount = 2200;
       for (var layer = 0; layer < 3; layer += 1) {
         var geometry = new THREE.BufferGeometry();
         var positions = new Float32Array(starCount * 3);
@@ -389,8 +392,10 @@
           var y = Math.sin(index * 0.1) * layer.height + Math.sin(index * 0.05) * layer.height * 0.5 + Math.random() * layer.height * 0.2 - 100;
           points.push(new THREE.Vector2(x, y));
         }
-        points.push(new THREE.Vector2(5000, -300));
-        points.push(new THREE.Vector2(-5000, -300));
+        // Extend the fill well below the camera frustum so the terrain cannot
+        // expose the polygon's straight closing edge on tall/mobile viewports.
+        points.push(new THREE.Vector2(7000, -2600));
+        points.push(new THREE.Vector2(-7000, -2600));
         var mountain = new THREE.Mesh(
           new THREE.ShapeGeometry(new THREE.Shape(points)),
           new THREE.MeshBasicMaterial({ color: layer.color, transparent: true, opacity: layer.opacity, side: THREE.DoubleSide })

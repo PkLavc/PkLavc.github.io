@@ -230,25 +230,47 @@ body.navigation-open {
     opacity: .82;
     transition: opacity .3s ease, color .3s ease, transform .3s ease;
 }
-.adm-navigation-link {
+#navigation-content > .adm-navigation-link {
     position: absolute;
     top: max(31px, calc(env(safe-area-inset-top) + 9px));
     left: max(66px, calc(4% + 48px + env(safe-area-inset-left)));
     z-index: 2;
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    width: auto !important;
+    height: auto !important;
+    min-width: 0;
+    margin: 0 !important;
     padding: 7px 11px;
-    border: 1px solid rgba(0, 209, 255, .48);
-    border-radius: 999px;
-    color: rgba(255,255,255,.84);
-    font: 600 11px/1 'Poppins', 'Inter', sans-serif;
+    border: 1px solid rgba(0, 209, 255, .48) !important;
+    border-radius: 999px !important;
+    background: rgba(0, 209, 255, .06) !important;
+    box-shadow: none !important;
+    color: rgba(255,255,255,.84) !important;
+    font: 600 11px/1 'Poppins', 'Inter', sans-serif !important;
     letter-spacing: .12em;
-    text-decoration: none;
-    transition: color .2s ease, border-color .2s ease, box-shadow .2s ease;
+    text-align: center;
+    text-decoration: none !important;
+    text-transform: none;
+    white-space: nowrap;
+    opacity: 1;
+    transform: none;
+    transition: color .2s ease, border-color .2s ease, box-shadow .2s ease, background .2s ease;
 }
-.adm-navigation-link:hover,
-.adm-navigation-link:focus-visible {
-    color: #fff;
-    border-color: #ff2aaa;
-    box-shadow: 0 0 16px rgba(255,42,170,.25);
+#navigation-content > .adm-navigation-link::before,
+#navigation-content > .adm-navigation-link::after {
+    content: none !important;
+    display: none !important;
+}
+#navigation-content > .adm-navigation-link:hover,
+#navigation-content > .adm-navigation-link:focus-visible {
+    color: #fff !important;
+    border-color: #ff2aaa !important;
+    background: rgba(255, 42, 170, .08) !important;
+    box-shadow: 0 0 16px rgba(255,42,170,.25) !important;
+    opacity: 1;
+    transform: none;
 }
 .navigation-language-gear-icon {
     width: 24px;
