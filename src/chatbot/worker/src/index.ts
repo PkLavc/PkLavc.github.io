@@ -102,6 +102,19 @@ export default {
       return new Response(null, { headers: corsHeaders(env, origin) });
     }
 
+    if (url.pathname === "/ads/geo" && request.method === "GET") {
+      if (!isAllowedOrigin(env, origin)) {
+        return withCors(json({ error: "origin_not_allowed" }, 403), env, origin);
+      }
+
+      const cf = (request as Request & { cf?: GeoCfProperties }).cf;
+      const country = normalizeCountryCode(cf?.country);
+      const region = normalizeGeoValue(cf?.regionCode, 24).toUpperCase();
+      const response = json({ country: country || null, region: region || null });
+      response.headers.set("Cache-Control", "private, no-store");
+      return withCors(response, env, origin);
+    }
+
     // Guard: fail fast with a clear 503 if Cloudflare KV bindings are misconfigured.
     // This can happen when wrangler.toml binding names don't match the Env interface.
     const bindings = env as unknown as Record<string, unknown>;

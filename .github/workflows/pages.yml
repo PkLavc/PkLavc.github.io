@@ -51,7 +51,7 @@ jobs:
         run: node --test scripts/normalize-seo.test.mjs scripts/indexnow.test.mjs
 
       - name: Validate SEO and preserve visual content
-        run: python3 scripts/audit-seo.py --root .pages-dist --compare-source . --strict-links --allow-adsense-injection
+        run: python3 scripts/audit-seo.py --root .pages-dist --compare-source . --strict-links --allow-ad-injection
 
       - name: Setup Pages
         uses: actions/configure-pages@v5

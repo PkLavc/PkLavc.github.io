@@ -47,6 +47,7 @@ const publicEntries = [
   "terms-of-use",
   "uses",
   "about",
+  "ads",
   "assets",
   "blog",
   "collections",
@@ -200,40 +201,39 @@ function updateCacheBusting() {
 
 function isBlogPost(file) {
   const relative = toPosixPath(path.relative(outDir, file));
-  return /^(?:blog|pt\/blog|es\/blog)\/[^/]+\/index\.html$/.test(relative);
+  return /^(?:blog|pt\/blog|es\/blog)\/(?:[^/]+\/index\.html|(?!index\.html$)[^/]+\.html)$/.test(relative);
 }
 
-function injectAdsenseSupport() {
-  if (!/^ca-pub-\d+$/.test(adsenseClientId)) {
-    return { updatedFiles: 0, enabled: false };
-  }
-
+function injectBlogAdSupport() {
   let updatedFiles = 0;
-  const config = JSON.stringify({
+  const hasAdsense = /^ca-pub-\d+$/.test(adsenseClientId);
+  const adsenseConfig = hasAdsense ? JSON.stringify({
     clientId: adsenseClientId,
     blogSlotId: /^\d+$/.test(adsenseBlogSlotId) ? adsenseBlogSlotId : "",
-  });
+  }) : "";
 
   for (const file of walkFiles(outDir)) {
     if (!isBlogPost(file)) continue;
 
     const original = fs.readFileSync(file, "utf8");
-    if (original.includes("PKLAVC_ADSENSE_CONFIG") || !original.includes("</head>")) {
+    if (original.includes('/ads/ads.js') || !original.includes("</head>")) {
       continue;
     }
 
     const snippet = [
-      `<meta name="google-adsense-account" content="${adsenseClientId}">`,
-      `<script>window.PKLAVC_ADSENSE_CONFIG=${config};</script>`,
-      `<script src="/js/blog-ads.js" defer></script>`,
+      hasAdsense ? `<meta name="google-adsense-account" content="${adsenseClientId}">` : "",
+      hasAdsense ? `<script>window.PKLAVC_ADSENSE_CONFIG=${adsenseConfig};</script>` : "",
+      '<link rel="stylesheet" href="/ads/ads.css">',
+      '<script src="/ads/config.js" defer></script>',
+      '<script src="/ads/ads.js" defer></script>',
       "",
-    ].join("\n");
+    ].filter(Boolean).join("\n");
     const updated = original.replace("</head>", `${snippet}</head>`);
     fs.writeFileSync(file, updated);
     updatedFiles += 1;
   }
 
-  return { updatedFiles, enabled: true };
+  return { updatedFiles, adsenseConfigured: hasAdsense };
 }
 
 function main() {
@@ -257,7 +257,7 @@ function main() {
 
   const files = walkFiles(outDir);
   const totalBytes = files.reduce((sum, file) => sum + fs.statSync(file).size, 0);
-  const adsenseStats = injectAdsenseSupport();
+  const adStats = injectBlogAdSupport();
   const cacheStats = updateCacheBusting();
   const finalFiles = walkFiles(outDir);
   const finalBytes = finalFiles.reduce((sum, file) => sum + fs.statSync(file).size, 0);
@@ -265,7 +265,7 @@ function main() {
   console.log(`Pages artifact: ${toPosixPath(outDir)}`);
   console.log(`Copied files: ${files.length}`);
   console.log(`Initial size: ${(totalBytes / 1024 / 1024).toFixed(2)} MB`);
-  console.log(`AdSense blog support: ${adsenseStats.enabled ? `${adsenseStats.updatedFiles} blog post file(s)` : "disabled"}`);
+  console.log(`Blog ads: ${adStats.updatedFiles} post file(s); AdSense credentials ${adStats.adsenseConfigured ? "available" : "not configured"}`);
   console.log(`Cache-busted files: ${cacheStats.updatedFiles}`);
   console.log(`Cache-busted refs: ${cacheStats.updatedRefs}`);
   console.log(`Referenced assets hashed: ${cacheStats.assets}`);

@@ -135,16 +135,16 @@ class PageParser(HTMLParser):
 
 class VisualSnapshot(HTMLParser):
     """Structural regression contract; a browser screenshot remains complementary."""
-    def __init__(self, text: str, page_url: str = "", allow_adsense_injection: bool = False):
+    def __init__(self, text: str, page_url: str = "", allow_ad_injection: bool = False):
         super().__init__(convert_charrefs=True)
         self.tokens = []
         self.body = False
         self.special = None
         self.json_script = False
         self.in_head = False
-        self.allow_adsense_injection = allow_adsense_injection
+        self.allow_ad_injection = allow_ad_injection
         self.head_script = None
-        self.adsense_ignored = 0
+        self.ad_scripts_ignored = 0
         def drop_self_refresh(match):
             target = re.search(r'\bcontent=[\"\'][^\"\']*?\burl=([^\"\']+)', match.group(), re.I)
             return "" if target and urljoin(page_url, unescape(target[1]).strip()) == page_url else match.group()
@@ -162,11 +162,14 @@ class VisualSnapshot(HTMLParser):
             return
         if self.json_script:
             return
-        if tag == "script" and self.in_head and self.allow_adsense_injection:
+        if tag == "script" and self.in_head and self.allow_ad_injection:
             self.head_script = (len(self.tokens), attrs, [])
         if tag in {"style", "script"}:
             self.special = tag
         stylesheet = tag == "link" and "stylesheet" in (values.get("rel") or "").split()
+        if (self.in_head and stylesheet and self.allow_ad_injection
+                and re.fullmatch(r"/ads/ads\.css(?:\?v=[A-Za-z0-9._-]+)?", values.get("href") or "")):
+            return
         if self.body or self.special or stylesheet:
             if tag in {"meta", "title"} or (tag == "link" and not stylesheet):
                 return
@@ -205,7 +208,7 @@ class VisualSnapshot(HTMLParser):
             start, attrs, chunks = self.head_script
             if self.allowed_adsense_script(attrs, "".join(chunks)):
                 del self.tokens[start:]
-                self.adsense_ignored += 1
+                self.ad_scripts_ignored += 1
             self.head_script = None
         if tag == self.special:
             self.special = None
@@ -216,11 +219,11 @@ class VisualSnapshot(HTMLParser):
 
     @staticmethod
     def allowed_adsense_script(attrs, script):
-        """Permit only the two exact head scripts emitted by the existing build."""
+        """Permit only the known ad scripts emitted by the Pages build."""
         values = dict(attrs)
         if len(attrs) == 2 and set(values) == {"src", "defer"}:
             return (values["defer"] is None
-                    and bool(re.fullmatch(r"/js/blog-ads\.js(?:\?v=[A-Za-z0-9._-]+)?", values["src"] or ""))
+                    and bool(re.fullmatch(r"/ads/(?:config|ads)\.js(?:\?v=[A-Za-z0-9._-]+)?", values["src"] or ""))
                     and not script.strip())
         if attrs:
             return False
@@ -451,10 +454,10 @@ class Audit:
             if not original.is_file():
                 self.report("visual-source", f"{relative}: missing source comparison file")
                 continue
-            source_snapshot = VisualSnapshot(original.read_text(encoding="utf-8-sig"), self.page_url(path), self.args.allow_adsense_injection)
-            artifact_snapshot = VisualSnapshot(path.read_text(encoding="utf-8-sig"), self.page_url(path), self.args.allow_adsense_injection)
+            source_snapshot = VisualSnapshot(original.read_text(encoding="utf-8-sig"), self.page_url(path), self.args.allow_ad_injection)
+            artifact_snapshot = VisualSnapshot(path.read_text(encoding="utf-8-sig"), self.page_url(path), self.args.allow_ad_injection)
             before, after = source_snapshot.tokens, artifact_snapshot.tokens
-            self.counts["adsense_head_scripts_allowed"] += artifact_snapshot.adsense_ignored
+            self.counts["ad_head_scripts_allowed"] += artifact_snapshot.ad_scripts_ignored
             self.counts["visual_html_compared"] += 1
             if before != after:
                 first = next((i for i, pair in enumerate(zip(before, after)) if pair[0] != pair[1]), min(len(before), len(after)))
@@ -496,7 +499,7 @@ def main():
     parser.add_argument("--root", type=Path, default=Path(".pages-dist"))
     parser.add_argument("--site", default="https://pklavc.com")
     parser.add_argument("--compare-source", type=Path, help="Check visible HTML and CSS against this source root")
-    parser.add_argument("--allow-adsense-injection", action="store_true", help="Permit only the existing build's validated AdSense config and blog-ads.js head scripts in the visual comparison")
+    parser.add_argument("--allow-ad-injection", "--allow-adsense-injection", dest="allow_ad_injection", action="store_true", help="Permit the build's validated blog ad assets and optional AdSense config in the visual comparison")
     parser.add_argument("--strict-links", action="store_true", help="Treat unresolved local references as errors")
     parser.add_argument("--max-details", type=int, default=25)
     parser.add_argument("--json", action="store_true", help="Print the complete machine-readable report")
