@@ -6,8 +6,15 @@ import time
 import urllib.request
 import urllib.error
 
+API_REQUESTS = 0
+
+
+def request_count() -> int:
+    return API_REQUESTS
+
 
 def call(prompt: str, *, search: bool = False) -> tuple[str, list[str]]:
+    global API_REQUESTS
     key = os.environ.get("GEMINI_API_KEY", "")
     if not key:
         raise RuntimeError("GEMINI_API_KEY não está configurada.")
@@ -20,6 +27,8 @@ def call(prompt: str, *, search: bool = False) -> tuple[str, list[str]]:
         data=json.dumps(payload).encode("utf-8"), headers={"Content-Type": "application/json", "x-goog-api-key": key}, method="POST")
     for attempt in range(4):
         try:
+            API_REQUESTS += 1
+            print(f"Gemini API request #{API_REQUESTS}: model={model}; Google Search={'on' if search else 'off'}")
             with urllib.request.urlopen(req, timeout=120) as response:
                 data = json.loads(response.read().decode("utf-8"))
             candidate = data.get("candidates", [{}])[0]

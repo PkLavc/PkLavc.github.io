@@ -6,7 +6,9 @@ import json
 import os
 import re
 from pathlib import Path
+from zoneinfo import ZoneInfo
 
+from . import gemini
 from .collect_sources import collect
 from .filter_candidates import filter_today
 from .generate_article import generate, render
@@ -34,22 +36,34 @@ def main() -> None:
     parser.add_argument("--dry-run", action="store_true", help="generate and validate without changing repository files")
     args = parser.parse_args()
     root = args.root.resolve()
-    day = dt.datetime.now(dt.timezone(dt.timedelta(hours=-3))).date().isoformat()
+    day = dt.datetime.now(ZoneInfo("America/Sao_Paulo")).date().isoformat()
     dry_run = args.dry_run or os.environ.get("DRY_RUN", "false").lower() == "true"
     print(f"Data editorial (America/Sao_Paulo): {day}; modelo Gemini: {os.getenv('GEMINI_MODEL', 'gemini-2.5-flash')}")
     if args.offline_fixture:
         story, article = fixture(day)
     else:
-        collected, _ = collect(root)
+        collected, source_stats = collect(root, day)
         candidates = filter_today(collected, day)
+        todays_before_dedup = len(candidates)
+        totals = {}
+        for stat in source_stats:
+            totals[stat["company"]] = totals.get(stat["company"], 0) + stat["today"]
+        print("Today's candidates by source: " + (", ".join(f"{stat['name']} ({stat['company']}): {stat['today']}" for stat in source_stats) if source_stats else "none"))
+        print("Today's candidates by company: " + (", ".join(f"{company}: {count}" for company, count in sorted(totals.items())) if totals else "none"))
         candidates = filter_duplicate_candidates(root, candidates)
+        print(f"Today's candidates after duplicate filter: {len(candidates)}")
         if not candidates:
-            print("Todos os candidatos de hoje já foram utilizados; nenhum post novo será gerado.")
+            if todays_before_dedup:
+                print("All candidates dated today were duplicates; no new post will be generated.")
+            else:
+                print("No usable source entries dated today; no new post will be generated.")
+            print(f"Gemini API requests total: {gemini.request_count()}")
             return
         source_config = json.loads((root / "scripts/blog_automation/sources.json").read_text(encoding="utf-8"))
         story = select(candidates, day, source_config.get("topics", []))
         if story is None:
             print("Nenhum assunto confirmado e relevante; nada será publicado.")
+            print(f"Gemini API requests total: {gemini.request_count()}")
             return
         check_duplicate(root, story)
         article = generate(story, day)
@@ -59,6 +73,7 @@ def main() -> None:
     word_count = len(re.findall(r"\b[\w'-]+\b", re.sub(r"<[^>]+>", " ", body.group(1) if body else "")))
     print(f"Resultado da geração: OK; {word_count} palavras; slug {slug}")
     preview = publish(root, story, document, day, dry_run or args.offline_fixture)
+    print(f"Gemini API requests total: {gemini.request_count()}")
     print("Commit: dispensado (dry-run/fixture)." if dry_run or args.offline_fixture else "Publicação preparada para commit pelo workflow.")
 
 

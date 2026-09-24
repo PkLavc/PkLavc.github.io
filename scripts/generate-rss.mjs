@@ -111,13 +111,19 @@ function extractPost(filePath) {
       const parsed = JSON.parse(match[1].trim());
       const post = findBlogPosting(parsed);
       if (post) {
+        const articleTags = metas.filter((attrs) => (attrs.property || "").toLowerCase() === "article:tag").map((attrs) => attrs.content).filter(Boolean);
+        const section = metaContent(html, "article:section") || (typeof post.articleSection === "string" ? post.articleSection : "");
+        const keywordList = Array.isArray(post.keywords) ? post.keywords : [];
+        const fallbackTags = keywordList.flatMap((keyword) => String(keyword).split(",")).map((tag) => tag.trim()).filter(Boolean);
         return {
           title: post.headline,
           description: post.description,
           url,
           date: post.dateModified || post.datePublished,
           published: post.datePublished,
-          keywords: Array.isArray(post.keywords) ? post.keywords : []
+          keywords: keywordList,
+          category: section || keywordList[0] || "Engineering",
+          tags: [...new Set(articleTags.length ? articleTags : fallbackTags)].filter((tag) => tag !== section && tag !== keywordList[0])
         };
       }
     } catch {
@@ -131,7 +137,7 @@ function extractPost(filePath) {
   const published = metaContent(html, "article:published_time") || date;
 
   if (!title || !url || !date) return null;
-  return { title, description, url, date, published, keywords: [] };
+  return { title, description, url, date, published, keywords: [], category: metaContent(html, "article:section") || "Engineering", tags: [...new Set(metas.filter((attrs) => (attrs.property || "").toLowerCase() === "article:tag").map((attrs) => attrs.content).filter(Boolean))] };
 }
 
 function toRssDate(value) {
@@ -178,4 +184,14 @@ ${items}
 </rss>\n`;
 
 fs.writeFileSync(path.join(ROOT, "feed.xml"), feed, "utf8");
+const indexPosts = [...new Map(posts.map((post) => [post.url, {
+  title: post.title,
+  url: new URL(post.url).pathname,
+  date: String(post.published || post.date).slice(0, 10),
+  category: post.category || "Engineering",
+  tags: post.tags || [],
+  description: post.description || ""
+}])).values()].sort((a, b) => b.date.localeCompare(a.date) || a.url.localeCompare(b.url));
+fs.writeFileSync(path.join(BLOG_DIR, "posts.json"), `${JSON.stringify(indexPosts, null, 2)}\n`, "utf8");
 console.log(`Generated feed.xml with ${posts.length} posts.`);
+console.log(`Generated blog/posts.json with ${indexPosts.length} unique posts.`);
