@@ -1144,7 +1144,7 @@ body.blog-layout::before {
     width: 100%;
     max-width: none;
     margin: 0;
-    padding: 0 clamp(24px, 6vw, 110px) clamp(72px, 9vh, 86px);
+    padding: 0 clamp(24px, 6vw, 110px) calc(var(--blog-footer-height, 86px) + 12px);
     box-sizing: border-box;
     background: linear-gradient(180deg, rgba(3, 5, 18, .74), rgba(6, 6, 20, .82));
     backdrop-filter: blur(4px);
@@ -1196,53 +1196,19 @@ body.blog-layout::before {
     will-change: transform, opacity;
 }
 .blog-carousel-card[data-glow] {
-    background-image: radial-gradient(var(--spotlight-size) var(--spotlight-size) at calc(var(--x, 0) * 1px) calc(var(--y, 0) * 1px), hsl(var(--hue, 210) 100% 70% / .1), transparent);
-    background-color: var(--backdrop, transparent);
-    background-size: calc(100% + (2 * var(--border-size))) calc(100% + (2 * var(--border-size)));
-    background-position: 50% 50%;
-    background-attachment: local;
-    border: var(--border-size) solid var(--backup-border);
-    position: absolute;
-    touch-action: none;
-}
-.blog-carousel-card[data-glow]::before,
-.blog-carousel-card[data-glow]::after {
-    pointer-events: none;
-    content: "";
-    position: absolute;
-    inset: calc(var(--border-size) * -1);
-    border: var(--border-size) solid transparent;
-    border-radius: calc(var(--radius) * 1px);
-    background-attachment: local;
-    background-size: calc(100% + (2 * var(--border-size))) calc(100% + (2 * var(--border-size)));
-    background-repeat: no-repeat;
-    background-position: 50% 50%;
-    mask: linear-gradient(transparent, transparent), linear-gradient(white, white);
-    mask-clip: padding-box, border-box;
-    mask-composite: intersect;
-}
-.blog-carousel-card[data-glow]::before {
-    background-image: radial-gradient(calc(var(--spotlight-size) * .75) calc(var(--spotlight-size) * .75) at calc(var(--x, 0) * 1px) calc(var(--y, 0) * 1px), hsl(var(--hue, 210) 100% 56% / 1), transparent 100%);
-    filter: brightness(2);
-}
-.blog-carousel-card[data-glow]::after {
-    background-image: radial-gradient(calc(var(--spotlight-size) * .5) calc(var(--spotlight-size) * .5) at calc(var(--x, 0) * 1px) calc(var(--y, 0) * 1px), hsl(0 100% 100% / .92), transparent 100%);
-}
-.blog-carousel-card[data-glow] [data-glow] {
-    position: absolute;
-    inset: 0;
-    will-change: filter;
-    opacity: var(--outer, 1);
-    border-radius: calc(var(--radius) * 1px);
-    border-width: calc(var(--border-size) * 20);
-    filter: blur(calc(var(--border-size) * 10));
-    background: none;
-    pointer-events: none;
-    border: none;
-}
-.blog-carousel-card[data-glow] > [data-glow]::before {
-    inset: -10px;
-    border-width: 10px;
+    --base: 188;
+    --spread: 150;
+    --spotlight-size: 200px;
+    --x: -400px;
+    --y: -400px;
+    --hue: calc(var(--base) + var(--xp, 0) * var(--spread));
+    border: 3px solid transparent;
+    border-radius: 14px;
+    background:
+        linear-gradient(#101010, #101010) padding-box,
+        radial-gradient(circle 100px at var(--x) var(--y), rgba(255, 255, 255, .9), transparent 75%) border-box,
+        radial-gradient(circle var(--spotlight-size) at var(--x) var(--y), hsl(var(--hue) 100% 56% / .95), transparent 85%) border-box,
+        linear-gradient(#343940, #343940) border-box;
 }
 .blog-carousel-card.is-active {
     box-shadow: 0 30px 80px rgba(0, 0, 0, .62);
@@ -1319,7 +1285,7 @@ body.blog-layout::before {
     .content-section p { max-width: 84vw; margin-top: 24px; font-size: clamp(.84rem, 3.7vw, 1rem); line-height: 1.5; }
     .hero-subtitle.cosmos-subtitle { width: 84vw; margin-top: clamp(22px, 4svh, 34px); }
     .hero-subtitle .subtitle-line { font-size: clamp(.82rem, 3.65vw, 1rem); line-height: 1.5; }
-    .blog-featured-carousel.is-in-scene { bottom: 0; padding: 0 8px 96px; }
+    .blog-featured-carousel.is-in-scene { bottom: 0; padding: 0 8px calc(var(--blog-footer-height, 86px) + 12px); }
     .blog-carousel-track { min-height: 0; height: 100%; }
     .blog-carousel-card { width: min(76vw, 280px); height: min(76vw, 280px); padding: 16px; gap: 9px; }
     .blog-carousel-card h3 { font-size: clamp(.94rem, 4.3vw, 1.08rem); line-height: 1.24; }

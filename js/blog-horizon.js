@@ -42,27 +42,17 @@
       stage.appendChild(footer);
       footer.classList.add('blog-footer-overlay');
       footer.setAttribute('aria-hidden', 'true');
+      function syncFooterHeight() {
+        stage.style.setProperty('--blog-footer-height', footer.offsetHeight + 'px');
+      }
+      syncFooterHeight();
+      if ('ResizeObserver' in window) new ResizeObserver(syncFooterHeight).observe(footer);
     }
 
     if (track && source.length && !track.children.length) {
       Array.prototype.slice.call(source).forEach(function (card) {
         card.classList.add('blog-carousel-card');
         card.setAttribute('data-glow', '');
-        card.style.setProperty('--base', '188');
-        card.style.setProperty('--spread', '150');
-        card.style.setProperty('--radius', '22');
-        card.style.setProperty('--border', '3');
-        card.style.setProperty('--backdrop', 'hsl(222 26% 8% / .96)');
-        card.style.setProperty('--backup-border', 'var(--backdrop)');
-        card.style.setProperty('--size', '200');
-        card.style.setProperty('--outer', '1');
-        card.style.setProperty('--border-size', 'calc(var(--border, 2) * 1px)');
-        card.style.setProperty('--spotlight-size', 'calc(var(--size, 150) * 1px)');
-        card.style.setProperty('--hue', 'calc(var(--base) + (var(--xp, 0) * var(--spread, 0)))');
-        var glowLayer = document.createElement('div');
-        glowLayer.setAttribute('data-glow', '');
-        glowLayer.setAttribute('aria-hidden', 'true');
-        card.prepend(glowLayer);
         card.querySelectorAll('[id]').forEach(function (node) { node.removeAttribute('id'); });
         track.appendChild(card);
       });
@@ -71,18 +61,15 @@
     }
 
     function syncGlowPointer(event) {
+      if (!stage.classList.contains('show-carousel')) return;
       cards.forEach(function (card) {
-        // GlowCard's default fixed backdrop is useful in a grid, but in a
-        // coverflow it makes every card share one spotlight. Convert the
-        // pointer to this card's own coordinate space so each edge reacts on
-        // its own as the pointer reaches it.
+        if (card.style.visibility !== 'visible') return;
         var rect = card.getBoundingClientRect();
         var x = event.clientX - rect.left;
         var y = event.clientY - rect.top;
-        card.style.setProperty('--x', x.toFixed(2));
-        card.style.setProperty('--xp', (x / Math.max(rect.width, 1)).toFixed(2));
-        card.style.setProperty('--y', y.toFixed(2));
-        card.style.setProperty('--yp', (y / Math.max(rect.height, 1)).toFixed(2));
+        card.style.setProperty('--x', x.toFixed(2) + 'px');
+        card.style.setProperty('--xp', Math.max(0, Math.min(1, x / Math.max(rect.width, 1))).toFixed(2));
+        card.style.setProperty('--y', y.toFixed(2) + 'px');
       });
     }
     document.addEventListener('pointermove', syncGlowPointer, { passive: true });
