@@ -22,15 +22,22 @@ def call(prompt: str, *, search: bool = False) -> tuple[str, list[str]]:
         try:
             with urllib.request.urlopen(req, timeout=120) as response:
                 data = json.loads(response.read().decode("utf-8"))
-            break
+            candidate = data.get("candidates", [{}])[0]
+            text = "".join(part.get("text", "") for part in candidate.get("content", {}).get("parts", []) if not part.get("thought"))
+            if text:
+                break
+            reason = candidate.get("finishReason") or data.get("promptFeedback", {}).get("blockReason") or "no candidate text"
+            if attempt == 3:
+                raise RuntimeError(f"Gemini returned no text after retries (reason={reason}).")
+            delay = 2 ** (attempt + 1)
+            print(f"Gemini retornou resposta sem texto (motivo={reason}); nova tentativa em {delay}s ({attempt + 1}/3).")
+            time.sleep(delay)
         except urllib.error.HTTPError as exc:
             if exc.code not in {429, 500, 502, 503, 504} or attempt == 3:
                 raise RuntimeError(f"Gemini API HTTP {exc.code}; see model availability and quota settings.") from None
             delay = 2 ** (attempt + 1)
             print(f"Gemini temporariamente indisponível (HTTP {exc.code}); nova tentativa em {delay}s ({attempt + 1}/3).")
             time.sleep(delay)
-    candidate = data.get("candidates", [{}])[0]
-    text = "".join(part.get("text", "") for part in candidate.get("content", {}).get("parts", []))
     sources = []
     for chunk in candidate.get("groundingMetadata", {}).get("groundingChunks", []):
         uri = chunk.get("web", {}).get("uri", "")
@@ -43,6 +50,4 @@ def call(prompt: str, *, search: bool = False) -> tuple[str, list[str]]:
                 continue
         if uri.startswith("https://") and uri not in sources:
             sources.append(uri)
-    if not text:
-        raise RuntimeError("Gemini retornou resposta vazia.")
     return text, sources
