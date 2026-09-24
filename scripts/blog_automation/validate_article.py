@@ -40,7 +40,17 @@ def validate(root: Path, html: str, story: dict, day: str, *, check_remote: bool
     body_words = len(re.findall(r"\b[\w'-]+\b", re.sub(r"<[^>]+>", " ", article_body.group(1) if article_body else "")))
     if body_words < 800: errors.append(f"article has only {body_words} content words; minimum is 800")
     if PLACEHOLDERS.search(html): errors.append("placeholder or AI meta commentary detected")
-    if len(story.get("sources", [])) < 1 or "<h2>Sources</h2>" not in html: errors.append("sources section missing")
+    source_section = re.search(r'<section><h2>Sources</h2>([\s\S]*?)</section>', html)
+    cited_urls = re.findall(r'<a\s+href="(https://[^" ]+)"', source_section.group(1) if source_section else "")
+    if not source_section or not cited_urls: errors.append("sources section missing")
+    if len(cited_urls) > 5: errors.append("more than five cited sources")
+    if len(set(cited_urls)) != len(cited_urls): errors.append("duplicate cited source URL")
+    if story.get("candidate", {}).get("url") not in cited_urls: errors.append("official primary source must be cited")
+    if any(url not in story.get("sources", []) for url in cited_urls): errors.append("article cites a URL not verified for this story")
+    for marker in ('<link rel="canonical"', '<meta name="description"', '<meta name="keywords"',
+                   'property="og:title"', 'property="og:description"', 'name="twitter:card"',
+                   '"@type":"BlogPosting"', '"@type":"BreadcrumbList"'):
+        if marker not in html: errors.append(f"SEO metadata missing: {marker}")
     parser = Structure()
     try:
         parser.feed(html); parser.close()

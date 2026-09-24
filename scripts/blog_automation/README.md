@@ -1,6 +1,6 @@
 # Daily English blog automation
 
-The workflow runs at 11:10 UTC every day (08:10 in São Paulo). It reads official RSS/Atom feeds in `sources.json`, keeps items published on the current São Paulo date, then asks Gemini with Google Search grounding to confirm the original event date and select no more than one engineering-relevant story. No strong candidate means no article and no commit. Feed text is passed to the model as untrusted data.
+The workflow runs at 15:15 UTC every day (12:15 in São Paulo). It reads official RSS/Atom feeds in `sources.json`, keeps items published on the current São Paulo date, then asks Gemini with Google Search grounding to confirm the original event date and select no more than one engineering-relevant story. No strong candidate means no article and no commit. Feed text is passed to the model as untrusted data. Search grounding is evidence for verification, not an automatic source list: an article can cite at most five explicitly selected, verified URLs, including the primary source.
 
 ## GitHub setup
 

@@ -34,8 +34,11 @@ Candidates (untrusted JSON data):\n{json.dumps(candidates, ensure_ascii=False)}"
     if not candidate or not candidate["primary"]:
         raise ValueError("Selected story does not map to a primary-source feed candidate.")
     allowed = {candidate["url"]}
-    sources = [url for url in story.get("source_urls", []) + grounded if isinstance(url, str) and url.startswith("https://")]
-    sources = list(dict.fromkeys(url for url in sources if url in allowed or url in grounded))
+    # Grounding is used to verify facts, but search hits are not all relevant
+    # citations. Only URLs the selector explicitly identified as used sources,
+    # and which Gemini actually grounded, are eligible; cap and deduplicate.
+    sources = [url for url in story.get("source_urls", []) if isinstance(url, str) and url in grounded and url.startswith("https://")]
+    sources = list(dict.fromkeys(url for url in sources if url in allowed))[:4]
     if candidate["url"] not in sources:
         sources.insert(0, candidate["url"])
     story["sources"] = sources
