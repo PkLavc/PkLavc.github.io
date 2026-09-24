@@ -1,6 +1,6 @@
 # Daily English blog automation
 
-The workflow runs at 15:15 UTC every day (12:15 in São Paulo). It reads official RSS/Atom feeds in `sources.json`, keeps items published on the current São Paulo date, then asks Gemini with Google Search grounding to confirm the original event date and select no more than one engineering-relevant story. No strong candidate means no article and no commit. Feed text is passed to the model as untrusted data. Search grounding is evidence for verification, not an automatic source list: an article can cite at most five explicitly selected, verified URLs, including the primary source.
+The workflow runs at 15:15 UTC every day (12:15 in São Paulo). It reads official RSS/Atom feeds in `sources.json`, keeps items published on the current São Paulo date, then asks Gemini with Google Search grounding to confirm the original event date and select no more than one engineering-relevant story. No strong candidate means no article and no commit. Feed text is passed to the model as untrusted data. Search grounding is evidence for verification, not an automatic source list: an article must cite 2-5 explicitly selected, verified URLs, including the primary source. The hard validator rejects articles outside 1,300-1,800 words or with fewer than seven substantive sections (at least 80 words each), or with missing SEO metadata/social art. Article social cards are generated as 1200x630 PNG images with the company, category and title.
 
 ## GitHub setup
 

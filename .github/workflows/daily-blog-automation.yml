@@ -29,6 +29,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+      - name: Install article image dependency
+        run: python -m pip install -r scripts/blog_automation/requirements.txt
       - uses: actions/setup-node@v4
         with:
           node-version: 24
@@ -52,7 +54,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add blog blog/index.html blog/automation-sitemap.xml sitemap.xml sitemap-index.xml sitemaps feed.xml scripts/blog_automation/used_stories.json
+          git add blog blog/index.html blog/automation-sitemap.xml images/og/blog sitemap.xml sitemap-index.xml sitemaps feed.xml scripts/blog_automation/used_stories.json
           git commit -m "blog: publish daily engineering story"
           git push
       - name: Trigger the existing Pages deployment

@@ -49,15 +49,21 @@ def update_index(root: Path, story: dict, day: str) -> None:
 def publish(root: Path, story: dict, html: str, day: str, dry_run: bool) -> Path:
     destination = root / "blog" / story["slug"] / "index.html"
     if destination.exists(): raise ValueError("Target post already exists.")
+    card_destination = root / story["social_card_path"].lstrip("/")
+    if card_destination.exists(): raise ValueError("Social card path already exists.")
     if dry_run:
         import tempfile
         folder = Path(tempfile.mkdtemp(prefix="pklavc-blog-preview-"))
         preview = folder / "index.html"
         preview.write_text(html, encoding="utf-8")
+        (folder / "social-card.png").write_bytes(story["social_card_content"])
         print(f"DRY_RUN: arquivo que seria publicado: {preview}")
+        print(f"DRY_RUN: social card que seria publicado: {folder / 'social-card.png'} -> {story['social_card_path']}")
         return preview
     destination.parent.mkdir(parents=True)
     destination.write_text(html, encoding="utf-8")
+    card_destination.parent.mkdir(parents=True, exist_ok=True)
+    card_destination.write_bytes(story["social_card_content"])
     update_index(root, story, day)
     state_path = root / STATE
     state = json.loads(state_path.read_text(encoding="utf-8")) if state_path.exists() else {"stories": []}
