@@ -5,9 +5,6 @@
     var horizon = document.querySelector('.blog-horizon');
     var stage = horizon && horizon.querySelector('.blog-horizon-stage');
     var canvas = stage && stage.querySelector('[data-horizon-canvas]');
-    var title = stage && stage.querySelector('.hero-title');
-    var subtitle = stage && stage.querySelector('.hero-subtitle');
-    var menu = stage && stage.querySelector('.side-menu');
     var contentSections = stage ? stage.querySelectorAll('[data-horizon-section]') : [];
     var carousel = document.querySelector('[data-blog-carousel]');
     var track = carousel && carousel.querySelector('.blog-carousel-track');
@@ -243,7 +240,7 @@
 
     showFallback();
     function startWebGL() {
-      if (!window.THREE || !window.gsap) return;
+      if (!window.THREE) return;
       if (fallbackHandlers) {
         window.removeEventListener('scroll', fallbackHandlers.scroll);
         window.removeEventListener('resize', fallbackHandlers.scroll);
@@ -252,7 +249,6 @@
       stage.classList.remove('horizon-fallback');
     var THREE = window.THREE;
     var compactViewport = window.matchMedia && window.matchMedia('(max-width: 760px)').matches;
-    if (window.ScrollTrigger) window.gsap.registerPlugin(window.ScrollTrigger);
 
     var refs = {
       scene: new THREE.Scene(), camera: null, renderer: null, composer: null,
@@ -513,26 +509,6 @@
       else refs.renderer.render(refs.scene, refs.camera);
     }
 
-    function splitTitle() {
-      if (!title || title.querySelector('.title-char')) return;
-      var label = title.textContent.trim();
-      title.setAttribute('aria-label', label);
-      title.textContent = '';
-      label.split(/\s+/).forEach(function (word) {
-        var wordSpan = document.createElement('span');
-        wordSpan.className = 'title-word';
-        wordSpan.setAttribute('aria-hidden', 'true');
-        Array.from(word).forEach(function (character) {
-          var span = document.createElement('span');
-          span.className = 'title-char';
-          span.textContent = character;
-          wordSpan.appendChild(span);
-        });
-        title.appendChild(wordSpan);
-      });
-    }
-
-    splitTitle();
     resize();
     updateScroll();
     animate();
@@ -555,11 +531,6 @@
         animate();
       }
     });
-    window.gsap.set([menu, title, subtitle], { visibility: 'visible' });
-    var timeline = window.gsap.timeline();
-    if (menu) timeline.from(menu, { x: -100, opacity: 0, duration: 1, ease: 'power3.out' });
-    if (title) timeline.from(title.querySelectorAll('.title-char'), { y: 200, opacity: 0, duration: 1.5, stagger: 0.05, ease: 'power4.out' }, '-=0.5');
-    if (subtitle) timeline.from(subtitle.querySelectorAll('.subtitle-line'), { y: 50, opacity: 0, duration: 1, stagger: 0.2, ease: 'power3.out' }, '-=0.8');
     window.addEventListener('resize', resize);
     window.addEventListener('scroll', updateScroll, { passive: true });
     if ('ResizeObserver' in window) {
