@@ -1196,19 +1196,16 @@ body.blog-layout::before {
     will-change: transform, opacity;
 }
 .blog-carousel-card[data-glow] {
-    --base: 188;
-    --spread: 150;
     --spotlight-size: 200px;
     --x: -400px;
     --y: -400px;
-    --hue: calc(var(--base) + var(--xp, 0) * var(--spread));
+    --spotlight-color: #00d1ff;
     border: 3px solid transparent;
     border-radius: 14px;
     background:
         linear-gradient(#101010, #101010) padding-box,
-        radial-gradient(circle 100px at var(--x) var(--y), rgba(255, 255, 255, .9), transparent 75%) border-box,
-        radial-gradient(circle var(--spotlight-size) at var(--x) var(--y), hsl(var(--hue) 100% 56% / .95), transparent 85%) border-box,
-        linear-gradient(#343940, #343940) border-box;
+        radial-gradient(circle var(--spotlight-size) at var(--x) var(--y), var(--spotlight-color), transparent 85%) border-box,
+        linear-gradient(#1a1a1a, #1a1a1a) border-box;
 }
 .blog-carousel-card.is-active {
     box-shadow: 0 30px 80px rgba(0, 0, 0, .62);

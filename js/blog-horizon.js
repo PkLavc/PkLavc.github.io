@@ -67,9 +67,14 @@
         var rect = card.getBoundingClientRect();
         var x = event.clientX - rect.left;
         var y = event.clientY - rect.top;
+        // Blend the site's cyan (#00d1ff) into pink (#ff2aaa) across the card.
+        var pinkAmount = Math.max(0, Math.min(1, x / Math.max(rect.width, 1)));
         card.style.setProperty('--x', x.toFixed(2) + 'px');
-        card.style.setProperty('--xp', Math.max(0, Math.min(1, x / Math.max(rect.width, 1))).toFixed(2));
         card.style.setProperty('--y', y.toFixed(2) + 'px');
+        card.style.setProperty('--spotlight-color', 'rgb(' +
+          Math.round(255 * pinkAmount) + ' ' +
+          Math.round(209 - 167 * pinkAmount) + ' ' +
+          Math.round(255 - 85 * pinkAmount) + ')');
       });
     }
     document.addEventListener('pointermove', syncGlowPointer, { passive: true });
