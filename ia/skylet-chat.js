@@ -8,6 +8,8 @@
   const log = document.querySelector('#chat-log');
   const voiceButton = document.querySelector('#voice-toggle');
   const viewport = document.querySelector('#viewport');
+  const stage = document.querySelector('.skylet-stage');
+  const consoleElement = document.querySelector('.s800-console');
   let conversationId = null;
   let voiceOutput = false;
   let characterSpeech = false;
@@ -31,6 +33,10 @@
   function autoResize() {
     input.style.height = 'auto';
     input.style.height = `${Math.min(input.scrollHeight, 132)}px`;
+  }
+
+  function syncConsoleSpace() {
+    stage.style.setProperty('--s800-console-height', `${consoleElement.offsetHeight}px`);
   }
 
   function setVoiceState() {
@@ -108,4 +114,7 @@
   input.placeholder = copy.placeholder;
   setVoiceState();
   autoResize();
+  syncConsoleSpace();
+  if ('ResizeObserver' in window) new ResizeObserver(syncConsoleSpace).observe(consoleElement);
+  else window.addEventListener('resize', syncConsoleSpace, { passive: true });
 })();

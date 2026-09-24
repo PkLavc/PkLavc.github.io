@@ -152,8 +152,6 @@ async function setSkin(requestedSkin) {
   const skin = CONFIG.skins[requestedSkin];
   if (!skin || loadingSkin) return;
   loadingSkin = true;
-  loading.hidden = false;
-  loading.textContent = `Loading ${skin.label}...`;
   try {
     const gltf = await gltfLoader.loadAsync(skin.modelUrl);
     const nextCharacter = gltf.scene;
@@ -172,7 +170,6 @@ async function setSkin(requestedSkin) {
     console.error(loadError);
     throw loadError;
   } finally {
-    loading.hidden = true;
     loadingSkin = false;
   }
 }

@@ -1282,6 +1282,8 @@ function setupCreditDetails() {
         button.outerHTML = '<span class="credits-detail-text">' + copy.particles + ' <a href="https://21st.dev/" target="_blank" rel="noopener noreferrer">21st.dev</a></span>';
       } else if (type === 'icons') {
         button.outerHTML = '<span class="credits-detail-text">' + copy.icons + ' <a href="https://lordicon.com/" target="_blank" rel="noopener noreferrer">Lordicon</a></span>';
+      } else if (type === 'easter-egg') {
+        button.outerHTML = '<span class="credits-detail-text"><a href="https://www.callofduty.com/br/pt/blog/2022/07/call-of-duty-vanguard-warzone-terminator-operator-bundles-titanium-trials" target="_blank" rel="noopener noreferrer">Skin</a></span>';
       }
     }, { once: true });
   });
