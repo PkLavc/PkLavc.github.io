@@ -14,6 +14,27 @@ def fingerprint(story: dict) -> str:
     return hashlib.sha256(re.sub(r"[^a-z0-9]", "", story["title"].lower()).encode()).hexdigest()
 
 
+def filter_duplicate_candidates(root: Path, candidates: list[dict]) -> list[dict]:
+    state = json.loads((root / STATE).read_text(encoding="utf-8")) if (root / STATE).exists() else {"stories": []}
+    used_urls = {url for item in state["stories"] for url in item.get("source_urls", [])}
+    used_titles = {re.sub(r"[^a-z0-9]", "", item.get("title", "").lower()) for item in state["stories"]}
+    existing_posts = []
+    for file in (root / "blog").glob("*/index.html"):
+        page = file.read_text(encoding="utf-8", errors="ignore")
+        title = re.search(r'<h1[^>]*>(.*?)</h1>', page, re.I | re.S)
+        existing_posts.append((page, re.sub(r"[^a-z0-9]", "", re.sub(r"<[^>]+>", "", title.group(1)).lower()) if title else ""))
+    unseen = []
+    for candidate in candidates:
+        normalized_title = re.sub(r"[^a-z0-9]", "", candidate.get("title", "").lower())
+        duplicate = (candidate.get("url") in used_urls or normalized_title in used_titles or
+                     any(candidate.get("url") in page or normalized_title == title for page, title in existing_posts))
+        if duplicate:
+            print(f"Candidato duplicado ignorado antes da seleção: {candidate.get('title', '')[:140]}")
+        else:
+            unseen.append(candidate)
+    return unseen
+
+
 def check_duplicate(root: Path, story: dict) -> None:
     state = json.loads((root / STATE).read_text(encoding="utf-8")) if (root / STATE).exists() else {"stories": []}
     urls = {url for item in state["stories"] for url in item.get("source_urls", [])}

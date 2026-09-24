@@ -10,7 +10,7 @@ from pathlib import Path
 from .collect_sources import collect
 from .filter_candidates import filter_today
 from .generate_article import generate, render
-from .publish_article import check_duplicate, publish
+from .publish_article import check_duplicate, filter_duplicate_candidates, publish
 from .select_story import select
 from .validate_article import validate
 
@@ -42,6 +42,10 @@ def main() -> None:
     else:
         collected, _ = collect(root)
         candidates = filter_today(collected, day)
+        candidates = filter_duplicate_candidates(root, candidates)
+        if not candidates:
+            print("Todos os candidatos de hoje já foram utilizados; nenhum post novo será gerado.")
+            return
         source_config = json.loads((root / "scripts/blog_automation/sources.json").read_text(encoding="utf-8"))
         story = select(candidates, day, source_config.get("topics", []))
         if story is None:
@@ -49,8 +53,6 @@ def main() -> None:
             return
         check_duplicate(root, story)
         article = generate(story, day)
-    if not args.offline_fixture:
-        check_duplicate(root, story)
     slug, document = render(root, story, article, day)
     validate(root, document, story, day, check_remote=not args.offline_fixture)
     body = re.search(r'<article class="blog-article">([\s\S]*?)</article>', document)
