@@ -254,7 +254,8 @@
       scene: new THREE.Scene(), camera: null, renderer: null, composer: null,
       stars: [], nebula: null, mountains: [], atmosphere: null, locations: [],
       animationId: null, targetCameraX: 0, targetCameraY: 30, targetCameraZ: 300,
-      sceneVisible: null, lastFrameTime: 0, resizeObserver: null
+      sceneVisible: null, lastFrameTime: 0, resizeObserver: null,
+      foregroundOpacity: 0, foregroundStartTime: null, foregroundTimer: 0
     };
     var smoothCameraPos = { x: 0, y: 30, z: 100 };
 
@@ -315,7 +316,7 @@
         geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
         geometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
         var material = new THREE.ShaderMaterial({
-          uniforms: { time: { value: 0 }, depth: { value: layer } },
+          uniforms: { time: { value: 0 }, depth: { value: layer }, foregroundOpacity: { value: 0 } },
           vertexShader: [
             'attribute float size;', 'attribute vec3 color;', 'varying vec3 vColor;', 'varying float vVisible;',
             'uniform float time;', 'uniform float depth;', 'void main() {',
@@ -330,11 +331,11 @@
             'gl_Position = projectionMatrix * mvPosition;', '}'
           ].join('\n'),
           fragmentShader: [
-            'varying vec3 vColor;', 'varying float vVisible;', 'void main() {',
+            'varying vec3 vColor;', 'varying float vVisible;', 'uniform float foregroundOpacity;', 'void main() {',
             'if (vVisible < 0.5) discard;',
             'float dist = length(gl_PointCoord - vec2(0.5));', 'if (dist > 0.5) discard;',
             'float opacity = 1.0 - smoothstep(0.0, 0.5, dist);',
-            'gl_FragColor = vec4(vColor, opacity);', '}'
+            'gl_FragColor = vec4(vColor, opacity * foregroundOpacity);', '}'
           ].join('\n'),
           transparent: true, blending: THREE.AdditiveBlending, depthWrite: false
         });
@@ -394,11 +395,11 @@
         points.push(new THREE.Vector2(-7000, -2600));
         var mountain = new THREE.Mesh(
           new THREE.ShapeGeometry(new THREE.Shape(points)),
-          new THREE.MeshBasicMaterial({ color: layer.color, transparent: true, opacity: layer.opacity, side: THREE.DoubleSide })
+          new THREE.MeshBasicMaterial({ color: layer.color, transparent: true, opacity: 0, side: THREE.DoubleSide })
         );
         mountain.position.z = layer.distance;
         mountain.position.y = layer.distance;
-        mountain.userData = { baseZ: layer.distance, index: layerIndex };
+        mountain.userData = { baseZ: layer.distance, index: layerIndex, targetOpacity: layer.opacity };
         refs.scene.add(mountain);
         refs.mountains.push(mountain);
         refs.locations.push(layer.distance);
@@ -426,9 +427,7 @@
       refs.scene.add(refs.atmosphere);
     }
 
-    createStarField();
     createNebula();
-    createMountains();
     createAtmosphere();
 
     function resize() {
@@ -466,7 +465,7 @@
         mountain.userData.targetZ = targetZ;
         mountain.position.z = scrollProgress > 0.7 ? 600000 : refs.locations[index];
       });
-      refs.nebula.position.z = refs.mountains[3].position.z;
+      if (refs.mountains.length) refs.nebula.position.z = refs.mountains[refs.mountains.length - 1].position.z;
       stage.style.setProperty('--hero-progress', scrollProgress.toFixed(4));
       var introOpacity = scrollProgress <= 0.18 ? 1 : Math.max(0, 1 - (scrollProgress - 0.18) / 0.12);
       var cosmosOpacity = scrollProgress < 0.24 ? 0 : scrollProgress < 0.34 ? (scrollProgress - 0.24) / 0.1 : scrollProgress <= 0.5 ? 1 : Math.max(0, 1 - (scrollProgress - 0.5) / 0.12);
@@ -489,7 +488,13 @@
       if (compactViewport && frameTime - refs.lastFrameTime < 1000 / 30) return;
       refs.lastFrameTime = frameTime;
       var time = Date.now() * 0.001;
-      refs.stars.forEach(function (starField) { starField.material.uniforms.time.value = reduced ? 0 : time; });
+      if (refs.foregroundStartTime !== null) {
+        refs.foregroundOpacity = Math.min(1, Math.max(0, (performance.now() - refs.foregroundStartTime) / 1100));
+      }
+      refs.stars.forEach(function (starField) {
+        starField.material.uniforms.time.value = reduced ? 0 : time;
+        starField.material.uniforms.foregroundOpacity.value = refs.foregroundOpacity;
+      });
       refs.nebula.material.uniforms.time.value = reduced ? 0 : time * 0.5;
       refs.atmosphere.material.uniforms.time.value = reduced ? 0 : time;
       var smoothingFactor = reduced ? 1 : 0.05;
@@ -502,6 +507,7 @@
       refs.camera.lookAt(0, 10, -600);
       refs.mountains.forEach(function (mountain, index) {
         var parallaxFactor = 1 + index * 0.5;
+        mountain.material.opacity = mountain.userData.targetOpacity * refs.foregroundOpacity;
         mountain.position.x = reduced ? 0 : Math.sin(time * 0.1) * 2 * parallaxFactor;
         mountain.position.y = 50 + (reduced ? 0 : Math.cos(time * 0.15) * parallaxFactor);
       });
@@ -513,6 +519,13 @@
     updateScroll();
     animate();
     stage.classList.add('horizon-scene-ready');
+    refs.foregroundTimer = window.setTimeout(function () {
+      if (!stage.isConnected) return;
+      createStarField();
+      createMountains();
+      refs.foregroundStartTime = performance.now();
+      updateScroll();
+    }, 1250);
     if ('IntersectionObserver' in window) {
       var sceneObserver = new IntersectionObserver(function (entries) {
         refs.sceneVisible = entries[0].isIntersecting;
