@@ -1018,6 +1018,47 @@ body.blog-layout::before {
     height: 100%;
 }
 .horizon-fallback .hero-canvas { display: none; }
+.horizon-fallback .blog-horizon-copy .hero-title {
+    display: block;
+    text-align: center;
+    overflow-wrap: normal;
+}
+.blog-horizon-stage.horizon-fallback::before {
+    content: '';
+    position: absolute;
+    inset: -1%;
+    z-index: 2;
+    pointer-events: none;
+    opacity: .64;
+    background-image:
+        radial-gradient(circle at 4% 16%, rgba(232,251,255,.9) 0 1px, transparent 1.8px),
+        radial-gradient(circle at 9% 73%, rgba(0,209,255,.82) 0 .9px, transparent 1.8px),
+        radial-gradient(circle at 15% 39%, rgba(255,255,255,.7) 0 .8px, transparent 1.7px),
+        radial-gradient(circle at 19% 87%, rgba(232,251,255,.82) 0 1px, transparent 1.9px),
+        radial-gradient(circle at 24% 11%, rgba(0,209,255,.74) 0 .8px, transparent 1.6px),
+        radial-gradient(circle at 29% 61%, rgba(255,255,255,.84) 0 1px, transparent 1.8px),
+        radial-gradient(circle at 34% 26%, rgba(255,42,170,.8) 0 .9px, transparent 1.8px),
+        radial-gradient(circle at 38% 94%, rgba(232,251,255,.72) 0 .8px, transparent 1.7px),
+        radial-gradient(circle at 43% 48%, rgba(255,255,255,.88) 0 1px, transparent 1.8px),
+        radial-gradient(circle at 47% 7%, rgba(0,209,255,.76) 0 .9px, transparent 1.7px),
+        radial-gradient(circle at 52% 79%, rgba(232,251,255,.78) 0 .8px, transparent 1.7px),
+        radial-gradient(circle at 57% 34%, rgba(255,42,170,.78) 0 1px, transparent 1.8px),
+        radial-gradient(circle at 62% 91%, rgba(255,255,255,.84) 0 .9px, transparent 1.8px),
+        radial-gradient(circle at 67% 18%, rgba(0,209,255,.82) 0 1px, transparent 1.9px),
+        radial-gradient(circle at 71% 57%, rgba(232,251,255,.72) 0 .8px, transparent 1.7px),
+        radial-gradient(circle at 76% 6%, rgba(255,255,255,.82) 0 .9px, transparent 1.7px),
+        radial-gradient(circle at 81% 83%, rgba(255,42,170,.76) 0 1px, transparent 1.8px),
+        radial-gradient(circle at 86% 42%, rgba(232,251,255,.9) 0 .9px, transparent 1.8px),
+        radial-gradient(circle at 91% 13%, rgba(0,209,255,.78) 0 .8px, transparent 1.7px),
+        radial-gradient(circle at 97% 68%, rgba(255,255,255,.84) 0 1px, transparent 1.9px);
+    background-repeat: no-repeat;
+    will-change: transform;
+    animation: horizonFallbackStarDrift 34s ease-in-out infinite alternate;
+}
+@keyframes horizonFallbackStarDrift {
+    from { transform: translate3d(0, 0, 0); }
+    to { transform: translate3d(-.7%, .9%, 0); }
+}
 .side-menu {
     position: absolute;
     z-index: 8;
@@ -1295,4 +1336,5 @@ body.blog-layout::before {
 @media (prefers-reduced-motion: reduce) {
     .blog-horizon { min-height: 200vh; }
     .blog-featured-carousel.is-in-scene { transition: none; }
+    .blog-horizon-stage.horizon-fallback::before { animation: none; }
 }

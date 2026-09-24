@@ -27,6 +27,7 @@
     var suppressClickUntil = 0;
     var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     var totalSections = 2;
+    var scrollProgress = 0;
 
     if (!horizon || !stage || !canvas) return;
 
@@ -49,15 +50,19 @@
       if ('ResizeObserver' in window) new ResizeObserver(syncFooterHeight).observe(footer);
     }
 
-    if (track && source.length && !track.children.length) {
+    function populateCarousel() {
+      if (!track || !source.length || cards.length) return;
+      var fragment = document.createDocumentFragment();
       Array.prototype.slice.call(source).forEach(function (card) {
         card.classList.add('blog-carousel-card');
         card.setAttribute('data-glow', '');
         card.querySelectorAll('[id]').forEach(function (node) { node.removeAttribute('id'); });
-        track.appendChild(card);
+        fragment.appendChild(card);
       });
+      track.appendChild(fragment);
       cards = Array.prototype.slice.call(track.querySelectorAll('.blog-carousel-card'));
-      library.remove();
+      if (library) library.remove();
+      renderCoverflow(activeCard);
     }
 
     function syncGlowPointer(event) {
@@ -207,10 +212,44 @@
       window.scrollTo({ top: destination, behavior: reduced ? 'auto' : 'smooth' });
     });
 
-    if (!window.THREE || !window.gsap) {
+    var fallbackHandlers = null;
+    function showFallback() {
+      if (fallbackHandlers) return;
       stage.classList.add('horizon-fallback');
-      return;
+      function updateFallbackScroll() {
+        var bounds = horizon.getBoundingClientRect();
+        var travel = Math.max(1, horizon.offsetHeight - window.innerHeight);
+        scrollProgress = Math.max(0, Math.min(1, -bounds.top / travel));
+        stage.style.setProperty('--hero-progress', scrollProgress.toFixed(4));
+        var introOpacity = scrollProgress <= 0.18 ? 1 : Math.max(0, 1 - (scrollProgress - 0.18) / 0.12);
+        var cosmosOpacity = scrollProgress < 0.24 ? 0 : scrollProgress < 0.34 ? (scrollProgress - 0.24) / 0.1 : scrollProgress <= 0.5 ? 1 : Math.max(0, 1 - (scrollProgress - 0.5) / 0.12);
+        var infinityOpacity = scrollProgress < 0.58 ? 0 : scrollProgress < 0.68 ? (scrollProgress - 0.58) / 0.1 : scrollProgress <= 0.8 ? 1 : Math.max(0, 1 - (scrollProgress - 0.8) / 0.1);
+        var copy = stage.querySelector('.blog-horizon-copy');
+        if (copy) copy.style.opacity = introOpacity.toFixed(3);
+        if (contentSections[0]) contentSections[0].style.opacity = cosmosOpacity.toFixed(3);
+        if (contentSections[1]) contentSections[1].style.opacity = infinityOpacity.toFixed(3);
+        var pageEnd = window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 1;
+        var finalStage = scrollProgress >= 0.999 && pageEnd;
+        if (finalStage) populateCarousel();
+        stage.classList.toggle('show-carousel', finalStage);
+        if (carousel) carousel.setAttribute('aria-hidden', finalStage ? 'false' : 'true');
+        if (footer) footer.setAttribute('aria-hidden', finalStage ? 'false' : 'true');
+      }
+      updateFallbackScroll();
+      window.addEventListener('scroll', updateFallbackScroll, { passive: true });
+      window.addEventListener('resize', updateFallbackScroll);
+      fallbackHandlers = { scroll: updateFallbackScroll };
     }
+
+    showFallback();
+    function startWebGL() {
+      if (!window.THREE || !window.gsap) return;
+      if (fallbackHandlers) {
+        window.removeEventListener('scroll', fallbackHandlers.scroll);
+        window.removeEventListener('resize', fallbackHandlers.scroll);
+        fallbackHandlers = null;
+      }
+      stage.classList.remove('horizon-fallback');
     var THREE = window.THREE;
     var compactViewport = window.matchMedia && window.matchMedia('(max-width: 760px)').matches;
     if (window.ScrollTrigger) window.gsap.registerPlugin(window.ScrollTrigger);
@@ -221,7 +260,6 @@
       animationId: null, targetCameraX: 0, targetCameraY: 30, targetCameraZ: 300
     };
     var smoothCameraPos = { x: 0, y: 30, z: 100 };
-    var scrollProgress = 0;
 
     refs.scene.fog = new THREE.FogExp2(0x000000, 0.00025);
     refs.camera = new THREE.PerspectiveCamera(compactViewport ? 84 : 75, 1, 0.1, 2000);
@@ -229,10 +267,10 @@
     try {
       refs.renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
     } catch (error) {
-      stage.classList.add('horizon-fallback');
+      showFallback();
       return;
     }
-    refs.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    refs.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
     refs.renderer.toneMapping = THREE.ACESFilmicToneMapping;
     refs.renderer.toneMappingExposure = 0.5;
     if (THREE.EffectComposer && THREE.RenderPass && THREE.UnrealBloomPass) {
@@ -242,7 +280,7 @@
     }
 
     function createStarField() {
-      var starCount = compactViewport ? 2200 : 5000;
+      var starCount = compactViewport ? 1100 : 2200;
       for (var layer = 0; layer < 3; layer += 1) {
         var geometry = new THREE.BufferGeometry();
         var positions = new Float32Array(starCount * 3);
@@ -307,7 +345,7 @@
     }
 
     function createNebula() {
-      var geometry = new THREE.PlaneGeometry(8000, 4000, 100, 100);
+      var geometry = new THREE.PlaneGeometry(8000, 4000, 48, 32);
       var material = new THREE.ShaderMaterial({
         uniforms: {
           time: { value: 0 }, color1: { value: new THREE.Color(0x0033ff) },
@@ -433,12 +471,15 @@
       if (contentSections[1]) contentSections[1].style.opacity = infinityOpacity.toFixed(3);
       var pageEnd = window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 1;
       var finalStage = scrollProgress >= 0.999 && pageEnd;
+      if (finalStage) populateCarousel();
       stage.classList.toggle('show-carousel', finalStage);
       if (carousel) carousel.setAttribute('aria-hidden', finalStage ? 'false' : 'true');
       if (footer) footer.setAttribute('aria-hidden', finalStage ? 'false' : 'true');
     }
 
     function animate() {
+      refs.animationId = 0;
+      if (document.hidden || !stage.isConnected || (refs.sceneVisible === false)) return;
       refs.animationId = window.requestAnimationFrame(animate);
       var time = Date.now() * 0.001;
       refs.stars.forEach(function (starField) { starField.material.uniforms.time.value = reduced ? 0 : time; });
@@ -484,6 +525,25 @@
     resize();
     updateScroll();
     animate();
+    if ('IntersectionObserver' in window) {
+      var sceneObserver = new IntersectionObserver(function (entries) {
+        refs.sceneVisible = entries[0].isIntersecting;
+        if (refs.sceneVisible && !document.hidden && !refs.animationId) animate();
+        else if (!refs.sceneVisible && refs.animationId) {
+          window.cancelAnimationFrame(refs.animationId);
+          refs.animationId = 0;
+        }
+      }, { threshold: 0.01 });
+      sceneObserver.observe(stage);
+    }
+    document.addEventListener('visibilitychange', function () {
+      if (document.hidden && refs.animationId) {
+        window.cancelAnimationFrame(refs.animationId);
+        refs.animationId = 0;
+      } else if (!document.hidden && !refs.animationId && refs.sceneVisible !== false) {
+        animate();
+      }
+    });
     window.gsap.set([menu, title, subtitle], { visibility: 'visible' });
     var timeline = window.gsap.timeline();
     if (menu) timeline.from(menu, { x: -100, opacity: 0, duration: 1, ease: 'power3.out' });
@@ -491,8 +551,18 @@
     if (subtitle) timeline.from(subtitle.querySelectorAll('.subtitle-line'), { y: 50, opacity: 0, duration: 1, stagger: 0.2, ease: 'power3.out' }, '-=0.8');
     window.addEventListener('resize', resize);
     window.addEventListener('scroll', updateScroll, { passive: true });
+    }
+
+    var dependencies = window.PkLavcBlogHorizonReady || Promise.resolve(false);
+    dependencies.then(function (available) {
+      if (available) startWebGL();
+    });
   }
 
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, { once: true });
-  else init();
+  function boot() {
+    init();
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot, { once: true });
+  else boot();
 }());
