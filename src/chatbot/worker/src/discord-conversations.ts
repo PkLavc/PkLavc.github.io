@@ -12,8 +12,48 @@ export async function getConversationControl(env: Env, conversationId: string, u
   };
 }
 
-export async function mirrorDiscordMessage(env: Env, conversationId: string, author: string, content: string): Promise<void> {
-  if (!env.DISCORD_BOT_TOKEN || !env.DISCORD_CHANNEL_ID || !content.trim()) return;
+export async function enqueueDiscordMessage(env: Env, conversationId: string, author: "Visitante" | "Skylet", content: string): Promise<void> {
+  if (!content.trim()) return;
+  const now = new Date().toISOString();
+  await env.DB.prepare("INSERT OR IGNORE INTO discord_conversations (conversation_id, status, created_at, updated_at) VALUES (?, 'AI', ?, ?)")
+    .bind(conversationId, now, now).run();
+  await env.DB.prepare("INSERT INTO discord_message_queue (conversation_id, author, content, status, created_at) VALUES (?, ?, ?, 'queued', ?)")
+    .bind(conversationId, author, content, now).run();
+}
+
+export async function drainDiscordMessageQueue(env: Env, conversationId: string): Promise<void> {
+  if (!env.DISCORD_BOT_TOKEN || !env.DISCORD_CHANNEL_ID) return;
+  const lockToken = crypto.randomUUID();
+  const now = new Date();
+  const nowIso = now.toISOString();
+  const lockUntil = new Date(now.getTime() + 120_000).toISOString();
+  const lock = await env.DB.prepare("UPDATE discord_conversations SET mirror_lock_token = ?, mirror_lock_until = ? WHERE conversation_id = ? AND (mirror_lock_until IS NULL OR mirror_lock_until < ?)")
+    .bind(lockToken, lockUntil, conversationId, nowIso).run();
+  if (!lock.meta.changes) return;
+
+  let failed = false;
+  try {
+    for (let count = 0; count < 100; count += 1) {
+      const item = await env.DB.prepare("SELECT id, author, content FROM discord_message_queue WHERE conversation_id = ? AND status = 'queued' ORDER BY id LIMIT 1")
+        .bind(conversationId).first<{ id: number; author: "Visitante" | "Skylet"; content: string }>();
+      if (!item) break;
+      const sent = await mirrorDiscordMessage(env, conversationId, item.author, item.content, `queue:${item.id}`);
+      if (!sent) { failed = true; break; }
+      await env.DB.prepare("UPDATE discord_message_queue SET status = 'sent' WHERE id = ? AND status = 'queued'").bind(item.id).run();
+    }
+  } finally {
+    await env.DB.prepare("UPDATE discord_conversations SET mirror_lock_token = NULL, mirror_lock_until = NULL WHERE conversation_id = ? AND mirror_lock_token = ?")
+      .bind(conversationId, lockToken).run();
+  }
+
+  if (!failed) {
+    const pending = await env.DB.prepare("SELECT id FROM discord_message_queue WHERE conversation_id = ? AND status = 'queued' ORDER BY id LIMIT 1").bind(conversationId).first();
+    if (pending) await drainDiscordMessageQueue(env, conversationId);
+  }
+}
+
+export async function mirrorDiscordMessage(env: Env, conversationId: string, author: string, content: string, eventKeyOverride?: string): Promise<boolean> {
+  if (!env.DISCORD_BOT_TOKEN || !env.DISCORD_CHANNEL_ID || !content.trim()) return false;
   let claimedEventKey: string | null = null;
   try {
     let row = await env.DB.prepare("SELECT * FROM discord_conversations WHERE conversation_id = ?").bind(conversationId).first<Control>();
@@ -22,7 +62,7 @@ export async function mirrorDiscordMessage(env: Env, conversationId: string, aut
       await env.DB.prepare("INSERT OR IGNORE INTO discord_conversations (conversation_id, status, created_at, updated_at) VALUES (?, 'AI', ?, ?)").bind(conversationId, now, now).run();
       row = await env.DB.prepare("SELECT * FROM discord_conversations WHERE conversation_id = ?").bind(conversationId).first<Control>();
     }
-    if (!row) return;
+    if (!row) return false;
     if (!row.discord_thread_id) {
       const claim = await env.DB.prepare("UPDATE discord_conversations SET discord_thread_id = 'pending', updated_at = ? WHERE conversation_id = ? AND discord_thread_id IS NULL")
         .bind(new Date().toISOString(), conversationId).run();
@@ -31,7 +71,7 @@ export async function mirrorDiscordMessage(env: Env, conversationId: string, aut
           const created = await discordApi(env, `/channels/${env.DISCORD_CHANNEL_ID}/threads`, {
             method: "POST", body: JSON.stringify({ name: `site-chat-${conversationId.slice(0, 8)}`, type: 11, auto_archive_duration: 1440, message: { content: "Nova conversa Skylet" } }),
           });
-          if (!created?.id) return;
+          if (!created?.id) return false;
           await env.DB.prepare("UPDATE discord_conversations SET discord_thread_id = ?, updated_at = ? WHERE conversation_id = ? AND discord_thread_id = 'pending'")
             .bind(created.id, new Date().toISOString(), conversationId).run();
         } catch (error) {
@@ -47,25 +87,29 @@ export async function mirrorDiscordMessage(env: Env, conversationId: string, aut
       }
       row = await env.DB.prepare("SELECT * FROM discord_conversations WHERE conversation_id = ?").bind(conversationId).first<Control>() || row;
     }
-    if (!row.discord_thread_id) return;
-    const messageId = await env.DB.prepare("SELECT id FROM messages WHERE conversation_id = ? AND role = ? AND content = ? ORDER BY id DESC LIMIT 1")
+    if (!row.discord_thread_id || row.discord_thread_id === "pending") return false;
+    const messageId = eventKeyOverride ? null : await env.DB.prepare("SELECT id FROM messages WHERE conversation_id = ? AND role = ? AND content = ? ORDER BY id DESC LIMIT 1")
       .bind(conversationId, author === "Skylet" ? "assistant" : "user", content).first<{ id: number }>();
-    const eventKey = `${conversationId}:${author}:${messageId?.id ?? content.slice(0, 100)}`;
+    const eventKey = eventKeyOverride || `${conversationId}:${author}:${messageId?.id ?? content.slice(0, 100)}`;
     const inserted = await env.DB.prepare("INSERT OR IGNORE INTO discord_mirrored_messages (event_key, conversation_id, created_at) VALUES (?, ?, ?)").bind(eventKey, conversationId, new Date().toISOString()).run();
-    if (!inserted.meta.changes) return;
+    if (!inserted.meta.changes) return true;
     claimedEventKey = eventKey;
     await discordApi(env, `/channels/${row.discord_thread_id}/messages`, { method: "POST", body: JSON.stringify({ content: `**${author}:**\n${content}`.slice(0, 2000), allowed_mentions: { parse: [] } }) });
     claimedEventKey = null;
     await updateControlMessage(env, row);
+    return true;
   } catch (error) {
     if (claimedEventKey) await env.DB.prepare("DELETE FROM discord_mirrored_messages WHERE event_key = ?").bind(claimedEventKey).run().catch(() => undefined);
     console.log(JSON.stringify({ level: "warn", event: "discord_mirror_failed", reason: error instanceof Error ? error.name : "unknown" }));
+    return false;
   }
 }
 
 export async function discordApi(env: Env, path: string, init: RequestInit = {}): Promise<any> {
   const response = await fetch(`https://discord.com/api/v10${path}`, {
-    ...init, headers: { Authorization: `Bot ${env.DISCORD_BOT_TOKEN}`, "Content-Type": "application/json", ...(init.headers || {}) },
+    ...init,
+    signal: init.signal || AbortSignal.timeout(15_000),
+    headers: { Authorization: `Bot ${env.DISCORD_BOT_TOKEN}`, "Content-Type": "application/json", ...(init.headers || {}) },
   });
   if (!response.ok) throw new Error(`discord_http_${response.status}`);
   if (response.status === 204) return null;

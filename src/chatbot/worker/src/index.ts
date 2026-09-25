@@ -1,6 +1,6 @@
 import { MANUAL_RAG_CONTEXT, MANUAL_RAG_SECTIONS } from "./manual-rag";
 import { handleDiscordInteraction } from "./discord-interactions";
-import { mirrorDiscordMessage, getConversationControl } from "./discord-conversations";
+import { drainDiscordMessageQueue, enqueueDiscordMessage, getConversationControl } from "./discord-conversations";
 
 export interface Env {
   DB: D1Database;
@@ -395,14 +395,24 @@ export default {
           if (control?.status === "CLOSED") return withCors(json({ ok: false, error: "conversation_closed", conversation_id: conversationId }, 409), env, origin);
           if (control?.status === "HUMAN") {
             await storeMessage(env, conversationId, "user", sanitizeInput(maskPii(input, env)));
-            ctx.waitUntil(mirrorDiscordMessage(env, conversationId, "Visitante", sanitizeInput(maskPii(input, env))));
+            ctx.waitUntil(enqueueAndDrainDiscordQueue(env, conversationId, "Visitante", sanitizeInput(maskPii(input, env))));
             return withCors(json({ ok: true, conversation_id: conversationId, reply: "", human_takeover: true }), env, origin);
           }
         }
-        const response = await handleChat(payload, user, env, traceId, false, traceparent);
+        let visitorQueued = false;
+        const onVisitorMessage = async (id: string, content: string) => {
+          try {
+            await enqueueDiscordMessage(env, id, "Visitante", content);
+            visitorQueued = true;
+            ctx.waitUntil(drainDiscordMessageQueue(env, id));
+          } catch {
+            console.log(JSON.stringify({ level: "warn", event: "discord_queue_insert_failed", author: "visitor" }));
+          }
+        };
+        const response = await handleChat(payload, user, env, traceId, false, traceparent, onVisitorMessage);
         if ("conversation_id" in response && response.conversation_id) {
-          ctx.waitUntil(mirrorDiscordMessage(env, response.conversation_id, "Visitante", sanitizeInput(maskPii(input, env))));
-          ctx.waitUntil(mirrorDiscordMessage(env, response.conversation_id, "Skylet", String(response.reply || "")));
+          if (!visitorQueued) await onVisitorMessage(response.conversation_id, sanitizeInput(maskPii(input, env)));
+          if (visitorQueued && response.reply) ctx.waitUntil(enqueueAndDrainDiscordQueue(env, response.conversation_id, "Skylet", String(response.reply)));
         }
         ctx.waitUntil(logSpan(env, {
           trace_id: traceId,
@@ -433,12 +443,22 @@ export default {
           if (control?.status === "HUMAN") {
             const content = sanitizeInput(maskPii(payload.message || "", env));
             await storeMessage(env, payload.conversation_id, "user", content);
-            ctx.waitUntil(mirrorDiscordMessage(env, payload.conversation_id, "Visitante", content));
+            ctx.waitUntil(enqueueAndDrainDiscordQueue(env, payload.conversation_id, "Visitante", content));
             return withCors(new Response(`data: ${JSON.stringify({ done: true, conversation_id: payload.conversation_id, human_takeover: true })}\n\n`, { headers: { "Content-Type": "text/event-stream", "Cache-Control": "no-cache" } }), env, origin);
           }
         }
-        const streamResponse = await handleChatStream(payload, user, env, traceId, traceparent);
-        if (payload.message) ctx.waitUntil(mirrorStreamCompletion(streamResponse, env, payload));
+        let visitorQueued = false;
+        const onVisitorMessage = async (id: string, content: string) => {
+          try {
+            await enqueueDiscordMessage(env, id, "Visitante", content);
+            visitorQueued = true;
+            ctx.waitUntil(drainDiscordMessageQueue(env, id));
+          } catch {
+            console.log(JSON.stringify({ level: "warn", event: "discord_queue_insert_failed", author: "visitor" }));
+          }
+        };
+        const streamResponse = await handleChatStream(payload, user, env, traceId, traceparent, onVisitorMessage);
+        if (payload.message) ctx.waitUntil(mirrorStreamCompletion(streamResponse, env, payload, visitorQueued));
         ctx.waitUntil(logSpan(env, {
           trace_id: traceId,
           span: "chat_stream_http",
@@ -526,7 +546,7 @@ export default {
   },
 };
 
-async function handleChat(payload: ChatPayload, user: AuthUser, env: Env, traceId: string, isStreaming: boolean, traceparent: string) {
+async function handleChat(payload: ChatPayload, user: AuthUser, env: Env, traceId: string, isStreaming: boolean, traceparent: string, onVisitorMessage?: (conversationId: string, content: string) => Promise<void>) {
   const startedAt = Date.now();
   const sanitized = sanitizeInput(maskPii(payload.message || "", env));
   const guardrail = runGuardrails(sanitized);
@@ -540,6 +560,7 @@ async function handleChat(payload: ChatPayload, user: AuthUser, env: Env, traceI
   if (localDecision) {
     const conversationId = await ensureConversation(env, user.id, payload.conversation_id);
     await storeMessage(env, conversationId, "user", sanitized);
+    await onVisitorMessage?.(conversationId, sanitized);
     await storeMessage(env, conversationId, "assistant", localDecision.reply);
 
     const responsePayload = {
@@ -577,6 +598,7 @@ async function handleChat(payload: ChatPayload, user: AuthUser, env: Env, traceI
 
   const conversationId = await ensureConversation(env, user.id, payload.conversation_id);
   await storeMessage(env, conversationId, "user", sanitized);
+  await onVisitorMessage?.(conversationId, sanitized);
 
   const memory = pruneMemory(await fetchMemory(env, conversationId, MAX_MEMORY_ITEMS), Number(env.MAX_CONTEXT_CHARS || "4000"));
   const conversationSignals = analyzeConversationSignals(memory, sanitized);
@@ -653,7 +675,7 @@ async function handleChat(payload: ChatPayload, user: AuthUser, env: Env, traceI
   return responsePayload;
 }
 
-async function handleChatStream(payload: ChatPayload, user: AuthUser, env: Env, traceId: string, traceparent: string): Promise<Response> {
+async function handleChatStream(payload: ChatPayload, user: AuthUser, env: Env, traceId: string, traceparent: string, onVisitorMessage?: (conversationId: string, content: string) => Promise<void>): Promise<Response> {
   const startedAt = Date.now();
   const sanitized = sanitizeInput(maskPii(payload.message || "", env));
   const guardrail = runGuardrails(sanitized);
@@ -663,6 +685,7 @@ async function handleChatStream(payload: ChatPayload, user: AuthUser, env: Env, 
 
   const conversationId = await ensureConversation(env, user.id, payload.conversation_id);
   await storeMessage(env, conversationId, "user", sanitized);
+  await onVisitorMessage?.(conversationId, sanitized);
 
   const task = payload.task || "chat";
   const localDecision = resolveLocalReply(sanitized, task);
@@ -795,7 +818,7 @@ async function handleChatStream(payload: ChatPayload, user: AuthUser, env: Env, 
   });
 }
 
-async function mirrorStreamCompletion(response: Response, env: Env, payload: ChatPayload): Promise<void> {
+async function mirrorStreamCompletion(response: Response, env: Env, payload: ChatPayload, visitorQueued: boolean): Promise<void> {
   try {
     const body = await response.clone().text();
     let reply = "";
@@ -810,11 +833,19 @@ async function mirrorStreamCompletion(response: Response, env: Env, payload: Cha
       } catch { /* Ignore malformed provider chunks. */ }
     }
     if (conversationId) {
-      const cleanUser = sanitizeInput(payload.message || "");
-      await mirrorDiscordMessage(env, conversationId, "Visitante", cleanUser);
-      if (reply) await mirrorDiscordMessage(env, conversationId, "Skylet", reply);
+      if (!visitorQueued && payload.message) await enqueueDiscordMessage(env, conversationId, "Visitante", sanitizeInput(payload.message));
+      if (reply && (visitorQueued || payload.message)) await enqueueAndDrainDiscordQueue(env, conversationId, "Skylet", reply);
     }
   } catch { /* Discord mirroring must never affect the visitor response. */ }
+}
+
+async function enqueueAndDrainDiscordQueue(env: Env, conversationId: string, author: "Visitante" | "Skylet", content: string): Promise<void> {
+  try {
+    await enqueueDiscordMessage(env, conversationId, author, content);
+    await drainDiscordMessageQueue(env, conversationId);
+  } catch {
+    console.log(JSON.stringify({ level: "warn", event: "discord_queue_delivery_failed", author }));
+  }
 }
 
 async function loginUser(env: Env, username: string, password: string): Promise<AuthUser | null> {
