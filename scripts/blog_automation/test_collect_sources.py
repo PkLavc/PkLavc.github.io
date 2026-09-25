@@ -52,6 +52,22 @@ class CollectSourcesTests(unittest.TestCase):
         self.assertEqual(candidates[0]["published_date"], "2026-09-24")
         self.assertEqual(stats[0]["type"], "Atom")
 
+    def test_official_jsonld_article_is_structured_and_date_filtered(self):
+        feed = {"name": "Official page", "company": "A", "url": "https://example.test/news", "primary": True, "format": "jsonld"}
+        page = b'''<html><script type="application/ld+json">{"@context":"https://schema.org","@type":"NewsArticle","headline":"Confirmed release","url":"https://example.test/news/release","datePublished":"2026-09-24T10:00:00-04:00","description":"Release details"}</script></html>'''
+        candidates, stats = self.run_feeds([feed], {feed["url"]: page})
+        self.assertEqual(stats[0]["type"], "HTML (JSON-LD Article)")
+        self.assertEqual(stats[0]["parsed"], 1)
+        self.assertEqual(stats[0]["today"], 1)
+        self.assertEqual(candidates[0]["url"], "https://example.test/news/release")
+
+    def test_jsonld_page_without_article_schema_is_not_counted_as_covered(self):
+        feed = {"name": "Unstructured official page", "company": "A", "url": "https://example.test/news", "format": "jsonld"}
+        candidates, stats = self.run_feeds([feed], {feed["url"]: b"<html><h1>News</h1></html>"})
+        self.assertFalse(stats[0]["ok"])
+        self.assertIn("no valid JSON-LD Article", stats[0]["error"])
+        self.assertEqual(candidates, [])
+
 
 if __name__ == "__main__":
     unittest.main()

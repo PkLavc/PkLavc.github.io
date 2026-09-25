@@ -23,10 +23,29 @@ class StorySourceSelectionTests(unittest.TestCase):
             result = select(self.candidates, "2026-09-24", [])
         self.assertEqual(result["sources"], ["https://vendor.example/news", "https://docs.vendor.example/new-api"])
 
-    def test_rejects_primary_only_evidence(self):
-        with patch("scripts.blog_automation.select_story.call", return_value=(json.dumps(self.story), ["https://vendor.example/news"])):
+    def test_primary_only_gets_exactly_one_enrichment_attempt_then_rejects(self):
+        with patch("scripts.blog_automation.select_story.call", side_effect=[
+            (json.dumps(self.story), ["https://vendor.example/news"]),
+            (json.dumps({"sources": []}), []),
+        ]) as mocked:
             result = select(self.candidates, "2026-09-24", [])
         self.assertIsNone(result)
+        self.assertEqual(mocked.call_count, 2)
+
+    def test_normalized_tracking_and_trailing_slash_source_match(self):
+        story = {**self.story, "source_urls": ["https://VENDOR.example/news/?utm_source=search", "https://docs.vendor.example/new-api#overview"]}
+        with patch("scripts.blog_automation.select_story.call", return_value=(json.dumps(story), ["https://vendor.example/news", "https://docs.vendor.example/new-api/"])):
+            result = select(self.candidates, "2026-09-24", [])
+        self.assertEqual(result["sources"], ["https://vendor.example/news", "https://docs.vendor.example/new-api/"])
+
+    def test_enrichment_adds_only_grounded_official_same_event_source(self):
+        enrichment = {"sources": [{"url": "https://docs.vendor.example/releases/feature", "why_same_event": "Official release notes describe this same platform launch and rollout details.", "official": True}]}
+        with patch("scripts.blog_automation.select_story.call", side_effect=[
+            (json.dumps(self.story), ["https://vendor.example/news"]),
+            (json.dumps(enrichment), ["https://docs.vendor.example/releases/feature"]),
+        ]):
+            result = select(self.candidates, "2026-09-24", [])
+        self.assertEqual(result["sources"], ["https://vendor.example/news", "https://docs.vendor.example/releases/feature"])
 
 
 if __name__ == "__main__":

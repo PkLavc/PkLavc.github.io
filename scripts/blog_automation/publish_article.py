@@ -6,6 +6,7 @@ import json
 import re
 import subprocess
 from pathlib import Path
+from .url_evidence import normalize_url
 
 STATE = Path("scripts/blog_automation/used_stories.json")
 
@@ -16,7 +17,7 @@ def fingerprint(story: dict) -> str:
 
 def filter_duplicate_candidates(root: Path, candidates: list[dict]) -> list[dict]:
     state = json.loads((root / STATE).read_text(encoding="utf-8")) if (root / STATE).exists() else {"stories": []}
-    used_urls = {url for item in state["stories"] for url in item.get("source_urls", [])}
+    used_urls = {normalize_url(url) for item in state["stories"] for url in item.get("source_urls", [])}
     used_titles = {re.sub(r"[^a-z0-9]", "", item.get("title", "").lower()) for item in state["stories"]}
     existing_posts = []
     for file in (root / "blog").glob("*/index.html"):
@@ -26,7 +27,7 @@ def filter_duplicate_candidates(root: Path, candidates: list[dict]) -> list[dict
     unseen = []
     for candidate in candidates:
         normalized_title = re.sub(r"[^a-z0-9]", "", candidate.get("title", "").lower())
-        duplicate = (candidate.get("url") in used_urls or normalized_title in used_titles or
+        duplicate = (normalize_url(candidate.get("url", "")) in used_urls or normalized_title in used_titles or
                      any(candidate.get("url") in page or normalized_title == title for page, title in existing_posts))
         if duplicate:
             print(f"Candidato duplicado ignorado antes da seleção: {candidate.get('title', '')[:140]}")
@@ -37,12 +38,12 @@ def filter_duplicate_candidates(root: Path, candidates: list[dict]) -> list[dict
 
 def check_duplicate(root: Path, story: dict) -> None:
     state = json.loads((root / STATE).read_text(encoding="utf-8")) if (root / STATE).exists() else {"stories": []}
-    urls = {url for item in state["stories"] for url in item.get("source_urls", [])}
+    urls = {normalize_url(url) for item in state["stories"] for url in item.get("source_urls", [])}
     event_keys = {item.get("event_key", "") for item in state["stories"]}
     titles = {re.sub(r"[^a-z0-9]", "", item.get("title", "").lower()) for item in state["stories"]}
     candidate_url = story["candidate"]["url"]
     normalized_title = re.sub(r"[^a-z0-9]", "", story["title"].lower())
-    if candidate_url in urls or normalized_title in titles or fingerprint(story) in {item.get("fingerprint") for item in state["stories"]} or story.get("event_key") in event_keys:
+    if normalize_url(candidate_url) in urls or normalized_title in titles or fingerprint(story) in {item.get("fingerprint") for item in state["stories"]} or story.get("event_key") in event_keys:
         raise ValueError("Duplicate source URL, title, or event already used.")
     for file in (root / "blog").glob("*/index.html"):
         text = file.read_text(encoding="utf-8", errors="ignore")

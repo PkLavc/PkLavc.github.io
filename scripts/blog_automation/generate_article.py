@@ -9,6 +9,7 @@ from urllib.parse import urlsplit
 
 from .gemini import call
 from .social_card import create_card
+from .url_evidence import normalize_url
 
 
 def build_prompt(story: dict, day: str) -> str:
@@ -28,14 +29,16 @@ def generate(story: dict, day: str) -> dict:
     # Grounding results are not automatically citations: many are merely related
     # search hits. Accept only URLs actually selected by the model from candidates
     # and validate them against the trusted story/grounding URL set.
-    allowed = set(story["sources"])
+    allowed = {normalize_url(url): url for url in story["sources"]}
     primary_url = story["candidate"]["url"]
     sources, seen = [], set()
     for item in result.get("sources", []):
         url = item.get("url", "")
-        if url in allowed and url not in seen:
+        normalized = normalize_url(url)
+        if normalized in allowed and allowed[normalized] not in seen:
+            item = {**item, "url": allowed[normalized]}
             sources.append(item)
-            seen.add(url)
+            seen.add(allowed[normalized])
         if len(sources) == 5:
             break
     if primary_url not in seen:
@@ -55,8 +58,9 @@ def render(root: Path, story: dict, article: dict, day: str) -> tuple[str, str]:
     title = story["title"]
     description = story["description"]
     url = f"https://pklavc.com/blog/{slug}/"
-    source_urls = set(story["sources"])
-    article_sources = [item for item in article.get("sources", []) if item.get("url") in source_urls][:5]
+    source_urls = {normalize_url(url): url for url in story["sources"]}
+    article_sources = [{**item, "url": source_urls[normalize_url(item.get("url", ""))]}
+                       for item in article.get("sources", []) if normalize_url(item.get("url", "")) in source_urls][:5]
     primary_url = story["candidate"]["url"]
     if not any(item.get("url") == primary_url for item in article_sources):
         article_sources.insert(0, {"label": story["candidate"].get("publisher", "Official primary source") + ": " + story["candidate"].get("title", story["title"]), "url": primary_url})
@@ -71,7 +75,7 @@ def render(root: Path, story: dict, article: dict, day: str) -> tuple[str, str]:
         sections.append("</section>")
     sections.append("<section><h2>Sources</h2><ul>" + "".join(
         f'<li><a href="{esc(source["url"])}" target="_blank" rel="noopener noreferrer">{esc(source["label"])}</a></li>'
-        for source in article["sources"] if source.get("url") in source_urls
+        for source in article["sources"] if normalize_url(source.get("url", "")) in source_urls
     ) + "</ul></section>")
     body = "\n".join(sections)
     template = (root / "scripts/blog_automation/template.html").read_text(encoding="utf-8")

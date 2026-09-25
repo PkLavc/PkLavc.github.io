@@ -1,5 +1,6 @@
 {
   "feeds": [
+    {"name":"Anthropic Newsroom JSON-LD","company":"Anthropic","url":"https://www.anthropic.com/news","format":"jsonld","primary":true},
     {"name":"OpenAI News","company":"OpenAI","url":"https://openai.com/news/rss.xml","primary":true},
     {"name":"Google AI Blog","company":"Google","url":"https://blog.google/innovation-and-ai/technology/ai/rss/","primary":true},
     {"name":"Google DeepMind","company":"Google DeepMind","url":"https://deepmind.google/blog/rss.xml","primary":true},
@@ -17,21 +18,32 @@
     {"name":"Meta Newsroom","company":"Meta","url":"https://about.fb.com/news/feed/","primary":true},
     {"name":"Meta Engineering","company":"Meta","url":"https://engineering.fb.com/feed/","primary":true},
     {"name":"Intel Releases","company":"Intel","url":"https://www.intc.com/news-events/press-releases/rss","primary":true},
-    {"name":"Samsung Newsroom","company":"Samsung","url":"https://news.samsung.com/global/feed","primary":true}
+    {"name":"Samsung Newsroom","company":"Samsung","url":"https://news.samsung.com/global/feed","primary":true},
+    {"name":"Google Cloud Blog JSON-LD","company":"Google","url":"https://cloud.google.com/blog","format":"jsonld","primary":true},
+    {"name":"Meta AI Blog JSON-LD","company":"Meta","url":"https://ai.meta.com/blog/","format":"jsonld","primary":true},
+    {"name":"IBM Newsroom Announcements","company":"IBM","url":"https://newsroom.ibm.com/announcements?format=rss&l=50","primary":true},
+    {"name":"Oracle Blogs","company":"Oracle","url":"https://blogs.oracle.com/rss","primary":true},
+    {"name":"Adobe Newsroom JSON-LD","company":"Adobe","url":"https://news.adobe.com/","format":"jsonld","primary":true},
+    {"name":"Qualcomm Releases JSON-LD","company":"Qualcomm","url":"https://www.qualcomm.com/news/releases","format":"jsonld","primary":true},
+    {"name":"xAI News JSON-LD","company":"xAI","url":"https://x.ai/news","format":"jsonld","primary":true},
+    {"name":"Tesla Blog JSON-LD","company":"Tesla","url":"https://www.tesla.com/blog","format":"jsonld","primary":true},
+    {"name":"Rockstar Newswire JSON-LD","company":"Rockstar Games","url":"https://www.rockstargames.com/newswire?tag_id=43","format":"jsonld","primary":true}
   ],
+  "expected_companies": ["OpenAI", "Anthropic", "Google", "Google DeepMind", "Microsoft", "GitHub", "Apple", "Meta", "Amazon", "AWS", "NVIDIA", "AMD", "Intel", "Cloudflare", "Oracle", "IBM", "Samsung", "Qualcomm", "Adobe", "xAI", "Tesla", "Rockstar Games"],
   "coverage_notes": {
-    "Anthropic": "Official newsroom exists at https://www.anthropic.com/news; the previously configured RSS endpoint returned 404. No validated official RSS URL found in this audit.",
-    "Rockstar Games": "Keep the official Newswire at https://www.rockstargames.com/newswire?tag_id=43; the previously configured /newswire/rss returned 404. No validated official RSS URL found. Do not scrape; technical-interest-only remains mandatory.",
-    "IBM": "Previously configured RSS endpoint returned malformed XML in the live audit; no replacement structured official feed validated in this audit.",
-    "Oracle": "Previously configured official RSS endpoint returned HTTP 403 in the live audit; no replacement structured official feed validated in this audit.",
-    "Adobe": "Previously configured feed returned HTTP 404; official Adobe Blog exists, but no validated RSS endpoint found in this audit.",
-    "Qualcomm": "Previously configured RSS endpoint returned HTTP 404; official news releases and OnQ blog exist, but no validated RSS endpoint found in this audit.",
-    "xAI": "Official news page is available at https://x.ai/news; no RSS feed validated, so it is not automatically collected pending a stable structured source.",
-    "Tesla": "Official blog/news exists; no structured RSS validated, so it is not automatically collected pending a stable structured source. Only technology/software-relevant stories may pass editorial selection.",
+    "Anthropic": "Official newsroom https://www.anthropic.com/news is polled only for schema.org Article JSON-LD. This structured fallback is counted as coverage only when the live collector parses entries successfully; RSS was not validated.",
+    "Rockstar Games": "Official Newswire https://www.rockstargames.com/newswire?tag_id=43 is polled only for schema.org Article JSON-LD; no unofficial source is used. Runtime parse success is required for coverage. Technical-interest-only remains mandatory.",
+    "IBM": "Official IBM Newsroom announcements RSS: https://newsroom.ibm.com/announcements?format=rss&l=50; newly configured after official publisher content confirmed the endpoint format.",
+    "Oracle": "https://blogs.oracle.com/rss is the official Oracle Blogs RSS endpoint; focused EBS technology feed https://blogs.oracle.com/ebstech/rss was documented by Oracle but the general RSS endpoint must pass the workflow's live parser check.",
+    "Adobe": "Official Adobe Newsroom https://news.adobe.com/ is polled only for schema.org Article JSON-LD; not considered covered unless runtime parse succeeds.",
+    "Qualcomm": "Official press releases https://www.qualcomm.com/news/releases are polled only for schema.org Article JSON-LD; not considered covered unless runtime parse succeeds.",
+    "xAI": "Official https://x.ai/news is polled only for schema.org Article JSON-LD; no RSS endpoint validated. Coverage remains unconfirmed until runtime parse succeeds.",
+    "Tesla": "Official https://www.tesla.com/blog is polled only for schema.org Article JSON-LD; no RSS endpoint validated. Technology/software relevance remains mandatory and coverage is unconfirmed until runtime parse succeeds.",
     "Google": "Coverage is split across Google AI, DeepMind, general Developers, and Android Developers feeds.",
-    "Google Cloud": "The official products/rss path rendered HTML rather than a valid RSS/Atom document in this audit, so Google Cloud is not listed as a checked structured feed; announcements may appear in general Google sources but dedicated Cloud coverage is incomplete.",
+    "Google Cloud": "Official cloud.google.com/blog is polled only for schema.org Article JSON-LD. It is counted as covered only when the live collector parses records successfully.",
     "Microsoft": "Microsoft Source and Azure engineering blog are separate; GitHub is independently monitored.",
-    "Amazon": "Corporate/product news is distinct from AWS What's New."
+    "Amazon": "Corporate/product news is distinct from AWS What's New.",
+    "Meta": "Meta Newsroom and Meta Engineering are complemented by the official AI at Meta blog at https://ai.meta.com/blog/, polled only for schema.org Article JSON-LD and counted only after live parsing."
   },
-  "topics": ["AI and models", "developer tools and APIs", "cloud platforms", "cybersecurity", "software engineering", "chips and computing hardware", "relevant technical developments from Rockstar Games"]
+  "topics": ["AI and models", "developer tools and APIs", "cloud platforms", "cybersecurity", "software engineering", "chips and computing hardware", "relevant technical developments from Rockstar Games", "Tesla technology and software only; exclude generic corporate/vehicle news"]
 }
