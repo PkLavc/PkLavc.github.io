@@ -211,6 +211,8 @@ describe("ordered Discord conversation delivery", () => {
     expect(posts.map(request => request.body?.content)).toEqual([
       "**Visitante:**\ncursos", "Estado: IA", "**Skylet:**\nresposta", "Estado: IA",
     ]);
+    const controls = posts.filter(request => request.body?.components).map(request => request.body?.components as Array<{ components: Array<{ label: string }> }>);
+    expect(controls[0][0].components.map(button => button.label)).toEqual(["Assumir", "Responder", "Devolver para IA"]);
     const panelIndexes = requests.map((request, index) => request.method === "POST" && request.body?.content === "Estado: IA" && request.body?.components ? index : -1).filter(index => index >= 0);
     const latestPanelIndex = panelIndexes[panelIndexes.length - 1];
     const deleteOldPanelIndex = requests.findIndex(request => request.method === "DELETE" && request.url.endsWith("/messages/discord-message-2"));

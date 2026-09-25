@@ -811,19 +811,31 @@
     var thinking = appendMessage("assistant", getCopy().thinking, true);
 
     try {
+      var chatPayload = {
+        message: text,
+        conversation_id: state.conversationId || null,
+        voice_reply: state.voiceEnabled,
+      };
       var res = await skyletFetch(state.apiBase + "/chat", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          message: text,
-          conversation_id: state.conversationId || null,
-          voice_reply: state.voiceEnabled,
-        }),
+        body: JSON.stringify(chatPayload),
       });
 
       var data = await res.json();
+      if (res.status === 409 && data.error === "conversation_closed" && state.conversationId) {
+        state.conversationId = "";
+        saveSession();
+        chatPayload.conversation_id = null;
+        res = await skyletFetch(state.apiBase + "/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(chatPayload),
+        });
+        data = await res.json();
+      }
       if (!res.ok) {
         throw new Error(data.error || "Chat failed");
       }

@@ -1,5 +1,5 @@
 import type { Env } from "./index";
-import { discordApi, postThreadMessage, updateControlMessage } from "./discord-conversations";
+import { postThreadMessage, updateControlMessage } from "./discord-conversations";
 
 type DiscordInteraction = {
   type: number; id: string; token: string;
@@ -27,7 +27,7 @@ export async function handleDiscordInteraction(request: Request, env: Env, ctx: 
   const actorId = interaction.member?.user?.id || interaction.user?.id;
   if (!actorId || actorId !== env.DISCORD_OWNER_USER_ID) return Response.json({ type: 4, data: { content: "Você não tem autorização para esta ação.", flags: 64 } });
   const customId = interaction.data?.custom_id || "";
-  const match = /^skylet:(assume|reply|return|close|reply_submit):([0-9a-f-]{36})$/i.exec(customId);
+  const match = /^skylet:(assume|reply|return|reply_submit):([0-9a-f-]{36})$/i.exec(customId);
   if (!match) return Response.json({ type: 4, data: { content: "Ação inválida.", flags: 64 } });
   const [, action, conversationId] = match;
   const control = await env.DB.prepare("SELECT * FROM discord_conversations WHERE conversation_id = ?").bind(conversationId).first<any>();
@@ -53,13 +53,11 @@ export async function handleDiscordInteraction(request: Request, env: Env, ctx: 
   }
   if (action === "assume" && control.status !== "AI") return Response.json({ type: 4, data: { content: "A conversa não está no estado IA.", flags: 64 } });
   if (action === "return" && control.status !== "HUMAN") return Response.json({ type: 4, data: { content: "A conversa não está em atendimento humano.", flags: 64 } });
-  if (action === "close" && control.status === "CLOSED") return Response.json({ type: 4, data: { content: "A conversa já está encerrada.", flags: 64 } });
-  const status = action === "assume" ? "HUMAN" : action === "return" ? "AI" : "CLOSED";
+  const status = action === "assume" ? "HUMAN" : "AI";
   ctx.waitUntil((async () => {
     await env.DB.prepare("UPDATE discord_conversations SET status = ?, updated_at = ? WHERE conversation_id = ?").bind(status, new Date().toISOString(), conversationId).run();
     await env.DB.prepare("INSERT INTO analytics_events (event_type, event_payload, created_at) VALUES ('discord_handoff', ?, ?)").bind(JSON.stringify({ conversation_id: conversationId, status }), new Date().toISOString()).run();
     await updateControlMessage(env, { ...control, status });
-    if (status === "CLOSED") await discordApi(env, `/channels/${control.discord_thread_id}`, { method: "PATCH", body: JSON.stringify({ archived: true }) });
   })().catch(() => console.log(JSON.stringify({ level: "warn", event: "discord_handoff_update_failed" }))));
   return Response.json({ type: 6 });
 }

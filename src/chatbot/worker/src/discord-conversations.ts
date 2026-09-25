@@ -184,7 +184,6 @@ export async function updateControlMessage(env: Env, control: Control, repositio
     { type: 2, style: 1, label: "Assumir", custom_id: `skylet:assume:${active.conversation_id}`, disabled: active.status === "HUMAN" },
     { type: 2, style: 2, label: "Responder", custom_id: `skylet:reply:${control.conversation_id}`, disabled: false },
     { type: 2, style: 2, label: "Devolver para IA", custom_id: `skylet:return:${active.conversation_id}`, disabled: active.status !== "HUMAN" },
-    { type: 2, style: 4, label: "Encerrar", custom_id: `skylet:close:${active.conversation_id}` },
   ] }];
   const body = { content: labels[active.status], components, allowed_mentions: { parse: [] } };
   if (!reposition) {

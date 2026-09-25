@@ -33,6 +33,13 @@ describe("Skylet browser conversation session", () => {
     expect(dedicatedScript).toContain("if (!response.ok) return;");
   });
 
+  it("starts a new conversation when the saved one was closed remotely", () => {
+    expect(widgetScript).toContain('data.error === "conversation_closed"');
+    expect(widgetScript).toContain("chatPayload.conversation_id = null");
+    expect(dedicatedScript).toContain("data.error === 'conversation_closed'");
+    expect(dedicatedScript).toContain("chatPayload.conversation_id = null");
+  });
+
   it("confirms deletion, clears the local active id, and closes the old conversation", () => {
     expect(widgetScript).toContain("window.confirm(getCopy().confirmClearConversation)");
     expect(widgetScript).toContain("state.conversationId = \"\"");
@@ -45,13 +52,13 @@ describe("Skylet browser conversation session", () => {
   it("uses the shared /ia/ client script on all three localized assistant pages", () => {
     for (const page of ["ia/index.html", "pt/ia/index.html", "es/ia/index.html"]) {
       const html = readFileSync(new URL(`../../../../${page}`, import.meta.url), "utf8");
-      expect(html).toContain("/ia/skylet-chat.js?v=df1b783729");
-      expect(html).toContain("/js/index.js?v=7b1c414025");
+      expect(html).toContain("/ia/skylet-chat.js?v=6640e11c52");
+      expect(html).toContain("/js/index.js?v=1d2bbc2929");
     }
-    expect(indexScript).toContain("/js/skylet-widget.js?v=abde231ee6");
+    expect(indexScript).toContain("/js/skylet-widget.js?v=13c52083e8");
     for (const page of ["about/index.html", "pt/sobre/index.html", "es/sobre/index.html"]) {
       const html = readFileSync(new URL(`../../../../${page}`, import.meta.url), "utf8");
-      expect(html).toContain("/js/skylet-widget.js?v=abde231ee6");
+      expect(html).toContain("/js/skylet-widget.js?v=13c52083e8");
     }
   });
 });

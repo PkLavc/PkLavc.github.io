@@ -122,13 +122,11 @@ describe("Discord interactions", () => {
     expect(harness.control.status).toBe("AI");
   });
 
-  it("lets the owner use the type 3 Encerrar button and closes the conversation", async () => {
+  it("rejects a stale Encerrar interaction after removing that control from Discord panels", async () => {
     const harness = createHarness("AI");
     const { body } = await invoke(component("close"), harness);
-    expect(body).toEqual({ type: 6 });
-    await finishTasks(harness);
-    expect(harness.control.status).toBe("CLOSED");
-    expect(harness.calls.some(call => call.url.endsWith(`/channels/${threadId}`) && call.body?.archived === true)).toBe(true);
+    expect(body).toMatchObject({ type: 4, data: { flags: 64 } });
+    expect(harness.control.status).toBe("AI");
   });
 
   it("accepts a type 5 modal submit, persists the human reply, and mirrors it to the thread", async () => {

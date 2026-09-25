@@ -150,13 +150,26 @@
 
     const waiting = appendMessage('assistant', '...', true);
     try {
-      const response = await skyletFetch(`${apiBase}/chat`, {
+      const chatPayload = { message, conversation_id: conversationId, voice_reply: voiceOutput };
+      let response = await skyletFetch(`${apiBase}/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message, conversation_id: conversationId, voice_reply: voiceOutput })
+        body: JSON.stringify(chatPayload)
       });
-      const contentType = response.headers.get('content-type') || '';
-      const data = contentType.includes('application/json') ? await response.json() : {};
+      let contentType = response.headers.get('content-type') || '';
+      let data = contentType.includes('application/json') ? await response.json() : {};
+      if (response.status === 409 && data.error === 'conversation_closed' && conversationId) {
+        conversationId = null;
+        saveConversationReference();
+        chatPayload.conversation_id = null;
+        response = await skyletFetch(`${apiBase}/chat`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(chatPayload)
+        });
+        contentType = response.headers.get('content-type') || '';
+        data = contentType.includes('application/json') ? await response.json() : {};
+      }
       if (!response.ok) throw new Error(data.error || `chat_http_${response.status}`);
       conversationId = data.conversation_id || conversationId;
       saveConversationReference();
