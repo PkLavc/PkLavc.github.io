@@ -1,7 +1,7 @@
 import { createHash } from "node:crypto";
 
 if (process.argv.length > 2) {
-  console.error("Read the password from stdin; do not pass it as a command-line argument.");
+  console.error("Generate the site admin password hash from stdin; do not pass the password as a command-line argument.");
   process.exit(2);
 }
 

@@ -1,4 +1,6 @@
-# Admin authentication configuration
+# Site admin authentication configuration
+
+This configures sign-in for the site's `/adm/` area. The existing Cloudflare Worker is used as its HTTP backend; this is separate from chatbot or Skylet authentication.
 
 The Worker keeps the existing password format: lowercase hexadecimal SHA-256 of the UTF-8 password. Generate it locally without putting the password in command history or an argument:
 
@@ -10,6 +12,6 @@ Remove-Variable plain, secure
 $hash
 ```
 
-Configure the resulting hash as the Cloudflare Worker secret `ADMIN_PASSWORD_HASH`; never put the password itself in Wrangler configuration. The deployment workflow reads GitHub Actions secrets `CHATBOT_ADMIN_PASSWORD_HASH` and `CHATBOT_ADMIN_USERNAME`, plus the existing `JWT_SECRET`, then syncs them to Worker secrets `ADMIN_PASSWORD_HASH`, `ADMIN_USERNAME`, and `JWT_SECRET`.
+Configure the resulting hash as the GitHub Actions secret `ADMIN_PASSWORD_HASH`; the existing deployment workflow syncs it to the Cloudflare Worker secret with the same name. Set `ADMIN_USERNAME` and `JWT_SECRET` as GitHub Actions secrets too; each is synchronized to the Worker secret with the same name. Never put the password itself in Wrangler configuration.
 
 For the existing deployment workflow, `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` must also be configured as GitHub Actions secrets. The allowed frontend origins are the non-secret Worker variable `ALLOWED_ORIGINS` in `wrangler.toml`; it currently includes `https://pklavc.com`, `https://www.pklavc.com`, and local development origins.
