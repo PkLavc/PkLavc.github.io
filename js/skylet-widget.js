@@ -701,6 +701,18 @@
     recognition.start();
   }
 
+  var humanReplyCursor = 0;
+  var humanReplyTimer = null;
+  async function pollHumanReplies() {
+    if (!state.conversationId) return;
+    try {
+      var poll = await fetch(state.apiBase + "/conversations/messages?conversation_id=" + encodeURIComponent(state.conversationId) + "&after_id=" + humanReplyCursor);
+      if (!poll.ok) return;
+      var result = await poll.json();
+      (result.items || []).forEach(function (item) { humanReplyCursor = Math.max(humanReplyCursor, Number(item.id) || 0); appendMessage("assistant", item.content, true); });
+    } catch (_) { /* Resume on the next interval. */ }
+  }
+
   async function sendChat() {
     if (!els.input) {
       return;
@@ -737,8 +749,10 @@
 
       state.conversationId = data.conversation_id || state.conversationId;
       saveSession();
+      if (!humanReplyTimer && state.conversationId) humanReplyTimer = window.setInterval(pollHumanReplies, 3000);
       if (thinking) {
-        thinking.innerHTML = renderMessageContent(data.reply || getCopy().noResponse);
+        if (data.human_takeover) thinking.remove();
+        else thinking.innerHTML = renderMessageContent(data.reply || getCopy().noResponse);
       }
       setStatus("");
       speakIfEnabled(data.reply || "");

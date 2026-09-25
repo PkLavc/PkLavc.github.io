@@ -68,7 +68,7 @@ jobs:
 
       - name: Sync Worker secrets
         run: |
-          for name in JWT_SECRET GROQ_API_KEY OPENROUTER_API_KEY ADMIN_USERNAME ADMIN_PASSWORD_HASH LANGFUSE_BASE_URL LANGFUSE_PUBLIC_KEY LANGFUSE_SECRET_KEY; do
+          for name in JWT_SECRET GROQ_API_KEY OPENROUTER_API_KEY ADMIN_USERNAME ADMIN_PASSWORD_HASH LANGFUSE_BASE_URL LANGFUSE_PUBLIC_KEY LANGFUSE_SECRET_KEY DISCORD_BOT_TOKEN DISCORD_PUBLIC_KEY DISCORD_CHANNEL_ID DISCORD_OWNER_USER_ID; do
             value="${!name}"
             if [ -n "$value" ]; then
               printf '%s' "$value" | npx wrangler secret put "$name"
@@ -85,6 +85,10 @@ jobs:
           LANGFUSE_BASE_URL: ${{ secrets.LANGFUSE_BASE_URL }}
           LANGFUSE_PUBLIC_KEY: ${{ secrets.LANGFUSE_PUBLIC_KEY }}
           LANGFUSE_SECRET_KEY: ${{ secrets.LANGFUSE_SECRET_KEY }}
+          DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
+          DISCORD_PUBLIC_KEY: ${{ vars.DISCORD_PUBLIC_KEY }}
+          DISCORD_CHANNEL_ID: ${{ vars.DISCORD_CHANNEL_ID }}
+          DISCORD_OWNER_USER_ID: ${{ vars.DISCORD_OWNER_USER_ID }}
 
       - name: Deploy Worker
         run: npx wrangler deploy

@@ -1,4 +1,6 @@
 import { MANUAL_RAG_CONTEXT, MANUAL_RAG_SECTIONS } from "./manual-rag";
+import { handleDiscordInteraction } from "./discord-interactions";
+import { mirrorDiscordMessage, getConversationControl } from "./discord-conversations";
 
 export interface Env {
   DB: D1Database;
@@ -32,6 +34,10 @@ export interface Env {
   LANGFUSE_BASE_URL?: string;
   LANGFUSE_PUBLIC_KEY?: string;
   LANGFUSE_SECRET_KEY?: string;
+  DISCORD_PUBLIC_KEY?: string;
+  DISCORD_BOT_TOKEN?: string;
+  DISCORD_CHANNEL_ID?: string;
+  DISCORD_OWNER_USER_ID?: string;
 }
 
 type ChatPayload = {
@@ -97,6 +103,10 @@ export default {
     const origin = request.headers.get("Origin");
     const traceId = request.headers.get("cf-ray") || crypto.randomUUID();
     const traceparent = request.headers.get("traceparent") || `00-${traceId.replace(/[^a-fA-F0-9]/g, "").slice(0, 32).padEnd(32, "0")}-0000000000000001-01`;
+
+    if (url.pathname === "/discord/interactions" && request.method === "POST") {
+      return handleDiscordInteraction(request, env, ctx);
+    }
 
     if (request.method === "OPTIONS") {
       return new Response(null, { headers: corsHeaders(env, origin) });
@@ -378,7 +388,22 @@ export default {
           return withCors(json({ error: "invalid_json" }, 400), env, origin);
         }
         const user = await resolveChatUser(request, env);
+        const input = (payload.message || "").trim();
+        const conversationId = payload.conversation_id;
+        if (conversationId) {
+          const control = await getConversationControl(env, conversationId, user.id);
+          if (control?.status === "CLOSED") return withCors(json({ ok: false, error: "conversation_closed", conversation_id: conversationId }, 409), env, origin);
+          if (control?.status === "HUMAN") {
+            await storeMessage(env, conversationId, "user", sanitizeInput(maskPii(input, env)));
+            ctx.waitUntil(mirrorDiscordMessage(env, conversationId, "Visitante", sanitizeInput(maskPii(input, env))));
+            return withCors(json({ ok: true, conversation_id: conversationId, reply: "", human_takeover: true }), env, origin);
+          }
+        }
         const response = await handleChat(payload, user, env, traceId, false, traceparent);
+        if ("conversation_id" in response && response.conversation_id) {
+          ctx.waitUntil(mirrorDiscordMessage(env, response.conversation_id, "Visitante", sanitizeInput(maskPii(input, env))));
+          ctx.waitUntil(mirrorDiscordMessage(env, response.conversation_id, "Skylet", String(response.reply || "")));
+        }
         ctx.waitUntil(logSpan(env, {
           trace_id: traceId,
           span: "chat_http",
@@ -402,7 +427,18 @@ export default {
           return withCors(json({ error: "invalid_json" }, 400), env, origin);
         }
         const user = await resolveChatUser(request, env);
+        if (payload.conversation_id) {
+          const control = await getConversationControl(env, payload.conversation_id, user.id);
+          if (control?.status === "CLOSED") return withCors(json({ ok: false, error: "conversation_closed" }, 409), env, origin);
+          if (control?.status === "HUMAN") {
+            const content = sanitizeInput(maskPii(payload.message || "", env));
+            await storeMessage(env, payload.conversation_id, "user", content);
+            ctx.waitUntil(mirrorDiscordMessage(env, payload.conversation_id, "Visitante", content));
+            return withCors(new Response(`data: ${JSON.stringify({ done: true, conversation_id: payload.conversation_id, human_takeover: true })}\n\n`, { headers: { "Content-Type": "text/event-stream", "Cache-Control": "no-cache" } }), env, origin);
+          }
+        }
         const streamResponse = await handleChatStream(payload, user, env, traceId, traceparent);
+        if (payload.message) ctx.waitUntil(mirrorStreamCompletion(streamResponse, env, payload));
         ctx.waitUntil(logSpan(env, {
           trace_id: traceId,
           span: "chat_stream_http",
@@ -411,6 +447,16 @@ export default {
           status: 200,
         }));
         return withCors(streamResponse, env, origin);
+      }
+
+      if (url.pathname === "/conversations/messages" && request.method === "GET") {
+        const user = await resolveChatUser(request, env);
+        const conversationId = url.searchParams.get("conversation_id") || "";
+        const afterId = Math.max(0, Number(url.searchParams.get("after_id") || 0));
+        const control = await getConversationControl(env, conversationId, user.id);
+        if (!control) return withCors(json({ error: "conversation_not_found" }, 404), env, origin);
+        const rows = await env.DB.prepare("SELECT id, role, content, created_at FROM messages WHERE conversation_id = ? AND id > ? AND role IN ('human') ORDER BY id ASC LIMIT 50").bind(conversationId, afterId).all();
+        return withCors(json({ ok: true, items: rows.results || [], status: control.status }), env, origin);
       }
 
       if (url.pathname === "/conversations" && request.method === "GET") {
@@ -747,6 +793,28 @@ async function handleChatStream(payload: ChatPayload, user: AuthUser, env: Env, 
       Connection: "keep-alive",
     },
   });
+}
+
+async function mirrorStreamCompletion(response: Response, env: Env, payload: ChatPayload): Promise<void> {
+  try {
+    const body = await response.clone().text();
+    let reply = "";
+    let conversationId = payload.conversation_id || "";
+    for (const event of body.split("\n\n")) {
+      const line = event.split("\n").find((part) => part.startsWith("data:"));
+      if (!line) continue;
+      try {
+        const data = JSON.parse(line.slice(5).trim());
+        if (data.token) reply += data.token;
+        if (data.conversation_id) conversationId = data.conversation_id;
+      } catch { /* Ignore malformed provider chunks. */ }
+    }
+    if (conversationId) {
+      const cleanUser = sanitizeInput(payload.message || "");
+      await mirrorDiscordMessage(env, conversationId, "Visitante", cleanUser);
+      if (reply) await mirrorDiscordMessage(env, conversationId, "Skylet", reply);
+    }
+  } catch { /* Discord mirroring must never affect the visitor response. */ }
 }
 
 async function loginUser(env: Env, username: string, password: string): Promise<AuthUser | null> {

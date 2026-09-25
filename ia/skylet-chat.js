@@ -59,6 +59,18 @@
     }
   }
 
+  let humanReplyCursor = 0;
+  let humanReplyTimer = null;
+  async function pollHumanReplies() {
+    if (!conversationId) return;
+    try {
+      const response = await fetch(`${apiBase}/conversations/messages?conversation_id=${encodeURIComponent(conversationId)}&after_id=${humanReplyCursor}`);
+      if (!response.ok) return;
+      const data = await response.json();
+      (data.items || []).forEach(item => { humanReplyCursor = Math.max(humanReplyCursor, Number(item.id) || 0); appendMessage('assistant', item.content); });
+    } catch (_) { /* Retry on next interval. */ }
+  }
+
   async function send() {
     const message = input.value.trim();
     if (!message) return;
@@ -83,8 +95,10 @@
       const data = contentType.includes('application/json') ? await response.json() : {};
       if (!response.ok) throw new Error(data.error || `chat_http_${response.status}`);
       conversationId = data.conversation_id || conversationId;
+      if (!humanReplyTimer && conversationId) humanReplyTimer = window.setInterval(pollHumanReplies, 3000);
       const reply = data.reply || copy.unavailable;
       waiting.classList.remove('is-pending');
+      if (data.human_takeover) { waiting.remove(); return; }
       waiting.querySelector('.s800-chat-bubble').innerHTML = escapeHtml(reply).replace(/\n/g, '<br>');
       if (voiceOutput) speakThroughS800(reply);
     } catch (error) {
