@@ -1550,7 +1550,7 @@ function loadSkyletWidgetAssets() {
   if (!document.getElementById('skylet-widget-script')) {
     var script = document.createElement('script');
     script.id = 'skylet-widget-script';
-    script.src = '/js/skylet-widget.js?v=13c52083e8';
+    script.src = '/js/skylet-widget.js?v=3ce4e98fcb';
     script.defer = true;
     document.body.appendChild(script);
   }

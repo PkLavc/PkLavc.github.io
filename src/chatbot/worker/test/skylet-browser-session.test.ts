@@ -40,6 +40,15 @@ describe("Skylet browser conversation session", () => {
     expect(dedicatedScript).toContain("chatPayload.conversation_id = null");
   });
 
+  it("cancels pending history restoration when the visitor clears the chat", () => {
+    expect(widgetScript).toContain("conversationRestoreGeneration += 1");
+    expect(widgetScript).toContain("restoringConversation = false");
+    expect(widgetScript).toContain("restoreGeneration !== conversationRestoreGeneration");
+    expect(dedicatedScript).toContain("conversationRestoreGeneration += 1");
+    expect(dedicatedScript).toContain("restoringConversation = false");
+    expect(dedicatedScript).toContain("restoreGeneration !== conversationRestoreGeneration");
+  });
+
   it("confirms deletion, clears the local active id, and closes the old conversation", () => {
     expect(widgetScript).toContain("window.confirm(getCopy().confirmClearConversation)");
     expect(widgetScript).toContain("state.conversationId = \"\"");
@@ -52,13 +61,13 @@ describe("Skylet browser conversation session", () => {
   it("uses the shared /ia/ client script on all three localized assistant pages", () => {
     for (const page of ["ia/index.html", "pt/ia/index.html", "es/ia/index.html"]) {
       const html = readFileSync(new URL(`../../../../${page}`, import.meta.url), "utf8");
-      expect(html).toContain("/ia/skylet-chat.js?v=6640e11c52");
-      expect(html).toContain("/js/index.js?v=1d2bbc2929");
+      expect(html).toContain("/ia/skylet-chat.js?v=13083b28cf");
+      expect(html).toContain("/js/index.js?v=2038092390");
     }
-    expect(indexScript).toContain("/js/skylet-widget.js?v=13c52083e8");
+    expect(indexScript).toContain("/js/skylet-widget.js?v=3ce4e98fcb");
     for (const page of ["about/index.html", "pt/sobre/index.html", "es/sobre/index.html"]) {
       const html = readFileSync(new URL(`../../../../${page}`, import.meta.url), "utf8");
-      expect(html).toContain("/js/skylet-widget.js?v=13c52083e8");
+      expect(html).toContain("/js/skylet-widget.js?v=3ce4e98fcb");
     }
   });
 });

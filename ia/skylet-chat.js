@@ -31,6 +31,7 @@
   let voiceOutput = false;
   let characterSpeech = false;
   let restoringConversation = false;
+  let conversationRestoreGeneration = 0;
 
   const copy = {
     en: { placeholder: 'Write a message…', audioOn: 'Audio replies on', audioOff: 'Audio replies off', unavailable: 'I could not answer right now. Please try again.', clear: 'Clear conversation', confirmClear: 'Delete this conversation from this browser?' },
@@ -66,9 +67,12 @@
 
   async function restoreConversation() {
     if (!conversationId) return;
+    const restoringId = conversationId;
+    const restoreGeneration = ++conversationRestoreGeneration;
     restoringConversation = true;
     try {
-      const response = await skyletFetch(`${apiBase}/conversations/history?conversation_id=${encodeURIComponent(conversationId)}`);
+      const response = await skyletFetch(`${apiBase}/conversations/history?conversation_id=${encodeURIComponent(restoringId)}`);
+      if (restoreGeneration !== conversationRestoreGeneration || conversationId !== restoringId) return;
       if (response.status === 404) {
         conversationId = null;
         saveConversationReference();
@@ -76,17 +80,20 @@
       }
       if (!response.ok) return;
       const data = await response.json();
+      if (restoreGeneration !== conversationRestoreGeneration || conversationId !== restoringId) return;
       (data.items || []).forEach(item => {
         appendMessage(item.role === 'user' ? 'user' : 'assistant', item.content);
         humanReplyCursor = Math.max(humanReplyCursor, Number(item.id) || 0);
       });
       if (!humanReplyTimer) humanReplyTimer = window.setInterval(pollHumanReplies, 3000);
     } catch (_) { /* Keep the reference and retry on the next page load. */ }
-    finally { restoringConversation = false; }
+    finally { if (restoreGeneration === conversationRestoreGeneration) restoringConversation = false; }
   }
 
   function clearConversation() {
     if (!window.confirm(copy.confirmClear)) return;
+    conversationRestoreGeneration += 1;
+    restoringConversation = false;
     const oldConversationId = conversationId;
     conversationId = null;
     humanReplyCursor = 0;

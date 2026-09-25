@@ -745,6 +745,7 @@
   var humanReplyCursor = 0;
   var humanReplyTimer = null;
   var restoringConversation = false;
+  var conversationRestoreGeneration = 0;
   async function pollHumanReplies() {
     if (!state.conversationId) return;
     try {
@@ -757,9 +758,12 @@
 
   async function restoreConversationHistory() {
     if (!state.conversationId) return;
+    var restoringId = state.conversationId;
+    var restoreGeneration = ++conversationRestoreGeneration;
     restoringConversation = true;
     try {
-      var response = await skyletFetch(state.apiBase + "/conversations/history?conversation_id=" + encodeURIComponent(state.conversationId));
+      var response = await skyletFetch(state.apiBase + "/conversations/history?conversation_id=" + encodeURIComponent(restoringId));
+      if (restoreGeneration !== conversationRestoreGeneration || state.conversationId !== restoringId) return;
       if (response.status === 404) {
         state.conversationId = "";
         saveSession();
@@ -767,6 +771,7 @@
       }
       if (!response.ok) return;
       var history = await response.json();
+      if (restoreGeneration !== conversationRestoreGeneration || state.conversationId !== restoringId) return;
       if (els.log) els.log.querySelectorAll(".about-chat-message").forEach(function (node) { node.remove(); });
       (history.items || []).forEach(function (item) {
         appendMessage(item.role === "user" ? "user" : "assistant", item.content, true);
@@ -774,11 +779,13 @@
       });
       if (!humanReplyTimer) humanReplyTimer = window.setInterval(pollHumanReplies, 3000);
     } catch (_) { /* Keep the local reference so the next load can retry. */ }
-    finally { restoringConversation = false; }
+    finally { if (restoreGeneration === conversationRestoreGeneration) restoringConversation = false; }
   }
 
   function clearConversation() {
     if (!window.confirm(getCopy().confirmClearConversation)) return;
+    conversationRestoreGeneration += 1;
+    restoringConversation = false;
     var oldConversationId = state.conversationId;
     state.conversationId = "";
     humanReplyCursor = 0;
