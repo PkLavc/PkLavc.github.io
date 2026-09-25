@@ -169,10 +169,10 @@ class GeminiRetryTests(unittest.TestCase):
                 path.write_text("unchanged", encoding="utf-8")
             story = {"event_key": "new-event", "candidate": {"url": "https://google.com/new"}, "sources": ["https://google.com/new"]}
             def selector(*args):
-                gemini.call("selector", purpose="Selector")
                 return [story]
             def generation(*args):
-                gemini.call("article", purpose="Article generation")
+                from . import llm_provider
+                llm_provider.call_llm("article", purpose="Article generation")
             with patch("sys.argv", ["run", "--root", str(root)]), \
                  patch("scripts.blog_automation.run.collect", return_value=([story], [])), \
                  patch("scripts.blog_automation.run.filter_today", return_value=[story]), \
@@ -181,7 +181,8 @@ class GeminiRetryTests(unittest.TestCase):
                  patch("scripts.blog_automation.run.select", side_effect=selector), \
                  patch("scripts.blog_automation.run.choose_ranked", return_value=story), \
                  patch("scripts.blog_automation.run.generate", side_effect=generation), \
-                 patch("scripts.blog_automation.gemini.urllib.request.urlopen", side_effect=[Response(), http_error(429, "QUOTA_EXCEEDED")]), \
+                 patch.dict(os.environ, {"GEMINI_API_KEY": "mock", "OPENROUTER_API_KEY": "", "CLOUDFLARE_API_TOKEN": "", "CLOUDFLARE_ACCOUNT_ID": ""}), \
+                 patch("scripts.blog_automation.llm_provider.gemini.call", side_effect=gemini.GeminiOperationalError("DAILY_QUOTA", "quota exhausted")), \
                  patch("scripts.blog_automation.run.publish") as publish, \
                  redirect_stdout(io.StringIO()) as log:
                 run.main()
@@ -190,8 +191,7 @@ class GeminiRetryTests(unittest.TestCase):
             self.assertTrue(all(path.read_text(encoding="utf-8") == ('{"stories":[]}' if path == used else "unchanged") for path in protected))
             self.assertEqual({path.name for path in (root / "blog").iterdir()}, {"posts.json", "index.html"})
             self.assertEqual(list((root / "images/og/blog").iterdir()), [])
-            self.assertIn("NO_POST_GEMINI_QUOTA_EXHAUSTED", log.getvalue())
-            self.assertEqual(gemini.request_count(), 2)
+            self.assertIn("NO_POST_ALL_LLM_PROVIDERS_UNAVAILABLE", log.getvalue())
 
 
 if __name__ == "__main__":

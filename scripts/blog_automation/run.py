@@ -8,7 +8,7 @@ import re
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
-from . import gemini
+from . import llm_provider
 from .collect_sources import collect
 from .filter_candidates import filter_today
 from .generate_article import generate, render
@@ -62,7 +62,7 @@ def _main() -> None:
     root = args.root.resolve()
     day = dt.datetime.now(ZoneInfo("America/Sao_Paulo")).date().isoformat()
     dry_run = args.dry_run or os.environ.get("DRY_RUN", "false").lower() == "true"
-    print(f"Data editorial (America/Sao_Paulo): {day}; modelo Gemini: {os.getenv('GEMINI_MODEL', 'gemini-2.5-flash')}")
+    print(f"Data editorial (America/Sao_Paulo): {day}; Gemini model: {os.getenv('GEMINI_MODEL', 'gemini-2.5-flash')}; OpenRouter model: {os.getenv('OPENROUTER_MODEL', 'openrouter/free')}; Cloudflare Workers AI model: {os.getenv('CLOUDFLARE_AI_MODEL', '@cf/openai/gpt-oss-120b')}")
     if args.offline_fixture:
         story, article = fixture(day)
     else:
@@ -104,16 +104,12 @@ def _main() -> None:
 def main() -> None:
     try:
         _main()
-    except gemini.GeminiOperationalError as exc:
-        reason = {
-            "DAILY_QUOTA": "NO_POST_GEMINI_QUOTA_EXHAUSTED",
-            "RATE_LIMIT": "NO_POST_GEMINI_TEMPORARILY_UNAVAILABLE",
-            "SERVICE_UNAVAILABLE": "NO_POST_GEMINI_TEMPORARILY_UNAVAILABLE",
-            "REQUEST_BUDGET": "NO_POST_GEMINI_REQUEST_BUDGET",
-        }.get(exc.circuit, "NO_POST_GEMINI_TEMPORARILY_UNAVAILABLE")
-        print(f"{reason}: {exc}. Article not published.")
+    except llm_provider.LLMProvidersUnavailable as exc:
+        print(f"NO_POST_ALL_LLM_PROVIDERS_UNAVAILABLE: {exc}. Article not published.")
+    except llm_provider.LLMRequestRejected as exc:
+        print(f"NO_POST_LLM_REQUEST_REJECTED: {exc}. Article not published.")
     finally:
-        gemini.report_usage()
+        llm_provider.report_usage()
 
 
 if __name__ == "__main__":

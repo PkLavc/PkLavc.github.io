@@ -5,6 +5,7 @@ import unittest
 from unittest.mock import MagicMock, patch
 
 from .select_story import _company_official, verify_evidence
+from .llm_provider import LLMResponse
 
 
 DAY = "2026-09-24"
@@ -48,7 +49,7 @@ class TieredEvidenceTests(unittest.TestCase):
 
     def test_a_primary_only_is_sufficient_when_no_secondary_is_found(self):
         story = {**STORY, "candidate": dict(STORY["candidate"]), "source_urls": [], "_grounded": []}
-        with self._pages({PRIMARY: self.official}), patch("scripts.blog_automation.select_story.call") as call:
+        with self._pages({PRIMARY: self.official}), patch("scripts.blog_automation.select_story.call_llm") as call:
             result = verify_evidence(story, DAY, [], allow_enrichment=True)
         self.assertEqual(result["evidence_status"], "PRIMARY_ONLY")
         self.assertEqual(result["sources"], [PRIMARY])
@@ -59,7 +60,7 @@ class TieredEvidenceTests(unittest.TestCase):
         story = {**STORY, "candidate": dict(STORY["candidate"]), "source_urls": [], "_grounded": [docs]}
         pages = {PRIMARY: self.official, docs: response(docs, "Orion Model Android Studio Developer Features",
                                                         "Google Orion model Android Studio developer integration.")}
-        with self._pages(pages), patch("scripts.blog_automation.select_story.call") as call:
+        with self._pages(pages), patch("scripts.blog_automation.select_story.call_llm") as call:
             result = verify_evidence(story, DAY, [], allow_enrichment=True)
         self.assertEqual(result["evidence_status"], "MULTI_SOURCE")
         self.assertEqual(result["sources"], [PRIMARY, docs])
@@ -69,7 +70,7 @@ class TieredEvidenceTests(unittest.TestCase):
         story = {**STORY, "candidate": dict(STORY["candidate"]), "source_urls": [], "_grounded": [],
                  "evidence_gap": "insufficient_detail", "evidence_gap_reason": "Official source lacks the configuration details needed for analysis."}
         with self._pages({PRIMARY: self.official}), patch(
-            "scripts.blog_automation.select_story.call", return_value=(json.dumps({"sources": []}), [])
+            "scripts.blog_automation.select_story.call_llm", return_value=LLMResponse("Gemini", "test", json.dumps({"sources": []}), [])
         ) as call:
             result = verify_evidence(story, DAY, [], allow_enrichment=True)
         self.assertEqual(result["evidence_status"], "PRIMARY_ONLY")

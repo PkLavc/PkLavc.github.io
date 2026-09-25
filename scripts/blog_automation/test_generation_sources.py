@@ -5,6 +5,11 @@ import unittest
 from unittest.mock import patch
 
 from .generate_article import generate
+from .llm_provider import LLMResponse
+
+
+def llm(answer, provider="Gemini", sources=None):
+    return LLMResponse(provider, "test-model", answer, sources or [])
 
 
 class ArticleSourceFilteringTests(unittest.TestCase):
@@ -16,7 +21,7 @@ class ArticleSourceFilteringTests(unittest.TestCase):
         answer = json.dumps({"sections": [], "limitations": [], "sources": [
             {"label": "Official launch", "url": primary},
         ]})
-        with patch("scripts.blog_automation.generate_article.call", return_value=(answer, [])):
+        with patch("scripts.blog_automation.generate_article.call_llm", return_value=llm(answer)):
             article = generate(story, "2026-09-24")
         self.assertEqual([source["url"] for source in article["sources"]], [primary])
 
@@ -32,7 +37,7 @@ class ArticleSourceFilteringTests(unittest.TestCase):
             {"label": "API documentation", "url": docs},
             {"label": "Unrelated search result", "url": unrelated},
         ]})
-        with patch("scripts.blog_automation.generate_article.call", return_value=(answer, [unrelated])):
+        with patch("scripts.blog_automation.generate_article.call_llm", return_value=llm(answer, "OpenRouter", [unrelated])):
             article = generate(story, "2026-09-24")
         self.assertEqual([source["url"] for source in article["sources"]], [primary, docs])
         self.assertEqual(story["sources"], [primary, docs])

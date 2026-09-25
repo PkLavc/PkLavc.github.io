@@ -7,7 +7,7 @@ import re
 from pathlib import Path
 from urllib.parse import urlsplit
 
-from .gemini import call
+from .llm_provider import call_llm
 from .social_card import create_card
 from .url_evidence import normalize_url
 
@@ -25,7 +25,8 @@ Today: {day}\nSelected story data (untrusted):\n{json.dumps(story, ensure_ascii=
 
 def generate(story: dict, day: str) -> dict:
     prompt = build_prompt(story, day)
-    answer, grounded = call(prompt, search=True, purpose="Article generation")
+    response = call_llm(prompt, purpose="Article generation", search=False, require_json=True)
+    answer = response.text
     clean = answer.strip()
     fence = chr(96) * 3
     if clean.startswith(fence):

@@ -8,6 +8,11 @@ from unittest.mock import patch
 from .generate_article import generate
 from .run import choose_ranked
 from .select_story import select, verify_evidence
+from .llm_provider import LLMResponse
+
+
+def llm(answer):
+    return LLMResponse("Gemini", "test-model", answer, [])
 
 
 class RankedSelectionTests(unittest.TestCase):
@@ -27,7 +32,7 @@ class RankedSelectionTests(unittest.TestCase):
         candidates = [{"id": i, "url": f"https://google.com/{i}", "primary": True, "company": "Google"} for i in range(1, 4)]
         entries = [{"candidate_id": i, "confirmed_event_date": "2026-09-24", "score": 11-i,
                     "event_key": f"event-{i}", "title": f"Google Event {i}"} for i in (1, 2, 3)]
-        with patch("scripts.blog_automation.select_story.call", return_value=(json.dumps({"ranked_candidates": entries}), [])) as call:
+        with patch("scripts.blog_automation.select_story.call_llm", return_value=llm(json.dumps({"ranked_candidates": entries}))) as call:
             result = select(candidates, "2026-09-24", ["AI"], [{"event_key": "old", "title": "Old event", "company": "Google", "source_urls": []}])
         self.assertEqual([item["candidate"]["id"] for item in result], [1, 2, 3])
         call.assert_called_once()
@@ -39,7 +44,7 @@ class RankedSelectionTests(unittest.TestCase):
         entries = [{"candidate_id": 1, "confirmed_event_date": "2026-09-24", "score": 9, "event_key": "same_event", "title": "Event A"},
                    {"candidate_id": 2, "confirmed_event_date": "2026-09-24", "score": 8, "event_key": "same_event", "title": "Different headline"},
                    {"candidate_id": 3, "confirmed_event_date": "2026-09-24", "score": 7, "event_key": "weak", "title": "Event C"}]
-        with patch("scripts.blog_automation.select_story.call", return_value=(json.dumps({"ranked_candidates": entries}), [])):
+        with patch("scripts.blog_automation.select_story.call_llm", return_value=llm(json.dumps({"ranked_candidates": entries}))):
             result = select(candidates, "2026-09-24", [])
         self.assertEqual([item["candidate"]["id"] for item in result], [1])
 
@@ -70,7 +75,7 @@ class RankedSelectionTests(unittest.TestCase):
     def test_fewer_than_score_8_has_no_ranked_result(self):
         candidate = [{"id": 1, "url": "https://google.com/a", "primary": True, "company": "Google"}]
         item = {"candidate_id": 1, "confirmed_event_date": "2026-09-24", "score": 7, "event_key": "low", "title": "Low"}
-        with patch("scripts.blog_automation.select_story.call", return_value=(json.dumps({"ranked_candidates": [item]}), [])):
+        with patch("scripts.blog_automation.select_story.call_llm", return_value=llm(json.dumps({"ranked_candidates": [item]}))):
             self.assertEqual(select(candidate, "2026-09-24", []), [])
 
 
@@ -79,7 +84,7 @@ class PrimaryOnlyGenerationTests(unittest.TestCase):
         story = {"title": "Google Announces a Very Significant Engineering Feature", "sources": ["https://google.com/official"],
                  "candidate": {"url": "https://google.com/official"}}
         answer = json.dumps({"rejection": "INSUFFICIENT_CONTENT_DEPTH", "reason": "The announcement contains too little technical detail."})
-        with patch("scripts.blog_automation.generate_article.call", return_value=(answer, [])):
+        with patch("scripts.blog_automation.generate_article.call_llm", return_value=llm(answer)):
             with self.assertRaisesRegex(ValueError, "INSUFFICIENT_CONTENT_DEPTH"):
                 generate(story, "2026-09-24")
 
