@@ -36,18 +36,39 @@ def filter_duplicate_candidates(root: Path, candidates: list[dict]) -> list[dict
     return unseen
 
 
+def published_today(root: Path, day: str) -> list[dict]:
+    state = json.loads((root / STATE).read_text(encoding="utf-8")) if (root / STATE).exists() else {"stories": []}
+    return [{
+        "event_key": item.get("event_key", ""),
+        "title": item.get("title", ""),
+        "company": item.get("company", ""),
+        "source_urls": item.get("source_urls", []),
+    } for item in state.get("stories", []) if item.get("event_date") == day]
+
+
+def matches_published_event(story: dict, used_today: list[dict]) -> bool:
+    title = re.sub(r"[^a-z0-9]", "", story.get("title", "").lower())
+    urls = {normalize_url(url) for url in [story.get("candidate", {}).get("url", ""), *story.get("source_urls", []), *story.get("sources", [])] if url}
+    for item in used_today:
+        if (story.get("event_key") and str(story["event_key"]).casefold() == str(item.get("event_key", "")).casefold()
+                or title and title == re.sub(r"[^a-z0-9]", "", item.get("title", "").lower())
+                or urls.intersection(normalize_url(url) for url in item.get("source_urls", []))):
+            return True
+    return False
+
+
 def check_duplicate(root: Path, story: dict) -> None:
     state = json.loads((root / STATE).read_text(encoding="utf-8")) if (root / STATE).exists() else {"stories": []}
     urls = {normalize_url(url) for item in state["stories"] for url in item.get("source_urls", [])}
-    event_keys = {item.get("event_key", "") for item in state["stories"]}
+    event_keys = {str(item.get("event_key", "")).casefold() for item in state["stories"]}
     titles = {re.sub(r"[^a-z0-9]", "", item.get("title", "").lower()) for item in state["stories"]}
-    candidate_url = story["candidate"]["url"]
+    candidate_urls = [story["candidate"]["url"], *story.get("sources", [])]
     normalized_title = re.sub(r"[^a-z0-9]", "", story["title"].lower())
-    if normalize_url(candidate_url) in urls or normalized_title in titles or fingerprint(story) in {item.get("fingerprint") for item in state["stories"]} or story.get("event_key") in event_keys:
+    if any(normalize_url(url) in urls for url in candidate_urls) or normalized_title in titles or fingerprint(story) in {item.get("fingerprint") for item in state["stories"]} or str(story.get("event_key", "")).casefold() in event_keys:
         raise ValueError("Duplicate source URL, title, or event already used.")
     for file in (root / "blog").glob("*/index.html"):
         text = file.read_text(encoding="utf-8", errors="ignore")
-        if candidate_url in text: raise ValueError("Source URL already cited by an existing blog post.")
+        if any(url in text for url in candidate_urls): raise ValueError("Source URL already cited by an existing blog post.")
         match = re.search(r"<title>(.*?)</title>", text, re.I | re.S)
         if match and re.sub(r"[^a-z0-9]", "", match.group(1).lower()) == normalized_title:
             raise ValueError("An existing post has the same title.")
@@ -89,7 +110,7 @@ def publish(root: Path, story: dict, html: str, day: str, dry_run: bool) -> Path
     update_index(root, story, day)
     state_path = root / STATE
     state = json.loads(state_path.read_text(encoding="utf-8")) if state_path.exists() else {"stories": []}
-    state["stories"].append({"event_date": day, "event_key": story["event_key"], "title": story["title"], "fingerprint": fingerprint(story), "source_urls": story["sources"], "slug": story["slug"]})
+    state["stories"].append({"event_date": day, "event_key": story["event_key"], "title": story["title"], "company": story.get("candidate", {}).get("company", ""), "fingerprint": fingerprint(story), "source_urls": story["sources"], "slug": story["slug"]})
     state_path.write_text(json.dumps(state, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     for script in ("scripts/generate-sitemaps.mjs", "scripts/generate-rss.mjs"):
         subprocess.run(["node", script], cwd=root, check=True)

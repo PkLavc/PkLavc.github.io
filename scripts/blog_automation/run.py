@@ -12,8 +12,8 @@ from . import gemini
 from .collect_sources import collect
 from .filter_candidates import filter_today
 from .generate_article import generate, render
-from .publish_article import check_duplicate, filter_duplicate_candidates, publish
-from .select_story import select
+from .publish_article import check_duplicate, filter_duplicate_candidates, matches_published_event, publish, published_today
+from .select_story import select, verify_evidence
 from .validate_article import validate
 
 
@@ -60,12 +60,37 @@ def main() -> None:
             print(f"Gemini API requests total: {gemini.request_count()}")
             return
         source_config = json.loads((root / "scripts/blog_automation/sources.json").read_text(encoding="utf-8"))
-        story = select(candidates, day, source_config.get("topics", []))
+        already_published = published_today(root, day)
+        ranked = select(candidates, day, source_config.get("topics", []), already_published)
+        story = None
+        enrichment_used = False
+        for index, proposed in enumerate(ranked, 1):
+            if matches_published_event(proposed, already_published):
+                print(f"Rank {index} skipped: event key, title or URL already published today.")
+                continue
+            try:
+                check_duplicate(root, proposed)
+            except ValueError as exc:
+                print(f"Rank {index} skipped by final duplicate barrier: {exc}")
+                continue
+            before = gemini.request_count()
+            verified = verify_evidence(proposed, day, source_config.get("topics", []), allow_enrichment=not enrichment_used)
+            enrichment_used = enrichment_used or gemini.request_count() > before
+            if verified is None:
+                print(f"Rank {index} rejected by primary/evidence validation; evaluating next ranked event without rerunning selector.")
+                continue
+            try:
+                check_duplicate(root, verified)
+            except ValueError as exc:
+                print(f"Rank {index} rejected by final source/event duplicate barrier: {exc}")
+                continue
+            story = verified
+            print(f"Selected first unpublished eligible event: {story.get('event_key')} (rank {index}).")
+            break
         if story is None:
-            print("Nenhum assunto confirmado e relevante; nada será publicado.")
+            print("No unpublished ranked event passed duplicate, primary and two-source evidence checks; no article generated.")
             print(f"Gemini API requests total: {gemini.request_count()}")
             return
-        check_duplicate(root, story)
         article = generate(story, day)
     slug, document = render(root, story, article, day)
     validate(root, document, story, day, check_remote=not args.offline_fixture)
