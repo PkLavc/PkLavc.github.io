@@ -53,10 +53,30 @@ def validate(root: Path, html: str, story: dict, day: str, *, check_remote: bool
     if PLACEHOLDERS.search(html): errors.append("placeholder or AI meta commentary detected")
     source_section = re.search(r'<section><h2>Sources</h2>([\s\S]*?)</section>', html)
     cited_urls = re.findall(r'<a\s+href="(https://[^" ]+)"', source_section.group(1) if source_section else "")
-    if not source_section or len(cited_urls) < 2: errors.append("at least two verified source URLs are required")
+    evidence_status = story.get("evidence_status", "MULTI_SOURCE")
+    if not source_section or len(cited_urls) < 1: errors.append("at least one verified source URL is required")
     if len(cited_urls) > 5: errors.append("more than five cited sources")
     if len(set(cited_urls)) != len(cited_urls): errors.append("duplicate cited source URL")
-    if story.get("candidate", {}).get("url") not in cited_urls: errors.append("official primary source must be cited")
+    if evidence_status != "TRUSTED_SECONDARY":
+        approved_evidence = {item.get("url"): item for item in story.get("evidence", [])}
+        # New evidence records allow a directly verified official supplemental
+        # source to stand in when the feed's primary URL is no longer accessible.
+        if approved_evidence:
+            cited_official = any(
+                url in approved_evidence and approved_evidence[url].get("tier") == "A"
+                for url in cited_urls
+            )
+            if not cited_official:
+                errors.append("at least one verified Tier A official source must be cited")
+        elif story.get("candidate", {}).get("url") not in cited_urls:
+            # Backward compatibility for existing offline fixtures.
+            errors.append("verified official primary source must be cited")
+    if evidence_status == "TRUSTED_SECONDARY":
+        approved_evidence = {item.get("url"): item for item in story.get("evidence", [])}
+        cited_publishers = {approved_evidence[url].get("publisher") for url in cited_urls
+                            if url in approved_evidence and approved_evidence[url].get("tier") == "B"}
+        if len(cited_urls) < 2 or len(cited_publishers) < 2:
+            errors.append("TRUSTED_SECONDARY requires two independent Tier B publishers")
     if any(url not in story.get("sources", []) for url in cited_urls): errors.append("article cites a URL not verified for this story")
     social_image = re.search(r'<meta property="og:image" content="([^"]+)"', html)
     twitter_image = re.search(r'<meta name="twitter:image" content="([^"]+)"', html)

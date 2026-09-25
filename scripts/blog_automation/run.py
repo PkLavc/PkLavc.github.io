@@ -17,6 +17,30 @@ from .select_story import select, verify_evidence
 from .validate_article import validate
 
 
+def choose_ranked(root: Path, ranked: list[dict], day: str, topics: list[str], already_published: list[dict]) -> dict | None:
+    for index, proposed in enumerate(ranked, 1):
+        if matches_published_event(proposed, already_published):
+            print(f"Rank {index} skipped: event key, title or URL already published today.")
+            continue
+        try:
+            check_duplicate(root, proposed)
+        except ValueError as exc:
+            print(f"Rank {index} skipped by final duplicate barrier: {exc}")
+            continue
+        verified = verify_evidence(proposed, day, topics, allow_enrichment=True)
+        if verified is None:
+            print(f"Rank {index} rejected by evidence validation; evaluating next ranked event without rerunning selector.")
+            continue
+        try:
+            check_duplicate(root, verified)
+        except ValueError as exc:
+            print(f"Rank {index} rejected by final source/event duplicate barrier: {exc}")
+            continue
+        print(f"Selected first unpublished eligible event: {verified.get('event_key')} (rank {index}).")
+        return verified
+    return None
+
+
 def fixture(day: str) -> tuple[dict, dict]:
     story = {"title": "Illustrative Source Validation Fixture for the Engineering Blog", "slug": "illustrative-validation-fixture",
              "description": "This offline fixture exercises the article template and safety checks without creating a blog post.",
@@ -52,6 +76,7 @@ def main() -> None:
         print("Today's candidates by company: " + (", ".join(f"{company}: {count}" for company, count in sorted(totals.items())) if totals else "none"))
         candidates = filter_duplicate_candidates(root, candidates)
         print(f"Today's candidates after duplicate filter: {len(candidates)}")
+        print(f"Remaining eligible events: {len(candidates)}")
         if not candidates:
             if todays_before_dedup:
                 print("All candidates dated today were duplicates; no new post will be generated.")
@@ -61,34 +86,11 @@ def main() -> None:
             return
         source_config = json.loads((root / "scripts/blog_automation/sources.json").read_text(encoding="utf-8"))
         already_published = published_today(root, day)
+        print(f"Already published today: {len(already_published)}")
         ranked = select(candidates, day, source_config.get("topics", []), already_published)
-        story = None
-        enrichment_used = False
-        for index, proposed in enumerate(ranked, 1):
-            if matches_published_event(proposed, already_published):
-                print(f"Rank {index} skipped: event key, title or URL already published today.")
-                continue
-            try:
-                check_duplicate(root, proposed)
-            except ValueError as exc:
-                print(f"Rank {index} skipped by final duplicate barrier: {exc}")
-                continue
-            before = gemini.request_count()
-            verified = verify_evidence(proposed, day, source_config.get("topics", []), allow_enrichment=not enrichment_used)
-            enrichment_used = enrichment_used or gemini.request_count() > before
-            if verified is None:
-                print(f"Rank {index} rejected by primary/evidence validation; evaluating next ranked event without rerunning selector.")
-                continue
-            try:
-                check_duplicate(root, verified)
-            except ValueError as exc:
-                print(f"Rank {index} rejected by final source/event duplicate barrier: {exc}")
-                continue
-            story = verified
-            print(f"Selected first unpublished eligible event: {story.get('event_key')} (rank {index}).")
-            break
+        story = choose_ranked(root, ranked, day, source_config.get("topics", []), already_published)
         if story is None:
-            print("No unpublished ranked event passed duplicate, primary and two-source evidence checks; no article generated.")
+            print("No unpublished ranked event passed duplicate and evidence-quality checks; no article generated.")
             print(f"Gemini API requests total: {gemini.request_count()}")
             return
         article = generate(story, day)

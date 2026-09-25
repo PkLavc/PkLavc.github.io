@@ -110,7 +110,7 @@ def publish(root: Path, story: dict, html: str, day: str, dry_run: bool) -> Path
     update_index(root, story, day)
     state_path = root / STATE
     state = json.loads(state_path.read_text(encoding="utf-8")) if state_path.exists() else {"stories": []}
-    state["stories"].append({"event_date": day, "event_key": story["event_key"], "title": story["title"], "company": story.get("candidate", {}).get("company", ""), "fingerprint": fingerprint(story), "source_urls": story["sources"], "slug": story["slug"]})
+    state["stories"].append({"event_date": day, "event_key": story["event_key"], "title": story["title"], "company": story.get("candidate", {}).get("company", ""), "evidence_status": story.get("evidence_status", "PRIMARY_ONLY"), "fingerprint": fingerprint(story), "source_urls": story["sources"], "slug": story["slug"]})
     state_path.write_text(json.dumps(state, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     for script in ("scripts/generate-sitemaps.mjs", "scripts/generate-rss.mjs"):
         subprocess.run(["node", script], cwd=root, check=True)
