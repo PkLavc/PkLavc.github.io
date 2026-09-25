@@ -41,6 +41,7 @@ jobs:
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GEMINI_MODEL: ${{ vars.GEMINI_MODEL || 'gemini-2.5-flash' }}
+          MAX_GEMINI_HTTP_REQUESTS_PER_RUN: ${{ vars.MAX_GEMINI_HTTP_REQUESTS_PER_RUN || '6' }}
           DRY_RUN: ${{ inputs.dry_run || false }}
         run: python3 -m scripts.blog_automation.run --root .
       - name: Check whether a story was published

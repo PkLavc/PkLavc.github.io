@@ -6,6 +6,8 @@ The workflow runs at 12:15, 15:15, 18:15 and 21:15 UTC, corresponding to 09:15, 
 
 Add repository secret `GEMINI_API_KEY` under **Settings > Secrets and variables > Actions > New repository secret**. Optionally set the Actions variable `GEMINI_MODEL`; the default is `gemini-2.5-flash`.
 
+Gemini normally needs one selector request and one article request. The selector's Google Search URLs are checked directly before any enrichment. Enrichment runs only for missing essential evidence or an explicit evidence gap. The per-run HTTP request budget defaults to six, including retries; set the Actions variable `MAX_GEMINI_HTTP_REQUESTS_PER_RUN` to change it. Calls are spaced at least 15 seconds apart. Temporary HTTP 429 errors use `Retry-After` or approximately 60/180-second backoffs; HTTP 502/503/504 use approximately 30/90 seconds. There are at most two retries per logical call and at most five minutes of cumulative cooldown. Daily quota exhaustion, exhausted retries, or a spent request budget end the run without publishing. The final log separates logical calls, HTTP outcomes, cooldown, and circuit breaker status.
+
 Open **Actions > Daily English Blog Automation > Run workflow** and enable `dry_run` for the real collection, Gemini selection/generation, image creation and validation path without changing the repository. Offline non-news tests run with `python -m scripts.blog_automation.run --offline-fixture`; this does not call Gemini.
 
 ## Sources and coverage

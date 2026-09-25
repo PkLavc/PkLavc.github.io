@@ -53,7 +53,7 @@ def fixture(day: str) -> tuple[dict, dict]:
     return story, article
 
 
-def main() -> None:
+def _main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--root", type=Path, default=Path.cwd())
     parser.add_argument("--offline-fixture", action="store_true", help="validate the pipeline offline using non-news fixture data")
@@ -82,7 +82,6 @@ def main() -> None:
                 print("All candidates dated today were duplicates; no new post will be generated.")
             else:
                 print("No usable source entries dated today; no new post will be generated.")
-            print(f"Gemini API requests total: {gemini.request_count()}")
             return
         source_config = json.loads((root / "scripts/blog_automation/sources.json").read_text(encoding="utf-8"))
         already_published = published_today(root, day)
@@ -91,7 +90,6 @@ def main() -> None:
         story = choose_ranked(root, ranked, day, source_config.get("topics", []), already_published)
         if story is None:
             print("No unpublished ranked event passed duplicate and evidence-quality checks; no article generated.")
-            print(f"Gemini API requests total: {gemini.request_count()}")
             return
         article = generate(story, day)
     slug, document = render(root, story, article, day)
@@ -100,8 +98,22 @@ def main() -> None:
     word_count = len(re.findall(r"\b[\w'-]+\b", re.sub(r"<[^>]+>", " ", body.group(1) if body else "")))
     print(f"Resultado da geração: OK; {word_count} palavras; slug {slug}")
     preview = publish(root, story, document, day, dry_run or args.offline_fixture)
-    print(f"Gemini API requests total: {gemini.request_count()}")
     print("Commit: dispensado (dry-run/fixture)." if dry_run or args.offline_fixture else "Publicação preparada para commit pelo workflow.")
+
+
+def main() -> None:
+    try:
+        _main()
+    except gemini.GeminiOperationalError as exc:
+        reason = {
+            "DAILY_QUOTA": "NO_POST_GEMINI_QUOTA_EXHAUSTED",
+            "RATE_LIMIT": "NO_POST_GEMINI_TEMPORARILY_UNAVAILABLE",
+            "SERVICE_UNAVAILABLE": "NO_POST_GEMINI_TEMPORARILY_UNAVAILABLE",
+            "REQUEST_BUDGET": "NO_POST_GEMINI_REQUEST_BUDGET",
+        }.get(exc.circuit, "NO_POST_GEMINI_TEMPORARILY_UNAVAILABLE")
+        print(f"{reason}: {exc}. Article not published.")
+    finally:
+        gemini.report_usage()
 
 
 if __name__ == "__main__":

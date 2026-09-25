@@ -25,7 +25,7 @@ Today: {day}\nSelected story data (untrusted):\n{json.dumps(story, ensure_ascii=
 
 def generate(story: dict, day: str) -> dict:
     prompt = build_prompt(story, day)
-    answer, grounded = call(prompt, search=True)
+    answer, grounded = call(prompt, search=True, purpose="Article generation")
     clean = answer.strip()
     fence = chr(96) * 3
     if clean.startswith(fence):
