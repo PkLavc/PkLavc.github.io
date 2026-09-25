@@ -69,9 +69,11 @@ export async function mirrorDiscordMessage(env: Env, conversationId: string, aut
       if (claim.meta.changes) {
         try {
           const created = await discordApi(env, `/channels/${env.DISCORD_CHANNEL_ID}/threads`, {
-            method: "POST", body: JSON.stringify({ name: `site-chat-${conversationId.slice(0, 8)}`, type: 11, auto_archive_duration: 1440, message: { content: "Nova conversa Skylet" } }),
+            method: "POST", body: JSON.stringify({ name: `site-chat-${conversationId.slice(0, 8)}`, type: 11, auto_archive_duration: 10080, message: { content: "Nova conversa Skylet" } }),
           });
           if (!created?.id) return false;
+          if (!env.DISCORD_OWNER_USER_ID) throw new Error("discord_owner_not_configured");
+          await discordApi(env, `/channels/${created.id}/thread-members/${env.DISCORD_OWNER_USER_ID}`, { method: "PUT" });
           await env.DB.prepare("UPDATE discord_conversations SET discord_thread_id = ?, updated_at = ? WHERE conversation_id = ? AND discord_thread_id = 'pending'")
             .bind(created.id, new Date().toISOString(), conversationId).run();
         } catch (error) {

@@ -3,12 +3,12 @@ import { drainDiscordMessageQueue, enqueueDiscordMessage } from "../src/discord-
 
 const conversationId = "12345678-1234-1234-1234-123456789012";
 
-function createEnv() {
+function createEnv(threadId: string | null = "discord-thread") {
   const queue: Array<{ id: number; author: "Visitante" | "Skylet"; content: string; status: "queued" | "sent" }> = [];
   const mirrorKeys = new Set<string>();
   const conversation: Record<string, unknown> = {
     conversation_id: conversationId,
-    discord_thread_id: "discord-thread",
+    discord_thread_id: threadId,
     control_message_id: "control-message",
     status: "AI",
     mirror_lock_token: null,
@@ -40,6 +40,19 @@ function createEnv() {
             conversation.mirror_lock_until = null;
             return { meta: { changes: 1 } };
           }
+          if (sql.startsWith("UPDATE discord_conversations SET discord_thread_id = 'pending'")) {
+            if (conversation.discord_thread_id !== null) return { meta: { changes: 0 } };
+            conversation.discord_thread_id = "pending";
+            return { meta: { changes: 1 } };
+          }
+          if (sql.startsWith("UPDATE discord_conversations SET discord_thread_id = ?")) {
+            conversation.discord_thread_id = values[0];
+            return { meta: { changes: 1 } };
+          }
+          if (sql.startsWith("UPDATE discord_conversations SET discord_thread_id = NULL")) {
+            conversation.discord_thread_id = null;
+            return { meta: { changes: 1 } };
+          }
           if (sql.startsWith("INSERT OR IGNORE INTO discord_mirrored_messages")) {
             const key = String(values[0]);
             if (mirrorKeys.has(key)) return { meta: { changes: 0 } };
@@ -63,7 +76,7 @@ function createEnv() {
     },
     async batch() { return []; },
   };
-  return { env: { DB, DISCORD_BOT_TOKEN: "test-token", DISCORD_CHANNEL_ID: "channel" } as never, DB };
+  return { env: { DB, DISCORD_BOT_TOKEN: "test-token", DISCORD_CHANNEL_ID: "channel", DISCORD_OWNER_USER_ID: "owner-user" } as never, DB };
 }
 
 describe("ordered Discord conversation delivery", () => {
@@ -108,5 +121,32 @@ describe("ordered Discord conversation delivery", () => {
       "**Skylet:**\nsegunda resposta",
     ]);
     expect(new Set(sent.map(item => item.url))).toEqual(new Set(["https://discord.com/api/v10/channels/discord-thread/messages"]));
+  });
+
+  it("creates seven-day threads and adds the configured owner as a member", async () => {
+    const { env } = createEnv(null);
+    let createBody: Record<string, unknown> | undefined;
+    let ownerMemberPath = "";
+    let ownerMemberMethod = "";
+    vi.stubGlobal("fetch", vi.fn(async (input: RequestInfo | URL, init?: RequestInit) => {
+      const url = String(input);
+      if (url.endsWith("/channels/channel/threads")) {
+        createBody = JSON.parse(String(init?.body));
+        return Response.json({ id: "new-thread" });
+      }
+      if (url.endsWith("/thread-members/owner-user")) {
+        ownerMemberPath = url;
+        ownerMemberMethod = init?.method || "";
+        return new Response(null, { status: 204 });
+      }
+      return Response.json({ id: "posted-message" });
+    }));
+
+    await enqueueDiscordMessage(env, conversationId, "Visitante", "cursos");
+    await drainDiscordMessageQueue(env, conversationId);
+
+    expect(createBody?.auto_archive_duration).toBe(10080);
+    expect(ownerMemberPath).toBe("https://discord.com/api/v10/channels/new-thread/thread-members/owner-user");
+    expect(ownerMemberMethod).toBe("PUT");
   });
 });
