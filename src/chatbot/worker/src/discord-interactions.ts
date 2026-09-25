@@ -23,7 +23,7 @@ export async function handleDiscordInteraction(request: Request, env: Env, ctx: 
   let interaction: DiscordInteraction;
   try { interaction = JSON.parse(raw) as DiscordInteraction; } catch { return new Response("invalid body", { status: 400 }); }
   if (interaction.type === 1) return Response.json({ type: 1 });
-  if (interaction.type !== 2 && interaction.type !== 5) return Response.json({ type: 4, data: { content: "Interação não suportada.", flags: 64 } });
+  if (interaction.type !== 3 && interaction.type !== 5) return Response.json({ type: 4, data: { content: "Interação não suportada.", flags: 64 } });
   const actorId = interaction.member?.user?.id || interaction.user?.id;
   if (!actorId || actorId !== env.DISCORD_OWNER_USER_ID) return Response.json({ type: 4, data: { content: "Você não tem autorização para esta ação.", flags: 64 } });
   const customId = interaction.data?.custom_id || "";
