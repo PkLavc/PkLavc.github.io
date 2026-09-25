@@ -6,6 +6,25 @@
   };
 
   var els = {};
+  var skyletVisitorId = getOrCreateVisitorId();
+
+  function getOrCreateVisitorId() {
+    try {
+      var stored = localStorage.getItem("skyletVisitorId");
+      if (stored && /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(stored)) return stored;
+      if (!window.crypto || typeof window.crypto.randomUUID !== "function") return null;
+      var visitorId = window.crypto.randomUUID();
+      localStorage.setItem("skyletVisitorId", visitorId);
+      return visitorId;
+    } catch (_) { return null; }
+  }
+
+  function skyletFetch(url, options) {
+    var requestOptions = options || {};
+    var headers = new Headers(requestOptions.headers || {});
+    if (skyletVisitorId) headers.set("X-Skylet-Visitor-Id", skyletVisitorId);
+    return fetch(url, Object.assign({}, requestOptions, { headers: headers }));
+  }
 
   var COPY = {
     en: {
@@ -729,7 +748,7 @@
   async function pollHumanReplies() {
     if (!state.conversationId) return;
     try {
-      var poll = await fetch(state.apiBase + "/conversations/messages?conversation_id=" + encodeURIComponent(state.conversationId) + "&after_id=" + humanReplyCursor);
+      var poll = await skyletFetch(state.apiBase + "/conversations/messages?conversation_id=" + encodeURIComponent(state.conversationId) + "&after_id=" + humanReplyCursor);
       if (!poll.ok) return;
       var result = await poll.json();
       (result.items || []).forEach(function (item) { humanReplyCursor = Math.max(humanReplyCursor, Number(item.id) || 0); appendMessage("assistant", item.content, true); });
@@ -740,8 +759,8 @@
     if (!state.conversationId) return;
     restoringConversation = true;
     try {
-      var response = await fetch(state.apiBase + "/conversations/history?conversation_id=" + encodeURIComponent(state.conversationId));
-      if (response.status === 404 || response.status === 401) {
+      var response = await skyletFetch(state.apiBase + "/conversations/history?conversation_id=" + encodeURIComponent(state.conversationId));
+      if (response.status === 404) {
         state.conversationId = "";
         saveSession();
         return;
@@ -766,7 +785,7 @@
     saveSession();
     if (els.log) els.log.querySelectorAll(".about-chat-message").forEach(function (node) { node.remove(); });
     if (oldConversationId) {
-      fetch(state.apiBase + "/conversations/close", {
+      skyletFetch(state.apiBase + "/conversations/close", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ conversation_id: oldConversationId }),
@@ -792,7 +811,7 @@
     var thinking = appendMessage("assistant", getCopy().thinking, true);
 
     try {
-      var res = await fetch(state.apiBase + "/chat", {
+      var res = await skyletFetch(state.apiBase + "/chat", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

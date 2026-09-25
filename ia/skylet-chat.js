@@ -1,5 +1,21 @@
 (() => {
   const apiBase = 'https://api.pklavc.com';
+  const visitorId = (() => {
+    try {
+      const key = 'skyletVisitorId';
+      const stored = localStorage.getItem(key);
+      if (stored && /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(stored)) return stored;
+      if (!crypto || typeof crypto.randomUUID !== 'function') return null;
+      const created = crypto.randomUUID();
+      localStorage.setItem(key, created);
+      return created;
+    } catch (_) { return null; }
+  })();
+  const skyletFetch = (url, options = {}) => {
+    const headers = new Headers(options.headers || {});
+    if (visitorId) headers.set('X-Skylet-Visitor-Id', visitorId);
+    return fetch(url, { ...options, headers });
+  };
   const storedLocale = (() => { try { return localStorage.getItem('pklavc.preferredLanguage'); } catch (_) { return null; } })();
   const routeLocale = /^\/pt\/ia\/?$/i.test(location.pathname) ? 'pt' : (/^\/es\/ia\/?$/i.test(location.pathname) ? 'es' : 'en');
   const locale = routeLocale !== 'en' ? routeLocale : (/^(pt|es)$/.test(storedLocale || '') ? storedLocale : (navigator.language || 'en').slice(0, 2));
@@ -52,8 +68,8 @@
     if (!conversationId) return;
     restoringConversation = true;
     try {
-      const response = await fetch(`${apiBase}/conversations/history?conversation_id=${encodeURIComponent(conversationId)}`);
-      if (response.status === 404 || response.status === 401) {
+      const response = await skyletFetch(`${apiBase}/conversations/history?conversation_id=${encodeURIComponent(conversationId)}`);
+      if (response.status === 404) {
         conversationId = null;
         saveConversationReference();
         return;
@@ -77,7 +93,7 @@
     saveConversationReference();
     log.replaceChildren();
     if (oldConversationId) {
-      fetch(`${apiBase}/conversations/close`, {
+      skyletFetch(`${apiBase}/conversations/close`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ conversation_id: oldConversationId }),
@@ -111,7 +127,7 @@
   async function pollHumanReplies() {
     if (!conversationId) return;
     try {
-      const response = await fetch(`${apiBase}/conversations/messages?conversation_id=${encodeURIComponent(conversationId)}&after_id=${humanReplyCursor}`);
+      const response = await skyletFetch(`${apiBase}/conversations/messages?conversation_id=${encodeURIComponent(conversationId)}&after_id=${humanReplyCursor}`);
       if (!response.ok) return;
       const data = await response.json();
       (data.items || []).forEach(item => { humanReplyCursor = Math.max(humanReplyCursor, Number(item.id) || 0); appendMessage('assistant', item.content); });
@@ -134,7 +150,7 @@
 
     const waiting = appendMessage('assistant', '...', true);
     try {
-      const response = await fetch(`${apiBase}/chat`, {
+      const response = await skyletFetch(`${apiBase}/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message, conversation_id: conversationId, voice_reply: voiceOutput })

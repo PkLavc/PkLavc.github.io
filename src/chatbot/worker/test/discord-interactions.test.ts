@@ -18,6 +18,7 @@ function createHarness(status: "AI" | "HUMAN" | "CLOSED" = "AI") {
   const control = { conversation_id: conversationId, discord_thread_id: threadId, control_message_id: "control-message", status };
   const humanMessages: string[] = [];
   const calls: Array<{ url: string; method: string; body?: Record<string, unknown> }> = [];
+  const cleanupMessages: string[] = [];
   const DB = {
     prepare(sql: string) {
       let values: unknown[] = [];
@@ -26,8 +27,13 @@ function createHarness(status: "AI" | "HUMAN" | "CLOSED" = "AI") {
         get values() { return values; },
         bind(...args: unknown[]) { values = args; return statement; },
         async first() { return sql.startsWith("SELECT * FROM discord_conversations") ? { ...control } : null; },
+        async all() { return { results: cleanupMessages.map(message_id => ({ message_id })) }; },
         async run() {
           if (sql.startsWith("UPDATE discord_conversations SET status = ?")) control.status = String(values[0]) as typeof status;
+          if (sql.startsWith("DELETE FROM discord_control_message_cleanup")) {
+            const index = cleanupMessages.indexOf(String(values[1]));
+            if (index >= 0) cleanupMessages.splice(index, 1);
+          }
           return { meta: { changes: 1 } };
         },
       };
@@ -36,6 +42,11 @@ function createHarness(status: "AI" | "HUMAN" | "CLOSED" = "AI") {
     async batch(statements: Array<{ sql: string; values: unknown[] }>) {
       if (statements[0]?.sql.startsWith("UPDATE discord_conversations SET status = 'HUMAN'")) control.status = "HUMAN";
       if (statements[1]?.sql.startsWith("INSERT INTO messages")) humanMessages.push(String(statements[1].values[1]));
+      if (statements[0]?.sql.startsWith("UPDATE discord_conversations SET control_message_id = ?")) {
+        if (control.control_message_id !== statements[0].values[3]) return [{ meta: { changes: 0 } }];
+        control.control_message_id = String(statements[0].values[0]);
+        if (statements[1]?.sql.startsWith("INSERT OR IGNORE INTO discord_control_message_cleanup")) cleanupMessages.push(String(statements[1].values[1]));
+      }
       return [{ meta: { changes: 1 } }, { meta: { changes: 1 } }, { meta: { changes: 1 } }];
     },
   };
@@ -48,7 +59,7 @@ function createHarness(status: "AI" | "HUMAN" | "CLOSED" = "AI") {
     calls.push({ url, method: init?.method || "GET", body });
     return Response.json({ id: "posted-message" });
   }));
-  return { env, ctx, control, humanMessages, calls, pending };
+  return { env, ctx, control, humanMessages, calls, pending, cleanupMessages };
 }
 
 async function invoke(interaction: Record<string, unknown>, harness: ReturnType<typeof createHarness>) {
@@ -89,10 +100,12 @@ describe("Discord interactions", () => {
 
   it("lets the owner use the type 3 Assumir button and changes AI to HUMAN", async () => {
     const harness = createHarness("AI");
+    harness.control.control_message_id = "recreated-control-panel";
     const { body } = await invoke(component("assume"), harness);
     expect(body).toEqual({ type: 6 });
     await finishTasks(harness);
     expect(harness.control.status).toBe("HUMAN");
+    expect(harness.calls.some(call => call.method === "PATCH" && call.url.endsWith("/messages/recreated-control-panel"))).toBe(true);
   });
 
   it("lets the owner use the type 3 Responder button and opens a type 9 modal", async () => {
@@ -130,7 +143,10 @@ describe("Discord interactions", () => {
     await finishTasks(harness);
     expect(harness.control.status).toBe("HUMAN");
     expect(harness.humanMessages).toEqual(["Ol\u00e1, posso ajudar."]);
-    expect(harness.calls.some(call => call.url.endsWith(`/channels/${threadId}/messages`) && String(call.body?.content).includes("Olá, posso ajudar."))).toBe(true);
+    const postCalls = harness.calls.filter(call => call.method === "POST" && call.url.endsWith(`/channels/${threadId}/messages`));
+    expect(postCalls.map(call => call.body?.content)).toEqual(["**Patrick:**\nOlá, posso ajudar.", "Estado: Atendimento humano"]);
+    expect(harness.control.control_message_id).toBe("posted-message");
+    expect(harness.calls.some(call => call.method === "DELETE" && call.url.endsWith("/messages/control-message"))).toBe(true);
   });
 
   it("rejects an unauthorized owner action sent as a real type 3 component", async () => {

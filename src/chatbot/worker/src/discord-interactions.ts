@@ -47,7 +47,7 @@ export async function handleDiscordInteraction(request: Request, env: Env, ctx: 
       ]);
       if (!outcomes[1]?.meta.changes) return;
       await postThreadMessage(env, control.discord_thread_id, { content: `**Patrick:**\n${content}`, allowed_mentions: { parse: [] } });
-      await updateControlMessage(env, { ...control, status: "HUMAN" });
+      await updateControlMessage(env, { ...control, status: "HUMAN" }, true);
     })().catch(() => console.log(JSON.stringify({ level: "warn", event: "discord_human_reply_failed" }))));
     return Response.json({ type: 5, data: { flags: 64 } });
   }

@@ -6,6 +6,7 @@ const conversationId = "12345678-1234-1234-1234-123456789012";
 function createEnv(threadId: string | null = "discord-thread") {
   const queue: Array<{ id: number; author: "Visitante" | "Skylet"; content: string; status: "queued" | "sent" }> = [];
   const mirrorKeys = new Set<string>();
+  const cleanupMessages: string[] = [];
   const conversation: Record<string, unknown> = {
     conversation_id: conversationId,
     discord_thread_id: threadId,
@@ -20,6 +21,8 @@ function createEnv(threadId: string | null = "discord-thread") {
     prepare(sql: string) {
       let values: unknown[] = [];
       const statement = {
+        sql,
+        get values() { return values; },
         bind(...args: unknown[]) { values = args; return statement; },
         async first() {
           if (sql.startsWith("SELECT * FROM discord_conversations")) return { ...conversation };
@@ -28,8 +31,9 @@ function createEnv(threadId: string | null = "discord-thread") {
           if (sql.startsWith("SELECT id FROM discord_message_queue")) return queue.find(row => row.status === "queued") || null;
           return null;
         },
+        async all() { return { results: cleanupMessages.map(message_id => ({ message_id })) }; },
         async run() {
-          if (sql.startsWith("UPDATE discord_conversations SET mirror_lock_token")) {
+          if (sql.startsWith("UPDATE discord_conversations SET mirror_lock_token") && !sql.startsWith("UPDATE discord_conversations SET mirror_lock_token = NULL")) {
             if (conversation.mirror_lock_until && String(conversation.mirror_lock_until) >= String(values[3])) return { meta: { changes: 0 } };
             conversation.mirror_lock_token = values[0];
             conversation.mirror_lock_until = values[1];
@@ -69,6 +73,11 @@ function createEnv(threadId: string | null = "discord-thread") {
             conversation.control_message_id = null;
             return { meta: { changes: 1 } };
           }
+          if (sql.startsWith("DELETE FROM discord_control_message_cleanup")) {
+            const index = cleanupMessages.indexOf(String(values[1]));
+            if (index >= 0) cleanupMessages.splice(index, 1);
+            return { meta: { changes: index >= 0 ? 1 : 0 } };
+          }
           if (sql.startsWith("INSERT OR IGNORE INTO discord_mirrored_messages")) {
             const key = String(values[0]);
             if (mirrorKeys.has(key)) return { meta: { changes: 0 } };
@@ -94,9 +103,17 @@ function createEnv(threadId: string | null = "discord-thread") {
       };
       return statement;
     },
-    async batch() { return []; },
+    async batch(statements: Array<{ sql: string; values: unknown[] }>) {
+      if (statements[0]?.sql.startsWith("UPDATE discord_conversations SET control_message_id = ?")) {
+        if (conversation.control_message_id !== statements[0].values[3]) return [{ meta: { changes: 0 } }];
+        conversation.control_message_id = String(statements[0].values[0]);
+        if (statements[1]?.sql.startsWith("INSERT OR IGNORE INTO discord_control_message_cleanup")) cleanupMessages.push(String(statements[1].values[1]));
+        return [{ meta: { changes: 1 } }, { meta: { changes: 1 } }];
+      }
+      return [];
+    },
   };
-  return { env: { DB, DISCORD_BOT_TOKEN: "test-token", DISCORD_CHANNEL_ID: "channel", DISCORD_OWNER_USER_ID: "owner-user" } as never, DB, conversation };
+  return { env: { DB, DISCORD_BOT_TOKEN: "test-token", DISCORD_CHANNEL_ID: "channel", DISCORD_OWNER_USER_ID: "owner-user" } as never, DB, conversation, cleanupMessages };
 }
 
 describe("ordered Discord conversation delivery", () => {
@@ -105,27 +122,29 @@ describe("ordered Discord conversation delivery", () => {
   it("sends Visitante: cursos before Skylet: resposta", async () => {
     const { env, DB } = createEnv();
     const sent: Array<{ url: string; content: string }> = [];
+    let discordMessageId = 0;
     vi.stubGlobal("fetch", vi.fn(async (input: RequestInfo | URL, init?: RequestInit) => {
       const url = String(input);
       if (init?.method === "POST" && url.endsWith("/messages")) sent.push({ url, content: JSON.parse(String(init.body)).content });
-      return Response.json({ id: "posted-message" });
+      return Response.json({ id: `discord-message-${++discordMessageId}` });
     }));
 
     await enqueueDiscordMessage(env, conversationId, "Visitante", "cursos");
     await enqueueDiscordMessage(env, conversationId, "Skylet", "resposta");
     await drainDiscordMessageQueue(env, conversationId);
 
-    expect(sent.map(item => item.content)).toEqual(["**Visitante:**\ncursos", "**Skylet:**\nresposta"]);
+    expect(sent.map(item => item.content)).toEqual(["**Visitante:**\ncursos", "Estado: IA", "**Skylet:**\nresposta", "Estado: IA"]);
     expect(sent.every(item => item.url.includes("/channels/discord-thread/messages"))).toBe(true);
   });
 
   it("keeps subsequent turns in order on the same Discord thread", async () => {
     const { env, DB } = createEnv();
     const sent: Array<{ url: string; content: string }> = [];
+    let discordMessageId = 0;
     vi.stubGlobal("fetch", vi.fn(async (input: RequestInfo | URL, init?: RequestInit) => {
       const url = String(input);
       if (init?.method === "POST" && url.endsWith("/messages")) sent.push({ url, content: JSON.parse(String(init.body)).content });
-      return Response.json({ id: "posted-message" });
+      return Response.json({ id: `discord-message-${++discordMessageId}` });
     }));
 
     await enqueueDiscordMessage(env, conversationId, "Visitante", "cursos");
@@ -134,12 +153,13 @@ describe("ordered Discord conversation delivery", () => {
     await enqueueDiscordMessage(env, conversationId, "Skylet", "segunda resposta");
     await drainDiscordMessageQueue(env, conversationId);
 
-    expect(sent.map(item => item.content)).toEqual([
+    expect(sent.map(item => item.content).filter(content => content.startsWith("**"))).toEqual([
       "**Visitante:**\ncursos",
       "**Skylet:**\nresposta",
       "**Visitante:**\nmais uma dúvida",
       "**Skylet:**\nsegunda resposta",
     ]);
+    expect(sent.filter(item => item.content === "Estado: IA")).toHaveLength(4);
     expect(new Set(sent.map(item => item.url))).toEqual(new Set(["https://discord.com/api/v10/channels/discord-thread/messages"]));
   });
 
@@ -168,6 +188,85 @@ describe("ordered Discord conversation delivery", () => {
     expect(createBody?.auto_archive_duration).toBe(10080);
     expect(ownerMemberPath).toBe("https://discord.com/api/v10/channels/new-thread/thread-members/owner-user");
     expect(ownerMemberMethod).toBe("PUT");
+  });
+
+  it("posts a new control panel after each visitor and Skylet message and removes the previous panel", async () => {
+    const { env, conversation } = createEnv();
+    const requests: Array<{ url: string; method?: string; body?: Record<string, unknown> }> = [];
+    let messageId = 0;
+    vi.stubGlobal("fetch", vi.fn(async (input: RequestInfo | URL, init?: RequestInit) => {
+      const url = String(input);
+      const body = init?.body ? JSON.parse(String(init.body)) as Record<string, unknown> : undefined;
+      requests.push({ url, method: init?.method, body });
+      if (init?.method === "POST" && url.endsWith("/messages")) return Response.json({ id: `discord-message-${++messageId}` });
+      return Response.json({ id: "patched" });
+    }));
+
+    await enqueueDiscordMessage(env, conversationId, "Visitante", "cursos");
+    await drainDiscordMessageQueue(env, conversationId);
+    await enqueueDiscordMessage(env, conversationId, "Skylet", "resposta");
+    await drainDiscordMessageQueue(env, conversationId);
+
+    const posts = requests.filter(request => request.method === "POST" && request.url.endsWith("/messages"));
+    expect(posts.map(request => request.body?.content)).toEqual([
+      "**Visitante:**\ncursos", "Estado: IA", "**Skylet:**\nresposta", "Estado: IA",
+    ]);
+    const panelIndexes = requests.map((request, index) => request.method === "POST" && request.body?.content === "Estado: IA" && request.body?.components ? index : -1).filter(index => index >= 0);
+    const latestPanelIndex = panelIndexes[panelIndexes.length - 1];
+    const deleteOldPanelIndex = requests.findIndex(request => request.method === "DELETE" && request.url.endsWith("/messages/discord-message-2"));
+    expect(deleteOldPanelIndex).toBeGreaterThan(latestPanelIndex);
+    expect(conversation.control_message_id).toBe("discord-message-4");
+  });
+
+  it("keeps the new panel id when old-panel deletion fails and retries cleanup on the next message", async () => {
+    const { env, conversation, cleanupMessages } = createEnv();
+    let messageId = 0;
+    let failFirstDelete = true;
+    vi.stubGlobal("fetch", vi.fn(async (input: RequestInfo | URL, init?: RequestInit) => {
+      const url = String(input);
+      if (init?.method === "POST" && url.endsWith("/messages")) return Response.json({ id: `discord-message-${++messageId}` });
+      if (init?.method === "DELETE" && failFirstDelete) {
+        failFirstDelete = false;
+        return Response.json({ code: 500, message: "temporary Discord failure" }, { status: 500 });
+      }
+      return Response.json({ id: "ok" });
+    }));
+
+    await enqueueDiscordMessage(env, conversationId, "Visitante", "primeira");
+    await drainDiscordMessageQueue(env, conversationId);
+    expect(conversation.control_message_id).toBe("discord-message-2");
+    expect(cleanupMessages).toEqual(["control-message"]);
+
+    await enqueueDiscordMessage(env, conversationId, "Skylet", "segunda");
+    await drainDiscordMessageQueue(env, conversationId);
+    expect(conversation.control_message_id).toBe("discord-message-4");
+    expect(cleanupMessages).toEqual([]);
+  });
+
+  it("retries a failed control-panel creation without duplicating the conversation message", async () => {
+    const { env, conversation } = createEnv();
+    let failFirstPanel = true;
+    const posted: string[] = [];
+    vi.stubGlobal("fetch", vi.fn(async (input: RequestInfo | URL, init?: RequestInit) => {
+      const url = String(input);
+      const body = init?.body ? JSON.parse(String(init.body)) as Record<string, unknown> : undefined;
+      if (init?.method === "POST" && url.endsWith("/messages")) {
+        if (body?.components && failFirstPanel) {
+          failFirstPanel = false;
+          return Response.json({ code: 500, message: "temporary Discord failure" }, { status: 500 });
+        }
+        posted.push(String(body?.content));
+        return Response.json({ id: body?.components ? "recovered-control" : "visitor-message" });
+      }
+      return Response.json({ id: "ok" });
+    }));
+
+    await enqueueDiscordMessage(env, conversationId, "Visitante", "cursos");
+    await drainDiscordMessageQueue(env, conversationId);
+    await drainDiscordMessageQueue(env, conversationId);
+
+    expect(posted).toEqual(["**Visitante:**\ncursos", "Estado: IA"]);
+    expect(conversation.control_message_id).toBe("recovered-control");
   });
 
   it.each(["AI", "HUMAN"] as const)("recreates a deleted thread while preserving %s handoff state", async status => {

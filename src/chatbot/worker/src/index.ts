@@ -387,7 +387,7 @@ export default {
         } catch {
           return withCors(json({ error: "invalid_json" }, 400), env, origin);
         }
-        const user = await resolveChatUser(request, env);
+        const user = await resolveChatUser(request, env, payload.conversation_id);
         const input = (payload.message || "").trim();
         const conversationId = payload.conversation_id;
         if (conversationId) {
@@ -436,7 +436,7 @@ export default {
         } catch {
           return withCors(json({ error: "invalid_json" }, 400), env, origin);
         }
-        const user = await resolveChatUser(request, env);
+        const user = await resolveChatUser(request, env, payload.conversation_id);
         if (payload.conversation_id) {
           const control = await getConversationControl(env, payload.conversation_id, user.id);
           if (control?.status === "CLOSED") return withCors(json({ ok: false, error: "conversation_closed" }, 409), env, origin);
@@ -470,8 +470,8 @@ export default {
       }
 
       if (url.pathname === "/conversations/messages" && request.method === "GET") {
-        const user = await resolveChatUser(request, env);
         const conversationId = url.searchParams.get("conversation_id") || "";
+        const user = await resolveChatUser(request, env, conversationId);
         const afterId = Math.max(0, Number(url.searchParams.get("after_id") || 0));
         const control = await getConversationControl(env, conversationId, user.id);
         if (!control) return withCors(json({ error: "conversation_not_found" }, 404), env, origin);
@@ -480,8 +480,8 @@ export default {
       }
 
       if (url.pathname === "/conversations/history" && request.method === "GET") {
-        const user = await resolveChatUser(request, env);
         const conversationId = url.searchParams.get("conversation_id") || "";
+        const user = await resolveChatUser(request, env, conversationId);
         const control = await getConversationControl(env, conversationId, user.id);
         if (!control) return withCors(json({ error: "conversation_not_found" }, 404), env, origin);
         const rows = await env.DB.prepare("SELECT id, role, content, created_at FROM messages WHERE conversation_id = ? ORDER BY id ASC")
@@ -490,11 +490,11 @@ export default {
       }
 
       if (url.pathname === "/conversations/close" && request.method === "POST") {
-        const user = await resolveChatUser(request, env);
         let payload: { conversation_id?: string };
         try { payload = await request.json<{ conversation_id?: string }>(); }
         catch { return withCors(json({ error: "invalid_json" }, 400), env, origin); }
         const conversationId = payload.conversation_id || "";
+        const user = await resolveChatUser(request, env, conversationId);
         const control = await getConversationControl(env, conversationId, user.id);
         if (!control) return withCors(json({ error: "conversation_not_found" }, 404), env, origin);
         const now = new Date().toISOString();
@@ -929,7 +929,7 @@ async function requireAuth(request: Request, env: Env): Promise<{ ok: true; user
   return { ok: true, user };
 }
 
-async function resolveChatUser(request: Request, env: Env): Promise<AuthUser> {
+async function resolveChatUser(request: Request, env: Env, conversationId?: string): Promise<AuthUser> {
   const auth = request.headers.get("Authorization") || "";
   if (auth.startsWith("Bearer ")) {
     const authenticated = await requireAuth(request, env);
@@ -938,18 +938,42 @@ async function resolveChatUser(request: Request, env: Env): Promise<AuthUser> {
     }
   }
 
+  const visitorId = request.headers.get("X-Skylet-Visitor-Id")?.trim() || "";
+  if (/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(visitorId)) {
+    const visitorHash = await cacheHash(visitorId.toLowerCase());
+    const guestUsername = `visitor-${visitorHash}`;
+    const guestPasswordHash = await sha256(`skylet-visitor:${visitorHash}`);
+    await ensureUser(env, guestUsername, guestPasswordHash, "user");
+    const visitor = await findUserByUsername(env, guestUsername);
+    if (!visitor) throw new Error("guest_user_unavailable");
+
+    // Safely adopt pre-visitor-ID chats only when this request still resolves to
+    // the legacy IP guest that owned the conversation. The conditional update
+    // prevents another browser from claiming it after the first migration.
+    if (conversationId) {
+      const owner = await env.DB.prepare("SELECT user_id FROM conversations WHERE id = ?").bind(conversationId).first<{ user_id: number }>();
+      if (owner && owner.user_id !== visitor.id) {
+        const legacy = await resolveLegacyGuestUser(request, env);
+        if (legacy && owner.user_id === legacy.id) {
+          await env.DB.prepare("UPDATE conversations SET user_id = ?, updated_at = ? WHERE id = ? AND user_id = ?")
+            .bind(visitor.id, new Date().toISOString(), conversationId, legacy.id).run();
+        }
+      }
+    }
+    return visitor;
+  }
+
+  return await resolveLegacyGuestUser(request, env) || (() => { throw new Error("guest_user_unavailable"); })();
+}
+
+async function resolveLegacyGuestUser(request: Request, env: Env): Promise<AuthUser | null> {
   const ip = request.headers.get("CF-Connecting-IP") || "unknown";
   const ipHash = (await cacheHash(ip)).slice(0, 16);
   const guestUsername = `guest-${ipHash}`;
   const guestPasswordHash = await sha256(`guest:${ipHash}`);
 
   await ensureUser(env, guestUsername, guestPasswordHash, "user");
-  const guestUser = await findUserByUsername(env, guestUsername);
-  if (guestUser) {
-    return guestUser;
-  }
-
-  throw new Error("guest_user_unavailable");
+  return findUserByUsername(env, guestUsername);
 }
 
 async function ensureUser(env: Env, username: string, passwordHash: string, role: string) {
@@ -1955,7 +1979,7 @@ function corsHeaders(env: Env, origin: string | null) {
   const allowOrigin = allowed.has("*") ? "*" : origin && allowed.has(origin) ? origin : "null";
   return {
     "Access-Control-Allow-Origin": allowOrigin,
-    "Access-Control-Allow-Headers": "Content-Type, Authorization",
+    "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Skylet-Visitor-Id",
     "Access-Control-Allow-Methods": "GET,POST,OPTIONS",
     "Access-Control-Max-Age": "86400",
     Vary: "Origin",

@@ -97,12 +97,15 @@ export async function mirrorDiscordMessage(env: Env, conversationId: string, aut
     const eventKey = eventKeyOverride || `${conversationId}:${author}:${messageId?.id ?? content.slice(0, 100)}`;
     attemptedEventKey = eventKey;
     const inserted = await env.DB.prepare("INSERT OR IGNORE INTO discord_mirrored_messages (event_key, conversation_id, created_at) VALUES (?, ?, ?)").bind(eventKey, conversationId, new Date().toISOString()).run();
-    if (!inserted.meta.changes) return true;
+    if (!inserted.meta.changes) {
+      await updateControlMessage(env, row, true);
+      return true;
+    }
     claimedEventKey = eventKey;
     attemptedThreadId = row.discord_thread_id;
     await postThreadMessage(env, row.discord_thread_id, { content: `**${author}:**\n${content}`.slice(0, 2000), allowed_mentions: { parse: [] } });
     claimedEventKey = null;
-    await updateControlMessage(env, row);
+    await updateControlMessage(env, row, true);
     return true;
   } catch (error) {
     if (claimedEventKey) await env.DB.prepare("DELETE FROM discord_mirrored_messages WHERE event_key = ?").bind(claimedEventKey).run().catch(() => undefined);
@@ -163,7 +166,7 @@ export async function closeDiscordConversation(env: Env, conversationId: string)
   const control = await env.DB.prepare("SELECT * FROM discord_conversations WHERE conversation_id = ?").bind(conversationId).first<Control>();
   if (!control) return;
   try {
-    if (control.control_message_id && control.control_message_id !== "pending") await updateControlMessage(env, { ...control, status: "CLOSED" });
+    if (control.control_message_id && control.control_message_id !== "pending") await updateControlMessage(env, { ...control, status: "CLOSED" }, true);
     if (control.discord_thread_id && control.discord_thread_id !== "pending") {
       await discordApi(env, `/channels/${control.discord_thread_id}`, { method: "PATCH", body: JSON.stringify({ archived: true }) });
     }
@@ -172,34 +175,65 @@ export async function closeDiscordConversation(env: Env, conversationId: string)
   }
 }
 
-export async function updateControlMessage(env: Env, control: Control): Promise<void> {
+export async function updateControlMessage(env: Env, control: Control, reposition = false): Promise<void> {
   if (!control.discord_thread_id) return;
+  const latest = await env.DB.prepare("SELECT * FROM discord_conversations WHERE conversation_id = ?").bind(control.conversation_id).first<Control>();
+  const active = latest ? { ...control, ...latest } : control;
   const labels: Record<HandoffStatus, string> = { AI: "Estado: IA", HUMAN: "Estado: Atendimento humano", CLOSED: "Estado: Encerrado" };
-  const components = control.status === "CLOSED" ? [] : [{ type: 1, components: [
-    { type: 2, style: 1, label: "Assumir", custom_id: `skylet:assume:${control.conversation_id}`, disabled: control.status === "HUMAN" },
+  const components = active.status === "CLOSED" ? [] : [{ type: 1, components: [
+    { type: 2, style: 1, label: "Assumir", custom_id: `skylet:assume:${active.conversation_id}`, disabled: active.status === "HUMAN" },
     { type: 2, style: 2, label: "Responder", custom_id: `skylet:reply:${control.conversation_id}`, disabled: false },
-    { type: 2, style: 2, label: "Devolver para IA", custom_id: `skylet:return:${control.conversation_id}`, disabled: control.status !== "HUMAN" },
-    { type: 2, style: 4, label: "Encerrar", custom_id: `skylet:close:${control.conversation_id}` },
+    { type: 2, style: 2, label: "Devolver para IA", custom_id: `skylet:return:${active.conversation_id}`, disabled: active.status !== "HUMAN" },
+    { type: 2, style: 4, label: "Encerrar", custom_id: `skylet:close:${active.conversation_id}` },
   ] }];
-  const body = { content: labels[control.status], components, allowed_mentions: { parse: [] } };
-  if (control.control_message_id && control.control_message_id !== "pending") {
-    await discordApi(env, `/channels/${control.discord_thread_id}/messages/${control.control_message_id}`, { method: "PATCH", body: JSON.stringify(body) });
-  } else {
-    const claim = await env.DB.prepare("UPDATE discord_conversations SET control_message_id = 'pending' WHERE conversation_id = ? AND control_message_id IS NULL").bind(control.conversation_id).run();
-    if (claim.meta.changes) {
-      try {
-        const result = await discordApi(env, `/channels/${control.discord_thread_id}/messages`, { method: "POST", body: JSON.stringify(body) });
-        await env.DB.prepare("UPDATE discord_conversations SET control_message_id = ?, updated_at = ? WHERE conversation_id = ? AND control_message_id = 'pending'")
-          .bind(result.id, new Date().toISOString(), control.conversation_id).run();
-      } catch (error) {
-        await env.DB.prepare("UPDATE discord_conversations SET control_message_id = NULL WHERE conversation_id = ? AND control_message_id = 'pending'").bind(control.conversation_id).run();
-        throw error;
-      }
-    } else {
-      const latest = await env.DB.prepare("SELECT control_message_id FROM discord_conversations WHERE conversation_id = ?").bind(control.conversation_id).first<{ control_message_id: string | null }>();
-      if (latest?.control_message_id && latest.control_message_id !== "pending") {
-        await discordApi(env, `/channels/${control.discord_thread_id}/messages/${latest.control_message_id}`, { method: "PATCH", body: JSON.stringify(body) });
-      }
+  const body = { content: labels[active.status], components, allowed_mentions: { parse: [] } };
+  if (!reposition) {
+    if (active.control_message_id && active.control_message_id !== "pending") {
+      await discordApi(env, `/channels/${active.discord_thread_id}/messages/${active.control_message_id}`, { method: "PATCH", body: JSON.stringify(body) });
     }
+    return;
+  }
+
+  const threadId = active.discord_thread_id;
+  if (!threadId) return;
+  const created = await discordApi(env, `/channels/${threadId}/messages`, { method: "POST", body: JSON.stringify(body) });
+  if (!created?.id) throw new Error("discord_control_message_create_failed");
+  const oldMessageId = active.control_message_id && active.control_message_id !== "pending" ? active.control_message_id : null;
+  const statements = [
+    env.DB.prepare("UPDATE discord_conversations SET control_message_id = ?, updated_at = ? WHERE conversation_id = ? AND control_message_id IS ?")
+      .bind(created.id, new Date().toISOString(), active.conversation_id, active.control_message_id),
+  ];
+  if (oldMessageId) {
+    statements.push(env.DB.prepare("INSERT OR IGNORE INTO discord_control_message_cleanup (conversation_id, message_id, created_at) SELECT ?, ?, ? WHERE changes() > 0")
+      .bind(active.conversation_id, oldMessageId, new Date().toISOString()));
+  }
+  const persisted = await env.DB.batch(statements);
+  if (!persisted[0]?.meta.changes) {
+    await deleteDiscordControlMessage(env, threadId, created.id).catch(() => undefined);
+    return;
+  }
+  await cleanupDiscordControlMessages(env, { ...active, discord_thread_id: threadId });
+}
+
+async function cleanupDiscordControlMessages(env: Env, control: Control): Promise<void> {
+  const pending = await env.DB.prepare("SELECT message_id FROM discord_control_message_cleanup WHERE conversation_id = ? ORDER BY created_at ASC")
+    .bind(control.conversation_id).all<{ message_id: string }>();
+  for (const row of pending.results || []) {
+    try {
+      await deleteDiscordControlMessage(env, control.discord_thread_id || "", row.message_id);
+      await env.DB.prepare("DELETE FROM discord_control_message_cleanup WHERE conversation_id = ? AND message_id = ?")
+        .bind(control.conversation_id, row.message_id).run();
+    } catch (error) {
+      console.log(JSON.stringify({ level: "warn", event: "discord_control_cleanup_failed", reason: error instanceof Error ? error.name : "unknown" }));
+    }
+  }
+}
+
+async function deleteDiscordControlMessage(env: Env, threadId: string, messageId: string): Promise<void> {
+  try {
+    await discordApi(env, `/channels/${threadId}/messages/${messageId}`, { method: "DELETE" });
+  } catch (error) {
+    if (error instanceof DiscordApiError && error.status === 404) return;
+    throw error;
   }
 }
