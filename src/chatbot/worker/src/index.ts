@@ -284,6 +284,12 @@ export default {
       }
 
       if (url.pathname === "/auth/login" && request.method === "POST") {
+        if (!isAllowedOrigin(env, origin)) return withCors(json({ error: "origin_not_allowed" }, 403), env, origin);
+        const ip = request.headers.get("CF-Connecting-IP") || "unknown";
+        const rateKey = `auth_login:${await cacheHash(ip)}`;
+        const attempts = Number(await env.SESSIONS.get(rateKey) || "0");
+        if (attempts >= 5) return withCors(json({ error: "rate_limited" }, 429), env, origin);
+        await env.SESSIONS.put(rateKey, String(attempts + 1), { expirationTtl: 60 });
         let body: { username: string; password: string } = { username: "", password: "" };
         try {
           body = await request.json();
@@ -306,14 +312,33 @@ export default {
         );
 
         await logEvent(env, user.id, "login", { username: user.username, trace_id: traceId });
-        try {
-          await env.SESSIONS.put(`session:${token}`, JSON.stringify({ uid: user.id, role: user.role }), {
-            expirationTtl: Number(env.JWT_EXP_HOURS || "24") * 3600,
-          });
-        } catch {
-          console.log(JSON.stringify({ level: "warn", message: "session_kv_put_failed", trace_id: traceId }));
-        }
-        return withCors(json({ token, username: user.username, role: user.role }), env, origin);
+        await env.SESSIONS.put(`session:${token}`, JSON.stringify({ uid: user.id, role: user.role }), {
+          expirationTtl: Number(env.JWT_EXP_HOURS || "24") * 3600,
+        });
+        const response = json({ authenticated: true, username: user.username, role: user.role });
+        response.headers.append("Set-Cookie", sessionCookie(token, Number(env.JWT_EXP_HOURS || "24") * 3600));
+        response.headers.set("Cache-Control", "no-store");
+        return withCors(response, env, origin);
+      }
+
+      if (url.pathname === "/auth/session" && request.method === "GET") {
+        if (!isAllowedOrigin(env, origin)) return withCors(json({ error: "origin_not_allowed" }, 403), env, origin);
+        const auth = await requireAuth(request, env);
+        if (!auth.ok) return withCors(json({ error: "unauthorized" }, 401), env, origin);
+        if (auth.user.role !== "admin") return withCors(json({ error: "forbidden" }, 403), env, origin);
+        const response = json({ authenticated: true, username: auth.user.username, role: "admin" });
+        response.headers.set("Cache-Control", "no-store");
+        return withCors(response, env, origin);
+      }
+
+      if (url.pathname === "/auth/logout" && request.method === "POST") {
+        if (!isAllowedOrigin(env, origin)) return withCors(json({ error: "origin_not_allowed" }, 403), env, origin);
+        const token = getAuthToken(request);
+        if (token) await env.SESSIONS.delete(`session:${token}`);
+        const response = json({ ok: true });
+        response.headers.append("Set-Cookie", sessionCookie("", 0));
+        response.headers.set("Cache-Control", "no-store");
+        return withCors(response, env, origin);
       }
 
       if (url.pathname === "/upload/pdf" && request.method === "POST") {
@@ -522,10 +547,8 @@ export default {
       }
 
       if (url.pathname === "/admin/analytics" && request.method === "GET") {
-        const user = await requireAuth(request, env);
-        if (!user.ok || user.user.role !== "admin") {
-          return withCors(json({ error: "admin_only" }, 403), env, origin);
-        }
+        const user = await requireAdmin(request, env);
+        if (!user.ok) return withCors(json({ error: user.error }, user.status), env, origin);
 
         const users = await scalar(env, "SELECT COUNT(*) as total FROM users");
         const conversations = await scalar(env, "SELECT COUNT(*) as total FROM conversations");
@@ -551,10 +574,8 @@ export default {
       }
 
       if (url.pathname === "/admin/conversations" && request.method === "GET") {
-        const user = await requireAuth(request, env);
-        if (!user.ok || user.user.role !== "admin") {
-          return withCors(json({ error: "admin_only" }, 403), env, origin);
-        }
+        const user = await requireAdmin(request, env);
+        if (!user.ok) return withCors(json({ error: user.error }, user.status), env, origin);
 
         const rows = await env.DB.prepare(
           "SELECT c.id, c.user_id, c.title, c.created_at, c.updated_at, (SELECT COUNT(*) FROM messages m WHERE m.conversation_id = c.id) AS message_count FROM conversations c ORDER BY c.updated_at DESC LIMIT 100",
@@ -905,12 +926,22 @@ async function loginUser(env: Env, username: string, password: string): Promise<
   return user;
 }
 
-async function requireAuth(request: Request, env: Env): Promise<{ ok: true; user: AuthUser } | { ok: false; error: string }> {
+function getAuthToken(request: Request): string {
   const auth = request.headers.get("Authorization") || "";
-  if (!auth.startsWith("Bearer ")) {
-    return { ok: false, error: "missing_token" };
-  }
-  const token = auth.slice(7).trim();
+  if (auth.startsWith("Bearer ")) return auth.slice(7).trim();
+  const cookie = request.headers.get("Cookie") || "";
+  const entry = cookie.split(";").map((part) => part.trim()).find((part) => part.startsWith("pklavc_admin_session="));
+  if (!entry) return "";
+  try { return decodeURIComponent(entry.slice("pklavc_admin_session=".length)); } catch { return ""; }
+}
+
+function sessionCookie(token: string, maxAge: number): string {
+  return `pklavc_admin_session=${token}; Path=/; Max-Age=${maxAge}; HttpOnly; Secure; SameSite=Strict`;
+}
+
+async function requireAuth(request: Request, env: Env): Promise<{ ok: true; user: AuthUser } | { ok: false; error: string }> {
+  const token = getAuthToken(request);
+  if (!token) return { ok: false, error: "missing_token" };
   const payload = await verifyJwt(token, env.JWT_SECRET);
   if (!payload || !payload.sub || !payload.uid) {
     return { ok: false, error: "invalid_token" };
@@ -926,7 +957,19 @@ async function requireAuth(request: Request, env: Env): Promise<{ ok: true; user
     return { ok: false, error: "user_not_found" };
   }
 
+  let session: { uid?: number; role?: string };
+  try { session = JSON.parse(inSession); } catch { return { ok: false, error: "invalid_session" }; }
+  if (session.uid !== user.id || session.role !== user.role || payload.role !== user.role || payload.sub !== user.username) {
+    return { ok: false, error: "invalid_session" };
+  }
   return { ok: true, user };
+}
+
+async function requireAdmin(request: Request, env: Env): Promise<{ ok: true; user: AuthUser } | { ok: false; error: string; status: 401 | 403 }> {
+  const authenticated = await requireAuth(request, env);
+  if (!authenticated.ok) return { ok: false, error: "unauthorized", status: 401 };
+  if (authenticated.user.role !== "admin") return { ok: false, error: "forbidden", status: 403 };
+  return authenticated;
 }
 
 async function resolveChatUser(request: Request, env: Env, conversationId?: string): Promise<AuthUser> {
@@ -1875,7 +1918,7 @@ async function logEvent(env: Env, userId: number | null, eventType: string, payl
 
 function isAllowedOrigin(env: Env, origin: string | null): boolean {
   const allowed = new Set((env.ALLOWED_ORIGINS || "").split(",").map((item) => item.trim()).filter(Boolean));
-  return allowed.has("*") || Boolean(origin && allowed.has(origin));
+  return Boolean(origin && allowed.has(origin));
 }
 
 function isAutomatedVisitor(request: Request): boolean {
@@ -1975,10 +2018,11 @@ async function sendLangfuseTrace(
 }
 
 function corsHeaders(env: Env, origin: string | null) {
-  const allowed = new Set((env.ALLOWED_ORIGINS || "*").split(",").map((item) => item.trim()));
-  const allowOrigin = allowed.has("*") ? "*" : origin && allowed.has(origin) ? origin : "null";
+  const allowed = new Set((env.ALLOWED_ORIGINS || "").split(",").map((item) => item.trim()).filter(Boolean));
+  const allowOrigin = origin && allowed.has(origin) ? origin : "null";
   return {
     "Access-Control-Allow-Origin": allowOrigin,
+    ...(origin && allowed.has(origin) ? { "Access-Control-Allow-Credentials": "true" } : {}),
     "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Skylet-Visitor-Id",
     "Access-Control-Allow-Methods": "GET,POST,OPTIONS",
     "Access-Control-Max-Age": "86400",
@@ -2081,7 +2125,7 @@ async function verifyJwt(token: string, secret: string): Promise<Record<string, 
   const payload = JSON.parse(payloadRaw) as Record<string, any>;
 
   const exp = Number(payload.exp || 0);
-  if (!exp || exp < Math.floor(Date.now() / 1000)) {
+  if (!exp || exp <= Math.floor(Date.now() / 1000)) {
     return null;
   }
 
