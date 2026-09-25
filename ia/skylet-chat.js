@@ -10,14 +10,16 @@
   const viewport = document.querySelector('#viewport');
   const stage = document.querySelector('.skylet-stage');
   const consoleElement = document.querySelector('.s800-console');
-  let conversationId = null;
+  const sessionKey = 'aboutChatWidgetSession';
+  let conversationId = (() => { try { return JSON.parse(localStorage.getItem(sessionKey) || '{}').conversationId || null; } catch (_) { return null; } })();
   let voiceOutput = false;
   let characterSpeech = false;
+  let restoringConversation = false;
 
   const copy = {
-    en: { placeholder: 'Write a message…', audioOn: 'Audio replies on', audioOff: 'Audio replies off', unavailable: 'I could not answer right now. Please try again.' },
-    pt: { placeholder: 'Escreva uma mensagem…', audioOn: 'Respostas em áudio ligadas', audioOff: 'Respostas em áudio desligadas', unavailable: 'Não consegui responder agora. Tente novamente.' },
-    es: { placeholder: 'Escribe un mensaje…', audioOn: 'Respuestas de audio activadas', audioOff: 'Respuestas de audio desactivadas', unavailable: 'No pude responder ahora. Inténtalo de nuevo.' }
+    en: { placeholder: 'Write a message…', audioOn: 'Audio replies on', audioOff: 'Audio replies off', unavailable: 'I could not answer right now. Please try again.', clear: 'Clear conversation', confirmClear: 'Delete this conversation from this browser?' },
+    pt: { placeholder: 'Escreva uma mensagem…', audioOn: 'Respostas em áudio ligadas', audioOff: 'Respostas em áudio desligadas', unavailable: 'Não consegui responder agora. Tente novamente.', clear: 'Apagar conversa', confirmClear: 'Apagar esta conversa deste navegador?' },
+    es: { placeholder: 'Escribe un mensaje…', audioOn: 'Respuestas de audio activadas', audioOff: 'Respuestas de audio desactivadas', unavailable: 'No pude responder ahora. Inténtalo de nuevo.', clear: 'Borrar conversación', confirmClear: '¿Borrar esta conversación de este navegador?' }
   }[locale] || null;
   const escapeHtml = value => String(value).replace(/[&<>'"]/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[character]));
 
@@ -37,6 +39,51 @@
 
   function syncConsoleSpace() {
     stage.style.setProperty('--s800-console-height', `${consoleElement.offsetHeight}px`);
+  }
+
+  function saveConversationReference() {
+    try {
+      const current = JSON.parse(localStorage.getItem(sessionKey) || '{}');
+      localStorage.setItem(sessionKey, JSON.stringify({ ...current, conversationId }));
+    } catch (_) { /* The conversation remains usable for the current page session. */ }
+  }
+
+  async function restoreConversation() {
+    if (!conversationId) return;
+    restoringConversation = true;
+    try {
+      const response = await fetch(`${apiBase}/conversations/history?conversation_id=${encodeURIComponent(conversationId)}`);
+      if (response.status === 404 || response.status === 401) {
+        conversationId = null;
+        saveConversationReference();
+        return;
+      }
+      if (!response.ok) return;
+      const data = await response.json();
+      (data.items || []).forEach(item => {
+        appendMessage(item.role === 'user' ? 'user' : 'assistant', item.content);
+        humanReplyCursor = Math.max(humanReplyCursor, Number(item.id) || 0);
+      });
+      if (!humanReplyTimer) humanReplyTimer = window.setInterval(pollHumanReplies, 3000);
+    } catch (_) { /* Keep the reference and retry on the next page load. */ }
+    finally { restoringConversation = false; }
+  }
+
+  function clearConversation() {
+    if (!window.confirm(copy.confirmClear)) return;
+    const oldConversationId = conversationId;
+    conversationId = null;
+    humanReplyCursor = 0;
+    saveConversationReference();
+    log.replaceChildren();
+    if (oldConversationId) {
+      fetch(`${apiBase}/conversations/close`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ conversation_id: oldConversationId }),
+        keepalive: true
+      }).catch(() => {});
+    }
   }
 
   function setVoiceState() {
@@ -72,6 +119,7 @@
   }
 
   async function send() {
+    if (restoringConversation) return;
     const message = input.value.trim();
     if (!message) return;
     input.value = '';
@@ -95,6 +143,7 @@
       const data = contentType.includes('application/json') ? await response.json() : {};
       if (!response.ok) throw new Error(data.error || `chat_http_${response.status}`);
       conversationId = data.conversation_id || conversationId;
+      saveConversationReference();
       if (!humanReplyTimer && conversationId) humanReplyTimer = window.setInterval(pollHumanReplies, 3000);
       const reply = data.reply || copy.unavailable;
       waiting.classList.remove('is-pending');
@@ -123,11 +172,19 @@
       form.requestSubmit();
     }
   });
+  const clearButton = document.createElement('button');
+  clearButton.type = 'button';
+  clearButton.className = 's800-clear-conversation';
+  clearButton.textContent = copy.clear;
+  clearButton.title = copy.clear;
+  clearButton.addEventListener('click', clearConversation);
+  consoleElement.insertBefore(clearButton, form);
   voiceButton.addEventListener('click', () => { voiceOutput = !voiceOutput; setVoiceState(); });
   document.querySelectorAll('[data-current-year]').forEach(node => { node.textContent = String(new Date().getFullYear()); });
   input.placeholder = copy.placeholder;
   setVoiceState();
   autoResize();
+  restoreConversation();
   syncConsoleSpace();
   if ('ResizeObserver' in window) new ResizeObserver(syncConsoleSpace).observe(consoleElement);
   else window.addEventListener('resize', syncConsoleSpace, { passive: true });

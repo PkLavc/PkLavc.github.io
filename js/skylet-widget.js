@@ -16,6 +16,8 @@
       voiceOn: "Voice on",
       voiceOff: "Voice off",
       closeChat: "Close chat",
+      clearConversation: "Delete conversation",
+      confirmClearConversation: "Delete this conversation from this browser?",
       statusPrompt: "Ask about projects, stack, and experience.",
       placeholder: "Type your message here...",
       sendMessage: "Send message",
@@ -65,6 +67,8 @@
       voiceOn: "Voz ativada",
       voiceOff: "Voz desativada",
       closeChat: "Fechar chat",
+      clearConversation: "Apagar conversa",
+      confirmClearConversation: "Apagar esta conversa deste navegador?",
       statusPrompt: "Pergunte sobre projetos, stack e experiência.",
       placeholder: "Digite sua mensagem aqui...",
       sendMessage: "Enviar mensagem",
@@ -114,6 +118,8 @@
       voiceOn: "Voz activada",
       voiceOff: "Voz desactivada",
       closeChat: "Cerrar chat",
+      clearConversation: "Borrar conversación",
+      confirmClearConversation: "¿Borrar esta conversación de este navegador?",
       statusPrompt: "Pregunta sobre proyectos, stack y experiencia.",
       placeholder: "Escribe tu mensaje aquí...",
       sendMessage: "Enviar mensaje",
@@ -226,6 +232,7 @@
       '  </div>',
       '  <div class="about-chat-actions">',
       '    <button id="about-chat-voice-toggle" class="about-chat-action-btn about-chat-voice-toggle" type="button" aria-pressed="false" aria-label="' + copy.voiceOff + '" title="' + copy.voiceOff + '">' + getVoiceToggleMarkup(false) + '</button>',
+      '    <button id="about-chat-clear" class="about-chat-action-btn about-chat-clear-btn" type="button" aria-label="' + copy.clearConversation + '" title="' + copy.clearConversation + '"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 7h16M9 7V4h6v3m3 0-1 13H7L6 7m4 4v5m4-5v5"></path></svg></button>',
       '    <button id="about-chat-close" class="about-chat-action-btn about-chat-close-btn" type="button" aria-label="' + copy.closeChat + '" title="' + copy.closeChat + '">' + getCloseButtonMarkup() + '</button>',
       '  </div>',
       '</header>',
@@ -247,6 +254,7 @@
     els.launcher = document.getElementById("about-chat-launcher");
     els.widget = document.getElementById("about-chat-widget");
     els.closeBtn = document.getElementById("about-chat-close");
+    els.clearBtn = document.getElementById("about-chat-clear");
     els.voiceToggle = document.getElementById("about-chat-voice-toggle");
     els.log = document.getElementById("about-chat-log");
     els.status = document.getElementById("about-chat-status");
@@ -376,6 +384,20 @@
     } catch (err) {
       console.warn("Invalid about chat session cache", err);
     }
+  }
+
+  function ensureClearButton() {
+    var actions = els.widget ? els.widget.querySelector(".about-chat-actions") : null;
+    if (!actions || els.clearBtn) return;
+    var button = document.createElement("button");
+    button.id = "about-chat-clear";
+    button.className = "about-chat-action-btn about-chat-clear-btn";
+    button.type = "button";
+    button.setAttribute("aria-label", getCopy().clearConversation);
+    button.title = getCopy().clearConversation;
+    button.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 7h16M9 7V4h6v3m3 0-1 13H7L6 7m4 4v5m4-5v5"></path></svg>';
+    actions.insertBefore(button, els.closeBtn);
+    els.clearBtn = button;
   }
 
   function escapeHtml(s) {
@@ -703,6 +725,7 @@
 
   var humanReplyCursor = 0;
   var humanReplyTimer = null;
+  var restoringConversation = false;
   async function pollHumanReplies() {
     if (!state.conversationId) return;
     try {
@@ -713,8 +736,47 @@
     } catch (_) { /* Resume on the next interval. */ }
   }
 
+  async function restoreConversationHistory() {
+    if (!state.conversationId) return;
+    restoringConversation = true;
+    try {
+      var response = await fetch(state.apiBase + "/conversations/history?conversation_id=" + encodeURIComponent(state.conversationId));
+      if (response.status === 404 || response.status === 401) {
+        state.conversationId = "";
+        saveSession();
+        return;
+      }
+      if (!response.ok) return;
+      var history = await response.json();
+      if (els.log) els.log.querySelectorAll(".about-chat-message").forEach(function (node) { node.remove(); });
+      (history.items || []).forEach(function (item) {
+        appendMessage(item.role === "user" ? "user" : "assistant", item.content, true);
+        humanReplyCursor = Math.max(humanReplyCursor, Number(item.id) || 0);
+      });
+      if (!humanReplyTimer) humanReplyTimer = window.setInterval(pollHumanReplies, 3000);
+    } catch (_) { /* Keep the local reference so the next load can retry. */ }
+    finally { restoringConversation = false; }
+  }
+
+  function clearConversation() {
+    if (!window.confirm(getCopy().confirmClearConversation)) return;
+    var oldConversationId = state.conversationId;
+    state.conversationId = "";
+    humanReplyCursor = 0;
+    saveSession();
+    if (els.log) els.log.querySelectorAll(".about-chat-message").forEach(function (node) { node.remove(); });
+    if (oldConversationId) {
+      fetch(state.apiBase + "/conversations/close", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ conversation_id: oldConversationId }),
+        keepalive: true,
+      }).catch(function () {});
+    }
+  }
+
   async function sendChat() {
-    if (!els.input) {
+    if (!els.input || restoringConversation) {
       return;
     }
 
@@ -833,6 +895,7 @@
     }
 
     loadSession();
+    ensureClearButton();
     localizeExistingMarkup();
     updateVoiceToggle();
     updateCloseButton();
@@ -841,11 +904,13 @@
       els.widget.inert = true;
     }
     bindEvents();
+    if (els.clearBtn) els.clearBtn.addEventListener("click", clearConversation);
     autoResizeInput();
 
     if (els.log && !els.log.querySelector(".about-chat-message")) {
       appendMessage("assistant", getCopy().intro);
     }
+    restoreConversationHistory();
 
     setStatus(state.voiceEnabled ? getCopy().voiceEnabledStatus : "");
 

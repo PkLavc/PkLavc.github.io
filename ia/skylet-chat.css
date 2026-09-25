@@ -22,6 +22,8 @@ body.skylet-page #all { min-height: 100svh; }
 @keyframes s800-message-in { from { opacity: 0; transform: translateY(7px); } to { opacity: 1; transform: none; } }
 
 .s800-console { position: absolute; z-index: 6; right: 0; bottom: 0; left: 0; width: min(100%, 1100px); margin: 0 auto; padding: 12px 6vw 24px; }
+.s800-clear-conversation { display: block; margin: 0 0 8px auto; padding: 5px 9px; border: 1px solid rgba(96, 225, 245, .28); border-radius: 999px; color: rgba(218, 236, 237, .72); background: rgba(5, 10, 12, .55); cursor: pointer; font: 500 12px/1.2 system-ui, sans-serif; }
+.s800-clear-conversation:hover, .s800-clear-conversation:focus-visible { border-color: var(--s800-cyan); color: #eef2ed; }
 .s800-chat-form { display: flex; align-items: stretch; gap: 10px; }
 .s800-chat-form textarea { min-width: 0; min-height: 50px; max-height: 132px; flex: 1; resize: none; overflow: hidden; scrollbar-width: none; border: 1px solid rgba(96, 225, 245, .48); border-radius: 16px; padding: 13px 15px; outline: 0; color: #eef2ed; background: rgba(5, 10, 12, .9); font: 500 17px/1.4 system-ui, sans-serif; }
 .s800-chat-form textarea::-webkit-scrollbar { display: none; }

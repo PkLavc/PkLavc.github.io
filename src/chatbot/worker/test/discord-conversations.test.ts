@@ -23,6 +23,7 @@ function createEnv(threadId: string | null = "discord-thread") {
         bind(...args: unknown[]) { values = args; return statement; },
         async first() {
           if (sql.startsWith("SELECT * FROM discord_conversations")) return { ...conversation };
+          if (sql.startsWith("SELECT control_message_id FROM discord_conversations")) return { control_message_id: conversation.control_message_id };
           if (sql.startsWith("SELECT id, author, content FROM discord_message_queue")) return queue.find(row => row.status === "queued") || null;
           if (sql.startsWith("SELECT id FROM discord_message_queue")) return queue.find(row => row.status === "queued") || null;
           return null;
@@ -49,8 +50,23 @@ function createEnv(threadId: string | null = "discord-thread") {
             conversation.discord_thread_id = values[0];
             return { meta: { changes: 1 } };
           }
-          if (sql.startsWith("UPDATE discord_conversations SET discord_thread_id = NULL")) {
+          if (sql.startsWith("UPDATE discord_conversations SET discord_thread_id = NULL, control_message_id = NULL")) {
+            if (conversation.discord_thread_id !== values[2]) return { meta: { changes: 0 } };
             conversation.discord_thread_id = null;
+            conversation.control_message_id = null;
+            return { meta: { changes: 1 } };
+          }
+          if (sql.startsWith("UPDATE discord_conversations SET control_message_id = 'pending'")) {
+            if (conversation.control_message_id !== null) return { meta: { changes: 0 } };
+            conversation.control_message_id = "pending";
+            return { meta: { changes: 1 } };
+          }
+          if (sql.startsWith("UPDATE discord_conversations SET control_message_id = ?")) {
+            conversation.control_message_id = values[0];
+            return { meta: { changes: 1 } };
+          }
+          if (sql.startsWith("UPDATE discord_conversations SET control_message_id = NULL")) {
+            conversation.control_message_id = null;
             return { meta: { changes: 1 } };
           }
           if (sql.startsWith("INSERT OR IGNORE INTO discord_mirrored_messages")) {
@@ -58,6 +74,10 @@ function createEnv(threadId: string | null = "discord-thread") {
             if (mirrorKeys.has(key)) return { meta: { changes: 0 } };
             mirrorKeys.add(key);
             return { meta: { changes: 1 } };
+          }
+          if (sql.startsWith("DELETE FROM discord_mirrored_messages")) {
+            const existed = mirrorKeys.delete(String(values[0]));
+            return { meta: { changes: existed ? 1 : 0 } };
           }
           if (sql.startsWith("INSERT INTO discord_message_queue")) {
             queue.push({ id: nextQueueId++, author: values[1] as "Visitante" | "Skylet", content: String(values[2]), status: "queued" });
@@ -76,7 +96,7 @@ function createEnv(threadId: string | null = "discord-thread") {
     },
     async batch() { return []; },
   };
-  return { env: { DB, DISCORD_BOT_TOKEN: "test-token", DISCORD_CHANNEL_ID: "channel", DISCORD_OWNER_USER_ID: "owner-user" } as never, DB };
+  return { env: { DB, DISCORD_BOT_TOKEN: "test-token", DISCORD_CHANNEL_ID: "channel", DISCORD_OWNER_USER_ID: "owner-user" } as never, DB, conversation };
 }
 
 describe("ordered Discord conversation delivery", () => {
@@ -148,5 +168,82 @@ describe("ordered Discord conversation delivery", () => {
     expect(createBody?.auto_archive_duration).toBe(10080);
     expect(ownerMemberPath).toBe("https://discord.com/api/v10/channels/new-thread/thread-members/owner-user");
     expect(ownerMemberMethod).toBe("PUT");
+  });
+
+  it.each(["AI", "HUMAN"] as const)("recreates a deleted thread while preserving %s handoff state", async status => {
+    const { env, conversation } = createEnv("deleted-thread");
+    conversation.status = status;
+    const requests: Array<{ url: string; method: string; body?: Record<string, unknown> }> = [];
+    vi.stubGlobal("fetch", vi.fn(async (input: RequestInfo | URL, init?: RequestInit) => {
+      const url = String(input);
+      const method = init?.method || "GET";
+      const body = init?.body ? JSON.parse(String(init.body)) as Record<string, unknown> : undefined;
+      requests.push({ url, method, body });
+      if (url.endsWith("/channels/deleted-thread/messages")) {
+        return Response.json({ code: 10003, message: "Unknown Channel" }, { status: 404 });
+      }
+      if (url.endsWith("/channels/channel/threads")) return Response.json({ id: "replacement-thread" });
+      if (url.endsWith("/thread-members/owner-user")) return new Response(null, { status: 204 });
+      if (url.endsWith("/channels/replacement-thread/messages")) return Response.json({ id: "new-control-message" });
+      return Response.json({ id: "patched" });
+    }));
+
+    await enqueueDiscordMessage(env, conversationId, "Visitante", "Olá novamente");
+    await drainDiscordMessageQueue(env, conversationId);
+
+    const recreationIndex = requests.findIndex(request => request.url.endsWith("/channels/channel/threads"));
+    const ownerIndex = requests.findIndex(request => request.url.endsWith("/thread-members/owner-user"));
+    const visitorIndex = requests.findIndex(request => request.url.endsWith("/channels/replacement-thread/messages") && String(request.body?.content).startsWith("**Visitante:**\n"));
+    expect(recreationIndex).toBeGreaterThan(-1);
+    expect(ownerIndex).toBeGreaterThan(recreationIndex);
+    expect(visitorIndex).toBeGreaterThan(ownerIndex);
+    expect(requests[recreationIndex].body?.auto_archive_duration).toBe(10080);
+    expect(conversation.discord_thread_id).toBe("replacement-thread");
+    expect(conversation.status).toBe(status);
+  });
+
+  it("does not create duplicate replacement threads when queued deliveries race", async () => {
+    const { env, conversation } = createEnv("deleted-thread");
+    let creationCount = 0;
+    vi.stubGlobal("fetch", vi.fn(async (input: RequestInfo | URL) => {
+      const url = String(input);
+      if (url.endsWith("/channels/deleted-thread/messages")) return Response.json({ code: 10003, message: "Unknown Channel" }, { status: 404 });
+      if (url.endsWith("/channels/channel/threads")) return Response.json({ id: `replacement-${++creationCount}` });
+      if (url.includes("/thread-members/")) return new Response(null, { status: 204 });
+      return Response.json({ id: "posted" });
+    }));
+
+    await Promise.all([
+      enqueueDiscordMessage(env, conversationId, "Visitante", "cursos"),
+      enqueueDiscordMessage(env, conversationId, "Skylet", "resposta"),
+    ]);
+    await Promise.all([drainDiscordMessageQueue(env, conversationId), drainDiscordMessageQueue(env, conversationId)]);
+    await drainDiscordMessageQueue(env, conversationId);
+
+    expect(creationCount).toBe(1);
+    expect(conversation.discord_thread_id).toBe("replacement-1");
+  });
+
+  it("unarchives an existing thread instead of creating a replacement", async () => {
+    const { env, conversation } = createEnv("archived-thread");
+    const requests: Array<{ url: string; method?: string; body?: Record<string, unknown> }> = [];
+    let firstPost = true;
+    vi.stubGlobal("fetch", vi.fn(async (input: RequestInfo | URL, init?: RequestInit) => {
+      const url = String(input);
+      const body = init?.body ? JSON.parse(String(init.body)) as Record<string, unknown> : undefined;
+      requests.push({ url, method: init?.method, body });
+      if (url.endsWith("/channels/archived-thread/messages") && firstPost) {
+        firstPost = false;
+        return Response.json({ code: 50083, message: "thread is archived" }, { status: 400 });
+      }
+      return Response.json({ id: "posted" });
+    }));
+
+    await enqueueDiscordMessage(env, conversationId, "Visitante", "cursos");
+    await drainDiscordMessageQueue(env, conversationId);
+
+    expect(requests.some(request => request.url.endsWith("/channels/archived-thread") && request.method === "PATCH" && request.body?.archived === false)).toBe(true);
+    expect(requests.some(request => request.url.endsWith("/channels/channel/threads"))).toBe(false);
+    expect(conversation.discord_thread_id).toBe("archived-thread");
   });
 });

@@ -52,9 +52,11 @@ export async function drainDiscordMessageQueue(env: Env, conversationId: string)
   }
 }
 
-export async function mirrorDiscordMessage(env: Env, conversationId: string, author: string, content: string, eventKeyOverride?: string): Promise<boolean> {
+export async function mirrorDiscordMessage(env: Env, conversationId: string, author: string, content: string, eventKeyOverride?: string, recoveryAttempt = false): Promise<boolean> {
   if (!env.DISCORD_BOT_TOKEN || !env.DISCORD_CHANNEL_ID || !content.trim()) return false;
   let claimedEventKey: string | null = null;
+  let attemptedEventKey: string | null = null;
+  let attemptedThreadId: string | null = null;
   try {
     let row = await env.DB.prepare("SELECT * FROM discord_conversations WHERE conversation_id = ?").bind(conversationId).first<Control>();
     if (!row) {
@@ -93,17 +95,46 @@ export async function mirrorDiscordMessage(env: Env, conversationId: string, aut
     const messageId = eventKeyOverride ? null : await env.DB.prepare("SELECT id FROM messages WHERE conversation_id = ? AND role = ? AND content = ? ORDER BY id DESC LIMIT 1")
       .bind(conversationId, author === "Skylet" ? "assistant" : "user", content).first<{ id: number }>();
     const eventKey = eventKeyOverride || `${conversationId}:${author}:${messageId?.id ?? content.slice(0, 100)}`;
+    attemptedEventKey = eventKey;
     const inserted = await env.DB.prepare("INSERT OR IGNORE INTO discord_mirrored_messages (event_key, conversation_id, created_at) VALUES (?, ?, ?)").bind(eventKey, conversationId, new Date().toISOString()).run();
     if (!inserted.meta.changes) return true;
     claimedEventKey = eventKey;
-    await discordApi(env, `/channels/${row.discord_thread_id}/messages`, { method: "POST", body: JSON.stringify({ content: `**${author}:**\n${content}`.slice(0, 2000), allowed_mentions: { parse: [] } }) });
+    attemptedThreadId = row.discord_thread_id;
+    await postThreadMessage(env, row.discord_thread_id, { content: `**${author}:**\n${content}`.slice(0, 2000), allowed_mentions: { parse: [] } });
     claimedEventKey = null;
     await updateControlMessage(env, row);
     return true;
   } catch (error) {
     if (claimedEventKey) await env.DB.prepare("DELETE FROM discord_mirrored_messages WHERE event_key = ?").bind(claimedEventKey).run().catch(() => undefined);
+    if (!recoveryAttempt && attemptedEventKey && attemptedThreadId && isUnknownChannel(error)) {
+      await env.DB.prepare("DELETE FROM discord_mirrored_messages WHERE event_key = ?").bind(attemptedEventKey).run().catch(() => undefined);
+      const reset = await env.DB.prepare("UPDATE discord_conversations SET discord_thread_id = NULL, control_message_id = NULL, updated_at = ? WHERE conversation_id = ? AND discord_thread_id = ?")
+        .bind(new Date().toISOString(), conversationId, attemptedThreadId).run().catch(() => ({ meta: { changes: 0 } }));
+      if (reset.meta.changes) return mirrorDiscordMessage(env, conversationId, author, content, eventKeyOverride, true);
+    }
     console.log(JSON.stringify({ level: "warn", event: "discord_mirror_failed", reason: error instanceof Error ? error.name : "unknown" }));
     return false;
+  }
+}
+
+export async function postThreadMessage(env: Env, threadId: string, body: Record<string, unknown>): Promise<void> {
+  try {
+    await discordApi(env, `/channels/${threadId}/messages`, { method: "POST", body: JSON.stringify(body) });
+  } catch (error) {
+    if (!(error instanceof DiscordApiError) || error.code !== 50083) throw error;
+    await discordApi(env, `/channels/${threadId}`, { method: "PATCH", body: JSON.stringify({ archived: false }) });
+    await discordApi(env, `/channels/${threadId}/messages`, { method: "POST", body: JSON.stringify(body) });
+  }
+}
+
+function isUnknownChannel(error: unknown): boolean {
+  return error instanceof DiscordApiError && error.status === 404 && (error.code === 10003 || /unknown channel/i.test(error.message));
+}
+
+class DiscordApiError extends Error {
+  constructor(readonly status: number, readonly code: number | null, message: string) {
+    super(message);
+    this.name = "DiscordApiError";
   }
 }
 
@@ -113,9 +144,32 @@ export async function discordApi(env: Env, path: string, init: RequestInit = {})
     signal: init.signal || AbortSignal.timeout(15_000),
     headers: { Authorization: `Bot ${env.DISCORD_BOT_TOKEN}`, "Content-Type": "application/json", ...(init.headers || {}) },
   });
-  if (!response.ok) throw new Error(`discord_http_${response.status}`);
+  if (!response.ok) {
+    const text = await response.text();
+    let code: number | null = null;
+    let message = text || `discord_http_${response.status}`;
+    try {
+      const errorBody = JSON.parse(text) as { code?: number; message?: string };
+      code = typeof errorBody.code === "number" ? errorBody.code : null;
+      message = errorBody.message || message;
+    } catch { /* Preserve non-JSON Discord response text for classification. */ }
+    throw new DiscordApiError(response.status, code, message);
+  }
   if (response.status === 204) return null;
   return response.json();
+}
+
+export async function closeDiscordConversation(env: Env, conversationId: string): Promise<void> {
+  const control = await env.DB.prepare("SELECT * FROM discord_conversations WHERE conversation_id = ?").bind(conversationId).first<Control>();
+  if (!control) return;
+  try {
+    if (control.control_message_id && control.control_message_id !== "pending") await updateControlMessage(env, { ...control, status: "CLOSED" });
+    if (control.discord_thread_id && control.discord_thread_id !== "pending") {
+      await discordApi(env, `/channels/${control.discord_thread_id}`, { method: "PATCH", body: JSON.stringify({ archived: true }) });
+    }
+  } catch (error) {
+    console.log(JSON.stringify({ level: "warn", event: "discord_conversation_close_failed", reason: error instanceof Error ? error.name : "unknown" }));
+  }
 }
 
 export async function updateControlMessage(env: Env, control: Control): Promise<void> {

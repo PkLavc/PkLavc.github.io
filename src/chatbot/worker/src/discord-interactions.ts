@@ -1,5 +1,5 @@
 import type { Env } from "./index";
-import { discordApi, updateControlMessage } from "./discord-conversations";
+import { discordApi, postThreadMessage, updateControlMessage } from "./discord-conversations";
 
 type DiscordInteraction = {
   type: number; id: string; token: string;
@@ -46,7 +46,7 @@ export async function handleDiscordInteraction(request: Request, env: Env, ctx: 
         env.DB.prepare("UPDATE conversations SET updated_at = ? WHERE id = ? AND EXISTS (SELECT 1 FROM discord_conversations WHERE conversation_id = ? AND status = 'HUMAN')").bind(now, conversationId, conversationId),
       ]);
       if (!outcomes[1]?.meta.changes) return;
-      await discordApi(env, `/channels/${control.discord_thread_id}/messages`, { method: "POST", body: JSON.stringify({ content: `**Patrick:**\n${content}`, allowed_mentions: { parse: [] } }) });
+      await postThreadMessage(env, control.discord_thread_id, { content: `**Patrick:**\n${content}`, allowed_mentions: { parse: [] } });
       await updateControlMessage(env, { ...control, status: "HUMAN" });
     })().catch(() => console.log(JSON.stringify({ level: "warn", event: "discord_human_reply_failed" }))));
     return Response.json({ type: 5, data: { flags: 64 } });

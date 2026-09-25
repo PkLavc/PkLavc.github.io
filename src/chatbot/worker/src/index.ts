@@ -1,6 +1,6 @@
 import { MANUAL_RAG_CONTEXT, MANUAL_RAG_SECTIONS } from "./manual-rag";
 import { handleDiscordInteraction } from "./discord-interactions";
-import { drainDiscordMessageQueue, enqueueDiscordMessage, getConversationControl } from "./discord-conversations";
+import { closeDiscordConversation, drainDiscordMessageQueue, enqueueDiscordMessage, getConversationControl } from "./discord-conversations";
 
 export interface Env {
   DB: D1Database;
@@ -477,6 +477,33 @@ export default {
         if (!control) return withCors(json({ error: "conversation_not_found" }, 404), env, origin);
         const rows = await env.DB.prepare("SELECT id, role, content, created_at FROM messages WHERE conversation_id = ? AND id > ? AND role IN ('human') ORDER BY id ASC LIMIT 50").bind(conversationId, afterId).all();
         return withCors(json({ ok: true, items: rows.results || [], status: control.status }), env, origin);
+      }
+
+      if (url.pathname === "/conversations/history" && request.method === "GET") {
+        const user = await resolveChatUser(request, env);
+        const conversationId = url.searchParams.get("conversation_id") || "";
+        const control = await getConversationControl(env, conversationId, user.id);
+        if (!control) return withCors(json({ error: "conversation_not_found" }, 404), env, origin);
+        const rows = await env.DB.prepare("SELECT id, role, content, created_at FROM messages WHERE conversation_id = ? ORDER BY id ASC")
+          .bind(conversationId).all<{ id: number; role: string; content: string; created_at: string }>();
+        return withCors(json({ ok: true, items: rows.results || [], status: control.status }), env, origin);
+      }
+
+      if (url.pathname === "/conversations/close" && request.method === "POST") {
+        const user = await resolveChatUser(request, env);
+        let payload: { conversation_id?: string };
+        try { payload = await request.json<{ conversation_id?: string }>(); }
+        catch { return withCors(json({ error: "invalid_json" }, 400), env, origin); }
+        const conversationId = payload.conversation_id || "";
+        const control = await getConversationControl(env, conversationId, user.id);
+        if (!control) return withCors(json({ error: "conversation_not_found" }, 404), env, origin);
+        const now = new Date().toISOString();
+        await env.DB.prepare("INSERT OR IGNORE INTO discord_conversations (conversation_id, status, created_at, updated_at) VALUES (?, 'CLOSED', ?, ?)")
+          .bind(conversationId, now, now).run();
+        await env.DB.prepare("UPDATE discord_conversations SET status = 'CLOSED', updated_at = ? WHERE conversation_id = ?")
+          .bind(now, conversationId).run();
+        ctx.waitUntil(closeDiscordConversation(env, conversationId));
+        return withCors(json({ ok: true, conversation_id: conversationId, status: "CLOSED" }), env, origin);
       }
 
       if (url.pathname === "/conversations" && request.method === "GET") {
