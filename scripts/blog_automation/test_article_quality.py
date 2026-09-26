@@ -39,6 +39,8 @@ class ArticleQualityGateTests(unittest.TestCase):
             "The product likely relies on a proprietary deployment architecture.",
             "This could mean that the product supports autonomous production deployments.",
             "The system could be based on an undocumented model architecture.",
+            "This means that sites are more likely to have robust bot protection from the outset.",
+            "The specific nature of the interface (e.g., a dedicated API, structured prompts, or a plugin architecture) was not disclosed.",
         )
         for sentence in examples:
             with self.subTest(sentence=sentence):

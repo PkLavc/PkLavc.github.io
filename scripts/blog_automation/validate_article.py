@@ -29,6 +29,11 @@ UNSUPPORTED_SPECULATION = (
     re.compile(r"\bprobable\s+(?:(?:[\w-]+\s+){0,3})(?:fine[- ]?tun\w*|training|architecture|infrastructure|model|capabilit\w*|system)\b", re.IGNORECASE),
     re.compile(r"\bcould\s+(?:mean|imply|suggest|indicate)\s+that\s+(?:the\s+)?(?:product|system|model|feature|service)\b.{0,100}\b(?:includes?|uses?|supports?|contains?|requires?|runs?|relies\s+on)\b", re.IGNORECASE),
     re.compile(r"\bcould\s+(?:include|use|rely\s+on|depend\s+on|support|contain|require|run|be\s+based\s+on|be\s+powered\s+by)\b", re.IGNORECASE),
+    # Predicting outcomes/capabilities is also speculation even when phrased as
+    # a probability rather than a direct claim about internal implementation.
+    re.compile(r"\b(?:more\s+)?(?:likely|probably|presumably|might|may)\s+to\s+(?:have|provide|deliver|ensure|create|produce|result\s+in)\b.{0,100}\b(?:robust|secure|security|protection|reliable|capabilit\w*|automation|vulnerabilit\w*|deployment\w*)\b", re.IGNORECASE),
+    re.compile(r"\b(?:(?:specific\s+)?(?:technical\s+)?(?:mechanism|interface|architecture|protocols?|implementation)|specific\s+nature\s+of\s+(?:the\s+)?(?:interface|mechanism|implementation))\b.{0,100}\b(?:e\.g\.|for\s+example|such\s+as)\b.{0,180}\b(?:not\s+disclosed|not\s+specified|unknown|unclear)\b", re.IGNORECASE),
+    re.compile(r"\bspecific\s+nature\s+of\s+the\s+interface\b.{0,250}\bnot\s+disclosed\b", re.IGNORECASE),
 )
 
 

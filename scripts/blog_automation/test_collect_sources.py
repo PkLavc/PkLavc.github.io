@@ -54,6 +54,17 @@ class CollectSourcesTests(unittest.TestCase):
         self.assertEqual(candidates[0]["published_date"], "2026-09-24")
         self.assertEqual(stats[0]["type"], "Atom")
 
+    def test_namespaced_publication_dates_are_read_from_rss_and_atom(self):
+        feeds = [
+            {"name": "Namespaced RSS", "company": "A", "url": "https://example.test/rss"},
+            {"name": "Namespaced Atom", "company": "B", "url": "https://example.test/atom"},
+        ]
+        rss = b'''<rss xmlns:dc="http://purl.org/dc/elements/1.1/" version="2.0"><channel><item><title>Google-style dated release</title><link>https://example.test/release</link><dc:date>2026-09-24T14:00:00Z</dc:date></item></channel></rss>'''
+        atom = b'''<feed xmlns="http://www.w3.org/2005/Atom" xmlns:dcterms="http://purl.org/dc/terms/"><entry><title>Namespaced Atom release</title><link href="https://example.test/atom-release"/><dcterms:issued>2026-09-24T14:00:00Z</dcterms:issued></entry></feed>'''
+        candidates, stats = self.run_feeds(feeds, {feeds[0]["url"]: rss, feeds[1]["url"]: atom})
+        self.assertEqual([c["title"] for c in candidates], ["Google-style dated release", "Namespaced Atom release"])
+        self.assertTrue(all(stat["ok"] for stat in stats))
+
     def test_official_jsonld_article_is_structured_and_date_filtered(self):
         feed = {"name": "Official page", "company": "A", "url": "https://example.test/news", "primary": True}
         page = b'''<html><script type="application/ld+json">{"@context":"https://schema.org","@type":"NewsArticle","headline":"Confirmed release","url":"https://example.test/news/release","datePublished":"2026-09-24T10:00:00-04:00","description":"Release details"}</script></html>'''

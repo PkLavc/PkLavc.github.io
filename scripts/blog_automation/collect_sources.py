@@ -28,7 +28,16 @@ def _text(element: ET.Element | None) -> str:
 
 
 def _entry_date(entry: ET.Element) -> dt.date | None:
-    raw = next((_text(entry.find(name)) for name in ("pubDate", "published", "updated", ATOM + "published", ATOM + "updated") if _text(entry.find(name))), "")
+    # Publishers use different namespace prefixes (dc:date, dcterms:issued,
+    # Atom published, etc.). Match by local name so prefixes do not silently
+    # turn a healthy feed into zero dated records.
+    preferred = {"pubdate": 0, "published": 1, "datepublished": 2, "issued": 3,
+                 "date": 4, "updated": 5, "modified": 6}
+    date_nodes = sorted(
+        (node for node in entry.iter() if node is not entry and node.tag.rsplit("}", 1)[-1].lower() in preferred),
+        key=lambda node: preferred[node.tag.rsplit("}", 1)[-1].lower()],
+    )
+    raw = next((_text(node) for node in date_nodes if _text(node)), "")
     if not raw:
         return None
     try:
