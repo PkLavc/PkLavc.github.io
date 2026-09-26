@@ -129,7 +129,9 @@ def _error_info(exc: urllib.error.HTTPError, key: str, prompt: str) -> tuple[str
             reasons.extend(str(item.get("description", "")).lower() for item in detail.get("violations", [])
                            if isinstance(item, dict))
     lower = " ".join(reasons + [raw_message.lower()])
-    if "quota_exceeded" in lower or ("quota" in lower and any(x in lower for x in ("daily", "per day", "per_day"))):
+    if "quota_exceeded" in lower or ("quota" in lower and any(
+        x in lower for x in ("daily", "per day", "per_day", "exceed", "exhaust", "limit reached")
+    )):
         kind = "quota_exceeded"
     elif exc.code == 429:
         kind = "too_many_requests" if "too_many_requests" in lower else "rate_limit_exceeded"

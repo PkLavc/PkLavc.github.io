@@ -114,6 +114,15 @@ class GeminiRetryTests(unittest.TestCase):
         self.assertEqual(gemini.CIRCUIT_BREAKER, "DAILY_QUOTA")
         self.assertEqual(gemini.LOGICAL_CALLS["Article generation"], 0)
 
+    def test_429_plain_language_quota_message_is_daily_quota(self):
+        error = http_error(429, message="You exceeded your current quota, please check your plan and billing details.")
+        with patch("scripts.blog_automation.gemini.urllib.request.urlopen", side_effect=error) as send:
+            with self.assertRaises(gemini.GeminiOperationalError):
+                gemini.call("selector", purpose="Selector")
+        send.assert_called_once()
+        self.assertEqual(gemini.CIRCUIT_BREAKER, "DAILY_QUOTA")
+        self.assertEqual(gemini.request_count(), 1)
+
     def test_j_six_request_budget_includes_retries(self):
         with patch("scripts.blog_automation.gemini.urllib.request.urlopen", return_value=Response()) as send:
             for _ in range(6):
