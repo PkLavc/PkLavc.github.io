@@ -17,6 +17,7 @@ const publicEntries = [
   "ai.txt",
   "apple-touch-icon.png",
   "browserconfig.xml",
+  "blog",
   "certifications",
   "CNAME",
   "changelog",

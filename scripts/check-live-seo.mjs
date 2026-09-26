@@ -60,7 +60,7 @@ async function sitemap(url) {
 
 await sitemap(`${SITE}/sitemap.xml`);
 report.sitemapPages = sitemapUrls.size;
-const sample = ["/", "/pt/", "/es/", "/about/", "/pt/sobre/", "/projects/omnichannel/", "/pt/projetos/omnichannel/", "/es/proyectos/omnichannel/", "/blog/", "/codepulse-monorepo/", "/robots.txt", "/llms.txt", "/llms-full.txt", "/blog/feed.xml", "/sitemap-index.xml"];
+const sample = ["/", "/pt/", "/es/", "/about/", "/pt/sobre/", "/projects/omnichannel/", "/pt/projetos/omnichannel/", "/es/proyectos/omnichannel/", "/blog/", "/pt/blog/", "/es/blog/", "/codepulse-monorepo/", "/robots.txt", "/llms.txt", "/llms-full.txt", "/sitemap-index.xml"];
 const urls = new Set(sample.map((route) => `${SITE}${route}`));
 if (args.includes("--all")) for (const url of sitemapUrls) urls.add(url);
 console.log(`Checking ${urls.size} public URLs; published sitemap lists ${sitemapUrls.size} pages.`);

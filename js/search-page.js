@@ -23,8 +23,8 @@
         {
             title: "Blog",
             url: "/blog/",
-            description: "Engineering articles about AI systems, backend architecture, cloud, security, automation, and APIs.",
-            tags: "blog articles ai backend cloud security"
+            description: "Editorial overview of software engineering, backend systems, APIs, automation, applied AI, cloud infrastructure, and evidence-based technology analysis.",
+            tags: "blog software engineering backend cloud security automation"
         },
         {
             title: "Resume",
@@ -47,7 +47,7 @@
         {
             title: "Status",
             url: "/status/",
-            description: "Public status checks for the portfolio, API, visitor analytics, feed, and sitemap.",
+            description: "Public status checks for the portfolio, API, visitor analytics, editorial overview, and sitemap.",
             tags: "status health api"
         },
         {
@@ -74,23 +74,6 @@
             .replace(/</g, "&lt;")
             .replace(/>/g, "&gt;")
             .replace(/"/g, "&quot;");
-    }
-
-    function parseFeed(xmlText) {
-        var parser = new DOMParser();
-        var doc = parser.parseFromString(xmlText, "application/xml");
-        return Array.prototype.slice.call(doc.querySelectorAll("item")).map(function (item) {
-            return {
-                title: item.querySelector("title") ? item.querySelector("title").textContent : "",
-                url: item.querySelector("link") ? item.querySelector("link").textContent.replace("https://pklavc.com", "") : "",
-                description: item.querySelector("description") ? item.querySelector("description").textContent : "",
-                tags: Array.prototype.slice.call(item.querySelectorAll("category")).map(function (category) {
-                    return category.textContent;
-                }).join(" ")
-            };
-        }).filter(function (item) {
-            return item.title && item.url;
-        });
     }
 
     function score(item, query) {
@@ -163,8 +146,5 @@
         run();
     }
 
-    window.fetch("/blog/feed.xml", { cache: "force-cache" })
-        .then(function (response) { return response.ok ? response.text() : ""; })
-        .then(function (text) { init(staticPages.concat(text ? parseFeed(text) : [])); })
-        .catch(function () { init(staticPages); });
+    init(staticPages);
 }());

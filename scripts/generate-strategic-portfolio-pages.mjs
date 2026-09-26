@@ -64,7 +64,7 @@ const locales = {
     home: "/pt/",
     about: "/pt/sobre/",
     projects: "/pt/projetos/",
-    blog: "/blog/pt/",
+    blog: "/pt/blog/",
     localeOg: "pt_BR",
     homeLabel: "Início",
     aboutLabel: "Sobre",
@@ -99,7 +99,7 @@ const locales = {
     home: "/es/",
     about: "/es/sobre/",
     projects: "/es/proyectos/",
-    blog: "/blog/es/",
+    blog: "/es/blog/",
     localeOg: "es_ES",
     homeLabel: "Inicio",
     aboutLabel: "Sobre",
@@ -556,7 +556,7 @@ function localizedRoute(localeKey, section, slug) {
     return `${locale.projects}${slug}/`;
   }
   if (section === "blog") {
-    return `${locale.blog}${slug}/`;
+    return locale.blog;
   }
   return `${locale.prefix}/${section}/${slug}/`;
 }
@@ -680,7 +680,7 @@ function canonicalForRoute(currentCanonical, targetLocale) {
   }
 
   if (parts[0] === "blog") {
-    return `https://pklavc.com${locale.blog}${parts[1] ? `${parts[1]}/` : ""}`;
+    return `https://pklavc.com${locale.blog}`;
   }
 
   return `https://pklavc.com${locale.home}`;

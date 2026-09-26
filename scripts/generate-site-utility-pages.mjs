@@ -60,7 +60,6 @@ function head({ title, description, canonical, robots = "index, follow", ogTitle
         <meta name="theme-color" content="#101114">
         <title>${escapeHtml(title)}</title>
         <link rel="canonical" href="${absolute}">
-        <link rel="alternate" type="application/rss+xml" title="Patrick Araujo Engineering Blog RSS" href="/blog/feed.xml">
         <link rel="search" type="application/opensearchdescription+xml" title="PkLavc" href="/opensearch.xml">
         <link rel="manifest" href="/manifest.webmanifest">
         <link rel="icon" href="/favicon.ico" sizes="any">
@@ -594,7 +593,7 @@ ${[
       { id: "site", name: "Portfolio delivery", url: "/" },
       { id: "api", name: "Public API health", url: "https://api.pklavc.com/health" },
       { id: "visitors", name: "Visitor analytics API", url: "https://api.pklavc.com/analytics/map" },
-      { id: "feed", name: "RSS feed", url: "/blog/feed.xml" },
+      { id: "blog", name: "Public blog overview", url: "/blog/" },
       { id: "sitemap", name: "Sitemap", url: "/sitemap.xml" }
     ].map((check) => {
       return `<article class="status-row" data-status-row="${check.id}"><div><strong class="status-name">${check.name}</strong><span class="status-detail" data-status-detail>Checking ${check.url}</span></div><span class="status-pill checking" data-status-pill>Checking</span></article>`;
@@ -605,11 +604,11 @@ ${[
 
   writeFile("search/index.html", page({
     title: "Search",
-    description: "Search Patrick Araujo's portfolio, projects, resume, engineering pages, and blog articles.",
+    description: "Search Patrick Araujo's portfolio, projects, resume, engineering pages, and editorial overview.",
     canonical: "/search/",
     kicker: "Site search",
-    lead: "Search portfolio pages, project routes, engineering context, and blog posts from one static page.",
-    body: `<section class="site-page-section"><h2>Search the site</h2><form class="site-search-form" data-search-form role="search"><input class="site-search-input" data-search-input type="search" name="q" autocomplete="off" placeholder="Search backend, RAG, APIs, projects..." aria-label="Search pklavc.com"><button class="site-page-button" type="submit">Search</button></form></section><section class="site-page-section"><h2>Results</h2><div class="site-search-results" data-search-results><p class="site-page-note">Type a term to search portfolio pages and blog articles.</p></div></section>`,
+    lead: "Search portfolio pages, project routes, engineering context, and the technical editorial overview from one static page.",
+    body: `<section class="site-page-section"><h2>Search the site</h2><form class="site-search-form" data-search-form role="search"><input class="site-search-input" data-search-input type="search" name="q" autocomplete="off" placeholder="Search backend, RAG, APIs, projects..." aria-label="Search pklavc.com"><button class="site-page-button" type="submit">Search</button></form></section><section class="site-page-section"><h2>Results</h2><div class="site-search-results" data-search-results><p class="site-page-note">Type a term to search published portfolio pages.</p></div></section>`,
     extra: `        <script src="/js/search-page.js" defer></script>`
   }));
 
@@ -772,7 +771,6 @@ function upsertDiscoveryLinks() {
   ];
 
   const block = `        <meta name="theme-color" content="#101114">
-        <link rel="alternate" type="application/rss+xml" title="Patrick Araujo Engineering Blog RSS" href="/blog/feed.xml">
         <link rel="search" type="application/opensearchdescription+xml" title="PkLavc" href="/opensearch.xml">
         <link rel="manifest" href="/manifest.webmanifest">
         <link rel="icon" href="/favicon.ico" sizes="any">

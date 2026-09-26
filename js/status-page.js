@@ -21,9 +21,9 @@
             ok: function (response) { return response.ok; }
         },
         {
-            id: "feed",
-            label: "RSS feed",
-            url: "/blog/feed.xml",
+            id: "blog",
+            label: "Public blog overview",
+            url: "/blog/",
             ok: function (response) { return response.ok; }
         },
         {

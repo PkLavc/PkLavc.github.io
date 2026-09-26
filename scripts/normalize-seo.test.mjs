@@ -24,12 +24,50 @@ test("profile pages resolve to the same Patrick identity", () => {
   }
 });
 
-test("the main repository contains no blog application or legacy localized routes", () => {
-  for (const relative of ["blog", "pt/blog", "es/blog", "scripts/blog_automation", "js/blog-related-posts.js", "css/blog.css"]) {
+test("the main repository exposes only the three institutional blog pages, not the private blog application", () => {
+  for (const relative of ["scripts/blog_automation", "js/blog-related-posts.js", "css/blog.css"]) {
     assert.equal(fs.existsSync(path.join(ROOT, relative)), false, `${relative} must remain absent`);
   }
-  const notFound = read("404.html");
-  assert.doesNotMatch(notFound, /['"]\/(?:pt|es)\/blog['"]\s*:/);
+  for (const relative of ["blog/index.html", "pt/blog/index.html", "es/blog/index.html"]) {
+    assert.equal(fs.existsSync(path.join(ROOT, relative)), true, `${relative} must exist`);
+  }
+  for (const relative of ["blog/feed.xml", "blog/sitemap.xml", "blog/posts.json", "blog/old-article/index.html", "pt/blog/old-article/index.html", "es/blog/old-article/index.html"]) {
+    assert.equal(fs.existsSync(path.join(ROOT, relative)), false, `${relative} must remain absent`);
+  }
+});
+
+test("institutional blog pages have reciprocal language metadata, real links, and indexable canonicals", () => {
+  const routes = ["/blog/", "/pt/blog/", "/es/blog/"];
+  const files = ["blog/index.html", "pt/blog/index.html", "es/blog/index.html"];
+  for (let index = 0; index < files.length; index += 1) {
+    const html = normalize(read(files[index]));
+    assert.ok(html.includes(`<link rel="canonical" href="https://pklavc.com${routes[index]}">`));
+    assert.match(html, /name="robots" content="index, follow(?:,|"|s)/);
+    for (const route of routes) assert.ok(html.includes(`https://pklavc.com${route}`), `${files[index]} missing alternate ${route}`);
+    assert.match(html, /property="og:title"/);
+    assert.match(html, /name="twitter:card"/);
+    assert.match(html, /application\/ld\+json/);
+    const usefulLinks = index === 0
+      ? ["/projects/", "/editorial-policy/", "/privacy-policy/"]
+      : index === 1
+        ? ["/pt/projetos/", "/pt/politica-editorial/", "/pt/politica-de-privacidade/"]
+        : ["/es/proyectos/", "/es/politica-editorial/", "/es/politica-de-privacidad/"];
+    for (const href of [...usefulLinks, "mailto:contact@pklavc.com", "https://github.com/PkLavc"]) {
+      assert.ok(html.includes(href), `${files[index]} missing useful link ${href}`);
+    }
+  }
+});
+
+test("root sitemap lists only the three public institutional blog routes", () => {
+  const xml = read("sitemap.xml");
+  const blogUrls = [...xml.matchAll(/<loc>(https:\/\/pklavc\.com\/(?:pt\/|es\/)?blog\/)<\/loc>/g)].map((match) => match[1]);
+  assert.deepEqual(blogUrls.sort(), [
+    "https://pklavc.com/blog/",
+    "https://pklavc.com/es/blog/",
+    "https://pklavc.com/pt/blog/"
+  ]);
+  assert.doesNotMatch(xml, /https:\/\/pklavc\.com\/(?:pt\/|es\/)?blog\/[a-z0-9-]+\//i);
+  assert.doesNotMatch(read("sitemap-index.xml"), /blog\/sitemap\.xml/);
 });
 
 test("repository and language markup uses project evidence and preserves coauthors", () => {

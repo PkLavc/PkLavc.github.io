@@ -63,11 +63,11 @@ export function generateDiscovery(directory = process.cwd()) {
 
 > ${home.description}
 
-Patrick Araujo publishes this personal engineering portfolio and blog under the handle PkLavc.
+Patrick Araujo publishes this personal engineering portfolio and technical editorial overview under the handle PkLavc.
 The profiles linked by this website are [GitHub](https://github.com/PkLavc) and [LinkedIn](https://www.linkedin.com/in/pklavc/).
 Professional contact: contact@pklavc.com.
 
-This directory is generated from the site's canonical HTML pages. Descriptions below summarize those pages; follow their links for full articles, project evidence, and current details. A project page does not by itself establish that its code is publicly available or open source; check its repository and license.
+This directory is generated from the site's canonical HTML pages. Descriptions below summarize those pages; follow their links for project evidence and current details. A project page does not by itself establish that its code is publicly available or open source; check its repository and license.
 `;
   const brief = `${introduction}
 ## Profile and primary pages
@@ -92,7 +92,6 @@ ${collections.map(link).join("\n")}
 
 - [Complete page directory](${SITE}/llms-full.txt): Canonical links and descriptions in every published language.
 - [Sitemap](${SITE}/sitemap.xml): Indexable page URLs and language alternatives.
-- [Engineering blog RSS](${SITE}/blog/feed.xml): English article feed.
 `;
   const full = `${introduction}
 ## Complete canonical page directory

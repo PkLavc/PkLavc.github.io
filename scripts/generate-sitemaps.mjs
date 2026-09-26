@@ -168,8 +168,8 @@ for (const [name, entries] of Object.entries(groups)) {
 }
 
 // Keep the primary sitemap at the domain root so its scope covers the whole site.
-// Group files remain available for Search Console reporting; the compatibility index
-// references the root sitemap, without guessing its file-modification timestamp.
+// The blog repository is private; only public institutional blog landing pages
+// that exist in this artifact are included. No separate/private blog sitemap is linked.
 const allPages = [...pages.values()].sort((a, b) => a.loc.localeCompare(b.loc));
 if (allPages.length > 50000) throw new Error("Root sitemap exceeds 50,000 URLs; split into root-level sitemap files.");
 const sitemap = renderUrlset(allPages);
@@ -180,12 +180,9 @@ fs.writeFileSync(path.join(ROOT, "sitemap-index.xml"), `<?xml version="1.0" enco
   <sitemap>
     <loc>${SITE}/sitemap.xml</loc>
   </sitemap>
-  <sitemap>
-    <loc>${SITE}/blog/sitemap.xml</loc>
-  </sitemap>
 </sitemapindex>
 `, "utf8");
 
 console.log(`Generated sitemap.xml with ${allPages.length} canonical URLs (${excluded} excluded pages, ${excludedAlternates} excluded alternates).`);
-console.log(`sitemap-index.xml links the standalone blog sitemap at ${SITE}/blog/sitemap.xml.`);
+console.log("sitemap-index.xml links only the public root sitemap.");
 for (const [name, entries] of Object.entries(groups)) console.log(`- sitemaps/${name}.xml: ${entries.length} URLs`);
