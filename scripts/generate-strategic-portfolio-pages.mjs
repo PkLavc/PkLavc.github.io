@@ -503,316 +503,6 @@ const roles = {
   }
 };
 
-const blogPosts = [
-  {
-    slug: "ai-kanban-fastapi-rag-agents",
-    role: "ai-engineer",
-    project: "skylet-assistant",
-    category: { en: "AI Platform", pt: "Plataforma de IA", es: "Plataforma de IA" },
-    title: {
-      en: "How I built an AI Kanban platform with FastAPI, RAG and agents",
-      pt: "Como criei uma plataforma Kanban com IA usando FastAPI, RAG e agentes",
-      es: "Cómo construí una plataforma Kanban con IA usando FastAPI, RAG y agentes"
-    },
-    description: {
-      en: "Architecture notes from Lavc Systems: FastAPI backend, React UI, local LLMs, RAG, vector memory, agents, WebSocket observability, and task orchestration.",
-      pt: "Notas de arquitetura do Lavc Systems: backend FastAPI, UI React, LLMs locais, RAG, memória vetorial, agentes, observabilidade WebSocket e orquestração de tarefas.",
-      es: "Notas de arquitectura de Lavc Systems: backend FastAPI, UI React, LLMs locales, RAG, memoria vectorial, agentes, observabilidad WebSocket y orquestación de tareas."
-    },
-    sections: {
-      en: [
-        ["The product boundary", "The platform is not a chatbot attached to a board. The Kanban is the operational surface and the agent system is the execution layer behind it. Tasks, logs, context, and status updates must stay connected so the user can understand what the system is doing."],
-        ["FastAPI as the control plane", "FastAPI owns the API boundary, task creation, agent calls, document access, and WebSocket events. This keeps model calls, memory access, and UI state behind explicit backend routes instead of spreading orchestration logic into the frontend."],
-        ["RAG and memory", "RAG is useful only when retrieval is scoped and auditable. Lavc Systems separates structured records in SQLite from semantic retrieval in ChromaDB, then uses local embeddings and Ollama so internal context can remain on the machine."],
-        ["What this demonstrates", "The project demonstrates applied AI engineering, backend design, local LLM orchestration, task observability, and a practical boundary between generated suggestions and system actions."]
-      ],
-      pt: [
-        ["O limite do produto", "A plataforma não é um chatbot acoplado a um quadro. O Kanban é a superfície operacional e o sistema de agentes é a camada de execução por trás dele. Tarefas, logs, contexto e status precisam ficar conectados para o usuário entender o que o sistema está fazendo."],
-        ["FastAPI como plano de controle", "O FastAPI concentra a fronteira de API, criação de tarefas, chamadas de agentes, acesso a documentos e eventos WebSocket. Isso mantém chamadas de modelo, memória e estado de UI atrás de rotas explícitas de backend."],
-        ["RAG e memória", "RAG só é útil quando a recuperação é bem delimitada e auditável. O Lavc Systems separa registros estruturados em SQLite da busca semântica no ChromaDB, usando embeddings locais e Ollama para manter contexto interno na máquina."],
-        ["O que isso demonstra", "O projeto demonstra engenharia de IA aplicada, design backend, orquestração com LLM local, observabilidade de tarefas e separação prática entre sugestões geradas e ações do sistema."]
-      ],
-      es: [
-        ["El límite del producto", "La plataforma no es un chatbot pegado a un tablero. El Kanban es la superficie operativa y el sistema de agentes es la capa de ejecución detrás. Tareas, logs, contexto y estado deben quedar conectados para que el usuario entienda qué hace el sistema."],
-        ["FastAPI como plano de control", "FastAPI concentra la frontera de API, creación de tareas, llamadas a agentes, acceso a documentos y eventos WebSocket. Esto mantiene modelo, memoria y estado de UI detrás de rutas explícitas de backend."],
-        ["RAG y memoria", "RAG solo es útil cuando la recuperación está delimitada y es auditable. Lavc Systems separa registros estructurados en SQLite de búsqueda semántica en ChromaDB, usando embeddings locales y Ollama para mantener contexto interno en la máquina."],
-        ["Qué demuestra", "El proyecto demuestra ingeniería de IA aplicada, diseño backend, orquestación con LLM local, observabilidad de tareas y separación práctica entre sugerencias generadas y acciones del sistema."]
-      ]
-    }
-  },
-  {
-    slug: "api-integrations-python-sql-github-actions",
-    role: "api-integrations",
-    project: "raw-api-ingestion-pipeline",
-    category: { en: "API Integration", pt: "Integração de APIs", es: "Integración de APIs" },
-    title: {
-      en: "How I structure API integrations with Python, SQL and GitHub Actions",
-      pt: "Como estruturo integrações de APIs com Python, SQL e GitHub Actions",
-      es: "Cómo estructuro integraciones de APIs con Python, SQL y GitHub Actions"
-    },
-    description: {
-      en: "A concise pattern for API integrations: credential boundary, raw ingestion, idempotent identifiers, scheduled jobs, SQL modeling, and operational reporting.",
-      pt: "Um padrão conciso para integrações de APIs: fronteira de credenciais, ingestão bruta, identificadores idempotentes, jobs agendados, modelagem SQL e relatórios operacionais.",
-      es: "Un patrón conciso para integraciones de APIs: frontera de credenciales, ingesta bruta, identificadores idempotentes, jobs programados, modelado SQL y reportes operativos."
-    },
-    sections: {
-      en: [
-        ["Start with the boundary", "An integration should have one clear place for credentials, one place for provider calls, and one place for downstream modeling. Mixing these concerns makes retries and audits harder."],
-        ["Keep raw payloads", "The raw layer preserves provider responses before business rules change them. SQL views and modeled tables can evolve without losing the original shape of the API response."],
-        ["Use idempotent IDs", "Repeated collection windows are normal. External IDs, upserts, and controlled logs let a job replay without duplicating records or hiding partial failures."],
-        ["Why GitHub Actions fits", "For lightweight scheduled ingestion, GitHub Actions gives history, manual dispatch, secret storage, and predictable execution without maintaining a permanent worker."]
-      ],
-      pt: [
-        ["Comece pela fronteira", "Uma integração deve ter um lugar claro para credenciais, um para chamadas ao provedor e outro para modelagem downstream. Misturar essas responsabilidades dificulta retries e auditoria."],
-        ["Preserve payloads brutos", "A camada raw guarda respostas do provedor antes que regras de negócio as transformem. Views SQL e tabelas modeladas podem evoluir sem perder o formato original da API."],
-        ["Use IDs idempotentes", "Janelas repetidas de coleta são normais. IDs externos, upserts e logs controlados permitem replay sem duplicar registros ou esconder falhas parciais."],
-        ["Por que GitHub Actions funciona", "Para ingestão leve e agendada, GitHub Actions oferece histórico, execução manual, secrets e previsibilidade sem manter um worker permanente."]
-      ],
-      es: [
-        ["Empieza por la frontera", "Una integración debe tener un lugar claro para credenciales, uno para llamadas al proveedor y otro para modelado downstream. Mezclar responsabilidades complica retries y auditoría."],
-        ["Preserva payloads brutos", "La capa raw guarda respuestas del proveedor antes de que reglas de negocio las transformen. Views SQL y tablas modeladas pueden evolucionar sin perder la forma original de la API."],
-        ["Usa IDs idempotentes", "Las ventanas repetidas de recopilación son normales. IDs externos, upserts y logs controlados permiten replay sin duplicar registros ni ocultar fallas parciales."],
-        ["Por qué GitHub Actions encaja", "Para ingesta ligera y programada, GitHub Actions ofrece historial, ejecución manual, secrets y previsibilidad sin mantener un worker permanente."]
-      ]
-    }
-  },
-  {
-    slug: "llms-internal-systems-critical-decisions",
-    role: "llm-rag",
-    project: "lavc-systems",
-    category: { en: "LLM Systems", pt: "Sistemas com LLM", es: "Sistemas con LLM" },
-    title: {
-      en: "How I use LLMs in internal systems without letting AI control critical decisions",
-      pt: "Como uso LLMs em sistemas internos sem deixar a IA tomar decisões críticas",
-      es: "Cómo uso LLMs en sistemas internos sin dejar que la IA controle decisiones críticas"
-    },
-    description: {
-      en: "LLMs can summarize, retrieve, draft, and suggest, but critical actions need policy, permissions, audit trails, and deterministic execution paths.",
-      pt: "LLMs podem resumir, recuperar contexto, redigir e sugerir, mas ações críticas precisam de política, permissões, auditoria e caminhos determinísticos de execução.",
-      es: "Los LLMs pueden resumir, recuperar contexto, redactar y sugerir, pero acciones críticas necesitan política, permisos, auditoría y caminos determinísticos de ejecución."
-    },
-    sections: {
-      en: [
-        ["LLM output is a proposal", "The model can help interpret context, draft a response, or explain options. It should not silently approve financial, security, or operational actions."],
-        ["Tools need permissions", "Every tool call should have scope, allowed inputs, logging, and a human-readable reason. The system boundary matters more than the model prompt."],
-        ["RAG needs source discipline", "Context retrieval should expose where information came from and what it can support. A confident answer without traceable context is not enough for internal workflows."],
-        ["Human control stays explicit", "The strongest design pattern is simple: AI accelerates preparation, humans approve high-impact changes, and deterministic services execute the approved action."]
-      ],
-      pt: [
-        ["Saída de LLM é proposta", "O modelo pode ajudar a interpretar contexto, redigir resposta ou explicar opções. Ele não deve aprovar silenciosamente ações financeiras, de segurança ou operacionais."],
-        ["Ferramentas precisam de permissão", "Toda chamada de ferramenta precisa de escopo, entradas permitidas, logging e motivo legível. A fronteira do sistema importa mais que o prompt do modelo."],
-        ["RAG precisa de disciplina de fonte", "A recuperação de contexto deve mostrar de onde a informação veio e o que ela sustenta. Resposta confiante sem contexto rastreável não basta em fluxos internos."],
-        ["Controle humano continua explícito", "O padrão mais forte é simples: IA acelera preparação, humanos aprovam mudanças de alto impacto e serviços determinísticos executam a ação aprovada."]
-      ],
-      es: [
-        ["La salida del LLM es una propuesta", "El modelo puede ayudar a interpretar contexto, redactar una respuesta o explicar opciones. No debe aprobar en silencio acciones financieras, de seguridad u operativas."],
-        ["Las herramientas necesitan permisos", "Cada llamada de herramienta necesita alcance, entradas permitidas, logging y una razón legible. La frontera del sistema importa más que el prompt del modelo."],
-        ["RAG necesita disciplina de fuentes", "La recuperación de contexto debe mostrar de dónde vino la información y qué sostiene. Una respuesta segura sin contexto rastreable no basta en flujos internos."],
-        ["El control humano sigue explícito", "El patrón más fuerte es simple: IA acelera preparación, humanos aprueban cambios de alto impacto y servicios determinísticos ejecutan la acción aprobada."]
-      ]
-    }
-  },
-  {
-    slug: "fastapi-backends-logs-queues-traceability",
-    role: "backend-python",
-    project: "lavc-systems",
-    category: { en: "Backend Engineering", pt: "Engenharia Backend", es: "Ingeniería Backend" },
-    title: {
-      en: "Building FastAPI backends with logs, queues and traceability",
-      pt: "Como construir backends FastAPI com logs, filas e rastreabilidade",
-      es: "Cómo construir backends FastAPI con logs, colas y trazabilidad"
-    },
-    description: {
-      en: "FastAPI backends become easier to operate when requests, jobs, queues, task state, and logs are designed as one traceable workflow.",
-      pt: "Backends FastAPI ficam mais fáceis de operar quando requests, jobs, filas, estado de tarefa e logs são desenhados como um fluxo rastreável.",
-      es: "Los backends FastAPI son más operables cuando requests, jobs, colas, estado de tarea y logs se diseñan como un flujo rastreable."
-    },
-    sections: {
-      en: [
-        ["Routes are not the whole system", "A route starts work; it should not hide the full lifecycle. For longer tasks, the API should create a durable record, enqueue work, and expose status."],
-        ["Logs need structure", "Useful logs explain which task ran, which provider or subsystem was called, what failed, and what can be retried without leaking credentials or full payloads."],
-        ["Queues create control", "A queue gives the backend a place to apply priority, backoff, retries, and cancellation. It also makes the UI easier to explain because state changes are explicit."],
-        ["Traceability supports trust", "When the user can see request, job, logs, output, and next action, the backend becomes understandable instead of opaque."]
-      ],
-      pt: [
-        ["Rotas não são o sistema inteiro", "Uma rota inicia trabalho; ela não deve esconder todo o ciclo de vida. Em tarefas longas, a API deve criar registro durável, enfileirar trabalho e expor status."],
-        ["Logs precisam de estrutura", "Logs úteis explicam qual tarefa rodou, qual provedor ou subsistema foi chamado, o que falhou e o que pode ser tentado novamente sem vazar credenciais ou payloads completos."],
-        ["Filas criam controle", "Uma fila dá ao backend um ponto para aplicar prioridade, backoff, retries e cancelamento. Também facilita explicar a UI porque mudanças de estado ficam explícitas."],
-        ["Rastreabilidade sustenta confiança", "Quando o usuário enxerga request, job, logs, saída e próxima ação, o backend fica compreensível em vez de opaco."]
-      ],
-      es: [
-        ["Las rutas no son todo el sistema", "Una ruta inicia trabajo; no debe ocultar todo el ciclo de vida. En tareas largas, la API debe crear un registro durable, encolar trabajo y exponer estado."],
-        ["Los logs necesitan estructura", "Logs útiles explican qué tarea corrió, qué proveedor o subsistema fue llamado, qué falló y qué puede reintentarse sin filtrar credenciales o payloads completos."],
-        ["Las colas crean control", "Una cola da al backend un punto para aplicar prioridad, backoff, retries y cancelación. También facilita explicar la UI porque los cambios de estado son explícitos."],
-        ["La trazabilidad sostiene confianza", "Cuando el usuario ve request, job, logs, salida y siguiente acción, el backend se vuelve comprensible en lugar de opaco."]
-      ]
-    }
-  },
-  {
-    slug: "operational-reports-apis-etl-sql",
-    role: "python-automation",
-    project: "raw-api-ingestion-pipeline",
-    category: { en: "Data Automation", pt: "Automação de Dados", es: "Automatización de Datos" },
-    title: {
-      en: "Automating operational reports with APIs, ETL and SQL",
-      pt: "Como automatizei relatórios operacionais com APIs, ETL e SQL",
-      es: "Automatización de reportes operativos con APIs, ETL y SQL"
-    },
-    description: {
-      en: "A practical reporting pipeline starts with reliable API collection, keeps raw data auditable, and moves business logic into SQL models that can evolve.",
-      pt: "Um pipeline de relatórios começa com coleta confiável de APIs, mantém dados brutos auditáveis e leva regras de negócio para modelos SQL que podem evoluir.",
-      es: "Un pipeline de reportes empieza con recopilación confiable de APIs, mantiene datos brutos auditables y lleva reglas de negocio a modelos SQL que pueden evolucionar."
-    },
-    sections: {
-      en: [
-        ["Reports fail upstream", "A dashboard is only as reliable as the collection layer behind it. Most reporting issues start with missing records, duplicated payloads, expired tokens, or unclear collection windows."],
-        ["ETL should be replayable", "A job should be able to run again for the same window without changing the meaning of the dataset. This requires external IDs, upserts, and stored raw responses."],
-        ["SQL is the modeling layer", "Once raw payloads are stored, SQL can express joins, filters, and operational definitions without calling the provider again."],
-        ["Automation is reliability work", "The goal is not just saving manual effort. The stronger result is a repeatable process with logs, clear failure modes, and data that can be audited."]
-      ],
-      pt: [
-        ["Relatórios falham antes do dashboard", "Um dashboard só é tão confiável quanto a camada de coleta por trás dele. Muitos problemas começam com registros ausentes, payloads duplicados, tokens expirados ou janelas de coleta mal definidas."],
-        ["ETL deve aceitar replay", "Um job precisa poder rodar de novo para a mesma janela sem mudar o significado do dataset. Isso exige IDs externos, upserts e respostas brutas armazenadas."],
-        ["SQL é a camada de modelagem", "Depois que os payloads brutos estão salvos, SQL expressa joins, filtros e definições operacionais sem chamar o provedor novamente."],
-        ["Automação é trabalho de confiabilidade", "O objetivo não é apenas economizar esforço manual. O resultado mais forte é um processo repetível com logs, modos de falha claros e dados auditáveis."]
-      ],
-      es: [
-        ["Los reportes fallan antes del dashboard", "Un dashboard es tan confiable como la capa de recopilación detrás. Muchos problemas empiezan con registros ausentes, payloads duplicados, tokens vencidos o ventanas mal definidas."],
-        ["ETL debe aceptar replay", "Un job debe poder correr otra vez para la misma ventana sin cambiar el significado del dataset. Esto exige IDs externos, upserts y respuestas brutas almacenadas."],
-        ["SQL es la capa de modelado", "Cuando los payloads brutos están guardados, SQL expresa joins, filtros y definiciones operativas sin llamar al proveedor otra vez."],
-        ["Automatización es confiabilidad", "El objetivo no es solo ahorrar esfuerzo manual. El resultado más fuerte es un proceso repetible con logs, modos de falla claros y datos auditables."]
-      ]
-    }
-  }
-];
-
-const blogPostExpansions = {
-  "ai-kanban-fastapi-rag-agents": {
-    en: [
-      ["Why Kanban is a useful AI interface", "A Kanban board gives the agent workflow a concrete shape. Instead of asking a user to trust a hidden chain of prompts, each task can expose intent, current status, blockers, generated notes, and final output. That matters because AI work often fails in the middle, not only at the answer. A task can be waiting for retrieval, waiting for a tool result, blocked by missing context, or ready for human review. Modeling those states in the product turns agent behavior into something inspectable."],
-      ["Designing agents as backend workers", "The safer pattern is to treat agents as backend workers with narrow responsibilities. A planning agent can break work down, a retrieval step can load context, and a synthesis step can prepare the response, but the API still owns persistence, permissions, logging, and state transitions. This keeps the model from becoming the application. It also makes testing easier, because the workflow can be exercised around inputs, outputs, events, and failure states instead of relying only on prompt snapshots."],
-      ["Observability changes the user experience", "WebSocket updates are not only a technical convenience. They let the UI show what changed without forcing the user to refresh or guess whether the system is stuck. When logs, task state, and agent events move together, the product becomes calmer to operate. A user can see that retrieval finished, a model call is running, a validation step failed, or a final answer is waiting. That transparency is what makes an AI system feel like software rather than a black box."]
-    ],
-    pt: [
-      ["Por que Kanban funciona como interface de IA", "Um quadro Kanban dá forma concreta ao fluxo dos agentes. Em vez de pedir que o usuário confie em uma cadeia invisível de prompts, cada tarefa pode mostrar intenção, status atual, bloqueios, notas geradas e saída final. Isso importa porque trabalhos com IA costumam falhar no meio do caminho, não apenas na resposta. Uma tarefa pode estar aguardando recuperação de contexto, resultado de ferramenta, informação ausente ou revisão humana. Modelar esses estados no produto torna o comportamento dos agentes inspecionável."],
-      ["Agentes como workers de backend", "O padrão mais seguro é tratar agentes como workers de backend com responsabilidades estreitas. Um agente de planejamento pode quebrar o trabalho, uma etapa de recuperação pode carregar contexto e uma etapa de síntese pode preparar a resposta, mas a API continua responsável por persistência, permissões, logs e transições de estado. Assim o modelo não vira a aplicação inteira. Isso também facilita testes, porque o fluxo pode ser validado por entradas, saídas, eventos e falhas, não apenas por snapshots de prompt."],
-      ["Observabilidade muda a experiência", "Atualizações via WebSocket não são só conveniência técnica. Elas permitem que a UI mostre o que mudou sem obrigar o usuário a atualizar a página ou adivinhar se o sistema travou. Quando logs, estado de tarefa e eventos de agentes caminham juntos, o produto fica mais tranquilo de operar. O usuário enxerga que a busca terminou, uma chamada de modelo está rodando, uma validação falhou ou uma resposta final está pronta. Essa transparência faz o sistema de IA parecer software de verdade, não uma caixa preta."]
-    ],
-    es: [
-      ["Por qué Kanban funciona como interfaz de IA", "Un tablero Kanban da una forma concreta al flujo de agentes. En vez de pedir al usuario que confíe en una cadena invisible de prompts, cada tarea puede mostrar intención, estado actual, bloqueos, notas generadas y salida final. Eso importa porque los trabajos con IA suelen fallar en el medio, no solo en la respuesta. Una tarea puede estar esperando recuperación de contexto, resultado de herramienta, información faltante o revisión humana. Modelar esos estados vuelve inspeccionable el comportamiento de los agentes."],
-      ["Agentes como workers de backend", "El patrón más seguro es tratar los agentes como workers de backend con responsabilidades estrechas. Un agente de planificación puede dividir el trabajo, una etapa de recuperación puede cargar contexto y una etapa de síntesis puede preparar la respuesta, pero la API sigue controlando persistencia, permisos, logs y transiciones de estado. Así el modelo no se convierte en toda la aplicación. También facilita pruebas, porque el flujo se valida por entradas, salidas, eventos y fallas, no solo por snapshots de prompt."],
-      ["La observabilidad cambia la experiencia", "Las actualizaciones por WebSocket no son solo una comodidad técnica. Permiten que la UI muestre qué cambió sin obligar al usuario a refrescar o adivinar si el sistema quedó detenido. Cuando logs, estado de tarea y eventos de agentes avanzan juntos, el producto se vuelve más tranquilo de operar. El usuario ve que la recuperación terminó, una llamada al modelo está corriendo, una validación falló o una respuesta final está lista. Esa transparencia hace que el sistema de IA se sienta como software real, no como una caja negra."]
-    ]
-  },
-  "api-integrations-python-sql-github-actions": {
-    en: [
-      ["Provider APIs are unstable contracts", "Even well documented APIs change behavior in small ways: optional fields disappear, rate limits move, pagination behaves differently, and tokens expire at awkward times. A good integration expects that drift. The code should isolate provider clients, normalize errors, record response metadata, and make it clear which part of the pipeline failed. That is the difference between a script that works today and an integration that can be maintained next month."],
-      ["Scheduling needs operational memory", "A scheduled job needs more than a cron expression. It needs to remember which window it collected, which records were inserted, which records were skipped, and whether a retry is safe. GitHub Actions helps by giving run history and manual dispatch, but the pipeline itself still needs logs and idempotent storage. Without those pieces, a retry can create duplicates or hide the reason a report is incomplete."],
-      ["SQL keeps business rules visible", "When the raw API response is saved first, business rules can move into SQL models where they are easier to inspect. Joins, filters, date windows, and status definitions become explicit instead of being buried inside Python transformations. This also makes stakeholder changes easier. If a report definition changes, the integration does not need to recollect every payload; the modeled layer can evolve from the same auditable source."]
-    ],
-    pt: [
-      ["APIs de provedores são contratos instáveis", "Mesmo APIs bem documentadas mudam comportamento em detalhes pequenos: campos opcionais desaparecem, limites de taxa mudam, paginação se comporta de outro jeito e tokens expiram em horários ruins. Uma boa integração espera esse desvio. O código deve isolar clients do provedor, normalizar erros, registrar metadados de resposta e deixar claro qual parte do pipeline falhou. Essa é a diferença entre um script que funciona hoje e uma integração que pode ser mantida no mês seguinte."],
-      ["Agendamento precisa de memória operacional", "Um job agendado precisa de mais do que uma expressão cron. Ele precisa lembrar qual janela coletou, quais registros inseriu, quais ignorou e se uma nova tentativa é segura. GitHub Actions ajuda com histórico de execução e disparo manual, mas o pipeline ainda precisa de logs e armazenamento idempotente. Sem isso, um retry pode criar duplicidade ou esconder o motivo de um relatório incompleto."],
-      ["SQL deixa regras de negócio visíveis", "Quando a resposta bruta da API é salva primeiro, as regras de negócio podem ir para modelos SQL, onde ficam mais fáceis de inspecionar. Joins, filtros, janelas de data e definições de status ficam explícitos em vez de enterrados em transformações Python. Isso também facilita mudanças de regra. Se a definição de um relatório muda, a integração não precisa coletar todos os payloads de novo; a camada modelada evolui a partir da mesma fonte auditável."]
-    ],
-    es: [
-      ["Las APIs de proveedores son contratos inestables", "Incluso APIs bien documentadas cambian en detalles pequeños: campos opcionales desaparecen, límites de tasa se mueven, la paginación se comporta distinto y los tokens vencen en malos momentos. Una buena integración espera ese desvío. El código debe aislar clientes del proveedor, normalizar errores, registrar metadatos de respuesta y dejar claro qué parte del pipeline falló. Esa es la diferencia entre un script que funciona hoy y una integración mantenible el mes siguiente."],
-      ["La programación necesita memoria operativa", "Un job programado necesita más que una expresión cron. Debe recordar qué ventana recopiló, qué registros insertó, cuáles omitió y si un reintento es seguro. GitHub Actions ayuda con historial de ejecución y disparo manual, pero el pipeline todavía necesita logs y almacenamiento idempotente. Sin eso, un retry puede crear duplicados u ocultar la razón de un reporte incompleto."],
-      ["SQL deja visibles las reglas de negocio", "Cuando la respuesta bruta de la API se guarda primero, las reglas de negocio pueden pasar a modelos SQL, donde son más fáciles de inspeccionar. Joins, filtros, ventanas de fecha y definiciones de estado quedan explícitos en vez de enterrados en transformaciones Python. Eso también facilita cambios de criterio. Si la definición de un reporte cambia, la integración no necesita recopilar todos los payloads otra vez; la capa modelada evoluciona desde la misma fuente auditable."]
-    ]
-  },
-  "llms-internal-systems-critical-decisions": {
-    en: [
-      ["The model should not own authority", "Authority belongs to the application, not to the LLM. A model can classify an issue, summarize a document, or draft a recommendation, but the application must decide which tools exist, which inputs are allowed, who can approve an action, and what gets logged. This separation is what prevents prompt text from becoming a security boundary. The model helps with interpretation; deterministic services enforce policy."],
-      ["Retrieval needs explicit context windows", "Internal systems usually contain mixed-quality information: old notes, current policies, incomplete tickets, and sensitive records. RAG should not dump all of that into a prompt. Retrieval needs filters, source labels, freshness signals, and a way to show the user what evidence supported the answer. When the system cannot find enough context, the correct behavior is to say that clearly instead of filling the gap with plausible language."],
-      ["Approval flows are product design", "Human approval should be visible in the workflow, not hidden as an afterthought. A strong internal AI system shows the proposed action, the evidence, the affected records, and the reason a human is needed. Then it records who approved, when, and what exact deterministic operation was executed. This makes the system useful in real operations because people can trust the path from suggestion to action."]
-    ],
-    pt: [
-      ["O modelo não deve ser dono da autoridade", "A autoridade pertence à aplicação, não ao LLM. Um modelo pode classificar um problema, resumir um documento ou rascunhar uma recomendação, mas a aplicação deve decidir quais ferramentas existem, quais entradas são permitidas, quem aprova uma ação e o que será registrado. Essa separação impede que texto de prompt vire fronteira de segurança. O modelo ajuda na interpretação; serviços determinísticos aplicam a política."],
-      ["Recuperação precisa de janelas explícitas", "Sistemas internos costumam ter informação de qualidade mista: notas antigas, políticas atuais, tickets incompletos e registros sensíveis. RAG não deve despejar tudo isso em um prompt. A recuperação precisa de filtros, rótulos de fonte, sinais de frescor e uma forma de mostrar ao usuário quais evidências sustentaram a resposta. Quando o sistema não encontra contexto suficiente, o comportamento correto é dizer isso claramente, não preencher a lacuna com linguagem plausível."],
-      ["Fluxos de aprovação são design de produto", "A aprovação humana deve estar visível no fluxo, não escondida como detalhe posterior. Um bom sistema interno com IA mostra a ação proposta, as evidências, os registros afetados e o motivo de uma pessoa ser necessária. Depois registra quem aprovou, quando aprovou e qual operação determinística foi executada. Isso torna o sistema útil em operações reais porque as pessoas conseguem confiar no caminho entre sugestão e ação."]
-    ],
-    es: [
-      ["El modelo no debe poseer la autoridad", "La autoridad pertenece a la aplicación, no al LLM. Un modelo puede clasificar un problema, resumir un documento o redactar una recomendación, pero la aplicación debe decidir qué herramientas existen, qué entradas se permiten, quién aprueba una acción y qué se registra. Esa separación evita que el texto del prompt sea una frontera de seguridad. El modelo ayuda a interpretar; los servicios determinísticos aplican la política."],
-      ["La recuperación necesita ventanas explícitas", "Los sistemas internos suelen contener información de calidad mixta: notas antiguas, políticas actuales, tickets incompletos y registros sensibles. RAG no debe volcar todo eso en un prompt. La recuperación necesita filtros, etiquetas de fuente, señales de frescura y una forma de mostrar al usuario qué evidencia sostuvo la respuesta. Cuando el sistema no encuentra contexto suficiente, el comportamiento correcto es decirlo claramente, no llenar el vacío con lenguaje plausible."],
-      ["Los flujos de aprobación son diseño de producto", "La aprobación humana debe estar visible en el flujo, no escondida como un detalle posterior. Un buen sistema interno con IA muestra la acción propuesta, la evidencia, los registros afectados y la razón por la que una persona es necesaria. Luego registra quién aprobó, cuándo y qué operación determinística fue ejecutada. Eso hace que el sistema sea útil en operaciones reales porque las personas pueden confiar en el camino entre sugerencia y acción."]
-    ]
-  },
-  "fastapi-backends-logs-queues-traceability": {
-    en: [
-      ["Traceability starts at request creation", "The first useful design decision is to create a stable identifier as soon as work enters the system. That identifier should follow the request, queue item, worker logs, provider calls, generated output, and final status. Without it, debugging becomes a search problem across unrelated logs. With it, the backend can answer simple operational questions: what started, what ran, what failed, what retried, and what the user can do next."],
-      ["Queues make failures easier to reason about", "A queue is not only for scale. It gives the backend a controlled place to pause, retry, cancel, and prioritize work. If a provider is down, the system can back off. If a task is no longer relevant, it can be cancelled. If two jobs compete for the same resource, priority can be explicit. That control is difficult when every route tries to do long-running work synchronously."],
-      ["Logs should be useful without being dangerous", "Operational logs should help a developer understand behavior without exposing credentials, private payloads, or full model prompts. The useful pattern is structured logging with task IDs, subsystem names, status codes, timing, and short error summaries. Sensitive data stays out of the log line, while enough context remains for diagnosis. This balance is especially important in systems that call third-party APIs or local AI services."]
-    ],
-    pt: [
-      ["Rastreabilidade começa na criação do request", "A primeira decisão útil é criar um identificador estável assim que o trabalho entra no sistema. Esse identificador deve acompanhar request, item de fila, logs do worker, chamadas a provedores, saída gerada e status final. Sem isso, debug vira uma busca em logs desconectados. Com isso, o backend consegue responder perguntas operacionais simples: o que iniciou, o que rodou, o que falhou, o que tentou de novo e qual é a próxima ação do usuário."],
-      ["Filas tornam falhas mais fáceis de entender", "Uma fila não serve apenas para escala. Ela dá ao backend um ponto controlado para pausar, tentar de novo, cancelar e priorizar trabalho. Se um provedor está fora, o sistema pode aplicar backoff. Se uma tarefa deixou de ser relevante, pode ser cancelada. Se dois jobs disputam o mesmo recurso, a prioridade fica explícita. Esse controle é difícil quando cada rota tenta executar trabalho longo de forma síncrona."],
-      ["Logs devem ser úteis sem serem perigosos", "Logs operacionais devem ajudar um desenvolvedor a entender comportamento sem expor credenciais, payloads privados ou prompts completos. O padrão útil é logging estruturado com IDs de tarefa, nomes de subsistema, status codes, tempo de execução e resumos curtos de erro. Dados sensíveis ficam fora da linha de log, mas o contexto necessário para diagnóstico permanece. Esse equilíbrio é especialmente importante em sistemas que chamam APIs externas ou serviços locais de IA."]
-    ],
-    es: [
-      ["La trazabilidad empieza al crear el request", "La primera decisión útil es crear un identificador estable cuando el trabajo entra al sistema. Ese identificador debe acompañar request, item de cola, logs del worker, llamadas a proveedores, salida generada y estado final. Sin eso, depurar se vuelve una búsqueda en logs desconectados. Con eso, el backend puede responder preguntas operativas simples: qué empezó, qué corrió, qué falló, qué se reintentó y cuál es la siguiente acción del usuario."],
-      ["Las colas hacen las fallas más comprensibles", "Una cola no sirve solo para escala. Da al backend un punto controlado para pausar, reintentar, cancelar y priorizar trabajo. Si un proveedor está caído, el sistema puede aplicar backoff. Si una tarea ya no es relevante, puede cancelarse. Si dos jobs compiten por el mismo recurso, la prioridad queda explícita. Ese control es difícil cuando cada ruta intenta ejecutar trabajo largo de forma síncrona."],
-      ["Los logs deben ser útiles sin ser peligrosos", "Los logs operativos deben ayudar a un desarrollador a entender comportamiento sin exponer credenciales, payloads privados o prompts completos. El patrón útil es logging estructurado con IDs de tarea, nombres de subsistema, códigos de estado, tiempos y resúmenes cortos de error. Los datos sensibles quedan fuera de la línea de log, pero se conserva contexto suficiente para diagnosticar. Ese equilibrio es especialmente importante en sistemas que llaman APIs externas o servicios locales de IA."]
-    ]
-  },
-  "operational-reports-apis-etl-sql": {
-    en: [
-      ["A report is a contract, not a screenshot", "Operational reporting should be treated as a repeatable contract. The same input window should produce the same interpreted result, or the system should explain why it changed. This means the pipeline needs collection logs, raw payload storage, transformation rules, and clear definitions for business fields. A static dashboard can look finished while the underlying data path remains fragile. The engineering work is making the path explainable."],
-      ["Reconciliation belongs in the pipeline", "Many report problems appear when totals do not match between a provider portal, an internal database, and a dashboard. The pipeline should include reconciliation checks that compare counts, totals, missing IDs, and date ranges. These checks do not need to be fancy to be valuable. Even a simple mismatch table can save hours because it points directly to the broken window or provider response instead of forcing manual inspection."],
-      ["Automation should leave room for change", "Reports evolve because the business evolves. New statuses appear, old categories stop mattering, and managers ask different questions. A useful ETL design keeps collection separate from modeling so those changes do not require rewriting the whole pipeline. Python handles collection and repeatable jobs; SQL handles interpretation; the dashboard consumes a stable modeled surface. That separation keeps automation useful after the first version."]
-    ],
-    pt: [
-      ["Relatório é contrato, não screenshot", "Relatórios operacionais devem ser tratados como um contrato repetível. A mesma janela de entrada deve produzir o mesmo resultado interpretado, ou o sistema deve explicar por que mudou. Isso significa que o pipeline precisa de logs de coleta, armazenamento de payload bruto, regras de transformação e definições claras para campos de negócio. Um dashboard estático pode parecer pronto enquanto o caminho dos dados continua frágil. O trabalho de engenharia é tornar esse caminho explicável."],
-      ["Reconciliação pertence ao pipeline", "Muitos problemas de relatório aparecem quando totais não batem entre portal do provedor, banco interno e dashboard. O pipeline deve incluir checagens de reconciliação que comparam contagens, totais, IDs ausentes e janelas de data. Essas checagens não precisam ser sofisticadas para ter valor. Até uma tabela simples de divergências economiza horas porque aponta direto para a janela quebrada ou para a resposta do provedor que causou o problema."],
-      ["Automação deve deixar espaço para mudança", "Relatórios evoluem porque o negócio evolui. Novos status aparecem, categorias antigas deixam de importar e gestores fazem outras perguntas. Um bom desenho de ETL separa coleta de modelagem para que essas mudanças não exijam reescrever todo o pipeline. Python cuida da coleta e dos jobs repetíveis; SQL cuida da interpretação; o dashboard consome uma superfície modelada estável. Essa separação mantém a automação útil depois da primeira versão."]
-    ],
-    es: [
-      ["Un reporte es un contrato, no una captura", "Los reportes operativos deben tratarse como un contrato repetible. La misma ventana de entrada debe producir el mismo resultado interpretado, o el sistema debe explicar por qué cambió. Eso significa que el pipeline necesita logs de recopilación, almacenamiento de payload bruto, reglas de transformación y definiciones claras para campos de negocio. Un dashboard estático puede parecer terminado mientras la ruta de datos sigue frágil. El trabajo de ingeniería es hacer que esa ruta sea explicable."],
-      ["La reconciliación pertenece al pipeline", "Muchos problemas de reporte aparecen cuando los totales no coinciden entre portal del proveedor, base interna y dashboard. El pipeline debe incluir verificaciones de reconciliación que comparen conteos, totales, IDs faltantes y rangos de fecha. Estas verificaciones no necesitan ser sofisticadas para ser valiosas. Incluso una tabla simple de diferencias ahorra horas porque apunta directamente a la ventana rota o a la respuesta del proveedor que causó el problema."],
-      ["La automatización debe dejar espacio para cambios", "Los reportes evolucionan porque el negocio evoluciona. Aparecen nuevos estados, viejas categorías dejan de importar y los equipos hacen otras preguntas. Un buen diseño de ETL separa recopilación de modelado para que esos cambios no obliguen a reescribir todo el pipeline. Python maneja recopilación y jobs repetibles; SQL maneja interpretación; el dashboard consume una superficie modelada estable. Esa separación mantiene útil la automatización después de la primera versión."]
-    ]
-  }
-};
-
-const caseDetails = {
-  "lavc-systems": {
-    problem: {
-      en: "Internal work, documents, agent tasks, and operational signals need one local environment instead of scattered prompts and files.",
-      pt: "Trabalho interno, documentos, tarefas de agentes e sinais operacionais precisam de um ambiente local integrado, não de prompts e arquivos espalhados.",
-      es: "Trabajo interno, documentos, tareas de agentes y señales operativas necesitan un entorno local integrado, no prompts y archivos dispersos."
-    },
-    solution: {
-      en: "A FastAPI and React platform combines Kanban, local LLMs, RAG, vector memory, agent orchestration, scheduler, and WebSocket observability.",
-      pt: "Uma plataforma FastAPI e React combina Kanban, LLMs locais, RAG, memória vetorial, orquestração de agentes, scheduler e observabilidade via WebSocket.",
-      es: "Una plataforma FastAPI y React combina Kanban, LLMs locales, RAG, memoria vectorial, orquestación de agentes, scheduler y observabilidad vía WebSocket."
-    }
-  },
-  "skylet-assistant": {
-    problem: {
-      en: "Visitors need fast answers about projects, stack, and experience without reading every portfolio page.",
-      pt: "Visitantes precisam de respostas rápidas sobre projetos, stack e experiência sem ler todas as páginas do portfólio.",
-      es: "Visitantes necesitan respuestas rápidas sobre proyectos, stack y experiencia sin leer todas las páginas del portafolio."
-    },
-    solution: {
-      en: "A Cloudflare Worker assistant uses manual RAG, multilingual answer rules, fallback behavior, and constrained context about the portfolio.",
-      pt: "Um assistente em Cloudflare Worker usa RAG manual, regras multilíngues de resposta, fallback e contexto controlado sobre o portfólio.",
-      es: "Un asistente en Cloudflare Worker usa RAG manual, reglas multilingües de respuesta, fallback y contexto controlado sobre el portafolio."
-    }
-  },
-  "raw-api-ingestion-pipeline": {
-    problem: {
-      en: "Operational reports depend on external APIs with changing payloads, scheduled windows, credentials, and replay needs.",
-      pt: "Relatórios operacionais dependem de APIs externas com payloads variáveis, janelas agendadas, credenciais e necessidade de replay.",
-      es: "Reportes operativos dependen de APIs externas con payloads variables, ventanas programadas, credenciales y necesidad de replay."
-    },
-    solution: {
-      en: "Node.js workers and GitHub Actions collect API payloads into Supabase SQL raw tables with idempotent identifiers and replayable windows.",
-      pt: "Workers Node.js e GitHub Actions coletam payloads em tabelas raw do Supabase SQL com identificadores idempotentes e janelas reproduzíveis.",
-      es: "Workers Node.js y GitHub Actions recopilan payloads en tablas raw de Supabase SQL con identificadores idempotentes y ventanas reproducibles."
-    }
-  }
-};
-
 function defaultCase(projectKey) {
   const project = projects[projectKey];
   return {
@@ -879,10 +569,6 @@ function projectRoute(projectKey, localeKey) {
   return `${locales[localeKey].projects}${projectKey}/`;
 }
 
-function blogRoute(slug, localeKey) {
-  return `${locales[localeKey].blog}${slug}/`;
-}
-
 function nav(localeKey) {
   const locale = locales[localeKey];
   return `<div id="navigation-content" role="navigation" aria-label="${escapeHtml(locale.homeLabel)} navigation">
@@ -930,7 +616,7 @@ function scripts() {
     <script src="${assetUrl("js/index.js")}" defer></script>`;
 }
 
-function headCommon({ localeKey, title, description, canonical, ogType = "website", article = false }) {
+function headCommon({ localeKey, title, description, canonical, ogType = "website" }) {
   const locale = locales[localeKey];
   const alternates = [
     `<link rel="alternate" href="${canonicalForRoute(canonical, "en")}" hreflang="en">`,
@@ -951,7 +637,6 @@ function headCommon({ localeKey, title, description, canonical, ogType = "websit
     <meta property="og:description" content="${escapeHtml(description)}">
     <meta property="og:url" content="${canonical}">
     <meta property="og:type" content="${ogType}">
-    ${article ? `<meta property="article:published_time" content="${TODAY}">\n    <meta property="article:modified_time" content="${TODAY}">\n    <meta property="article:author" content="Patrick Araujo">` : ""}
     <meta property="og:image" content="${absoluteAssetUrl("images/brand/lavc.webp")}">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
@@ -971,7 +656,6 @@ function headCommon({ localeKey, title, description, canonical, ogType = "websit
     <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Monoton&family=Poppins:wght@500;600;700&family=Raleway:wght@300&display=swap" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Monoton&family=Poppins:wght@500;600;700&family=Raleway:wght@300&display=swap"></noscript>
     <link rel="stylesheet" href="${assetUrl("css/global.css")}">
-    <link rel="stylesheet" href="/blog/css/blog.css">
     <link rel="stylesheet" href="${assetUrl("css/projects.css")}">`;
 }
 
@@ -1110,115 +794,6 @@ function renderRolePage(roleKey, localeKey) {
 `;
 }
 
-function renderBlogPost(post, localeKey) {
-  const locale = locales[localeKey];
-  const route = blogRoute(post.slug, localeKey);
-  const canonical = `https://pklavc.com${route}`;
-  const title = post.title[localeKey];
-  const description = post.description[localeKey];
-  const schema = {
-    "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "BlogPosting",
-        "headline": title,
-        "description": description,
-        "image": absoluteAssetUrl("images/brand/lavc.webp"),
-        "datePublished": TODAY,
-        "dateModified": TODAY,
-        "author": { "@type": "Person", "name": "Patrick Araujo" },
-        "publisher": { "@type": "Person", "name": "Patrick Araujo" },
-        "mainEntityOfPage": canonical,
-        "url": canonical,
-        "keywords": [post.category.en, "Backend Engineering", "Python", "FastAPI", "API integrations", "LLM", "RAG"]
-      },
-      {
-        "@type": "BreadcrumbList",
-        "itemListElement": [
-          { "@type": "ListItem", "position": 1, "name": locale.homeLabel, "item": `https://pklavc.com${locale.home}` },
-          { "@type": "ListItem", "position": 2, "name": locale.blogLabel, "item": `https://pklavc.com${locale.blog}` },
-          { "@type": "ListItem", "position": 3, "name": title, "item": canonical }
-        ]
-      }
-    ]
-  };
-  const relatedRole = roleRoute(post.role, localeKey);
-  const relatedProject = projectRoute(post.project, localeKey);
-  const otherPosts = blogPosts.filter((item) => item.slug !== post.slug).slice(0, 3);
-  const articleSections = [
-    ...post.sections[localeKey],
-    ...(blogPostExpansions[post.slug]?.[localeKey] || [])
-  ];
-
-  return `<!DOCTYPE html>
-<html lang="${locale.lang}">
-<head>
-    ${headCommon({ localeKey, title, description, canonical, ogType: "article", article: true })}
-    ${schemaScript(schema)}
-</head>
-<body class="blog-layout seo-layout">
-    <div id="breaker"></div>
-    <div id="breaker-two"></div>
-    <div id="all">
-        <div class="cursor"></div>
-        ${nav(localeKey)}
-        <main class="blog-shell" role="main">
-            <div class="blog-columns">
-                <div>
-                    <article class="blog-post-hero">
-                        <div class="blog-breadcrumb" aria-label="Breadcrumb">
-                            <a href="${locale.home}">${locale.homeLabel}</a>
-                            <span>/</span>
-                            <a href="${locale.blog}">${locale.blogLabel}</a>
-                            <span>/</span>
-                            <span aria-current="page">${escapeHtml(title)}</span>
-                        </div>
-                        <span class="blog-kicker">${escapeHtml(post.category[localeKey])}</span>
-                        <h1>${escapeHtml(title)}</h1>
-                        <p>${escapeHtml(description)}</p>
-                        <div class="blog-post-meta">
-                            <span>${locale.published}</span>
-                            <span>${locale.minutes}</span>
-                            <span>${escapeHtml(post.category[localeKey])}</span>
-                        </div>
-                    </article>
-                    <article class="blog-article">
-                        ${articleSections.map(([heading, body]) => `<h2>${escapeHtml(heading)}</h2>\n                        <p>${escapeHtml(body)}</p>`).join("\n\n                        ")}
-                        <div class="blog-callout">
-                            ${localeKey === "en"
-                              ? `Related project evidence: <a href="${relatedProject}">${escapeHtml(projects[post.project].title[localeKey])}</a>. Continue with the technical path at <a href="${relatedRole}">${escapeHtml(roles[post.role].h1[localeKey])}</a> or contact me directly.`
-                              : localeKey === "pt"
-                                ? `Evidência relacionada: <a href="${relatedProject}">${escapeHtml(projects[post.project].title[localeKey])}</a>. Continue pela trilha técnica em <a href="${relatedRole}">${escapeHtml(roles[post.role].h1[localeKey])}</a> ou entre em contato diretamente.`
-                                : `Evidencia relacionada: <a href="${relatedProject}">${escapeHtml(projects[post.project].title[localeKey])}</a>. Continua por la ruta técnica en <a href="${relatedRole}">${escapeHtml(roles[post.role].h1[localeKey])}</a> o entra en contacto directamente.`}
-                        </div>
-                    </article>
-                </div>
-                <aside class="blog-article-grid">
-                    <section class="blog-sidebar-card">
-                        <h2>${localeKey === "en" ? "Continue exploring" : localeKey === "pt" ? "Continue explorando" : "Continúa explorando"}</h2>
-                        <ul>
-                            <li><a href="${relatedRole}">${escapeHtml(roles[post.role].h1[localeKey])}</a></li>
-                            <li><a href="${relatedProject}">${escapeHtml(projects[post.project].title[localeKey])}</a></li>
-                            <li><a href="mailto:contact@pklavc.com">${locale.contactLabel}</a></li>
-                        </ul>
-                    </section>
-                    <section class="blog-sidebar-card">
-                        <h2>${localeKey === "en" ? "Related posts" : localeKey === "pt" ? "Posts relacionados" : "Posts relacionados"}</h2>
-                        <ul>
-                            ${otherPosts.map((item) => `<li><a href="${blogRoute(item.slug, localeKey)}">${escapeHtml(item.title[localeKey])}</a></li>`).join("\n                            ")}
-                        </ul>
-                    </section>
-                </aside>
-            </div>
-        </main>
-    </div>
-    ${footer(localeKey)}
-    ${scripts()}
-</body>
-</html>
-`;
-}
-
 function roleExplorer(localeKey) {
   const locale = locales[localeKey];
   const cards = Object.keys(roles).map((roleKey) => {
@@ -1251,26 +826,6 @@ function roleExplorer(localeKey) {
     </div>
 </section>
 <!-- strategic-role-explorer:end -->`;
-}
-
-function blogCards(localeKey) {
-  const locale = locales[localeKey];
-  return `<!-- strategic-blog-cards:start -->
-${blogPosts.map((post) => `<article class="blog-card" role="article">
-    <div class="blog-card-meta">
-        <span>${escapeHtml(post.category[localeKey])}</span>
-        <span>${locale.minutes}</span>
-    </div>
-    <h3><a href="${blogRoute(post.slug, localeKey)}">${escapeHtml(post.title[localeKey])}</a></h3>
-    <p>${escapeHtml(post.description[localeKey])}</p>
-    <div class="blog-tag-row">
-        <span>Python</span>
-        <span>FastAPI</span>
-        <span>SEO portfolio</span>
-    </div>
-    <a class="blog-link" href="${blogRoute(post.slug, localeKey)}">${locale.readArticle}</a>
-</article>`).join("\n")}
-<!-- strategic-blog-cards:end -->`;
 }
 
 function aboutProjectCarousel(localeKey) {
@@ -1352,18 +907,6 @@ function updateProjectIndex(localeKey, relativePath) {
     );
   }
 
-  writeFile(relativePath, content);
-}
-
-function updateBlogIndex(localeKey, relativePath) {
-  let content = readFile(relativePath);
-  content = updateBetweenMarkers(
-    content,
-    "<!-- strategic-blog-cards:start -->",
-    "<!-- strategic-blog-cards:end -->",
-    blogCards(localeKey),
-    '<article class="blog-card" role="article">'
-  );
   writeFile(relativePath, content);
 }
 
