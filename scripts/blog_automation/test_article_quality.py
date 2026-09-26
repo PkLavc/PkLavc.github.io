@@ -41,6 +41,12 @@ class ArticleQualityGateTests(unittest.TestCase):
             "The system could be based on an undocumented model architecture.",
             "This means that sites are more likely to have robust bot protection from the outset.",
             "The specific nature of the interface (e.g., a dedicated API, structured prompts, or a plugin architecture) was not disclosed.",
+            "This implies that developers can remain in their IDE without interruption.",
+            "The architecture could establish a pattern for other cloud providers.",
+            "The launch is likely to encourage adoption across the industry.",
+            "The feature is poised to enhance engineering efficiency.",
+            "The validated guidance ensures correctness and adherence to best practices.",
+            "The approach might lead to more reliable deployments.",
         )
         for sentence in examples:
             with self.subTest(sentence=sentence):

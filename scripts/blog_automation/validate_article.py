@@ -34,6 +34,12 @@ UNSUPPORTED_SPECULATION = (
     re.compile(r"\b(?:more\s+)?(?:likely|probably|presumably|might|may)\s+to\s+(?:have|provide|deliver|ensure|create|produce|result\s+in)\b.{0,100}\b(?:robust|secure|security|protection|reliable|capabilit\w*|automation|vulnerabilit\w*|deployment\w*)\b", re.IGNORECASE),
     re.compile(r"\b(?:(?:specific\s+)?(?:technical\s+)?(?:mechanism|interface|architecture|protocols?|implementation)|specific\s+nature\s+of\s+(?:the\s+)?(?:interface|mechanism|implementation))\b.{0,100}\b(?:e\.g\.|for\s+example|such\s+as)\b.{0,180}\b(?:not\s+disclosed|not\s+specified|unknown|unclear)\b", re.IGNORECASE),
     re.compile(r"\bspecific\s+nature\s+of\s+the\s+interface\b.{0,250}\bnot\s+disclosed\b", re.IGNORECASE),
+    # These phrases often turn a narrow feature announcement into unsupported
+    # claims about product behavior, outcomes, or ecosystem effects.
+    re.compile(r"\b(?:this|it|the\s+(?:approach|development|integration|announcement|system|feature))\s+(?:implies|suggests|indicates|demonstrates)\b", re.IGNORECASE),
+    re.compile(r"\b(?:can\s+be\s+inferred\s+as|is\s+poised\s+to|sets?\s+a\s+precedent|could\s+establish\s+a\s+pattern|likely\s+to\s+encourage|might\s+adopt\s+similar)\b", re.IGNORECASE),
+    re.compile(r"\b(?:could|may|might|will)\s+(?:lead\s+to|result\s+in|foster|accelerate|reduce\s+fragmentation|improve\s+(?:the\s+)?(?:quality|reliability|security)|enhance\s+(?:engineering\s+)?efficienc\w*)\b", re.IGNORECASE),
+    re.compile(r"\b(?:ensures?|guarantees?)\s+(?:correctness|adherence|security|reliability|compliance|best\s+practices)\b", re.IGNORECASE),
 )
 
 
