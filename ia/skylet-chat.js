@@ -211,10 +211,43 @@
   const clearButton = document.createElement('button');
   clearButton.type = 'button';
   clearButton.className = 's800-clear-conversation';
-  clearButton.textContent = copy.clear;
+  clearButton.setAttribute('aria-label', copy.clear);
   clearButton.title = copy.clear;
+  clearButton.setAttribute('aria-haspopup', 'dialog');
+  const clearIcon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  clearIcon.setAttribute('viewBox', '0 0 24 24');
+  clearIcon.setAttribute('width', '24');
+  clearIcon.setAttribute('height', '24');
+  clearIcon.setAttribute('fill', 'none');
+  clearIcon.setAttribute('stroke', 'currentColor');
+  clearIcon.setAttribute('stroke-width', '1.8');
+  clearIcon.setAttribute('stroke-linecap', 'round');
+  clearIcon.setAttribute('stroke-linejoin', 'round');
+  clearIcon.setAttribute('aria-hidden', 'true');
+  const clearIconPaths = [
+    'M3 6h18',
+    'M8 6V4h8v2',
+    'm19 6-1 14H6L5 6',
+    'M10 11v5',
+    'M14 11v5'
+  ];
+  clearIconPaths.forEach(pathData => {
+    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    path.setAttribute('d', pathData);
+    clearIcon.appendChild(path);
+  });
+  clearButton.appendChild(clearIcon);
   clearButton.addEventListener('click', clearConversation);
-  consoleElement.insertBefore(clearButton, form);
+  consoleElement.appendChild(clearButton);
+  const menuButton = document.querySelector('#navigation-bar .menubar');
+  const alignClearButtonWithMenu = () => {
+    if (!menuButton) return;
+    const menuRect = menuButton.getBoundingClientRect();
+    const clearRect = clearButton.getBoundingClientRect();
+    clearButton.style.top = `${Math.round(menuRect.top + (menuRect.height - clearRect.height) / 2)}px`;
+  };
+  alignClearButtonWithMenu();
+  window.addEventListener('resize', alignClearButtonWithMenu, { passive: true });
   voiceButton.addEventListener('click', () => { voiceOutput = !voiceOutput; setVoiceState(); });
   document.querySelectorAll('[data-current-year]').forEach(node => { node.textContent = String(new Date().getFullYear()); });
   input.placeholder = copy.placeholder;
