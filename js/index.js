@@ -1591,29 +1591,14 @@ function initIndexFooterAwareSocialLinks() {
   }
 }
 
-function loadBlogRelatedPostNavigation() {
-  var path = window.location.pathname || '';
-  if (!path.startsWith('/blog/') || path === '/blog/' || path === '/blog/index.html') return;
-  if (!document.querySelector('.blog-article-grid') || !document.querySelector('.blog-post-hero')) return;
-  if (document.querySelector('script[src*="/js/blog-related-posts.js"]')) return;
-
-  var script = document.createElement('script');
-  script.src = '/js/blog-related-posts.js?v=20260924';
-  script.defer = true;
-  script.setAttribute('data-blog-related-posts-loader', 'true');
-  document.body.appendChild(script);
-}
-
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', initSpaceReveals, { once: true });
   document.addEventListener('DOMContentLoaded', ensureLottiePlayerAssets, { once: true });
   document.addEventListener('DOMContentLoaded', loadSkyletWidgetAssets, { once: true });
   document.addEventListener('DOMContentLoaded', initIndexFooterAwareSocialLinks, { once: true });
-  document.addEventListener('DOMContentLoaded', loadBlogRelatedPostNavigation, { once: true });
 } else {
   initSpaceReveals();
   ensureLottiePlayerAssets();
   loadSkyletWidgetAssets();
   initIndexFooterAwareSocialLinks();
-  loadBlogRelatedPostNavigation();
 }

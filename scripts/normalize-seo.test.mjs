@@ -13,7 +13,7 @@ function normalize(html) { return normalizeSeoHtml(html, { directory: ROOT }); }
 function graph(html) { return [...html.matchAll(JSON_LD)].flatMap((match) => { const node = JSON.parse(match[1]); return node["@graph"] || [node]; }); }
 function byType(html, type) { return graph(html).filter((node) => [node["@type"]].flat().includes(type)); }
 
-test("profile pages and article authors resolve to the same Patrick identity", () => {
+test("profile pages resolve to the same Patrick identity", () => {
   for (const file of ["index.html", "about/index.html", "pt/sobre/index.html", "es/sobre/index.html", "resume/index.html"]) {
     const html = normalize(read(file));
     const profile = byType(html, "ProfilePage")[0];
@@ -22,21 +22,14 @@ test("profile pages and article authors resolve to the same Patrick identity", (
     assert.equal(person["@id"], PERSON);
     assert.deepEqual(person.sameAs, ["https://github.com/PkLavc", "https://www.linkedin.com/in/pklavc/"]);
   }
-  assert.equal(fs.existsSync(path.join(ROOT, "blog")), false, "The standalone blog repository owns all articles");
 });
 
-test("legacy localized blog routes are noindex redirects to the new project routes", () => {
-  for (const [file, target] of [
-    ["pt/blog/index.html", "https://pklavc.com/blog/pt/"],
-    ["pt/blog/ai-kanban-fastapi-rag-agents/index.html", "https://pklavc.com/blog/pt/ai-kanban-fastapi-rag-agents/"],
-    ["es/blog/index.html", "https://pklavc.com/blog/es/"],
-    ["es/blog/ai-kanban-fastapi-rag-agents/index.html", "https://pklavc.com/blog/es/ai-kanban-fastapi-rag-agents/"]
-  ]) {
-    const html = read(file);
-    assert.match(html, /name="robots" content="noindex,follow"/i, file);
-    assert.match(html, new RegExp(`<link rel="canonical" href="${target.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}"`), file);
-    assert.match(html, new RegExp(`http-equiv="refresh" content="0;url=${target.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}"`), file);
+test("the main repository contains no blog application or legacy localized routes", () => {
+  for (const relative of ["blog", "pt/blog", "es/blog", "scripts/blog_automation", "js/blog-related-posts.js", "css/blog.css"]) {
+    assert.equal(fs.existsSync(path.join(ROOT, relative)), false, `${relative} must remain absent`);
   }
+  const notFound = read("404.html");
+  assert.doesNotMatch(notFound, /['"]\/(?:pt|es)\/blog['"]\s*:/);
 });
 
 test("repository and language markup uses project evidence and preserves coauthors", () => {
@@ -87,7 +80,7 @@ test("all source pages retain visible markup, runtime scripts and styles; normal
   const scripts = (html) => html.match(/<script\b(?![^>]*application\/ld\+json)[^>]*>[\s\S]*?<\/script>/gi) || [];
   const styles = (html) => html.match(/<style\b[^>]*>[\s\S]*?<\/style>/gi) || [];
   const pages = walk(ROOT);
-  assert.ok(pages.length > 300);
+  assert.ok(pages.length > 130);
   for (const file of pages) {
     const input = fs.readFileSync(file, "utf8");
     const output = normalize(input);

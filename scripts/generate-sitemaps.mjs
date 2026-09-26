@@ -10,7 +10,7 @@ if (args.length && (args.length !== 2 || args[0] !== "--root" || !args[1])) {
 const ROOT = path.resolve(SOURCE_ROOT, args[1] || ".");
 const SITE = "https://pklavc.com";
 const SITEMAP_DIR = path.join(ROOT, "sitemaps");
-const groups = { pages: [], blog: [], projects: [], pt: [], es: [] };
+const groups = { pages: [], projects: [], pt: [], es: [] };
 const utilityRoutes = new Set([
   "/404.html", "/410.html", "/503.html", "/maintenance/", "/search/", "/status/",
   "/visitors/", "/pt/visitantes/", "/es/visitantes/"
@@ -110,7 +110,6 @@ function gitLastmods() {
 function classify(route) {
   if (route.startsWith("/pt/")) return "pt";
   if (route.startsWith("/es/")) return "es";
-  if (route.startsWith("/blog/")) return "blog";
   if (route.startsWith("/projects/")) return "projects";
   return "pages";
 }
