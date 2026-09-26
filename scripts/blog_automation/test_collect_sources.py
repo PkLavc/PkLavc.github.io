@@ -118,6 +118,13 @@ class CollectSourcesTests(unittest.TestCase):
             host = urlsplit(feed["html_url"]).hostname
             self.assertTrue(any(host == allowed or host.endswith("." + allowed) for allowed in feed["allowed_hosts"]))
 
+    def test_google_developers_and_microsoft_source_have_official_html_fallbacks(self):
+        config = json.loads((Path.cwd() / "scripts/blog_automation/sources.json").read_text(encoding="utf-8"))
+        feeds = {feed["name"]: feed for feed in config["feeds"]}
+        self.assertEqual(feeds["Google Developers"]["html_url"], "https://developers.googleblog.com/")
+        self.assertEqual(feeds["Microsoft Source"]["allowed_hosts"], ["microsoft.com"])
+        self.assertEqual(feeds["Microsoft Source"]["html_url"], "https://news.microsoft.com/source/")
+
     def test_html_listing_is_parsed_for_each_repaired_official_host(self):
         config = json.loads((Path.cwd() / "scripts/blog_automation/sources.json").read_text(encoding="utf-8"))
         names = {"Anthropic Newsroom", "Google DeepMind", "Google Cloud Blog", "Meta AI Blog",
