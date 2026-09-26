@@ -14,6 +14,7 @@ PLACEHOLDERS = re.compile(r"\{\{[A-Z_]+\}\}|TODO|lorem ipsum|as an AI|I cannot a
 VOID = {"area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta", "param", "source", "track", "wbr"}
 QUALITY_ERROR_PREFIXES = (
     "article has ", "section '", "first two sections must separate",
+    "confirmed facts and analysis must be clearly separated",
     "placeholder or AI meta commentary detected", "at least one verified source URL is required",
     "more than five cited sources", "duplicate cited source URL",
     "at least one verified Tier A official source must be cited",

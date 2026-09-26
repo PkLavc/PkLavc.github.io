@@ -2,11 +2,13 @@ from __future__ import annotations
 
 import tempfile
 import unittest
+from contextlib import redirect_stdout
+from io import StringIO
 from pathlib import Path
 from unittest.mock import patch
 
 from . import llm_provider
-from .run import generate_render_validate
+from .run import generate_first_quality_valid_story, generate_render_validate
 from .validate_article import ArticleQualityError
 
 
@@ -57,6 +59,47 @@ class ArticleProviderQualityFallbackTests(unittest.TestCase):
 
         self.assertEqual(check.call_count, 3)
         self.assertTrue(all(llm_provider.STATES[p]["circuit"] == "QUALITY_VALIDATION_FAILED" for p in llm_provider.PROVIDERS))
+
+    def test_all_providers_fail_first_candidate_then_second_candidate_succeeds(self):
+        first = {"title": "First confirmed story with substantial technical impact", "candidate": {"url": "https://a.example/news"}}
+        second = {"title": "Second confirmed story with substantial technical impact", "candidate": {"url": "https://b.example/news"}}
+        exhausted = llm_provider.ArticleQualityProvidersExhausted("empty section", list(llm_provider.PROVIDERS))
+        with tempfile.TemporaryDirectory() as temp, StringIO() as output, redirect_stdout(output), \
+             patch("scripts.blog_automation.run.generate_render_validate", side_effect=[exhausted, ("second", "<html>second</html>", {"sections": []})]) as generate:
+            result = generate_first_quality_valid_story(Path(temp), [first, second], "2026-09-26", check_remote=True)
+            log = output.getvalue()
+
+        self.assertEqual(result[0], second)
+        self.assertEqual([call.args[1] for call in generate.call_args_list], [first, second])
+        self.assertIn(first["title"], log)
+        self.assertIn(first["candidate"]["url"], log)
+        self.assertIn("providers tried=Gemini, OpenRouter, Cloudflare Workers AI", log)
+        self.assertIn("Following ranked candidate 2", log)
+
+    def test_first_valid_candidate_stops_before_second(self):
+        first = {"title": "First confirmed story with substantial technical impact", "candidate": {"url": "https://a.example/news"}}
+        second = {"title": "Second confirmed story with substantial technical impact", "candidate": {"url": "https://b.example/news"}}
+        with tempfile.TemporaryDirectory() as temp, \
+             patch("scripts.blog_automation.run.generate_render_validate", return_value=("first", "<html>first</html>", {"sections": []})) as generate:
+            result = generate_first_quality_valid_story(Path(temp), [first, second], "2026-09-26", check_remote=True)
+
+        self.assertEqual(result[0], first)
+        generate.assert_called_once()
+
+    def test_all_ranked_candidates_exhausted_returns_no_story(self):
+        stories = [{"title": f"Confirmed story {n} with technical impact", "candidate": {"url": f"https://{n}.example/news"}}
+                   for n in (1, 2)]
+        rejected = llm_provider.ArticleQualityProvidersExhausted("placeholder detected", list(llm_provider.PROVIDERS))
+        with tempfile.TemporaryDirectory() as temp, \
+             patch("scripts.blog_automation.run.generate_render_validate", side_effect=[rejected, rejected]) as generate, \
+             patch("scripts.blog_automation.run.publish") as publish:
+            result = generate_first_quality_valid_story(Path(temp), stories, "2026-09-26", check_remote=True)
+            if result:
+                publish()
+
+        self.assertIsNone(result)
+        self.assertEqual(generate.call_count, 2)
+        publish.assert_not_called()
 
 
 if __name__ == "__main__":

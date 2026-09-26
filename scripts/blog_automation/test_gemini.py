@@ -179,7 +179,7 @@ class GeminiRetryTests(unittest.TestCase):
                  patch("scripts.blog_automation.run.filter_duplicate_candidates", return_value=[story]), \
                  patch("scripts.blog_automation.run.published_today", return_value=[]), \
                  patch("scripts.blog_automation.run.select", side_effect=selector), \
-                 patch("scripts.blog_automation.run.choose_ranked", return_value=story), \
+                 patch("scripts.blog_automation.run.choose_ranked_stories", return_value=[story]), \
                  patch("scripts.blog_automation.run.generate", side_effect=generation), \
                  patch.dict(os.environ, {"GEMINI_API_KEY": "mock", "OPENROUTER_API_KEY": "", "CLOUDFLARE_API_TOKEN": "", "CLOUDFLARE_ACCOUNT_ID": ""}), \
                  patch("scripts.blog_automation.llm_provider.gemini.call", side_effect=gemini.GeminiOperationalError("DAILY_QUOTA", "quota exhausted")), \

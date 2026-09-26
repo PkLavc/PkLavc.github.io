@@ -31,10 +31,18 @@ class LLMRequestRejected(RuntimeError):
     """Non-transient request/schema error; do not hide it with a provider switch."""
 
 
+class ArticleQualityProvidersExhausted(LLMProvidersUnavailable):
+    def __init__(self, reason: str, providers: list[str]):
+        self.reason = reason
+        self.providers = providers
+        super().__init__("All providers failed unchanged article-quality validation: " + reason)
+
+
 PROVIDERS = ("Gemini", "OpenRouter", "Cloudflare Workers AI")
 STATES: dict[str, dict[str, Any]] = {}
 LOGICAL_CALLS = {"Selector": 0, "Enrichment": 0, "Article generation": 0}
 PROVIDER_BY_PURPOSE: dict[str, str] = {}
+ARTICLE_PROVIDER_ATTEMPTS: list[str] = []
 FALLBACKS_USED = 0
 OPENROUTER_REQUESTS = 0
 CLOUDFLARE_REQUESTS = 0
@@ -55,6 +63,7 @@ def reset_state() -> None:
     for purpose in LOGICAL_CALLS:
         LOGICAL_CALLS[purpose] = 0
     PROVIDER_BY_PURPOSE.clear()
+    ARTICLE_PROVIDER_ATTEMPTS.clear()
     FALLBACKS_USED = OPENROUTER_REQUESTS = CLOUDFLARE_REQUESTS = 0
     OPENROUTER_LAST = CLOUDFLARE_LAST = None
     for counts in _HTTP_COUNTS.values():
@@ -279,6 +288,8 @@ def call_llm(prompt: str, purpose: str, search: bool = False, require_json: bool
             FALLBACKS_USED += 1
         try:
             response = _call_one(provider, prompt, purpose, search if provider == "Gemini" else False, require_json)
+            if purpose == "Article generation" and provider not in ARTICLE_PROVIDER_ATTEMPTS:
+                ARTICLE_PROVIDER_ATTEMPTS.append(provider)
             try:
                 _validate_response(response.text, purpose, require_json)
             except ValueError as exc:
@@ -288,6 +299,9 @@ def call_llm(prompt: str, purpose: str, search: bool = False, require_json: bool
             PROVIDER_BY_PURPOSE[purpose] = provider
             return response
         except LLMProvidersUnavailable as exc:
+            if (purpose == "Article generation" and _state(provider).get("circuit") not in {"NOT_CONFIGURED", "REQUEST_BUDGET"}
+                    and provider not in ARTICLE_PROVIDER_ATTEMPTS):
+                ARTICLE_PROVIDER_ATTEMPTS.append(provider)
             failures.append(f"{provider}: {exc}")
             continue
         except LLMRequestRejected:
@@ -302,6 +316,22 @@ def mark_article_quality_failure() -> str:
     _state(provider).update(circuit="QUALITY_VALIDATION_FAILED", result="QUALITY_VALIDATION_FAILED")
     print(f"{provider}: article failed existing quality validation; provider circuit opened for article generation.")
     return provider
+
+
+def reset_article_attempts() -> None:
+    ARTICLE_PROVIDER_ATTEMPTS.clear()
+
+
+def article_attempts() -> list[str]:
+    return ARTICLE_PROVIDER_ATTEMPTS.copy()
+
+
+def reset_article_quality_circuits() -> None:
+    """Quality rejection belongs to one story; operational circuits stay open."""
+    for provider in PROVIDERS:
+        state = _state(provider)
+        if state.get("circuit") == "QUALITY_VALIDATION_FAILED":
+            state.update(circuit="none", result="READY_FOR_NEXT_STORY")
 
 
 def report_usage() -> None:

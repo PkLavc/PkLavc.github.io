@@ -17,7 +17,8 @@ from .select_story import select, verify_evidence
 from .validate_article import ArticleQualityError, validate
 
 
-def choose_ranked(root: Path, ranked: list[dict], day: str, topics: list[str], already_published: list[dict]) -> dict | None:
+def choose_ranked_stories(root: Path, ranked: list[dict], day: str, topics: list[str], already_published: list[dict]) -> list[dict]:
+    eligible = []
     for index, proposed in enumerate(ranked, 1):
         if matches_published_event(proposed, already_published):
             print(f"Rank {index} skipped: event key, title or URL already published today.")
@@ -36,9 +37,15 @@ def choose_ranked(root: Path, ranked: list[dict], day: str, topics: list[str], a
         except ValueError as exc:
             print(f"Rank {index} rejected by final source/event duplicate barrier: {exc}")
             continue
-        print(f"Selected first unpublished eligible event: {verified.get('event_key')} (rank {index}).")
-        return verified
-    return None
+        print(f"Ranked candidate passed duplicate and evidence checks: {verified.get('event_key')} (rank {index}).")
+        eligible.append(verified)
+    return eligible
+
+
+def choose_ranked(root: Path, ranked: list[dict], day: str, topics: list[str], already_published: list[dict]) -> dict | None:
+    """Compatibility helper retained for existing callers/tests."""
+    eligible = choose_ranked_stories(root, ranked, day, topics, already_published)
+    return eligible[0] if eligible else None
 
 
 def fixture(day: str) -> tuple[dict, dict]:
@@ -55,22 +62,49 @@ def fixture(day: str) -> tuple[dict, dict]:
 
 def generate_render_validate(root: Path, story: dict, day: str, *, check_remote: bool) -> tuple[str, str, dict]:
     """Keep validators authoritative; rotate providers only for model-quality failures."""
+    quality_failures = []
     for attempt in range(len(llm_provider.PROVIDERS)):
         try:
             article = generate(story, day)
             slug, document = render(root, story, article, day)
             validate(root, document, story, day, check_remote=check_remote)
             return slug, document, article
+        except llm_provider.LLMProvidersUnavailable as exc:
+            if quality_failures:
+                providers = llm_provider.article_attempts()
+                reason = "; ".join(quality_failures + ["remaining providers unavailable: " + str(exc)])[:400]
+                raise llm_provider.ArticleQualityProvidersExhausted(reason, providers) from None
+            raise
         except (ArticleQualityError, ValueError) as exc:
             is_quality = isinstance(exc, ArticleQualityError) or str(exc).startswith("INSUFFICIENT_CONTENT_DEPTH:")
             if not is_quality:
                 raise
+            quality_failures.append(" ".join(str(exc).split())[:240])
             failed_provider = llm_provider.mark_article_quality_failure()
             if attempt + 1 >= len(llm_provider.PROVIDERS):
-                raise llm_provider.LLMProvidersUnavailable(
-                    "All available providers produced article content that failed unchanged quality validation.") from None
+                providers = llm_provider.article_attempts()
+                raise llm_provider.ArticleQualityProvidersExhausted(
+                    "; ".join(str(exc).split())[:400], providers) from None
             print(f"Article quality validation failed for {failed_provider or 'unknown provider'}; trying the next provider ({attempt + 2}/{len(llm_provider.PROVIDERS)}).")
     raise llm_provider.LLMProvidersUnavailable("No provider produced a validated article.")
+
+
+def generate_first_quality_valid_story(root: Path, stories: list[dict], day: str, *, check_remote: bool) -> tuple[dict, str, str, dict] | None:
+    for index, story in enumerate(stories, 1):
+        llm_provider.reset_article_attempts()
+        try:
+            slug, document, article = generate_render_validate(root, story, day, check_remote=check_remote)
+            return story, slug, document, article
+        except llm_provider.ArticleQualityProvidersExhausted as exc:
+            candidate = story.get("candidate", {})
+            title = " ".join(str(story.get("title", "(untitled)")).split())[:180]
+            url = " ".join(str(candidate.get("url", "(no URL)")).split())[:240]
+            tried = ", ".join(exc.providers) if exc.providers else "none configured/available"
+            print(f"Rank {index} article rejected: title={title}; URL={url}; reason={exc.reason}; providers tried={tried}.")
+            if index < len(stories):
+                print(f"Following ranked candidate {index + 1}: previous story failed all available providers' content-quality validation.")
+            llm_provider.reset_article_quality_circuits()
+    return None
 
 
 def _main() -> None:
@@ -107,15 +141,18 @@ def _main() -> None:
         already_published = published_today(root, day)
         print(f"Already published today: {len(already_published)}")
         ranked = select(candidates, day, source_config.get("topics", []), already_published)
-        story = choose_ranked(root, ranked, day, source_config.get("topics", []), already_published)
-        if story is None:
+        stories = choose_ranked_stories(root, ranked, day, source_config.get("topics", []), already_published)
+        if not stories:
             print("No unpublished ranked event passed duplicate and evidence-quality checks; no article generated.")
             return
     if args.offline_fixture:
         slug, document = render(root, story, article, day)
         validate(root, document, story, day, check_remote=False)
     else:
-        slug, document, article = generate_render_validate(root, story, day, check_remote=True)
+        story, slug, document, article = generate_first_quality_valid_story(root, stories, day, check_remote=True) or (None, None, None, None)
+        if story is None:
+            print("No post published: all valid ranked stories failed article-quality validation across available providers.")
+            return
     body = re.search(r'<article class="blog-article">([\s\S]*?)</article>', document)
     word_count = len(re.findall(r"\b[\w'-]+\b", re.sub(r"<[^>]+>", " ", body.group(1) if body else "")))
     print(f"Resultado da geração: OK; {word_count} palavras; slug {slug}")
