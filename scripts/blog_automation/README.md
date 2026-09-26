@@ -1,6 +1,6 @@
 # Daily English blog automation
 
-The workflow runs at 12:15, 15:15, 18:15 and 21:15 UTC, corresponding to 09:15, 12:15, 15:15 and 18:15 in Sao Paulo (UTC-3). It queries official feeds, keeps only items published on the current `America/Sao_Paulo` date, removes previously used stories before Gemini ranking, and selects at most one technical story per run. No relevant confirmed event means no article and no commit. Feed content is untrusted data. The validator enforces 1,300-1,800 words, at least seven substantive sections (80+ words each), sources, SEO metadata, HTML structure, and a 1200x630 story-specific social card.
+The workflow runs at 12:15, 15:15, 18:15 and 21:15 UTC, corresponding to 09:15, 12:15, 15:15 and 18:15 in Sao Paulo (UTC-3). It queries official feeds, keeps only items published on the current `America/Sao_Paulo` date, removes previously used stories before Gemini ranking, and selects at most one technical story per run. No relevant confirmed event means no article and no commit. Feed content is untrusted data. The validator enforces a minimum of 1,300 words (no upper limit), at least seven substantive sections (80+ words each), sources, SEO metadata, HTML structure, and a 1200x630 story-specific social card.
 
 ## GitHub setup
 

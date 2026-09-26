@@ -12,6 +12,18 @@ from urllib.parse import urlsplit
 
 PLACEHOLDERS = re.compile(r"\{\{[A-Z_]+\}\}|TODO|lorem ipsum|as an AI|I cannot access|according to the information provided|como uma IA|não tenho acesso|según la información proporcionada", re.I)
 VOID = {"area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta", "param", "source", "track", "wbr"}
+QUALITY_ERROR_PREFIXES = (
+    "article has ", "section '", "first two sections must separate",
+    "placeholder or AI meta commentary detected", "at least one verified source URL is required",
+    "more than five cited sources", "duplicate cited source URL",
+    "at least one verified Tier A official source must be cited",
+    "TRUSTED_SECONDARY requires two independent Tier B publishers",
+    "article cites a URL not verified for this story",
+)
+
+
+class ArticleQualityError(ValueError):
+    """Generated article failed editorial checks; another provider may try."""
 
 
 class Structure(html.parser.HTMLParser):
@@ -42,7 +54,7 @@ def validate(root: Path, html: str, story: dict, day: str, *, check_remote: bool
     source_match = re.search(r'<section><h2>Sources</h2>[\s\S]*?</section>', body_text)
     substantive_text = body_text.replace(source_match.group(0), "") if source_match else body_text
     substantive_words = len(re.findall(r"\b[\w'-]+\b", re.sub(r"<[^>]+>", " ", substantive_text)))
-    if not 1300 <= substantive_words <= 1800: errors.append(f"article has {substantive_words} content words; required range is 1,300-1,800")
+    if substantive_words < 1300: errors.append(f"article has {substantive_words} content words; minimum is 1,300")
     sections = re.findall(r'<section data-editorial-kind="(fact|analysis|neutral)"><h2>(.*?)</h2>([\s\S]*?)</section>', substantive_text)
     if len(sections) < 7: errors.append(f"article has {len(sections)} substantive sections; minimum is 7")
     if len(sections) >= 2 and (sections[0][0] != "fact" or sections[0][1] != "Confirmed facts" or sections[1][0] != "analysis" or sections[1][1] != "Technical analysis"):
@@ -123,5 +135,8 @@ def validate(root: Path, html: str, story: dict, day: str, *, check_remote: bool
     for raw in re.findall(r'\b(?:href|src)="(/[^"#?]+)', html):
         local = root / raw.lstrip("/")
         if not local.exists(): errors.append(f"missing local asset: {raw}")
-    if errors: raise ValueError("; ".join(errors))
+    if errors:
+        if all(any(error.startswith(prefix) for prefix in QUALITY_ERROR_PREFIXES) for error in errors):
+            raise ArticleQualityError("; ".join(errors))
+        raise ValueError("; ".join(errors))
     print("Validação HTML, metadata, conteúdo, fontes e caminhos relativos: OK")

@@ -21,8 +21,12 @@ class ArticleQualityGateTests(unittest.TestCase):
 
     def test_short_content_is_rejected(self):
         short = re.sub(r"<p>[\s\S]*?</p>", "<p>Too short.</p>", self.document)
-        with self.assertRaisesRegex(ValueError, "1,300-1,800"):
+        with self.assertRaisesRegex(ValueError, "minimum is 1,300"):
             validate(self.root, short, self.story, self.day, check_remote=False)
+
+    def test_content_above_1800_words_is_allowed(self):
+        long_document = self.document.replace("</section>", f"<p>{'additional context ' * 150}</p></section>", 1)
+        validate(self.root, long_document, self.story, self.day, check_remote=False)
 
     def test_fewer_than_seven_content_sections_is_rejected(self):
         blocks = re.findall(r'<section data-editorial-kind="(?:fact|analysis|neutral)">[\s\S]*?</section>', self.document)

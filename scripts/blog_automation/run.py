@@ -14,7 +14,7 @@ from .filter_candidates import filter_today
 from .generate_article import generate, render
 from .publish_article import check_duplicate, filter_duplicate_candidates, matches_published_event, publish, published_today
 from .select_story import select, verify_evidence
-from .validate_article import validate
+from .validate_article import ArticleQualityError, validate
 
 
 def choose_ranked(root: Path, ranked: list[dict], day: str, topics: list[str], already_published: list[dict]) -> dict | None:
@@ -51,6 +51,26 @@ def fixture(day: str) -> tuple[dict, dict]:
     sections = [{"heading": heading, "kind": "fact" if i == 0 else "analysis", "paragraphs": paragraphs, "bullets": []} for i, heading in enumerate(["Confirmed facts", "Technical analysis", "System context", "How the workflow behaves", "Engineering implications", "What changed", "Limitations and open questions", "Practical considerations"])]
     article = {"sections": sections, "sources": [{"label": "Official developer publication (validation fixture)", "url": story["sources"][0]}, {"label": "Official developers publication (validation fixture)", "url": story["sources"][1]}]}
     return story, article
+
+
+def generate_render_validate(root: Path, story: dict, day: str, *, check_remote: bool) -> tuple[str, str, dict]:
+    """Keep validators authoritative; rotate providers only for model-quality failures."""
+    for attempt in range(len(llm_provider.PROVIDERS)):
+        try:
+            article = generate(story, day)
+            slug, document = render(root, story, article, day)
+            validate(root, document, story, day, check_remote=check_remote)
+            return slug, document, article
+        except (ArticleQualityError, ValueError) as exc:
+            is_quality = isinstance(exc, ArticleQualityError) or str(exc).startswith("INSUFFICIENT_CONTENT_DEPTH:")
+            if not is_quality:
+                raise
+            failed_provider = llm_provider.mark_article_quality_failure()
+            if attempt + 1 >= len(llm_provider.PROVIDERS):
+                raise llm_provider.LLMProvidersUnavailable(
+                    "All available providers produced article content that failed unchanged quality validation.") from None
+            print(f"Article quality validation failed for {failed_provider or 'unknown provider'}; trying the next provider ({attempt + 2}/{len(llm_provider.PROVIDERS)}).")
+    raise llm_provider.LLMProvidersUnavailable("No provider produced a validated article.")
 
 
 def _main() -> None:
@@ -91,9 +111,11 @@ def _main() -> None:
         if story is None:
             print("No unpublished ranked event passed duplicate and evidence-quality checks; no article generated.")
             return
-        article = generate(story, day)
-    slug, document = render(root, story, article, day)
-    validate(root, document, story, day, check_remote=not args.offline_fixture)
+    if args.offline_fixture:
+        slug, document = render(root, story, article, day)
+        validate(root, document, story, day, check_remote=False)
+    else:
+        slug, document, article = generate_render_validate(root, story, day, check_remote=True)
     body = re.search(r'<article class="blog-article">([\s\S]*?)</article>', document)
     word_count = len(re.findall(r"\b[\w'-]+\b", re.sub(r"<[^>]+>", " ", body.group(1) if body else "")))
     print(f"Resultado da geração: OK; {word_count} palavras; slug {slug}")

@@ -295,6 +295,15 @@ def call_llm(prompt: str, purpose: str, search: bool = False, require_json: bool
     raise LLMProvidersUnavailable("All configured LLM providers failed or are unavailable. " + " | ".join(failures))
 
 
+def mark_article_quality_failure() -> str:
+    provider = PROVIDER_BY_PURPOSE.get("Article generation", "")
+    if provider not in PROVIDERS:
+        return ""
+    _state(provider).update(circuit="QUALITY_VALIDATION_FAILED", result="QUALITY_VALIDATION_FAILED")
+    print(f"{provider}: article failed existing quality validation; provider circuit opened for article generation.")
+    return provider
+
+
 def report_usage() -> None:
     gemini.report_usage()
     print("LLM provider usage:")
