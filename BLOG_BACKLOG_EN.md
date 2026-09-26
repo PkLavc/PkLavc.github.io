@@ -361,7 +361,7 @@ Suggested visual primitives for future HTML posts:
   Angle: incident reporting, risk management, supply chain, vulnerability management, and board accountability.
   Visual: NIS2 obligation pipeline.
 
-- [ ] Sovereign Cloud And Geopatriation: Why Workload Location Matters
+- [x] Sovereign Cloud And Geopatriation: Why Workload Location Matters
   Slug: `sovereign-cloud-geopatriation-workload-location`
   Angle: data residency, provider risk, regional failover, identity, encryption, and vendor strategy.
   Visual: cloud placement decision tree.
