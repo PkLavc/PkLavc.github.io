@@ -23,7 +23,7 @@
         {
             id: "feed",
             label: "RSS feed",
-            url: "/feed.xml",
+            url: "/blog/feed.xml",
             ok: function (response) { return response.ok; }
         },
         {

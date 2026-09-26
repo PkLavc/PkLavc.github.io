@@ -1,4 +1,4 @@
-﻿import { execFileSync } from "node:child_process";
+import { execFileSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
 
@@ -60,7 +60,7 @@ function head({ title, description, canonical, robots = "index, follow", ogTitle
         <meta name="theme-color" content="#101114">
         <title>${escapeHtml(title)}</title>
         <link rel="canonical" href="${absolute}">
-        <link rel="alternate" type="application/rss+xml" title="Patrick Araujo Engineering Blog RSS" href="/feed.xml">
+        <link rel="alternate" type="application/rss+xml" title="Patrick Araujo Engineering Blog RSS" href="/blog/feed.xml">
         <link rel="search" type="application/opensearchdescription+xml" title="PkLavc" href="/opensearch.xml">
         <link rel="manifest" href="/manifest.webmanifest">
         <link rel="icon" href="/favicon.ico" sizes="any">
@@ -594,7 +594,7 @@ ${[
       { id: "site", name: "Portfolio delivery", url: "/" },
       { id: "api", name: "Public API health", url: "https://api.pklavc.com/health" },
       { id: "visitors", name: "Visitor analytics API", url: "https://api.pklavc.com/analytics/map" },
-      { id: "feed", name: "RSS feed", url: "/feed.xml" },
+      { id: "feed", name: "RSS feed", url: "/blog/feed.xml" },
       { id: "sitemap", name: "Sitemap", url: "/sitemap.xml" }
     ].map((check) => {
       return `<article class="status-row" data-status-row="${check.id}"><div><strong class="status-name">${check.name}</strong><span class="status-detail" data-status-detail>Checking ${check.url}</span></div><span class="status-pill checking" data-status-pill>Checking</span></article>`;
@@ -766,16 +766,13 @@ function upsertDiscoveryLinks() {
     "projects/index.html",
     "pt/projetos/index.html",
     "es/proyectos/index.html",
-    "blog/index.html",
-    "pt/blog/index.html",
-    "es/blog/index.html",
     "visitors/index.html",
     "pt/visitantes/index.html",
     "es/visitantes/index.html"
   ];
 
   const block = `        <meta name="theme-color" content="#101114">
-        <link rel="alternate" type="application/rss+xml" title="Patrick Araujo Engineering Blog RSS" href="/feed.xml">
+        <link rel="alternate" type="application/rss+xml" title="Patrick Araujo Engineering Blog RSS" href="/blog/feed.xml">
         <link rel="search" type="application/opensearchdescription+xml" title="PkLavc" href="/opensearch.xml">
         <link rel="manifest" href="/manifest.webmanifest">
         <link rel="icon" href="/favicon.ico" sizes="any">

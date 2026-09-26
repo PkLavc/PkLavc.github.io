@@ -24,7 +24,6 @@ const publicEntries = [
   "editorial-policy",
   "favicon.ico",
   "favicon.svg",
-  "feed.xml",
   "humans.txt",
   "llms-full.txt",
   "llms.txt",
@@ -50,7 +49,6 @@ const publicEntries = [
   "adm",
   "ads",
   "assets",
-  "blog",
   "collections",
   "css",
   "es",
@@ -85,8 +83,6 @@ const assetExtensions = new Set([
 const localAssetPattern =
   /(?<prefix>["'(=\s])(?<url>https:\/\/pklavc\.com\/[^"'\s<>?#)]+\.(?:css|js|svg|webp|png|jpg|jpeg|gif|ico|json|webmanifest|glb|wasm)|(?:\/|\.\.?\/|[A-Za-z0-9_.-]+\/)[^"'\s<>?#)]+\.(?:css|js|svg|webp|png|jpg|jpeg|gif|ico|json|webmanifest|glb|wasm))(\?v=(?<version>[A-Za-z0-9._-]+))?/gi;
 
-const adsenseClientId = (process.env.ADSENSE_CLIENT_ID || "").trim();
-const adsenseBlogSlotId = (process.env.ADSENSE_BLOG_SLOT_ID || "").trim();
 
 function removeDirectory(target) {
   if (path.resolve(target) !== path.join(root, ".pages-dist") || (fs.existsSync(target) && fs.lstatSync(target).isSymbolicLink())) {
@@ -200,43 +196,6 @@ function updateCacheBusting() {
   return { updatedFiles, updatedRefs, assets: hashCache.size };
 }
 
-function isBlogPost(file) {
-  const relative = toPosixPath(path.relative(outDir, file));
-  return /^(?:blog|pt\/blog|es\/blog)\/(?:[^/]+\/index\.html|(?!index\.html$)[^/]+\.html)$/.test(relative);
-}
-
-function injectBlogAdSupport() {
-  let updatedFiles = 0;
-  const hasAdsense = /^ca-pub-\d+$/.test(adsenseClientId);
-  const adsenseConfig = hasAdsense ? JSON.stringify({
-    clientId: adsenseClientId,
-    blogSlotId: /^\d+$/.test(adsenseBlogSlotId) ? adsenseBlogSlotId : "",
-  }) : "";
-
-  for (const file of walkFiles(outDir)) {
-    if (!isBlogPost(file)) continue;
-
-    const original = fs.readFileSync(file, "utf8");
-    if (original.includes('/ads/ads.js') || !original.includes("</head>")) {
-      continue;
-    }
-
-    const snippet = [
-      hasAdsense ? `<meta name="google-adsense-account" content="${adsenseClientId}">` : "",
-      hasAdsense ? `<script>window.PKLAVC_ADSENSE_CONFIG=${adsenseConfig};</script>` : "",
-      '<link rel="stylesheet" href="/ads/ads.css">',
-      '<script src="/ads/config.js" defer></script>',
-      '<script src="/ads/ads.js" defer></script>',
-      "",
-    ].filter(Boolean).join("\n");
-    const updated = original.replace("</head>", `${snippet}</head>`);
-    fs.writeFileSync(file, updated);
-    updatedFiles += 1;
-  }
-
-  return { updatedFiles, adsenseConfigured: hasAdsense };
-}
-
 function main() {
   removeDirectory(outDir);
   fs.mkdirSync(outDir, { recursive: true });
@@ -248,9 +207,7 @@ function main() {
   // Generate discovery from the exact HTML that will be deployed on every build.
   const seoStats = normalizeSeoDirectory(outDir);
   console.log(`SEO normalization: ${seoStats.updated} of ${seoStats.pages} HTML files updated.`);
-  for (const generator of ["generate-sitemaps.mjs", "generate-rss.mjs"]) {
-    execFileSync(process.execPath, [path.join(root, "scripts", generator), "--root", outDir], { cwd: root, stdio: "inherit" });
-  }
+  execFileSync(process.execPath, [path.join(root, "scripts", "generate-sitemaps.mjs"), "--root", outDir], { cwd: root, stdio: "inherit" });
   generateDiscovery(outDir);
   const commit = execFileSync("git", ["rev-parse", "HEAD"], { cwd: root, encoding: "utf8" }).trim();
   fs.mkdirSync(path.join(outDir, ".well-known"), { recursive: true });
@@ -258,7 +215,6 @@ function main() {
 
   const files = walkFiles(outDir);
   const totalBytes = files.reduce((sum, file) => sum + fs.statSync(file).size, 0);
-  const adStats = injectBlogAdSupport();
   const cacheStats = updateCacheBusting();
   const finalFiles = walkFiles(outDir);
   const finalBytes = finalFiles.reduce((sum, file) => sum + fs.statSync(file).size, 0);
@@ -266,7 +222,6 @@ function main() {
   console.log(`Pages artifact: ${toPosixPath(outDir)}`);
   console.log(`Copied files: ${files.length}`);
   console.log(`Initial size: ${(totalBytes / 1024 / 1024).toFixed(2)} MB`);
-  console.log(`Blog ads: ${adStats.updatedFiles} post file(s); AdSense credentials ${adStats.adsenseConfigured ? "available" : "not configured"}`);
   console.log(`Cache-busted files: ${cacheStats.updatedFiles}`);
   console.log(`Cache-busted refs: ${cacheStats.updatedRefs}`);
   console.log(`Referenced assets hashed: ${cacheStats.assets}`);

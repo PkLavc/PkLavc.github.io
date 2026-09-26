@@ -1,6 +1,6 @@
 # Anúncios dos posts
 
-O build de GitHub Pages carrega `ads.css`, `config.js` e `ads.js` em todo post em `/blog/<slug>/`, `/pt/blog/<slug>/` e `/es/blog/<slug>/`, incluindo posts no formato `<slug>.html`. As três raízes do blog ficam fora. Os quatro espaços são `sidebar` (desktop), `inline` (dentro do artigo), `bottom` (após o artigo) e `mobile` (somente telas até 767 px).
+O build de GitHub Pages carrega `ads.css`, `config.js` e `ads.js` em todo post em `/blog/<slug>/`, `/blog/pt/<slug>/` e `/blog/es/<slug>/`, incluindo posts no formato `<slug>.html`. As três raízes do blog ficam fora. Os quatro espaços são `sidebar` (desktop), `inline` (dentro do artigo), `bottom` (após o artigo) e `mobile` (somente telas até 767 px).
 
 Edite apenas [`config.js`](config.js) para trocar campanhas, destinos e imagens. A campanha `pklavc` atual contém uma peça para cada posição em inglês, português e espanhol; os SVGs estão em [`banners/`](banners/). A posição `inline` alterna a cada 15 segundos entre `pklavc` e `pklavc_projects`, demonstrando o rodízio. O idioma vem da URL do post. As peças próprias não carregam scripts de anúncios de terceiros.
 

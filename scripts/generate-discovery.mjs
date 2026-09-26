@@ -92,7 +92,7 @@ ${collections.map(link).join("\n")}
 
 - [Complete page directory](${SITE}/llms-full.txt): Canonical links and descriptions in every published language.
 - [Sitemap](${SITE}/sitemap.xml): Indexable page URLs and language alternatives.
-- [Engineering blog RSS](${SITE}/feed.xml): English article feed.
+- [Engineering blog RSS](${SITE}/blog/feed.xml): English article feed.
 `;
   const full = `${introduction}
 ## Complete canonical page directory

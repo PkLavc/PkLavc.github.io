@@ -170,7 +170,9 @@
   }
 
   function getLanguageFromPath(path) {
-    var firstSegment = splitPath(path)[0];
+    var segments = splitPath(path);
+    if (segments[0] === 'blog' && (segments[1] === 'pt' || segments[1] === 'es')) return segments[1];
+    var firstSegment = segments[0];
     return LOCALE_PREFIXES[firstSegment] ? firstSegment : 'en';
   }
 
@@ -180,6 +182,10 @@
 
   function getEnglishRoute(path) {
     var segments = splitPath(path);
+    if (segments[0] === 'blog' && (segments[1] === 'pt' || segments[1] === 'es')) {
+      segments.splice(1, 1);
+      return '/' + segments.join('/') + '/';
+    }
     var locale = LOCALE_PREFIXES[segments[0]] ? segments.shift() : 'en';
 
     if (!segments.length) {
@@ -206,6 +212,10 @@
   function getLocalizedRoute(englishRoute, locale) {
     var route = getEnglishRoute(englishRoute);
     var segments = splitPath(route);
+
+    if (segments[0] === 'blog' && (locale === 'pt' || locale === 'es')) {
+      return '/blog/' + locale + (segments.length > 1 ? '/' + segments.slice(1).join('/') : '') + '/';
+    }
 
     // Skylet uses the same final /ia slug in every localized route.
     if (route === '/ia/') {

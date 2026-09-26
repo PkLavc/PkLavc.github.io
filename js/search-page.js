@@ -163,7 +163,7 @@
         run();
     }
 
-    window.fetch("/feed.xml", { cache: "force-cache" })
+    window.fetch("/blog/feed.xml", { cache: "force-cache" })
         .then(function (response) { return response.ok ? response.text() : ""; })
         .then(function (text) { init(staticPages.concat(text ? parseFeed(text) : [])); })
         .catch(function () { init(staticPages); });

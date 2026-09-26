@@ -1,4 +1,4 @@
-﻿import crypto from "node:crypto";
+import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 
@@ -64,7 +64,7 @@ const locales = {
     home: "/pt/",
     about: "/pt/sobre/",
     projects: "/pt/projetos/",
-    blog: "/pt/blog/",
+    blog: "/blog/pt/",
     localeOg: "pt_BR",
     homeLabel: "Início",
     aboutLabel: "Sobre",
@@ -99,7 +99,7 @@ const locales = {
     home: "/es/",
     about: "/es/sobre/",
     projects: "/es/proyectos/",
-    blog: "/es/blog/",
+    blog: "/blog/es/",
     localeOg: "es_ES",
     homeLabel: "Inicio",
     aboutLabel: "Sobre",
@@ -971,7 +971,7 @@ function headCommon({ localeKey, title, description, canonical, ogType = "websit
     <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Monoton&family=Poppins:wght@500;600;700&family=Raleway:wght@300&display=swap" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Monoton&family=Poppins:wght@500;600;700&family=Raleway:wght@300&display=swap"></noscript>
     <link rel="stylesheet" href="${assetUrl("css/global.css")}">
-    <link rel="stylesheet" href="${assetUrl("css/blog.css")}">
+    <link rel="stylesheet" href="/blog/css/blog.css">
     <link rel="stylesheet" href="${assetUrl("css/projects.css")}">`;
 }
 
@@ -1495,16 +1495,9 @@ for (const localeKey of Object.keys(locales)) {
     newRoutes.push(route);
   }
 
-  for (const post of blogPosts) {
-    const route = blogRoute(post.slug, localeKey);
-    writePage(route, renderBlogPost(post, localeKey));
-    newRoutes.push(route);
-  }
 }
 
-updateBlogIndex("en", "blog/index.html");
-updateBlogIndex("pt", "pt/blog/index.html");
-updateBlogIndex("es", "es/blog/index.html");
+// Blog indexes are owned and deployed by PkLavc/blog. Do not recreate local copies.
 
 updateAboutPage("en", "about/index.html");
 updateAboutPage("pt", "pt/sobre/index.html");
@@ -1512,4 +1505,4 @@ updateAboutPage("es", "es/sobre/index.html");
 
 updateSitemap(newRoutes);
 
-console.log(`Generated ${newRoutes.length} strategic pages and updated blog indexes, about pages, and sitemap.`);
+console.log(`Generated ${newRoutes.length} strategic pages and updated about pages and sitemap.`);

@@ -27,7 +27,7 @@ ROBOTS = ("Googlebot", "bingbot", "OAI-SearchBot", "ChatGPT-User", "Amzn-SearchB
 # Verified live HTTP 200 on 2026-09-08: this GitHub Pages project is served
 # independently of the portfolio artifact. Only this exact project route and
 # its descendants bypass the artifact-file check; unknown local paths do not.
-SEPARATELY_HOSTED_PROJECTS = ("/codepulse-monorepo/",)
+SEPARATELY_HOSTED_PROJECTS = ("/codepulse-monorepo/", "/blog/")
 # Remove only the legacy keyword paragraph at the end of a document. Accessible
 # labels, carousel descriptions, hidden controls, and all other text are retained.
 TAIL_KEYWORDS = re.compile(r'<div\s+class=[\"\']visually-hidden[\"\']\s*>\s*<p>[^<]*</p>\s*</div>\s*(?=</body>)', re.I)
@@ -389,6 +389,9 @@ class Audit:
         for node in tree:
             loc = next((child.text or "" for child in node if child.tag.rsplit("}", 1)[-1] == "loc"), "").strip()
             target_path = self.local_path(loc)
+            if any(urlsplit(loc).path.startswith(prefix) for prefix in SEPARATELY_HOSTED_PROJECTS):
+                self.counts["external_project_sitemaps"] += 1
+                continue
             if not target_path or not target_path.is_file() or not loc.startswith(self.site + "/"):
                 self.report("sitemap-target", f"{path.name}: URL does not resolve in artifact: {loc}")
                 continue
