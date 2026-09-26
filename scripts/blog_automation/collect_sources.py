@@ -41,7 +41,10 @@ def _entry_date(entry: ET.Element) -> dt.date | None:
     if not raw:
         return None
     try:
-        stamp = parsedate_to_datetime(raw) if "," in raw else dt.datetime.fromisoformat(raw.replace("Z", "+00:00"))
+        try:
+            stamp = parsedate_to_datetime(raw)
+        except (TypeError, ValueError, OverflowError):
+            stamp = dt.datetime.fromisoformat(raw.replace("Z", "+00:00"))
         if stamp.tzinfo is None:
             stamp = stamp.replace(tzinfo=dt.timezone.utc)
         return stamp.astimezone(LOCAL_ZONE).date()
@@ -77,7 +80,15 @@ class _HtmlNode:
         self.children: list[_HtmlNode | str] = []
 
     def text(self) -> str:
-        return " ".join(child if isinstance(child, str) else child.text() for child in self.children).strip()
+        parts: list[str] = []
+        pending: list[_HtmlNode | str] = list(reversed(self.children))
+        while pending:
+            child = pending.pop()
+            if isinstance(child, str):
+                parts.append(child)
+            else:
+                pending.extend(reversed(child.children))
+        return " ".join(parts).strip()
 
 
 class _ListingParser(html.parser.HTMLParser):
@@ -145,13 +156,15 @@ def _published_date(raw: str) -> dt.date | None:
     return None
 
 
-def _html_parts(body: bytes, base_url: str, allowed_hosts: set[str]) -> tuple[list[dict], list[str]]:
+def _html_parts(body: bytes, base_url: str, allowed_hosts: set[str]) -> tuple[list[dict], list[str], list[dict]]:
     parser = _ListingParser()
     parser.feed(body.decode("utf-8", "replace"))
     links: list[str] = []
     anchors: list[_HtmlNode] = []
 
-    def visit(node: _HtmlNode):
+    pending_nodes = [parser.root]
+    while pending_nodes:
+        node = pending_nodes.pop()
         link_type = node.attrs.get("type", "").lower()
         if node.tag == "link" and node.attrs.get("rel", "").lower() in {"alternate", "feed"} and ("rss" in link_type or "atom" in link_type or "xml" in link_type):
             href = urljoin(base_url, node.attrs.get("href", ""))
@@ -163,12 +176,9 @@ def _html_parts(body: bytes, base_url: str, allowed_hosts: set[str]) -> tuple[li
                 links.append(href)
         if node.tag == "a":
             anchors.append(node)
-        for child in node.children:
-            if isinstance(child, _HtmlNode):
-                visit(child)
-
-    visit(parser.root)
+        pending_nodes.extend(child for child in reversed(node.children) if isinstance(child, _HtmlNode))
     rows: list[dict] = []
+    undated: list[dict] = []
     seen: set[str] = set()
     for anchor in anchors:
         href = urljoin(base_url, anchor.attrs.get("href", ""))
@@ -203,11 +213,22 @@ def _html_parts(body: bytes, base_url: str, allowed_hosts: set[str]) -> tuple[li
             if found_date:
                 break
             current = current.parent
-        if not found_date or href in seen:
+        if href in seen:
             continue
+        if not found_date:
+            parsed_href = urlsplit(href)
+            base_path = urlsplit(base_url).path.rstrip("/")
+            base_parts = [part for part in base_path.split("/") if part]
+            path_parts = [part for part in parsed_href.path.split("/") if part]
+            # Do not spend article-page requests on header/footer links,
+            # pagination, filters, or the listing page itself.
+            if (parsed_href.query or parsed_href.fragment or parsed_href.path.rstrip("/") == base_path
+                    or len(path_parts) <= len(base_parts) or len(path_parts[-1]) < 6):
+                continue
         seen.add(href)
-        rows.append({"title": title[:400], "url": href, "published": found_date, "summary": ""})
-    return rows, list(dict.fromkeys(links))
+        row = {"title": title[:400], "url": href, "published": found_date, "summary": ""}
+        (rows if found_date else undated).append(row)
+    return rows, list(dict.fromkeys(links)), undated
 
 
 def _xml_entries(body: bytes) -> tuple[list[ET.Element], str]:
@@ -225,8 +246,9 @@ def _same_official_hosts(url: str, allowed_hosts: set[str]) -> bool:
     return urlsplit(url).scheme == "https" and any(host == allowed or host.endswith("." + allowed) for allowed in allowed_hosts)
 
 
-def _fetch(url: str, allowed_hosts: set[str]) -> tuple[bytes, str]:
-    request = urllib.request.Request(url, headers={"User-Agent": UA, "Accept": "application/atom+xml, application/rss+xml, application/xml, text/xml, text/html, application/xhtml+xml, */*;q=0.8"})
+def _fetch(url: str, allowed_hosts: set[str], *, html_preferred: bool = False) -> tuple[bytes, str]:
+    accept = "text/html, application/xhtml+xml, application/xml;q=0.8, */*;q=0.5" if html_preferred else "application/atom+xml, application/rss+xml, application/xml, text/xml, text/html, application/xhtml+xml, */*;q=0.8"
+    request = urllib.request.Request(url, headers={"User-Agent": UA, "Accept": accept})
     with urllib.request.urlopen(request, timeout=18) as response:
         body, final_url = response.read(2_000_000), response.geturl()
     if not _same_official_hosts(final_url, allowed_hosts):
@@ -238,20 +260,43 @@ def _jsonld_items(body: bytes) -> list[dict]:
     parser = _JsonLdParser()
     parser.feed(body.decode("utf-8", "replace"))
     items: list[dict] = []
-    def walk(value):
-        if isinstance(value, list):
-            for child in value: walk(child)
-        elif isinstance(value, dict):
-            kind = value.get("@type", [])
-            kinds = {kind} if isinstance(kind, str) else set(kind)
-            if kinds.intersection({"NewsArticle", "BlogPosting", "Article"}):
-                items.append(value)
-            walk(value.get("@graph", []))
-            walk(value.get("mainEntity", []))
     for raw in parser.documents:
-        try: walk(json.loads(raw))
+        try:
+            pending = [json.loads(raw)]
+            while pending:
+                value = pending.pop()
+                if isinstance(value, list):
+                    pending.extend(value)
+                elif isinstance(value, dict):
+                    kind = value.get("@type", [])
+                    kinds = {kind} if isinstance(kind, str) else set(kind)
+                    if kinds.intersection({"NewsArticle", "BlogPosting", "Article"}):
+                        items.append(value)
+                    pending.extend((value.get("@graph", []), value.get("mainEntity", [])))
         except (ValueError, TypeError): continue
     return items
+
+
+def _article_published_date(body: bytes) -> dt.date | None:
+    for item in _jsonld_items(body):
+        value = item.get("datePublished") or item.get("dateCreated")
+        if value and (date := _published_date(str(value))):
+            return date
+    parser = _ListingParser()
+    parser.feed(body.decode("utf-8", "replace"))
+    values: list[str] = []
+    pending_nodes = [parser.root]
+    while pending_nodes:
+        node = pending_nodes.pop()
+        if node.tag == "meta":
+            attrs = node.attrs
+            key = (attrs.get("property") or attrs.get("name") or attrs.get("itemprop") or "").lower()
+            if key in {"article:published_time", "datepublished", "datecreated", "date", "dc.date", "dcterms.issued"}:
+                values.append(attrs.get("content", ""))
+        if node.tag == "time" and node.attrs.get("datetime"):
+            values.append(node.attrs["datetime"])
+        pending_nodes.extend(child for child in reversed(node.children) if isinstance(child, _HtmlNode))
+    return next((date for value in values if (date := _published_date(value))), None)
 
 
 def collect(root: Path, day: str | None = None) -> tuple[list[dict], list[dict]]:
@@ -277,6 +322,7 @@ def collect(root: Path, day: str | None = None) -> tuple[list[dict], list[dict]]
         entries, fmt = _xml_entries(body)
         rows = []
         missing_date = 0
+        date_fetches = 0
         for entry in entries:
             title = _text(entry.find("title")) or _text(entry.find(ATOM + "title"))
             link = _text(entry.find("link"))
@@ -288,10 +334,17 @@ def collect(root: Path, day: str | None = None) -> tuple[list[dict], list[dict]]
             summary = (_text(entry.find("description")) or _text(entry.find("summary")) or
                        _text(entry.find(ATOM + "summary")) or _text(entry.find(ATOM + "content")))
             published = _entry_date(entry)
-            if published is None:
-                missing_date += 1
-                continue
             if title and _same_official_hosts(link, allowed_hosts):
+                if published is None and date_fetches < 15:
+                    date_fetches += 1
+                    try:
+                        article_body, _ = _fetch(link, allowed_hosts)
+                        published = _article_published_date(article_body)
+                    except (OSError, urllib.error.URLError, TimeoutError, ValueError):
+                        published = None
+                if published is None:
+                    missing_date += 1
+                    continue
                 rows.append({"title": title, "url": link, "published": published, "summary": summary})
         if not rows and missing_date:
             raise ValueError(f"{missing_date} feed entries had no trustworthy publication date")
@@ -318,9 +371,14 @@ def collect(root: Path, day: str | None = None) -> tuple[list[dict], list[dict]]
         except (OSError, urllib.error.URLError, TimeoutError, ValueError) as exc:
             errors.append(f"feed: {type(exc).__name__}: {safe_log(str(exc))}")
 
-        if not stat["ok"] and html_url not in {feed["url"], *(url for _, url in bodies)}:
+        existing_html = any(
+            final.lower().startswith(html_url.lower()) and
+            (b"<html" in body[:2048].lower() or b"<!doctype html" in body[:2048].lower())
+            for body, final in bodies
+        )
+        if not stat["ok"] and (html_url not in {url for _, url in bodies} or not existing_html):
             try:
-                body, final_url = _fetch(html_url, hosts)
+                body, final_url = _fetch(html_url, hosts, html_preferred=True)
                 bodies.append((body, final_url))
             except (OSError, urllib.error.URLError, TimeoutError, ValueError) as exc:
                 errors.append(f"HTML fallback: {type(exc).__name__}: {safe_log(str(exc))}")
@@ -329,7 +387,7 @@ def collect(root: Path, day: str | None = None) -> tuple[list[dict], list[dict]]
             # HTML pages may publish their own first-party RSS/Atom alternate link.
             html_body, base_url = next(((body, final) for body, final in reversed(bodies)
                                         if b"<html" in body[:2048].lower() or b"<!doctype html" in body[:2048].lower()), bodies[-1])
-            html_rows, discovered_feeds = _html_parts(html_body, base_url, hosts)
+            html_rows, discovered_feeds, undated_html_rows = _html_parts(html_body, base_url, hosts)
             feed_ok = False
             for discovered in discovered_feeds:
                 if discovered == feed["url"]:
@@ -344,6 +402,18 @@ def collect(root: Path, day: str | None = None) -> tuple[list[dict], list[dict]]
                         break
                 except (OSError, urllib.error.URLError, ET.ParseError, TimeoutError, ValueError) as exc:
                     errors.append(f"discovered feed: {type(exc).__name__}: {safe_log(str(exc))}")
+            if not feed_ok and len(undated_html_rows) > 0:
+                # Some first-party listings omit dates on the card but provide
+                # datePublished on the linked article. Verify a small bounded
+                # set directly instead of guessing from crawl/update dates.
+                for row in undated_html_rows[:15]:
+                    try:
+                        article_body, _ = _fetch(row["url"], hosts)
+                        row["published"] = _article_published_date(article_body)
+                        if row["published"]:
+                            html_rows.append(row)
+                    except (OSError, urllib.error.URLError, TimeoutError, ValueError) as exc:
+                        errors.append(f"article date fallback: {type(exc).__name__}: {safe_log(str(exc))}")
             if not feed_ok and html_rows:
                 stat["type"] = "HTML listing"
                 add_rows(html_rows, feed, stat)

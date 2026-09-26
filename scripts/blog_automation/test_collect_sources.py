@@ -1,13 +1,14 @@
 from __future__ import annotations
 
 import json
+import datetime as dt
 import tempfile
 import unittest
 from pathlib import Path
-from unittest.mock import patch
+from unittest.mock import patch, call
 from urllib.parse import urlsplit
 
-from .collect_sources import collect
+from .collect_sources import _article_published_date, collect
 
 
 class Response:
@@ -65,6 +66,33 @@ class CollectSourcesTests(unittest.TestCase):
         self.assertEqual([c["title"] for c in candidates], ["Google-style dated release", "Namespaced Atom release"])
         self.assertTrue(all(stat["ok"] for stat in stats))
 
+    def test_rfc822_date_without_comma_is_supported(self):
+        feed = {"name": "Oracle style feed date", "company": "Oracle", "url": "https://example.test/rss"}
+        rss = b'<rss version="2.0"><channel><item><title>Oracle official announcement</title><link>https://example.test/news</link><pubDate>Thu Sep 24 16:30:00 UTC 2026</pubDate></item></channel></rss>'
+        candidates, stats = self.run_feeds([feed], {feed["url"]: rss})
+        self.assertEqual(stats[0]["type"], "RSS")
+        self.assertEqual(candidates[0]["published_date"], "2026-09-24")
+
+    def test_undated_official_rss_item_uses_its_article_publication_metadata(self):
+        feed = {"name": "Feed without item date", "company": "Google", "url": "https://example.test/rss"}
+        rss = b'<rss version="2.0"><channel><item><title>Official developer feature release</title><link>https://example.test/news/item</link></item></channel></rss>'
+        article = b'<html><script type="application/ld+json">{"@type":"NewsArticle","datePublished":"2026-09-24"}</script></html>'
+        candidates, stats = self.run_feeds([feed], {feed["url"]: rss, "https://example.test/news/item": article})
+        self.assertTrue(stats[0]["ok"])
+        self.assertEqual(candidates[0]["published_date"], "2026-09-24")
+
+    def test_undated_official_listing_card_uses_article_publication_metadata(self):
+        feed = {"name": "Official listing without card dates", "company": "A", "url": "https://example.test/news"}
+        page = b'<html><article><a href="/news/release">A dated article whose listing card omits the date</a></article></html>'
+        article = b'<html><meta property="article:published_time" content="2026-09-24T12:00:00Z"></html>'
+        candidates, stats = self.run_feeds([feed], {feed["url"]: page, "https://example.test/news/release": article})
+        self.assertEqual(stats[0]["type"], "HTML listing")
+        self.assertEqual(candidates[0]["published_date"], "2026-09-24")
+
+    def test_article_date_parser_handles_deeply_nested_official_html(self):
+        nested = ("<div>" * 1200 + '<meta property="article:published_time" content="2026-09-24">' + "</div>" * 1200).encode()
+        self.assertEqual(_article_published_date(nested), dt.date(2026, 9, 24))
+
     def test_official_jsonld_article_is_structured_and_date_filtered(self):
         feed = {"name": "Official page", "company": "A", "url": "https://example.test/news", "primary": True}
         page = b'''<html><script type="application/ld+json">{"@context":"https://schema.org","@type":"NewsArticle","headline":"Confirmed release","url":"https://example.test/news/release","datePublished":"2026-09-24T10:00:00-04:00","description":"Release details"}</script></html>'''
@@ -91,6 +119,22 @@ class CollectSourcesTests(unittest.TestCase):
         self.assertIn("feed: OSError", stats[0]["error"])
         self.assertEqual(candidates[0]["published_date"], "2026-09-24")
 
+    def test_same_url_is_retried_with_html_accept_after_malformed_feed_response(self):
+        feed = {"name": "Negotiated official page", "company": "A", "url": "https://example.test/news", "html_url": "https://example.test/news"}
+        malformed_feed = b'<rss><channel><item>'
+        html_page = b'<html><article><time datetime="2026-09-24"><a href="/news/release">A sufficiently descriptive official announcement</a></time></article></html>'
+        temp = tempfile.TemporaryDirectory()
+        self.addCleanup(temp.cleanup)
+        root = Path(temp.name)
+        config = root / "scripts/blog_automation"
+        config.mkdir(parents=True)
+        (config / "sources.json").write_text(json.dumps({"feeds": [feed]}), encoding="utf-8")
+        with patch("scripts.blog_automation.collect_sources._fetch", side_effect=[(malformed_feed, feed["url"]), (html_page, feed["url"])]) as fetch:
+            candidates, stats = collect(root, "2026-09-24")
+        self.assertTrue(stats[0]["ok"])
+        self.assertEqual(candidates[0]["url"], "https://example.test/news/release")
+        self.assertEqual(fetch.call_args_list[1], call(feed["url"], {"example.test"}, html_preferred=True))
+
     def test_discovered_first_party_rss_is_preferred_to_html_cards(self):
         feed = {"name": "Official page", "company": "A", "url": "https://example.test/news", "primary": True}
         page = b'''<html><head><link rel="alternate" type="application/rss+xml" href="/feed.xml"></head><article><time datetime="2026-09-24">September 24, 2026</time><a href="/news/html">HTML list story title</a></article></html>'''
@@ -102,14 +146,14 @@ class CollectSourcesTests(unittest.TestCase):
     def test_html_fallback_never_accepts_non_official_hosts_or_undated_cards(self):
         feed = {"name": "Official page", "company": "A", "url": "https://example.test/news", "primary": True}
         page = b'''<html><article><time datetime="2026-09-24">September 24, 2026</time><a href="https://thirdparty.test/news/story">A plausible third party report title</a></article><article><a href="/news/no-date">An undated official story headline</a></article></html>'''
-        candidates, stats = self.run_feeds([feed], {feed["url"]: page})
+        candidates, stats = self.run_feeds([feed], {feed["url"]: page, "https://example.test/news/no-date": OSError("undated article")})
         self.assertFalse(stats[0]["ok"])
         self.assertEqual(candidates, [])
 
     def test_all_eleven_formerly_broken_sources_have_an_official_html_fallback(self):
         config = json.loads((Path.cwd() / "scripts/blog_automation/sources.json").read_text(encoding="utf-8"))
         names = {"Anthropic Newsroom", "Google DeepMind", "Google Cloud Blog", "Meta AI Blog",
-                 "IBM Newsroom Announcements", "Oracle Blogs", "Adobe Newsroom", "Qualcomm Releases",
+                 "IBM Newsroom Announcements", "Oracle News Releases", "Adobe Newsroom", "Qualcomm Releases",
                  "xAI News", "Tesla Blog", "Rockstar Newswire"}
         feeds = [feed for feed in config["feeds"] if feed["name"] in names]
         self.assertEqual({feed["name"] for feed in feeds}, names)
@@ -124,11 +168,13 @@ class CollectSourcesTests(unittest.TestCase):
         self.assertEqual(feeds["Google Developers"]["html_url"], "https://developers.googleblog.com/")
         self.assertEqual(feeds["Microsoft Source"]["allowed_hosts"], ["microsoft.com"])
         self.assertEqual(feeds["Microsoft Source"]["html_url"], "https://news.microsoft.com/source/")
+        self.assertEqual(feeds["Oracle News Releases"]["url"], "https://www.oracle.com/corporate/press/rss/rss-pr.xml")
+        self.assertEqual(feeds["Rockstar Newswire"]["url"], "https://www.rockstargames.com/newswire")
 
     def test_html_listing_is_parsed_for_each_repaired_official_host(self):
         config = json.loads((Path.cwd() / "scripts/blog_automation/sources.json").read_text(encoding="utf-8"))
         names = {"Anthropic Newsroom", "Google DeepMind", "Google Cloud Blog", "Meta AI Blog",
-                 "IBM Newsroom Announcements", "Oracle Blogs", "Adobe Newsroom", "Qualcomm Releases",
+                 "IBM Newsroom Announcements", "Oracle News Releases", "Adobe Newsroom", "Qualcomm Releases",
                  "xAI News", "Tesla Blog", "Rockstar Newswire"}
         for source in (feed for feed in config["feeds"] if feed["name"] in names):
             feed = {**source, "url": source["html_url"]}
