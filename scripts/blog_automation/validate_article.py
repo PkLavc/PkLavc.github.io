@@ -1,16 +1,17 @@
 from __future__ import annotations
 
 import datetime as dt
+import html as html_lib
 import html.parser
+import io
 import json
 import re
-import io
 import urllib.error
 import urllib.request
 from pathlib import Path
 from urllib.parse import urlsplit
 
-PLACEHOLDERS = re.compile(r"\{\{[A-Z_]+\}\}|TODO|lorem ipsum|as an AI|I cannot access|according to the information provided|como uma IA|não tenho acesso|según la información proporcionada", re.I)
+PLACEHOLDERS = re.compile(r"\{\{[A-Z_]+\}\}|TODO|lorem ipsum|as an AI|I cannot access|according to the information provided|como uma IA|não tenho acesso|según la información proporcionada", re.IGNORECASE)
 VOID = {"area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta", "param", "source", "track", "wbr"}
 QUALITY_ERROR_PREFIXES = (
     "article has ", "section '", "first two sections must separate",
@@ -20,6 +21,14 @@ QUALITY_ERROR_PREFIXES = (
     "at least one verified Tier A official source must be cited",
     "TRUSTED_SECONDARY requires two independent Tier B publishers",
     "article cites a URL not verified for this story",
+    "unsupported technical speculation detected",
+)
+
+UNSUPPORTED_SPECULATION = (
+    re.compile(r"\b(?:likely|probably|presumably|might|may)\s+(?:to\s+)?(?:includes?|uses?|relies\s+on|depend(?:s)?\s+on|supports?|contains?|requires?|runs?|employs?|implements?|be\s+based\s+on|be\s+powered\s+by)\b", re.IGNORECASE),
+    re.compile(r"\bprobable\s+(?:(?:[\w-]+\s+){0,3})(?:fine[- ]?tun\w*|training|architecture|infrastructure|model|capabilit\w*|system)\b", re.IGNORECASE),
+    re.compile(r"\bcould\s+(?:mean|imply|suggest|indicate)\s+that\s+(?:the\s+)?(?:product|system|model|feature|service)\b.{0,100}\b(?:includes?|uses?|supports?|contains?|requires?|runs?|relies\s+on)\b", re.IGNORECASE),
+    re.compile(r"\bcould\s+(?:include|use|rely\s+on|depend\s+on|support|contain|require|run|be\s+based\s+on|be\s+powered\s+by)\b", re.IGNORECASE),
 )
 
 
@@ -40,17 +49,17 @@ class Structure(html.parser.HTMLParser):
         else: self.stack.pop()
 
 
-def validate(root: Path, html: str, story: dict, day: str, *, check_remote: bool = True) -> None:
+def validate(root: Path, document_html: str, story: dict, day: str, *, check_remote: bool = True) -> None:
     errors = []
     if not story.get("title") or len(story["title"]) < 20: errors.append("title missing or too short")
     slug = story.get("slug", "")
     if not re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", slug): errors.append("invalid slug")
     if dt.date.fromisoformat(day).isoformat() != day: errors.append("invalid date")
     if story.get("confirmed_event_date") != day: errors.append("event date differs from run date")
-    if "Confirmed facts" not in html or "Technical analysis" not in html: errors.append("confirmed facts and analysis must be clearly separated")
+    if "Confirmed facts" not in document_html or "Technical analysis" not in document_html: errors.append("confirmed facts and analysis must be clearly separated")
     if len(story.get("description", "")) < 60: errors.append("description too short")
     if len(story.get("tags", [])) < 3: errors.append("at least three tags required")
-    article_body = re.search(r'<article class="blog-article">([\s\S]*?)</article>', html)
+    article_body = re.search(r'<article class="blog-article">([\s\S]*?)</article>', document_html)
     body_text = article_body.group(1) if article_body else ""
     source_match = re.search(r'<section><h2>Sources</h2>[\s\S]*?</section>', body_text)
     substantive_text = body_text.replace(source_match.group(0), "") if source_match else body_text
@@ -63,8 +72,16 @@ def validate(root: Path, html: str, story: dict, day: str, *, check_remote: bool
     for _, heading, content in sections:
         section_words = len(re.findall(r"\b[\w'-]+\b", re.sub(r"<[^>]+>", " ", content)))
         if section_words < 80: errors.append(f"section '{heading}' is not substantive ({section_words} words; minimum 80)")
-    if PLACEHOLDERS.search(html): errors.append("placeholder or AI meta commentary detected")
-    source_section = re.search(r'<section><h2>Sources</h2>([\s\S]*?)</section>', html)
+    for match in re.finditer(r'<section data-editorial-kind="(?:fact|analysis|neutral)"><h2>.*?</h2>([\s\S]*?)</section>', substantive_text):
+        section_text = html_lib.unescape(re.sub(r"<[^>]+>", " ", match.group(1)))
+        for pattern in UNSUPPORTED_SPECULATION:
+            found = pattern.search(section_text)
+            if found:
+                excerpt = " ".join(found.group(0).split())[:100]
+                errors.append(f"unsupported technical speculation detected: {excerpt}")
+                break
+    if PLACEHOLDERS.search(document_html): errors.append("placeholder or AI meta commentary detected")
+    source_section = re.search(r'<section><h2>Sources</h2>([\s\S]*?)</section>', document_html)
     cited_urls = re.findall(r'<a\s+href="(https://[^" ]+)"', source_section.group(1) if source_section else "")
     evidence_status = story.get("evidence_status", "MULTI_SOURCE")
     if not source_section or len(cited_urls) < 1: errors.append("at least one verified source URL is required")
@@ -91,9 +108,9 @@ def validate(root: Path, html: str, story: dict, day: str, *, check_remote: bool
         if len(cited_urls) < 2 or len(cited_publishers) < 2:
             errors.append("TRUSTED_SECONDARY requires two independent Tier B publishers")
     if any(url not in story.get("sources", []) for url in cited_urls): errors.append("article cites a URL not verified for this story")
-    social_image = re.search(r'<meta property="og:image" content="([^"]+)"', html)
-    twitter_image = re.search(r'<meta name="twitter:image" content="([^"]+)"', html)
-    image_alt = re.search(r'<meta property="og:image:alt" content="([^"]+)"', html)
+    social_image = re.search(r'<meta property="og:image" content="([^"]+)"', document_html)
+    twitter_image = re.search(r'<meta name="twitter:image" content="([^"]+)"', document_html)
+    image_alt = re.search(r'<meta property="og:image:alt" content="([^"]+)"', document_html)
     if not social_image or not twitter_image or social_image.group(1) != twitter_image.group(1): errors.append("Open Graph and Twitter social images must match")
     if not image_alt or story.get("title", "").lower() not in image_alt.group(1).lower(): errors.append("social image alt text must describe this article")
     expected_card = story.get("social_card_path", "")
@@ -110,13 +127,13 @@ def validate(root: Path, html: str, story: dict, day: str, *, check_remote: bool
     for marker in ('<link rel="canonical"', '<meta name="description"', '<meta name="keywords"',
                    'property="og:title"', 'property="og:description"', 'name="twitter:card"',
                    '"@type":"BlogPosting"', '"@type":"BreadcrumbList"'):
-        if marker not in html: errors.append(f"SEO metadata missing: {marker}")
+        if marker not in document_html: errors.append(f"SEO metadata missing: {marker}")
     parser = Structure()
     try:
-        parser.feed(html); parser.close()
+        parser.feed(document_html); parser.close()
         if parser.error or parser.stack: errors.append(parser.error or f"unclosed tags: {parser.stack[-5:]}")
-    except Exception as exc: errors.append(f"HTML parsing failed: {exc}")
-    jsonld = re.search(r'<script type="application/ld\+json">([\s\S]*?)</script>', html)
+    except (ValueError, AssertionError, RecursionError) as exc: errors.append(f"HTML parsing failed: {exc}")
+    jsonld = re.search(r'<script type="application/ld\+json">([\s\S]*?)</script>', document_html)
     try:
         if not jsonld: raise ValueError("JSON-LD not found")
         json.loads(jsonld.group(1))
@@ -133,7 +150,7 @@ def validate(root: Path, html: str, story: dict, day: str, *, check_remote: bool
                     if response.status >= 400: errors.append(f"source URL returned {response.status}: {url}")
             except (OSError, urllib.error.URLError, TimeoutError) as exc:
                 errors.append(f"source URL unavailable: {url} ({type(exc).__name__})")
-    for raw in re.findall(r'\b(?:href|src)="(/[^"#?]+)', html):
+    for raw in re.findall(r'\b(?:href|src)="(/[^"#?]+)', document_html):
         local = root / raw.lstrip("/")
         if not local.exists(): errors.append(f"missing local asset: {raw}")
     if errors:
