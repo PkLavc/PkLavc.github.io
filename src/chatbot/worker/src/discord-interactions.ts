@@ -1,5 +1,6 @@
 import type { Env } from "./index";
 import { postThreadMessage, updateControlMessage } from "./discord-conversations";
+import { sendInstagramReplyForConversation } from "./instagram-messaging";
 
 type DiscordInteraction = {
   type: number; id: string; token: string;
@@ -48,6 +49,7 @@ export async function handleDiscordInteraction(request: Request, env: Env, ctx: 
       if (!outcomes[1]?.meta.changes) return;
       await postThreadMessage(env, control.discord_thread_id, { content: `**Patrick:**\n${content}`, allowed_mentions: { parse: [] } });
       await updateControlMessage(env, { ...control, status: "HUMAN" }, true);
+      await sendInstagramReplyForConversation(env, conversationId, content);
     })().catch(() => console.log(JSON.stringify({ level: "warn", event: "discord_human_reply_failed" }))));
     return Response.json({ type: 5, data: { flags: 64 } });
   }

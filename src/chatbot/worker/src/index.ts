@@ -1,6 +1,8 @@
 import { MANUAL_RAG_CONTEXT, MANUAL_RAG_SECTIONS } from "./manual-rag";
 import { handleDiscordInteraction } from "./discord-interactions";
 import { closeDiscordConversation, drainDiscordMessageQueue, enqueueDiscordMessage, getConversationControl } from "./discord-conversations";
+import { decryptInstagramRecipient, deriveInstagramIdentity, encryptInstagramRecipient, sendInstagramMessage } from "./instagram-messaging";
+import { parseInstagramWebhook } from "./instagram-webhook";
 
 export interface Env {
   DB: D1Database;
@@ -38,6 +40,11 @@ export interface Env {
   DISCORD_BOT_TOKEN?: string;
   DISCORD_CHANNEL_ID?: string;
   DISCORD_OWNER_USER_ID?: string;
+  INSTAGRAM_ACCESS_TOKEN?: string;
+  INSTAGRAM_APP_SECRET?: string;
+  INSTAGRAM_WEBHOOK_VERIFY_TOKEN?: string;
+  INSTAGRAM_API_MODE?: string;
+  INSTAGRAM_GRAPH_API_VERSION?: string;
 }
 
 type ChatPayload = {
@@ -106,6 +113,22 @@ export default {
 
     if (url.pathname === "/discord/interactions" && request.method === "POST") {
       return handleDiscordInteraction(request, env, ctx);
+    }
+
+    if (url.pathname === "/webhook/instagram") {
+      const result = await parseInstagramWebhook(request, env);
+      if ("response" in result) return result.response;
+      let enqueueFailed = false;
+      for (const message of result.messages) {
+        try {
+          await enqueueInstagramInbound(env, message.accountId, message.senderId, message.messageId, message.text, ctx);
+        } catch (error) {
+          enqueueFailed = true;
+          console.log(JSON.stringify({ level: "warn", event: "instagram_webhook_enqueue_failed", reason: error instanceof Error ? error.name : "unknown" }));
+        }
+      }
+      if (enqueueFailed) return new Response("Temporary processing failure", { status: 500 });
+      return new Response("EVENT_RECEIVED", { status: 200, headers: { "Content-Type": "text/plain" } });
     }
 
     if (request.method === "OPTIONS") {
@@ -594,7 +617,7 @@ export default {
   },
 };
 
-async function handleChat(payload: ChatPayload, user: AuthUser, env: Env, traceId: string, isStreaming: boolean, traceparent: string, onVisitorMessage?: (conversationId: string, content: string) => Promise<void>) {
+async function handleChat(payload: ChatPayload, user: AuthUser, env: Env, traceId: string, isStreaming: boolean, traceparent: string, onVisitorMessage?: (conversationId: string, content: string) => Promise<void>, skipResponseCache = false) {
   const startedAt = Date.now();
   const sanitized = sanitizeInput(maskPii(payload.message || "", env));
   const guardrail = runGuardrails(sanitized);
@@ -634,14 +657,16 @@ async function handleChat(payload: ChatPayload, user: AuthUser, env: Env, traceI
   }
 
   const cacheKey = await cacheHash(`u:${user.id}|task:${task}|msg:${sanitized}`);
-  const cached = await env.SESSIONS.get(`response:${cacheKey}`);
-  if (cached) {
-    const parsed = JSON.parse(cached) as Record<string, unknown>;
-    return {
-      ...parsed,
-      from_cache: true,
-      trace_id: traceId,
-    };
+  if (!skipResponseCache) {
+    const cached = await env.SESSIONS.get(`response:${cacheKey}`);
+    if (cached) {
+      const parsed = JSON.parse(cached) as Record<string, unknown>;
+      return {
+        ...parsed,
+        from_cache: true,
+        trace_id: traceId,
+      };
+    }
   }
 
   const conversationId = await ensureConversation(env, user.id, payload.conversation_id);
@@ -716,9 +741,11 @@ async function handleChat(payload: ChatPayload, user: AuthUser, env: Env, traceI
     trace_id: traceId,
   };
 
-  await env.SESSIONS.put(`response:${cacheKey}`, JSON.stringify(responsePayload), {
-    expirationTtl: Number(env.RESPONSE_CACHE_TTL || "180"),
-  });
+  if (!skipResponseCache) {
+    await env.SESSIONS.put(`response:${cacheKey}`, JSON.stringify(responsePayload), {
+      expirationTtl: Number(env.RESPONSE_CACHE_TTL || "180"),
+    });
+  }
 
   return responsePayload;
 }
@@ -894,6 +921,115 @@ async function enqueueAndDrainDiscordQueue(env: Env, conversationId: string, aut
   } catch {
     console.log(JSON.stringify({ level: "warn", event: "discord_queue_delivery_failed", author }));
   }
+}
+
+async function enqueueInstagramInbound(env: Env, accountId: string, senderId: string, messageId: string, text: string, ctx: ExecutionContext): Promise<void> {
+  if (!env.INSTAGRAM_APP_SECRET) throw new Error("instagram_app_secret_missing");
+  const identity = await deriveInstagramIdentity(env.INSTAGRAM_APP_SECRET, accountId, senderId);
+  const request = new Request("https://internal.pklavc.com/chat", { headers: { "X-Skylet-Visitor-Id": identity.visitorId } });
+  const user = await resolveChatUser(request, env);
+  const now = new Date().toISOString();
+  await env.DB.prepare("INSERT OR IGNORE INTO conversations (id, user_id, title, created_at, updated_at) VALUES (?, ?, ?, ?, ?)")
+    .bind(identity.conversationId, user.id, "Instagram chat", now, now).run();
+  const recipientCipher = await encryptInstagramRecipient(env.INSTAGRAM_APP_SECRET, senderId);
+  await env.DB.prepare("INSERT OR IGNORE INTO instagram_conversations (sender_key, visitor_id, conversation_id, account_id, recipient_id_cipher, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)")
+    .bind(identity.senderKey, identity.visitorId, identity.conversationId, accountId, recipientCipher, now, now).run();
+  const mapping = await env.DB.prepare("SELECT conversation_id FROM instagram_conversations WHERE sender_key = ?").bind(identity.senderKey).first<{ conversation_id: string }>();
+  if (!mapping) throw new Error("instagram_conversation_unavailable");
+  if (mapping.conversation_id !== identity.conversationId) {
+    await env.DB.prepare("INSERT OR IGNORE INTO conversations (id, user_id, title, created_at, updated_at) VALUES (?, ?, ?, ?, ?)")
+      .bind(mapping.conversation_id, user.id, "Instagram chat", now, now).run();
+  }
+  const eventKey = await sha256(`instagram:${accountId}:${messageId}`);
+  const content = sanitizeInput(maskPii(text, env));
+  await env.DB.prepare("INSERT OR IGNORE INTO instagram_inbox_queue (event_key, sender_key, content, status, created_at, updated_at) VALUES (?, ?, ?, 'queued', ?, ?)")
+    .bind(eventKey, identity.senderKey, content, now, now).run();
+  ctx.waitUntil(drainInstagramInbox(env, identity.senderKey));
+}
+
+async function drainInstagramInbox(env: Env, senderKey: string): Promise<void> {
+  const lockToken = crypto.randomUUID();
+  const now = new Date();
+  const lock = await env.DB.prepare("UPDATE instagram_conversations SET processing_lock_token = ?, processing_lock_until = ?, updated_at = ? WHERE sender_key = ? AND (processing_lock_until IS NULL OR processing_lock_until < ?)")
+    .bind(lockToken, new Date(now.getTime() + 120_000).toISOString(), now.toISOString(), senderKey, now.toISOString()).run();
+  if (!lock.meta.changes) return;
+  let failed = false;
+  try {
+    for (let count = 0; count < 50; count += 1) {
+      const item = await env.DB.prepare("SELECT id, event_key, content, response_content, status FROM instagram_inbox_queue WHERE sender_key = ? AND status <> 'sent' ORDER BY id LIMIT 1")
+        .bind(senderKey).first<{ id: number; event_key: string; content: string; response_content: string | null; status: "queued" | "reply_pending" }>();
+      if (!item) break;
+      try {
+        await processInstagramInboxItem(env, senderKey, item);
+      } catch (error) {
+        failed = true;
+        console.log(JSON.stringify({ level: "warn", event: "instagram_inbox_processing_failed", reason: error instanceof Error ? error.name : "unknown" }));
+        break;
+      }
+    }
+  } finally {
+    await env.DB.prepare("UPDATE instagram_conversations SET processing_lock_token = NULL, processing_lock_until = NULL, updated_at = ? WHERE sender_key = ? AND processing_lock_token = ?")
+      .bind(new Date().toISOString(), senderKey, lockToken).run();
+  }
+  if (!failed) {
+    const pending = await env.DB.prepare("SELECT id FROM instagram_inbox_queue WHERE sender_key = ? AND status <> 'sent' ORDER BY id LIMIT 1").bind(senderKey).first();
+    if (pending) await drainInstagramInbox(env, senderKey);
+  }
+}
+
+async function processInstagramInboxItem(env: Env, senderKey: string, item: { id: number; event_key: string; content: string; response_content: string | null; status: "queued" | "reply_pending" }): Promise<void> {
+  const mapping = await env.DB.prepare("SELECT visitor_id, conversation_id, account_id, recipient_id_cipher FROM instagram_conversations WHERE sender_key = ?")
+    .bind(senderKey).first<{ visitor_id: string; conversation_id: string; account_id: string; recipient_id_cipher: string }>();
+  if (!mapping || !env.INSTAGRAM_APP_SECRET) throw new Error("instagram_conversation_unavailable");
+  const user = await resolveChatUser(new Request("https://internal.pklavc.com/chat", { headers: { "X-Skylet-Visitor-Id": mapping.visitor_id } }), env);
+  let conversationId = mapping.conversation_id;
+  let control = await getConversationControl(env, conversationId, user.id);
+  if (control?.status === "CLOSED") {
+    const replacementId = crypto.randomUUID();
+    const now = new Date().toISOString();
+    await env.DB.prepare("INSERT INTO conversations (id, user_id, title, created_at, updated_at) VALUES (?, ?, ?, ?, ?)")
+      .bind(replacementId, user.id, "Instagram chat", now, now).run();
+    await env.DB.prepare("UPDATE instagram_conversations SET conversation_id = ?, updated_at = ? WHERE sender_key = ? AND conversation_id = ?")
+      .bind(replacementId, now, senderKey, conversationId).run();
+    conversationId = replacementId;
+    control = await getConversationControl(env, conversationId, user.id);
+  }
+
+  let responseContent = item.response_content || "";
+  if (item.status === "queued") {
+    if (control?.status === "HUMAN") {
+      await storeMessage(env, conversationId, "user", item.content);
+      await enqueueAndDrainDiscordQueue(env, conversationId, "Visitante", item.content);
+      await env.DB.prepare("UPDATE instagram_inbox_queue SET status = 'sent', updated_at = ? WHERE id = ? AND status = 'queued'")
+        .bind(new Date().toISOString(), item.id).run();
+      return;
+    }
+    let visitorQueued = false;
+    const payload: ChatPayload = { message: item.content, conversation_id: conversationId };
+    const result = await handleChat(payload, user, env, crypto.randomUUID().replaceAll("-", ""), false, "00-00000000000000000000000000000000-0000000000000001-01", async (id, content) => {
+      await enqueueDiscordMessage(env, id, "Visitante", content);
+      visitorQueued = true;
+    }, true);
+    if ("conversation_id" in result && result.conversation_id) {
+      conversationId = result.conversation_id;
+      if (!visitorQueued) await enqueueDiscordMessage(env, conversationId, "Visitante", item.content);
+      responseContent = typeof result.reply === "string" ? result.reply : "";
+      if (responseContent && visitorQueued) await enqueueDiscordMessage(env, conversationId, "Skylet", responseContent);
+      await drainDiscordMessageQueue(env, conversationId);
+    }
+    if (!responseContent) {
+      await env.DB.prepare("UPDATE instagram_inbox_queue SET status = 'sent', updated_at = ? WHERE id = ? AND status = 'queued'")
+        .bind(new Date().toISOString(), item.id).run();
+      return;
+    }
+    await env.DB.prepare("UPDATE instagram_inbox_queue SET status = 'reply_pending', response_content = ?, updated_at = ? WHERE id = ? AND status = 'queued'")
+      .bind(responseContent, new Date().toISOString(), item.id).run();
+  }
+
+  const recipientId = await decryptInstagramRecipient(env.INSTAGRAM_APP_SECRET, mapping.recipient_id_cipher);
+  await sendInstagramMessage(env, recipientId, mapping.account_id, responseContent);
+  await env.DB.prepare("UPDATE instagram_inbox_queue SET status = 'sent', updated_at = ? WHERE id = ? AND status = 'reply_pending'")
+    .bind(new Date().toISOString(), item.id).run();
 }
 
 async function loginUser(env: Env, username: string, password: string): Promise<AuthUser | null> {

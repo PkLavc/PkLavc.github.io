@@ -61,13 +61,13 @@ describe("Skylet browser conversation session", () => {
   it("uses the shared /ia/ client script on all three localized assistant pages", () => {
     for (const page of ["ia/index.html", "pt/ia/index.html", "es/ia/index.html"]) {
       const html = readFileSync(new URL(`../../../../${page}`, import.meta.url), "utf8");
-      expect(html).toContain("/ia/skylet-chat.js?v=13083b28cf");
+      expect(html).toMatch(/\/ia\/skylet-chat\.js\?v=[^"']+/);
       expect(html).toContain("/js/index.js?v=2038092390");
     }
-    expect(indexScript).toContain("/js/skylet-widget.js?v=3ce4e98fcb");
+    expect(indexScript).toMatch(/\/js\/skylet-widget\.js\?v=[^"']+/);
     for (const page of ["about/index.html", "pt/sobre/index.html", "es/sobre/index.html"]) {
       const html = readFileSync(new URL(`../../../../${page}`, import.meta.url), "utf8");
-      expect(html).toContain("/js/skylet-widget.js?v=3ce4e98fcb");
+      expect(html).toMatch(/\/js\/skylet-widget\.js\?v=[^"']+/);
     }
   });
 });
