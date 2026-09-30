@@ -11,7 +11,6 @@
       blog: 'blog',
       collections: 'colecoes',
       stacks: 'stacks',
-      store: 'loja',
     },
     es: {
       about: 'sobre',
@@ -20,7 +19,6 @@
       blog: 'blog',
       collections: 'colecciones',
       stacks: 'stacks',
-      store: 'tienda',
     }
   };
 
@@ -32,7 +30,6 @@
       blog: 'blog',
       colecoes: 'collections',
       stacks: 'stacks',
-      loja: 'store',
     },
     es: {
       sobre: 'about',
@@ -41,7 +38,6 @@
       blog: 'blog',
       colecciones: 'collections',
       stacks: 'stacks',
-      tienda: 'store',
     }
   };
 
@@ -218,6 +214,3 @@
     }
 
     // Skylet uses the same final /ia slug in every localized route.
-    if (route === '/ia/') {
-      return locale === 'en' ? '/ia/' : '/' + locale + '/ia/';
-    }
