@@ -93,6 +93,12 @@ jobs:
           INSTAGRAM_APP_SECRET: ${{ secrets.INSTAGRAM_APP_SECRET }}
           INSTAGRAM_WEBHOOK_VERIFY_TOKEN: ${{ secrets.INSTAGRAM_WEBHOOK_VERIFY_TOKEN }}
 
+      - name: Subscribe Instagram account to message webhooks
+        run: node scripts/subscribe-instagram-webhooks.mjs
+        env:
+          INSTAGRAM_ACCESS_TOKEN: ${{ secrets.INSTAGRAM_ACCESS_TOKEN }}
+          INSTAGRAM_GRAPH_API_VERSION: v26.0
+
       - name: Deploy Worker
         run: npx wrangler deploy
         env:
