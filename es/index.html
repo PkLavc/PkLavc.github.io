@@ -18,7 +18,7 @@
         <script>
             const { hostname, pathname, search, hash } = window.location;
             const host = hostname.toLowerCase();
-            const redirectHosts = ["pklavc.github.io", "www.pklavc.com"];
+            const redirectHosts = ["pklavc.github.io"];
 
             if (redirectHosts.includes(host)) {
                 window.location.replace("https://pklavc.com" + pathname + search + hash);
