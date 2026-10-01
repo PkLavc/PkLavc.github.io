@@ -11,7 +11,6 @@
       blog: 'blog',
       collections: 'colecoes',
       stacks: 'stacks',
-      store: 'loja',
     },
     es: {
       about: 'sobre',
@@ -20,7 +19,6 @@
       blog: 'blog',
       collections: 'colecciones',
       stacks: 'stacks',
-      store: 'tienda',
     }
   };
 
@@ -32,7 +30,6 @@
       blog: 'blog',
       colecoes: 'collections',
       stacks: 'stacks',
-      loja: 'store',
     },
     es: {
       sobre: 'about',
@@ -41,7 +38,6 @@
       blog: 'blog',
       colecciones: 'collections',
       stacks: 'stacks',
-      tienda: 'store',
     }
   };
 
@@ -95,6 +91,7 @@
   };
 
   var LOCALIZED_TO_SLUG = buildReverseSlugMaps();
+  var routeExistenceChecks = Object.create(null);
 
   var NAV_LABELS = {
     en: {
@@ -103,6 +100,7 @@
       projects: 'PROJECTS',
       visitors: 'VISIT MAP',
       blog: 'BLOG',
+      store: 'STORE',
       navigation: 'Primary navigation',
       languageSettings: 'Language settings'
     },
@@ -112,6 +110,7 @@
       projects: 'PROJETOS',
       visitors: 'MAPA DE VISITAS',
       blog: 'BLOG',
+      store: 'LOJA',
       navigation: 'Navega\u00e7\u00e3o principal',
       languageSettings: 'Configura\u00e7\u00f5es de idioma'
     },
@@ -121,6 +120,7 @@
       projects: 'PROYECTOS',
       visitors: 'MAPA DE VISITAS',
       blog: 'BLOG',
+      store: 'TIENDA',
       navigation: 'Navegaci\u00f3n principal',
       languageSettings: 'Configuraci\u00f3n de idioma'
     }
@@ -176,6 +176,7 @@
   function getLanguageFromPath(path) {
     var segments = splitPath(path);
     if (segments[0] === 'blog' && (segments[1] === 'pt' || segments[1] === 'es')) return segments[1];
+    if (segments[0] === 'store' && (segments[1] === 'pt' || segments[1] === 'es')) return segments[1];
     var firstSegment = segments[0];
     return LOCALE_PREFIXES[firstSegment] ? firstSegment : 'en';
   }
@@ -186,6 +187,14 @@
 
   function getEnglishRoute(path) {
     var segments = splitPath(path);
+    if (segments[0] === 'blog' && (segments[1] === 'pt' || segments[1] === 'es')) {
+      segments.splice(1, 1);
+      return '/' + segments.join('/') + '/';
+    }
+    if (segments[0] === 'store' && (segments[1] === 'pt' || segments[1] === 'es')) {
+      segments.splice(1, 1);
+      return '/' + segments.join('/') + '/';
+    }
     var locale = LOCALE_PREFIXES[segments[0]] ? segments.shift() : 'en';
 
     if (!segments.length) {
@@ -214,7 +223,404 @@
     var segments = splitPath(route);
 
     if (segments[0] === 'blog' && (locale === 'pt' || locale === 'es')) {
-      return '/' + locale + '/blog' + (segments.length > 1 ? '/' + segments.slice(1).join('/') : '') + '/';
+      return '/blog/' + locale + (segments.length > 1 ? '/' + segments.slice(1).join('/') : '') + '/';
+    }
+    if (segments[0] === 'store') {
+      return locale === 'en' ? '/store/' : '/store/' + locale + '/';
     }
 
     // Skylet uses the same final /ia slug in every localized route.
+    if (route === '/ia/') {
+      return locale === 'en' ? '/ia/' : '/' + locale + '/ia/';
+    }
+
+    if (locale === 'en') {
+      return route;
+    }
+
+    if (!segments.length) {
+      return '/' + locale + '/';
+    }
+
+    var section = segments[0];
+    segments[0] = (SECTION_TO_LOCALIZED[locale] && SECTION_TO_LOCALIZED[locale][section]) || section;
+
+    if (segments.length > 1 && SLUG_TO_LOCALIZED[locale] && SLUG_TO_LOCALIZED[locale][section]) {
+      segments[1] = SLUG_TO_LOCALIZED[locale][section][segments[1]] || segments[1];
+    }
+
+    return '/' + locale + '/' + segments.join('/') + '/';
+  }
+
+  function getLanguageFallback(englishRoute, locale) {
+    var route = getEnglishRoute(englishRoute);
+    if (route === '/blog/' || route.indexOf('/blog/') === 0) {
+      return locale === 'en' ? '/blog/' : '/blog/' + locale + '/';
+    }
+    if (route === '/store/' || route.indexOf('/store/') === 0) {
+      return locale === 'en' ? '/store/' : '/store/' + locale + '/';
+    }
+    return locale === 'en' ? '/' : '/' + locale + '/';
+  }
+
+  function pageExists(path) {
+    var normalized = normalizePath(path);
+    if (!routeExistenceChecks[normalized]) {
+      routeExistenceChecks[normalized] = Promise.resolve()
+        .then(function() {
+          if (typeof window.fetch !== 'function') return false;
+          return window.fetch(normalized, {
+            method: 'HEAD',
+            credentials: 'same-origin',
+            cache: 'force-cache'
+          }).then(function(response) {
+            return Boolean(response && response.ok);
+          });
+        })
+        .catch(function() {
+          return false;
+        });
+    }
+    return routeExistenceChecks[normalized];
+  }
+
+  function resolveLocalizedRoute(englishRoute, locale) {
+    var targetLocale = normalizeLocale(locale);
+    var candidate = getLocalizedRoute(englishRoute, targetLocale);
+    var fallback = getLanguageFallback(englishRoute, targetLocale);
+    if (candidate.indexOf('/blog/en/') === 0) candidate = fallback;
+    if (candidate === fallback) return Promise.resolve(fallback);
+    return pageExists(candidate).then(function(exists) {
+      return exists ? candidate : fallback;
+    });
+  }
+
+  function addCurrentQueryAndHash(path) {
+    return path + window.location.search + window.location.hash;
+  }
+
+  function normalizeLocale(locale) {
+    if (!locale) {
+      return 'en';
+    }
+
+    var value = String(locale).toLowerCase().split('-')[0];
+    return isSupportedLocale(value) ? value : 'en';
+  }
+
+  function getStoredLanguage() {
+    try {
+      return normalizeLocale(window.localStorage && window.localStorage.getItem(STORAGE_KEY));
+    } catch (error) {
+      return 'en';
+    }
+  }
+
+  function setStoredLanguage(locale) {
+    if (!isSupportedLocale(locale)) {
+      return;
+    }
+
+    try {
+      if (window.localStorage) {
+        window.localStorage.setItem(STORAGE_KEY, locale);
+      }
+    } catch (error) {
+      // Preference storage is optional; navigation still works without it.
+    }
+  }
+
+  function getBrowserLanguage() {
+    var languages = navigator.languages && navigator.languages.length
+      ? navigator.languages
+      : [navigator.language || navigator.userLanguage || ''];
+
+    for (var index = 0; index < languages.length; index += 1) {
+      var locale = normalizeLocale(languages[index]);
+
+      if (locale === 'pt' || locale === 'es') {
+        return locale;
+      }
+    }
+
+    return 'en';
+  }
+
+  function getPreferredLanguage() {
+    var stored = getStoredLanguage();
+
+    if (stored !== 'en') {
+      return stored;
+    }
+
+    try {
+      if (window.localStorage && window.localStorage.getItem(STORAGE_KEY)) {
+        return stored;
+      }
+    } catch (error) {
+      return getBrowserLanguage();
+    }
+
+    return getBrowserLanguage();
+  }
+
+  function buildCurrentPageRoute(locale) {
+    return getLocalizedRoute(getEnglishRoute(window.location.pathname), locale);
+  }
+
+  function redirectToPreferredLanguage() {
+    var currentLanguage = getLanguageFromPath(window.location.pathname);
+
+    if (currentLanguage !== 'en') {
+      setStoredLanguage(currentLanguage);
+      return;
+    }
+
+    var preferredLanguage = getPreferredLanguage();
+
+    if (preferredLanguage === 'en') {
+      return;
+    }
+
+    var currentPath = normalizePath(window.location.pathname);
+    var targetPath = buildCurrentPageRoute(preferredLanguage);
+    if (targetPath === currentPath) return;
+    resolveLocalizedRoute(getEnglishRoute(currentPath), preferredLanguage).then(function(existingPath) {
+      if (existingPath !== currentPath) {
+        window.location.replace(addCurrentQueryAndHash(existingPath));
+      }
+    });
+  }
+
+  function createNavigationLabelFragment(label) {
+    var fragment = document.createDocumentFragment();
+
+    Array.prototype.forEach.call(label, function(character) {
+      var span = document.createElement('span');
+      span.textContent = character;
+
+      if (/[mia]/i.test(character)) {
+        span.className = 'navigation-menu-letter-miami';
+      }
+
+      fragment.appendChild(span);
+    });
+
+    return fragment;
+  }
+
+  function renderEnhancedNavigationLabel(link, label) {
+    var visibleLabel = document.createElement('span');
+    var hoverLabel = document.createElement('span');
+
+    visibleLabel.className = 'navigation-link-text';
+    visibleLabel.appendChild(createNavigationLabelFragment(label));
+
+    hoverLabel.className = 'navigation-hover-text';
+    hoverLabel.setAttribute('aria-hidden', 'true');
+    hoverLabel.appendChild(createNavigationLabelFragment(label));
+
+    link.textContent = '';
+    link.classList.add('is-navigation-enhanced');
+    link.appendChild(visibleLabel);
+    link.appendChild(hoverLabel);
+  }
+
+  function getLanguageToggleIconMarkup() {
+    return [
+      '<svg class="navigation-language-gear-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">',
+      '<path d="M12 15.5A3.5 3.5 0 1 0 12 8a3.5 3.5 0 0 0 0 7.5Z"></path>',
+      '<path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06A1.65 1.65 0 0 0 15 19.4a1.65 1.65 0 0 0-1 .6 1.65 1.65 0 0 0-.34 1v.17a2 2 0 0 1-4 0V21a1.65 1.65 0 0 0-.34-1 1.65 1.65 0 0 0-1-.6 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-.6-1 1.65 1.65 0 0 0-1-.34H2.83a2 2 0 0 1 0-4H3a1.65 1.65 0 0 0 1-.34 1.65 1.65 0 0 0 .6-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06A2 2 0 1 1 7.04 3.6l.06.06A1.65 1.65 0 0 0 8.9 4a1.65 1.65 0 0 0 1-.6 1.65 1.65 0 0 0 .34-1V2.23a2 2 0 0 1 4 0v.17a1.65 1.65 0 0 0 .34 1 1.65 1.65 0 0 0 1 .6 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 8.9a1.65 1.65 0 0 0 .6 1 1.65 1.65 0 0 0 1 .34h.17a2 2 0 0 1 0 4H21a1.65 1.65 0 0 0-1 .34 1.65 1.65 0 0 0-.6 1Z"></path>',
+      '</svg>'
+    ].join('');
+  }
+
+  function setNavigationLink(link, label, href) {
+    if (!link) {
+      return;
+    }
+
+    link.href = href;
+    link.setAttribute('data-text', label);
+    link.setAttribute('data-nav-label', label);
+
+    if (link.classList.contains('is-navigation-enhanced') || link.querySelector('.navigation-link-text')) {
+      renderEnhancedNavigationLabel(link, label);
+      return;
+    }
+
+    link.textContent = label;
+  }
+
+  function localizeNavigation() {
+    var locale = getLanguageFromPath(window.location.pathname);
+    var labels = NAV_LABELS[locale] || NAV_LABELS.en;
+    var nav = document.getElementById('navigation-content');
+
+    if (nav) {
+      nav.setAttribute('aria-label', labels.navigation);
+    }
+
+    document.querySelectorAll('#home-link').forEach(function(link) {
+      setNavigationLink(link, labels.home, getLocalizedRoute('/', locale));
+    });
+
+    document.querySelectorAll('#about-link').forEach(function(link) {
+      setNavigationLink(link, labels.about, getLocalizedRoute('/about/', locale));
+    });
+
+    document.querySelectorAll('#projects-link').forEach(function(link) {
+      setNavigationLink(link, labels.projects, getLocalizedRoute('/projects/', locale));
+    });
+
+    document.querySelectorAll('#visitor-map-link').forEach(function(link) {
+      setNavigationLink(link, labels.visitors, getLocalizedRoute('/visitors/', locale));
+    });
+
+    document.querySelectorAll('#blog-link').forEach(function(link) {
+      setNavigationLink(link, labels.blog, getLocalizedRoute('/blog/', locale));
+    });
+
+    document.querySelectorAll('#store-link').forEach(function(link) {
+      setNavigationLink(link, labels.store, getLocalizedRoute('/store/', locale));
+    });
+
+  }
+
+  function updateLanguageLinks(container) {
+    var currentLanguage = getLanguageFromPath(window.location.pathname);
+    var currentRoute = getEnglishRoute(window.location.pathname);
+
+    container.querySelectorAll('[data-language-option]').forEach(function(link) {
+      var locale = link.getAttribute('data-language-option');
+      var fallbackPath = getLanguageFallback(currentRoute, locale);
+      link.href = addCurrentQueryAndHash(fallbackPath);
+      resolveLocalizedRoute(currentRoute, locale).then(function(targetPath) {
+        if (link.isConnected !== false) link.href = addCurrentQueryAndHash(targetPath);
+      });
+      link.classList.toggle('is-current-language', locale === currentLanguage);
+
+      if (locale === currentLanguage) {
+        link.setAttribute('aria-current', 'page');
+      } else {
+        link.removeAttribute('aria-current');
+      }
+    });
+  }
+
+  function initLanguageMenu() {
+    var nav = document.getElementById('navigation-content');
+
+    if (!nav) {
+      return;
+    }
+
+    var labels = NAV_LABELS[getLanguageFromPath(window.location.pathname)] || NAV_LABELS.en;
+    var toggle = nav.querySelector('.navigation-language-toggle');
+    var options = nav.querySelector('.navigation-language-options');
+
+    if (!toggle) {
+      toggle = document.createElement('button');
+      toggle.className = 'navigation-language-toggle';
+      toggle.type = 'button';
+      toggle.setAttribute('aria-expanded', 'false');
+      toggle.innerHTML = getLanguageToggleIconMarkup();
+      nav.insertBefore(toggle, nav.firstChild);
+
+      toggle.addEventListener('click', function(event) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        var isLanguageMode = nav.classList.toggle('is-language-mode');
+        toggle.setAttribute('aria-expanded', isLanguageMode ? 'true' : 'false');
+
+        if (options) {
+          updateLanguageLinks(options);
+        }
+      });
+    }
+
+    toggle.setAttribute('aria-label', labels.languageSettings);
+    toggle.setAttribute('title', labels.languageSettings);
+
+    var adminLink = nav.querySelector('.adm-navigation-link');
+    if (!adminLink) {
+      adminLink = document.createElement('a');
+      adminLink.className = 'adm-navigation-link';
+      adminLink.href = '/adm/';
+      adminLink.textContent = 'ADM';
+      adminLink.setAttribute('aria-label', 'Open admin panel');
+      adminLink.title = 'Admin';
+      toggle.insertAdjacentElement('afterend', adminLink);
+    }
+
+    if (!options) {
+      options = document.createElement('div');
+      options.className = 'navigation-language-options';
+
+      LANGUAGE_OPTIONS.forEach(function(option) {
+        var link = document.createElement('a');
+        link.href = '#';
+        link.setAttribute('data-language-option', option.locale);
+        link.setAttribute('data-text', option.label.toUpperCase());
+        link.setAttribute('data-nav-label', option.label);
+        renderEnhancedNavigationLabel(link, option.label);
+
+        link.addEventListener('click', function(event) {
+          setStoredLanguage(option.locale);
+          if (option.locale === getLanguageFromPath(window.location.pathname)) return;
+          if (event && event.preventDefault) event.preventDefault();
+          resolveLocalizedRoute(getEnglishRoute(window.location.pathname), option.locale).then(function(targetPath) {
+            window.location.assign(addCurrentQueryAndHash(targetPath));
+          });
+        });
+
+        options.appendChild(link);
+      });
+
+      nav.appendChild(options);
+    }
+
+    updateLanguageLinks(options);
+  }
+
+  function resetLanguageMenu() {
+    var nav = document.getElementById('navigation-content');
+
+    if (!nav) {
+      return;
+    }
+
+    nav.classList.remove('is-language-mode');
+
+    var toggle = nav.querySelector('.navigation-language-toggle');
+    if (toggle) {
+      toggle.setAttribute('aria-expanded', 'false');
+    }
+  }
+
+  redirectToPreferredLanguage();
+
+  window.PkLavcI18n = {
+    getCurrentLanguage: function() {
+      return getLanguageFromPath(window.location.pathname);
+    },
+    getEnglishRoute: getEnglishRoute,
+    getLocalizedRoute: getLocalizedRoute,
+    resolveLocalizedRoute: resolveLocalizedRoute,
+    initLanguageMenu: initLanguageMenu,
+    localizeNavigation: localizeNavigation,
+    resetLanguageMenu: resetLanguageMenu,
+    setStoredLanguage: setStoredLanguage
+  };
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() {
+      localizeNavigation();
+      initLanguageMenu();
+    }, { once: true });
+  } else {
+    localizeNavigation();
+    initLanguageMenu();
+  }
+}());
