@@ -1543,14 +1543,14 @@ function loadSkyletWidgetAssets() {
     var link = document.createElement('link');
     link.id = 'skylet-widget-style';
     link.rel = 'stylesheet';
-    link.href = '/css/skylet-widget.css?v=b6f515f624';
+    link.href = '/css/skylet-widget.css?v=4d85970dfe';
     document.head.appendChild(link);
   }
 
   if (!document.getElementById('skylet-widget-script')) {
     var script = document.createElement('script');
     script.id = 'skylet-widget-script';
-    script.src = '/js/skylet-widget.js?v=3ce4e98fcb';
+    script.src = '/js/skylet-widget.js?v=d6441a2fa8';
     script.defer = true;
     document.body.appendChild(script);
   }
