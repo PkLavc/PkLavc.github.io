@@ -1,76 +1,151 @@
 (function () {
   'use strict';
 
-  // Each position can be disabled, targeted by language/country/region, or rotated.
-  // An empty list ([]) explicitly leaves the position without an ad.
+  // Shared advertising configuration for blog articles and Store.
+  // Rules can still be overridden by language, country or region.
+  var rotationSeconds = 8;
+  var campaigns = ['pklavc_blog', 'macca_blog', 'pklavc_store', 'pklavc_projects'];
+
+  function rotatingPlacement(extra) {
+    return Object.assign({
+      enabled: true,
+      default: campaigns.slice(),
+      countries: {},
+      regions: {},
+      locales: {},
+      rotateEverySeconds: rotationSeconds
+    }, extra || {});
+  }
+
   window.PKLAVC_BLOG_ADS = {
     geoEndpoint: 'https://api.pklavc.com/ads/geo',
     geoTimeoutMs: 1500,
     placements: {
-      sidebar: { enabled: true, default: 'pklavc', countries: {}, regions: {}, locales: {} },
-      inline: {
-        enabled: true,
-        default: ['pklavc', 'pklavc_projects'],
-        countries: {},
-        regions: {},
-        locales: {},
-        rotateEverySeconds: 15
-      },
-      bottom: { enabled: true, default: 'pklavc', countries: {}, regions: {}, locales: {} },
-      mobile: { enabled: true, default: 'pklavc', countries: {}, regions: {}, locales: {} },
-      'project-sidebar': { enabled: true, default: 'pklavc', countries: {}, regions: {}, locales: {} },
-      'project-bottom': { enabled: true, default: 'pklavc', countries: {}, regions: {}, locales: {} },
-      'store-sidebar': { enabled: true, default: 'pklavc', countries: {}, regions: {}, locales: {} },
-      'store-rows': { enabled: true, default: ['pklavc', 'pklavc_projects'], countries: {}, regions: {}, locales: {}, rotateEverySeconds: 20, everyRows: 10 },
-      'store-bottom': { enabled: true, default: 'pklavc', countries: {}, regions: {}, locales: {} }
+      sidebar: rotatingPlacement(),
+      inline: rotatingPlacement(),
+      bottom: rotatingPlacement(),
+      mobile: rotatingPlacement(),
+      'store-sidebar': rotatingPlacement(),
+      'store-rows': rotatingPlacement({ everyRows: 10 }),
+      'store-bottom': rotatingPlacement()
     },
     campaigns: {
-      pklavc: {
+      pklavc_blog: {
         type: 'image',
         locales: {
           en: {
-            image: '/ads/banners/en.svg',
-            imageAlt: 'PKLAVC — backend systems, AI and automation',
-            sidebar: { title: 'Explore the work behind the ideas', body: 'Backend, AI and automation projects built for real operations.', cta: 'See projects', href: '/projects/' },
-            inline: { title: 'From article to architecture', body: 'See how these ideas become working systems and integrations.', cta: 'Explore projects', href: '/projects/' },
-            bottom: { title: 'Build something reliable together', body: 'Explore the portfolio and the engineering approach behind it.', cta: 'Meet Patrick', href: '/about/' },
-            mobile: { title: 'Backend and AI in practice', body: 'A compact look at projects, systems and automation.', cta: 'View projects', href: '/projects/' }
+            image: '/ads/banners/blog-en.svg',
+            imageAlt: 'PKLAVC engineering blog',
+            sidebar: { title: 'Read the PKLAVC Blog', body: 'Verified engineering notes on backend systems, AI, automation and major platform changes.', cta: 'Open blog', href: '/blog/en/' },
+            inline: { title: 'More engineering notes', body: 'Continue with technical articles focused on practical systems and confirmed releases.', cta: 'Read the blog', href: '/blog/en/' },
+            bottom: { title: 'Continue reading PKLAVC', body: 'Browse the latest engineering articles and technical breakdowns.', cta: 'Open blog', href: '/blog/en/' },
+            mobile: { title: 'PKLAVC Blog', body: 'Engineering, backend, AI and automation articles.', cta: 'Read', href: '/blog/en/' }
           },
           pt: {
-            image: '/ads/banners/pt.svg',
-            imageAlt: 'PKLAVC — sistemas backend, IA e automação',
-            sidebar: { title: 'Conheça os projetos por trás das ideias', body: 'Backend, IA e automação construídos para operações reais.', cta: 'Ver projetos', href: '/pt/projetos/' },
-            inline: { title: 'Do artigo para a arquitetura', body: 'Veja essas ideias em sistemas e integrações funcionais.', cta: 'Explorar projetos', href: '/pt/projetos/' },
-            bottom: { title: 'Vamos construir algo confiável', body: 'Conheça o portfólio e a abordagem de engenharia por trás dele.', cta: 'Conhecer Patrick', href: '/pt/sobre/' },
-            mobile: { title: 'Backend e IA na prática', body: 'Projetos, sistemas e automação em uma visita rápida.', cta: 'Ver projetos', href: '/pt/projetos/' }
+            image: '/ads/banners/blog-pt.svg',
+            imageAlt: 'Blog de engenharia PKLAVC',
+            sidebar: { title: 'Leia o Blog PKLAVC', body: 'Conteúdo técnico verificado sobre backend, IA, automação e mudanças de grandes plataformas.', cta: 'Abrir blog', href: '/blog/pt/' },
+            inline: { title: 'Mais conteúdo de engenharia', body: 'Continue com artigos técnicos focados em sistemas práticos e lançamentos confirmados.', cta: 'Ler o blog', href: '/blog/pt/' },
+            bottom: { title: 'Continue lendo o PKLAVC', body: 'Veja os artigos mais recentes e análises técnicas.', cta: 'Abrir blog', href: '/blog/pt/' },
+            mobile: { title: 'Blog PKLAVC', body: 'Engenharia, backend, IA e automação.', cta: 'Ler', href: '/blog/pt/' }
           },
           es: {
-            image: '/ads/banners/es.svg',
-            imageAlt: 'PKLAVC — sistemas backend, IA y automatización',
-            sidebar: { title: 'Explora los proyectos detrás de las ideas', body: 'Backend, IA y automatización para operaciones reales.', cta: 'Ver proyectos', href: '/es/proyectos/' },
-            inline: { title: 'Del artículo a la arquitectura', body: 'Mira estas ideas en sistemas e integraciones funcionales.', cta: 'Explorar proyectos', href: '/es/proyectos/' },
-            bottom: { title: 'Construyamos algo confiable', body: 'Conoce el portafolio y el enfoque de ingeniería detrás de él.', cta: 'Conocer a Patrick', href: '/es/sobre/' },
-            mobile: { title: 'Backend e IA en la práctica', body: 'Proyectos, sistemas y automatización en una visita rápida.', cta: 'Ver proyectos', href: '/es/proyectos/' }
+            image: '/ads/banners/blog-es.svg',
+            imageAlt: 'Blog de ingeniería PKLAVC',
+            sidebar: { title: 'Lee el Blog PKLAVC', body: 'Contenido técnico verificado sobre backend, IA, automatización y cambios de grandes plataformas.', cta: 'Abrir blog', href: '/blog/es/' },
+            inline: { title: 'Más contenido de ingeniería', body: 'Continúa con artículos técnicos sobre sistemas prácticos y lanzamientos confirmados.', cta: 'Leer el blog', href: '/blog/es/' },
+            bottom: { title: 'Sigue leyendo PKLAVC', body: 'Explora los artículos más recientes y análisis técnicos.', cta: 'Abrir blog', href: '/blog/es/' },
+            mobile: { title: 'Blog PKLAVC', body: 'Ingeniería, backend, IA y automatización.', cta: 'Leer', href: '/blog/es/' }
           }
         }
       },
+
+      macca_blog: {
+        type: 'image',
+        locales: {
+          en: {
+            image: 'https://macca-lab.onrender.com/ads/partner.webp',
+            imageAlt: 'Macca the Gator partner artwork',
+            sidebar: { title: 'Visit the Macca Blog', body: 'GTA and Rockstar coverage from Macca the Gator.', cta: 'Open Macca Blog', href: 'https://macca-lab.onrender.com/blog/' },
+            inline: { title: 'More GTA and Rockstar coverage', body: 'Continue on the Macca Blog for GTA, Rockstar and community stories.', cta: 'Visit Macca', href: 'https://macca-lab.onrender.com/blog/' },
+            bottom: { title: 'Macca the Gator', body: 'Explore the Macca Blog for GTA and Rockstar coverage.', cta: 'Open blog', href: 'https://macca-lab.onrender.com/blog/' },
+            mobile: { title: 'Macca Blog', body: 'GTA and Rockstar coverage.', cta: 'Visit', href: 'https://macca-lab.onrender.com/blog/' }
+          },
+          pt: {
+            image: 'https://macca-lab.onrender.com/ads/partner.webp',
+            imageAlt: 'Arte de parceria do Macca the Gator',
+            sidebar: { title: 'Visite o Macca Blog', body: 'Cobertura de GTA e Rockstar com o Macca the Gator.', cta: 'Abrir Macca Blog', href: 'https://macca-lab.onrender.com/blog/' },
+            inline: { title: 'Mais sobre GTA e Rockstar', body: 'Continue no Macca Blog com conteúdo sobre GTA, Rockstar e comunidade.', cta: 'Visitar Macca', href: 'https://macca-lab.onrender.com/blog/' },
+            bottom: { title: 'Macca the Gator', body: 'Explore o Macca Blog para acompanhar GTA e Rockstar.', cta: 'Abrir blog', href: 'https://macca-lab.onrender.com/blog/' },
+            mobile: { title: 'Macca Blog', body: 'Conteúdo sobre GTA e Rockstar.', cta: 'Visitar', href: 'https://macca-lab.onrender.com/blog/' }
+          },
+          es: {
+            image: 'https://macca-lab.onrender.com/ads/partner.webp',
+            imageAlt: 'Arte de colaboración de Macca the Gator',
+            sidebar: { title: 'Visita el Macca Blog', body: 'Cobertura de GTA y Rockstar con Macca the Gator.', cta: 'Abrir Macca Blog', href: 'https://macca-lab.onrender.com/blog/' },
+            inline: { title: 'Más sobre GTA y Rockstar', body: 'Continúa en Macca Blog con contenido sobre GTA, Rockstar y la comunidad.', cta: 'Visitar Macca', href: 'https://macca-lab.onrender.com/blog/' },
+            bottom: { title: 'Macca the Gator', body: 'Explora Macca Blog para seguir GTA y Rockstar.', cta: 'Abrir blog', href: 'https://macca-lab.onrender.com/blog/' },
+            mobile: { title: 'Macca Blog', body: 'Contenido sobre GTA y Rockstar.', cta: 'Visitar', href: 'https://macca-lab.onrender.com/blog/' }
+          }
+        }
+      },
+
+      pklavc_store: {
+        type: 'image',
+        locales: {
+          en: {
+            image: '/ads/banners/store-en.svg',
+            imageAlt: 'PKLAVC Store',
+            sidebar: { title: 'Browse the PKLAVC Store', body: 'Selected technology, gaming and partner products in one place.', cta: 'Open Store', href: '/store/' },
+            inline: { title: 'Discover the PKLAVC Store', body: 'Browse selected products and current partner offers.', cta: 'Shop now', href: '/store/' },
+            bottom: { title: 'Continue to the Store', body: 'See selected technology and gaming products.', cta: 'Open Store', href: '/store/' },
+            mobile: { title: 'PKLAVC Store', body: 'Selected tech and gaming products.', cta: 'Open', href: '/store/' }
+          },
+          pt: {
+            image: '/ads/banners/store-pt.svg',
+            imageAlt: 'Loja PKLAVC',
+            sidebar: { title: 'Conheça a Loja PKLAVC', body: 'Tecnologia, games e produtos selecionados de lojas parceiras.', cta: 'Abrir loja', href: '/store/pt/' },
+            inline: { title: 'Explore a Loja PKLAVC', body: 'Veja produtos selecionados e ofertas atuais de parceiros.', cta: 'Ver loja', href: '/store/pt/' },
+            bottom: { title: 'Continue para a Loja', body: 'Confira produtos selecionados de tecnologia e games.', cta: 'Abrir loja', href: '/store/pt/' },
+            mobile: { title: 'Loja PKLAVC', body: 'Tecnologia e games selecionados.', cta: 'Abrir', href: '/store/pt/' }
+          },
+          es: {
+            image: '/ads/banners/store-es.svg',
+            imageAlt: 'Tienda PKLAVC',
+            sidebar: { title: 'Conoce la Tienda PKLAVC', body: 'Tecnología, gaming y productos seleccionados de tiendas asociadas.', cta: 'Abrir tienda', href: '/store/es/' },
+            inline: { title: 'Explora la Tienda PKLAVC', body: 'Mira productos seleccionados y ofertas actuales de socios.', cta: 'Ver tienda', href: '/store/es/' },
+            bottom: { title: 'Continúa a la Tienda', body: 'Descubre productos seleccionados de tecnología y gaming.', cta: 'Abrir tienda', href: '/store/es/' },
+            mobile: { title: 'Tienda PKLAVC', body: 'Tecnología y gaming seleccionados.', cta: 'Abrir', href: '/store/es/' }
+          }
+        }
+      },
+
       pklavc_projects: {
         type: 'image',
         locales: {
           en: {
             image: '/ads/banners/projects-en.svg',
-            imageAlt: 'PKLAVC — real projects and practical engineering',
-            inline: { title: 'See the engineering in action', body: 'Explore real projects, integrations and AI systems.', cta: 'Browse projects', href: '/projects/' }
+            imageAlt: 'PKLAVC real projects and practical engineering',
+            sidebar: { title: 'Explore PKLAVC Projects', body: 'Backend systems, integrations, automation and AI built for real use.', cta: 'View projects', href: '/projects/' },
+            inline: { title: 'See the engineering in action', body: 'Explore real projects, integrations and AI systems.', cta: 'Browse projects', href: '/projects/' },
+            bottom: { title: 'From article to working systems', body: 'Browse implementations behind the engineering notes.', cta: 'View projects', href: '/projects/' },
+            mobile: { title: 'PKLAVC Projects', body: 'Backend, AI and automation in practice.', cta: 'View', href: '/projects/' }
           },
           pt: {
             image: '/ads/banners/projects-pt.svg',
-            imageAlt: 'PKLAVC — projetos reais e engenharia prática',
-            inline: { title: 'Veja a engenharia em ação', body: 'Explore projetos reais, integrações e sistemas de IA.', cta: 'Conhecer projetos', href: '/pt/projetos/' }
+            imageAlt: 'Projetos reais e engenharia prática no PKLAVC',
+            sidebar: { title: 'Explore os Projetos PKLAVC', body: 'Backend, integrações, automação e IA construídos para uso real.', cta: 'Ver projetos', href: '/pt/projetos/' },
+            inline: { title: 'Veja a engenharia em ação', body: 'Explore projetos reais, integrações e sistemas de IA.', cta: 'Conhecer projetos', href: '/pt/projetos/' },
+            bottom: { title: 'Do artigo para sistemas reais', body: 'Veja as implementações por trás do conteúdo técnico.', cta: 'Ver projetos', href: '/pt/projetos/' },
+            mobile: { title: 'Projetos PKLAVC', body: 'Backend, IA e automação na prática.', cta: 'Ver', href: '/pt/projetos/' }
           },
           es: {
             image: '/ads/banners/projects-es.svg',
-            imageAlt: 'PKLAVC — proyectos reales e ingeniería práctica',
-            inline: { title: 'Mira la ingeniería en acción', body: 'Explora proyectos reales, integraciones y sistemas de IA.', cta: 'Ver proyectos', href: '/es/proyectos/' }
+            imageAlt: 'Proyectos reales e ingeniería práctica en PKLAVC',
+            sidebar: { title: 'Explora los Proyectos PKLAVC', body: 'Backend, integraciones, automatización e IA para uso real.', cta: 'Ver proyectos', href: '/es/proyectos/' },
+            inline: { title: 'Mira la ingeniería en acción', body: 'Explora proyectos reales, integraciones y sistemas de IA.', cta: 'Ver proyectos', href: '/es/proyectos/' },
+            bottom: { title: 'Del artículo a sistemas reales', body: 'Mira las implementaciones detrás del contenido técnico.', cta: 'Ver proyectos', href: '/es/proyectos/' },
+            mobile: { title: 'Proyectos PKLAVC', body: 'Backend, IA y automatización en práctica.', cta: 'Ver', href: '/es/proyectos/' }
           }
         }
       }
