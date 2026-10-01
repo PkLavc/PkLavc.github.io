@@ -324,7 +324,7 @@
     var columns = document.querySelector('.blog-columns');
     if (!article || !columns || article.dataset.blogAdsReady === 'true') return;
 
-    var paragraphs = article.querySelectorAll(':scope > p');
+    var paragraphs = article.querySelectorAll(':scope > p, :scope > section > p');
     var side = sidebar && placementAd('sidebar', geo);
     var inline = placementAd('inline', geo);
     var bottom = placementAd('bottom', geo);
