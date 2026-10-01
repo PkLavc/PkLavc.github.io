@@ -361,8 +361,8 @@
     function update() {
       var bounds = anchor.getBoundingClientRect();
       var available = Math.max(0, bounds.left - 18);
-      var width = Math.min(250, available - 18);
-      if (window.innerWidth < 1180 || width < 170) {
+      var width = Math.min(220, available - 18);
+      if (window.innerWidth < 1050 || width < 145) {
         ad.hidden = true;
         return;
       }
