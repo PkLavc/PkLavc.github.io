@@ -94,11 +94,7 @@ jobs:
                           depth -= 1
                           if depth == 0:
                               end = i + 1
-                              while end < len(source) and source[end] in " \t":
-                                  end += 1
-                              if end < len(source) and source[end] == "\r":
-                                  end += 1
-                              if end < len(source) and source[end] == "\n":
+                              while end < len(source) and source[end] in " \t\r\n":
                                   end += 1
                               source = source[:pos] + source[end:]
                               break
@@ -108,70 +104,104 @@ jobs:
                   pos = source.find(needle)
               return source
 
-          changed = []
+          changed = set()
+
+          def write_if_changed(path: Path, original: str, updated: str) -> None:
+              if updated != original:
+                  path.write_text(updated, encoding="utf-8")
+                  changed.add(str(path))
 
           for path in list(ROOT.rglob("*.html")) + list(ROOT.rglob("*.mjs")):
-              if ".git" in path.parts:
+              if ".git" in path.parts or ".pages-dist" in path.parts:
                   continue
-              text = path.read_text(encoding="utf-8")
-              original = text
-              text = NAV_CONTENT_RE.sub("\n", text)
+              original = path.read_text(encoding="utf-8")
+              text = NAV_CONTENT_RE.sub("\n", original)
               text = NAV_BAR_RE.sub("\n", text)
+
               if path.suffix == ".html":
+                  # About pages have a local fallback implementation of the old menu.
+                  text = re.sub(
+                      r'\n\s*function setupMenu\(\)\s*\{.*?\n\s*\}\n\s*\n\s*(function setupCursor\(\))',
+                      r'\n\n                \1',
+                      text,
+                      count=1,
+                      flags=re.S,
+                  )
                   text = remove_js_function(text, "setupMenu")
-                  text = re.sub(r'\n?\s*setupMenu\(\);\s*', "\n", text)
-              if text != original:
-                  path.write_text(text, encoding="utf-8")
-                  changed.append(str(path))
+                  text = re.sub(r'\n\s*setupMenu\(\);', "", text)
+
+                  # Store pages carried a standalone legacy language-menu bridge.
+                  def strip_legacy_inline_script(match):
+                      body = match.group(0)
+                      if "navigation-language-toggle" in body and "navigation-content" in body:
+                          return ""
+                      return body
+
+                  text = re.sub(r'<script\b[^>]*>.*?</script>', strip_legacy_inline_script, text, flags=re.I | re.S)
+
+                  # Remove isolated references that only served the deleted menu.
+                  text = text.replace("a, .menubar, .copy-btn, .contact-value, .credits-trigger", "a, .copy-btn, .contact-value, .credits-trigger")
+                  text = text.replace("a,.menubar,.copy-btn,.contact-value,.credits-trigger", "a,.copy-btn,.contact-value,.credits-trigger")
+                  text = re.sub(
+                      r'^\s*setRoute\(document\.getElementById\(["\'](?:home|about|projects|blog)-link["\']\).*?;\s*\n?',
+                      "",
+                      text,
+                      flags=re.M,
+                  )
+                  text = re.sub(
+                      r'^\s*document\.querySelector\(["\']#navigation-content["\']\)\.setAttribute\(.*?;\s*\n?',
+                      "",
+                      text,
+                      flags=re.M,
+                  )
+                  text = re.sub(
+                      r'^\s*document\.querySelector\(["\']\.menubar["\']\)\.setAttribute\(.*?;\s*\n?',
+                      "",
+                      text,
+                      flags=re.M,
+                  )
+
+              write_if_changed(path, original, text)
 
           global_css = Path("css/global.css")
-          text = global_css.read_text(encoding="utf-8")
-          original = text
+          original = global_css.read_text(encoding="utf-8")
+          text = original
           start = text.find("#navigation-content{")
           end_marker = "#navigation-bar img:hover{ opacity: 1; transform:rotate(-45deg); }"
           end = text.find(end_marker, start)
           if start != -1 and end != -1:
               text = text[:start] + text[end + len(end_marker):]
-          if text != original:
-              global_css.write_text(text, encoding="utf-8")
-              changed.append(str(global_css))
+          write_if_changed(global_css, original, text)
 
           index_css = Path("css/index.css")
-          text = index_css.read_text(encoding="utf-8")
-          original = text
+          original = index_css.read_text(encoding="utf-8")
           text = re.sub(
               r'\s*#navigation-content\.is-open\s*~\s*#header\s+\.social-media-links\s*\{[^{}]*\}',
               "",
-              text,
+              original,
               flags=re.S,
           )
           start = text.find("#navigation-bar .menubar {")
           end = text.find("\n.cursor{", start)
           if start != -1 and end != -1:
               text = text[:start] + text[end:]
-          if text != original:
-              index_css.write_text(text, encoding="utf-8")
-              changed.append(str(index_css))
+          write_if_changed(index_css, original, text)
 
           store_css = Path("store/assets/store.css")
           if store_css.exists():
-              text = store_css.read_text(encoding="utf-8")
-              original = text
-              text = re.sub(r'#navigation-bar\{[^{}]*\}#navigation-bar \.menubar\{[^{}]*\}', "", text)
+              original = store_css.read_text(encoding="utf-8")
+              text = re.sub(r'#navigation-bar\{[^{}]*\}#navigation-bar \.menubar\{[^{}]*\}', "", original)
               text = text.replace(".store-site-header{position:sticky;padding-right:90px}", "")
-              if text != original:
-                  store_css.write_text(text, encoding="utf-8")
-                  changed.append(str(store_css))
+              write_if_changed(store_css, original, text)
 
           index_js = Path("js/index.js")
-          text = index_js.read_text(encoding="utf-8")
-          original = text
+          original = index_js.read_text(encoding="utf-8")
           text = re.sub(
               r"\n\s*if \(\$\('#navigation-content'\)\.length\) \{\s*"
               r"\$\('#navigation-content'\)\.removeClass\('is-open'\);\s*"
               r"setElementDisplay\('#navigation-content', 'none'\);\s*\}",
               "",
-              text,
+              original,
               count=1,
               flags=re.S,
           )
@@ -182,14 +212,17 @@ jobs:
           text = re.sub(r"\n\s*\$\('\.menubar'\)\.hover\(cursorhover, cursor\);", "", text)
           text = re.sub(r"\n\s*\$\('\.navigation-close'\)\.hover\(cursorhover, cursor\);", "", text)
           text = re.sub(r"\n\s*\$\('\.navigation-language-toggle'\)\.hover\(cursorhover, cursor\);", "", text)
-          if text != original:
-              index_js.write_text(text, encoding="utf-8")
-              changed.append(str(index_js))
+          write_if_changed(index_js, original, text)
 
           i18n = Path("js/i18n.js")
-          text = i18n.read_text(encoding="utf-8")
-          original = text
-          text = re.sub(r"\n\s*var NAV_LABELS = \{.*?\n\s*\};\n\s*var LANGUAGE_OPTIONS = \[.*?\n\s*\];\n", "\n", text, count=1, flags=re.S)
+          original = i18n.read_text(encoding="utf-8")
+          text = re.sub(
+              r"\n\s*var NAV_LABELS = \{.*?\n\s*\};\n\s*var LANGUAGE_OPTIONS = \[.*?\n\s*\];\n",
+              "\n",
+              original,
+              count=1,
+              flags=re.S,
+          )
           for name in (
               "createNavigationLabelFragment",
               "renderEnhancedNavigationLabel",
@@ -210,155 +243,26 @@ jobs:
               closure_pos = text.rfind("}());")
               if dom_pos != -1 and closure_pos != -1 and dom_pos < closure_pos:
                   text = text[:dom_pos] + text[closure_pos:]
-          if text != original:
-              i18n.write_text(text, encoding="utf-8")
-              changed.append(str(i18n))
+          write_if_changed(i18n, original, text)
 
           spot = Path("js/spotlight-navigation.js")
-          text = spot.read_text(encoding="utf-8")
-          original = text
-          text = remove_js_function(text, "disableLegacyNavigation")
+          original = spot.read_text(encoding="utf-8")
+          text = remove_js_function(original, "disableLegacyNavigation")
           text = re.sub(r"\n\s*disableLegacyNavigation\(\);", "", text)
-          if text != original:
-              spot.write_text(text, encoding="utf-8")
-              changed.append(str(spot))
-
-          # Remove isolated legacy-menu integrations that are outside the shared markup.
-          for path in (Path("store/index.html"), Path("store/pt/index.html"), Path("store/es/index.html")):
-              if path.exists():
-                  text = path.read_text(encoding="utf-8")
-                  original = text
-                  text = re.sub(
-                      r'\s*<script>\s*\(function\(\)\{\s*var languageToggle=document\.querySelector\("\\.navigation-language-toggle"\);.*?</script>',
-                      "",
-                      text,
-                      count=1,
-                      flags=re.S,
-                  )
-                  if text != original:
-                      path.write_text(text, encoding="utf-8")
-                      changed.append(str(path))
-
-          for path in (Path("about/index.html"), Path("pt/sobre/index.html"), Path("es/sobre/index.html")):
-              if path.exists():
-                  text = path.read_text(encoding="utf-8")
-                  original = text
-                  text = re.sub(
-                      r'\n\s*function setupMenu\(\)\s*\{.*?\n\s*\}\n\s*\n\s*(function setupCursor\(\))',
-                      r'\n\n                \1',
-                      text,
-                      count=1,
-                      flags=re.S,
-                  )
-                  text = text.replace("a, .menubar, .copy-btn, .contact-value, .credits-trigger", "a, .copy-btn, .contact-value, .credits-trigger")
-                  text = text.replace("a,.menubar,.copy-btn,.contact-value,.credits-trigger", "a,.copy-btn,.contact-value,.credits-trigger")
-                  text = re.sub(r'\n\s*setupMenu\(\);', "", text)
-                  if text != original:
-                      path.write_text(text, encoding="utf-8")
-                      changed.append(str(path))
-
-          error_page = Path("404.html")
-          if error_page.exists():
-              text = error_page.read_text(encoding="utf-8")
-              original = text
-              text = re.sub(r'^\s*setRoute\(document\.getElementById\(\'(?:home|about|projects|blog)-link\'\).*?;\s*
-          PY
-
-      - name: Validate cleanup
-        shell: bash
-        run: |
-          node --check js/index.js
-          node --check js/i18n.js
-          node --check js/spotlight-navigation.js
-          if grep -R -n -E 'id=["'"'"']navigation-(content|bar)["'"'"']|\.menubar|openNavigationMenu|initLanguageMenu|navigation-language-toggle|disableLegacyNavigation' \
-            --include='*.html' --include='*.css' --include='*.js' --include='*.mjs' \
-            --exclude-dir=.git .; then
-            echo "Legacy navigation references remain."
-            exit 1
-          fi
-
-      - name: Commit cleanup
-        shell: bash
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git rm .github/workflows/remove-legacy-navigation-once.yml
-          git add -A
-          git commit -m "Remove legacy navigation"
-          git push
-, "", text, flags=re.M)
-              text = re.sub(r'^\s*document\.querySelector\(\'#navigation-content\'\).*?;\s*
-          PY
-
-      - name: Validate cleanup
-        shell: bash
-        run: |
-          node --check js/index.js
-          node --check js/i18n.js
-          node --check js/spotlight-navigation.js
-          if grep -R -n -E 'id=["'"'"']navigation-(content|bar)["'"'"']|\.menubar|openNavigationMenu|initLanguageMenu|navigation-language-toggle|disableLegacyNavigation' \
-            --include='*.html' --include='*.css' --include='*.js' --include='*.mjs' \
-            --exclude-dir=.git .; then
-            echo "Legacy navigation references remain."
-            exit 1
-          fi
-
-      - name: Commit cleanup
-        shell: bash
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git rm .github/workflows/remove-legacy-navigation-once.yml
-          git add -A
-          git commit -m "Remove legacy navigation"
-          git push
-, "", text, flags=re.M)
-              text = re.sub(r'^\s*document\.querySelector\(\'\.menubar\'\).*?;\s*
-          PY
-
-      - name: Validate cleanup
-        shell: bash
-        run: |
-          node --check js/index.js
-          node --check js/i18n.js
-          node --check js/spotlight-navigation.js
-          if grep -R -n -E 'id=["'"'"']navigation-(content|bar)["'"'"']|\.menubar|openNavigationMenu|initLanguageMenu|navigation-language-toggle|disableLegacyNavigation' \
-            --include='*.html' --include='*.css' --include='*.js' --include='*.mjs' \
-            --exclude-dir=.git .; then
-            echo "Legacy navigation references remain."
-            exit 1
-          fi
-
-      - name: Commit cleanup
-        shell: bash
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git rm .github/workflows/remove-legacy-navigation-once.yml
-          git add -A
-          git commit -m "Remove legacy navigation"
-          git push
-, "", text, flags=re.M)
-              if text != original:
-                  error_page.write_text(text, encoding="utf-8")
-                  changed.append(str(error_page))
+          write_if_changed(spot, original, text)
 
           skylet_chat = Path("ia/skylet-chat.js")
           if skylet_chat.exists():
-              text = skylet_chat.read_text(encoding="utf-8")
-              original = text
-              text = re.sub(
-                  r'\n\s*const menuButton = document\.querySelector\(\'#navigation-bar \\.menubar\'\);.*?window\.addEventListener\(\'resize\', alignClearButtonWithMenu, \{ passive: true \}\);',
-                  "",
-                  text,
-                  count=1,
-                  flags=re.S,
-              )
-              if text != original:
-                  skylet_chat.write_text(text, encoding="utf-8")
-                  changed.append(str(skylet_chat))
+              original = skylet_chat.read_text(encoding="utf-8")
+              text = original
+              start = text.find("  const menuButton = document.querySelector('#navigation-bar .menubar');")
+              end_marker = "  window.addEventListener('resize', alignClearButtonWithMenu, { passive: true });"
+              end = text.find(end_marker, start)
+              if start != -1 and end != -1:
+                  text = text[:start] + text[end + len(end_marker):]
+              write_if_changed(skylet_chat, original, text)
 
-          print(f"Updated {len(set(changed))} files")
+          print(f"Updated {len(changed)} files")
           PY
 
       - name: Validate cleanup
@@ -367,10 +271,14 @@ jobs:
           node --check js/index.js
           node --check js/i18n.js
           node --check js/spotlight-navigation.js
-          if grep -R -n -E 'id=["'"'"']navigation-(content|bar)["'"'"']|\.menubar|openNavigationMenu|initLanguageMenu|navigation-language-toggle|disableLegacyNavigation' \
-            --include='*.html' --include='*.css' --include='*.js' --include='*.mjs' \
-            --exclude-dir=.git .; then
+          node --check ia/skylet-chat.js
+          if grep -R -n -E 'id=["'"'"']navigation-(content|bar)["'"'"']|\.menubar|openNavigationMenu|initLanguageMenu|navigation-language-toggle|disableLegacyNavigation'             --include='*.html' --include='*.css' --include='*.js' --include='*.mjs'             --exclude-dir=.git --exclude-dir=.pages-dist .; then
             echo "Legacy navigation references remain."
+            exit 1
+          fi
+          node scripts/build-pages-artifact.mjs
+          if grep -R -n -E 'id=["'"'"']navigation-(content|bar)["'"'"']|\.menubar|openNavigationMenu|initLanguageMenu|navigation-language-toggle|disableLegacyNavigation'             --include='*.html' --include='*.css' --include='*.js' .pages-dist; then
+            echo "Legacy navigation leaked into the Pages artifact."
             exit 1
           fi
 
@@ -380,6 +288,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git rm .github/workflows/remove-legacy-navigation-once.yml
+          rm -rf .pages-dist
           git add -A
           git commit -m "Remove legacy navigation"
           git push
