@@ -62,6 +62,7 @@
 
       macca_blog: {
         type: 'image',
+        style: 'macca',
         locales: {
           en: {
             image: '/ads/banners/macca-partner.webp',
