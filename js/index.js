@@ -1134,7 +1134,8 @@ function loadSkyletWidgetAssets() {
   }
 }
 
-// Spotlight navigation is the sole site navigation.\nfunction loadSpotlightNavigationAssets() {
+// Spotlight navigation is the sole site navigation.
+function loadSpotlightNavigationAssets() {
   function loadScript() {
     if (document.getElementById('spotlight-navigation-script')) {
       return;
