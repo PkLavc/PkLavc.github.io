@@ -1672,7 +1672,7 @@ if (document.readyState === 'loading') {
 
   var config = document.createElement('script');
   config.id = 'pklavc-ads-config';
-  config.src = '/ads/config.js?v=8b6816e3ef';
+  config.src = '/ads/config.js?v=e502eedda3';
   config.async = true;
   config.addEventListener('load', loadRuntime, { once: true });
   document.head.appendChild(config);
