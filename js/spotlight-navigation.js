@@ -274,6 +274,7 @@
 
     function setLanguageMenuOpen(shouldOpen) {
       shell.classList.toggle('is-language-menu-open', shouldOpen);
+      document.body.classList.toggle('spotlight-language-menu-open', shouldOpen);
       languageMenu.hidden = !shouldOpen;
       languageButton.setAttribute('aria-expanded', shouldOpen ? 'true' : 'false');
       present(shouldOpen ? languageIndex : activeIndex);
