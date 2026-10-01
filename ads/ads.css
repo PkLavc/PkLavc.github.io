@@ -130,6 +130,45 @@
 
 
 /* Store placements outside blog articles. */
+.store-sidebar-column {
+  min-width: 0;
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  position: relative;
+  top: auto;
+  max-height: none;
+  overflow: visible;
+  scrollbar-width: none;
+}
+
+.store-sidebar-column::-webkit-scrollbar {
+  display: none;
+}
+
+.store-sidebar-column > .filter-sidebar {
+  position: relative !important;
+  top: auto !important;
+  max-height: none !important;
+  overflow: visible !important;
+}
+
+.store-sidebar-ads {
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 18px;
+  overflow: visible;
+}
+
+.pklavc-ad--store-sidebar {
+  width: 100%;
+  margin: 0;
+  flex: 0 0 auto;
+}
+
 .pklavc-ad--store-sidebar .pklavc-ad__link {
   grid-template-columns: minmax(0, 1fr);
 }
@@ -144,52 +183,34 @@
   padding: 14px;
 }
 
-.pklavc-ad--store-bottom {
-  width: min(1180px, calc(100% - 48px));
-  margin: 34px auto;
-}
-
-.store-sidebar-column {
-  min-width: 0;
-  position: sticky;
-  top: 76px;
-  align-self: start;
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-  max-height: calc(100vh - 94px);
-  overflow: auto;
-  overscroll-behavior: contain;
-  scrollbar-width: thin;
-  scrollbar-color: #455361 transparent;
-}
-
-.store-sidebar-column > .filter-sidebar {
-  position: static;
-  top: auto;
-  max-height: none;
-  overflow: visible;
-}
-
-.pklavc-ad--store-sidebar {
-  margin: 0;
-}
-
 .pklavc-ad--store-rows {
-  grid-column: 1 / -1;
-  margin: 6px 0 14px;
+  grid-column: 1 / -1 !important;
+  width: 100% !important;
+  max-width: none !important;
+  margin: 10px 0 18px !important;
+  justify-self: stretch;
+}
+
+.pklavc-ad--store-bottom {
+  width: calc(100% - 88px);
+  max-width: none;
+  margin: 34px 88px 0 0;
 }
 
 @media (max-width: 760px) {
   .store-sidebar-column {
-    position: static;
-    top: auto;
-    max-height: none;
-    overflow: visible;
+    display: block;
+  }
+
+  .store-sidebar-ads {
+    height: auto !important;
+    min-height: 0 !important;
+    gap: 16px;
+    margin-top: 16px;
   }
 
   .pklavc-ad--store-bottom {
-    width: calc(100% - 32px);
-    margin: 26px auto;
+    width: calc(100% - 64px);
+    margin: 26px 64px 0 0;
   }
 }
