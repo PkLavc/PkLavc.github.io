@@ -571,22 +571,8 @@ function projectRoute(projectKey, localeKey) {
 
 function nav(localeKey) {
   const locale = locales[localeKey];
-  return `<div id="navigation-content" role="navigation" aria-label="${escapeHtml(locale.homeLabel)} navigation">
-            <div class="logo"></div>
-            <div class="navigation-links">
-                <a href="${locale.home}" data-text="${escapeHtml(locale.homeLabel.toUpperCase())}" id="home-link">${escapeHtml(locale.homeLabel.toUpperCase())}</a>
-                <a href="${locale.about}" data-text="${escapeHtml(locale.aboutLabel.toUpperCase())}" id="about-link">${escapeHtml(locale.aboutLabel.toUpperCase())}</a>
-                <a href="${locale.projects}" data-text="${escapeHtml(locale.projectsLabel.toUpperCase())}" id="projects-link">${escapeHtml(locale.projectsLabel.toUpperCase())}</a>
-                <a href="${locale.blog}" data-text="BLOG" id="blog-link">BLOG</a>
-            </div>
-        </div>
-        <div id="navigation-bar">
-            <div class="menubar">
-                <span class="first-span"></span>
-                <span class="second-span"></span>
-                <span class="third-span"></span>
-            </div>
-        </div>`;
+  return `
+`;
 }
 
 function footer(localeKey) {

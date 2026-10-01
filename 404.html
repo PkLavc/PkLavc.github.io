@@ -194,22 +194,7 @@
 <body class="seo-layout error-page-layout">
     <div id="all">
         <div class="cursor"></div>
-        <div id="navigation-content" role="navigation" aria-label="Primary navigation">
-            <div class="logo"></div>
-            <div class="navigation-links">
-                <a href="/" data-text="HOME" id="home-link">HOME</a>
-                <a href="/about/" data-text="ABOUT" id="about-link">ABOUT</a>
-                <a href="/projects/" data-text="PROJECTS" id="projects-link">PROJECTS</a>
-                <a href="/blog/" data-text="BLOG" id="blog-link">BLOG</a>
-            </div>
-        </div>
-        <div id="navigation-bar">
-            <div class="menubar" role="button" tabindex="0" aria-label="Open navigation">
-                <span class="first-span"></span>
-                <span class="second-span"></span>
-                <span class="third-span"></span>
-            </div>
-        </div>
+
         <main role="main" class="error-page-main">
             <section class="error-page-card">
                 <h1 class="error-page-code">404</h1>
@@ -351,19 +336,13 @@
             setText('[data-error-copy="email"]', text.email);
             setText('[data-footer-copy="email"]', text.email);
             setText('[data-footer-copy="sponsor"]', text.sponsor);
-
-            setRoute(document.getElementById('home-link'), text.nav.home, text.routes.home);
-            setRoute(document.getElementById('about-link'), text.nav.about, text.routes.about);
-            setRoute(document.getElementById('projects-link'), text.nav.projects, text.routes.projects);
-            setRoute(document.getElementById('blog-link'), text.nav.blog, text.routes.blog);
+setRoute(document.getElementById('about-link'), text.nav.about, text.routes.about);
+setRoute(document.getElementById('blog-link'), text.nav.blog, text.routes.blog);
             setRoute(document.querySelector('[data-error-link="home"]'), text.actions.home, text.routes.home);
             setRoute(document.querySelector('[data-error-link="about"]'), text.actions.about, text.routes.about);
             setRoute(document.querySelector('[data-error-link="projects"]'), text.actions.projects, text.routes.projects);
             setRoute(document.querySelector('[data-error-link="blog"]'), text.actions.blog, text.routes.blog);
-
-            document.querySelector('#navigation-content').setAttribute('aria-label', text.navAria);
-            document.querySelector('.menubar').setAttribute('aria-label', text.menuAria);
-            document.querySelector('.error-page-social').setAttribute('aria-label', text.contactAria);
+document.querySelector('.error-page-social').setAttribute('aria-label', text.contactAria);
             document.querySelector('.footer-link-list').setAttribute('aria-label', text.footerAria);
             document.querySelector('.footer-legal-inline').setAttribute('aria-label', text.legalAria);
 

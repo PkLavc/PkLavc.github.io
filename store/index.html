@@ -33,7 +33,9 @@
 </head>
 <body class="seo-layout ready" data-store-locale="en">
   <div id="all">
-    <header class="store-site-header"><a class="store-wordmark" href="#store-products">PKLAVC<span>STORE</span></a><input class="store-search" type="search" placeholder="Search products" aria-label="Search products" data-store-search><div id="navigation-bar"><div class="menubar"><span class="first-span"></span><span class="second-span"></span><span class="third-span"></span></div></div></header><div id="navigation-content" role="navigation" aria-label="Primary navigation"><div class="logo"></div><div class="navigation-links"><a href="/" data-text="HOME" id="home-link">HOME</a><a href="/about/" data-text="ABOUT" id="about-link">ABOUT</a><a href="/projects/" data-text="PROJECTS" id="projects-link">PROJECTS</a><a href="/store/" data-text="STORE" id="store-link">STORE</a></div></div>
+    <header class="store-site-header"><a class="store-wordmark" href="#store-products">PKLAVC<span>STORE</span></a><input class="store-search" type="search" placeholder="Search products" aria-label="Search products" data-store-search>
+</header>
+
     <main class="store-main">
       <div class="catalog-layout">
         <aside class="filter-sidebar" aria-label="Category">
@@ -64,18 +66,7 @@
       <p class="store-footer-disclosure" id="store-notice"><strong>Aviso</strong>Products and services may be offered by partner stores.<br>PkLavc.com is not responsible for any purchase, payment, delivery, return, service fulfillment or warranty.</p>
     </div>
   </footer>
-  <script>
-    (function(){
-      var languageToggle=document.querySelector(".navigation-language-toggle");
-      var navigationPanel=document.querySelector("#navigation-content");
-      if(languageToggle&&navigationPanel){
-        languageToggle.addEventListener("click",function(){
-          var active=navigationPanel.classList.toggle("is-language-mode");
-          languageToggle.setAttribute("aria-pressed",String(active));
-        });
-      }
-    }());
-  </script>
+  
   <script src="/store/assets/store-runtime.js?v=6264d6f774" defer></script>
   <script src="/js/i18n.js?v=ace3080ab2" defer></script>
   <script src="/js/jquery.min.js?v=d482871a5e" defer></script>

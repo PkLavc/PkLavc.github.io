@@ -33,7 +33,9 @@
 </head>
 <body class="seo-layout ready" data-store-locale="es">
   <div id="all">
-    <header class="store-site-header"><a class="store-wordmark" href="#store-products">PKLAVC<span>STORE</span></a><input class="store-search" type="search" placeholder="Buscar productos" aria-label="Buscar productos" data-store-search><div id="navigation-bar"><div class="menubar"><span class="first-span"></span><span class="second-span"></span><span class="third-span"></span></div></div></header><div id="navigation-content" role="navigation" aria-label="Navegación primaria"><div class="logo"></div><div class="navigation-links"><a href="/es/" data-text="INICIO" id="home-link">INICIO</a><a href="/es/sobre/" data-text="SOBRE" id="about-link">SOBRE</a><a href="/es/proyectos/" data-text="PROYECTOS" id="projects-link">PROYECTOS</a><a href="/store/es/" data-text="TIENDA" id="store-link">TIENDA</a></div></div>
+    <header class="store-site-header"><a class="store-wordmark" href="#store-products">PKLAVC<span>STORE</span></a><input class="store-search" type="search" placeholder="Buscar productos" aria-label="Buscar productos" data-store-search>
+</header>
+
     <main class="store-main">
       <div class="catalog-layout">
         <aside class="filter-sidebar" aria-label="Categoría">
@@ -64,18 +66,7 @@
       <p class="store-footer-disclosure" id="store-notice"><strong>Aviso</strong>Los productos y servicios pueden ser ofrecidos por tiendas asociadas.<br>pklavc.com no se responsabiliza de ninguna compra, pago, entrega, prestación de servicios, devolución ni garantía.</p>
     </div>
   </footer>
-  <script>
-    (function(){
-      var languageToggle=document.querySelector(".navigation-language-toggle");
-      var navigationPanel=document.querySelector("#navigation-content");
-      if(languageToggle&&navigationPanel){
-        languageToggle.addEventListener("click",function(){
-          var active=navigationPanel.classList.toggle("is-language-mode");
-          languageToggle.setAttribute("aria-pressed",String(active));
-        });
-      }
-    }());
-  </script>
+  
   <script src="/store/assets/store-runtime.js?v=6264d6f774" defer></script>
   <script src="/js/i18n.js?v=ace3080ab2" defer></script>
   <script src="/js/jquery.min.js?v=d482871a5e" defer></script>

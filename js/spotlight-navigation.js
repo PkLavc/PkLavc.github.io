@@ -115,18 +115,6 @@
     return appendCurrentLocation(localizedRoute('/', locale));
   }
 
-  function disableLegacyNavigation() {
-    var panel = document.getElementById('navigation-content');
-    var trigger = document.getElementById('navigation-bar');
-
-    [panel, trigger].forEach(function (element) {
-      if (!element) return;
-      element.setAttribute('aria-hidden', 'true');
-      element.setAttribute('inert', '');
-      element.dataset.navigationDisabled = 'true';
-    });
-  }
-
   function setCurrentItem(items, activeIndex) {
     items.forEach(function (item, index) {
       item.classList.toggle('is-active', index === activeIndex);
@@ -347,7 +335,6 @@
   }
 
   function init() {
-    disableLegacyNavigation();
     createNavigation();
   }
 

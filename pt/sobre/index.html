@@ -360,23 +360,7 @@
         </script>
         <div id="all">
             <div class="cursor"></div>
-            <div id="navigation-content" role="navigation" aria-label="Navegação primária">
-                <div class="logo">
-                </div>
-                                <div class="navigation-links">
-                    <a href="/pt/" data-text="INÍCIO" id="home-link" >INÍCIO</a>
-                    <a href="#" data-text="SOBRE" id="about-link" >SOBRE</a>
-                    <a href="/pt/projetos/" data-text="PROJETOS" id="projects-link" >PROJETOS</a>
-                                    <a href="/pt/blog/" data-text="BLOG" id="blog-link" >BLOG</a>
-                </div>
-            </div>
-            <div id="navigation-bar">
-                <div class="menubar">
-                    <span class="first-span"></span>
-                    <span class="second-span"></span>
-                    <span class="third-span"></span>
-                </div>
-            </div>
+
             <main id="main-content">
            <div id="about" aria-label="Seção Sobre">
         <div class="about-container">
@@ -874,40 +858,6 @@
                     }
                 }
 
-                function setupMenu() {
-                    const nav = document.getElementById('navigation-content');
-                    const menuButton = document.querySelector('.menubar');
-
-                    if (!nav || !menuButton) {
-                        return;
-                    }
-
-                    function closeMenu() {
-                        nav.classList.remove('is-open');
-                    }
-
-                    menuButton.addEventListener('click', function(event) {
-                        event.preventDefault();
-                        event.stopPropagation();
-                        nav.classList.toggle('is-open');
-                    });
-
-                    document.addEventListener('click', function(event) {
-                        if (nav.classList.contains('is-open') && !nav.contains(event.target) && !menuButton.contains(event.target)) {
-                            closeMenu();
-                        }
-                    });
-
-                    nav.querySelectorAll('a').forEach(function(link) {
-                        link.addEventListener('click', function(event) {
-                            if (link.id === 'about-link') {
-                                event.preventDefault();
-                            }
-                            closeMenu();
-                        });
-                    });
-                }
-
                 function setupCursor() {
                     if (isTouchOrMobile()) {
                         return;
@@ -928,7 +878,7 @@
                         cursor.style.transform = 'translate(' + (event.clientX - 25) + 'px, ' + (event.clientY - 25) + 'px) scale(' + scale + ')';
                     }, { passive: true });
 
-                    document.querySelectorAll('a,.menubar,.copy-btn,.contact-value,.credits-trigger').forEach(function(element) {
+                    document.querySelectorAll('a,.copy-btn,.contact-value,.credits-trigger').forEach(function(element) {
                         element.addEventListener('mouseenter', function() {
                             setCursorScale('1.4', '1');
                         });

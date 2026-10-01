@@ -239,15 +239,7 @@
   clearButton.appendChild(clearIcon);
   clearButton.addEventListener('click', clearConversation);
   consoleElement.appendChild(clearButton);
-  const menuButton = document.querySelector('#navigation-bar .menubar');
-  const alignClearButtonWithMenu = () => {
-    if (!menuButton) return;
-    const menuRect = menuButton.getBoundingClientRect();
-    const clearRect = clearButton.getBoundingClientRect();
-    clearButton.style.top = `${Math.round(menuRect.top + (menuRect.height - clearRect.height) / 2)}px`;
-  };
-  alignClearButtonWithMenu();
-  window.addEventListener('resize', alignClearButtonWithMenu, { passive: true });
+
   voiceButton.addEventListener('click', () => { voiceOutput = !voiceOutput; setVoiceState(); });
   document.querySelectorAll('[data-current-year]').forEach(node => { node.textContent = String(new Date().getFullYear()); });
   input.placeholder = copy.placeholder;
