@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <!-- Local assets are content-hashed at build time. -->
+  <!-- Store shell is static. Product data is loaded from /store/products.json. -->
   <script>
     if (window.location.hostname === "pklavc.github.io") {
       window.location.replace("https://pklavc.com" + window.location.pathname + window.location.search + window.location.hash);
@@ -30,79 +30,23 @@
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Monoton&family=Poppins:wght@500&family=Raleway:wght@300&display=optional"></noscript>
   <link rel="stylesheet" href="/store/assets/css/global.css?v=af74974e94">
   <link rel="stylesheet" href="/store/assets/store.css?v=1a364e4f8f">
-  <style>
-    .store-grid{display:grid!important}
-    .store-grid>.store-card:not(.is-filtered-out){display:flex!important;visibility:visible!important;opacity:1!important}
-  </style>
 </head>
-<body class="seo-layout ready">
+<body class="seo-layout ready" data-store-locale="pt">
   <div id="all">
     <header class="store-site-header"><a class="store-wordmark" href="#store-products">PKLAVC<span>STORE</span></a><input class="store-search" type="search" placeholder="Buscar produtos" aria-label="Buscar produtos" data-store-search><div id="navigation-bar"><div class="menubar"><span class="first-span"></span><span class="second-span"></span><span class="third-span"></span></div></div></header><div id="navigation-content" role="navigation" aria-label="Navegação primária"><div class="logo"></div><div class="navigation-links"><a href="/pt/" data-text="INÍCIO" id="home-link">INÍCIO</a><a href="/pt/sobre/" data-text="SOBRE" id="about-link">SOBRE</a><a href="/pt/projetos/" data-text="PROJETOS" id="projects-link">PROJETOS</a><a href="/store/pt/" data-text="LOJA" id="store-link">LOJA</a></div></div>
     <main class="store-main">
       <div class="catalog-layout">
         <aside class="filter-sidebar" aria-label="Categoria">
           <div class="filter-sidebar-heading"><h2>Filtrar</h2><button type="button" data-clear-filters>Limpar filtros</button></div>
-          <label class="filter-price-title">Preço <select data-currency><option value="">Todas as moedas</option><option value="BRL">BRL</option></select></label>
-          <div class="filter-price-inputs"><label><span>Mín.</span><input type="number" data-min-price min="449.9" value="" step="any" disabled></label><label><span>Máx.</span><input type="number" data-max-price max="599.9" value="" step="any" disabled></label></div>
+          <label class="filter-price-title">Preço <select data-currency><option value="">Todas as moedas</option></select></label>
+          <div class="filter-price-inputs"><label><span>Mín.</span><input type="number" data-min-price value="" step="any" disabled></label><label><span>Máx.</span><input type="number" data-max-price value="" step="any" disabled></label></div>
           <label class="filter-option filter-stock"><input type="checkbox" data-in-stock><span>Em estoque</span></label>
-          <fieldset class="filter-group"><legend>Categoria</legend><div class="filter-options"><label class="filter-option"><input type="checkbox" data-filter-key="category"  value="Controles"><span>Controles</span></label><label class="filter-option"><input type="checkbox" data-filter-key="category"  value="Jogos"><span>Jogos</span></label></div></fieldset><fieldset class="filter-group"><legend>Marca</legend><div class="filter-options"><label class="filter-option"><input type="checkbox" data-filter-key="vendor"  value="Rockstar Games"><span>Rockstar Games</span></label><label class="filter-option"><input type="checkbox" data-filter-key="vendor"  value="Sony"><span>Sony</span></label></div></fieldset><fieldset class="filter-group"><legend>Loja</legend><div class="filter-options"><label class="filter-option"><input type="checkbox" data-filter-key="program"  value="Amazon Brasil"><span>Amazon Brasil</span></label></div></fieldset>
+          <div data-dynamic-filters></div>
         </aside>
         <section class="store-results" aria-label="Loja">
-          <div class="results-toolbar"><p><strong data-result-count>3</strong> produtos</p><div class="results-controls"><label>Ordenar <select data-sort><option value="featured">Destaques</option><option value="price-asc">Menor preço</option><option value="price-desc">Maior preço</option><option value="name">Nome</option></select></label><div class="column-picker" role="group" aria-label="Produtos por linha"><span>Produtos por linha</span><button type="button" data-columns="2" aria-label="2" title="2" aria-pressed="false">2</button><button type="button" data-columns="3" aria-label="3" title="3" aria-pressed="true">3</button><button type="button" data-columns="4" aria-label="4" title="4" aria-pressed="false">4</button></div></div></div>
-          <section class="store-grid" id="store-products" data-store-grid data-columns="3">
-    <article class="store-card" data-product-id="B0HHNVBHQ5" data-category="Controles" data-vendor="Sony" data-program="Amazon Brasil" data-currency="BRL" data-price="599.9" data-available="unknown" data-attributes="{}" data-search="controle sem fio dualsense preto — edição limitada grand theft auto vi sony controles amazon brasil">
-      <a class="store-image-wrap" href="https://www.amazon.com.br/dp/B0HHNVBHQ5" target="_blank" rel="sponsored noopener noreferrer" aria-label="Controle sem fio DualSense preto — Edição limitada Grand Theft Auto VI">
-        <img class="store-image" src="https://m.media-amazon.com/images/P/B0HHNVBHQ5.01._SCLZZZZZZZ_.jpg" alt="Controle sem fio DualSense preto — Edição limitada Grand Theft Auto VI" loading="lazy" referrerpolicy="no-referrer" onerror="this.hidden=true;this.parentNode.classList.add('image-unavailable')">
-        <span class="store-badge">PRÉ-VENDA</span>
-
-      </a>
-      <div class="store-card-body">
-        <div class="store-card-meta"><span>Amazon Brasil</span><span>Sony</span></div>
-        <h2>Controle sem fio DualSense preto — Edição limitada Grand Theft Auto VI</h2>
-        <p class="store-description">Edição limitada do controle sem fio DualSense para PlayStation 5, com design inspirado em Grand Theft Auto VI. Consulte prazo, estoque e condições na Amazon.</p>
-        <div class="store-price-row">
-          <strong>R$ 599,90</strong>
-
-        </div>
-        <a class="store-cta" href="https://www.amazon.com.br/dp/B0HHNVBHQ5" target="_blank" rel="sponsored noopener noreferrer">Ver oferta<span aria-hidden="true"> ↗</span></a>
-      </div>
-    </article>
-
-    <article class="store-card" data-product-id="B0HHNZFXL5" data-category="Controles" data-vendor="Sony" data-program="Amazon Brasil" data-currency="BRL" data-price="599.9" data-available="unknown" data-attributes="{}" data-search="controle sem fio dualsense branco — edição limitada grand theft auto vi sony controles amazon brasil">
-      <a class="store-image-wrap" href="https://www.amazon.com.br/dp/B0HHNZFXL5" target="_blank" rel="sponsored noopener noreferrer" aria-label="Controle sem fio DualSense branco — Edição limitada Grand Theft Auto VI">
-        <img class="store-image" src="https://m.media-amazon.com/images/P/B0HHNZFXL5.01._SCLZZZZZZZ_.jpg" alt="Controle sem fio DualSense branco — Edição limitada Grand Theft Auto VI" loading="lazy" referrerpolicy="no-referrer" onerror="this.hidden=true;this.parentNode.classList.add('image-unavailable')">
-        <span class="store-badge">PRÉ-VENDA</span>
-
-      </a>
-      <div class="store-card-body">
-        <div class="store-card-meta"><span>Amazon Brasil</span><span>Sony</span></div>
-        <h2>Controle sem fio DualSense branco — Edição limitada Grand Theft Auto VI</h2>
-        <p class="store-description">Edição limitada branca do controle sem fio DualSense para PlayStation 5, com arte oficial de Grand Theft Auto VI. Consulte prazo, estoque e condições na Amazon.</p>
-        <div class="store-price-row">
-          <strong>R$ 599,90</strong>
-
-        </div>
-        <a class="store-cta" href="https://www.amazon.com.br/dp/B0HHNZFXL5" target="_blank" rel="sponsored noopener noreferrer">Ver oferta<span aria-hidden="true"> ↗</span></a>
-      </div>
-    </article>
-
-    <article class="store-card" data-product-id="B0H6KT2RWH" data-category="Jogos" data-vendor="Rockstar Games" data-program="Amazon Brasil" data-currency="BRL" data-price="449.9" data-available="unknown" data-attributes="{}" data-search="grand theft auto vi — playstation 5 rockstar games jogos amazon brasil">
-      <a class="store-image-wrap" href="https://www.amazon.com.br/dp/B0H6KT2RWH" target="_blank" rel="sponsored noopener noreferrer" aria-label="Grand Theft Auto VI — PlayStation 5">
-        <img class="store-image" src="https://m.media-amazon.com/images/P/B0H6KT2RWH.01._SCLZZZZZZZ_.jpg" alt="Grand Theft Auto VI — PlayStation 5" loading="lazy" referrerpolicy="no-referrer" onerror="this.hidden=true;this.parentNode.classList.add('image-unavailable')">
-        <span class="store-badge">PLAYSTATION 5</span>
-
-      </a>
-      <div class="store-card-body">
-        <div class="store-card-meta"><span>Amazon Brasil</span><span>Rockstar Games</span></div>
-        <h2>Grand Theft Auto VI — PlayStation 5</h2>
-        <p class="store-description">Grand Theft Auto VI para PlayStation 5. A página do varejista informa preço e disponibilidade atuais; confira os detalhes antes de comprar.</p>
-        <div class="store-price-row">
-          <strong>R$ 449,90</strong>
-
-        </div>
-        <a class="store-cta" href="https://www.amazon.com.br/dp/B0H6KT2RWH" target="_blank" rel="sponsored noopener noreferrer">Ver oferta<span aria-hidden="true"> ↗</span></a>
-      </div>
-    </article></section>
+          <div class="results-toolbar"><p><strong data-result-count>0</strong> produtos</p><div class="results-controls"><label>Ordenar <select data-sort><option value="featured">Destaques</option><option value="price-asc">Menor preço</option><option value="price-desc">Maior preço</option><option value="name">Nome</option></select></label><div class="column-picker" role="group" aria-label="Produtos por linha"><span>Produtos por linha</span><button type="button" data-columns="2" aria-label="2" title="2" aria-pressed="false">2</button><button type="button" data-columns="3" aria-label="3" title="3" aria-pressed="true">3</button><button type="button" data-columns="4" aria-label="4" title="4" aria-pressed="false">4</button></div></div></div>
+          <p class="store-empty store-loading" data-store-loading>Carregando produtos...</p>
+          <section class="store-grid" id="store-products" data-store-grid data-columns="3"></section>
           <p class="store-empty store-no-results" data-no-results hidden>Nenhum produto encontrado.</p>
         </section>
       </div>
@@ -115,7 +59,7 @@
         <p class="store-footer-note">&copy; 2026 PkLavc Store</p>
         <nav aria-label="Links institucionais">
           <a href="/pt/politica-de-privacidade/">Política de Privacidade</a><a href="/pt/termos-de-uso/">Termos de Uso</a><a href="/pt/politica-editorial/">Política Editorial</a>
-      </nav>
+        </nav>
       </div>
       <p class="store-footer-disclosure" id="store-notice"><strong>Aviso</strong>Os produtos são oferecidos pelas lojas parceiras. O pklavc.com não se responsabiliza por nenhuma compra, pagamento, entrega, devolução ou garantia.</p>
     </div>
@@ -130,106 +74,9 @@
           languageToggle.setAttribute("aria-pressed",String(active));
         });
       }
-      try {
-      var cards=[].slice.call(document.querySelectorAll(".store-card"));
-      cards.forEach(function(card){card.removeAttribute("hidden");card.classList.remove("is-filtered-out");});
-      var defaultOrder=cards.slice();
-      var grid=document.querySelector("[data-store-grid]");
-      function forceCardVisibility(){
-        if(!grid||!cards.length)return;
-        grid.style.setProperty("display","grid","important");
-        grid.style.setProperty("visibility","visible","important");
-        grid.style.setProperty("opacity","1","important");
-        cards.forEach(function(card){
-          if(card.classList.contains("is-filtered-out"))return;
-          card.removeAttribute("hidden");
-          card.style.setProperty("display","flex","important");
-          card.style.setProperty("visibility","visible","important");
-          card.style.setProperty("opacity","1","important");
-          card.style.setProperty("min-height","360px","important");
-        });
-      }
-      forceCardVisibility();
-      requestAnimationFrame(forceCardVisibility);
-      setTimeout(forceCardVisibility,250);
-      setTimeout(forceCardVisibility,1000);
-      var search=document.querySelector("[data-store-search]");
-      var currency=document.querySelector("[data-currency]");
-      var minInput=document.querySelector("[data-min-price]");
-      var maxInput=document.querySelector("[data-max-price]");
-      var count=document.querySelector("[data-result-count]");
-      var empty=document.querySelector("[data-no-results]");
-      function valuesFor(key, attributeKey){
-        return [].slice.call(document.querySelectorAll('[data-filter-key="'+key+'"]'+(attributeKey?'[data-attribute-key="'+attributeKey+'"]':''))).filter(function(input){return input.checked;}).map(function(input){return input.value;});
-      }
-      function currencyBounds(){
-        var matching=cards.filter(function(card){return card.dataset.currency===currency.value&&card.dataset.price!=="";}).map(function(card){return Number(card.dataset.price);});
-        if(!currency.value||!matching.length){minInput.value="";maxInput.value="";minInput.disabled=true;maxInput.disabled=true;return;}
-        minInput.disabled=false;maxInput.disabled=false;
-        var low=Math.min.apply(null,matching),high=Math.max.apply(null,matching);
-        minInput.min=low;minInput.max=high;maxInput.min=low;maxInput.max=high;
-        minInput.value=low;maxInput.value=high;
-      }
-      function apply(){
-        var q=(search.value||"").trim().toLowerCase();
-        var category=valuesFor("category"),vendor=valuesFor("vendor"),program=valuesFor("program");
-        var inStock=document.querySelector("[data-in-stock]").checked;
-        var low=minInput.value===""?-Infinity:Number(minInput.value),high=maxInput.value===""?Infinity:Number(maxInput.value);
-        var visible=0;
-        cards.forEach(function(card){
-          var attrs={};try{attrs=JSON.parse(card.dataset.attributes||"{}");}catch(e){}
-          var attrMatch=[].slice.call(document.querySelectorAll('[data-filter-key="attribute"]:checked')).every(function(input){return input.dataset.attributeKey&&String(attrs[input.dataset.attributeKey]||"")===input.value;});
-          var price=Number(card.dataset.price);
-          var priceMatch=!currency.value||(card.dataset.currency===currency.value&&card.dataset.price!==""&&price>=low&&price<=high);
-          var show=(!q||(card.dataset.search||"").indexOf(q)>=0)&&(!category.length||category.indexOf(card.dataset.category)>=0)&&(!vendor.length||vendor.indexOf(card.dataset.vendor)>=0)&&(!program.length||program.indexOf(card.dataset.program)>=0)&&attrMatch&&(!inStock||card.dataset.available==="true")&&priceMatch;
-          card.classList.toggle("is-filtered-out",!show);
-          if(show){
-            card.removeAttribute("hidden");
-            card.style.setProperty("display","flex","important");
-            card.style.setProperty("visibility","visible","important");
-            card.style.setProperty("opacity","1","important");
-            visible++;
-          }else{
-            card.style.setProperty("display","none","important");
-          }
-        });
-        count.textContent=visible;if(empty)empty.hidden=visible!==0;
-      }
-      function sortCards(){
-        var mode=document.querySelector("[data-sort]").value;
-        cards.sort(function(a,b){var pa=Number(a.dataset.price)||0,pb=Number(b.dataset.price)||0;
-          if((mode==="price-asc"||mode==="price-desc")&&a.dataset.currency!==b.dataset.currency)return a.dataset.currency.localeCompare(b.dataset.currency);
-          if(mode==="price-asc")return pa-pb;if(mode==="price-desc")return pb-pa;
-          if(mode==="name")return a.querySelector("h2").textContent.localeCompare(b.querySelector("h2").textContent);
-          return defaultOrder.indexOf(a)-defaultOrder.indexOf(b);
-        }).forEach(function(card){grid.appendChild(card);});forceCardVisibility();
-      }
-      search.addEventListener("input",apply);
-      document.querySelectorAll("[data-filter-key], [data-in-stock]").forEach(function(input){input.addEventListener("change",apply);});
-      document.querySelector("[data-clear-filters]").addEventListener("click",function(){
-        document.querySelectorAll('[data-filter-key], [data-in-stock]').forEach(function(input){input.checked=false;});search.value="";currency.value="";currencyBounds();apply();
-      });
-      currency.addEventListener("change",function(){currencyBounds();apply();});
-      minInput.addEventListener("input",apply);maxInput.addEventListener("input",apply);
-      document.querySelector("[data-sort]").addEventListener("change",function(){sortCards();apply();});
-      document.querySelectorAll("[data-columns]").forEach(function(button){button.addEventListener("click",function(){
-        var before=new Map(cards.map(function(card){return [card,card.getBoundingClientRect()];}));
-        grid.dataset.columns=button.dataset.columns;
-        document.querySelectorAll("[data-columns]").forEach(function(other){other.setAttribute("aria-pressed",String(other===button));});
-        requestAnimationFrame(function(){cards.forEach(function(card){var first=before.get(card),last=card.getBoundingClientRect();if(!first||card.hidden)return;var dx=first.left-last.left,dy=first.top-last.top;if(dx||dy)card.animate([{transform:"translate("+dx+"px,"+dy+"px)"},{transform:"translate(0,0)"}],{duration:320,easing:"cubic-bezier(.2,.8,.2,1)"});});});
-      });});
-      document.querySelectorAll("[data-columns]").forEach(function(button){button.textContent=button.dataset.columns;});
-      currencyBounds();
-      } catch (error) {
-        var fallbackCards = document.querySelectorAll(".store-card");
-        var fallbackCount = document.querySelector("[data-result-count]");
-        var fallbackEmpty = document.querySelector("[data-no-results]");
-        fallbackCards.forEach(function(card){card.removeAttribute("hidden");card.classList.remove("is-filtered-out");});
-        if(fallbackCount)fallbackCount.textContent=fallbackCards.length;
-        if(fallbackEmpty)fallbackEmpty.hidden=fallbackCards.length!==0;
-      }
     }());
   </script>
+  <script src="/store/assets/store-runtime.js?v=d7bb436bcc" defer></script>
   <script src="/store/assets/js/i18n.js?v=ace3080ab2" defer></script>
   <script src="/store/assets/js/jquery.min.js?v=d482871a5e" defer></script>
   <script src="/store/assets/js/index.js?v=171252f4cc" defer></script>
