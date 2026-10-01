@@ -1638,9 +1638,6 @@ if (document.readyState === 'loading') {
   var shouldLoad =
     /^\/blog\/(?:(?:en|pt|es)\/)?[^/]+\/?$/.test(path) ||
     /^\/(?:pt|es)\/blog\/[^/]+\/?$/.test(path) ||
-    /^\/projects(?:\/|$)/.test(path) ||
-    /^\/pt\/projetos(?:\/|$)/.test(path) ||
-    /^\/es\/proyectos(?:\/|$)/.test(path) ||
     /^\/store(?:\/(?:pt|es))?\/?$/.test(path);
 
   if (!shouldLoad) return;
@@ -1649,7 +1646,7 @@ if (document.readyState === 'loading') {
     var style = document.createElement('link');
     style.id = 'pklavc-ads-style';
     style.rel = 'stylesheet';
-    style.href = '/ads/ads.css?v=fbaff7c5bf';
+    style.href = '/ads/ads.css?v=0f9fe4b27a';
     document.head.appendChild(style);
   }
 
@@ -1657,7 +1654,7 @@ if (document.readyState === 'loading') {
     if (document.getElementById('pklavc-ads-runtime')) return;
     var runtime = document.createElement('script');
     runtime.id = 'pklavc-ads-runtime';
-    runtime.src = '/ads/ads.js?v=7a44f9977c';
+    runtime.src = '/ads/ads.js?v=f703ee9975';
     runtime.async = true;
     document.head.appendChild(runtime);
   }
@@ -1675,7 +1672,7 @@ if (document.readyState === 'loading') {
 
   var config = document.createElement('script');
   config.id = 'pklavc-ads-config';
-  config.src = '/ads/config.js?v=89515fea8c';
+  config.src = '/ads/config.js?v=e502eedda3';
   config.async = true;
   config.addEventListener('load', loadRuntime, { once: true });
   document.head.appendChild(config);
