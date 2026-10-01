@@ -93,7 +93,10 @@
     var selected = localized && matchCampaigns(localized, geo);
     if (selected === undefined) selected = matchCampaigns(rule, geo);
     var ids = (Array.isArray(selected) ? selected : [selected]).filter(function (id, index, list) {
-      return typeof id === 'string' && id.length > 0 && list.indexOf(id) === index;
+      if (typeof id !== 'string' || !id.length || list.indexOf(id) !== index) return false;
+      if (pageContext.type === 'blog' && id === 'pklavc_blog') return false;
+      if (pageContext.type === 'store' && id === 'pklavc_store') return false;
+      return true;
     });
     var seconds = localized && own(localized, 'rotateEverySeconds') ? localized.rotateEverySeconds : rule.rotateEverySeconds;
     var everyRows = localized && own(localized, 'everyRows') ? localized.everyRows : rule.everyRows;
@@ -327,18 +330,14 @@
     var article = document.querySelector('.blog-article');
     var sidebar = document.querySelector('.blog-columns > aside.blog-article-grid');
     var columns = document.querySelector('.blog-columns');
+    var mainColumn = sidebar && sidebar.previousElementSibling;
     if (!article || !columns || article.dataset.blogAdsReady === 'true') return;
 
     var paragraphs = article.querySelectorAll(':scope > p, :scope > section > p');
-    var side = sidebar && placementAd('sidebar', geo);
-    var inline = placementAd('inline', geo);
-    var bottom = placementAd('bottom', geo);
-    var mobile = placementAd('mobile', geo);
+    var inline = placementAd('inline', geo, 0);
+    var bottom = placementAd('bottom', geo, 1);
+    var mobile = placementAd('mobile', geo, 2);
 
-    if (side) {
-      if (sidebar.firstElementChild) sidebar.firstElementChild.insertAdjacentElement('afterend', side.ad);
-      else sidebar.appendChild(side.ad);
-    }
     if (inline) {
       if (paragraphs.length) paragraphs[Math.min(4, paragraphs.length - 1)].insertAdjacentElement('afterend', inline.ad);
       else article.appendChild(inline.ad);
@@ -349,10 +348,71 @@
     }
     if (bottom) columns.insertAdjacentElement('afterend', bottom.ad);
 
-    rotatePlacement(side, 'sidebar', geo);
     rotatePlacement(inline, 'inline', geo);
     rotatePlacement(bottom, 'bottom', geo);
     rotatePlacement(mobile, 'mobile', geo);
+
+    var sidebarTimer = 0;
+    var sidebarAds = null;
+
+    if (sidebar) {
+      sidebar.querySelectorAll('.pklavc-ad--sidebar, .blog-sidebar-ads').forEach(function (node) { node.remove(); });
+      sidebarAds = document.createElement('div');
+      sidebarAds.className = 'blog-sidebar-ads';
+      sidebar.appendChild(sidebarAds);
+    }
+
+    function refreshSidebarAds() {
+      sidebarTimer = 0;
+      if (!sidebar || !sidebarAds || !mainColumn) return;
+
+      var cards = Array.prototype.filter.call(sidebar.children, function (child) {
+        return child !== sidebarAds && child.classList && child.classList.contains('blog-sidebar-card');
+      });
+      var cardsHeight = cards.reduce(function (sum, card) {
+        return sum + card.getBoundingClientRect().height;
+      }, 0);
+      var gaps = Math.max(0, cards.length - 1) * 18;
+      var mainHeight = Math.max(mainColumn.scrollHeight, mainColumn.getBoundingClientRect().height);
+      var available = Math.max(0, Math.floor(mainHeight - cardsHeight - gaps - 18));
+
+      sidebarAds.style.minHeight = available + 'px';
+
+      var desired = available >= 170 ? Math.max(1, Math.floor((available + 18) / 310)) : 0;
+      desired = Math.min(desired, 8);
+      if (available >= 620) desired = Math.max(2, desired);
+
+      if (sidebarAds.childElementCount === desired) return;
+      sidebarAds.replaceChildren();
+
+      for (var slot = 0; slot < desired; slot += 1) {
+        var side = placementAd('sidebar', geo, slot);
+        if (!side) continue;
+        sidebarAds.appendChild(side.ad);
+        rotatePlacement(side, 'sidebar', geo);
+      }
+    }
+
+    function scheduleSidebarAds() {
+      if (sidebarTimer) clearTimeout(sidebarTimer);
+      sidebarTimer = setTimeout(refreshSidebarAds, 70);
+    }
+
+    if (sidebarAds) {
+      refreshSidebarAds();
+      requestAnimationFrame(refreshSidebarAds);
+      setTimeout(refreshSidebarAds, 350);
+      window.addEventListener('resize', scheduleSidebarAds, { passive: true });
+      window.addEventListener('load', scheduleSidebarAds, { once: true });
+      if ('ResizeObserver' in window) {
+        var blogSidebarObserver = new ResizeObserver(scheduleSidebarAds);
+        blogSidebarObserver.observe(mainColumn);
+        sidebar.querySelectorAll('.blog-sidebar-card').forEach(function (card) {
+          blogSidebarObserver.observe(card);
+        });
+      }
+    }
+
     article.dataset.blogAdsReady = 'true';
   }
 
@@ -390,6 +450,7 @@
     var bottom = placementAd('store-bottom', geo, 2);
     if (bottom) {
       results.appendChild(bottom.ad);
+      results.classList.add('store-results--has-bottom-ad');
       rotatePlacement(bottom, 'store-bottom', geo);
     }
 
