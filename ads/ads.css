@@ -155,12 +155,16 @@
 }
 
 .store-sidebar-ads {
-  min-height: 0;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  gap: 18px;
-  overflow: visible;
+  justify-content: flex-start;
+  gap: 12px;
+  min-height: 0;
+  overflow: hidden;
 }
 
 .pklavc-ad--store-sidebar {
@@ -203,10 +207,12 @@
   }
 
   .store-sidebar-ads {
+    position: static;
     height: auto !important;
     min-height: 0 !important;
-    gap: 16px;
+    gap: 12px;
     margin-top: 16px;
+    overflow: visible;
   }
 
   .pklavc-ad--store-bottom {
@@ -231,8 +237,8 @@
 .blog-sidebar-ads {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  gap: 18px;
+  justify-content: flex-start;
+  gap: 12px;
   min-height: 0;
 }
 
@@ -248,8 +254,8 @@
 }
 
 .store-results--has-bottom-ad .pklavc-ad--store-bottom {
-  margin-top: 22px;
-  margin-bottom: -48px;
+  margin-top: 18px;
+  margin-bottom: 0;
 }
 
 .filter-sidebar,
@@ -261,4 +267,106 @@
 
 .filter-group {
   align-self: start;
+}
+
+
+/* Macca-style partner creative, adapted from Macca-the-Gator/lab. */
+.pklavc-ad--style-macca .pklavc-ad__link {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  width: 100%;
+  min-height: 150px;
+  align-items: center;
+  justify-content: space-between;
+  overflow: hidden;
+  padding: 18px clamp(16px, 3vw, 30px);
+  border: 1px solid #754776;
+  border-radius: 10px;
+  background:
+    radial-gradient(ellipse at 88% 55%, #71345f 0, transparent 34%),
+    linear-gradient(115deg, #171326, #362047 58%, #52284d);
+  color: #fff2ec !important;
+}
+
+.pklavc-ad--style-macca .pklavc-ad__link::before {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background: linear-gradient(90deg, transparent 70%, rgba(255, 104, 173, .08));
+  content: "";
+}
+
+.pklavc-ad--style-macca .pklavc-ad__image {
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  right: 4px;
+  bottom: 0;
+  width: min(38%, 290px);
+  height: 100%;
+  min-height: 0;
+  object-fit: contain;
+  object-position: right bottom;
+  background: transparent;
+  filter: drop-shadow(0 0 12px rgba(255, 104, 173, .44));
+}
+
+.pklavc-ad--style-macca .pklavc-ad__text {
+  position: relative;
+  z-index: 2;
+  width: min(72%, 680px);
+  padding: 8px 0;
+  color: #ead8ea;
+  text-shadow: 0 1px 3px #100d1b;
+}
+
+.pklavc-ad--style-macca .pklavc-ad__text strong {
+  color: #fff2ec;
+}
+
+.pklavc-ad--style-macca .pklavc-ad__cta {
+  color: #4de0ed;
+}
+
+.pklavc-ad--style-macca .pklavc-ad__link:hover,
+.pklavc-ad--style-macca .pklavc-ad__link:focus-visible {
+  border-color: #ff68ad;
+  box-shadow: 0 0 22px rgba(255, 104, 173, .19);
+}
+
+.pklavc-ad--sidebar.pklavc-ad--style-macca .pklavc-ad__link,
+.pklavc-ad--store-sidebar.pklavc-ad--style-macca .pklavc-ad__link {
+  min-height: 190px;
+  padding: 12px;
+}
+
+.pklavc-ad--sidebar.pklavc-ad--style-macca .pklavc-ad__image,
+.pklavc-ad--store-sidebar.pklavc-ad--style-macca .pklavc-ad__image {
+  right: -8px;
+  width: 46%;
+  height: 100%;
+  aspect-ratio: auto;
+}
+
+.pklavc-ad--sidebar.pklavc-ad--style-macca .pklavc-ad__text,
+.pklavc-ad--store-sidebar.pklavc-ad--style-macca .pklavc-ad__text {
+  width: 78%;
+  padding: 10px;
+  border-radius: 8px;
+  background: linear-gradient(90deg, rgba(16, 13, 27, .91), rgba(16, 13, 27, .74) 72%, transparent);
+}
+
+@media (max-width: 520px) {
+  .pklavc-ad--style-macca .pklavc-ad__link {
+    min-height: 136px;
+    padding: 14px;
+  }
+  .pklavc-ad--style-macca .pklavc-ad__text {
+    width: 74%;
+  }
+  .pklavc-ad--style-macca .pklavc-ad__image {
+    right: -4px;
+    width: 42%;
+  }
 }
