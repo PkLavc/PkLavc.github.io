@@ -18,7 +18,6 @@ const publicEntries = [
   "apple-touch-icon.png",
   "browserconfig.xml",
   "certifications",
-  "CNAME",
   "changelog",
   "context.txt",
   "editorial-policy",
