@@ -384,23 +384,26 @@
       sidebarAds.replaceChildren();
       var used = 0;
       var slot = 0;
+      var sidebarSelection = placementSelection('sidebar', geo);
+      var sidebarCampaigns = sidebarSelection ? sidebarSelection.ids : [];
 
-      while (slot < 8 && used < available) {
-        var side = placementAd('sidebar', geo, slot);
-        if (!side) break;
+      // A sidebar rail shows each campaign at most once. Page/inline placements
+      // may still use the same campaign independently.
+      while (slot < sidebarCampaigns.length && used < available) {
+        var sideAd = createAd(sidebarCampaigns[slot], 'sidebar', geo);
+        slot += 1;
+        if (!sideAd) continue;
 
-        sidebarAds.appendChild(side.ad);
-        var height = Math.ceil(side.ad.getBoundingClientRect().height || 160);
-        var nextUsed = used + (slot ? gap : 0) + height;
+        sidebarAds.appendChild(sideAd);
+        var height = Math.ceil(sideAd.getBoundingClientRect().height || 160);
+        var nextUsed = used + (used ? gap : 0) + height;
 
-        if (slot > 0 && nextUsed > available) {
-          side.ad.remove();
+        if (used && nextUsed > available) {
+          sideAd.remove();
           break;
         }
 
         used = nextUsed;
-        rotatePlacement(side, 'sidebar', geo);
-        slot += 1;
       }
     }
 
@@ -481,22 +484,26 @@
 
       var used = 0;
       var slot = 0;
-      while (slot < 12 && used < available) {
-        var item = placementAd('store-sidebar', geo, slot);
-        if (!item) break;
+      var sidebarSelection = placementSelection('store-sidebar', geo);
+      var sidebarCampaigns = sidebarSelection ? sidebarSelection.ids : [];
 
-        sidebarAds.appendChild(item.ad);
-        var height = Math.ceil(item.ad.getBoundingClientRect().height || 160);
-        var nextUsed = used + (slot ? gap : 0) + height;
+      // Keep the Store rail unique as well: no campaign is repeated inside
+      // the same sidebar, regardless of the available vertical space.
+      while (slot < sidebarCampaigns.length && used < available) {
+        var sideAd = createAd(sidebarCampaigns[slot], 'store-sidebar', geo);
+        slot += 1;
+        if (!sideAd) continue;
 
-        if (slot > 0 && nextUsed > available) {
-          item.ad.remove();
+        sidebarAds.appendChild(sideAd);
+        var height = Math.ceil(sideAd.getBoundingClientRect().height || 160);
+        var nextUsed = used + (used ? gap : 0) + height;
+
+        if (used && nextUsed > available) {
+          sideAd.remove();
           break;
         }
 
         used = nextUsed;
-        rotatePlacement(item, 'store-sidebar', geo);
-        slot += 1;
       }
     }
 
