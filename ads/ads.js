@@ -473,6 +473,13 @@
       sidebarTimer = 0;
       if (!sidebarAds || !column || !filters || !results) return;
 
+      // On mobile the Store uses only row ads (every 10 rows) and the final ad.
+      if (window.matchMedia && window.matchMedia('(max-width: 760px)').matches) {
+        sidebarAds.replaceChildren();
+        sidebarAds.style.top = '';
+        return;
+      }
+
       var columnHeight = Math.max(column.getBoundingClientRect().height, results.getBoundingClientRect().height);
       var filtersHeight = Math.ceil(filters.getBoundingClientRect().height);
       var gap = 12;
