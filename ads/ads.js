@@ -106,6 +106,9 @@
   function createShell(placement, campaign) {
     var shell = document.createElement('aside');
     shell.className = 'pklavc-ad pklavc-ad--' + placement;
+    if (campaign.style) {
+      shell.classList.add('pklavc-ad--style-' + String(campaign.style).replace(/[^a-z0-9_-]/gi, '').toLowerCase());
+    }
     shell.dataset.adPlacement = placement;
     shell.dataset.adType = campaign.type;
     shell.setAttribute('aria-label', labels[locale]);
@@ -143,7 +146,8 @@
     image.className = 'pklavc-ad__image';
     image.src = imageUrl;
     image.alt = creative.imageAlt || '';
-    image.loading = 'lazy';
+    image.loading = campaign.style === 'macca' ? 'eager' : 'lazy';
+    image.decoding = 'async';
     image.width = 800;
     image.height = 480;
     var text = document.createElement('span');
@@ -375,21 +379,28 @@
       var gaps = Math.max(0, cards.length - 1) * 18;
       var mainHeight = Math.max(mainColumn.scrollHeight, mainColumn.getBoundingClientRect().height);
       var available = Math.max(0, Math.floor(mainHeight - cardsHeight - gaps - 18));
+      var gap = 12;
 
-      sidebarAds.style.minHeight = available + 'px';
-
-      var desired = available >= 170 ? Math.max(1, Math.floor((available + 18) / 310)) : 0;
-      desired = Math.min(desired, 8);
-      if (available >= 620) desired = Math.max(2, desired);
-
-      if (sidebarAds.childElementCount === desired) return;
       sidebarAds.replaceChildren();
+      var used = 0;
+      var slot = 0;
 
-      for (var slot = 0; slot < desired; slot += 1) {
+      while (slot < 8 && used < available) {
         var side = placementAd('sidebar', geo, slot);
-        if (!side) continue;
+        if (!side) break;
+
         sidebarAds.appendChild(side.ad);
+        var height = Math.ceil(side.ad.getBoundingClientRect().height || 160);
+        var nextUsed = used + (slot ? gap : 0) + height;
+
+        if (slot > 0 && nextUsed > available) {
+          side.ad.remove();
+          break;
+        }
+
+        used = nextUsed;
         rotatePlacement(side, 'sidebar', geo);
+        slot += 1;
       }
     }
 
@@ -459,24 +470,33 @@
       sidebarTimer = 0;
       if (!sidebarAds || !column || !filters || !results) return;
 
-      var resultsHeight = Math.max(results.scrollHeight, results.getBoundingClientRect().height);
-      var filtersHeight = filters.getBoundingClientRect().height;
-      var available = Math.max(0, Math.floor(resultsHeight - filtersHeight - 18));
+      var columnHeight = Math.max(column.getBoundingClientRect().height, results.getBoundingClientRect().height);
+      var filtersHeight = Math.ceil(filters.getBoundingClientRect().height);
+      var gap = 12;
+      var top = filtersHeight + gap;
+      var available = Math.max(0, Math.floor(columnHeight - top));
 
-      sidebarAds.style.minHeight = available + 'px';
-      sidebarAds.style.height = available + 'px';
-
-      var desired = available >= 120 ? Math.max(1, Math.floor((available + 18) / 300)) : 0;
-      desired = Math.min(desired, 12);
-
-      if (sidebarAds.childElementCount === desired) return;
+      sidebarAds.style.top = top + 'px';
       sidebarAds.replaceChildren();
 
-      for (var slot = 0; slot < desired; slot += 1) {
+      var used = 0;
+      var slot = 0;
+      while (slot < 12 && used < available) {
         var item = placementAd('store-sidebar', geo, slot);
-        if (!item) continue;
+        if (!item) break;
+
         sidebarAds.appendChild(item.ad);
+        var height = Math.ceil(item.ad.getBoundingClientRect().height || 160);
+        var nextUsed = used + (slot ? gap : 0) + height;
+
+        if (slot > 0 && nextUsed > available) {
+          item.ad.remove();
+          break;
+        }
+
+        used = nextUsed;
         rotatePlacement(item, 'store-sidebar', geo);
+        slot += 1;
       }
     }
 
