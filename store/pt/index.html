@@ -29,7 +29,7 @@
   <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Monoton&family=Poppins:wght@500&family=Raleway:wght@300&display=optional" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Monoton&family=Poppins:wght@500&family=Raleway:wght@300&display=optional"></noscript>
   <link rel="stylesheet" href="/store/assets/css/global.css?v=af74974e94">
-  <link rel="stylesheet" href="/store/assets/store.css?v=08bb7bfb06">
+  <link rel="stylesheet" href="/store/assets/store.css?v=50db07ef36">
   <style>
     .store-grid{display:grid!important}
     .store-grid>.store-card:not(.is-filtered-out){display:flex!important;visibility:visible!important;opacity:1!important}
@@ -50,7 +50,7 @@
         <section class="store-results" aria-label="Loja">
           <div class="results-toolbar"><p><strong data-result-count>3</strong> produtos</p><div class="results-controls"><label>Ordenar <select data-sort><option value="featured">Destaques</option><option value="price-asc">Menor preço</option><option value="price-desc">Maior preço</option><option value="name">Nome</option></select></label><div class="column-picker" role="group" aria-label="Produtos por linha"><span>Produtos por linha</span><button type="button" data-columns="2" aria-label="2" title="2" aria-pressed="false">2</button><button type="button" data-columns="3" aria-label="3" title="3" aria-pressed="true">3</button><button type="button" data-columns="4" aria-label="4" title="4" aria-pressed="false">4</button></div></div></div>
           <section class="store-grid" id="store-products" data-store-grid data-columns="3">
-    <article class="store-card" data-category="Controles" data-vendor="Sony" data-program="Amazon Brasil" data-currency="BRL" data-price="599.9" data-available="unknown" data-attributes="{}" data-search="controle sem fio dualsense preto — edição limitada grand theft auto vi sony controles amazon brasil">
+    <article class="store-card" data-product-id="B0HHNVBHQ5" data-category="Controles" data-vendor="Sony" data-program="Amazon Brasil" data-currency="BRL" data-price="599.9" data-available="unknown" data-attributes="{}" data-search="controle sem fio dualsense preto — edição limitada grand theft auto vi sony controles amazon brasil">
       <a class="store-image-wrap" href="https://www.amazon.com.br/dp/B0HHNVBHQ5" target="_blank" rel="sponsored noopener noreferrer" aria-label="Controle sem fio DualSense preto — Edição limitada Grand Theft Auto VI">
         <img class="store-image" src="https://m.media-amazon.com/images/P/B0HHNVBHQ5.01._SCLZZZZZZZ_.jpg" alt="Controle sem fio DualSense preto — Edição limitada Grand Theft Auto VI" loading="lazy" referrerpolicy="no-referrer" onerror="this.hidden=true;this.parentNode.classList.add('image-unavailable')">
         <span class="store-badge">PRÉ-VENDA</span>
@@ -68,7 +68,7 @@
       </div>
     </article>
 
-    <article class="store-card" data-category="Controles" data-vendor="Sony" data-program="Amazon Brasil" data-currency="BRL" data-price="599.9" data-available="unknown" data-attributes="{}" data-search="controle sem fio dualsense branco — edição limitada grand theft auto vi sony controles amazon brasil">
+    <article class="store-card" data-product-id="B0HHNZFXL5" data-category="Controles" data-vendor="Sony" data-program="Amazon Brasil" data-currency="BRL" data-price="599.9" data-available="unknown" data-attributes="{}" data-search="controle sem fio dualsense branco — edição limitada grand theft auto vi sony controles amazon brasil">
       <a class="store-image-wrap" href="https://www.amazon.com.br/dp/B0HHNZFXL5" target="_blank" rel="sponsored noopener noreferrer" aria-label="Controle sem fio DualSense branco — Edição limitada Grand Theft Auto VI">
         <img class="store-image" src="https://m.media-amazon.com/images/P/B0HHNZFXL5.01._SCLZZZZZZZ_.jpg" alt="Controle sem fio DualSense branco — Edição limitada Grand Theft Auto VI" loading="lazy" referrerpolicy="no-referrer" onerror="this.hidden=true;this.parentNode.classList.add('image-unavailable')">
         <span class="store-badge">PRÉ-VENDA</span>
@@ -86,7 +86,7 @@
       </div>
     </article>
 
-    <article class="store-card" data-category="Jogos" data-vendor="Rockstar Games" data-program="Amazon Brasil" data-currency="BRL" data-price="449.9" data-available="unknown" data-attributes="{}" data-search="grand theft auto vi — playstation 5 rockstar games jogos amazon brasil">
+    <article class="store-card" data-product-id="B0H6KT2RWH" data-category="Jogos" data-vendor="Rockstar Games" data-program="Amazon Brasil" data-currency="BRL" data-price="449.9" data-available="unknown" data-attributes="{}" data-search="grand theft auto vi — playstation 5 rockstar games jogos amazon brasil">
       <a class="store-image-wrap" href="https://www.amazon.com.br/dp/B0H6KT2RWH" target="_blank" rel="sponsored noopener noreferrer" aria-label="Grand Theft Auto VI — PlayStation 5">
         <img class="store-image" src="https://m.media-amazon.com/images/P/B0H6KT2RWH.01._SCLZZZZZZZ_.jpg" alt="Grand Theft Auto VI — PlayStation 5" loading="lazy" referrerpolicy="no-referrer" onerror="this.hidden=true;this.parentNode.classList.add('image-unavailable')">
         <span class="store-badge">PLAYSTATION 5</span>
@@ -135,6 +135,24 @@
       cards.forEach(function(card){card.removeAttribute("hidden");card.classList.remove("is-filtered-out");});
       var defaultOrder=cards.slice();
       var grid=document.querySelector("[data-store-grid]");
+      function forceCardVisibility(){
+        if(!grid||!cards.length)return;
+        grid.style.setProperty("display","grid","important");
+        grid.style.setProperty("visibility","visible","important");
+        grid.style.setProperty("opacity","1","important");
+        cards.forEach(function(card){
+          if(card.classList.contains("is-filtered-out"))return;
+          card.removeAttribute("hidden");
+          card.style.setProperty("display","flex","important");
+          card.style.setProperty("visibility","visible","important");
+          card.style.setProperty("opacity","1","important");
+          card.style.setProperty("min-height","360px","important");
+        });
+      }
+      forceCardVisibility();
+      requestAnimationFrame(forceCardVisibility);
+      setTimeout(forceCardVisibility,250);
+      setTimeout(forceCardVisibility,1000);
       var search=document.querySelector("[data-store-search]");
       var currency=document.querySelector("[data-currency]");
       var minInput=document.querySelector("[data-min-price]");
@@ -164,7 +182,16 @@
           var price=Number(card.dataset.price);
           var priceMatch=!currency.value||(card.dataset.currency===currency.value&&card.dataset.price!==""&&price>=low&&price<=high);
           var show=(!q||(card.dataset.search||"").indexOf(q)>=0)&&(!category.length||category.indexOf(card.dataset.category)>=0)&&(!vendor.length||vendor.indexOf(card.dataset.vendor)>=0)&&(!program.length||program.indexOf(card.dataset.program)>=0)&&attrMatch&&(!inStock||card.dataset.available==="true")&&priceMatch;
-          card.classList.toggle("is-filtered-out",!show);if(show)visible++;
+          card.classList.toggle("is-filtered-out",!show);
+          if(show){
+            card.removeAttribute("hidden");
+            card.style.setProperty("display","flex","important");
+            card.style.setProperty("visibility","visible","important");
+            card.style.setProperty("opacity","1","important");
+            visible++;
+          }else{
+            card.style.setProperty("display","none","important");
+          }
         });
         count.textContent=visible;if(empty)empty.hidden=visible!==0;
       }
@@ -175,7 +202,7 @@
           if(mode==="price-asc")return pa-pb;if(mode==="price-desc")return pb-pa;
           if(mode==="name")return a.querySelector("h2").textContent.localeCompare(b.querySelector("h2").textContent);
           return defaultOrder.indexOf(a)-defaultOrder.indexOf(b);
-        }).forEach(function(card){grid.appendChild(card);});
+        }).forEach(function(card){grid.appendChild(card);});forceCardVisibility();
       }
       search.addEventListener("input",apply);
       document.querySelectorAll("[data-filter-key], [data-in-stock]").forEach(function(input){input.addEventListener("change",apply);});
@@ -205,6 +232,6 @@
   </script>
   <script src="/store/assets/js/i18n.js?v=ace3080ab2" defer></script>
   <script src="/store/assets/js/jquery.min.js?v=d482871a5e" defer></script>
-  <script src="/store/assets/js/index.js?v=981d5f4b29" defer></script>
+  <script src="/store/assets/js/index.js?v=2789e7b58b" defer></script>
 </body>
 </html>
