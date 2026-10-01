@@ -64,7 +64,7 @@
         type: 'image',
         locales: {
           en: {
-            image: 'https://macca-lab.onrender.com/ads/partner.webp',
+            image: '/ads/banners/macca-partner.webp',
             imageAlt: 'Macca the Gator partner artwork',
             sidebar: { title: 'Visit the Macca Blog', body: 'GTA and Rockstar coverage from Macca the Gator.', cta: 'Open Macca Blog', href: 'https://macca-lab.onrender.com/blog/' },
             inline: { title: 'More GTA and Rockstar coverage', body: 'Continue on the Macca Blog for GTA, Rockstar and community stories.', cta: 'Visit Macca', href: 'https://macca-lab.onrender.com/blog/' },
@@ -72,7 +72,7 @@
             mobile: { title: 'Macca Blog', body: 'GTA and Rockstar coverage.', cta: 'Visit', href: 'https://macca-lab.onrender.com/blog/' }
           },
           pt: {
-            image: 'https://macca-lab.onrender.com/ads/partner.webp',
+            image: '/ads/banners/macca-partner.webp',
             imageAlt: 'Arte de parceria do Macca the Gator',
             sidebar: { title: 'Visite o Macca Blog', body: 'Cobertura de GTA e Rockstar com o Macca the Gator.', cta: 'Abrir Macca Blog', href: 'https://macca-lab.onrender.com/blog/' },
             inline: { title: 'Mais sobre GTA e Rockstar', body: 'Continue no Macca Blog com conteúdo sobre GTA, Rockstar e comunidade.', cta: 'Visitar Macca', href: 'https://macca-lab.onrender.com/blog/' },
@@ -80,7 +80,7 @@
             mobile: { title: 'Macca Blog', body: 'Conteúdo sobre GTA e Rockstar.', cta: 'Visitar', href: 'https://macca-lab.onrender.com/blog/' }
           },
           es: {
-            image: 'https://macca-lab.onrender.com/ads/partner.webp',
+            image: '/ads/banners/macca-partner.webp',
             imageAlt: 'Arte de colaboración de Macca the Gator',
             sidebar: { title: 'Visita el Macca Blog', body: 'Cobertura de GTA y Rockstar con Macca the Gator.', cta: 'Abrir Macca Blog', href: 'https://macca-lab.onrender.com/blog/' },
             inline: { title: 'Más sobre GTA y Rockstar', body: 'Continúa en Macca Blog con contenido sobre GTA, Rockstar y la comunidad.', cta: 'Visitar Macca', href: 'https://macca-lab.onrender.com/blog/' },
