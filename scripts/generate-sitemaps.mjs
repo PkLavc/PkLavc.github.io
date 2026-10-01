@@ -170,8 +170,8 @@ for (const [name, entries] of Object.entries(groups)) {
 }
 
 // Keep the primary sitemap at the domain root so its scope covers the whole site.
-// The blog repository is private; only public institutional blog landing pages
-// that exist in this artifact are included. No separate/private blog sitemap is linked.
+// The blog is deployed independently from the private blog repository through
+// S3/CloudFront. Keep its sitemap discoverable without copying blog pages here.
 const allPages = [...pages.values()].sort((a, b) => a.loc.localeCompare(b.loc));
 if (allPages.length > 50000) throw new Error("Root sitemap exceeds 50,000 URLs; split into root-level sitemap files.");
 const sitemap = renderUrlset(allPages);
@@ -182,9 +182,12 @@ fs.writeFileSync(path.join(ROOT, "sitemap-index.xml"), `<?xml version="1.0" enco
   <sitemap>
     <loc>${SITE}/sitemap.xml</loc>
   </sitemap>
+  <sitemap>
+    <loc>${SITE}/blog/sitemap.xml</loc>
+  </sitemap>
 </sitemapindex>
 `, "utf8");
 
 console.log(`Generated sitemap.xml with ${allPages.length} canonical URLs (${excluded} excluded pages, ${excludedAlternates} excluded alternates).`);
-console.log("sitemap-index.xml links only the public root sitemap.");
+console.log("sitemap-index.xml links the public root sitemap and the AWS-hosted blog sitemap.");
 for (const [name, entries] of Object.entries(groups)) console.log(`- sitemaps/${name}.xml: ${entries.length} URLs`);
