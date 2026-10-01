@@ -1,6 +1,8 @@
 (function () {
   'use strict';
 
+  // Static shell; product inventory is sourced exclusively from /store/products.json.
+
   var locale = /^\/store\/pt\/?/.test(location.pathname) ? 'pt' :
     /^\/store\/es\/?/.test(location.pathname) ? 'es' : 'en';
 
