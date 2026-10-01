@@ -1,14 +1,27 @@
 (function () {
   'use strict';
 
-  var postRoute = /^\/(?:pt\/|es\/)?blog\/([^/]+)(?:\/index\.html|\/)?$/.exec(window.location.pathname);
-  if (!postRoute || postRoute[1] === 'index.html') return;
+  function detectPageContext(pathname) {
+    var path = String(pathname || '/').replace(/\/index\.html$/i, '/');
+    var blog = /^\/blog\/(?:(en|pt|es)\/)?([^/]+)\/?$/.exec(path);
+    if (blog && blog[2] && blog[2] !== 'index.html') return { type: 'blog', locale: blog[1] || 'en' };
+    var legacyBlog = /^\/(pt|es)\/blog\/([^/]+)\/?$/.exec(path);
+    if (legacyBlog && legacyBlog[2]) return { type: 'blog', locale: legacyBlog[1] };
+    var store = /^\/store(?:\/(pt|es))?\/?$/.exec(path);
+    if (store) return { type: 'store', locale: store[1] || 'en' };
+    if (/^\/projects(?:\/|$)/.test(path)) return { type: 'project', locale: 'en' };
+    if (/^\/pt\/projetos(?:\/|$)/.test(path)) return { type: 'project', locale: 'pt' };
+    if (/^\/es\/proyectos(?:\/|$)/.test(path)) return { type: 'project', locale: 'es' };
+    return null;
+  }
+
+  var pageContext = detectPageContext(window.location.pathname);
+  if (!pageContext) return;
 
   var config = window.PKLAVC_BLOG_ADS;
   if (!config || !config.placements || !config.campaigns) return;
 
-  var locale = /^\/pt\/blog\//.test(location.pathname) ? 'pt' :
-    /^\/es\/blog\//.test(location.pathname) ? 'es' : 'en';
+  var locale = pageContext.locale;
   var labels = {
     en: 'Advertisement',
     pt: 'Publicidade',
@@ -86,7 +99,8 @@
       return typeof id === 'string' && id.length > 0 && list.indexOf(id) === index;
     });
     var seconds = localized && own(localized, 'rotateEverySeconds') ? localized.rotateEverySeconds : rule.rotateEverySeconds;
-    return { ids: ids, rotateEverySeconds: Number(seconds) || 0 };
+    var everyRows = localized && own(localized, 'everyRows') ? localized.everyRows : rule.everyRows;
+    return { ids: ids, rotateEverySeconds: Number(seconds) || 0, everyRows: Math.max(1, Number(everyRows) || 10) };
   }
 
   function createShell(placement, campaign) {
