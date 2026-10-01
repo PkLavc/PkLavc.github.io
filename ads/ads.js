@@ -524,6 +524,7 @@
       });
     });
 
+    document.addEventListener('store:products-rendered', scheduleStoreAds);
     window.addEventListener('resize', scheduleStoreAds, { passive: true });
     window.addEventListener('load', scheduleStoreAds, { once: true });
 
