@@ -1237,9 +1237,9 @@ function normalizeUnifiedFooter() {
       '<span class="footer-split-spacer" aria-hidden="true"></span>' +
       '<div class="footer-split-right">' +
         '<nav class="footer-social-icons" aria-label="' + copy.nav + '">' +
-          '<a class="footer-social-icon-link" href="https://github.com/PkLavc" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><span class="footer-social-icon footer-social-icon-github" aria-hidden="true"></span></a>' +
-          '<a class="footer-social-icon-link" href="https://www.linkedin.com/in/pklavc/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><span class="footer-social-icon footer-social-icon-linkedin" aria-hidden="true"></span></a>' +
-          '<a class="footer-social-icon-link" href="mailto:contact@pklavc.com" aria-label="Email"><span class="footer-social-icon footer-social-icon-mail" aria-hidden="true"></span></a>' +
+          '<a class="footer-social-icon-link" href="https://github.com/PkLavc" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><lottie-player src="/images/lottie/github.json?v=50cdc84fd8" background="transparent" speed="1" loop autoplay class="footer-social-lottie" aria-hidden="true"></lottie-player></a>' +
+          '<a class="footer-social-icon-link" href="https://www.linkedin.com/in/pklavc/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><lottie-player src="/images/lottie/linkedin.json?v=86d0c9e071" background="transparent" speed="1" loop autoplay class="footer-social-lottie" aria-hidden="true"></lottie-player></a>' +
+          '<a class="footer-social-icon-link" href="mailto:contact@pklavc.com" aria-label="Email"><lottie-player src="/images/lottie/mail.json?v=895f6ab30e" background="transparent" speed="1" loop autoplay class="footer-social-lottie" aria-hidden="true"></lottie-player></a>' +
           '<a class="footer-social-icon-link" href="https://github.com/sponsors/PkLavc" target="_blank" rel="noopener noreferrer" aria-label="' + copy.sponsor + '"><span class="footer-social-icon footer-social-icon-heart" aria-hidden="true"></span></a>' +
         '</nav>' +
       '</div>' +
