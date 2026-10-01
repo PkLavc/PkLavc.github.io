@@ -337,3 +337,15 @@ body.page-index.spotlight-navigation-enabled .footer-minimal {
         transition: none;
     }
 }
+
+
+@media (max-width: 620px) {
+    body.spotlight-language-menu-open .about-chat-launcher {
+        bottom: calc(var(--spotlight-nav-footer-space) + 150px + var(--skylet-footer-offset, 0px)) !important;
+    }
+
+    body.spotlight-language-menu-open .about-chat-widget.is-open {
+        bottom: calc(var(--spotlight-nav-footer-space) + 150px + var(--skylet-footer-offset, 0px)) !important;
+        max-height: calc(100vh - var(--spotlight-nav-footer-space) - 174px);
+    }
+}
