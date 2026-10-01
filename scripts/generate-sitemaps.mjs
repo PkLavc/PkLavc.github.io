@@ -108,6 +108,8 @@ function gitLastmods() {
 }
 
 function classify(route) {
+  if (route.startsWith("/store/pt/")) return "pt";
+  if (route.startsWith("/store/es/")) return "es";
   if (route.startsWith("/pt/")) return "pt";
   if (route.startsWith("/es/")) return "es";
   if (route.startsWith("/projects/")) return "projects";

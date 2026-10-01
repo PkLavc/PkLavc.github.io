@@ -60,6 +60,7 @@ const publicEntries = [
   "pt",
   "ia",
   "stacks",
+  "store",
   "visitors",
   "ags",
 ];
