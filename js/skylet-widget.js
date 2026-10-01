@@ -298,7 +298,11 @@
     var footerStyle = window.getComputedStyle ? window.getComputedStyle(footer) : null;
     var reservedBottom = footerStyle ? parseFloat(footerStyle.paddingBottom) || 0 : 0;
     var overlap = Math.max(0, viewportHeight - footerTop - reservedBottom);
-    var offset = overlap > 0 ? Math.ceil(overlap + 12) : 0;
+    var allowsPartialOverlap = footer.classList.contains("footer-projects");
+    var allowedFooterOverlap = allowsPartialOverlap ? 76 : 0;
+    var offset = overlap > allowedFooterOverlap
+      ? Math.ceil(overlap - allowedFooterOverlap + (allowsPartialOverlap ? 0 : 12))
+      : 0;
     var maxOffset = Math.max(0, viewportHeight - 140);
 
     root.style.setProperty("--skylet-footer-offset", Math.min(offset, maxOffset) + "px");
