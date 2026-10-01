@@ -299,8 +299,13 @@ body.page-index.spotlight-navigation-enabled .footer-minimal {
 
 /* Keep the Skylet launcher clear of the centered navigation on compact screens. */
 @media (max-width: 620px) {
-    .about-chat-launcher {
-        bottom: calc(86px + var(--skylet-footer-offset, 0px));
+    body.spotlight-navigation-enabled .about-chat-launcher {
+        bottom: calc(var(--spotlight-nav-footer-space) + 10px + var(--skylet-footer-offset, 0px)) !important;
+    }
+
+    body.spotlight-navigation-enabled .about-chat-widget.is-open {
+        bottom: calc(var(--spotlight-nav-footer-space) + 10px + var(--skylet-footer-offset, 0px)) !important;
+        max-height: calc(100dvh - var(--spotlight-nav-footer-space) - 30px);
     }
 
     .spotlight-navigation-shell {
