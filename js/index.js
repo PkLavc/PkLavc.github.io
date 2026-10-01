@@ -1649,7 +1649,7 @@ if (document.readyState === 'loading') {
     var style = document.createElement('link');
     style.id = 'pklavc-ads-style';
     style.rel = 'stylesheet';
-    style.href = '/ads/ads.css?v=253837b978';
+    style.href = '/ads/ads.css?v=fbaff7c5bf';
     document.head.appendChild(style);
   }
 
@@ -1657,7 +1657,7 @@ if (document.readyState === 'loading') {
     if (document.getElementById('pklavc-ads-runtime')) return;
     var runtime = document.createElement('script');
     runtime.id = 'pklavc-ads-runtime';
-    runtime.src = '/ads/ads.js?v=c19f0d8089';
+    runtime.src = '/ads/ads.js?v=7a44f9977c';
     runtime.async = true;
     document.head.appendChild(runtime);
   }
