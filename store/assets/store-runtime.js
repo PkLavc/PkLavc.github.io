@@ -40,6 +40,42 @@
 
   if (!grid || !search || !currency || !count || !dynamicFilters) return;
 
+  var filterSidebar = document.querySelector('.filter-sidebar');
+  var filterHeading = filterSidebar && filterSidebar.querySelector('.filter-sidebar-heading');
+  var mobileFilterToggle = null;
+
+  function setupLayoutControls() {
+    grid.dataset.columns = '4';
+    document.querySelectorAll('[data-columns]').forEach(function (button) {
+      button.setAttribute('aria-pressed', String(button.dataset.columns === '4'));
+    });
+
+    if (!filterSidebar || !filterHeading || filterHeading.querySelector('[data-mobile-filter-toggle]')) return;
+
+    mobileFilterToggle = document.createElement('button');
+    mobileFilterToggle.type = 'button';
+    mobileFilterToggle.className = 'mobile-filter-toggle';
+    mobileFilterToggle.dataset.mobileFilterToggle = '';
+    mobileFilterToggle.setAttribute('aria-expanded', 'false');
+    mobileFilterToggle.innerHTML =
+      '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
+        '<path d="M4 7h10M18 7h2M4 17h2M10 17h10M14 4v6M8 14v6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>' +
+      '</svg><span>' + (locale === 'pt' ? 'Filtros' : locale === 'es' ? 'Filtros' : 'Filters') + '</span>';
+    filterHeading.insertBefore(mobileFilterToggle, filterHeading.firstChild);
+
+    mobileFilterToggle.addEventListener('click', function () {
+      var open = filterSidebar.classList.toggle('is-open');
+      mobileFilterToggle.setAttribute('aria-expanded', String(open));
+    });
+
+    window.addEventListener('resize', function () {
+      if (window.innerWidth > 760 && filterSidebar.classList.contains('is-open')) {
+        filterSidebar.classList.remove('is-open');
+        mobileFilterToggle.setAttribute('aria-expanded', 'false');
+      }
+    }, { passive: true });
+  }
+
   var products = [];
   var cards = [];
   var defaultOrder = [];
@@ -345,6 +381,7 @@
     }
   }
 
+  setupLayoutControls();
   bindControls();
   loadProducts();
 }());
