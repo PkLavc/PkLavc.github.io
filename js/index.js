@@ -1251,73 +1251,6 @@ $(function(){
   }
 });
 
-function toggleCredits() {
-    var x = document.getElementById("credits-list");
-    var trigger = document.getElementById("credits-trigger-btn");
-    if (x.style.display === "block") {
-        x.style.display = "none";
-        if (trigger) {
-            trigger.setAttribute("aria-expanded", "false");
-        }
-    } else {
-        x.style.display = "block";
-        if (trigger) {
-            trigger.setAttribute("aria-expanded", "true");
-        }
-    }
-}
-
-function getSharedUiLanguage() {
-  if (window.PkLavcI18n && typeof window.PkLavcI18n.getCurrentLanguage === 'function') {
-    return window.PkLavcI18n.getCurrentLanguage();
-  }
-
-  var path = window.location.pathname || '/';
-  if (/^\/pt(?:\/|$)/i.test(path)) return 'pt';
-  if (/^\/es(?:\/|$)/i.test(path)) return 'es';
-  return 'en';
-}
-
-function getCreditCopy() {
-  var copy = {
-    en: {
-      particles: 'Particles by',
-      icons: 'Animated icons by'
-    },
-    pt: {
-      particles: 'Partículas por',
-      icons: 'Ícones animados por'
-    },
-    es: {
-      particles: 'Partículas por',
-      icons: 'Iconos animados por'
-    }
-  };
-
-  return copy[getSharedUiLanguage()] || copy.en;
-}
-
-function setupCreditDetails() {
-  var creditButtons = document.querySelectorAll('[data-credit-detail]');
-  var copy = getCreditCopy();
-
-  creditButtons.forEach(function(button) {
-    button.addEventListener('click', function(event) {
-      event.preventDefault();
-
-      var type = button.getAttribute('data-credit-detail');
-
-      if (type === 'vfx') {
-        button.outerHTML = '<span class="credits-detail-text">' + copy.particles + ' <a href="https://21st.dev/" target="_blank" rel="noopener noreferrer">21st.dev</a></span>';
-      } else if (type === 'icons') {
-        button.outerHTML = '<span class="credits-detail-text">' + copy.icons + ' <a href="https://lordicon.com/" target="_blank" rel="noopener noreferrer">Lordicon</a></span>';
-      } else if (type === 'easter-egg') {
-        button.outerHTML = '<span class="credits-detail-text"><a href="https://www.callofduty.com/br/pt/blog/2022/07/call-of-duty-vanguard-warzone-terminator-operator-bundles-titanium-trials" target="_blank" rel="noopener noreferrer">Skin</a></span>';
-      }
-    }, { once: true });
-  });
-}
-
 function prefersReducedMotion() {
   return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 }
@@ -1434,10 +1367,8 @@ function setupAnimatedPageTitles() {
 }
 
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', setupCreditDetails, { once: true });
   document.addEventListener('DOMContentLoaded', setupAnimatedPageTitles, { once: true });
 } else {
-  setupCreditDetails();
   setupAnimatedPageTitles();
 }
 
@@ -1579,10 +1510,38 @@ function loadSkyletWidgetAssets() {
   if (!document.getElementById('skylet-widget-script')) {
     var script = document.createElement('script');
     script.id = 'skylet-widget-script';
-    script.src = '/js/skylet-widget.js?v=d6441a2fa8';
+    script.src = '/js/skylet-widget.js?v=20261001footer2';
     script.defer = true;
     document.body.appendChild(script);
   }
+}
+
+function loadSpotlightNavigationAssets() {
+  function loadScript() {
+    if (document.getElementById('spotlight-navigation-script')) {
+      return;
+    }
+
+    var script = document.createElement('script');
+    script.id = 'spotlight-navigation-script';
+    script.src = '/js/spotlight-navigation.js?v=20261001e';
+    script.defer = true;
+    document.body.appendChild(script);
+  }
+
+  var existingStyle = document.getElementById('spotlight-navigation-style');
+
+  if (!existingStyle) {
+    var link = document.createElement('link');
+    link.id = 'spotlight-navigation-style';
+    link.rel = 'stylesheet';
+    link.href = '/css/spotlight-navigation.css?v=20261001e';
+    link.addEventListener('load', loadScript, { once: true });
+    document.head.appendChild(link);
+    return;
+  }
+
+  loadScript();
 }
 
 function syncIndexSocialFooterOffset() {
@@ -1624,11 +1583,13 @@ if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', initSpaceReveals, { once: true });
   document.addEventListener('DOMContentLoaded', ensureLottiePlayerAssets, { once: true });
   document.addEventListener('DOMContentLoaded', loadSkyletWidgetAssets, { once: true });
+  document.addEventListener('DOMContentLoaded', loadSpotlightNavigationAssets, { once: true });
   document.addEventListener('DOMContentLoaded', initIndexFooterAwareSocialLinks, { once: true });
 } else {
   initSpaceReveals();
   ensureLottiePlayerAssets();
   loadSkyletWidgetAssets();
+  loadSpotlightNavigationAssets();
   initIndexFooterAwareSocialLinks();
 }
 

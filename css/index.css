@@ -1722,20 +1722,25 @@ for tabs and large phones
 @media (min-width: 551px) {
     .page-index .contact {
         right: calc(4% - 20px);
-        top: 100px;
-        bottom: 112px;
+        top: 0;
+        bottom: 155px;
         height: auto;
         width: 76px;
         align-items: center;
         justify-content: center;
     }
 
+    .page-index .techstack-carousel {
+        height: 100%;
+        max-height: none;
+    }
+
     #index-skylet-btn {
         position: absolute;
-        right: calc(4% - 20px);
-        bottom: 26px;
+        right: 24px;
+        bottom: 18px;
         top: auto;
-        width: 76px;
+        width: 108px;
         z-index: 3;
         display: flex;
         flex-direction: column;
@@ -1758,8 +1763,8 @@ for tabs and large phones
     }
 
     #index-skylet-btn img {
-        width: 58px;
-        height: 58px;
+        width: 108px;
+        height: 108px;
         display: block;
         margin: 0 auto;
     }
@@ -1777,6 +1782,6 @@ for tabs and large phones
 
     /* Move floating launcher above the social-media icon bar on root page */
     .page-index .about-chat-launcher {
-        bottom: 76px;
+        bottom: calc(86px + var(--skylet-footer-offset, 0px));
     }
 }

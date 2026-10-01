@@ -591,6 +591,11 @@ function nav(localeKey) {
 
 function footer(localeKey) {
   const locale = locales[localeKey];
+  const legalLinks = {
+    en: '<a class="footer-legal-link" href="/privacy-policy/">Privacy Policy</a><span aria-hidden="true">/</span><a class="footer-legal-link" href="/terms-of-use/">Terms of Use</a><span aria-hidden="true">/</span><a class="footer-legal-link" href="/editorial-policy/">Editorial Policy</a><span aria-hidden="true">/</span><a class="footer-legal-link" href="/credits/">Credits</a>',
+    pt: '<a class="footer-legal-link" href="/pt/politica-de-privacidade/">Pol&iacute;tica de Privacidade</a><span aria-hidden="true">/</span><a class="footer-legal-link" href="/pt/termos-de-uso/">Termos de Uso</a><span aria-hidden="true">/</span><a class="footer-legal-link" href="/pt/politica-editorial/">Pol&iacute;tica Editorial</a><span aria-hidden="true">/</span><a class="footer-legal-link" href="/pt/creditos/">Cr&eacute;ditos</a>',
+    es: '<a class="footer-legal-link" href="/es/politica-de-privacidad/">Pol&iacute;tica de Privacidad</a><span aria-hidden="true">/</span><a class="footer-legal-link" href="/es/terminos-de-uso/">T&eacute;rminos de Uso</a><span aria-hidden="true">/</span><a class="footer-legal-link" href="/es/politica-editorial/">Pol&iacute;tica Editorial</a><span aria-hidden="true">/</span><a class="footer-legal-link" href="/es/creditos/">Cr&eacute;ditos</a>'
+  }[localeKey];
   return `<footer class="footer-minimal">
         <div class="footer-container">
             <div class="footer-link-list" aria-label="Footer links">
@@ -598,7 +603,7 @@ function footer(localeKey) {
                 <a class="footer-link-pill" href="https://www.linkedin.com/in/pklavc/" target="_blank" rel="noopener noreferrer">${locale.linkedinLabel}</a>
                 <a class="footer-link-pill" href="mailto:contact@pklavc.com">${locale.emailLabel}</a>
             </div>
-            <p>&copy; <span data-current-year></span> Patrick Araujo</p>
+            <p class="footer-meta"><span class="footer-copyright-line">&copy; <span data-current-year></span> Patrick Araujo</span><span class="footer-meta-separator">&bull;</span><span class="footer-legal-inline" aria-label="Legal links">${legalLinks}</span></p>
         </div>
     </footer>`;
 }

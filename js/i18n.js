@@ -11,6 +11,7 @@
       blog: 'blog',
       collections: 'colecoes',
       stacks: 'stacks',
+      credits: 'creditos',
     },
     es: {
       about: 'sobre',
@@ -19,6 +20,7 @@
       blog: 'blog',
       collections: 'colecciones',
       stacks: 'stacks',
+      credits: 'creditos',
     }
   };
 
@@ -30,6 +32,7 @@
       blog: 'blog',
       colecoes: 'collections',
       stacks: 'stacks',
+      creditos: 'credits',
     },
     es: {
       sobre: 'about',
@@ -38,6 +41,7 @@
       blog: 'blog',
       colecciones: 'collections',
       stacks: 'stacks',
+      creditos: 'credits',
     }
   };
 

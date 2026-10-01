@@ -36,6 +36,63 @@ body{font-family:Inter,sans-serif;color:#e7eaf0;background:#0c1018}
 
 /* Context-aware ads sync marker. */
 
+/* Footer, advertising and sticky-search alignment with the bottom navigation. */
+.store-footer-disclosure{
+  min-width:0;
+  max-width:100%;
+  overflow-wrap:anywhere;
+}
+
+@media(min-width:1100px){
+  .store-footer-inner{
+    grid-template-columns:minmax(0,1fr) minmax(390px,430px) minmax(0,1fr);
+  }
+  .store-footer-disclosure{
+    grid-column:3;
+    justify-self:end;
+    text-align:right;
+  }
+}
+
+@media(max-width:1099px){
+  .store-footer-inner{
+    grid-template-columns:minmax(0,1fr);
+    align-items:start;
+  }
+  .store-footer-disclosure{
+    width:100%;
+    text-align:left;
+  }
+}
+
+@media(max-width:760px){
+  .store-site-header{
+    top:0;
+    width:100%;
+    box-sizing:border-box;
+    gap:10px;
+    padding:calc(10px + env(safe-area-inset-top)) 12px 10px;
+    overflow:visible;
+  }
+  .store-wordmark{
+    font-size:clamp(.7rem,3.3vw,.82rem);
+    letter-spacing:.07em;
+  }
+  .store-site-header .store-search{
+    flex:1 1 0;
+    width:auto;
+    min-width:0;
+    max-width:none;
+    margin-left:0;
+    border-radius:10px;
+  }
+  body[data-store-locale] .pklavc-ad--store-bottom{
+    width:100%!important;
+    max-width:none!important;
+    margin:26px 0 0!important;
+  }
+}
+
 
 /* Store catalog density and mobile marketplace layout. */
 .store-grid{--store-columns:4}

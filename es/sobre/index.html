@@ -48,8 +48,8 @@
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Monoton&amp;family=Poppins:wght@500&amp;family=Raleway:wght@300&amp;display=optional" onload="this.onload=null;this.rel='stylesheet'">
         <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Monoton&amp;family=Poppins:wght@500&amp;family=Raleway:wght@300&amp;display=optional"></noscript>
-        <link rel="preload" href="/css/global.css?v=6d8a856a8a" as="style">
-        <link rel="stylesheet" href="/css/global.css?v=6d8a856a8a">
+        <link rel="preload" href="/css/global.css?v=20261001footer1" as="style">
+        <link rel="stylesheet" href="/css/global.css?v=20261001footer1">
         <link id="skylet-widget-style" rel="stylesheet" href="/css/skylet-widget.css?v=b6f515f624">
         <style>
             body {
@@ -193,8 +193,8 @@
                 }
             }
         </style>
-        <link rel="preload" href="/css/about.css?v=f8be4070cb" as="style">
-        <link rel="stylesheet" href="/css/about.css?v=f8be4070cb">
+        <link rel="preload" href="/css/about.css?v=20261001credits2" as="style">
+        <link rel="stylesheet" href="/css/about.css?v=20261001credits2">
         <link rel="stylesheet" href="/css/interactive-globe.css">
         <link rel="preload" href="/css/space-reveal.css?v=601db46cac" as="style">
         <link rel="stylesheet" href="/css/space-reveal.css?v=601db46cac">
@@ -813,6 +813,9 @@
                                     </button>
                                 </div>
                             </div>
+                        </div>
+                        <div class="about-sponsor-row">
+                            <a class="about-sponsor-link" href="https://github.com/sponsors/PkLavc" target="_blank" rel="noopener noreferrer">Apoyar en GitHub</a>
                         </div>
                     </div>
 
@@ -1546,21 +1549,6 @@
                     }
                 }
 
-                window.toggleCredits = function() {
-                    const credits = document.getElementById('credits-list');
-                    const trigger = document.getElementById('credits-trigger-btn');
-
-                    if (!credits) {
-                        return;
-                    }
-
-                    const isOpen = credits.style.display === 'block';
-                    credits.style.display = isOpen ? 'none': 'block';
-
-                    if (trigger) {
-                        trigger.setAttribute('aria-expanded', isOpen ? 'false': 'true');
-                    }
-                };
 
                 document.body.classList.add('ready');
                 updateSemester();
@@ -1583,22 +1571,12 @@
         <script src="/js/interactive-globe.js" defer></script>
         <script src="/js/about-effects.js" defer></script>
         <script type="module" src="/js/black-hole.js?v=20260922b"></script>
-        <script id="skylet-widget-script" src="/js/skylet-widget.js?v=3ce4e98fcb" defer></script>
-<footer class="footer-minimal">
+        <script id="skylet-widget-script" src="/js/skylet-widget.js?v=20261001footer2" defer></script>
+<footer class="footer-minimal footer-split footer-about">
     <div class="footer-container">
-        <div class="footer-link-list" aria-label="Enlaces de pie de página">
-            <a class="footer-link-pill" href="https://github.com/PkLavc" target="_blank" rel="noopener noreferrer">GitHub</a>
-            <a class="footer-link-pill" href="https://www.linkedin.com/in/pklavc/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
-            <a class="footer-link-pill" href="mailto:contact@pklavc.com">Correo electrónico</a>
-            <a class="footer-link-pill footer-link-pill-accent" href="https://github.com/sponsors/PkLavc" target="_blank" rel="noopener noreferrer">Apoyar en GitHub</a>
-        </div>
-        <p class="footer-meta"><span class="footer-copyright-line">&copy; <span id="current-year"></span> Patrick Araujo</span> <span class="footer-meta-separator">&bull;</span><button id="credits-trigger-btn" class="credits-trigger" type="button" onclick="toggleCredits()" aria-controls="credits-list" aria-expanded="false">Recursos y créditos</button> <span class="footer-meta-separator">&bull;</span><span class="footer-legal-inline" aria-label="Legal links"><a class="footer-legal-link" href="/es/politica-de-privacidad/">Pol&iacute;tica de Privacidad</a><span aria-hidden="true">/</span><a class="footer-legal-link" href="/es/terminos-de-uso/">T&eacute;rminos de Uso</a><span aria-hidden="true">/</span><a class="footer-legal-link" href="/es/politica-editorial/">Pol&iacute;tica Editorial</a></span></p>
-        <div id="credits-list" class="credits-hidden">
-            <div class="credits-grid">
-                <button class="credits-detail-trigger" type="button" data-credit-detail="icons">Iconos</button>
-                <button class="credits-detail-trigger" type="button" data-credit-detail="vfx">Efectos visuales</button>
-</div>
-        </div>
+        <div class="footer-split-left"><span class="footer-copyright-line">&copy; <span id="current-year"></span> Patrick Araujo</span></div>
+        <span class="footer-split-spacer" aria-hidden="true"></span>
+        <div class="footer-split-right"><span class="footer-legal-inline" aria-label="Enlaces legales"><a class="footer-legal-link" href="/es/politica-de-privacidad/">Pol&iacute;tica de Privacidad</a><span aria-hidden="true">/</span><a class="footer-legal-link" href="/es/terminos-de-uso/">T&eacute;rminos de Uso</a><span aria-hidden="true">/</span><a class="footer-legal-link" href="/es/politica-editorial/">Pol&iacute;tica Editorial</a><span aria-hidden="true">/</span><a class="footer-legal-link" href="/es/creditos/">Cr&eacute;ditos</a></span></div>
     </div>
 </footer>
 <div class="visually-hidden">

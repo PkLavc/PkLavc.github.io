@@ -26,6 +26,7 @@ const SITE_DIRECTORIES = new Set([
   "certifications",
   "changelog",
   "collections",
+  "credits",
   "css",
   "editorial-policy",
   "es",

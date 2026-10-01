@@ -295,7 +295,9 @@
 
     var viewportHeight = window.innerHeight || document.documentElement.clientHeight || 0;
     var footerTop = footer.getBoundingClientRect().top;
-    var overlap = Math.max(0, viewportHeight - footerTop);
+    var footerStyle = window.getComputedStyle ? window.getComputedStyle(footer) : null;
+    var reservedBottom = footerStyle ? parseFloat(footerStyle.paddingBottom) || 0 : 0;
+    var overlap = Math.max(0, viewportHeight - footerTop - reservedBottom);
     var offset = overlap > 0 ? Math.ceil(overlap + 12) : 0;
     var maxOffset = Math.max(0, viewportHeight - 140);
 
