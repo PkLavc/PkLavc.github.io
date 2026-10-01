@@ -1646,7 +1646,7 @@ if (document.readyState === 'loading') {
     var style = document.createElement('link');
     style.id = 'pklavc-ads-style';
     style.rel = 'stylesheet';
-    style.href = '/ads/ads.css?v=0f9fe4b27a';
+    style.href = '/ads/ads.css?v=70e6374d07';
     document.head.appendChild(style);
   }
 
@@ -1654,7 +1654,7 @@ if (document.readyState === 'loading') {
     if (document.getElementById('pklavc-ads-runtime')) return;
     var runtime = document.createElement('script');
     runtime.id = 'pklavc-ads-runtime';
-    runtime.src = '/ads/ads.js?v=f703ee9975';
+    runtime.src = '/ads/ads.js?v=6769f70dac';
     runtime.async = true;
     document.head.appendChild(runtime);
   }
