@@ -1657,7 +1657,7 @@ if (document.readyState === 'loading') {
     if (document.getElementById('pklavc-ads-runtime')) return;
     var runtime = document.createElement('script');
     runtime.id = 'pklavc-ads-runtime';
-    runtime.src = '/ads/ads.js?v=d4d146a499';
+    runtime.src = '/ads/ads.js?v=c19f0d8089';
     runtime.async = true;
     document.head.appendChild(runtime);
   }
