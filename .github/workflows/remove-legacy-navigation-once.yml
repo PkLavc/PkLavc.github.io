@@ -223,6 +223,141 @@ jobs:
               spot.write_text(text, encoding="utf-8")
               changed.append(str(spot))
 
+          # Remove isolated legacy-menu integrations that are outside the shared markup.
+          for path in (Path("store/index.html"), Path("store/pt/index.html"), Path("store/es/index.html")):
+              if path.exists():
+                  text = path.read_text(encoding="utf-8")
+                  original = text
+                  text = re.sub(
+                      r'\s*<script>\s*\(function\(\)\{\s*var languageToggle=document\.querySelector\("\\.navigation-language-toggle"\);.*?</script>',
+                      "",
+                      text,
+                      count=1,
+                      flags=re.S,
+                  )
+                  if text != original:
+                      path.write_text(text, encoding="utf-8")
+                      changed.append(str(path))
+
+          for path in (Path("about/index.html"), Path("pt/sobre/index.html"), Path("es/sobre/index.html")):
+              if path.exists():
+                  text = path.read_text(encoding="utf-8")
+                  original = text
+                  text = re.sub(
+                      r'\n\s*function setupMenu\(\)\s*\{.*?\n\s*\}\n\s*\n\s*(function setupCursor\(\))',
+                      r'\n\n                \1',
+                      text,
+                      count=1,
+                      flags=re.S,
+                  )
+                  text = text.replace("a, .menubar, .copy-btn, .contact-value, .credits-trigger", "a, .copy-btn, .contact-value, .credits-trigger")
+                  text = text.replace("a,.menubar,.copy-btn,.contact-value,.credits-trigger", "a,.copy-btn,.contact-value,.credits-trigger")
+                  text = re.sub(r'\n\s*setupMenu\(\);', "", text)
+                  if text != original:
+                      path.write_text(text, encoding="utf-8")
+                      changed.append(str(path))
+
+          error_page = Path("404.html")
+          if error_page.exists():
+              text = error_page.read_text(encoding="utf-8")
+              original = text
+              text = re.sub(r'^\s*setRoute\(document\.getElementById\(\'(?:home|about|projects|blog)-link\'\).*?;\s*
+          PY
+
+      - name: Validate cleanup
+        shell: bash
+        run: |
+          node --check js/index.js
+          node --check js/i18n.js
+          node --check js/spotlight-navigation.js
+          if grep -R -n -E 'id=["'"'"']navigation-(content|bar)["'"'"']|\.menubar|openNavigationMenu|initLanguageMenu|navigation-language-toggle|disableLegacyNavigation' \
+            --include='*.html' --include='*.css' --include='*.js' --include='*.mjs' \
+            --exclude-dir=.git .; then
+            echo "Legacy navigation references remain."
+            exit 1
+          fi
+
+      - name: Commit cleanup
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git rm .github/workflows/remove-legacy-navigation-once.yml
+          git add -A
+          git commit -m "Remove legacy navigation"
+          git push
+, "", text, flags=re.M)
+              text = re.sub(r'^\s*document\.querySelector\(\'#navigation-content\'\).*?;\s*
+          PY
+
+      - name: Validate cleanup
+        shell: bash
+        run: |
+          node --check js/index.js
+          node --check js/i18n.js
+          node --check js/spotlight-navigation.js
+          if grep -R -n -E 'id=["'"'"']navigation-(content|bar)["'"'"']|\.menubar|openNavigationMenu|initLanguageMenu|navigation-language-toggle|disableLegacyNavigation' \
+            --include='*.html' --include='*.css' --include='*.js' --include='*.mjs' \
+            --exclude-dir=.git .; then
+            echo "Legacy navigation references remain."
+            exit 1
+          fi
+
+      - name: Commit cleanup
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git rm .github/workflows/remove-legacy-navigation-once.yml
+          git add -A
+          git commit -m "Remove legacy navigation"
+          git push
+, "", text, flags=re.M)
+              text = re.sub(r'^\s*document\.querySelector\(\'\.menubar\'\).*?;\s*
+          PY
+
+      - name: Validate cleanup
+        shell: bash
+        run: |
+          node --check js/index.js
+          node --check js/i18n.js
+          node --check js/spotlight-navigation.js
+          if grep -R -n -E 'id=["'"'"']navigation-(content|bar)["'"'"']|\.menubar|openNavigationMenu|initLanguageMenu|navigation-language-toggle|disableLegacyNavigation' \
+            --include='*.html' --include='*.css' --include='*.js' --include='*.mjs' \
+            --exclude-dir=.git .; then
+            echo "Legacy navigation references remain."
+            exit 1
+          fi
+
+      - name: Commit cleanup
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git rm .github/workflows/remove-legacy-navigation-once.yml
+          git add -A
+          git commit -m "Remove legacy navigation"
+          git push
+, "", text, flags=re.M)
+              if text != original:
+                  error_page.write_text(text, encoding="utf-8")
+                  changed.append(str(error_page))
+
+          skylet_chat = Path("ia/skylet-chat.js")
+          if skylet_chat.exists():
+              text = skylet_chat.read_text(encoding="utf-8")
+              original = text
+              text = re.sub(
+                  r'\n\s*const menuButton = document\.querySelector\(\'#navigation-bar \\.menubar\'\);.*?window\.addEventListener\(\'resize\', alignClearButtonWithMenu, \{ passive: true \}\);',
+                  "",
+                  text,
+                  count=1,
+                  flags=re.S,
+              )
+              if text != original:
+                  skylet_chat.write_text(text, encoding="utf-8")
+                  changed.append(str(skylet_chat))
+
           print(f"Updated {len(set(changed))} files")
           PY
 
