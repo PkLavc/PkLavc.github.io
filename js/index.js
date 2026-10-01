@@ -940,6 +940,34 @@ function ensureBlogNavigationLink() {
   });
 }
 
+
+function ensureStoreNavigationLink() {
+  var navLists = document.querySelectorAll('.navigation-links');
+
+  navLists.forEach(function(navList) {
+    if (navList.querySelector('#store-link') || navList.querySelector('a[href="/store/"], a[href="/store/pt/"], a[href="/store/es/"]')) {
+      return;
+    }
+
+    var blogLink = navList.querySelector('#blog-link');
+    var storeLink = document.createElement('a');
+    var i18n = window.PkLavcI18n;
+    var locale = i18n && typeof i18n.getCurrentLanguage === 'function' ? i18n.getCurrentLanguage() : 'en';
+
+    storeLink.href = i18n && typeof i18n.getLocalizedRoute === 'function' ? i18n.getLocalizedRoute('/store/', locale) : '/store/';
+    storeLink.id = 'store-link';
+    storeLink.setAttribute('data-text', 'STORE');
+    storeLink.textContent = 'STORE';
+
+    if (blogLink && blogLink.nextSibling) {
+      navList.insertBefore(storeLink, blogLink.nextSibling);
+      return;
+    }
+
+    navList.appendChild(storeLink);
+  });
+}
+
 function createNavigationLabelFragment(label) {
   var fragment = document.createDocumentFragment();
 
@@ -995,6 +1023,7 @@ function enhanceNavigationMenuLetters() {
 }
 
 ensureBlogNavigationLink();
+ensureStoreNavigationLink();
 if (window.PkLavcI18n && typeof window.PkLavcI18n.localizeNavigation === 'function') {
   window.PkLavcI18n.localizeNavigation();
 }
