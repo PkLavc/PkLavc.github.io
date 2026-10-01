@@ -145,6 +145,7 @@
 
     nav.style.setProperty('--spotlight-indicator-left', indicatorLeft + 'px');
     nav.style.setProperty('--spotlight-indicator-width', indicatorWidth + 'px');
+    nav.style.setProperty('--spotlight-item-left', (itemRect.left - navRect.left) + 'px');
   }
 
   function setPresentedItem(nav, items, presentedIndex, animate) {
