@@ -306,7 +306,12 @@
     return null;
   }
 
-  function placeAds(geo) {
+  function rotatePlacement(item, placement, geo) {
+    if (!item) return;
+    rotateImages(item.ad, item.selection.ids, item.selection.rotateEverySeconds, placement, geo);
+  }
+
+  function placeBlogAds(geo) {
     var article = document.querySelector('.blog-article');
     var sidebar = document.querySelector('.blog-columns > aside.blog-article-grid');
     var columns = document.querySelector('.blog-columns');
@@ -331,17 +336,138 @@
       else article.prepend(mobile.ad);
     }
     if (bottom) columns.insertAdjacentElement('afterend', bottom.ad);
-    [side, inline, bottom, mobile].forEach(function (item, index) {
-      if (!item) return;
-      rotateImages(item.ad, item.selection.ids, item.selection.rotateEverySeconds,
-        ['sidebar', 'inline', 'bottom', 'mobile'][index], geo);
-    });
+
+    rotatePlacement(side, 'sidebar', geo);
+    rotatePlacement(inline, 'inline', geo);
+    rotatePlacement(bottom, 'bottom', geo);
+    rotatePlacement(mobile, 'mobile', geo);
     article.dataset.blogAdsReady = 'true';
+  }
+
+  function projectContentAnchor() {
+    return document.querySelector('.full-readme-container, .blog-columns, .project-visual-container, .project-hero, main');
+  }
+
+  function positionProjectSidebar(ad) {
+    var anchor = projectContentAnchor();
+    if (!anchor) return;
+    function update() {
+      var bounds = anchor.getBoundingClientRect();
+      var available = Math.max(0, bounds.left - 18);
+      var width = Math.min(250, available - 18);
+      if (window.innerWidth < 1180 || width < 170) {
+        ad.hidden = true;
+        return;
+      }
+      ad.hidden = false;
+      ad.style.width = Math.floor(width) + 'px';
+      ad.style.left = Math.max(16, Math.floor(bounds.left - width - 18)) + 'px';
+    }
+    update();
+    window.addEventListener('resize', update, { passive: true });
+  }
+
+  function placeProjectAds(geo) {
+    var main = document.querySelector('main');
+    if (!main || document.body.dataset.projectAdsReady === 'true') return;
+    var side = placementAd('project-sidebar', geo);
+    var bottom = placementAd('project-bottom', geo);
+    var footer = document.querySelector('footer');
+
+    if (side) {
+      document.body.appendChild(side.ad);
+      positionProjectSidebar(side.ad);
+      rotatePlacement(side, 'project-sidebar', geo);
+    }
+    if (bottom) {
+      if (footer) footer.insertAdjacentElement('beforebegin', bottom.ad);
+      else main.insertAdjacentElement('afterend', bottom.ad);
+      rotatePlacement(bottom, 'project-bottom', geo);
+    }
+    document.body.dataset.projectAdsReady = 'true';
+  }
+
+  function ensureStoreSidebarColumn(aside) {
+    if (!aside) return null;
+    if (aside.parentElement && aside.parentElement.classList.contains('store-sidebar-column')) return aside.parentElement;
+    var column = document.createElement('div');
+    column.className = 'store-sidebar-column';
+    aside.parentNode.insertBefore(column, aside);
+    column.appendChild(aside);
+    return column;
+  }
+
+  function actualStoreColumns(grid) {
+    var template = window.getComputedStyle ? getComputedStyle(grid).gridTemplateColumns : '';
+    var columns = template && template !== 'none' ? template.trim().split(/\s+/).length : 0;
+    return columns > 0 ? columns : Math.max(1, Number(grid.dataset.columns) || 3);
+  }
+
+  function placeStoreAds(geo) {
+    var grid = document.querySelector('[data-store-grid]');
+    var filters = document.querySelector('.filter-sidebar');
+    var footer = document.querySelector('.store-footer, footer');
+    if (!grid || document.body.dataset.storeAdsReady === 'true') return;
+
+    var side = placementAd('store-sidebar', geo);
+    var bottom = placementAd('store-bottom', geo);
+    var column = ensureStoreSidebarColumn(filters);
+
+    if (side && column) {
+      column.appendChild(side.ad);
+      rotatePlacement(side, 'store-sidebar', geo);
+    }
+    if (bottom) {
+      if (footer) footer.insertAdjacentElement('beforebegin', bottom.ad);
+      else grid.closest('main').insertAdjacentElement('afterend', bottom.ad);
+      rotatePlacement(bottom, 'store-bottom', geo);
+    }
+
+    var refreshTimer = 0;
+    function refreshRowAds() {
+      refreshTimer = 0;
+      grid.querySelectorAll('.pklavc-ad--store-rows').forEach(function (ad) { ad.remove(); });
+      var selection = placementSelection('store-rows', geo);
+      if (!selection || !selection.ids.length) return;
+
+      var visibleCards = Array.prototype.filter.call(grid.querySelectorAll('.store-card'), function (card) {
+        return !card.classList.contains('is-filtered-out') && !card.hidden;
+      });
+      var columns = actualStoreColumns(grid);
+      var interval = Math.max(1, selection.everyRows * columns);
+
+      for (var index = interval; index < visibleCards.length; index += interval) {
+        var rowAd = placementAd('store-rows', geo);
+        if (!rowAd) continue;
+        visibleCards[index - 1].insertAdjacentElement('afterend', rowAd.ad);
+        rotatePlacement(rowAd, 'store-rows', geo);
+      }
+    }
+
+    function scheduleRowAds() {
+      if (refreshTimer) clearTimeout(refreshTimer);
+      refreshTimer = setTimeout(refreshRowAds, 0);
+    }
+
+    ['input', 'change', 'click'].forEach(function (eventName) {
+      document.addEventListener(eventName, function (event) {
+        var target = event.target;
+        if (!target || !target.closest) return;
+        if (target.closest('[data-store-search], [data-currency], [data-min-price], [data-max-price], [data-filter-key], [data-in-stock], [data-clear-filters], [data-sort], [data-columns]')) {
+          scheduleRowAds();
+        }
+      });
+    });
+    window.addEventListener('resize', scheduleRowAds, { passive: true });
+    refreshRowAds();
+    document.body.dataset.storeAdsReady = 'true';
   }
 
   function init() {
     window.PKLAVC_BLOG_ADS_READY = getGeo().then(function (geo) {
-      placeAds(geo);
+      if (pageContext.type === 'blog') placeBlogAds(geo);
+      if (pageContext.type === 'project') placeProjectAds(geo);
+      if (pageContext.type === 'store') placeStoreAds(geo);
       return geo;
     });
   }
