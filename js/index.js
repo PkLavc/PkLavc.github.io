@@ -1631,3 +1631,52 @@ if (document.readyState === 'loading') {
   loadSkyletWidgetAssets();
   initIndexFooterAwareSocialLinks();
 }
+
+
+(function loadDynamicAdvertising() {
+  var path = String(window.location.pathname || '/').replace(/\/index\.html$/i, '/');
+  var shouldLoad =
+    /^\/blog\/(?:(?:en|pt|es)\/)?[^/]+\/?$/.test(path) ||
+    /^\/(?:pt|es)\/blog\/[^/]+\/?$/.test(path) ||
+    /^\/projects(?:\/|$)/.test(path) ||
+    /^\/pt\/projetos(?:\/|$)/.test(path) ||
+    /^\/es\/proyectos(?:\/|$)/.test(path) ||
+    /^\/store(?:\/(?:pt|es))?\/?$/.test(path);
+
+  if (!shouldLoad) return;
+
+  if (!document.getElementById('pklavc-ads-style')) {
+    var style = document.createElement('link');
+    style.id = 'pklavc-ads-style';
+    style.rel = 'stylesheet';
+    style.href = '/ads/ads.css?v=253837b978';
+    document.head.appendChild(style);
+  }
+
+  function loadRuntime() {
+    if (document.getElementById('pklavc-ads-runtime')) return;
+    var runtime = document.createElement('script');
+    runtime.id = 'pklavc-ads-runtime';
+    runtime.src = '/ads/ads.js?v=d4d146a499';
+    runtime.async = true;
+    document.head.appendChild(runtime);
+  }
+
+  if (window.PKLAVC_BLOG_ADS) {
+    loadRuntime();
+    return;
+  }
+
+  var existingConfig = document.getElementById('pklavc-ads-config');
+  if (existingConfig) {
+    existingConfig.addEventListener('load', loadRuntime, { once: true });
+    return;
+  }
+
+  var config = document.createElement('script');
+  config.id = 'pklavc-ads-config';
+  config.src = '/ads/config.js?v=89515fea8c';
+  config.async = true;
+  config.addEventListener('load', loadRuntime, { once: true });
+  document.head.appendChild(config);
+}());
