@@ -289,7 +289,19 @@
     var footer = document.querySelector("footer");
     var root = document.documentElement;
 
-    if (!footer || !root) {
+    if (!root) {
+      return;
+    }
+
+    // Store content is populated asynchronously. Its footer can briefly sit inside
+    // the viewport while products/ads are still loading, which made Skylet jump up
+    // and then back down. Store intentionally does not use footer-aware positioning.
+    if (document.body && document.body.hasAttribute("data-store-locale")) {
+      root.style.setProperty("--skylet-footer-offset", "0px");
+      return;
+    }
+
+    if (!footer) {
       return;
     }
 
