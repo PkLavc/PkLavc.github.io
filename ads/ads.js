@@ -9,9 +9,6 @@
     if (legacyBlog && legacyBlog[2]) return { type: 'blog', locale: legacyBlog[1] };
     var store = /^\/store(?:\/(pt|es))?\/?$/.exec(path);
     if (store) return { type: 'store', locale: store[1] || 'en' };
-    if (/^\/projects(?:\/|$)/.test(path)) return { type: 'project', locale: 'en' };
-    if (/^\/pt\/projetos(?:\/|$)/.test(path)) return { type: 'project', locale: 'pt' };
-    if (/^\/es\/proyectos(?:\/|$)/.test(path)) return { type: 'project', locale: 'es' };
     return null;
   }
 
@@ -276,8 +273,14 @@
     if (!Number.isFinite(seconds) || seconds < 2 ||
         !ids.every(function (id) { return config.campaigns[id] && config.campaigns[id].type === 'image'; })) return;
     ids = ids.filter(function (id) {
-      var creative = config.campaigns[id].locales && config.campaigns[id].locales[locale];
-      var copy = creative && creative[placement];
+      var campaign = config.campaigns[id];
+      var creative = campaign.locales && campaign.locales[locale];
+      var fallbackPlacements = {
+        'store-sidebar': 'sidebar',
+        'store-rows': 'inline',
+        'store-bottom': 'bottom'
+      };
+      var copy = creative && (creative[placement] || creative[fallbackPlacements[placement]]);
       return creative && copy && safeUrl(creative.image) && safeUrl(copy.href);
     });
     if (ids.length < 2) return;
@@ -349,49 +352,6 @@
     rotatePlacement(bottom, 'bottom', geo);
     rotatePlacement(mobile, 'mobile', geo);
     article.dataset.blogAdsReady = 'true';
-  }
-
-  function projectContentAnchor() {
-    return document.querySelector('.full-readme-container, .blog-columns, .project-visual-container, .project-hero, main');
-  }
-
-  function positionProjectSidebar(ad) {
-    var anchor = projectContentAnchor();
-    if (!anchor) return;
-    function update() {
-      var bounds = anchor.getBoundingClientRect();
-      var available = Math.max(0, bounds.left - 18);
-      var width = Math.min(220, available - 18);
-      if (window.innerWidth < 1050 || width < 145) {
-        ad.hidden = true;
-        return;
-      }
-      ad.hidden = false;
-      ad.style.width = Math.floor(width) + 'px';
-      ad.style.left = Math.max(16, Math.floor(bounds.left - width - 18)) + 'px';
-    }
-    update();
-    window.addEventListener('resize', update, { passive: true });
-  }
-
-  function placeProjectAds(geo) {
-    var main = document.querySelector('main');
-    if (!main || document.body.dataset.projectAdsReady === 'true') return;
-    var side = placementAd('project-sidebar', geo);
-    var bottom = placementAd('project-bottom', geo);
-    var footer = document.querySelector('footer');
-
-    if (side) {
-      document.body.appendChild(side.ad);
-      positionProjectSidebar(side.ad);
-      rotatePlacement(side, 'project-sidebar', geo);
-    }
-    if (bottom) {
-      if (footer) footer.insertAdjacentElement('beforebegin', bottom.ad);
-      else main.insertAdjacentElement('afterend', bottom.ad);
-      rotatePlacement(bottom, 'project-bottom', geo);
-    }
-    document.body.dataset.projectAdsReady = 'true';
   }
 
   function ensureStoreSidebarColumn(aside) {
@@ -473,7 +433,6 @@
   function init() {
     window.PKLAVC_BLOG_ADS_READY = getGeo().then(function (geo) {
       if (pageContext.type === 'blog') placeBlogAds(geo);
-      if (pageContext.type === 'project') placeProjectAds(geo);
       if (pageContext.type === 'store') placeStoreAds(geo);
       return geo;
     });
