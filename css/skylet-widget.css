@@ -1,7 +1,7 @@
 ﻿.about-chat-launcher {
     position: fixed;
     right: 24px;
-    bottom: 24px;
+    bottom: calc(24px + var(--skylet-footer-offset, 0px));
     z-index: 9999;
     display: inline-flex;
     align-items: center;
@@ -31,7 +31,7 @@
     --skylet-widget-bg: #06080f;
     position: fixed;
     right: 24px;
-    bottom: 92px;
+    bottom: calc(92px + var(--skylet-footer-offset, 0px));
     z-index: 9999;
     width: min(390px, calc(100vw - 24px));
     height: min(calc(100vh - 100px), 90vh);
@@ -51,7 +51,7 @@
 
 .about-chat-widget.is-open {
     display: flex;
-    bottom: 24px;
+    bottom: calc(24px + var(--skylet-footer-offset, 0px));
 }
 
 .about-chat-header {
@@ -446,7 +446,7 @@
 @media (max-width: 768px) {
     .about-chat-launcher {
         right: 16px;
-        bottom: 16px;
+        bottom: calc(16px + var(--skylet-footer-offset, 0px));
     }
 
     .about-chat-launcher img {
@@ -457,13 +457,13 @@
     .about-chat-widget {
         right: 12px;
         left: 12px;
-        bottom: 78px;
+        bottom: calc(78px + var(--skylet-footer-offset, 0px));
         width: auto;
         height: min(calc(100vh - 80px), 94vh);
     }
 
     .about-chat-widget.is-open {
-        bottom: 12px;
+        bottom: calc(12px + var(--skylet-footer-offset, 0px));
     }
 }
 
