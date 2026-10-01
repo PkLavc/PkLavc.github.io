@@ -940,6 +940,34 @@ function ensureBlogNavigationLink() {
   });
 }
 
+
+function ensureStoreNavigationLink() {
+  var navLists = document.querySelectorAll('.navigation-links');
+
+  navLists.forEach(function(navList) {
+    if (navList.querySelector('#store-link') || navList.querySelector('a[href="/store/"], a[href="/store/pt/"], a[href="/store/es/"]')) {
+      return;
+    }
+
+    var blogLink = navList.querySelector('#blog-link');
+    var storeLink = document.createElement('a');
+    var i18n = window.PkLavcI18n;
+    var locale = i18n && typeof i18n.getCurrentLanguage === 'function' ? i18n.getCurrentLanguage() : 'en';
+
+    storeLink.href = i18n && typeof i18n.getLocalizedRoute === 'function' ? i18n.getLocalizedRoute('/store/', locale) : '/store/';
+    storeLink.id = 'store-link';
+    storeLink.setAttribute('data-text', 'STORE');
+    storeLink.textContent = 'STORE';
+
+    if (blogLink && blogLink.nextSibling) {
+      navList.insertBefore(storeLink, blogLink.nextSibling);
+      return;
+    }
+
+    navList.appendChild(storeLink);
+  });
+}
+
 function createNavigationLabelFragment(label) {
   var fragment = document.createDocumentFragment();
 
@@ -995,6 +1023,7 @@ function enhanceNavigationMenuLetters() {
 }
 
 ensureBlogNavigationLink();
+ensureStoreNavigationLink();
 if (window.PkLavcI18n && typeof window.PkLavcI18n.localizeNavigation === 'function') {
   window.PkLavcI18n.localizeNavigation();
 }
@@ -1543,14 +1572,14 @@ function loadSkyletWidgetAssets() {
     var link = document.createElement('link');
     link.id = 'skylet-widget-style';
     link.rel = 'stylesheet';
-    link.href = '/css/skylet-widget.css?v=b6f515f624';
+    link.href = '/css/skylet-widget.css?v=e3ca269f9e';
     document.head.appendChild(link);
   }
 
   if (!document.getElementById('skylet-widget-script')) {
     var script = document.createElement('script');
     script.id = 'skylet-widget-script';
-    script.src = '/js/skylet-widget.js?v=3ce4e98fcb';
+    script.src = '/js/skylet-widget.js?v=324ad7cecc';
     script.defer = true;
     document.body.appendChild(script);
   }
@@ -1602,3 +1631,52 @@ if (document.readyState === 'loading') {
   loadSkyletWidgetAssets();
   initIndexFooterAwareSocialLinks();
 }
+
+
+(function loadDynamicAdvertising() {
+  var path = String(window.location.pathname || '/').replace(/\/index\.html$/i, '/');
+  var shouldLoad =
+    /^\/blog\/(?:(?:en|pt|es)\/)?[^/]+\/?$/.test(path) ||
+    /^\/(?:pt|es)\/blog\/[^/]+\/?$/.test(path) ||
+    /^\/projects(?:\/|$)/.test(path) ||
+    /^\/pt\/projetos(?:\/|$)/.test(path) ||
+    /^\/es\/proyectos(?:\/|$)/.test(path) ||
+    /^\/store(?:\/(?:pt|es))?\/?$/.test(path);
+
+  if (!shouldLoad) return;
+
+  if (!document.getElementById('pklavc-ads-style')) {
+    var style = document.createElement('link');
+    style.id = 'pklavc-ads-style';
+    style.rel = 'stylesheet';
+    style.href = '/ads/ads.css?v=253837b978';
+    document.head.appendChild(style);
+  }
+
+  function loadRuntime() {
+    if (document.getElementById('pklavc-ads-runtime')) return;
+    var runtime = document.createElement('script');
+    runtime.id = 'pklavc-ads-runtime';
+    runtime.src = '/ads/ads.js?v=d4d146a499';
+    runtime.async = true;
+    document.head.appendChild(runtime);
+  }
+
+  if (window.PKLAVC_BLOG_ADS) {
+    loadRuntime();
+    return;
+  }
+
+  var existingConfig = document.getElementById('pklavc-ads-config');
+  if (existingConfig) {
+    existingConfig.addEventListener('load', loadRuntime, { once: true });
+    return;
+  }
+
+  var config = document.createElement('script');
+  config.id = 'pklavc-ads-config';
+  config.src = '/ads/config.js?v=89515fea8c';
+  config.async = true;
+  config.addEventListener('load', loadRuntime, { once: true });
+  document.head.appendChild(config);
+}());
