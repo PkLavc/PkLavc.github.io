@@ -17,7 +17,12 @@
         rotateEverySeconds: 15
       },
       bottom: { enabled: true, default: 'pklavc', countries: {}, regions: {}, locales: {} },
-      mobile: { enabled: true, default: 'pklavc', countries: {}, regions: {}, locales: {} }
+      mobile: { enabled: true, default: 'pklavc', countries: {}, regions: {}, locales: {} },
+      'project-sidebar': { enabled: true, default: 'pklavc', countries: {}, regions: {}, locales: {} },
+      'project-bottom': { enabled: true, default: 'pklavc', countries: {}, regions: {}, locales: {} },
+      'store-sidebar': { enabled: true, default: 'pklavc', countries: {}, regions: {}, locales: {} },
+      'store-rows': { enabled: true, default: ['pklavc', 'pklavc_projects'], countries: {}, regions: {}, locales: {}, rotateEverySeconds: 20, everyRows: 10 },
+      'store-bottom': { enabled: true, default: 'pklavc', countries: {}, regions: {}, locales: {} }
     },
     campaigns: {
       pklavc: {
