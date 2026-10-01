@@ -1143,7 +1143,7 @@ function loadSpotlightNavigationAssets() {
 
     var script = document.createElement('script');
     script.id = 'spotlight-navigation-script';
-    script.src = '/js/spotlight-navigation.js?v=20261001e';
+    script.src = '/js/spotlight-navigation.js?v=20261001i';
     script.defer = true;
     document.body.appendChild(script);
   }
@@ -1154,7 +1154,7 @@ function loadSpotlightNavigationAssets() {
     var link = document.createElement('link');
     link.id = 'spotlight-navigation-style';
     link.rel = 'stylesheet';
-    link.href = '/css/spotlight-navigation.css?v=20261001e';
+    link.href = '/css/spotlight-navigation.css?v=20261001h';
     link.addEventListener('load', loadScript, { once: true });
     document.head.appendChild(link);
     return;

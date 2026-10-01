@@ -88,6 +88,7 @@
     var normalized = normalizePath(path);
     var parts = normalized.split('/').filter(Boolean);
     var first = parts[0] || '';
+    if (document.documentElement.hasAttribute('data-blog-navigation') && (first === '' || first === 'en' || first === 'pt' || first === 'es')) return 3;
     var section = first === 'pt' || first === 'es' ? (parts[1] || '') : first;
 
     if (first === 'blog' || section === 'blog') return 3;
@@ -133,24 +134,37 @@
     var icon = item.querySelector('.spotlight-navigation-icon');
     if (!icon) return;
 
-    var indicatorWidth = window.innerWidth <= 360 ? 44 : 48;
     var navRect = nav.getBoundingClientRect();
+    var isCompact = window.innerWidth <= 620;
+    var indicatorWidth = isCompact ? (window.innerWidth <= 360 ? 44 : 48) : item.getBoundingClientRect().width;
+    var itemRect = item.getBoundingClientRect();
     var iconRect = icon.getBoundingClientRect();
-    var iconCenter = iconRect.left - navRect.left + (iconRect.width / 2);
+    var indicatorLeft = isCompact
+      ? iconRect.left - navRect.left + (iconRect.width / 2) - (indicatorWidth / 2)
+      : itemRect.left - navRect.left;
 
-    nav.style.setProperty('--spotlight-indicator-left', (iconCenter - (indicatorWidth / 2)) + 'px');
+    nav.style.setProperty('--spotlight-indicator-left', indicatorLeft + 'px');
+    nav.style.setProperty('--spotlight-indicator-width', indicatorWidth + 'px');
   }
 
-  function setPresentedItem(nav, items, presentedIndex) {
+  function setPresentedItem(nav, items, presentedIndex, animate) {
     nav.style.setProperty('--spotlight-active-index', String(presentedIndex));
+    nav.classList.toggle('is-moving', animate === true);
 
     items.forEach(function (item, index) {
       var isPresented = index === presentedIndex;
       item.style.setProperty('--spotlight-opacity', isPresented ? '1' : '0');
-      item.classList.toggle('is-presented', isPresented);
+      item.classList.toggle('is-presented', isPresented && animate !== true);
     });
 
     updateIndicator(nav, items[presentedIndex]);
+    if (animate === true) {
+      window.setTimeout(function () {
+        if (!nav.isConnected || Number(nav.style.getPropertyValue('--spotlight-active-index')) !== presentedIndex) return;
+        nav.classList.remove('is-moving');
+        items[presentedIndex].classList.add('is-presented');
+      }, 420);
+    }
   }
 
   function createNavigation() {
@@ -222,9 +236,9 @@
     setCurrentItem(items, activeIndex);
     setPresentedItem(nav, items, presentedIndex);
 
-    function present(index) {
+    function present(index, animate) {
       presentedIndex = index;
-      setPresentedItem(nav, items, presentedIndex);
+      setPresentedItem(nav, items, presentedIndex, animate);
     }
 
     var languageMenu = document.createElement('div');
@@ -277,7 +291,7 @@
       document.body.classList.toggle('spotlight-language-menu-open', shouldOpen);
       languageMenu.hidden = !shouldOpen;
       languageButton.setAttribute('aria-expanded', shouldOpen ? 'true' : 'false');
-      present(shouldOpen ? languageIndex : activeIndex);
+      present(shouldOpen ? languageIndex : activeIndex, true);
     }
 
     languageButton.addEventListener('click', function (event) {
@@ -288,19 +302,19 @@
 
     items.forEach(function (item, index) {
       item.addEventListener('pointerenter', function () {
-        present(index);
+        present(index, true);
       });
       item.addEventListener('focus', function () {
-        present(index);
+        present(index, true);
       });
     });
 
     nav.addEventListener('pointerleave', function () {
-      present(languageMenu.hidden ? activeIndex : languageIndex);
+      present(languageMenu.hidden ? activeIndex : languageIndex, true);
     });
 
     nav.addEventListener('focusout', function (event) {
-      if (!nav.contains(event.relatedTarget)) present(languageMenu.hidden ? activeIndex : languageIndex);
+      if (!nav.contains(event.relatedTarget)) present(languageMenu.hidden ? activeIndex : languageIndex, true);
     });
 
     document.addEventListener('click', function (event) {
