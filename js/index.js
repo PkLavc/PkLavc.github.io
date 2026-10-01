@@ -1163,6 +1163,93 @@ function loadSpotlightNavigationAssets() {
   loadScript();
 }
 
+
+function isStoreRoute() {
+  var path = String(window.location.pathname || '/').replace(/\/index\.html$/i, '/');
+  return /^\/(?:pt\/|es\/)?store(?:\/|$)/i.test(path) || /^\/store(?:\/(?:pt|es))?(?:\/|$)/i.test(path);
+}
+
+function normalizeUnifiedFooter() {
+  if (isStoreRoute()) {
+    return;
+  }
+
+  var path = String(window.location.pathname || '/');
+  var locale = path.indexOf('/pt/') === 0 ? 'pt' : (path.indexOf('/es/') === 0 ? 'es' : 'en');
+  var copy = {
+    en: {
+      nav: 'Social and contact links',
+      privacy: 'Privacy Policy',
+      terms: 'Terms of Use',
+      editorial: 'Editorial Policy',
+      credits: 'Credits',
+      sponsor: 'Sponsor me',
+      privacyHref: '/privacy-policy/',
+      termsHref: '/terms-of-use/',
+      editorialHref: '/editorial-policy/',
+      creditsHref: '/credits/'
+    },
+    pt: {
+      nav: 'Links sociais e de contato',
+      privacy: 'Política de Privacidade',
+      terms: 'Termos de Uso',
+      editorial: 'Política Editorial',
+      credits: 'Créditos',
+      sponsor: 'Patrocine',
+      privacyHref: '/pt/politica-de-privacidade/',
+      termsHref: '/pt/termos-de-uso/',
+      editorialHref: '/pt/politica-editorial/',
+      creditsHref: '/pt/creditos/'
+    },
+    es: {
+      nav: 'Enlaces sociales y de contacto',
+      privacy: 'Política de Privacidad',
+      terms: 'Términos de Uso',
+      editorial: 'Política Editorial',
+      credits: 'Créditos',
+      sponsor: 'Patrocíname',
+      privacyHref: '/es/politica-de-privacidad/',
+      termsHref: '/es/terminos-de-uso/',
+      editorialHref: '/es/politica-editorial/',
+      creditsHref: '/es/creditos/'
+    }
+  }[locale];
+
+  var footer = document.querySelector('footer.footer-minimal, footer');
+  if (!footer) {
+    footer = document.createElement('footer');
+    document.body.appendChild(footer);
+  }
+
+  footer.classList.add('footer-minimal', 'footer-split', 'footer-projects');
+  footer.setAttribute('data-unified-footer', 'true');
+  footer.innerHTML =
+    '<div class="footer-container">' +
+      '<div class="footer-split-left">' +
+        '<span class="footer-copyright-line">&copy; <span data-current-year></span> Patrick Araujo</span>' +
+        '<span class="footer-legal-inline" aria-label="Legal links">' +
+          '<a class="footer-legal-link" href="' + copy.privacyHref + '">' + copy.privacy + '</a><span aria-hidden="true">/</span>' +
+          '<a class="footer-legal-link" href="' + copy.termsHref + '">' + copy.terms + '</a><span aria-hidden="true">/</span>' +
+          '<a class="footer-legal-link" href="' + copy.editorialHref + '">' + copy.editorial + '</a><span aria-hidden="true">/</span>' +
+          '<a class="footer-legal-link" href="' + copy.creditsHref + '">' + copy.credits + '</a>' +
+        '</span>' +
+      '</div>' +
+      '<span class="footer-split-spacer" aria-hidden="true"></span>' +
+      '<div class="footer-split-right">' +
+        '<nav class="footer-social-icons" aria-label="' + copy.nav + '">' +
+          '<a class="footer-social-icon-link" href="https://github.com/PkLavc" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><span class="footer-social-icon footer-social-icon-github" aria-hidden="true"></span></a>' +
+          '<a class="footer-social-icon-link" href="https://www.linkedin.com/in/pklavc/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><span class="footer-social-icon footer-social-icon-linkedin" aria-hidden="true"></span></a>' +
+          '<a class="footer-social-icon-link" href="mailto:contact@pklavc.com" aria-label="Email"><span class="footer-social-icon footer-social-icon-mail" aria-hidden="true"></span></a>' +
+          '<a class="footer-social-icon-link" href="https://github.com/sponsors/PkLavc" target="_blank" rel="noopener noreferrer" aria-label="' + copy.sponsor + '"><span class="footer-social-icon footer-social-icon-heart" aria-hidden="true"></span></a>' +
+        '</nav>' +
+      '</div>' +
+    '</div>';
+
+  footer.querySelectorAll('[data-current-year]').forEach(function(node) {
+    node.textContent = String(new Date().getFullYear());
+  });
+}
+
 function syncIndexSocialFooterOffset() {
   if (!document.body || !document.body.classList.contains('page-index')) {
     return;
@@ -1199,12 +1286,14 @@ function initIndexFooterAwareSocialLinks() {
 }
 
 if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', normalizeUnifiedFooter, { once: true });
   document.addEventListener('DOMContentLoaded', initSpaceReveals, { once: true });
   document.addEventListener('DOMContentLoaded', ensureLottiePlayerAssets, { once: true });
   document.addEventListener('DOMContentLoaded', loadSkyletWidgetAssets, { once: true });
   document.addEventListener('DOMContentLoaded', loadSpotlightNavigationAssets, { once: true });
   document.addEventListener('DOMContentLoaded', initIndexFooterAwareSocialLinks, { once: true });
 } else {
+  normalizeUnifiedFooter();
   initSpaceReveals();
   ensureLottiePlayerAssets();
   loadSkyletWidgetAssets();
