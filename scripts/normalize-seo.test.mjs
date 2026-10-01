@@ -24,20 +24,20 @@ test("profile pages resolve to the same Patrick identity", () => {
   }
 });
 
-test("the main repository delegates the blog to the private AWS deployment", () => {
+test("the main repository delegates the blog to AWS and keeps only localized redirect aliases", () => {
   for (const relative of [
     "scripts/blog_automation",
     "js/blog-related-posts.js",
     "css/blog.css",
     "blog/index.html",
-    "pt/blog/index.html",
-    "es/blog/index.html",
     "blog/feed.xml",
     "blog/sitemap.xml",
     "blog/posts.json"
   ]) {
     assert.equal(fs.existsSync(path.join(ROOT, relative)), false, `${relative} must remain absent from GitHub Pages`);
   }
+  assert.match(read("pt/blog/index.html"), /https:\/\/pklavc\.com\/blog\/pt\//);
+  assert.match(read("es/blog/index.html"), /https:\/\/pklavc\.com\/blog\/es\//);
 });
 
 test("root sitemap delegates blog discovery to the AWS-hosted blog sitemap", () => {
