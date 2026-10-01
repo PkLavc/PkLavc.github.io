@@ -306,11 +306,13 @@
     }, seconds * 1000);
   }
 
-  function placementAd(placement, geo) {
+  function placementAd(placement, geo, startIndex) {
     var selection = placementSelection(placement, geo);
     if (!selection || !selection.ids.length) return null;
+    var offset = Math.max(0, Number(startIndex) || 0) % selection.ids.length;
     for (var i = 0; i < selection.ids.length; i += 1) {
-      var ad = createAd(selection.ids[i], placement, geo);
+      var campaignId = selection.ids[(offset + i) % selection.ids.length];
+      var ad = createAd(campaignId, placement, geo);
       if (ad) return { ad: ad, selection: selection };
     }
     return null;
@@ -373,47 +375,82 @@
   function placeStoreAds(geo) {
     var grid = document.querySelector('[data-store-grid]');
     var filters = document.querySelector('.filter-sidebar');
-    var footer = document.querySelector('.store-footer, footer');
-    if (!grid || document.body.dataset.storeAdsReady === 'true') return;
+    var results = grid && grid.closest('.store-results');
+    if (!grid || !results || document.body.dataset.storeAdsReady === 'true') return;
 
-    var side = placementAd('store-sidebar', geo);
-    var bottom = placementAd('store-bottom', geo);
     var column = ensureStoreSidebarColumn(filters);
-
-    if (side && column) {
-      column.appendChild(side.ad);
-      rotatePlacement(side, 'store-sidebar', geo);
+    var sidebarAds = null;
+    if (column) {
+      sidebarAds = document.createElement('div');
+      sidebarAds.className = 'store-sidebar-ads';
+      column.appendChild(sidebarAds);
     }
+
+    // Bottom advertising belongs to the results column, not the whole page.
+    var bottom = placementAd('store-bottom', geo, 2);
     if (bottom) {
-      if (footer) footer.insertAdjacentElement('beforebegin', bottom.ad);
-      else grid.closest('main').insertAdjacentElement('afterend', bottom.ad);
+      results.appendChild(bottom.ad);
       rotatePlacement(bottom, 'store-bottom', geo);
     }
 
-    var refreshTimer = 0;
+    var sidebarTimer = 0;
+    function refreshSidebarAds() {
+      sidebarTimer = 0;
+      if (!sidebarAds || !column || !filters || !results) return;
+
+      var resultsHeight = Math.max(results.scrollHeight, results.getBoundingClientRect().height);
+      var filtersHeight = filters.getBoundingClientRect().height;
+      var available = Math.max(0, Math.floor(resultsHeight - filtersHeight - 18));
+
+      sidebarAds.style.minHeight = available + 'px';
+      sidebarAds.style.height = available + 'px';
+
+      var desired = available >= 120 ? Math.max(1, Math.floor((available + 18) / 300)) : 0;
+      desired = Math.min(desired, 12);
+
+      if (sidebarAds.childElementCount === desired) return;
+      sidebarAds.replaceChildren();
+
+      for (var slot = 0; slot < desired; slot += 1) {
+        var item = placementAd('store-sidebar', geo, slot);
+        if (!item) continue;
+        sidebarAds.appendChild(item.ad);
+        rotatePlacement(item, 'store-sidebar', geo);
+      }
+    }
+
+    var rowTimer = 0;
     function refreshRowAds() {
-      refreshTimer = 0;
+      rowTimer = 0;
       grid.querySelectorAll('.pklavc-ad--store-rows').forEach(function (ad) { ad.remove(); });
       var selection = placementSelection('store-rows', geo);
-      if (!selection || !selection.ids.length) return;
+      if (!selection || !selection.ids.length) {
+        refreshSidebarAds();
+        return;
+      }
 
       var visibleCards = Array.prototype.filter.call(grid.querySelectorAll('.store-card'), function (card) {
         return !card.classList.contains('is-filtered-out') && !card.hidden;
       });
       var columns = actualStoreColumns(grid);
       var interval = Math.max(1, selection.everyRows * columns);
+      var adIndex = 0;
 
       for (var index = interval; index < visibleCards.length; index += interval) {
-        var rowAd = placementAd('store-rows', geo);
+        var rowAd = placementAd('store-rows', geo, adIndex++);
         if (!rowAd) continue;
         visibleCards[index - 1].insertAdjacentElement('afterend', rowAd.ad);
         rotatePlacement(rowAd, 'store-rows', geo);
       }
+
+      requestAnimationFrame(refreshSidebarAds);
     }
 
-    function scheduleRowAds() {
-      if (refreshTimer) clearTimeout(refreshTimer);
-      refreshTimer = setTimeout(refreshRowAds, 0);
+    function scheduleStoreAds() {
+      if (rowTimer) clearTimeout(rowTimer);
+      if (sidebarTimer) clearTimeout(sidebarTimer);
+      rowTimer = setTimeout(refreshRowAds, 30);
+      sidebarTimer = setTimeout(refreshSidebarAds, 80);
     }
 
     ['input', 'change', 'click'].forEach(function (eventName) {
@@ -421,12 +458,23 @@
         var target = event.target;
         if (!target || !target.closest) return;
         if (target.closest('[data-store-search], [data-currency], [data-min-price], [data-max-price], [data-filter-key], [data-in-stock], [data-clear-filters], [data-sort], [data-columns]')) {
-          scheduleRowAds();
+          scheduleStoreAds();
         }
       });
     });
-    window.addEventListener('resize', scheduleRowAds, { passive: true });
+
+    window.addEventListener('resize', scheduleStoreAds, { passive: true });
+    window.addEventListener('load', scheduleStoreAds, { once: true });
+
+    if ('ResizeObserver' in window) {
+      var resizeObserver = new ResizeObserver(scheduleStoreAds);
+      resizeObserver.observe(results);
+      if (filters) resizeObserver.observe(filters);
+    }
+
     refreshRowAds();
+    requestAnimationFrame(refreshSidebarAds);
+    setTimeout(refreshSidebarAds, 350);
     document.body.dataset.storeAdsReady = 'true';
   }
 
