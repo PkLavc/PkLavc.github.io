@@ -3,7 +3,7 @@
 
   // Shared advertising configuration for blog articles and Store.
   // Rules can still be overridden by language, country or region.
-  var rotationSeconds = 8;
+  var rotationSeconds = 5;
   var campaigns = ['pklavc_blog', 'macca_blog', 'pklavc_store', 'pklavc_projects'];
 
   function rotatingPlacement(extra) {
