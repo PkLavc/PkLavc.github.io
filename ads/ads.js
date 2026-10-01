@@ -118,7 +118,14 @@
 
   function imageAd(campaign, placement) {
     var creative = campaign.locales && campaign.locales[locale];
-    var copy = creative && creative[placement];
+    var fallbackPlacements = {
+      'project-sidebar': 'sidebar',
+      'project-bottom': 'bottom',
+      'store-sidebar': 'sidebar',
+      'store-rows': 'inline',
+      'store-bottom': 'bottom'
+    };
+    var copy = creative && (creative[placement] || creative[fallbackPlacements[placement]]);
     if (!creative || !copy) return null;
     var imageUrl = safeUrl(creative.image);
     var destination = safeUrl(copy.href);
