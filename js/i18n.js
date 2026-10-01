@@ -100,6 +100,7 @@
       projects: 'PROJECTS',
       visitors: 'VISIT MAP',
       blog: 'BLOG',
+      store: 'STORE',
       navigation: 'Primary navigation',
       languageSettings: 'Language settings'
     },
@@ -109,6 +110,7 @@
       projects: 'PROJETOS',
       visitors: 'MAPA DE VISITAS',
       blog: 'BLOG',
+      store: 'LOJA',
       navigation: 'Navega\u00e7\u00e3o principal',
       languageSettings: 'Configura\u00e7\u00f5es de idioma'
     },
@@ -118,6 +120,7 @@
       projects: 'PROYECTOS',
       visitors: 'MAPA DE VISITAS',
       blog: 'BLOG',
+      store: 'TIENDA',
       navigation: 'Navegaci\u00f3n principal',
       languageSettings: 'Configuraci\u00f3n de idioma'
     }
@@ -173,6 +176,7 @@
   function getLanguageFromPath(path) {
     var segments = splitPath(path);
     if (segments[0] === 'blog' && (segments[1] === 'pt' || segments[1] === 'es')) return segments[1];
+    if (segments[0] === 'store' && (segments[1] === 'pt' || segments[1] === 'es')) return segments[1];
     var firstSegment = segments[0];
     return LOCALE_PREFIXES[firstSegment] ? firstSegment : 'en';
   }
@@ -184,6 +188,10 @@
   function getEnglishRoute(path) {
     var segments = splitPath(path);
     if (segments[0] === 'blog' && (segments[1] === 'pt' || segments[1] === 'es')) {
+      segments.splice(1, 1);
+      return '/' + segments.join('/') + '/';
+    }
+    if (segments[0] === 'store' && (segments[1] === 'pt' || segments[1] === 'es')) {
       segments.splice(1, 1);
       return '/' + segments.join('/') + '/';
     }
@@ -217,6 +225,9 @@
     if (segments[0] === 'blog' && (locale === 'pt' || locale === 'es')) {
       return '/blog/' + locale + (segments.length > 1 ? '/' + segments.slice(1).join('/') : '') + '/';
     }
+    if (segments[0] === 'store') {
+      return locale === 'en' ? '/store/' : '/store/' + locale + '/';
+    }
 
     // Skylet uses the same final /ia slug in every localized route.
     if (route === '/ia/') {
@@ -245,6 +256,9 @@
     var route = getEnglishRoute(englishRoute);
     if (route === '/blog/' || route.indexOf('/blog/') === 0) {
       return locale === 'en' ? '/blog/' : '/blog/' + locale + '/';
+    }
+    if (route === '/store/' || route.indexOf('/store/') === 0) {
+      return locale === 'en' ? '/store/' : '/store/' + locale + '/';
     }
     return locale === 'en' ? '/' : '/' + locale + '/';
   }
@@ -465,6 +479,10 @@
 
     document.querySelectorAll('#blog-link').forEach(function(link) {
       setNavigationLink(link, labels.blog, getLocalizedRoute('/blog/', locale));
+    });
+
+    document.querySelectorAll('#store-link').forEach(function(link) {
+      setNavigationLink(link, labels.store, getLocalizedRoute('/store/', locale));
     });
 
   }
