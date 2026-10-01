@@ -2,6 +2,11 @@
 <html lang="pt-BR">
 <head>
   <!-- Local assets are content-hashed at build time. -->
+  <script>
+    if (window.location.hostname === "pklavc.github.io") {
+      window.location.replace("https://pklavc.com" + window.location.pathname + window.location.search + window.location.hash);
+    }
+  </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="author" content="PkLavc">
@@ -25,16 +30,14 @@
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Monoton&family=Poppins:wght@500&family=Raleway:wght@300&display=optional"></noscript>
   <link rel="stylesheet" href="/store/assets/css/global.css?v=8beda9ee19">
   <link rel="stylesheet" href="/store/assets/store.css?v=1902c3e64c">
+  <style>
+    .store-grid{display:grid!important}
+    .store-grid>.store-card:not(.is-filtered-out){display:flex!important;visibility:visible!important;opacity:1!important}
+  </style>
 </head>
 <body class="seo-layout ready">
   <div id="all">
-    <header class="store-site-header"><a class="store-wordmark" href="#store-products">PKLAVC<span>STORE</span></a><input class="store-search" type="search" placeholder="Buscar produtos" aria-label="Buscar produtos" data-store-search><div id="navigation-bar">
-                <div class="menubar">
-                    <span class="first-span"></span>
-                    <span class="second-span"></span>
-                    <span class="third-span"></span>
-                </div>
-            </div></header><div id="navigation-content" role="navigation" aria-label="Navegação primária"><div class="logo"></div><div class="navigation-links"><a href="/pt/" data-text="INÍCIO" id="home-link">INÍCIO</a><a href="/pt/sobre/" data-text="SOBRE" id="about-link">SOBRE</a><a href="/store/pt/" data-text="LOJA" id="store-link">LOJA</a></div><button type="button" class="navigation-language-toggle" aria-label="Configurações de idioma" title="Configurações de idioma" aria-pressed="false"><svg class="navigation-language-gear-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-1.7 2.94-.09-.02a1.7 1.7 0 0 0-1.74.65l-.05.08h-3.4l-.03-.09a1.7 1.7 0 0 0-1.4-1.15l-.1-.01-1.7-2.94.07-.07A1.7 1.7 0 0 0 10 14.4l-.09-.03v-3.4l.09-.03a1.7 1.7 0 0 0 1.15-1.4l.01-.1 2.94-1.7.07.07a1.7 1.7 0 0 0 1.88.34l.06-.06 2.94 1.7-.02.09a1.7 1.7 0 0 0 .65 1.74l.08.05v3.4l-.09.03A1.7 1.7 0 0 0 19.4 15Z" transform="translate(-3 -3)"></path></svg></button><a class="adm-navigation-link" href="/adm/">Admin</a><div class="navigation-language-options" aria-label="Configurações de idioma"><a href="/store/" lang="en" data-text="English" class="">English</a><a href="/store/es/" lang="es" data-text="Español" class="">Español</a><a href="/store/pt/" lang="pt" data-text="Português" class="is-current-language">Português</a></div></div>
+    <header class="store-site-header"><a class="store-wordmark" href="#store-products">PKLAVC<span>STORE</span></a><input class="store-search" type="search" placeholder="Buscar produtos" aria-label="Buscar produtos" data-store-search></header><div id="navigation-content" role="navigation" aria-label="Navegação primária"><div class="logo"></div><div class="navigation-links"><a href="/pt/" data-text="INÍCIO" id="home-link">INÍCIO</a><a href="/pt/sobre/" data-text="SOBRE" id="about-link">SOBRE</a><a href="/pt/projetos/" data-text="PROJETOS" id="projects-link">PROJETOS</a><a href="/store/pt/" data-text="LOJA" id="store-link">LOJA</a></div></div><div id="navigation-bar"><div class="menubar"><span class="first-span"></span><span class="second-span"></span><span class="third-span"></span></div></div>
     <main class="store-main">
       <div class="catalog-layout">
         <aside class="filter-sidebar" aria-label="Categoria">
