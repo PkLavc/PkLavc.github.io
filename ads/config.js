@@ -78,6 +78,7 @@
 
       pklavc_blog: {
         type: 'image',
+        style: 'pklavc-blog',
         locales: {
           en: {
             image: '/ads/banners/blog-en.svg',
@@ -139,6 +140,7 @@
 
       pklavc_store: {
         type: 'image',
+        style: 'pklavc-store',
         locales: {
           en: {
             image: '/ads/banners/store-en.svg',
@@ -169,6 +171,7 @@
 
       pklavc_projects: {
         type: 'image',
+        style: 'pklavc-projects',
         locales: {
           en: {
             image: '/ads/banners/projects-en.svg',

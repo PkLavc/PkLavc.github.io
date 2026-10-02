@@ -196,6 +196,84 @@
     return shell;
   }
 
+  function pklavcShowcaseVisual(style) {
+    if (style === 'pklavc-store') {
+      return '<span class="pklavc-showcase__scene pklavc-store-scene">' +
+        '<span class="pklavc-store-scene__halo"></span>' +
+        '<span class="pklavc-store-scene__laptop"><i></i><b>PK</b></span>' +
+        '<span class="pklavc-store-scene__bag"><i></i><b>STORE</b></span>' +
+        '<span class="pklavc-store-scene__headset"><i></i></span>' +
+        '<span class="pklavc-store-scene__controller"><i></i><i></i><i></i><i></i></span>' +
+        '<span class="pklavc-showcase__spark pklavc-showcase__spark--one"></span>' +
+        '<span class="pklavc-showcase__spark pklavc-showcase__spark--two"></span>' +
+      '</span>';
+    }
+    if (style === 'pklavc-projects') {
+      return '<span class="pklavc-showcase__scene pklavc-projects-scene">' +
+        '<span class="pklavc-projects-scene__grid"></span>' +
+        '<span class="pklavc-projects-scene__window">' +
+          '<span class="pklavc-projects-scene__bar"><i></i><i></i><i></i></span>' +
+          '<span class="pklavc-projects-scene__node pklavc-projects-scene__node--api"><b>API</b><i></i></span>' +
+          '<span class="pklavc-projects-scene__node pklavc-projects-scene__node--ai"><b>AI</b><i></i></span>' +
+          '<span class="pklavc-projects-scene__node pklavc-projects-scene__node--cloud"><b>☁</b><i></i></span>' +
+          '<span class="pklavc-projects-scene__route pklavc-projects-scene__route--one"></span>' +
+          '<span class="pklavc-projects-scene__route pklavc-projects-scene__route--two"></span>' +
+        '</span>' +
+        '<span class="pklavc-projects-scene__bracket">{ }</span>' +
+      '</span>';
+    }
+    return '<span class="pklavc-showcase__scene pklavc-blog-scene">' +
+      '<span class="pklavc-blog-scene__orbit"></span>' +
+      '<span class="pklavc-blog-scene__page">' +
+        '<span class="pklavc-blog-scene__bar"><i></i><i></i><i></i></span>' +
+        '<span class="pklavc-blog-scene__kicker">PKLAVC / BLOG</span>' +
+        '<span class="pklavc-blog-scene__title"></span>' +
+        '<span class="pklavc-blog-scene__line pklavc-blog-scene__line--one"></span>' +
+        '<span class="pklavc-blog-scene__line pklavc-blog-scene__line--two"></span>' +
+        '<span class="pklavc-blog-scene__line pklavc-blog-scene__line--three"></span>' +
+        '<span class="pklavc-blog-scene__code">&lt;/&gt;</span>' +
+      '</span>' +
+      '<span class="pklavc-blog-scene__pen"></span>' +
+      '<span class="pklavc-blog-scene__chip">AI</span>' +
+    '</span>';
+  }
+
+  function pklavcShowcaseAd(campaign, placement, creative, copy, destination) {
+    var style = campaign.style;
+    var shell = createShell(placement, campaign);
+    var link = document.createElement('a');
+    link.className = 'pklavc-ad__link pklavc-showcase';
+    link.href = destination;
+    if (new URL(destination).origin !== window.location.origin) {
+      link.target = '_blank';
+      link.rel = 'sponsored noopener noreferrer';
+    }
+
+    var eyebrow = {
+      'pklavc-blog': { en: 'ENGINEERING NOTES', pt: 'NOTAS DE ENGENHARIA', es: 'NOTAS DE INGENIERÍA' },
+      'pklavc-store': { en: 'CURATED GEAR', pt: 'SELEÇÃO PKLAVC', es: 'SELECCIÓN PKLAVC' },
+      'pklavc-projects': { en: 'BUILT IN PRACTICE', pt: 'FEITO NA PRÁTICA', es: 'HECHO EN LA PRÁCTICA' }
+    }[style][locale];
+
+    var creativeRoot = document.createElement('span');
+    creativeRoot.className = 'pklavc-showcase__creative';
+    creativeRoot.innerHTML =
+      '<span class="pklavc-showcase__copy">' +
+        '<span class="pklavc-showcase__eyebrow"></span>' +
+        '<strong class="pklavc-showcase__headline"></strong>' +
+        '<span class="pklavc-showcase__body"></span>' +
+        '<span class="pklavc-showcase__cta"><span></span><i aria-hidden="true">→</i></span>' +
+      '</span>' +
+      '<span class="pklavc-showcase__visual" aria-hidden="true">' + pklavcShowcaseVisual(style) + '</span>';
+    creativeRoot.querySelector('.pklavc-showcase__eyebrow').textContent = eyebrow;
+    creativeRoot.querySelector('.pklavc-showcase__headline').textContent = copy.title;
+    creativeRoot.querySelector('.pklavc-showcase__body').textContent = copy.body;
+    creativeRoot.querySelector('.pklavc-showcase__cta span').textContent = copy.cta;
+    link.appendChild(creativeRoot);
+    shell.appendChild(link);
+    return shell;
+  }
+
   function imageAd(campaign, placement) {
     var creative = campaign.locales && campaign.locales[locale];
     var fallbackPlacements = {
@@ -212,6 +290,9 @@
 
     if (campaign.style === 'prime-video') {
       return primeVideoAd(campaign, placement, creative, copy, destination);
+    }
+    if (campaign.style === 'pklavc-blog' || campaign.style === 'pklavc-store' || campaign.style === 'pklavc-projects') {
+      return pklavcShowcaseAd(campaign, placement, creative, copy, destination);
     }
 
     var imageUrl = safeUrl(creative.image);
@@ -343,6 +424,7 @@
   function preloadImage(ad) {
     return new Promise(function (resolve) {
       var nextImage = ad.querySelector('img');
+      if (!nextImage) { resolve(true); return; }
       var preload = new Image();
       var timer = setTimeout(function () { finish(false); }, 8000);
       function finish(loaded) {
