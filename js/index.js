@@ -1379,7 +1379,7 @@ if (document.readyState === 'loading') {
     var style = document.createElement('link');
     style.id = 'pklavc-ads-style';
     style.rel = 'stylesheet';
-    style.href = '/ads/ads.css?v=c2ce1366a0';
+    style.href = '/ads/ads.css?v=20261002prime1';
     document.head.appendChild(style);
   }
 
@@ -1405,7 +1405,7 @@ if (document.readyState === 'loading') {
 
   var config = document.createElement('script');
   config.id = 'pklavc-ads-config';
-  config.src = '/ads/config.js?v=283b160aa6';
+  config.src = '/ads/config.js?v=20261002prime1';
   config.async = true;
   config.addEventListener('load', loadRuntime, { once: true });
   document.head.appendChild(config);
