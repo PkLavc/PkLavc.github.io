@@ -329,6 +329,10 @@
     var maxOffset = Math.max(0, viewportHeight - 140);
 
     root.style.setProperty("--skylet-footer-offset", Math.min(offset, maxOffset) + "px");
+
+    if (!isMobile && footerTop < viewportHeight && footer.getBoundingClientRect().bottom > 0) {
+      scheduleFooterClearance();
+    }
   }
 
   function scheduleFooterClearance() {
@@ -343,6 +347,7 @@
     syncFooterClearance();
     window.addEventListener("scroll", scheduleFooterClearance, { passive: true });
     window.addEventListener("resize", scheduleFooterClearance, { passive: true });
+    window.addEventListener("orientationchange", scheduleFooterClearance, { passive: true });
 
     if (window.visualViewport) {
       window.visualViewport.addEventListener("resize", scheduleFooterClearance, { passive: true });
@@ -353,6 +358,27 @@
     if (footer && "ResizeObserver" in window) {
       var footerObserver = new ResizeObserver(scheduleFooterClearance);
       footerObserver.observe(footer);
+    }
+
+    if (footer && "IntersectionObserver" in window) {
+      var footerIntersectionObserver = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.target === footer) {
+            scheduleFooterClearance();
+          }
+        });
+      }, { threshold: [0, 0.01, 0.25, 0.5, 1] });
+      footerIntersectionObserver.observe(footer);
+    }
+
+    if ("ResizeObserver" in window && document.documentElement) {
+      var pageObserver = new ResizeObserver(scheduleFooterClearance);
+      pageObserver.observe(document.documentElement);
+    }
+
+    if ("MutationObserver" in window && document.body) {
+      var bodyObserver = new MutationObserver(scheduleFooterClearance);
+      bodyObserver.observe(document.body, { childList: true, subtree: true });
     }
   }
 
