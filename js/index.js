@@ -1302,7 +1302,7 @@ function normalizeUnifiedFooter() {
           '<a class="footer-social-icon-link" href="https://www.instagram.com/pklavc/" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><lottie-player src="/images/lottie/instagram-pklavc-blue-20261002.json" background="transparent" speed="1" loop autoplay class="footer-social-lottie" aria-hidden="true"></lottie-player></a>' +
           '<a class="footer-social-icon-link" href="https://www.youtube.com/@PkLavc" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><lottie-player src="/images/lottie/youtube-pklavc-blue-20261002.json" background="transparent" speed="1" loop autoplay class="footer-social-lottie" aria-hidden="true"></lottie-player></a>' +
           '<a class="footer-social-icon-link" href="mailto:contact@pklavc.com" aria-label="Email"><lottie-player src="/images/lottie/mail.json?v=895f6ab30e" background="transparent" speed="1" loop autoplay class="footer-social-lottie" aria-hidden="true"></lottie-player></a>' +
-          '<a class="footer-social-icon-link" href="https://github.com/sponsors/PkLavc" target="_blank" rel="noopener noreferrer" aria-label="' + copy.sponsor + '"><span class="footer-social-icon footer-social-icon-heart" aria-hidden="true"></span></a>' +
+          '<a class="footer-social-icon-link" href="https://github.com/sponsors/PkLavc" target="_blank" rel="noopener noreferrer" aria-label="' + copy.sponsor + '"><lottie-player src="/images/lottie/sponsor-pklavc-blue-20261002.json" background="transparent" speed="1" loop autoplay class="footer-social-lottie" aria-hidden="true"></lottie-player></a>' +
         '</nav>' +
       '</div>' +
     '</div>';
