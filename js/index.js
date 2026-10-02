@@ -1128,7 +1128,7 @@ function loadSkyletWidgetAssets() {
   if (!document.getElementById('skylet-widget-script')) {
     var script = document.createElement('script');
     script.id = 'skylet-widget-script';
-    script.src = '/js/skylet-widget.js?v=20261001footer2';
+    script.src = '/js/skylet-widget.js?v=20261001desktop3';
     script.defer = true;
     document.body.appendChild(script);
   }
