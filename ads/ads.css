@@ -493,13 +493,15 @@
   display: inline-flex;
   align-items: center;
   gap: 9px;
+  max-width: 100%;
   color: var(--showcase-accent);
-  font: 800 clamp(.65rem, 1vw, .78rem)/1 Inter, system-ui, sans-serif;
+  font: 800 clamp(.65rem, 1vw, .78rem)/1.3 Inter, system-ui, sans-serif;
   letter-spacing: .17em;
-  white-space: nowrap;
+  white-space: normal;
 }
 
 .pklavc-showcase__eyebrow::before {
+  flex: 0 0 24px;
   width: 24px;
   height: 2px;
   border-radius: 2px;
@@ -991,6 +993,13 @@
 .pklavc-ad--sidebar .pklavc-showcase__body,
 .pklavc-ad--store-sidebar .pklavc-showcase__body {
   font-size: .78rem;
+}
+
+.pklavc-ad--sidebar.pklavc-ad--style-pklavc-blog .pklavc-showcase__eyebrow,
+.pklavc-ad--store-sidebar.pklavc-ad--style-pklavc-blog .pklavc-showcase__eyebrow {
+  align-items: flex-start;
+  font-size: .6rem;
+  letter-spacing: .12em;
 }
 
 .pklavc-ad--sidebar .pklavc-showcase__visual,
