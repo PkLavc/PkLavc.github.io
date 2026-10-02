@@ -21,15 +21,61 @@
     geoEndpoint: 'https://api.pklavc.com/ads/geo',
     geoTimeoutMs: 1500,
     placements: {
-      sidebar: rotatingPlacement(),
-      inline: rotatingPlacement(),
+      // Blog: Prime Video is fixed in-article and always appears first in the desktop sidebar.
+      sidebar: rotatingPlacement({
+        default: ['amazon_prime_video', 'pklavc_blog', 'macca_blog', 'pklavc_store', 'pklavc_projects']
+      }),
+      inline: rotatingPlacement({
+        default: 'amazon_prime_video',
+        rotateEverySeconds: 0
+      }),
       bottom: rotatingPlacement(),
       mobile: rotatingPlacement(),
+
+      // Store: Prime Video is fixed between product rows and in the final ad slot.
       'store-sidebar': rotatingPlacement(),
-      'store-rows': rotatingPlacement({ everyRows: 10 }),
-      'store-bottom': rotatingPlacement()
+      'store-rows': rotatingPlacement({
+        default: 'amazon_prime_video',
+        everyRows: 10,
+        rotateEverySeconds: 0
+      }),
+      'store-bottom': rotatingPlacement({
+        default: 'amazon_prime_video',
+        rotateEverySeconds: 0
+      })
     },
     campaigns: {
+      amazon_prime_video: {
+        type: 'image',
+        style: 'prime-video',
+        locales: {
+          en: {
+            image: '/ads/banners/prime-video-en.svg',
+            imageAlt: 'Prime Video 30-day free trial for eligible new subscribers',
+            sidebar: { title: '30 days free with Prime Video', body: 'For eligible new subscribers. Terms apply.', cta: 'Start free trial', href: 'https://kdbov.com/g/6osk6x1ky42fa9b296a4ce4f0d0bb0/' },
+            inline: { title: 'Try Prime Video free for 30 days', body: 'For eligible new subscribers. Terms apply.', cta: 'Start free trial', href: 'https://kdbov.com/g/6osk6x1ky42fa9b296a4ce4f0d0bb0/' },
+            bottom: { title: '30 days free with Prime Video', body: 'For eligible new subscribers. Terms apply.', cta: 'Start free trial', href: 'https://kdbov.com/g/6osk6x1ky42fa9b296a4ce4f0d0bb0/' },
+            mobile: { title: 'Prime Video — 30 days free', body: 'Eligible new subscribers. Terms apply.', cta: 'Try free', href: 'https://kdbov.com/g/6osk6x1ky42fa9b296a4ce4f0d0bb0/' }
+          },
+          pt: {
+            image: '/ads/banners/prime-video-pt.svg',
+            imageAlt: 'Prime Video com teste grátis de 30 dias para novos assinantes elegíveis',
+            sidebar: { title: '30 dias grátis de Prime Video', body: 'Para novos assinantes elegíveis. Termos se aplicam.', cta: 'Experimentar grátis', href: 'https://kdbov.com/g/6osk6x1ky42fa9b296a4ce4f0d0bb0/' },
+            inline: { title: 'Experimente Prime Video grátis por 30 dias', body: 'Para novos assinantes elegíveis. Termos se aplicam.', cta: 'Experimentar grátis', href: 'https://kdbov.com/g/6osk6x1ky42fa9b296a4ce4f0d0bb0/' },
+            bottom: { title: '30 dias grátis de Prime Video', body: 'Para novos assinantes elegíveis. Termos se aplicam.', cta: 'Experimentar grátis', href: 'https://kdbov.com/g/6osk6x1ky42fa9b296a4ce4f0d0bb0/' },
+            mobile: { title: 'Prime Video — 30 dias grátis', body: 'Novos assinantes elegíveis. Termos se aplicam.', cta: 'Testar grátis', href: 'https://kdbov.com/g/6osk6x1ky42fa9b296a4ce4f0d0bb0/' }
+          },
+          es: {
+            image: '/ads/banners/prime-video-es.svg',
+            imageAlt: 'Prime Video con prueba gratis de 30 días para nuevos suscriptores elegibles',
+            sidebar: { title: '30 días gratis de Prime Video', body: 'Para nuevos suscriptores elegibles. Se aplican términos.', cta: 'Probar gratis', href: 'https://kdbov.com/g/6osk6x1ky42fa9b296a4ce4f0d0bb0/' },
+            inline: { title: 'Prueba Prime Video gratis durante 30 días', body: 'Para nuevos suscriptores elegibles. Se aplican términos.', cta: 'Probar gratis', href: 'https://kdbov.com/g/6osk6x1ky42fa9b296a4ce4f0d0bb0/' },
+            bottom: { title: '30 días gratis de Prime Video', body: 'Para nuevos suscriptores elegibles. Se aplican términos.', cta: 'Probar gratis', href: 'https://kdbov.com/g/6osk6x1ky42fa9b296a4ce4f0d0bb0/' },
+            mobile: { title: 'Prime Video — 30 días gratis', body: 'Nuevos suscriptores elegibles. Se aplican términos.', cta: 'Probar gratis', href: 'https://kdbov.com/g/6osk6x1ky42fa9b296a4ce4f0d0bb0/' }
+          }
+        }
+      },
+
       pklavc_blog: {
         type: 'image',
         locales: {
