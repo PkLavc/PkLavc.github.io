@@ -1169,6 +1169,52 @@ function isStoreRoute() {
   return /^\/(?:pt\/|es\/)?store(?:\/|$)/i.test(path) || /^\/store(?:\/(?:pt|es))?(?:\/|$)/i.test(path);
 }
 
+function ensureAboutSocialContacts() {
+  var path = String(window.location.pathname || '/');
+  var isAbout = path === '/about/' || path === '/about/index.html' ||
+    path === '/pt/sobre/' || path === '/pt/sobre/index.html' ||
+    path === '/es/sobre/' || path === '/es/sobre/index.html';
+  if (!isAbout) {
+    return;
+  }
+
+  var grid = document.querySelector('.contact-inquiries-section .contact-grid');
+  if (!grid) {
+    return;
+  }
+
+  var locale = path.indexOf('/pt/') === 0 ? 'pt' : (path.indexOf('/es/') === 0 ? 'es' : 'en');
+  var copy = {
+    en: { button: 'Copy', title: 'Copy to clipboard', yt: 'Copy YouTube channel URL to clipboard', ig: 'Copy Instagram profile URL to clipboard' },
+    pt: { button: 'Copiar', title: 'Copiar para a área de transferência', yt: 'Copiar URL do canal do YouTube para a área de transferência', ig: 'Copiar URL do perfil do Instagram para a área de transferência' },
+    es: { button: 'Copiar', title: 'Copiar al portapapeles', yt: 'Copiar la URL del canal de YouTube al portapapeles', ig: 'Copiar la URL del perfil de Instagram al portapapeles' }
+  }[locale];
+
+  function appendContact(id, href, label, animation, aria) {
+    if (grid.querySelector('[data-social-contact="' + id + '"]') || grid.querySelector('[data-href="' + href + '"]')) {
+      return;
+    }
+
+    var item = document.createElement('div');
+    item.className = 'contact-item';
+    item.setAttribute('data-social-contact', id);
+    item.innerHTML =
+      '<a href="' + href + '" target="_blank" rel="noopener noreferrer">' +
+        '<lottie-player src="' + animation + '" background="transparent" speed="1" class="contact-item-icon" loop autoplay aria-hidden="true"></lottie-player>' +
+      '</a>' +
+      '<span class="contact-value" data-href="' + href + '">' + label + '</span>' +
+      '<button class="copy-btn" type="button" data-copy="' + href + '" title="' + copy.title + '" aria-label="' + aria + '">' +
+        '<lottie-player src="/images/lottie/copy.json?v=a7cf92b17b" background="transparent" speed="0.55" class="copy-btn-icon" loop autoplay aria-hidden="true"></lottie-player>' +
+        '<span>' + copy.button + '</span>' +
+      '</button>';
+
+    grid.appendChild(item);
+  }
+
+  appendContact('youtube', 'https://www.youtube.com/@PkLavc', '@PkLavc', '/images/lottie/youtube-pklavc-20261002.json', copy.yt);
+  appendContact('instagram', 'https://www.instagram.com/pklavc/', '@pklavc', '/images/lottie/instagram-pklavc-20261002.json', copy.ig);
+}
+
 function normalizeUnifiedFooter() {
   if (isStoreRoute()) {
     return;
@@ -1240,8 +1286,8 @@ function normalizeUnifiedFooter() {
           '<a class="footer-social-icon-link" href="https://github.com/PkLavc" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><lottie-player src="/images/lottie/github.json?v=50cdc84fd8" background="transparent" speed="1" loop autoplay class="footer-social-lottie" aria-hidden="true"></lottie-player></a>' +
           '<a class="footer-social-icon-link" href="https://www.linkedin.com/in/pklavc/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><lottie-player src="/images/lottie/linkedin.json?v=86d0c9e071" background="transparent" speed="1" loop autoplay class="footer-social-lottie" aria-hidden="true"></lottie-player></a>' +
           '<a class="footer-social-icon-link" href="mailto:contact@pklavc.com" aria-label="Email"><lottie-player src="/images/lottie/mail.json?v=895f6ab30e" background="transparent" speed="1" loop autoplay class="footer-social-lottie" aria-hidden="true"></lottie-player></a>' +
-          '<a class="footer-social-icon-link" href="https://www.youtube.com/@PkLavc" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><lottie-player src="/images/lottie/youtube.json?v=20261002b" background="transparent" speed="1" loop autoplay class="footer-social-lottie" aria-hidden="true"></lottie-player></a>' +
-          '<a class="footer-social-icon-link" href="https://www.instagram.com/pklavc/" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><lottie-player src="/images/lottie/instagram.json?v=20261002b" background="transparent" speed="1" loop autoplay class="footer-social-lottie" aria-hidden="true"></lottie-player></a>' +
+          '<a class="footer-social-icon-link" href="https://www.youtube.com/@PkLavc" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><lottie-player src="/images/lottie/youtube-pklavc-20261002.json" background="transparent" speed="1" loop autoplay class="footer-social-lottie" aria-hidden="true"></lottie-player></a>' +
+          '<a class="footer-social-icon-link" href="https://www.instagram.com/pklavc/" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><lottie-player src="/images/lottie/instagram-pklavc-20261002.json" background="transparent" speed="1" loop autoplay class="footer-social-lottie" aria-hidden="true"></lottie-player></a>' +
           '<a class="footer-social-icon-link" href="https://github.com/sponsors/PkLavc" target="_blank" rel="noopener noreferrer" aria-label="' + copy.sponsor + '"><span class="footer-social-icon footer-social-icon-heart" aria-hidden="true"></span></a>' +
         '</nav>' +
       '</div>' +
@@ -1288,6 +1334,7 @@ function initIndexFooterAwareSocialLinks() {
 }
 
 if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', ensureAboutSocialContacts, { once: true });
   document.addEventListener('DOMContentLoaded', normalizeUnifiedFooter, { once: true });
   document.addEventListener('DOMContentLoaded', initSpaceReveals, { once: true });
   document.addEventListener('DOMContentLoaded', ensureLottiePlayerAssets, { once: true });
@@ -1295,6 +1342,7 @@ if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', loadSpotlightNavigationAssets, { once: true });
   document.addEventListener('DOMContentLoaded', initIndexFooterAwareSocialLinks, { once: true });
 } else {
+  ensureAboutSocialContacts();
   normalizeUnifiedFooter();
   initSpaceReveals();
   ensureLottiePlayerAssets();
