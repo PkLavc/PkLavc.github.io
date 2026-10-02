@@ -1097,7 +1097,7 @@ function loadLottiePlayerAssets(forceReload) {
 
   var script = document.createElement('script');
   script.setAttribute('data-lottie-player-loader', 'true');
-  script.src = 'https://cdn.jsdelivr.net/npm/@lottiefiles/lottie-player@1.5.7/dist/lottie-player.js';
+  script.src = 'https://cdn.jsdelivr.net/npm/@lottiefiles/lottie-player@2.0.12/dist/lottie-player.js';
   script.defer = true;
   document.head.appendChild(script);
 }
