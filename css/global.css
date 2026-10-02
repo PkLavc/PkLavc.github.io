@@ -845,3 +845,19 @@ body.seo-layout .footer-minimal {
 }
 
 /* End of global.css */
+
+
+/* Mobile footer social alignment: keep icons clear of Skylet on the right. */
+@media screen and (max-width: 768px) {
+    .footer-minimal .footer-split-right {
+        width: 100%;
+        align-self: stretch;
+        justify-content: flex-start;
+        text-align: left;
+    }
+
+    .footer-minimal .footer-social-icons {
+        width: 100%;
+        justify-content: flex-start;
+    }
+}
