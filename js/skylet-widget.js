@@ -293,10 +293,15 @@
       return;
     }
 
-    // Store content is populated asynchronously. Its footer can briefly sit inside
-    // the viewport while products/ads are still loading, which made Skylet jump up
-    // and then back down. Store intentionally does not use footer-aware positioning.
-    if (document.body && document.body.hasAttribute("data-store-locale")) {
+    var isMobile = typeof window.matchMedia === "function"
+      ? window.matchMedia("(max-width: 768px)").matches
+      : window.innerWidth <= 768;
+    var isStore = document.body && document.body.hasAttribute("data-store-locale");
+
+    // Store is populated asynchronously. On mobile, keep Skylet fixed above the
+    // bottom navigation so it does not jump while products and ads are loading.
+    // Desktop always uses footer-aware clearance on every page.
+    if (isStore && isMobile) {
       root.style.setProperty("--skylet-footer-offset", "0px");
       return;
     }
@@ -310,7 +315,7 @@
     var footerStyle = window.getComputedStyle ? window.getComputedStyle(footer) : null;
     var reservedBottom = footerStyle ? parseFloat(footerStyle.paddingBottom) || 0 : 0;
     var overlap = Math.max(0, viewportHeight - footerTop - reservedBottom);
-    var allowsPartialOverlap = footer.classList.contains("footer-projects");
+    var allowsPartialOverlap = isMobile && footer.classList.contains("footer-projects");
     var allowedFooterOverlap = allowsPartialOverlap ? 76 : 0;
     var offset = overlap > allowedFooterOverlap
       ? Math.ceil(overlap - allowedFooterOverlap + (allowsPartialOverlap ? 0 : 12))
