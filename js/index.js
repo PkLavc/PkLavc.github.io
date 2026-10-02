@@ -1379,7 +1379,7 @@ if (document.readyState === 'loading') {
     var style = document.createElement('link');
     style.id = 'pklavc-ads-style';
     style.rel = 'stylesheet';
-    style.href = '/ads/ads.css?v=20261002prime3';
+    style.href = '/ads/ads.css?v=20261002prime4';
     document.head.appendChild(style);
   }
 

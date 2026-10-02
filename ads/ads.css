@@ -449,6 +449,14 @@
   isolation: isolate;
 }
 
+/* Blog articles allow emergency breaks, but ad copy must wrap only between words. */
+.pklavc-prime__creative,
+.pklavc-prime__creative * {
+  overflow-wrap: normal;
+  word-break: normal;
+  hyphens: none;
+}
+
 .pklavc-prime__creative::before {
   content: "";
   position: absolute;
@@ -481,6 +489,7 @@
   margin-bottom: 12px;
   font: 800 clamp(1.6rem, 3vw, 2.8rem)/1 Inter, system-ui, sans-serif;
   letter-spacing: -.055em;
+  white-space: nowrap;
 }
 
 .pklavc-prime__logo-prime { color: #00a8e1; }
@@ -519,6 +528,12 @@
   letter-spacing: -.055em;
 }
 
+.pklavc-prime__headline b,
+.pklavc-prime__headline strong {
+  max-width: 100%;
+  white-space: nowrap;
+}
+
 .pklavc-prime__headline b {
   color: #fff;
   font-size: clamp(2.45rem, 5vw, 5.1rem);
@@ -555,6 +570,7 @@
   color: #fff;
   font: 800 clamp(.8rem, 1.25vw, 1rem)/1 Inter, system-ui, sans-serif;
   letter-spacing: .01em;
+  max-width: 100%;
 }
 
 .pklavc-prime__cta-play {
