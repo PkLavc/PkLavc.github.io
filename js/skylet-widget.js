@@ -314,7 +314,13 @@
     var footerTop = footer.getBoundingClientRect().top;
     var footerStyle = window.getComputedStyle ? window.getComputedStyle(footer) : null;
     var reservedBottom = footerStyle ? parseFloat(footerStyle.paddingBottom) || 0 : 0;
-    var overlap = Math.max(0, viewportHeight - footerTop - reservedBottom);
+    var rawFooterOverlap = Math.max(0, viewportHeight - footerTop);
+    // On desktop the whole visible footer is protected, including the area reserved
+    // for the fixed navigation. On mobile that reserved area is ignored so Skylet
+    // can keep the intended partial overlap with the visual footer content.
+    var overlap = isMobile
+      ? Math.max(0, rawFooterOverlap - reservedBottom)
+      : rawFooterOverlap;
     var allowsPartialOverlap = isMobile && footer.classList.contains("footer-projects");
     var allowedFooterOverlap = allowsPartialOverlap ? 76 : 0;
     var offset = overlap > allowedFooterOverlap
