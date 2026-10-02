@@ -497,7 +497,7 @@
   color: var(--showcase-accent);
   font: 800 clamp(.65rem, 1vw, .78rem)/1.3 Inter, system-ui, sans-serif;
   letter-spacing: .17em;
-  white-space: normal;
+  white-space: nowrap;
 }
 
 .pklavc-showcase__eyebrow::before {
@@ -997,9 +997,15 @@
 
 .pklavc-ad--sidebar.pklavc-ad--style-pklavc-blog .pklavc-showcase__eyebrow,
 .pklavc-ad--store-sidebar.pklavc-ad--style-pklavc-blog .pklavc-showcase__eyebrow {
-  align-items: flex-start;
-  font-size: .6rem;
-  letter-spacing: .12em;
+  gap: 6px;
+  font-size: .55rem;
+  letter-spacing: .08em;
+}
+
+.pklavc-ad--sidebar.pklavc-ad--style-pklavc-blog .pklavc-showcase__eyebrow::before,
+.pklavc-ad--store-sidebar.pklavc-ad--style-pklavc-blog .pklavc-showcase__eyebrow::before {
+  flex-basis: 18px;
+  width: 18px;
 }
 
 .pklavc-ad--sidebar .pklavc-showcase__visual,
