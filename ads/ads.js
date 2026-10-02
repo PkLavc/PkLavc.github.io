@@ -119,6 +119,83 @@
     return shell;
   }
 
+  function primeVideoAd(campaign, placement, creative, copy, destination) {
+    var shell = createShell(placement, campaign);
+    var link = document.createElement('a');
+    link.className = 'pklavc-ad__link pklavc-prime';
+    link.href = destination;
+    if (new URL(destination).origin !== window.location.origin) {
+      link.target = '_blank';
+      link.rel = 'sponsored noopener noreferrer';
+    }
+
+    var words = {
+      en: {
+        offerTop: '30 DAYS',
+        offerBottom: 'FREE',
+        eligible: 'For eligible new subscribers',
+        terms: 'Terms apply.',
+        movies: 'MOVIES',
+        series: 'SERIES',
+        originals: 'ORIGINALS'
+      },
+      pt: {
+        offerTop: '30 DIAS',
+        offerBottom: 'GRÁTIS',
+        eligible: 'Para novos assinantes elegíveis',
+        terms: 'Termos se aplicam.',
+        movies: 'FILMES',
+        series: 'SÉRIES',
+        originals: 'ORIGINAIS'
+      },
+      es: {
+        offerTop: '30 DÍAS',
+        offerBottom: 'GRATIS',
+        eligible: 'Para nuevos suscriptores elegibles',
+        terms: 'Se aplican términos.',
+        movies: 'PELÍCULAS',
+        series: 'SERIES',
+        originals: 'ORIGINALES'
+      }
+    }[locale] || null;
+
+    if (!words) return null;
+
+    var creativeRoot = document.createElement('span');
+    creativeRoot.className = 'pklavc-prime__creative';
+    creativeRoot.innerHTML =
+      '<span class="pklavc-prime__copy">' +
+        '<span class="pklavc-prime__logo" aria-label="Prime Video">' +
+          '<span class="pklavc-prime__logo-prime">prime</span> <span class="pklavc-prime__logo-video">video</span>' +
+          '<span class="pklavc-prime__smile" aria-hidden="true"></span>' +
+        '</span>' +
+        '<span class="pklavc-prime__headline"><b>' + words.offerTop + '</b><strong>' + words.offerBottom + '</strong></span>' +
+        '<span class="pklavc-prime__service">Prime Video</span>' +
+        '<span class="pklavc-prime__eligible">' + words.eligible + '</span>' +
+        '<span class="pklavc-prime__cta"><span class="pklavc-prime__cta-play" aria-hidden="true">▶</span>' + copy.cta + '<span aria-hidden="true">›</span></span>' +
+        '<span class="pklavc-prime__terms">' + words.terms + '</span>' +
+      '</span>' +
+      '<span class="pklavc-prime__visual" aria-hidden="true">' +
+        '<span class="pklavc-prime__arc pklavc-prime__arc--one"></span>' +
+        '<span class="pklavc-prime__arc pklavc-prime__arc--two"></span>' +
+        '<span class="pklavc-prime__screen">' +
+          '<span class="pklavc-prime__tile pklavc-prime__tile--1"><i></i><b>' + words.movies + '</b></span>' +
+          '<span class="pklavc-prime__tile pklavc-prime__tile--2"><i></i><b>' + words.series + '</b></span>' +
+          '<span class="pklavc-prime__tile pklavc-prime__tile--3"><i></i><b>' + words.originals + '</b></span>' +
+          '<span class="pklavc-prime__tile pklavc-prime__tile--4"><i></i></span>' +
+          '<span class="pklavc-prime__play">▶</span>' +
+        '</span>' +
+        '<span class="pklavc-prime__popcorn">' +
+          '<i></i><i></i><i></i><i></i><i></i><i></i>' +
+        '</span>' +
+        '<span class="pklavc-prime__remote"><i></i><i></i><i></i><i></i></span>' +
+      '</span>';
+
+    link.appendChild(creativeRoot);
+    shell.appendChild(link);
+    return shell;
+  }
+
   function imageAd(campaign, placement) {
     var creative = campaign.locales && campaign.locales[locale];
     var fallbackPlacements = {
@@ -130,9 +207,15 @@
     };
     var copy = creative && (creative[placement] || creative[fallbackPlacements[placement]]);
     if (!creative || !copy) return null;
-    var imageUrl = safeUrl(creative.image);
     var destination = safeUrl(copy.href);
-    if (!imageUrl || !destination) return null;
+    if (!destination) return null;
+
+    if (campaign.style === 'prime-video') {
+      return primeVideoAd(campaign, placement, creative, copy, destination);
+    }
+
+    var imageUrl = safeUrl(creative.image);
+    if (!imageUrl) return null;
 
     var shell = createShell(placement, campaign);
     var link = document.createElement('a');
