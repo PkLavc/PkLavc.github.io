@@ -1,0 +1,233 @@
+name: Process private blog social on public runner
+
+on:
+  schedule:
+    # 00:47, 06:47, 12:47 and 18:47 America/Sao_Paulo.
+    # The 12:47 run follows the daily 12:17 article generation by ~30 minutes.
+    - cron: "47 3,9,15,21 * * *"
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "Publish queued social items or run a non-publishing smoke test"
+        required: true
+        type: choice
+        default: smoke
+        options:
+          - smoke
+          - publish
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/private-blog-social.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: private-blog-public-runner
+  cancel-in-progress: false
+
+jobs:
+  smoke:
+    if: github.event_name == 'push' || inputs.mode == 'smoke'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      PRIVATE_BLOG_REPO_TOKEN: ${{ secrets.PRIVATE_BLOG_REPO_TOKEN }}
+      INSTAGRAM_ACCESS_TOKEN: ${{ secrets.INSTAGRAM_ACCESS_TOKEN }}
+      INSTAGRAM_BUSINESS_ACCOUNT_ID: ${{ secrets.INSTAGRAM_BUSINESS_ACCOUNT_ID }}
+      YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+      YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+      YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+      YOUTUBE_ANALYTICS_REFRESH_TOKEN: ${{ secrets.YOUTUBE_ANALYTICS_REFRESH_TOKEN }}
+      CLOUDFLARE_R2_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_R2_ACCOUNT_ID }}
+      CLOUDFLARE_R2_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_R2_ACCESS_KEY_ID }}
+      CLOUDFLARE_R2_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_R2_SECRET_ACCESS_KEY }}
+      CLOUDFLARE_R2_BUCKET: ${{ secrets.CLOUDFLARE_R2_BUCKET }}
+      CLOUDFLARE_R2_PUBLIC_BASE_URL: ${{ secrets.CLOUDFLARE_R2_PUBLIC_BASE_URL }}
+    steps:
+      - name: Verify required social secrets are configured
+        shell: bash
+        run: |
+          missing=0
+          for name in PRIVATE_BLOG_REPO_TOKEN INSTAGRAM_ACCESS_TOKEN INSTAGRAM_BUSINESS_ACCOUNT_ID YOUTUBE_CLIENT_ID YOUTUBE_CLIENT_SECRET YOUTUBE_REFRESH_TOKEN YOUTUBE_ANALYTICS_REFRESH_TOKEN CLOUDFLARE_R2_ACCOUNT_ID CLOUDFLARE_R2_ACCESS_KEY_ID CLOUDFLARE_R2_SECRET_ACCESS_KEY CLOUDFLARE_R2_BUCKET CLOUDFLARE_R2_PUBLIC_BASE_URL; do
+            if [[ -z "${!name}" ]]; then
+              echo "::error::Missing required secret: $name"
+              missing=1
+            fi
+          done
+          exit "$missing"
+
+      - name: Checkout private blog repository
+        uses: actions/checkout@v4
+        with:
+          repository: PkLavc/blog
+          ref: main
+          token: ${{ secrets.PRIVATE_BLOG_REPO_TOKEN }}
+          path: private-blog
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Verify private repository token can push
+        working-directory: private-blog
+        run: git push --dry-run origin HEAD:main
+
+      - name: Validate private social code without publishing
+        working-directory: private-blog
+        run: |
+          python -m compileall -q scripts/social_video
+          python -m unittest scripts.blog_automation.test_json_safe
+
+  publish:
+    if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.mode == 'publish')
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      SOCIAL_MAX_ITEMS_PER_RUN: ${{ vars.SOCIAL_MAX_ITEMS_PER_RUN || '1' }}
+      SOCIAL_MAX_R2_UPLOADS_PER_RUN: ${{ vars.SOCIAL_MAX_R2_UPLOADS_PER_RUN || '1' }}
+      SOCIAL_MAX_VIDEO_MB: ${{ vars.SOCIAL_MAX_VIDEO_MB || '25' }}
+      SOCIAL_TTS: kokoro
+      SOCIAL_ALLOW_ESPEAK_FALLBACK: "true"
+      INSTAGRAM_GRAPH_VERSION: ${{ vars.INSTAGRAM_GRAPH_VERSION || 'v26.0' }}
+
+    steps:
+      - name: Checkout private blog repository
+        uses: actions/checkout@v4
+        with:
+          repository: PkLavc/blog
+          ref: main
+          token: ${{ secrets.PRIVATE_BLOG_REPO_TOKEN }}
+          path: private-blog
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Check pending publications and due Analytics snapshots
+        id: pending
+        working-directory: private-blog
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json, os
+          from datetime import datetime, timedelta, timezone
+          from pathlib import Path
+          root = Path("social-state")
+          def load(name, key):
+              path = root / name
+              return json.loads(path.read_text(encoding="utf-8")).get(key, []) if path.exists() else []
+          videos = any(item.get("status", "pending") == "pending"
+              for name in ("instagram-queue.json", "youtube-queue.json")
+              for item in load(name, "items"))
+          now = datetime.now(timezone.utc)
+          due = False
+          for record in load("youtube-analytics.json", "videos"):
+              try:
+                  published = datetime.fromisoformat(record["publishedAt"].replace("Z", "+00:00"))
+              except (KeyError, ValueError):
+                  continue
+              for snapshot in record.get("snapshots", []):
+                  if snapshot.get("status") != "pending":
+                      continue
+                  try:
+                      hours = int(snapshot["scheduledAt"].removesuffix("h"))
+                  except (KeyError, ValueError):
+                      continue
+                  if now >= published + timedelta(hours=hours):
+                      due = True
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as output:
+              output.write(f"has_video={'true' if videos else 'false'}\n")
+              output.write(f"has_analytics={'true' if due else 'false'}\n")
+          print(f"Pending social publication: {videos}; due Analytics snapshot: {due}.")
+          PY
+
+      - name: Cache Kokoro model files
+        if: steps.pending.outputs.has_video == 'true'
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/huggingface/hub
+          key: kokoro-82m-${{ runner.os }}-v1
+
+      - name: Install video renderer and publisher dependencies
+        if: steps.pending.outputs.has_video == 'true'
+        working-directory: private-blog
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg espeak-ng fonts-dejavu-core
+          python -m pip install -r scripts/social_video/requirements.txt google-api-python-client google-auth boto3 requests
+
+      - name: Publish pending Instagram Reels and YouTube Shorts
+        id: social
+        if: steps.pending.outputs.has_video == 'true'
+        continue-on-error: true
+        working-directory: private-blog
+        env:
+          INSTAGRAM_ACCESS_TOKEN: ${{ secrets.INSTAGRAM_ACCESS_TOKEN }}
+          INSTAGRAM_BUSINESS_ACCOUNT_ID: ${{ secrets.INSTAGRAM_BUSINESS_ACCOUNT_ID }}
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+          CLOUDFLARE_R2_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_R2_ACCOUNT_ID }}
+          CLOUDFLARE_R2_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_R2_ACCESS_KEY_ID }}
+          CLOUDFLARE_R2_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_R2_SECRET_ACCESS_KEY }}
+          CLOUDFLARE_R2_BUCKET: ${{ secrets.CLOUDFLARE_R2_BUCKET }}
+          CLOUDFLARE_R2_PUBLIC_BASE_URL: ${{ secrets.CLOUDFLARE_R2_PUBLIC_BASE_URL }}
+        run: python -m scripts.social_video.publish_queue
+
+      - name: Persist queue and publication state
+        if: always() && steps.social.outcome != 'skipped'
+        working-directory: private-blog
+        run: |
+          if [[ -n "$(git status --porcelain -- social-state/)" ]]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git add social-state/
+            git commit -m "social: persist publication queue state"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          else
+            echo "No social state changes to persist."
+          fi
+
+      - name: Install Analytics client without video renderer
+        if: steps.pending.outputs.has_analytics == 'true' && steps.pending.outputs.has_video != 'true'
+        working-directory: private-blog
+        run: python -m pip install google-api-python-client google-auth requests
+
+      - name: Collect due YouTube Analytics snapshots
+        id: analytics
+        if: steps.pending.outputs.has_analytics == 'true'
+        continue-on-error: true
+        working-directory: private-blog
+        env:
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_ANALYTICS_REFRESH_TOKEN: ${{ secrets.YOUTUBE_ANALYTICS_REFRESH_TOKEN }}
+        run: python -m scripts.social_video.analytics
+
+      - name: Persist Analytics state
+        if: always() && steps.analytics.outcome != 'skipped'
+        working-directory: private-blog
+        run: |
+          if [[ -n "$(git status --porcelain -- social-state/)" ]]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git add social-state/
+            git commit -m "social: save YouTube Analytics snapshots"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          else
+            echo "No Analytics state changes to persist."
+          fi
+
+      - name: Fail after persisting partial results
+        if: always()
+        run: |
+          if [[ "${{ steps.social.outcome }}" == "failure" || "${{ steps.analytics.outcome }}" == "failure" ]]; then
+            echo "A social publication or Analytics operation failed; completed state changes were persisted first."
+            exit 1
+          fi
