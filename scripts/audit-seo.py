@@ -135,7 +135,7 @@ class PageParser(HTMLParser):
 
 class VisualSnapshot(HTMLParser):
     """Structural regression contract; a browser screenshot remains complementary."""
-    def __init__(self, text: str, page_url: str = "", allow_ad_injection: bool = False):
+    def __init__(self, text: str, page_url: str = "", allow_ad_injection: bool = False, allow_store_prerender: bool = False):
         super().__init__(convert_charrefs=True)
         self.tokens = []
         self.body = False
@@ -143,6 +143,8 @@ class VisualSnapshot(HTMLParser):
         self.json_script = False
         self.in_head = False
         self.allow_ad_injection = allow_ad_injection
+        self.allow_store_prerender = allow_store_prerender
+        self.store_prerender_depth = 0
         self.head_script = None
         self.ad_scripts_ignored = 0
         def drop_self_refresh(match):
@@ -153,6 +155,13 @@ class VisualSnapshot(HTMLParser):
 
     def handle_starttag(self, tag, attrs):
         values = dict(attrs)
+        if self.store_prerender_depth:
+            self.store_prerender_depth += 1
+            return
+        classes = set((values.get("class") or "").split())
+        if self.allow_store_prerender and ("store-intro" in classes or values.get("data-prerendered-product") is not None):
+            self.store_prerender_depth = 1
+            return
         if tag == "head":
             self.in_head = True
         if tag == "body":
@@ -188,6 +197,8 @@ class VisualSnapshot(HTMLParser):
             self.handle_endtag(tag)
 
     def handle_data(self, data):
+        if self.store_prerender_depth:
+            return
         if self.json_script:
             return
         if self.head_script is not None:
@@ -198,6 +209,9 @@ class VisualSnapshot(HTMLParser):
                 self.tokens.append(("text", value))
 
     def handle_endtag(self, tag):
+        if self.store_prerender_depth:
+            self.store_prerender_depth -= 1
+            return
         if self.json_script:
             if tag == "script":
                 self.json_script = False
@@ -457,8 +471,8 @@ class Audit:
             if not original.is_file():
                 self.report("visual-source", f"{relative}: missing source comparison file")
                 continue
-            source_snapshot = VisualSnapshot(original.read_text(encoding="utf-8-sig"), self.page_url(path), self.args.allow_ad_injection)
-            artifact_snapshot = VisualSnapshot(path.read_text(encoding="utf-8-sig"), self.page_url(path), self.args.allow_ad_injection)
+            source_snapshot = VisualSnapshot(original.read_text(encoding="utf-8-sig"), self.page_url(path), self.args.allow_ad_injection, self.args.allow_store_prerender)
+            artifact_snapshot = VisualSnapshot(path.read_text(encoding="utf-8-sig"), self.page_url(path), self.args.allow_ad_injection, self.args.allow_store_prerender)
             before, after = source_snapshot.tokens, artifact_snapshot.tokens
             self.counts["ad_head_scripts_allowed"] += artifact_snapshot.ad_scripts_ignored
             self.counts["visual_html_compared"] += 1
@@ -503,6 +517,7 @@ def main():
     parser.add_argument("--site", default="https://pklavc.com")
     parser.add_argument("--compare-source", type=Path, help="Check visible HTML and CSS against this source root")
     parser.add_argument("--allow-ad-injection", "--allow-adsense-injection", dest="allow_ad_injection", action="store_true", help="Permit the build's validated blog ad assets and optional AdSense config in the visual comparison")
+    parser.add_argument("--allow-store-prerender", action="store_true", help="Permit only generated .store-intro and [data-prerendered-product] markup in the artifact visual comparison")
     parser.add_argument("--strict-links", action="store_true", help="Treat unresolved local references as errors")
     parser.add_argument("--max-details", type=int, default=25)
     parser.add_argument("--json", action="store_true", help="Print the complete machine-readable report")
