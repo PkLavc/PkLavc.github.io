@@ -75,11 +75,17 @@ jobs:
         working-directory: private-blog
         run: git push --dry-run origin HEAD:main
 
+      - name: Install smoke-test dependencies
+        working-directory: private-blog
+        run: |
+          python -m pip install -r scripts/blog_automation/requirements.txt
+          python -m pip install -r scripts/social_video/requirements.txt
+
       - name: Validate private social code without publishing
         working-directory: private-blog
         run: |
           python -m compileall -q scripts/social_video
-          python -m unittest scripts.blog_automation.test_json_safe
+          python -m unittest scripts.social_video.test_render scripts.blog_automation.test_json_safe
 
   publish:
     if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.mode == 'publish')
