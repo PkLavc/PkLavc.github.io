@@ -3,7 +3,7 @@
 
   // Shared advertising configuration for blog articles and Store.
   // Rules can still be overridden by language, country or region.
-  var rotationSeconds = 5;
+  var rotationSeconds = 24;
   var campaigns = ['pklavc_blog', 'macca_blog', 'pklavc_store', 'pklavc_projects'];
 
   function rotatingPlacement(extra) {
@@ -48,6 +48,8 @@
       amazon_prime_video: {
         type: 'image',
         style: 'prime-video',
+        brandLogo: 'https://m.media-amazon.com/images/G/01/AdProductsWebsite/images/ad-specs/AvailableAt_Amazon_US_StackedLogo_Rgb_SquidInk._TTW_.png',
+        brandLogoAlt: 'Available at Amazon',
         locales: {
           en: {
             image: '/ads/banners/prime-video-en-v2.svg',
