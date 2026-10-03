@@ -4,6 +4,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { normalizeSeoDirectory } from "./normalize-seo.mjs";
 import { generateDiscovery } from "./generate-discovery.mjs";
+import { enhanceStoreArtifact } from "./enhance-store-artifact.mjs";
 
 const root = process.cwd();
 const outDir = path.join(root, ".pages-dist");
@@ -204,6 +205,9 @@ function main() {
   for (const entry of publicEntries) {
     copyEntry(path.join(root, entry), path.join(outDir, entry));
   }
+
+  const storeStats = enhanceStoreArtifact(outDir);
+  console.log(`Store prerender: ${storeStats.pages} page(s), ${storeStats.products} product(s).`);
 
   // Generate discovery from the exact HTML that will be deployed on every build.
   const seoStats = normalizeSeoDirectory(outDir);
