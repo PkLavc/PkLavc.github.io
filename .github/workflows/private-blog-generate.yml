@@ -77,8 +77,9 @@ jobs:
       - name: Validate private generation pipeline without API calls or publishing
         working-directory: private-blog
         run: |
-          python -m unittest scripts.blog_automation.test_publish_paths
-          node --test scripts/test-blog-discovery.mjs
+          python -m unittest scripts.blog_automation.test_publish_paths scripts.test_newsletter_assembly
+          node --test scripts/test-blog-discovery.mjs scripts/test-newsletter-content.mjs
+          (cd newsletter-worker && npm test)
           python -m scripts.blog_automation.run --root . --offline-fixture --dry-run
 
   generate:
@@ -138,6 +139,17 @@ jobs:
       - name: Sync English landing page to repository root
         working-directory: private-blog
         run: cp en/index.html index.html
+
+      - name: Validate newsletter and assembled publication before commit
+        working-directory: private-blog
+        run: |
+          node --test scripts/test-newsletter-content.mjs
+          python -m unittest scripts.test_newsletter_assembly
+          (cd newsletter-worker && npm test)
+          node scripts/generate-rss.mjs
+          git diff --exit-code -- en/feed.xml en/posts.json
+          python scripts/assemble_pages.py --root . --output _site
+          rm -rf _site
 
       - name: Detect publication changes
         id: changes
