@@ -324,6 +324,7 @@
     var fallbackPlacements = {
       'project-sidebar': 'sidebar',
       'project-bottom': 'bottom',
+      continuous: 'inline',
       'store-sidebar': 'sidebar',
       'store-rows': 'inline',
       'store-bottom': 'bottom'
@@ -506,6 +507,7 @@
       var campaign = config.campaigns[id];
       var creative = campaign.locales && campaign.locales[locale];
       var fallbackPlacements = {
+        continuous: 'inline',
         'store-sidebar': 'sidebar',
         'store-rows': 'inline',
         'store-bottom': 'bottom'
@@ -578,6 +580,27 @@
     rotatePlacement(inline, 'inline', geo);
     rotatePlacement(bottom, 'bottom', geo);
     rotatePlacement(mobile, 'mobile', geo);
+
+    var continuousAdIndex = 0;
+    function hydrateContinuousAds() {
+      document.querySelectorAll('[data-blog-continuous-ad]').forEach(function (slot) {
+        if (slot.dataset.blogContinuousAdReady === 'true') return;
+        var continuous = placementAd('continuous', geo, continuousAdIndex++);
+        if (!continuous) {
+          slot.remove();
+          return;
+        }
+        slot.appendChild(continuous.ad);
+        slot.dataset.blogContinuousAdReady = 'true';
+        rotatePlacement(continuous, 'continuous', geo);
+      });
+    }
+
+    hydrateContinuousAds();
+    if ('MutationObserver' in window) {
+      var continuousAdsObserver = new MutationObserver(hydrateContinuousAds);
+      continuousAdsObserver.observe(document.body, { childList: true, subtree: true });
+    }
 
     var sidebarTimer = 0;
     var sidebarAds = null;

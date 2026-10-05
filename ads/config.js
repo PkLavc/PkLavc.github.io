@@ -29,6 +29,12 @@
         default: 'amazon_prime_video',
         rotateEverySeconds: 0
       }),
+      // Article-to-article transition ads use a separate rotation so they can
+      // keep their campaign order independently from in-article placements.
+      continuous: rotatingPlacement({
+        default: ['amazon_prime_video', 'shopee', 'pklavc_store', 'pklavc_projects', 'macca_blog'],
+        rotateEverySeconds: 0
+      }),
       // Blog home: a dedicated card is inserted between editorial cards.
       feed: rotatingPlacement({
         default: 'shopee',
@@ -55,9 +61,9 @@
       amazon_prime_video: {
         type: 'image',
         style: 'prime-video',
-        brandLogo: '/ads/banners/amazon-logo.png',
+        brandLogo: '/ads/assets/creative-01.png',
         brandLogoAlt: 'Amazon',
-        lineupImage: '/ads/banners/prime-video-lineup.jpg',
+        lineupImage: '/ads/assets/creative-02.jpg',
         locales: {
           en: {
             image: '/ads/banners/prime-video-en-v2.svg',
