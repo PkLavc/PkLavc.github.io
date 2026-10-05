@@ -62,8 +62,7 @@ export function enhanceStoreArtifact(root) {
     let html = fs.readFileSync(file, "utf8");
     const canonical = locale === "en" ? "https://pklavc.com/store/" : `https://pklavc.com/store/${locale}/`;
     const seo = copy[locale];
-    const intro = `<section class="store-intro" aria-labelledby="store-page-title"><p class="store-intro-kicker">PKLAVC STORE</p><h1 id="store-page-title">${esc(seo.title)}</h1><p>${esc(seo.description)}</p><small>${esc(seo.notice)}</small></section>`;
-    if (!html.includes('class="store-intro"')) html = html.replace('<main class="store-main">', '<main class="store-main">' + intro);
+    html = html.replace(/<section class="store-intro"[\s\S]*?<\/section>\s*/g, "");
 
     const cards = products.map(product => prerenderCard(product, locale)).join("");
     html = html.replace(/<section class="store-grid" id="store-products" data-store-grid data-columns="4">[\s\S]*?<\/section>/,
