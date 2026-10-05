@@ -267,11 +267,22 @@
     maxInput.value = high;
   }
 
+  var lastProductsRenderedSignature = null;
   function notifyProductsRendered() {
+    var visibleCards = cards.filter(function (card) {
+      return !card.classList.contains('is-filtered-out') && !card.hidden;
+    });
+    var signature = [grid.dataset.columns || '', visibleCards.map(function (card) {
+      return card.dataset.productId || '';
+    }).join(',')].join('|');
+
+    if (signature === lastProductsRenderedSignature) return;
+    lastProductsRenderedSignature = signature;
+
     document.dispatchEvent(new CustomEvent('store:products-rendered', {
       detail: {
         total: cards.length,
-        visible: cards.filter(function (card) { return !card.classList.contains('is-filtered-out'); }).length
+        visible: visibleCards.length
       }
     }));
   }
