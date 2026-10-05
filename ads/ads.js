@@ -165,7 +165,7 @@
     creativeRoot.className = 'pklavc-prime__creative';
     creativeRoot.innerHTML =
       '<span class="pklavc-prime__copy">' +
-        '<span class="pklavc-prime__brand"><img class="pklavc-prime__brand-logo" src="' + safeUrl(campaign.brandLogo) + '" alt="' + (campaign.brandLogoAlt || 'Available at Amazon') + '" width="220" height="118" loading="lazy" decoding="async"></span>' +
+        '<span class="pklavc-prime__brand"><img class="pklavc-prime__brand-logo" src="' + safeUrl(campaign.brandLogo) + '" alt="' + (campaign.brandLogoAlt || 'Amazon') + '" width="2400" height="723" loading="lazy" decoding="async"></span>' +
         '<span class="pklavc-prime__headline"><b>' + words.offerTop + '</b><strong>' + words.offerBottom + '</strong></span>' +
         '<span class="pklavc-prime__service">Prime Video</span>' +
         '<span class="pklavc-prime__eligible">' + words.eligible + '</span>' +

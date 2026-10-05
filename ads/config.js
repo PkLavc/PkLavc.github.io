@@ -48,8 +48,8 @@
       amazon_prime_video: {
         type: 'image',
         style: 'prime-video',
-        brandLogo: 'https://m.media-amazon.com/images/G/01/AdProductsWebsite/images/ad-specs/AvailableAt_Amazon_US_StackedLogo_Rgb_SquidInk._TTW_.png',
-        brandLogoAlt: 'Available at Amazon',
+        brandLogo: '/ads/banners/amazon-logo.png',
+        brandLogoAlt: 'Amazon',
         locales: {
           en: {
             image: '/ads/banners/prime-video-en-v2.svg',
