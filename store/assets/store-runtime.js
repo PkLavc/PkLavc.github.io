@@ -169,7 +169,7 @@
         '<h2>' + esc(product.name) + '</h2>' +
         (product.description ? '<p class="store-description">' + esc(String(product.description).slice(0, 220)) + '</p>' : '') +
         '<div class="store-price-row"><strong data-price-label>' + esc(priceText) + '</strong>' + (oldPriceText ? '<del data-old-price-label>' + esc(oldPriceText) + '</del>' : '') + '</div>' +
-        '<a class="store-cta" href="' + esc(product.url) + '" target="_blank" rel="sponsored noopener noreferrer">' + esc(labels.view) + '<span aria-hidden="true"> ↗</span></a>' +
+        '<a class="store-cta" href="' + esc(product.url) + '" target="_blank" rel="sponsored noopener noreferrer">' + esc(labels.view) + '<span aria-hidden="true"> ↗︎</span></a>' +
       '</div>';
 
     var image = article.querySelector('.store-image');
