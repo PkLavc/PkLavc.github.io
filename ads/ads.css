@@ -1498,19 +1498,14 @@
 
 /* Monochrome Amazon mark remains legible directly on the dark campaign art. */
 .pklavc-prime__brand{
-  display:flex;
-  align-items:center;
-  justify-content:flex-start;
+  display:block;
+  flex:0 0 auto;
   width:min(220px,72%);
-  min-height:0;
+  height:66px;
+  min-height:66px;
   padding:0;
   border-radius:0;
-  background:transparent;
-}
-.pklavc-prime__brand-logo{
-  display:block;
-  width:100%;
-  height:auto;
-  object-fit:contain;
-  filter:grayscale(1) brightness(0) invert(1);
+  background:#fff;
+  -webkit-mask:url('/ads/banners/amazon-logo.png') left center / contain no-repeat;
+  mask:url('/ads/banners/amazon-logo.png') left center / contain no-repeat;
 }

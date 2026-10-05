@@ -165,7 +165,7 @@
     creativeRoot.className = 'pklavc-prime__creative';
     creativeRoot.innerHTML =
       '<span class="pklavc-prime__copy">' +
-        '<span class="pklavc-prime__brand"><img class="pklavc-prime__brand-logo" src="' + safeUrl(campaign.brandLogo) + '" alt="' + (campaign.brandLogoAlt || 'Amazon') + '" width="2400" height="723" loading="lazy" decoding="async"></span>' +
+        '<span class="pklavc-prime__brand" role="img" aria-label="' + (campaign.brandLogoAlt || 'Amazon') + '"></span>' +
         '<span class="pklavc-prime__headline"><b>' + words.offerTop + '</b><strong>' + words.offerBottom + '</strong></span>' +
         '<span class="pklavc-prime__service">Prime Video</span>' +
         '<span class="pklavc-prime__eligible">' + words.eligible + '</span>' +
@@ -631,14 +631,18 @@
     }
 
     var sidebarTimer = 0;
+    var lastSidebarAdLayout = null;
     function refreshSidebarAds() {
       sidebarTimer = 0;
       if (!sidebarAds || !column || !filters || !results) return;
 
       // On mobile the Store uses only row ads (every 10 rows) and the final ad.
       if (window.matchMedia && window.matchMedia('(max-width: 760px)').matches) {
-        sidebarAds.replaceChildren();
-        sidebarAds.style.top = '';
+        if (lastSidebarAdLayout !== 'mobile') {
+          sidebarAds.replaceChildren();
+          sidebarAds.style.top = '';
+          lastSidebarAdLayout = 'mobile';
+        }
         return;
       }
 
@@ -648,14 +652,22 @@
       var top = filtersHeight + gap;
       var available = Math.max(0, Math.floor(columnHeight - top));
 
+      var sidebarSelection = placementSelection('store-sidebar', geo);
+      var sidebarCampaigns = sidebarSelection ? sidebarSelection.ids : [];
+      var maxSlots = sidebarCampaigns.length ? Math.ceil(available / 160) + 1 : 0;
+      var sidebarLayout = [top, available, maxSlots, sidebarCampaigns.join(',')].join('|');
+
+      // ResizeObserver also observes the Store rail. Rebuilding an unchanged
+      // rail would resize it again and schedule an endless remove / insert
+      // cycle, which also disturbs the current scroll anchor.
+      if (sidebarLayout === lastSidebarAdLayout) return;
+      lastSidebarAdLayout = sidebarLayout;
+
       sidebarAds.style.top = top + 'px';
       sidebarAds.replaceChildren();
 
       var used = 0;
       var slot = 0;
-      var sidebarSelection = placementSelection('store-sidebar', geo);
-      var sidebarCampaigns = sidebarSelection ? sidebarSelection.ids : [];
-      var maxSlots = sidebarCampaigns.length ? Math.ceil(available / 160) + 1 : 0;
 
       // Repeat the campaign set to use the full sidebar height, while only
       // appending ads whose measured height fits in the remaining space.
