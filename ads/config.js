@@ -63,7 +63,7 @@
         style: 'prime-video',
         brandLogo: '/ads/assets/creative-01.png',
         brandLogoAlt: 'Amazon',
-        lineupImage: '/ads/assets/creative-02.jpg',
+        lineupImage: '/ads/banners/prime-video-lineup.jpg',
         locales: {
           en: {
             image: '/ads/banners/prime-video-en-v2.svg',
