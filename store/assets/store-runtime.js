@@ -23,12 +23,16 @@
       loadError: 'No fue posible cargar los productos. Inténtalo de nuevo en unos instantes.'
     }
   }[locale];
+  labels.currencyAuto = locale === 'pt' ? 'Autom\u00e1tica' : locale === 'es' ? 'Autom\u00e1tica' : 'Auto';
   labels.filterSearch = locale === 'pt' ? 'Buscar opções' : locale === 'es' ? 'Buscar opciones' : labels.filterSearch;
 
   var numberLocale = locale === 'pt' ? 'pt-BR' : locale === 'es' ? 'es-ES' : 'en-US';
+  var currencyTools = window.PKLAVCStoreCurrency;
   var grid = document.querySelector('[data-store-grid]');
   var search = document.querySelector('[data-store-search]');
   var currency = document.querySelector('[data-currency]');
+  var currencyNote = document.querySelector('[data-currency-note]');
+  var defaultCurrencyNote = currencyNote ? currencyNote.textContent : '';
   var minInput = document.querySelector('[data-min-price]');
   var maxInput = document.querySelector('[data-max-price]');
   var count = document.querySelector('[data-result-count]');
@@ -39,7 +43,7 @@
   var clearButton = document.querySelector('[data-clear-filters]');
   var inStockInput = document.querySelector('[data-in-stock]');
 
-  if (!grid || !search || !currency || !count || !dynamicFilters) return;
+  if (!grid || !search || !currency || !count || !dynamicFilters || !currencyTools) return;
 
   var filterSidebar = document.querySelector('.filter-sidebar');
   var filterHeading = filterSidebar && filterSidebar.querySelector('.filter-sidebar-heading');
@@ -81,6 +85,11 @@
   var products = [];
   var cards = [];
   var defaultOrder = [];
+  var geoCountry = '';
+  var geoCurrency = locale === 'pt' ? 'BRL' : locale === 'es' ? 'EUR' : 'USD';
+  var displayCurrency = geoCurrency;
+  var exchangeRates = { EUR: 1 };
+  var manualCurrencyKey = 'pklavc.store.displayCurrency.v1';
 
   function esc(value) {
     return String(value == null ? '' : value).replace(/[&<>"']/g, function (ch) {
@@ -93,18 +102,22 @@
     return text || 'Other';
   }
 
-  function priceLabel(product) {
-    var amount = Number(product.price);
+  function priceLabel(amount, code) {
+    amount = Number(amount);
     if (!Number.isFinite(amount)) return '';
     try {
       return new Intl.NumberFormat(numberLocale, {
         style: 'currency',
-        currency: product.currency || 'USD',
+        currency: code || 'USD',
         maximumFractionDigits: 2
       }).format(amount);
     } catch (error) {
-      return amount.toFixed(2) + ' ' + (product.currency || '');
+      return amount.toFixed(2) + ' ' + (code || '');
     }
+  }
+
+  function convertedPrice(amount, sourceCurrency) {
+    return currencyTools.convertAmount(amount, sourceCurrency, displayCurrency, exchangeRates);
   }
 
   function unique(values) {
@@ -119,13 +132,16 @@
     var discount = Number.isFinite(old) && old > price && price > 0
       ? Math.round((1 - price / old) * 100)
       : 0;
+    var shownPrice = convertedPrice(price, product.currency);
+    var shownOldPrice = discount ? convertedPrice(old, product.currency) : null;
+    var shownCurrency = shownPrice == null ? product.currency : displayCurrency;
     var attributes = product.attributes && typeof product.attributes === 'object' ? product.attributes : {};
     var searchText = [
       product.name, product.vendor, product.category, product.program
     ].concat(Object.values(attributes)).filter(Boolean).join(' ').toLowerCase();
     var available = product.available === true ? 'true' : product.available === false ? 'false' : 'unknown';
-    var priceText = priceLabel(product) || labels.checkPrice;
-    var oldPriceText = discount ? priceLabel(Object.assign({}, product, { price: old })) : '';
+    var priceText = priceLabel(shownPrice == null ? price : shownPrice, shownCurrency) || labels.checkPrice;
+    var oldPriceText = discount ? priceLabel(shownOldPrice == null ? old : shownOldPrice, shownCurrency) : '';
 
     var article = document.createElement('article');
     article.className = 'store-card';
@@ -134,7 +150,10 @@
     article.dataset.vendor = String(product.vendor || '');
     article.dataset.program = String(product.program || '');
     article.dataset.currency = String(product.currency || '');
-    article.dataset.price = Number.isFinite(price) ? String(price) : '';
+    article.dataset.basePrice = Number.isFinite(price) ? String(price) : '';
+    article.dataset.baseOldPrice = Number.isFinite(old) ? String(old) : '';
+    article.dataset.price = Number.isFinite(shownPrice == null ? price : shownPrice) ? String(shownPrice == null ? price : shownPrice) : '';
+    article.dataset.displayCurrency = shownCurrency || '';
     article.dataset.available = available;
     article.dataset.attributes = JSON.stringify(attributes);
     article.dataset.search = searchText;
@@ -149,7 +168,7 @@
         '<div class="store-card-meta"><span>' + esc(product.program || labels.filterStore) + '</span><span>' + esc(product.vendor || '') + '</span></div>' +
         '<h2>' + esc(product.name) + '</h2>' +
         (product.description ? '<p class="store-description">' + esc(String(product.description).slice(0, 220)) + '</p>' : '') +
-        '<div class="store-price-row"><strong>' + esc(priceText) + '</strong>' + (oldPriceText ? '<del>' + esc(oldPriceText) + '</del>' : '') + '</div>' +
+        '<div class="store-price-row"><strong data-price-label>' + esc(priceText) + '</strong>' + (oldPriceText ? '<del data-old-price-label>' + esc(oldPriceText) + '</del>' : '') + '</div>' +
         '<a class="store-cta" href="' + esc(product.url) + '" target="_blank" rel="sponsored noopener noreferrer">' + esc(labels.view) + '<span aria-hidden="true"> ↗</span></a>' +
       '</div>';
 
@@ -195,7 +214,6 @@
     var categories = unique(products.map(function (p) { return p.category; }));
     var vendors = unique(products.map(function (p) { return p.vendor; }));
     var programs = unique(products.map(function (p) { return p.program; }));
-    var currencies = unique(products.map(function (p) { return p.currency; }));
     var attributeKeys = unique(products.flatMap(function (p) {
       return Object.keys(p.attributes && typeof p.attributes === 'object' ? p.attributes : {});
     }));
@@ -223,13 +241,6 @@
       });
     });
 
-    while (currency.options.length > 1) currency.remove(1);
-    currencies.forEach(function (code) {
-      var option = document.createElement('option');
-      option.value = code;
-      option.textContent = code;
-      currency.appendChild(option);
-    });
   }
 
   function valuesFor(key, attributeKey) {
@@ -243,12 +254,12 @@
 
   function currencyBounds() {
     var matching = cards.filter(function (card) {
-      return card.dataset.currency === currency.value && card.dataset.price !== '';
+      return card.dataset.displayCurrency === displayCurrency && card.dataset.price !== '';
     }).map(function (card) {
       return Number(card.dataset.price);
     });
 
-    if (!currency.value || !matching.length) {
+    if (!matching.length) {
       minInput.value = '';
       maxInput.value = '';
       minInput.disabled = true;
@@ -266,6 +277,52 @@
     maxInput.max = high;
     minInput.value = low;
     maxInput.value = high;
+  }
+
+  function updateAutoCurrencyOption() {
+    var automatic = currency.querySelector('option[value="auto"]');
+    if (automatic) automatic.textContent = labels.currencyAuto + ' (' + geoCurrency + ')';
+  }
+
+  function populateCurrencyOptions() {
+    var automatic = currency.querySelector('option[value="auto"]');
+    currency.replaceChildren(automatic);
+    currencyTools.currencies.forEach(function (code) {
+      var option = document.createElement('option');
+      option.value = code;
+      option.textContent = code;
+      currency.appendChild(option);
+    });
+  }
+
+  function updateDisplayedPrices() {
+    var missingConversion = false;
+    cards.forEach(function (card) {
+      var base = Number(card.dataset.basePrice);
+      var old = Number(card.dataset.baseOldPrice);
+      var current = convertedPrice(base, card.dataset.currency);
+      var previous = Number.isFinite(old) ? convertedPrice(old, card.dataset.currency) : null;
+      var shownCurrency = current == null ? card.dataset.currency : displayCurrency;
+      if (current == null && card.dataset.currency !== displayCurrency) missingConversion = true;
+      card.dataset.price = current == null ? card.dataset.basePrice : String(current);
+      card.dataset.displayCurrency = shownCurrency || '';
+      var currentLabel = card.querySelector('[data-price-label]');
+      if (currentLabel) currentLabel.textContent = priceLabel(current == null ? base : current, shownCurrency) || labels.checkPrice;
+      var oldLabel = card.querySelector('[data-old-price-label]');
+      if (oldLabel && Number.isFinite(old)) oldLabel.textContent = priceLabel(previous == null ? old : previous, shownCurrency);
+    });
+    if (currencyNote) {
+      currencyNote.textContent = missingConversion
+        ? (locale === 'pt'
+          ? 'Alguns preços estão na moeda original porque a conversão está temporariamente indisponível.'
+          : locale === 'es'
+            ? 'Algunos precios siguen en su moneda original porque la conversión no está disponible temporalmente.'
+            : 'Some prices remain in their original currency because conversion is temporarily unavailable.')
+        : defaultCurrencyNote;
+    }
+    currencyBounds();
+    if (sort && (sort.value === 'price-asc' || sort.value === 'price-desc')) sortCards();
+    applyFilters();
   }
 
   var lastProductsRenderedSignature = null;
@@ -307,8 +364,7 @@
         }
       );
       var price = Number(card.dataset.price);
-      var priceMatch = !currency.value ||
-        (card.dataset.currency === currency.value && card.dataset.price !== '' && price >= low && price <= high);
+      var priceMatch = card.dataset.displayCurrency !== displayCurrency || card.dataset.price === '' || (price >= low && price <= high);
       var show =
         (!q || (card.dataset.search || '').indexOf(q) >= 0) &&
         (!category.length || category.indexOf(card.dataset.category) >= 0) &&
@@ -337,8 +393,8 @@
     cards.sort(function (a, b) {
       var pa = Number(a.dataset.price) || 0;
       var pb = Number(b.dataset.price) || 0;
-      if ((mode === 'price-asc' || mode === 'price-desc') && a.dataset.currency !== b.dataset.currency) {
-        return a.dataset.currency.localeCompare(b.dataset.currency);
+      if ((mode === 'price-asc' || mode === 'price-desc') && a.dataset.displayCurrency !== b.dataset.displayCurrency) {
+        return a.dataset.displayCurrency.localeCompare(b.dataset.displayCurrency);
       }
       if (mode === 'price-asc') return pa - pb;
       if (mode === 'price-desc') return pb - pa;
@@ -361,8 +417,14 @@
   function bindControls() {
     search.addEventListener('input', applyFilters);
     currency.addEventListener('change', function () {
-      currencyBounds();
-      applyFilters();
+      if (currency.value === 'auto') {
+        try { localStorage.removeItem(manualCurrencyKey); } catch (error) {}
+        displayCurrency = geoCurrency;
+      } else {
+        displayCurrency = currency.value;
+        try { localStorage.setItem(manualCurrencyKey, displayCurrency); } catch (error) {}
+      }
+      updateDisplayedPrices();
     });
     minInput.addEventListener('input', applyFilters);
     maxInput.addEventListener('input', applyFilters);
@@ -374,9 +436,10 @@
         input.checked = false;
       });
       search.value = '';
-      currency.value = '';
-      currencyBounds();
-      applyFilters();
+      currency.value = 'auto';
+      displayCurrency = geoCurrency;
+      try { localStorage.removeItem(manualCurrencyKey); } catch (error) {}
+      updateDisplayedPrices();
     });
 
     if (sort) sort.addEventListener('change', function () {
@@ -395,6 +458,116 @@
     });
   }
 
+  function browserRegion() {
+    var language = String(navigator.language || '').toUpperCase();
+    var match = /[-_]([A-Z]{2})$/.exec(language);
+    return match ? match[1] : '';
+  }
+
+  function browserShopperLanguage() {
+    var languages = navigator.languages && navigator.languages.length
+      ? navigator.languages
+      : [navigator.language || ''];
+    for (var index = 0; index < languages.length; index += 1) {
+      if (/^(pt|es)(?:-|$)/i.test(String(languages[index] || ''))) return languages[index];
+    }
+    return navigator.language || '';
+  }
+
+  async function detectCountry() {
+    var cacheKey = 'pklavc.store.geo.v1';
+    try {
+      var cached = JSON.parse(sessionStorage.getItem(cacheKey) || 'null');
+      if (cached && cached.country && Date.now() - cached.at < 30 * 60 * 1000) return cached.country;
+    } catch (error) {}
+
+    var controller = typeof AbortController === 'function' ? new AbortController() : null;
+    var timer = controller ? setTimeout(function () { controller.abort(); }, 2000) : null;
+    try {
+      var response = await fetch('https://api.pklavc.com/ads/geo', {
+        mode: 'cors', credentials: 'omit', cache: 'no-store',
+        signal: controller ? controller.signal : undefined
+      });
+      if (!response.ok) throw new Error('geolocation_unavailable');
+      var data = await response.json();
+      var country = String(data && data.country || '').toUpperCase();
+      if (!/^[A-Z]{2}$/.test(country)) throw new Error('geolocation_invalid');
+      try { sessionStorage.setItem(cacheKey, JSON.stringify({ country: country, at: Date.now() })); } catch (error) {}
+      return country;
+    } catch (error) {
+      return '';
+    } finally {
+      if (timer) clearTimeout(timer);
+    }
+  }
+
+  function readCachedRates() {
+    try {
+      var cached = JSON.parse(localStorage.getItem('pklavc.store.exchangeRates.v1') || 'null');
+      if (cached && cached.rates && typeof cached.rates === 'object') return cached;
+    } catch (error) {}
+    return null;
+  }
+
+  async function loadExchangeRates() {
+    var cached = readCachedRates();
+    var required = currencyTools.currencies.concat(products.map(function (product) { return product.currency; }));
+    var cacheHasCurrencies = cached && required.every(function (code) { return code === 'EUR' || Number(cached.rates[code]) > 0; });
+    if (cacheHasCurrencies && Date.now() - Number(cached.updatedAt || 0) < 12 * 60 * 60 * 1000) {
+      exchangeRates = cached.rates;
+      return;
+    }
+
+    var quotes = Array.from(new Set(required.map(function (code) { return String(code || '').toUpperCase(); })))
+      .filter(function (code) { return code && code !== 'EUR'; });
+    var controller = typeof AbortController === 'function' ? new AbortController() : null;
+    var timer = controller ? setTimeout(function () { controller.abort(); }, 5000) : null;
+    try {
+      var url = 'https://api.frankfurter.dev/v2/rates?base=EUR&quotes=' + encodeURIComponent(quotes.join(','));
+      var response = await fetch(url, { signal: controller ? controller.signal : undefined });
+      if (!response.ok) throw new Error('exchange_rates_unavailable');
+      var rows = await response.json();
+      if (!Array.isArray(rows) || !rows.length) throw new Error('exchange_rates_invalid');
+      exchangeRates = currencyTools.rowsToRates(rows);
+      try {
+        localStorage.setItem('pklavc.store.exchangeRates.v1', JSON.stringify({
+          rates: exchangeRates, updatedAt: Date.now()
+        }));
+      } catch (error) {}
+    } catch (error) {
+      if (cached) {
+        exchangeRates = cached.rates;
+      }
+    } finally {
+      if (timer) clearTimeout(timer);
+    }
+  }
+
+  async function prepareCatalog(rawProducts) {
+    var detected = await detectCountry();
+    geoCountry = detected || browserRegion() || (locale === 'pt' ? 'BR' : '');
+    geoCurrency = currencyTools.currencyForCountry(geoCountry) || (locale === 'pt' ? 'BRL' : locale === 'es' ? 'EUR' : 'USD');
+    var manualCurrency = '';
+    try { manualCurrency = localStorage.getItem(manualCurrencyKey) || ''; } catch (error) {}
+    displayCurrency = currencyTools.currencies.indexOf(manualCurrency) >= 0 ? manualCurrency : geoCurrency;
+    currency.value = currencyTools.currencies.indexOf(manualCurrency) >= 0 ? manualCurrency : 'auto';
+    updateAutoCurrencyOption();
+
+    var preferredLanguage = '';
+    try {
+      var savedLanguage = localStorage.getItem('pklavc.preferredLanguage') || '';
+      if (/^(en|pt|es)$/.test(savedLanguage)) preferredLanguage = savedLanguage;
+    } catch (error) {}
+    var shopperLanguage = preferredLanguage || browserShopperLanguage();
+    var allowShopee = currencyTools.shopeeAllowed(locale, shopperLanguage, geoCountry);
+    products = rawProducts.filter(function (product) {
+      return allowShopee || !/shopee/i.test(String(product.program || ''));
+    });
+    renderProducts();
+    document.body.dataset.storeProductsLoaded = 'true';
+    loadExchangeRates().then(updateDisplayedPrices);
+  }
+
   async function loadProducts() {
     if (loading) loading.hidden = false;
     try {
@@ -404,11 +577,10 @@
       });
       if (!response.ok) throw new Error('HTTP ' + response.status);
       var payload = await response.json();
-      products = Array.isArray(payload.products)
+      var catalog = Array.isArray(payload.products)
         ? payload.products.filter(function (p) { return p && p.name && p.url && p.picture; })
         : [];
-      renderProducts();
-      document.body.dataset.storeProductsLoaded = 'true';
+      await prepareCatalog(catalog);
     } catch (error) {
       console.error('Store catalog load failed:', error);
       products = [];
@@ -426,6 +598,7 @@
     }
   }
 
+  populateCurrencyOptions();
   setupLayoutControls();
   bindControls();
   loadProducts();
