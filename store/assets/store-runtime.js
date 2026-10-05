@@ -8,7 +8,7 @@
 
   var labels = {
     en: {
-      filterCategory: 'Category', filterBrand: 'Brand', filterStore: 'Store',
+      filterCategory: 'Category', filterBrand: 'Brand', filterStore: 'Store', filterSearch: 'Search options',
       checkPrice: 'Check price', view: 'View offer', noResults: 'No products found.',
       loadError: 'Products could not be loaded. Try again shortly.'
     },
@@ -23,6 +23,7 @@
       loadError: 'No fue posible cargar los productos. Inténtalo de nuevo en unos instantes.'
     }
   }[locale];
+  labels.filterSearch = locale === 'pt' ? 'Buscar opções' : locale === 'es' ? 'Buscar opciones' : labels.filterSearch;
 
   var numberLocale = locale === 'pt' ? 'pt-BR' : locale === 'es' ? 'es-ES' : 'en-US';
   var grid = document.querySelector('[data-store-grid]');
@@ -164,11 +165,29 @@
   function filterSection(title, key, values, attributeKey) {
     if (!values.length) return '';
     var attribute = attributeKey ? ' data-attribute-key="' + esc(attributeKey) + '"' : '';
-    return '<fieldset class="filter-group"><legend>' + esc(title) + '</legend><div class="filter-options">' +
-      values.map(function (value) {
+    var searchLabel = title + ': ' + labels.filterSearch;
+    return '<details class="filter-group" data-filter-group><summary class="filter-group-summary"><span>' + esc(title) + '</span><span class="filter-group-count" data-filter-selected-count hidden></span></summary>' +
+      '<div class="filter-group-content"><label class="filter-search-wrap"><span class="visually-hidden">' + esc(searchLabel) + '</span><input class="filter-group-search" type="search" data-filter-search placeholder="' + esc(labels.filterSearch + ' ' + title.toLowerCase()) + '" aria-label="' + esc(searchLabel) + '" autocomplete="off"></label>' +
+      '<div class="filter-options">' + values.map(function (value) {
         return '<label class="filter-option"><input type="checkbox" data-filter-key="' + esc(key) + '"' + attribute + ' value="' + esc(value) + '"><span>' + esc(value) + '</span></label>';
-      }).join('') +
-      '</div></fieldset>';
+      }).join('') + '</div></div></details>';
+  }
+
+  function filterSearchKey(value) {
+    return String(value || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
+  }
+
+  function updateFilterGroups() {
+    if (!dynamicFilters) return;
+    dynamicFilters.querySelectorAll('[data-filter-group]').forEach(function (group) {
+      var selected = group.querySelectorAll('[data-filter-key]:checked').length;
+      var countBadge = group.querySelector('[data-filter-selected-count]');
+      if (countBadge) {
+        countBadge.textContent = String(selected);
+        countBadge.hidden = selected === 0;
+      }
+      group.classList.toggle('has-selections', selected > 0);
+    });
   }
 
   function renderFilters() {
@@ -189,6 +208,19 @@
           return p.attributes && typeof p.attributes[key] === 'string' ? p.attributes[key] : '';
         })), key);
       }).join('');
+
+    dynamicFilters.querySelectorAll('[data-filter-search]').forEach(function (input) {
+      input.addEventListener('input', function () {
+        var query = filterSearchKey(input.value);
+        var group = input.closest('[data-filter-group]');
+        if (!group) return;
+        group.querySelectorAll('.filter-option').forEach(function (option) {
+          var checkbox = option.querySelector('[data-filter-key]');
+          var matches = !query || filterSearchKey(option.textContent).indexOf(query) >= 0;
+          option.hidden = !matches && !(checkbox && checkbox.checked);
+        });
+      });
+    });
 
     while (currency.options.length > 1) currency.remove(1);
     currencies.forEach(function (code) {
@@ -280,6 +312,7 @@
     });
 
     count.textContent = visible;
+    updateFilterGroups();
     if (empty) {
       empty.textContent = labels.noResults;
       empty.hidden = visible !== 0;

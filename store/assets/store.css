@@ -150,6 +150,89 @@ body{font-family:Inter,sans-serif;color:#e7eaf0;background:#0c1018}
     line-height:1.42;
     -webkit-line-clamp:1;
   }
+/* Compact, searchable filter groups for larger partner catalogs. */
+.filter-sidebar{padding:14px}
+.filter-sidebar-heading{margin-bottom:10px}
+.filter-group{
+  margin:0 0 8px;
+  overflow:hidden;
+  border:1px solid #26313e;
+  border-radius:9px;
+  background:#0d141d;
+}
+.filter-group-summary{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  min-height:40px;
+  padding:8px 10px;
+  color:#e5ebf2;
+  font-size:.78rem;
+  font-weight:700;
+  cursor:pointer;
+  list-style:none;
+}
+.filter-group-summary::-webkit-details-marker{display:none}
+.filter-group-summary::after{
+  content:"+";
+  margin-left:auto;
+  color:#6b7a8b;
+  font-size:1.1rem;
+  line-height:1;
+}
+.filter-group[open]>.filter-group-summary::after{content:"−"}
+.filter-group.has-selections>.filter-group-summary{color:#72e9eb}
+.filter-group-count{
+  display:inline-grid;
+  place-items:center;
+  min-width:19px;
+  height:19px;
+  padding:0 5px;
+  border-radius:999px;
+  background:#133337;
+  color:#7aedef;
+  font-size:.68rem;
+  line-height:1;
+}
+.filter-group-content{padding:0 9px 9px}
+.filter-search-wrap{display:block;margin:0 0 8px}
+.filter-group-search{
+  width:100%;
+  min-height:35px;
+  box-sizing:border-box;
+  padding:7px 9px;
+  border:1px solid #2b3745;
+  border-radius:7px;
+  outline:none;
+  background:#091018;
+  color:#edf2f7;
+  font:inherit;
+  font-size:.74rem;
+}
+.filter-group-search:focus{border-color:#50e3e9;box-shadow:0 0 0 2px #50e3e91c}
+.filter-group-search::placeholder{color:#748294}
+.filter-group .filter-options{
+  max-height:190px;
+  overflow:auto;
+  gap:7px;
+  padding:1px 4px 2px 1px;
+  overscroll-behavior:contain;
+}
+.filter-group .filter-option{font-size:.75rem}
+.filter-group .filter-option[hidden]{display:none!important}
+.visually-hidden{
+  position:absolute!important;
+  width:1px!important;
+  height:1px!important;
+  overflow:hidden!important;
+  clip:rect(0,0,0,0)!important;
+  white-space:nowrap!important;
+  clip-path:inset(50%)!important;
+}
+@media(max-width:760px){
+  .filter-sidebar.is-open{padding:0 10px 10px}
+  .filter-group .filter-options{max-height:160px}
+}
   .store-description{
     min-height:2.7em;
     font-size:.72rem;
