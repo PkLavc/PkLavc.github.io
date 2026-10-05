@@ -655,19 +655,21 @@
       var slot = 0;
       var sidebarSelection = placementSelection('store-sidebar', geo);
       var sidebarCampaigns = sidebarSelection ? sidebarSelection.ids : [];
+      var maxSlots = sidebarCampaigns.length ? Math.ceil(available / 160) + 1 : 0;
 
-      // Keep the Store rail unique as well: no campaign is repeated inside
-      // the same sidebar, regardless of the available vertical space.
-      while (slot < sidebarCampaigns.length && used < available) {
-        var sideAd = createAd(sidebarCampaigns[slot], 'store-sidebar', geo);
+      // Repeat the campaign set to use the full sidebar height, while only
+      // appending ads whose measured height fits in the remaining space.
+      while (slot < maxSlots && used < available) {
+        var campaignId = sidebarCampaigns[slot % sidebarCampaigns.length];
         slot += 1;
+        var sideAd = createAd(campaignId, 'store-sidebar', geo);
         if (!sideAd) continue;
 
         sidebarAds.appendChild(sideAd);
         var height = Math.ceil(sideAd.getBoundingClientRect().height || 160);
         var nextUsed = used + (used ? gap : 0) + height;
 
-        if (used && nextUsed > available) {
+        if (nextUsed > available) {
           sideAd.remove();
           break;
         }
@@ -677,11 +679,15 @@
     }
 
     var rowTimer = 0;
+    var lastRowAdLayout = null;
     function refreshRowAds() {
       rowTimer = 0;
-      grid.querySelectorAll('.pklavc-ad--store-rows').forEach(function (ad) { ad.remove(); });
       var selection = placementSelection('store-rows', geo);
       if (!selection || !selection.ids.length) {
+        if (lastRowAdLayout !== 'none') {
+          grid.querySelectorAll('.pklavc-ad--store-rows').forEach(function (ad) { ad.remove(); });
+          lastRowAdLayout = 'none';
+        }
         refreshSidebarAds();
         return;
       }
@@ -691,14 +697,33 @@
       });
       var columns = actualStoreColumns(grid);
       var interval = Math.max(1, selection.everyRows * columns);
+      var slots = [];
       var adIndex = 0;
 
       for (var index = interval; index < visibleCards.length; index += interval) {
-        var rowAd = placementAd('store-rows', geo, adIndex++);
-        if (!rowAd) continue;
-        visibleCards[index - 1].insertAdjacentElement('afterend', rowAd.ad);
-        rotatePlacement(rowAd, 'store-rows', geo);
+        slots.push({ anchor: visibleCards[index - 1], index: adIndex++ });
       }
+
+      var layoutSignature = selection.ids.join(',') + '|' + interval + '|' + slots.map(function (slot) {
+        return (slot.anchor.dataset.productId || slot.anchor.id || '') + ':' + selection.ids[slot.index % selection.ids.length];
+      }).join('|');
+
+      // ResizeObserver also fires when an ad finishes laying out. Keep the
+      // existing nodes when their positions are unchanged to avoid a remove /
+      // insert cycle that repeatedly shifts the product grid.
+      if (layoutSignature === lastRowAdLayout) {
+        requestAnimationFrame(refreshSidebarAds);
+        return;
+      }
+
+      grid.querySelectorAll('.pklavc-ad--store-rows').forEach(function (ad) { ad.remove(); });
+      slots.forEach(function (slot) {
+        var rowAd = placementAd('store-rows', geo, slot.index);
+        if (!rowAd) return;
+        slot.anchor.insertAdjacentElement('afterend', rowAd.ad);
+        rotatePlacement(rowAd, 'store-rows', geo);
+      });
+      lastRowAdLayout = layoutSignature;
 
       requestAnimationFrame(refreshSidebarAds);
     }
@@ -706,19 +731,9 @@
     function scheduleStoreAds() {
       if (rowTimer) clearTimeout(rowTimer);
       if (sidebarTimer) clearTimeout(sidebarTimer);
-      rowTimer = setTimeout(refreshRowAds, 30);
+      rowTimer = setTimeout(refreshRowAds, 180);
       sidebarTimer = setTimeout(refreshSidebarAds, 80);
     }
-
-    ['input', 'change', 'click'].forEach(function (eventName) {
-      document.addEventListener(eventName, function (event) {
-        var target = event.target;
-        if (!target || !target.closest) return;
-        if (target.closest('[data-store-search], [data-currency], [data-min-price], [data-max-price], [data-filter-key], [data-in-stock], [data-clear-filters], [data-sort], [data-columns]')) {
-          scheduleStoreAds();
-        }
-      });
-    });
 
     document.addEventListener('store:products-rendered', scheduleStoreAds);
     window.addEventListener('resize', scheduleStoreAds, { passive: true });
