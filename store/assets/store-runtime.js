@@ -43,6 +43,7 @@
 
   var filterSidebar = document.querySelector('.filter-sidebar');
   var filterHeading = filterSidebar && filterSidebar.querySelector('.filter-sidebar-heading');
+  var resultsToolbar = document.querySelector('.results-toolbar');
   var mobileFilterToggle = null;
 
   function setupLayoutControls() {
@@ -51,7 +52,7 @@
       button.setAttribute('aria-pressed', String(button.dataset.columns === '4'));
     });
 
-    if (!filterSidebar || !filterHeading || filterHeading.querySelector('[data-mobile-filter-toggle]')) return;
+    if (!filterSidebar || !filterHeading || !resultsToolbar || resultsToolbar.querySelector('[data-mobile-filter-toggle]')) return;
 
     mobileFilterToggle = document.createElement('button');
     mobileFilterToggle.type = 'button';
@@ -62,7 +63,7 @@
       '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
         '<path d="M4 7h10M18 7h2M4 17h2M10 17h10M14 4v6M8 14v6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>' +
       '</svg><span>' + (locale === 'pt' ? 'Filtros' : locale === 'es' ? 'Filtros' : 'Filters') + '</span>';
-    filterHeading.insertBefore(mobileFilterToggle, filterHeading.firstChild);
+    resultsToolbar.insertBefore(mobileFilterToggle, resultsToolbar.firstChild);
 
     mobileFilterToggle.addEventListener('click', function () {
       var open = filterSidebar.classList.toggle('is-open');
