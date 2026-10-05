@@ -45,7 +45,7 @@ function prerenderCard(product, locale) {
       <h2>${esc(product.name)}</h2>
       ${product.description ? `<p class="store-description">${esc(product.description)}</p>` : ""}
       <div class="store-price-row"><strong>${esc(price)}</strong></div>
-      <a class="store-cta" href="${esc(product.url)}" target="_blank" rel="sponsored noopener noreferrer">${locale === "pt" ? "Ver oferta" : locale === "es" ? "Ver oferta" : "View offer"}<span aria-hidden="true"> ↗</span></a>
+      <a class="store-cta" href="${esc(product.url)}" target="_blank" rel="sponsored noopener noreferrer">${locale === "pt" ? "Ver oferta" : locale === "es" ? "Ver oferta" : "View offer"}<span aria-hidden="true"> ↗︎</span></a>
     </div>
   </article>`;
 }
