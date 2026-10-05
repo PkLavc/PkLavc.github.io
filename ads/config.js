@@ -23,17 +23,24 @@
     placements: {
       // Blog: Prime Video is fixed in-article and always appears first in the desktop sidebar.
       sidebar: rotatingPlacement({
-        default: ['amazon_prime_video', 'pklavc_blog', 'macca_blog', 'pklavc_store', 'pklavc_projects']
+        default: ['amazon_prime_video', 'shopee', 'pklavc_blog', 'macca_blog', 'pklavc_store', 'pklavc_projects']
       }),
       inline: rotatingPlacement({
         default: 'amazon_prime_video',
+        rotateEverySeconds: 0
+      }),
+      // Blog home: a dedicated card is inserted between editorial cards.
+      feed: rotatingPlacement({
+        default: 'shopee',
         rotateEverySeconds: 0
       }),
       bottom: rotatingPlacement(),
       mobile: rotatingPlacement(),
 
       // Store: Prime Video is fixed between product rows and in the final ad slot.
-      'store-sidebar': rotatingPlacement(),
+      'store-sidebar': rotatingPlacement({
+        default: ['amazon_prime_video', 'pklavc_blog', 'macca_blog', 'pklavc_store', 'pklavc_projects']
+      }),
       'store-rows': rotatingPlacement({
         default: 'amazon_prime_video',
         everyRows: 10,
@@ -50,6 +57,7 @@
         style: 'prime-video',
         brandLogo: '/ads/banners/amazon-logo.png',
         brandLogoAlt: 'Amazon',
+        lineupImage: '/ads/banners/prime-video-lineup.jpg',
         locales: {
           en: {
             image: '/ads/banners/prime-video-en-v2.svg',
@@ -74,6 +82,31 @@
             inline: { title: 'Prueba Prime Video gratis durante 30 días', body: 'Para nuevos suscriptores elegibles. Se aplican términos.', cta: 'Probar gratis', href: 'https://kdbov.com/g/6osk6x1ky42fa9b296a4ce4f0d0bb0/' },
             bottom: { title: '30 días gratis de Prime Video', body: 'Para nuevos suscriptores elegibles. Se aplican términos.', cta: 'Probar gratis', href: 'https://kdbov.com/g/6osk6x1ky42fa9b296a4ce4f0d0bb0/' },
             mobile: { title: 'Prime Video — 30 días gratis', body: 'Nuevos suscriptores elegibles. Se aplican términos.', cta: 'Probar gratis', href: 'https://kdbov.com/g/6osk6x1ky42fa9b296a4ce4f0d0bb0/' }
+          }
+        }
+      },
+
+      shopee: {
+        type: 'image',
+        style: 'shopee',
+        locales: {
+          en: {
+            imageAlt: 'Shopee offers',
+            sidebar: { title: 'Shopee deals worth a look', body: 'Tech, home and everyday finds at Shopee.', cta: 'See the offers', href: 'https://xqjeo.com/c/knlhlz71ux2fa9b296a404f147125c/' },
+            inline: { title: 'Featured offers at Shopee', body: 'Explore products across tech, home and more.', cta: 'See the offers', href: 'https://xqjeo.com/c/knlhlz71ux2fa9b296a404f147125c/' },
+            feed: { title: 'Featured offers at Shopee', body: 'Explore products across tech, home and more.', cta: 'Shop Shopee offers', href: 'https://xqjeo.com/c/knlhlz71ux2fa9b296a404f147125c/' }
+          },
+          pt: {
+            imageAlt: 'Ofertas da Shopee',
+            sidebar: { title: 'Achados e ofertas na Shopee', body: 'Tecnologia, casa e produtos para o dia a dia.', cta: 'Conferir ofertas', href: 'https://xqjeo.com/c/knlhlz71ux2fa9b296a404f147125c/' },
+            inline: { title: 'Ofertas e achados da Shopee', body: 'Produtos de tecnologia, casa e muito mais.', cta: 'Ver ofertas', href: 'https://xqjeo.com/c/knlhlz71ux2fa9b296a404f147125c/' },
+            feed: { title: 'OFERTAS E ACHADOS NA SHOPEE', body: 'Produtos de tecnologia, casa e muito mais.', cta: 'Ver ofertas Shopee', href: 'https://xqjeo.com/c/knlhlz71ux2fa9b296a404f147125c/' }
+          },
+          es: {
+            imageAlt: 'Ofertas de Shopee',
+            sidebar: { title: 'Ofertas destacadas de Shopee', body: 'Tecnologia, hogar y productos para cada dia.', cta: 'Ver ofertas', href: 'https://xqjeo.com/c/knlhlz71ux2fa9b296a404f147125c/' },
+            inline: { title: 'Ofertas y hallazgos de Shopee', body: 'Productos de tecnologia, hogar y mucho mas.', cta: 'Ver ofertas', href: 'https://xqjeo.com/c/knlhlz71ux2fa9b296a404f147125c/' },
+            feed: { title: 'OFERTAS DESTACADAS DE SHOPEE', body: 'Productos de tecnologia, hogar y mucho mas.', cta: 'Ver ofertas Shopee', href: 'https://xqjeo.com/c/knlhlz71ux2fa9b296a404f147125c/' }
           }
         }
       },

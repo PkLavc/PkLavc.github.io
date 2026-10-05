@@ -3,6 +3,10 @@
 
   function detectPageContext(pathname) {
     var path = String(pathname || '/').replace(/\/index\.html$/i, '/');
+    var blogHome = /^\/blog\/(?:(en|pt|es)\/)?$/.exec(path);
+    if (blogHome) return { type: 'blog-index', locale: blogHome[1] || 'en' };
+    var legacyBlogHome = /^\/(pt|es)\/blog\/$/.exec(path);
+    if (legacyBlogHome) return { type: 'blog-index', locale: legacyBlogHome[1] };
     var blog = /^\/blog\/(?:(en|pt|es)\/)?([^/]+)\/?$/.exec(path);
     if (blog && blog[2] && blog[2] !== 'index.html') return { type: 'blog', locale: blog[1] || 'en' };
     var legacyBlog = /^\/(pt|es)\/blog\/([^/]+)\/?$/.exec(path);
@@ -12,7 +16,16 @@
     return null;
   }
 
+  var testPreview = window.PKLAVC_ADS_TEST_PREVIEW === true;
   var pageContext = detectPageContext(window.location.pathname);
+  if (!pageContext && testPreview) {
+    var previewLanguage = String(document.documentElement.lang || 'en').toLowerCase();
+    pageContext = {
+      type: 'store',
+      locale: previewLanguage.indexOf('pt') === 0 ? 'pt' : previewLanguage.indexOf('es') === 0 ? 'es' : 'en',
+      testPreview: true
+    };
+  }
   if (!pageContext) return;
 
   var config = window.PKLAVC_BLOG_ADS;
@@ -94,8 +107,9 @@
     if (selected === undefined) selected = matchCampaigns(rule, geo);
     var ids = (Array.isArray(selected) ? selected : [selected]).filter(function (id, index, list) {
       if (typeof id !== 'string' || !id.length || list.indexOf(id) !== index) return false;
-      if (pageContext.type === 'blog' && id === 'pklavc_blog') return false;
-      if (pageContext.type === 'store' && id === 'pklavc_store') return false;
+      if ((pageContext.type === 'blog' || pageContext.type === 'blog-index') && id === 'pklavc_blog') return false;
+      if (id === 'shopee' && locale !== 'pt' && geo.country !== 'BR') return false;
+      if (pageContext.type === 'store' && id === 'pklavc_store' && !pageContext.testPreview) return false;
       return true;
     });
     var seconds = localized && own(localized, 'rotateEverySeconds') ? localized.rotateEverySeconds : rule.rotateEverySeconds;
@@ -160,6 +174,8 @@
     }[locale] || null;
 
     if (!words) return null;
+    var lineupImage = safeUrl(campaign.lineupImage);
+    if (!lineupImage) return null;
 
     var creativeRoot = document.createElement('span');
     creativeRoot.className = 'pklavc-prime__creative';
@@ -176,10 +192,7 @@
         '<span class="pklavc-prime__arc pklavc-prime__arc--one"></span>' +
         '<span class="pklavc-prime__arc pklavc-prime__arc--two"></span>' +
         '<span class="pklavc-prime__screen">' +
-          '<span class="pklavc-prime__tile pklavc-prime__tile--1"><i></i><b>' + words.movies + '</b></span>' +
-          '<span class="pklavc-prime__tile pklavc-prime__tile--2"><i></i><b>' + words.series + '</b></span>' +
-          '<span class="pklavc-prime__tile pklavc-prime__tile--3"><i></i><b>' + words.originals + '</b></span>' +
-          '<span class="pklavc-prime__tile pklavc-prime__tile--4"><i></i></span>' +
+          '<span class="pklavc-prime__media-wall"><img class="pklavc-prime__lineup" src="' + lineupImage + '" alt="" loading="lazy" decoding="async"></span>' +
           '<span class="pklavc-prime__play">▶</span>' +
         '</span>' +
         '<span class="pklavc-prime__popcorn">' +
@@ -235,6 +248,41 @@
     '</span>';
   }
 
+  function shopeeAd(campaign, placement, creative, copy, destination) {
+    var shell = createShell(placement, campaign);
+    var link = document.createElement('a');
+    link.className = 'pklavc-ad__link pklavc-shopee';
+    link.href = destination;
+    if (new URL(destination).origin !== window.location.origin) {
+      link.target = '_blank';
+      link.rel = 'sponsored noopener noreferrer';
+    }
+
+    var creativeRoot = document.createElement('span');
+    creativeRoot.className = 'pklavc-shopee__creative';
+    creativeRoot.innerHTML =
+      '<span class="pklavc-shopee__copy">' +
+        '<span class="pklavc-shopee__eyebrow"><b>SHOPEE</b><i>OFERTAS</i></span>' +
+        '<strong class="pklavc-shopee__headline"></strong>' +
+        '<span class="pklavc-shopee__body"></span>' +
+        '<span class="pklavc-shopee__cta"><span></span><i aria-hidden="true">→</i></span>' +
+      '</span>' +
+      '<span class="pklavc-shopee__visual" aria-hidden="true">' +
+        '<span class="pklavc-shopee__rays"></span>' +
+        '<span class="pklavc-shopee__bag"><i></i><b>S</b></span>' +
+        '<span class="pklavc-shopee__parcel pklavc-shopee__parcel--one"></span>' +
+        '<span class="pklavc-shopee__parcel pklavc-shopee__parcel--two"></span>' +
+        '<span class="pklavc-shopee__spark pklavc-shopee__spark--one"></span>' +
+        '<span class="pklavc-shopee__spark pklavc-shopee__spark--two"></span>' +
+      '</span>';
+    creativeRoot.querySelector('.pklavc-shopee__headline').textContent = copy.title;
+    creativeRoot.querySelector('.pklavc-shopee__body').textContent = copy.body;
+    creativeRoot.querySelector('.pklavc-shopee__cta span').textContent = copy.cta;
+    link.appendChild(creativeRoot);
+    shell.appendChild(link);
+    return shell;
+  }
+
   function pklavcShowcaseAd(campaign, placement, creative, copy, destination) {
     var style = campaign.style;
     var shell = createShell(placement, campaign);
@@ -287,6 +335,9 @@
 
     if (campaign.style === 'prime-video') {
       return primeVideoAd(campaign, placement, creative, copy, destination);
+    }
+    if (campaign.style === 'shopee') {
+      return shopeeAd(campaign, placement, creative, copy, destination);
     }
     if (campaign.style === 'pklavc-blog' || campaign.style === 'pklavc-store' || campaign.style === 'pklavc-projects') {
       return pklavcShowcaseAd(campaign, placement, creative, copy, destination);
@@ -414,7 +465,17 @@
     if (campaign.type === 'adsense') ad = adsenseAd(campaign, placement);
     if (campaign.type === 'iframe') ad = iframeAd(campaign, placement);
     if (campaign.type === 'custom') ad = customAd(campaign, placement, geo);
-    if (ad) ad.dataset.adCampaign = id;
+    if (ad) {
+      ad.dataset.adCampaign = id;
+      if (pageContext.testPreview) {
+        ad.querySelectorAll('a').forEach(function (link) {
+          link.removeAttribute('href');
+          link.removeAttribute('target');
+          link.removeAttribute('rel');
+          link.setAttribute('aria-disabled', 'true');
+        });
+      }
+    }
     return ad;
   }
 
@@ -592,6 +653,40 @@
     article.dataset.blogAdsReady = 'true';
   }
 
+  function placeBlogIndexAds(geo) {
+    function hydrate() {
+      var slots = document.querySelectorAll('[data-blog-feed-ad]');
+      slots.forEach(function (slot, index) {
+        if (slot.dataset.blogFeedAdReady === 'true') return;
+        var feed = placementAd('feed', geo, index);
+        if (!feed) {
+          slot.remove();
+          document.dispatchEvent(new CustomEvent('pklavc:blog-feed-ad-empty', { detail: slot }));
+          return;
+        }
+        slot.appendChild(feed.ad);
+        slot.dataset.blogFeedAdReady = 'true';
+        rotatePlacement(feed, 'feed', geo);
+      });
+      return slots.length > 0;
+    }
+
+    // The coverflow creates its cards only after the reader reaches it. The
+    // runtime normally arrives earlier, so wait once for the real card slot.
+    if (hydrate() || document.documentElement.dataset.blogFeedAdsWatching === 'true') return;
+    document.documentElement.dataset.blogFeedAdsWatching = 'true';
+    var observer = new MutationObserver(function () {
+      if (!hydrate()) return;
+      observer.disconnect();
+      delete document.documentElement.dataset.blogFeedAdsWatching;
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+    setTimeout(function () {
+      observer.disconnect();
+      delete document.documentElement.dataset.blogFeedAdsWatching;
+    }, 30000);
+  }
+
   function ensureStoreSidebarColumn(aside) {
     if (!aside) return null;
     if (aside.parentElement && aside.parentElement.classList.contains('store-sidebar-column')) return aside.parentElement;
@@ -657,9 +752,9 @@
       var maxSlots = sidebarCampaigns.length ? Math.ceil(available / 160) + 1 : 0;
       var sidebarLayout = [top, available, maxSlots, sidebarCampaigns.join(',')].join('|');
 
-      // ResizeObserver also observes the Store rail. Rebuilding an unchanged
-      // rail would resize it again and schedule an endless remove / insert
-      // cycle, which also disturbs the current scroll anchor.
+      // This function is also called by a ResizeObserver. Rebuilding an
+      // unchanged rail would resize the Store again and schedule an endless
+      // remove / insert cycle, which also disturbs the current scroll anchor.
       if (sidebarLayout === lastSidebarAdLayout) return;
       lastSidebarAdLayout = sidebarLayout;
 
@@ -763,9 +858,32 @@
     document.body.dataset.storeAdsReady = 'true';
   }
 
+  function placePreviewAds(geo) {
+    var gallery = document.querySelector('[data-ad-preview-grid]');
+    if (!gallery) return;
+
+    var campaigns = Array.isArray(window.PKLAVC_ADS_TEST_CAMPAIGNS)
+      ? window.PKLAVC_ADS_TEST_CAMPAIGNS
+      : Object.keys(config.campaigns).filter(function (id) {
+          var campaign = config.campaigns[id];
+          return campaign.type === 'image' && campaign.locales && campaign.locales[locale];
+        });
+
+    campaigns.forEach(function (id) {
+      var ad = createAd(id, 'store-rows', geo);
+      if (ad) gallery.appendChild(ad);
+    });
+    document.body.dataset.adsTestReady = 'true';
+  }
+
   function init() {
     window.PKLAVC_BLOG_ADS_READY = getGeo().then(function (geo) {
+      if (pageContext.testPreview) {
+        placePreviewAds(geo);
+        return geo;
+      }
       if (pageContext.type === 'blog') placeBlogAds(geo);
+      if (pageContext.type === 'blog-index') placeBlogIndexAds(geo);
       if (pageContext.type === 'store') placeStoreAds(geo);
       return geo;
     });
