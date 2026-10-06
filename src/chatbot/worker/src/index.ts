@@ -185,6 +185,8 @@ export default {
           return withCors(new Response(null, { status: 204 }), env, origin);
         }
 
+        const analyticsSite = url.searchParams.get("site") === "macca" ? "macca" : "pklavc";
+        const tableName = analyticsSite === "macca" ? "macca_geo_visit_daily" : "geo_visit_daily";
         const cf = (request as Request & { cf?: GeoCfProperties }).cf;
         const countryCode = normalizeCountryCode(cf?.country);
 
@@ -198,7 +200,7 @@ export default {
         const updatedAt = new Date().toISOString();
 
         await env.DB.prepare(
-          `INSERT INTO geo_visit_daily (
+          `INSERT INTO ${tableName} (
             visit_date,
             country_code,
             region_code,
@@ -211,7 +213,7 @@ export default {
             visits = visits + 1,
             region_name = CASE
               WHEN excluded.region_name <> '' THEN excluded.region_name
-              ELSE geo_visit_daily.region_name
+              ELSE ${tableName}.region_name
             END,
             updated_at = excluded.updated_at`,
         )
@@ -222,20 +224,22 @@ export default {
       }
 
       if (url.pathname === "/analytics/map" && request.method === "GET") {
+        const analyticsSite = url.searchParams.get("site") === "macca" ? "macca" : "pklavc";
+        const tableName = analyticsSite === "macca" ? "macca_geo_visit_daily" : "geo_visit_daily";
         const period = parseGeoAnalyticsPeriod(url.searchParams.get("days"));
         const dateClause = period.days === null ? "" : "WHERE visit_date >= date('now', ?)";
         const since = period.days === null ? null : `-${Math.max(period.days - 1, 0)} days`;
 
         const countryStatement = env.DB.prepare(
           `SELECT country_code, SUM(visits) AS visits
-          FROM geo_visit_daily
+          FROM ${tableName}
           ${dateClause}
           GROUP BY country_code
           ORDER BY visits DESC, country_code ASC`,
         );
         const regionStatement = env.DB.prepare(
           `SELECT country_code, region_code, region_name, SUM(visits) AS visits
-          FROM geo_visit_daily
+          FROM ${tableName}
           ${dateClause}
           ${dateClause ? "AND" : "WHERE"} (region_code <> '' OR region_name <> '')
           GROUP BY country_code, region_code, region_name
