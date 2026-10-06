@@ -141,7 +141,8 @@ jobs:
           dispatch_mode = os.environ.get("DISPATCH_MODE", "")
           has_store = schedule_run or dispatch_mode in {"store-products-preview", "store-products-publish"}
           store_dry_run = dispatch_mode == "store-products-preview"
-          publish_queue = os.environ.get("EVENT_NAME") == "schedule" or dispatch_mode == "publish"
+          publish_queue = ((os.environ.get("EVENT_NAME") == "schedule" and not schedule_run)
+                           or dispatch_mode == "publish")
           now = datetime.now(timezone.utc)
           due = False
           for record in load("youtube-analytics.json", "videos"):
