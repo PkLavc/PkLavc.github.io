@@ -1379,7 +1379,7 @@ if (document.readyState === 'loading') {
     var style = document.createElement('link');
     style.id = 'pklavc-ads-style';
     style.rel = 'stylesheet';
-    style.href = '/ads/ads.css?v=20261005-aliexpress-banner1';
+    style.href = '/ads/ads.css?v=20261005amazon-white-logo1';
     document.head.appendChild(style);
   }
 
@@ -1387,7 +1387,7 @@ if (document.readyState === 'loading') {
     if (document.getElementById('pklavc-ads-runtime')) return;
     var runtime = document.createElement('script');
     runtime.id = 'pklavc-ads-runtime';
-    runtime.src = '/ads/ads.js?v=20261005-aliexpress-banner1';
+    runtime.src = '/ads/ads.js?v=20261005amazon-white-logo1';
     runtime.async = true;
     document.head.appendChild(runtime);
   }
@@ -1405,7 +1405,7 @@ if (document.readyState === 'loading') {
 
   var config = document.createElement('script');
   config.id = 'pklavc-ads-config';
-  config.src = '/ads/config.js?v=20261005-aliexpress-banner1';
+  config.src = '/ads/config.js?v=20261005amazon-white-logo1';
   config.async = true;
   config.addEventListener('load', loadRuntime, { once: true });
   document.head.appendChild(config);
