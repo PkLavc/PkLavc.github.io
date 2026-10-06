@@ -141,6 +141,7 @@ jobs:
           dispatch_mode = os.environ.get("DISPATCH_MODE", "")
           has_store = schedule_run or dispatch_mode in {"store-products-preview", "store-products-publish"}
           store_dry_run = dispatch_mode == "store-products-preview"
+          publish_queue = os.environ.get("EVENT_NAME") == "schedule" or dispatch_mode == "publish"
           now = datetime.now(timezone.utc)
           due = False
           for record in load("youtube-analytics.json", "videos"):
@@ -162,18 +163,19 @@ jobs:
               output.write(f"has_analytics={'true' if due else 'false'}\n")
               output.write(f"has_store_products={'true' if has_store else 'false'}\n")
               output.write(f"store_products_dry_run={'true' if store_dry_run else 'false'}\n")
-          print(f"Pending social publication: {videos}; due Analytics snapshot: {due}; Store product run: {has_store} (dry-run={store_dry_run}).")
+              output.write(f"publish_video_queue={'true' if publish_queue else 'false'}\n")
+          print(f"Pending social publication: {videos}; due Analytics snapshot: {due}; Store product run: {has_store} (dry-run={store_dry_run}); process article queue: {publish_queue}.")
           PY
 
       - name: Cache Kokoro model files
-        if: steps.pending.outputs.has_video == 'true' || steps.pending.outputs.has_store_products == 'true'
+        if: (steps.pending.outputs.has_video == 'true' && steps.pending.outputs.publish_video_queue == 'true') || steps.pending.outputs.has_store_products == 'true'
         uses: actions/cache@v4
         with:
           path: ~/.cache/huggingface/hub
           key: kokoro-82m-${{ runner.os }}-v1
 
       - name: Install video renderer and publisher dependencies
-        if: steps.pending.outputs.has_video == 'true' || steps.pending.outputs.has_store_products == 'true'
+        if: (steps.pending.outputs.has_video == 'true' && steps.pending.outputs.publish_video_queue == 'true') || steps.pending.outputs.has_store_products == 'true'
         working-directory: private-blog
         run: |
           sudo apt-get update
@@ -182,7 +184,7 @@ jobs:
 
       - name: Publish pending Instagram Reels and YouTube Shorts
         id: social
-        if: steps.pending.outputs.has_video == 'true'
+        if: steps.pending.outputs.has_video == 'true' && steps.pending.outputs.publish_video_queue == 'true'
         continue-on-error: true
         working-directory: private-blog
         env:
@@ -248,7 +250,7 @@ jobs:
           fi
 
       - name: Install Analytics client without video renderer
-        if: steps.pending.outputs.has_analytics == 'true' && steps.pending.outputs.has_video != 'true'
+        if: steps.pending.outputs.has_analytics == 'true' && (steps.pending.outputs.has_video != 'true' || steps.pending.outputs.publish_video_queue != 'true')
         working-directory: private-blog
         run: python -m pip install google-api-python-client google-auth requests
 
