@@ -5,16 +5,20 @@ on:
     # 00:47, 06:47, 12:47 and 18:47 America/Sao_Paulo.
     # The 12:47 run follows the daily 12:17 article generation by ~30 minutes.
     - cron: "47 3,9,15,21 * * *"
+    # One dedicated Store product post at 09:00 America/Sao_Paulo.
+    - cron: "0 12 * * *"
   workflow_dispatch:
     inputs:
       mode:
-        description: "Publish queued social items or run a non-publishing smoke test"
+        description: "Publish queued items, run checks, or preview/publish Store products"
         required: true
         type: choice
         default: smoke
         options:
           - smoke
           - publish
+          - store-products-preview
+          - store-products-publish
   push:
     branches: [main]
     paths:
@@ -85,10 +89,10 @@ jobs:
         working-directory: private-blog
         run: |
           python -m compileall -q scripts/social_video
-          python -m unittest scripts.social_video.test_render scripts.blog_automation.test_json_safe
+          python -m unittest scripts.social_video.test_render scripts.social_video.test_products scripts.blog_automation.test_json_safe
 
   publish:
-    if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.mode == 'publish')
+    if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && (inputs.mode == 'publish' || inputs.mode == 'store-products-preview' || inputs.mode == 'store-products-publish'))
     runs-on: ubuntu-latest
     timeout-minutes: 90
     env:
@@ -117,6 +121,10 @@ jobs:
         id: pending
         working-directory: private-blog
         shell: bash
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          EVENT_SCHEDULE: ${{ github.event.schedule }}
+          DISPATCH_MODE: ${{ inputs.mode }}
         run: |
           python - <<'PY'
           import json, os
@@ -129,6 +137,10 @@ jobs:
           videos = any(item.get("status", "pending") == "pending"
               for name in ("instagram-queue.json", "youtube-queue.json")
               for item in load(name, "items"))
+          schedule_run = os.environ.get("EVENT_NAME") == "schedule" and os.environ.get("EVENT_SCHEDULE") == "0 12 * * *"
+          dispatch_mode = os.environ.get("DISPATCH_MODE", "")
+          has_store = schedule_run or dispatch_mode in {"store-products-preview", "store-products-publish"}
+          store_dry_run = dispatch_mode == "store-products-preview"
           now = datetime.now(timezone.utc)
           due = False
           for record in load("youtube-analytics.json", "videos"):
@@ -148,18 +160,20 @@ jobs:
           with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as output:
               output.write(f"has_video={'true' if videos else 'false'}\n")
               output.write(f"has_analytics={'true' if due else 'false'}\n")
-          print(f"Pending social publication: {videos}; due Analytics snapshot: {due}.")
+              output.write(f"has_store_products={'true' if has_store else 'false'}\n")
+              output.write(f"store_products_dry_run={'true' if store_dry_run else 'false'}\n")
+          print(f"Pending social publication: {videos}; due Analytics snapshot: {due}; Store product run: {has_store} (dry-run={store_dry_run}).")
           PY
 
       - name: Cache Kokoro model files
-        if: steps.pending.outputs.has_video == 'true'
+        if: steps.pending.outputs.has_video == 'true' || steps.pending.outputs.has_store_products == 'true'
         uses: actions/cache@v4
         with:
           path: ~/.cache/huggingface/hub
           key: kokoro-82m-${{ runner.os }}-v1
 
       - name: Install video renderer and publisher dependencies
-        if: steps.pending.outputs.has_video == 'true'
+        if: steps.pending.outputs.has_video == 'true' || steps.pending.outputs.has_store_products == 'true'
         working-directory: private-blog
         run: |
           sudo apt-get update
@@ -184,8 +198,42 @@ jobs:
           CLOUDFLARE_R2_PUBLIC_BASE_URL: ${{ secrets.CLOUDFLARE_R2_PUBLIC_BASE_URL }}
         run: python -m scripts.social_video.publish_queue
 
+      - name: Publish today's 16-product Store video
+        id: store_products
+        if: steps.pending.outputs.has_store_products == 'true'
+        continue-on-error: true
+        working-directory: private-blog
+        env:
+          INSTAGRAM_ACCESS_TOKEN: ${{ secrets.INSTAGRAM_ACCESS_TOKEN }}
+          INSTAGRAM_BUSINESS_ACCOUNT_ID: ${{ secrets.INSTAGRAM_BUSINESS_ACCOUNT_ID }}
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+          CLOUDFLARE_R2_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_R2_ACCOUNT_ID }}
+          CLOUDFLARE_R2_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_R2_ACCESS_KEY_ID }}
+          CLOUDFLARE_R2_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_R2_SECRET_ACCESS_KEY }}
+          CLOUDFLARE_R2_BUCKET: ${{ secrets.CLOUDFLARE_R2_BUCKET }}
+          CLOUDFLARE_R2_PUBLIC_BASE_URL: ${{ secrets.CLOUDFLARE_R2_PUBLIC_BASE_URL }}
+        run: |
+          if [ "${{ steps.pending.outputs.store_products_dry_run }}" = "true" ]; then
+            python -m scripts.social_video.products --dry-run --preview-dir social-preview/store-products
+          else
+            python -m scripts.social_video.products
+          fi
+
+      - name: Upload Store product video preview (not published)
+        if: steps.pending.outputs.store_products_dry_run == 'true' && steps.store_products.outcome == 'success'
+        uses: actions/upload-artifact@v4
+        with:
+          name: pklavc-store-products-preview-${{ github.run_number }}
+          path: |
+            private-blog/social-preview/store-products/pklavc-store-picks.mp4
+            private-blog/social-preview/store-products/manifest.json
+          if-no-files-found: error
+          retention-days: 7
+
       - name: Persist queue and publication state
-        if: always() && steps.social.outcome != 'skipped'
+        if: always() && (steps.social.outcome != 'skipped' || steps.store_products.outcome != 'skipped')
         working-directory: private-blog
         run: |
           if [[ -n "$(git status --porcelain -- social-state/)" ]]; then
@@ -233,7 +281,7 @@ jobs:
       - name: Fail after persisting partial results
         if: always()
         run: |
-          if [[ "${{ steps.social.outcome }}" == "failure" || "${{ steps.analytics.outcome }}" == "failure" ]]; then
+          if [[ "${{ steps.social.outcome }}" == "failure" || "${{ steps.store_products.outcome }}" == "failure" || "${{ steps.analytics.outcome }}" == "failure" ]]; then
             echo "A social publication or Analytics operation failed; completed state changes were persisted first."
             exit 1
           fi
