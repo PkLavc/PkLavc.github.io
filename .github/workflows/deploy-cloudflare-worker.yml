@@ -94,6 +94,7 @@ jobs:
           INSTAGRAM_WEBHOOK_VERIFY_TOKEN: ${{ secrets.INSTAGRAM_WEBHOOK_VERIFY_TOKEN }}
 
       - name: Subscribe Instagram account to message webhooks
+        continue-on-error: true
         run: node scripts/subscribe-instagram-webhooks.mjs
         env:
           INSTAGRAM_ACCESS_TOKEN: ${{ secrets.INSTAGRAM_ACCESS_TOKEN }}
