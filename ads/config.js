@@ -4,7 +4,7 @@
   // Shared advertising configuration for blog articles and Store.
   // Rules can still be overridden by language, country or region.
   var rotationSeconds = 24;
-  var campaigns = ['pklavc_blog', 'macca_blog', 'pklavc_store', 'pklavc_projects'];
+  var campaigns = ['aliexpress', 'pklavc_blog', 'macca_blog', 'pklavc_store', 'pklavc_projects'];
 
   function rotatingPlacement(extra) {
     return Object.assign({
@@ -23,7 +23,7 @@
     placements: {
       // Blog: Prime Video is fixed in-article and always appears first in the desktop sidebar.
       sidebar: rotatingPlacement({
-        default: ['amazon_prime_video', 'shopee', 'pklavc_blog', 'macca_blog', 'pklavc_store', 'pklavc_projects']
+        default: ['amazon_prime_video', 'shopee', 'aliexpress', 'pklavc_blog', 'macca_blog', 'pklavc_store', 'pklavc_projects']
       }),
       inline: rotatingPlacement({
         default: 'amazon_prime_video',
@@ -32,12 +32,12 @@
       // Article-to-article transition ads use a separate rotation so they can
       // keep their campaign order independently from in-article placements.
       continuous: rotatingPlacement({
-        default: ['amazon_prime_video', 'shopee', 'pklavc_store', 'pklavc_projects', 'macca_blog'],
+        default: ['amazon_prime_video', 'shopee', 'aliexpress', 'pklavc_store', 'pklavc_projects', 'macca_blog'],
         rotateEverySeconds: 0
       }),
       // Blog home: a dedicated card is inserted between editorial cards.
       feed: rotatingPlacement({
-        default: 'shopee',
+        default: ['shopee', 'aliexpress'],
         rotateEverySeconds: 0
       }),
       bottom: rotatingPlacement(),
@@ -113,6 +113,37 @@
             sidebar: { title: 'Ofertas destacadas de Shopee', body: 'Tecnologia, hogar y productos para cada dia.', cta: 'Ver ofertas', href: 'https://xqjeo.com/c/knlhlz71ux2fa9b296a404f147125c/' },
             inline: { title: 'Ofertas y hallazgos de Shopee', body: 'Productos de tecnologia, hogar y mucho mas.', cta: 'Ver ofertas', href: 'https://xqjeo.com/c/knlhlz71ux2fa9b296a404f147125c/' },
             feed: { title: 'OFERTAS DESTACADAS DE SHOPEE', body: 'Productos de tecnologia, hogar y mucho mas.', cta: 'Ver ofertas Shopee', href: 'https://xqjeo.com/c/knlhlz71ux2fa9b296a404f147125c/' }
+          }
+        }
+      },
+
+      aliexpress: {
+        type: 'image',
+        style: 'aliexpress',
+        locales: {
+          en: {
+            imageAlt: 'AliExpress shopping offers',
+            sidebar: { title: 'Find your next favorite', body: 'Tech, home and everyday finds on AliExpress.', cta: 'Explore AliExpress', href: 'https://rzekl.com/c/1e8d1144942fa9b296a416525dc3e8/' },
+            inline: { title: 'Discover your next great find', body: 'Explore deals across tech, home and more.', cta: 'Explore deals', href: 'https://rzekl.com/c/1e8d1144942fa9b296a416525dc3e8/' },
+            bottom: { title: 'Find something worth a closer look', body: 'Explore AliExpress finds across tech, home and more.', cta: 'Discover offers', href: 'https://rzekl.com/c/1e8d1144942fa9b296a416525dc3e8/' },
+            mobile: { title: 'AliExpress finds for every day', body: 'Explore tech, home and everyday offers.', cta: 'Explore', href: 'https://rzekl.com/c/1e8d1144942fa9b296a416525dc3e8/' },
+            feed: { title: 'Fresh finds. Better prices.', body: 'Discover offers across tech, home and more.', cta: 'Shop AliExpress', href: 'https://rzekl.com/c/1e8d1144942fa9b296a416525dc3e8/' }
+          },
+          pt: {
+            imageAlt: 'Ofertas de compras no AliExpress',
+            sidebar: { title: 'Achados que valem a visita', body: 'Tecnologia, casa e ofertas para o dia a dia.', cta: 'Explorar AliExpress', href: 'https://rzekl.com/c/1e8d1144942fa9b296a416525dc3e8/' },
+            inline: { title: 'Descubra seu próximo achado', body: 'Ofertas de tecnologia, casa e muito mais.', cta: 'Ver ofertas', href: 'https://rzekl.com/c/1e8d1144942fa9b296a416525dc3e8/' },
+            bottom: { title: 'Achados para descobrir', body: 'Explore ofertas de tecnologia, casa e muito mais.', cta: 'Descobrir ofertas', href: 'https://rzekl.com/c/1e8d1144942fa9b296a416525dc3e8/' },
+            mobile: { title: 'Ofertas para o seu dia a dia', body: 'Achados de tecnologia, casa e muito mais.', cta: 'Explorar', href: 'https://rzekl.com/c/1e8d1144942fa9b296a416525dc3e8/' },
+            feed: { title: 'Ofertas para descobrir', body: 'Achados de tecnologia, casa e muito mais.', cta: 'Ver AliExpress', href: 'https://rzekl.com/c/1e8d1144942fa9b296a416525dc3e8/' }
+          },
+          es: {
+            imageAlt: 'Ofertas de compras en AliExpress',
+            sidebar: { title: 'Encuentra algo que te encante', body: 'Tecnología, hogar y hallazgos para cada día.', cta: 'Explorar AliExpress', href: 'https://rzekl.com/c/1e8d1144942fa9b296a416525dc3e8/' },
+            inline: { title: 'Descubre tu próximo hallazgo', body: 'Ofertas de tecnología, hogar y mucho más.', cta: 'Ver ofertas', href: 'https://rzekl.com/c/1e8d1144942fa9b296a416525dc3e8/' },
+            bottom: { title: 'Hallazgos para descubrir', body: 'Explora ofertas de tecnología, hogar y más.', cta: 'Descubrir ofertas', href: 'https://rzekl.com/c/1e8d1144942fa9b296a416525dc3e8/' },
+            mobile: { title: 'Ofertas para cada día', body: 'Encuentra tecnología, hogar y mucho más.', cta: 'Explorar', href: 'https://rzekl.com/c/1e8d1144942fa9b296a416525dc3e8/' },
+            feed: { title: 'Nuevos hallazgos. Mejores precios.', body: 'Descubre ofertas en tecnología, hogar y más.', cta: 'Ver AliExpress', href: 'https://rzekl.com/c/1e8d1144942fa9b296a416525dc3e8/' }
           }
         }
       },

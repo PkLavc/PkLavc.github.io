@@ -1798,9 +1798,103 @@
 /* The Store's final campaign spans its complete results column. */
 .pklavc-ad--store-bottom { width: 100%; margin: 34px 0 0; }
 
+/* AliExpress: a bold marketplace creative that mirrors Shopee's compact banner format. */
+.pklavc-ad--style-aliexpress .pklavc-ad__link.pklavc-aliexpress {
+  display: block;
+  min-height: 0;
+  padding: 0;
+  border: 1px solid rgba(255, 118, 76, .8);
+  border-radius: 12px;
+  background: #3a0b12;
+  overflow: hidden;
+}
+
+.pklavc-aliexpress__creative {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  grid-template-columns: minmax(0, 1.18fr) minmax(122px, .82fr);
+  min-height: 230px;
+  overflow: hidden;
+  color: #fff;
+  background:
+    radial-gradient(circle at 82% 18%, rgba(255, 202, 103, .34), transparent 24%),
+    linear-gradient(132deg, #650f1d 0%, #c91d2b 48%, #f15b35 100%);
+}
+
+.pklavc-aliexpress__creative::before {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  content: '';
+  opacity: .28;
+  background-image: linear-gradient(135deg, transparent 46%, rgba(255,255,255,.38) 47%, transparent 49%);
+  background-size: 31px 31px;
+}
+
+.pklavc-aliexpress__copy,
+.pklavc-aliexpress__visual { position: relative; min-width: 0; }
+
+.pklavc-aliexpress__copy {
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 9px;
+  padding: 24px clamp(20px, 3vw, 38px);
+}
+
+.pklavc-aliexpress__eyebrow { display: inline-flex; align-items: center; gap: 7px; color: #fff; font: 900 .68rem/1 Inter, system-ui, sans-serif; letter-spacing: .12em; text-transform: uppercase; }
+.pklavc-aliexpress__eyebrow b { font: inherit; }
+.pklavc-aliexpress__eyebrow i { font: 850 .54rem/1 Inter, system-ui, sans-serif; letter-spacing: .12em; opacity: .78; }
+.pklavc-aliexpress__eyebrow::before { width: 18px; height: 18px; border: 2px solid #fff; border-radius: 50% 50% 50% 3px; content: ''; transform: rotate(-45deg); box-shadow: inset 0 0 0 3px rgba(255,255,255,.12); }
+.pklavc-aliexpress__headline { max-width: 19ch; font: 950 clamp(1.55rem, 2.8vw, 2.75rem)/.98 Inter, system-ui, sans-serif; letter-spacing: -.052em; text-wrap: balance; text-shadow: 0 2px 16px rgba(65, 4, 12, .28); }
+.pklavc-aliexpress__body { max-width: 34rem; color: rgba(255,255,255,.9); font: 520 clamp(.76rem, 1.1vw, .92rem)/1.4 Inter, system-ui, sans-serif; }
+.pklavc-aliexpress__cta { display: inline-flex; align-items: center; gap: 10px; margin-top: 3px; padding: 10px 14px; border-radius: 999px; background: #fff; color: #b5162c; font: 850 .76rem/1 Inter, system-ui, sans-serif; box-shadow: 0 9px 18px rgba(77, 12, 3, .24); }
+.pklavc-aliexpress__cta i { font-style: normal; font-size: 1.08rem; transition: transform .2s ease; }
+.pklavc-aliexpress:hover .pklavc-aliexpress__cta i,
+.pklavc-aliexpress:focus-visible .pklavc-aliexpress__cta i { transform: translateX(4px); }
+
+.pklavc-aliexpress__visual { z-index: 1; min-height: 230px; overflow: hidden; }
+.pklavc-aliexpress__halo { position: absolute; width: 300px; height: 300px; right: -116px; top: -47px; border: 1px solid rgba(255,255,255,.48); border-radius: 50%; box-shadow: 0 0 0 24px rgba(255,255,255,.055), 0 0 0 49px rgba(255,255,255,.045); }
+.pklavc-aliexpress__deal-tag { position: absolute; z-index: 3; top: 17%; right: 11%; display: grid; width: 76px; height: 68px; place-content: center; border: 2px solid rgba(255,255,255,.75); border-radius: 15px 15px 20px 20px; background: linear-gradient(145deg, #fff4d8, #ffc76b); color: #a31525; font: 950 .68rem/1.12 Inter, system-ui, sans-serif; letter-spacing: .06em; text-align: center; box-shadow: 0 12px 22px rgba(72,5,11,.28); transform: rotate(8deg); }
+.pklavc-aliexpress__parcel { position: absolute; z-index: 2; display: block; border: 2px solid rgba(255,255,255,.72); border-radius: 12px; box-shadow: 0 18px 24px rgba(72,5,11,.28); }
+.pklavc-aliexpress__parcel i { position: absolute; inset: 0 auto 0 43%; width: 14%; background: rgba(255,244,216,.86); }
+.pklavc-aliexpress__parcel i::after { position: absolute; top: 42%; left: -200%; width: 500%; height: 8px; background: rgba(255,244,216,.86); content: ''; }
+.pklavc-aliexpress__parcel--one { right: 16%; bottom: 10%; width: 96px; height: 91px; background: linear-gradient(145deg, #ffb342, #f06439); transform: rotate(7deg); }
+.pklavc-aliexpress__parcel--two { right: 49%; bottom: 6%; width: 63px; height: 59px; background: linear-gradient(145deg, #ffd778, #fa9841); transform: rotate(-11deg); }
+.pklavc-aliexpress__parcel--three { right: 1%; bottom: 12%; width: 49px; height: 48px; background: linear-gradient(145deg, #fff0ce, #ffb85d); transform: rotate(13deg); }
+.pklavc-aliexpress__spark { position: absolute; width: 7px; height: 7px; border-radius: 50%; background: #fff; box-shadow: 0 0 14px #fff; }
+.pklavc-aliexpress__spark--one { top: 15%; right: 53%; }
+.pklavc-aliexpress__spark--two { top: 54%; right: 6%; width: 5px; height: 5px; }
+.pklavc-aliexpress__spark--three { top: 31%; left: 10%; width: 4px; height: 4px; }
+
+/* Keep the shopping creative compact in the same home-page ad card as Shopee. */
+.blog-carousel-ad-slot .pklavc-ad--style-aliexpress { width: 100%; height: 100%; margin: 0; }
+.blog-carousel-ad-slot .pklavc-aliexpress__creative { height: 100%; min-height: 0; grid-template-columns: 1fr; }
+.blog-carousel-ad-slot .pklavc-aliexpress__copy { justify-content: flex-start; padding: 42px 22px 10px; }
+.blog-carousel-ad-slot .pklavc-aliexpress__headline { font-size: clamp(1.35rem, 2.2vw, 1.82rem); }
+.blog-carousel-ad-slot .pklavc-aliexpress__body { font-size: .77rem; }
+.blog-carousel-ad-slot .pklavc-aliexpress__visual { position: absolute; right: 0; bottom: 0; width: 54%; min-height: 150px; height: 58%; opacity: .96; }
+
+/* Sidebar placement matches the compact vertical footprint of the Shopee creative. */
+.pklavc-ad--sidebar.pklavc-ad--style-aliexpress .pklavc-aliexpress__creative { grid-template-columns: minmax(0, 1fr) 112px; min-height: 210px; }
+.pklavc-ad--sidebar.pklavc-ad--style-aliexpress .pklavc-aliexpress__copy { gap: 7px; padding: 21px 17px; }
+.pklavc-ad--sidebar.pklavc-ad--style-aliexpress .pklavc-aliexpress__headline { font-size: 1.28rem; }
+.pklavc-ad--sidebar.pklavc-ad--style-aliexpress .pklavc-aliexpress__body { font-size: .72rem; }
+.pklavc-ad--sidebar.pklavc-ad--style-aliexpress .pklavc-aliexpress__cta { padding: 9px 11px; font-size: .69rem; }
+.pklavc-ad--sidebar.pklavc-ad--style-aliexpress .pklavc-aliexpress__visual { min-height: 210px; }
+.pklavc-ad--sidebar.pklavc-ad--style-aliexpress .pklavc-aliexpress__parcel--one { right: 2%; bottom: 22%; width: 77px; height: 73px; }
+.pklavc-ad--sidebar.pklavc-ad--style-aliexpress .pklavc-aliexpress__parcel--two { right: 44%; bottom: 7%; width: 49px; height: 46px; }
+.pklavc-ad--sidebar.pklavc-ad--style-aliexpress .pklavc-aliexpress__parcel--three { right: -14%; bottom: 7%; width: 39px; height: 38px; }
+.pklavc-ad--sidebar.pklavc-ad--style-aliexpress .pklavc-aliexpress__deal-tag { top: 13%; right: 15%; width: 59px; height: 53px; font-size: .55rem; }
+
 @media (max-width: 760px) {
   .pklavc-prime__screen { top: 5%; right: 6%; width: 88%; height: 84%; }
   .pklavc-shopee__creative { grid-template-columns: 1fr; }
   .pklavc-shopee__visual { min-height: 170px; }
+  .pklavc-aliexpress__creative { grid-template-columns: 1fr; }
+  .pklavc-aliexpress__visual { min-height: 170px; }
   .pklavc-ad--store-bottom { width: 100%; margin: 26px 0 0; }
 }

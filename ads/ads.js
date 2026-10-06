@@ -283,6 +283,43 @@
     return shell;
   }
 
+  function aliexpressAd(campaign, placement, creative, copy, destination) {
+    var shell = createShell(placement, campaign);
+    var link = document.createElement('a');
+    link.className = 'pklavc-ad__link pklavc-aliexpress';
+    link.href = destination;
+    if (new URL(destination).origin !== window.location.origin) {
+      link.target = '_blank';
+      link.rel = 'sponsored noopener noreferrer';
+    }
+
+    var creativeRoot = document.createElement('span');
+    creativeRoot.className = 'pklavc-aliexpress__creative';
+    creativeRoot.innerHTML =
+      '<span class="pklavc-aliexpress__copy">' +
+        '<span class="pklavc-aliexpress__eyebrow"><b>AliExpress</b><i>ONLINE FINDS</i></span>' +
+        '<strong class="pklavc-aliexpress__headline"></strong>' +
+        '<span class="pklavc-aliexpress__body"></span>' +
+        '<span class="pklavc-aliexpress__cta"><span></span><i aria-hidden="true">&#8594;</i></span>' +
+      '</span>' +
+      '<span class="pklavc-aliexpress__visual" aria-hidden="true">' +
+        '<span class="pklavc-aliexpress__halo"></span>' +
+        '<span class="pklavc-aliexpress__deal-tag">FRESH<br>FINDS</span>' +
+        '<span class="pklavc-aliexpress__parcel pklavc-aliexpress__parcel--one"><i></i></span>' +
+        '<span class="pklavc-aliexpress__parcel pklavc-aliexpress__parcel--two"><i></i></span>' +
+        '<span class="pklavc-aliexpress__parcel pklavc-aliexpress__parcel--three"><i></i></span>' +
+        '<span class="pklavc-aliexpress__spark pklavc-aliexpress__spark--one"></span>' +
+        '<span class="pklavc-aliexpress__spark pklavc-aliexpress__spark--two"></span>' +
+        '<span class="pklavc-aliexpress__spark pklavc-aliexpress__spark--three"></span>' +
+      '</span>';
+    creativeRoot.querySelector('.pklavc-aliexpress__headline').textContent = copy.title;
+    creativeRoot.querySelector('.pklavc-aliexpress__body').textContent = copy.body;
+    creativeRoot.querySelector('.pklavc-aliexpress__cta span').textContent = copy.cta;
+    link.appendChild(creativeRoot);
+    shell.appendChild(link);
+    return shell;
+  }
+
   function pklavcShowcaseAd(campaign, placement, creative, copy, destination) {
     var style = campaign.style;
     var shell = createShell(placement, campaign);
@@ -339,6 +376,9 @@
     }
     if (campaign.style === 'shopee') {
       return shopeeAd(campaign, placement, creative, copy, destination);
+    }
+    if (campaign.style === 'aliexpress') {
+      return aliexpressAd(campaign, placement, creative, copy, destination);
     }
     if (campaign.style === 'pklavc-blog' || campaign.style === 'pklavc-store' || campaign.style === 'pklavc-projects') {
       return pklavcShowcaseAd(campaign, placement, creative, copy, destination);
