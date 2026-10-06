@@ -1496,18 +1496,30 @@
   }
 }
 
-/* Monochrome Amazon mark remains legible directly on the dark campaign art. */
+/* Use the real Amazon logo image instead of a CSS mask.
+   This keeps the mark visible in iOS/WebKit and in compact/mobile placements. */
 .pklavc-prime__brand{
-  display:block;
+  display:flex;
+  align-items:center;
+  justify-content:flex-start;
   flex:0 0 auto;
   width:min(220px,72%);
   height:66px;
   min-height:66px;
   padding:0;
   border-radius:0;
-  background:#fff;
-  -webkit-mask:url('/ads/assets/creative-01.png') left center / contain no-repeat;
-  mask:url('/ads/assets/creative-01.png') left center / contain no-repeat;
+  background:transparent;
+  overflow:visible;
+}
+
+.pklavc-prime__brand-logo{
+  display:block;
+  width:100%;
+  height:100%;
+  max-width:100%;
+  object-fit:contain;
+  object-position:left center;
+  flex:0 0 auto;
 }
 
 /* Prime Video v4: an original poster-wall treatment, distinct from the other campaigns. */
