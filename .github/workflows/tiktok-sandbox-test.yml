@@ -1,8 +1,16 @@
-name: TikTok Sandbox Direct Post Test
-# Retry uses FILE_UPLOAD to avoid URL ownership requirements.
+name: TikTok Sandbox Content Posting Test
 
 on:
   workflow_dispatch:
+    inputs:
+      mode:
+        description: "Sandbox Content Posting API test"
+        required: true
+        type: choice
+        default: direct
+        options:
+          - direct
+          - draft
   push:
     branches: [main]
     paths:
@@ -39,7 +47,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y ffmpeg espeak-ng fonts-dejavu-core
-          python -m pip install pillow boto3 requests
+          python -m pip install pillow requests
 
       - name: Mint GitHub OIDC token for TikTok publisher
         id: oidc
@@ -52,15 +60,17 @@ jobs:
           echo "::add-mask::$token"
           echo "token=$token" >> "$GITHUB_OUTPUT"
 
-      - name: Publish one private TikTok sandbox test
+      - name: Run TikTok Sandbox Content Posting test
         working-directory: private-blog
         env:
           TIKTOK_PUBLISH_OIDC_TOKEN: ${{ steps.oidc.outputs.token }}
           SOCIAL_MAX_VIDEO_MB: ${{ vars.SOCIAL_MAX_VIDEO_MB || '25' }}
           SOCIAL_ALLOW_ESPEAK_FALLBACK: "true"
-          CLOUDFLARE_R2_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_R2_ACCOUNT_ID }}
-          CLOUDFLARE_R2_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_R2_ACCESS_KEY_ID }}
-          CLOUDFLARE_R2_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_R2_SECRET_ACCESS_KEY }}
-          CLOUDFLARE_R2_BUCKET: ${{ secrets.CLOUDFLARE_R2_BUCKET }}
-          CLOUDFLARE_R2_PUBLIC_BASE_URL: ${{ secrets.CLOUDFLARE_R2_PUBLIC_BASE_URL }}
-        run: python -m scripts.social_video.tiktok_test
+          EVENT_NAME: ${{ github.event_name }}
+          TEST_MODE: ${{ inputs.mode }}
+        run: |
+          if [ "$EVENT_NAME" = "push" ] || [ "$TEST_MODE" = "draft" ]; then
+            python -m scripts.social_video.tiktok_draft_test
+          else
+            python -m scripts.social_video.tiktok_test
+          fi
