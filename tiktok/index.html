@@ -17,6 +17,7 @@
     p{margin:0;color:#aaaab4;line-height:1.55}
     .eyebrow{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#777985;margin-bottom:10px}
     .account{display:flex;align-items:center;justify-content:space-between;gap:16px}
+    .identity{display:flex;align-items:center;gap:14px}.avatar{width:52px;height:52px;border-radius:50%;object-fit:cover;background:#202027;border:1px solid #33333b}
     .account strong{display:block;font-size:18px}.account span{color:#9898a3}
     .badge{border:1px solid #34343c;border-radius:999px;padding:6px 10px;font-size:12px;color:#c8c8cf;white-space:nowrap}
     .grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
@@ -58,10 +59,13 @@
     <section id="publisher" class="hidden">
       <section class="card">
         <div class="account">
-          <div>
-            <div class="eyebrow">Authorized account</div>
-            <strong id="creatorName">TikTok account</strong>
-            <span id="creatorMeta"></span>
+          <div class="identity">
+            <img id="creatorAvatar" class="avatar" alt="" hidden>
+            <div>
+              <div class="eyebrow">Authorized account · user.info.basic</div>
+              <strong id="creatorName">TikTok account</strong>
+              <span id="creatorMeta"></span>
+            </div>
           </div>
           <span class="badge">Sandbox</span>
         </div>
@@ -179,15 +183,24 @@
 
       async function loadCreator() {
         try {
-          const creator = await apiJson("/tiktok/creator-info", {});
+          const [user, creator] = await Promise.all([
+            apiJson("/tiktok/user-info", {}),
+            apiJson("/tiktok/creator-info", {})
+          ]);
           connectCard.classList.add("hidden");
           publisher.classList.remove("hidden");
 
           const username = creator.creator_username ? "@" + creator.creator_username : "Authorized TikTok account";
-          document.getElementById("creatorName").textContent = username;
+          document.getElementById("creatorName").textContent = user.display_name || creator.creator_nickname || username;
           document.getElementById("creatorMeta").textContent =
-            (creator.creator_nickname || "") +
+            username +
             (creator.max_video_post_duration_sec ? " · max " + creator.max_video_post_duration_sec + "s" : "");
+          const avatar = document.getElementById("creatorAvatar");
+          if (user.avatar_url) {
+            avatar.src = user.avatar_url;
+            avatar.alt = (user.display_name || username) + " avatar";
+            avatar.hidden = false;
+          }
 
           privacy.innerHTML = '<option value="">Choose privacy</option>';
           for (const option of creator.privacy_level_options || []) {
