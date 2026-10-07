@@ -4,6 +4,8 @@ import { closeDiscordConversation, drainDiscordMessageQueue, enqueueDiscordMessa
 import { decryptInstagramRecipient, deriveInstagramIdentity, encryptInstagramRecipient, sendInstagramMessage } from "./instagram-messaging";
 import { parseInstagramWebhook } from "./instagram-webhook";
 import { handleTikTokOAuthExchange } from "./tiktok-oauth";
+import { verifyGithubActionsOidc } from "./github-oidc";
+import { handleTikTokCreatorInfo, handleTikTokDirectPost, handleTikTokMediaProxy, handleTikTokPostStatus } from "./tiktok-publish";
 
 export interface Env {
   DB: D1Database;
@@ -48,6 +50,7 @@ export interface Env {
   INSTAGRAM_GRAPH_API_VERSION?: string;
   TIKTOK_SANDBOX_CLIENT_KEY?: string;
   TIKTOK_SANDBOX_CLIENT_SECRET?: string;
+  CLOUDFLARE_R2_PUBLIC_BASE_URL?: string;
 }
 
 type ChatPayload = {
@@ -114,6 +117,10 @@ export default {
     const traceId = request.headers.get("cf-ray") || crypto.randomUUID();
     const traceparent = request.headers.get("traceparent") || `00-${traceId.replace(/[^a-fA-F0-9]/g, "").slice(0, 32).padEnd(32, "0")}-0000000000000001-01`;
 
+    if (url.pathname.startsWith("/tiktok/media/")) {
+      return handleTikTokMediaProxy(request, env);
+    }
+
     if (url.pathname === "/discord/interactions" && request.method === "POST") {
       return handleDiscordInteraction(request, env, ctx);
     }
@@ -167,6 +174,35 @@ export default {
           return withCors(json({ error: "origin_not_allowed" }, 403), env, origin);
         }
         return withCors(await handleTikTokOAuthExchange(request, env), env, origin);
+      }
+
+      if (
+        request.method === "POST" &&
+        (
+          url.pathname === "/tiktok/creator-info" ||
+          url.pathname === "/tiktok/publish/video" ||
+          url.pathname === "/tiktok/publish/status"
+        )
+      ) {
+        try {
+          await verifyGithubActionsOidc(request);
+        } catch (error) {
+          console.log(JSON.stringify({
+            level: "warn",
+            event: "tiktok_github_oidc_rejected",
+            reason: error instanceof Error ? error.message : "unknown",
+            trace_id: traceId,
+          }));
+          return json({ error: "unauthorized" }, 401);
+        }
+
+        if (url.pathname === "/tiktok/creator-info") {
+          return handleTikTokCreatorInfo(env);
+        }
+        if (url.pathname === "/tiktok/publish/video") {
+          return handleTikTokDirectPost(request, env);
+        }
+        return handleTikTokPostStatus(request, env);
       }
 
       if (url.pathname === "/health" && request.method === "GET") {
