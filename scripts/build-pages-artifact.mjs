@@ -22,6 +22,7 @@ const publicEntries = [
   "changelog",
   "context.txt",
   "credits",
+  "development",
   "editorial-policy",
   "favicon.ico",
   "favicon.svg",
