@@ -10,6 +10,7 @@ const root = process.cwd();
 const outDir = path.join(root, ".pages-dist");
 
 const publicEntries = [
+  "Autotrader",
   "404.html",
   "410.html",
   "503.html",
