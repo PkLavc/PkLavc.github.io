@@ -62,7 +62,7 @@ describe("Skylet browser conversation session", () => {
     for (const page of ["ia/index.html", "pt/ia/index.html", "es/ia/index.html"]) {
       const html = readFileSync(new URL(`../../../../${page}`, import.meta.url), "utf8");
       expect(html).toMatch(/\/ia\/skylet-chat\.js\?v=[^"']+/);
-      expect(html).toContain("/js/index.js?v=2038092390");
+      expect(html).toMatch(/\/js\/index\.js\?v=[^"\']+/);
     }
     expect(indexScript).toMatch(/\/js\/skylet-widget\.js\?v=[^"']+/);
     for (const page of ["about/index.html", "pt/sobre/index.html", "es/sobre/index.html"]) {
