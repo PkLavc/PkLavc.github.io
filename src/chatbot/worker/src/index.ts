@@ -5,7 +5,7 @@ import { decryptInstagramRecipient, deriveInstagramIdentity, encryptInstagramRec
 import { parseInstagramWebhook } from "./instagram-webhook";
 import { handleTikTokOAuthExchange } from "./tiktok-oauth";
 import { verifyGithubActionsOidc } from "./github-oidc";
-import { handleTikTokCreatorInfo, handleTikTokDirectPost, handleTikTokMediaProxy, handleTikTokPostStatus } from "./tiktok-publish";
+import { handleTikTokCreatorInfo, handleTikTokDirectFilePost, handleTikTokDirectPost, handleTikTokMediaProxy, handleTikTokPostStatus } from "./tiktok-publish";
 
 export interface Env {
   DB: D1Database;
@@ -181,6 +181,7 @@ export default {
         (
           url.pathname === "/tiktok/creator-info" ||
           url.pathname === "/tiktok/publish/video" ||
+          url.pathname === "/tiktok/publish/file" ||
           url.pathname === "/tiktok/publish/status"
         )
       ) {
@@ -201,6 +202,9 @@ export default {
         }
         if (url.pathname === "/tiktok/publish/video") {
           return handleTikTokDirectPost(request, env);
+        }
+        if (url.pathname === "/tiktok/publish/file") {
+          return handleTikTokDirectFilePost(request, env);
         }
         return handleTikTokPostStatus(request, env);
       }
