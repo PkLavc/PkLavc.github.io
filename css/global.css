@@ -862,3 +862,16 @@ body.seo-layout .footer-minimal {
         margin-left: -16px;
     }
 }
+
+
+/* Final unified footer is present in HTML on home pages.
+   Keep it visible from first paint so no legacy/gray footer flashes underneath. */
+.footer-minimal[data-unified-footer="true"] {
+    opacity: 1;
+    visibility: visible;
+    transition: none;
+}
+
+.footer-minimal.footer-projects {
+    background: #101010;
+}
