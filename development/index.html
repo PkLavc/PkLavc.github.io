@@ -77,6 +77,9 @@
         /* Development preview: only the name is changed. Background/layout remain the current homepage. */
         .pklavc-name-heading {
             white-space: nowrap;
+            font-family: Poppins, Inter, sans-serif !important;
+            font-weight: 800 !important;
+            letter-spacing: -0.035em;
         }
 
         .pklavc-name-morph {
@@ -86,6 +89,9 @@
             gap: 0;
             white-space: nowrap;
             line-height: 1;
+            font-family: inherit;
+            font-weight: inherit;
+            vertical-align: baseline;
         }
 
         .pklavc-word {
@@ -269,6 +275,379 @@
         }
     </style>
 
+    
+    <style id="development-lower-content-style">
+        /* Lower content restored from the first development concept.
+           Scoped so the current homepage background, particles, carousel,
+           fixed navigation, Skylet widget and footer remain untouched. */
+        .dev-lower-content {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            background: #101114;
+            color: #f4f7f9;
+            border-top: 1px solid rgba(255,255,255,.07);
+            font-family: Inter, Poppins, sans-serif;
+        }
+
+        .dev-lower-section {
+            width: min(1180px, calc(100% - 48px));
+            margin: 0 auto;
+            padding: clamp(76px, 8vw, 124px) 0;
+            border-bottom: 1px solid rgba(255,255,255,.07);
+        }
+
+        .dev-lower-section:last-child {
+            border-bottom: 0;
+        }
+
+        .dev-lower-grid {
+            display: grid;
+            grid-template-columns: minmax(180px, .34fr) minmax(0, 1fr);
+            gap: clamp(42px, 7vw, 104px);
+            align-items: start;
+        }
+
+        .dev-lower-index {
+            position: sticky;
+            top: 110px;
+        }
+
+        .dev-lower-number {
+            display: block;
+            margin-bottom: 14px;
+            color: var(--clr-primary);
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: .2em;
+            text-transform: uppercase;
+        }
+
+        .dev-lower-index h2 {
+            margin: 0;
+            color: rgba(255,255,255,.92);
+            font-family: Poppins, Inter, sans-serif;
+            font-size: clamp(28px, 3vw, 42px);
+            font-weight: 700;
+            line-height: 1.1;
+            letter-spacing: -.03em;
+        }
+
+        .dev-lower-body > p {
+            max-width: 840px;
+            margin: 0;
+            color: rgba(240,244,247,.70);
+            font-size: clamp(15px, 1.35vw, 18px);
+            line-height: 1.78;
+        }
+
+        .dev-lower-body > p + p {
+            margin-top: 19px;
+        }
+
+        .dev-discipline-list,
+        .dev-project-list {
+            margin-top: 46px;
+            border-top: 1px solid rgba(255,255,255,.08);
+        }
+
+        .dev-discipline {
+            display: grid;
+            grid-template-columns: 68px minmax(190px,.6fr) minmax(0,1fr);
+            gap: 22px;
+            align-items: center;
+            min-height: 108px;
+            padding: 22px 0;
+            border-bottom: 1px solid rgba(255,255,255,.08);
+        }
+
+        .dev-code {
+            color: rgba(255,255,255,.30);
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: .16em;
+            text-transform: uppercase;
+        }
+
+        .dev-discipline h3,
+        .dev-project h3 {
+            margin: 0;
+            color: #fff;
+            font-family: Poppins, Inter, sans-serif;
+            font-weight: 700;
+            letter-spacing: -.02em;
+        }
+
+        .dev-discipline h3 {
+            font-size: clamp(19px, 1.8vw, 26px);
+        }
+
+        .dev-discipline p,
+        .dev-project p {
+            margin: 0;
+            color: rgba(240,244,247,.56);
+            font-size: 13px;
+            line-height: 1.67;
+        }
+
+        .dev-project {
+            position: relative;
+            display: grid;
+            grid-template-columns: 94px minmax(230px,.72fr) minmax(0,1fr) 24px;
+            gap: 22px;
+            align-items: center;
+            min-height: 118px;
+            padding: 24px 14px 24px 0;
+            border-bottom: 1px solid rgba(255,255,255,.08);
+            color: inherit;
+            text-decoration: none;
+            transition: padding-left .24s ease, background .24s ease;
+        }
+
+        .dev-project:hover,
+        .dev-project:focus-visible {
+            padding-left: 14px;
+            background: linear-gradient(90deg, rgba(0,209,255,.075), transparent 72%);
+            outline: none;
+        }
+
+        .dev-project h3 {
+            font-size: clamp(21px, 2.1vw, 30px);
+        }
+
+        .dev-project-arrow {
+            color: var(--clr-primary);
+            font-size: 21px;
+            transition: transform .24s ease;
+        }
+
+        .dev-project:hover .dev-project-arrow,
+        .dev-project:focus-visible .dev-project-arrow {
+            transform: translateX(5px);
+        }
+
+        .dev-writing-panel {
+            margin-top: 46px;
+            display: grid;
+            grid-template-columns: 1.25fr .75fr;
+            border: 1px solid rgba(255,255,255,.08);
+            background: rgba(255,255,255,.018);
+        }
+
+        .dev-writing-main,
+        .dev-writing-side {
+            padding: clamp(28px, 4vw, 48px);
+        }
+
+        .dev-writing-side {
+            border-left: 1px solid rgba(255,255,255,.08);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 32px;
+        }
+
+        .dev-writing-main h3 {
+            max-width: 690px;
+            margin: 0 0 20px;
+            color: #fff;
+            font-family: Poppins, Inter, sans-serif;
+            font-size: clamp(28px, 3.5vw, 48px);
+            font-weight: 700;
+            line-height: 1.08;
+            letter-spacing: -.035em;
+        }
+
+        .dev-writing-main p,
+        .dev-writing-side p {
+            margin: 0;
+            color: rgba(240,244,247,.60);
+            font-size: 14px;
+            line-height: 1.74;
+        }
+
+        .dev-writing-label {
+            color: rgba(255,255,255,.30);
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: .18em;
+            text-transform: uppercase;
+        }
+
+        .dev-text-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 9px;
+            width: fit-content;
+            margin-top: 28px;
+            color: #fff;
+            text-decoration: none;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: .13em;
+            text-transform: uppercase;
+        }
+
+        .dev-text-link::after {
+            content: "→";
+            color: var(--clr-primary);
+        }
+
+        .dev-route-list {
+            margin-top: 44px;
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0,1fr));
+            border: 1px solid rgba(255,255,255,.08);
+            border-right: 0;
+        }
+
+        .dev-route {
+            min-height: 126px;
+            padding: 22px;
+            border-right: 1px solid rgba(255,255,255,.08);
+            color: #fff;
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: background .24s ease;
+        }
+
+        .dev-route:hover,
+        .dev-route:focus-visible {
+            background: rgba(0,209,255,.055);
+            outline: none;
+        }
+
+        .dev-route small {
+            color: rgba(255,255,255,.31);
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: .14em;
+            text-transform: uppercase;
+        }
+
+        .dev-route strong {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 12px;
+            font-family: Poppins, Inter, sans-serif;
+            font-size: 17px;
+            font-weight: 700;
+        }
+
+        .dev-route strong::after {
+            content: "↗";
+            color: var(--clr-primary);
+            font-family: Inter, sans-serif;
+            font-size: 13px;
+        }
+
+        @media (max-width: 900px) {
+            .dev-lower-grid {
+                grid-template-columns: 1fr;
+                gap: 28px;
+            }
+
+            .dev-lower-index {
+                position: static;
+            }
+
+            .dev-project {
+                grid-template-columns: 72px minmax(180px,.75fr) minmax(0,1fr) 24px;
+                gap: 16px;
+            }
+
+            .dev-writing-panel {
+                grid-template-columns: 1fr;
+            }
+
+            .dev-writing-side {
+                border-left: 0;
+                border-top: 1px solid rgba(255,255,255,.08);
+            }
+
+            .dev-route-list {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .dev-route:nth-child(2) {
+                border-right: 0;
+            }
+
+            .dev-route:nth-child(-n+2) {
+                border-bottom: 1px solid rgba(255,255,255,.08);
+            }
+        }
+
+        @media (max-width: 550px) {
+            .dev-lower-section {
+                width: min(100% - 30px, 1180px);
+                padding: 68px 0;
+            }
+
+            .dev-lower-index h2 {
+                font-size: 28px;
+            }
+
+            .dev-lower-body > p {
+                font-size: 15px;
+                line-height: 1.72;
+            }
+
+            .dev-discipline {
+                grid-template-columns: 40px 1fr;
+                gap: 14px;
+                min-height: 0;
+                padding: 22px 0;
+            }
+
+            .dev-discipline p {
+                grid-column: 2;
+                margin-top: -5px;
+            }
+
+            .dev-project {
+                grid-template-columns: 40px 1fr 22px;
+                min-height: 0;
+                padding: 23px 0;
+            }
+
+            .dev-project:hover,
+            .dev-project:focus-visible {
+                padding-left: 8px;
+            }
+
+            .dev-project p {
+                grid-column: 2 / -1;
+                margin-top: -5px;
+                padding-right: 12px;
+            }
+
+            .dev-writing-main,
+            .dev-writing-side {
+                padding: 24px 20px;
+            }
+
+            .dev-writing-main h3 {
+                font-size: 31px;
+            }
+
+            .dev-route-list {
+                grid-template-columns: 1fr;
+                border-bottom: 0;
+            }
+
+            .dev-route,
+            .dev-route:nth-child(2) {
+                min-height: 106px;
+                border-right: 1px solid rgba(255,255,255,.08);
+                border-bottom: 1px solid rgba(255,255,255,.08);
+            }
+        }
+    </style>
+
     </head>
     <body class="page-index">
         <!-- Profile Schema -->
@@ -440,6 +819,133 @@
                 </header>
                             </div>
         </div>
+        
+        <main class="dev-lower-content" aria-label="Engineering overview">
+            <section class="dev-lower-section" id="systems" aria-labelledby="systems-title">
+                <div class="dev-lower-grid">
+                    <div class="dev-lower-index">
+                        <span class="dev-lower-number">01 / Systems</span>
+                        <h2 id="systems-title">What I build</h2>
+                    </div>
+
+                    <div class="dev-lower-body">
+                        <p>My work sits between backend engineering and day-to-day operations. I build software that connects platforms, moves data between systems, automates repetitive processes, and gives teams a clearer way to understand what is happening inside their workflows.</p>
+                        <p>The architecture changes with the problem, but the priorities stay consistent: clear boundaries, reproducible execution, controlled failure modes, useful logs, and enough context to maintain the system without treating production behavior as a black box.</p>
+
+                        <div class="dev-discipline-list">
+                            <article class="dev-discipline">
+                                <span class="dev-code">A/01</span>
+                                <h3>Backend platforms</h3>
+                                <p>FastAPI, Node.js, TypeScript, PostgreSQL, authentication, queues, caching, internal tools, and service boundaries built around operational requirements.</p>
+                            </article>
+                            <article class="dev-discipline">
+                                <span class="dev-code">A/02</span>
+                                <h3>Systems integration</h3>
+                                <p>REST APIs, OAuth, webhooks, ERP and CRM connections, idempotent ingestion, synchronization workers, and replayable data pipelines.</p>
+                            </article>
+                            <article class="dev-discipline">
+                                <span class="dev-code">A/03</span>
+                                <h3>Applied AI</h3>
+                                <p>RAG, contextual assistants, multi-agent workflows, vector memory, controlled tool execution, fallback behavior, and observable AI processes.</p>
+                            </article>
+                            <article class="dev-discipline">
+                                <span class="dev-code">A/04</span>
+                                <h3>Automation &amp; data</h3>
+                                <p>Scheduled jobs, ETL, validation, reporting pipelines, dashboards, business rules, and workflows that replace repetitive manual operations.</p>
+                            </article>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="dev-lower-section" aria-labelledby="work-title">
+                <div class="dev-lower-grid">
+                    <div class="dev-lower-index">
+                        <span class="dev-lower-number">02 / Work</span>
+                        <h2 id="work-title">Selected systems</h2>
+                    </div>
+
+                    <div class="dev-lower-body">
+                        <p>The projects below are not isolated visual demos. They document implementation choices, data flows, system responsibilities, and the engineering constraints behind each build.</p>
+
+                        <div class="dev-project-list">
+                            <a class="dev-project" href="/projects/lavc-systems/">
+                                <span class="dev-code">AI / 01</span>
+                                <h3>Lavc Systems</h3>
+                                <p>Multi-agent orchestration, Kanban execution, RAG knowledge, vector memory, local models, and real-time observability.</p>
+                                <span class="dev-project-arrow" aria-hidden="true">→</span>
+                            </a>
+                            <a class="dev-project" href="/projects/api-integrations/">
+                                <span class="dev-code">DATA / 02</span>
+                                <h3>API Integration Pipeline</h3>
+                                <p>Replayable ingestion across operational APIs with normalization, idempotent identifiers, SQL persistence, and scheduled execution.</p>
+                                <span class="dev-project-arrow" aria-hidden="true">→</span>
+                            </a>
+                            <a class="dev-project" href="/projects/equiptrack/">
+                                <span class="dev-code">OPS / 03</span>
+                                <h3>EquipTrack</h3>
+                                <p>Inventory and rental operations with availability controls, movement history, maintenance records, permissions, and automated deployment.</p>
+                                <span class="dev-project-arrow" aria-hidden="true">→</span>
+                            </a>
+                            <a class="dev-project" href="/projects/skylet-assistant/">
+                                <span class="dev-code">AI / 04</span>
+                                <h3>Skylet Assistant</h3>
+                                <p>A contextual assistant using Cloudflare infrastructure, manual RAG, multilingual conversation, sessions, caching, and provider fallback.</p>
+                                <span class="dev-project-arrow" aria-hidden="true">→</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="dev-lower-section" aria-labelledby="writing-title">
+                <div class="dev-lower-grid">
+                    <div class="dev-lower-index">
+                        <span class="dev-lower-number">03 / Writing</span>
+                        <h2 id="writing-title">Technical context</h2>
+                    </div>
+
+                    <div class="dev-lower-body">
+                        <p>The portfolio shows finished systems. The blog is where I expand the reasoning around them: backend patterns, APIs, automation, cloud infrastructure, developer tooling, applied AI, data workflows, and the practical decisions that appear while building and maintaining software.</p>
+
+                        <div class="dev-writing-panel">
+                            <div class="dev-writing-main">
+                                <h3>Engineering notes beyond the project page.</h3>
+                                <p>Articles are used to document implementation details, explain technologies in context, compare approaches, and keep a public record of what I am testing or improving. The goal is useful technical material, not a second copy of the résumé.</p>
+                                <a class="dev-text-link" href="/blog/">Open the blog</a>
+                            </div>
+
+                            <aside class="dev-writing-side">
+                                <span class="dev-writing-label">Coverage</span>
+                                <p>Backend architecture<br>API integrations<br>Automation<br>Applied AI &amp; RAG<br>Cloud &amp; deployment<br>Data pipelines</p>
+                            </aside>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="dev-lower-section" aria-labelledby="about-title">
+                <div class="dev-lower-grid">
+                    <div class="dev-lower-index">
+                        <span class="dev-lower-number">04 / Patrick</span>
+                        <h2 id="about-title">About the engineer</h2>
+                    </div>
+
+                    <div class="dev-lower-body">
+                        <p>I am Patrick Araujo, a Backend Software Engineer based in Belo Horizonte, Brazil. I work with backend platforms, internal systems, applied AI, integrations, data pipelines, automation, and cloud infrastructure. My professional work has involved systems used for operational, administrative, financial, inventory, reporting, and customer-service workflows.</p>
+                        <p>This homepage is intentionally an overview. The About page contains the full professional timeline and stack, Projects contains implementation-specific material, and Certifications documents training and continued technical development.</p>
+
+                        <nav class="dev-route-list" aria-label="Explore the site">
+                            <a class="dev-route" href="/about/"><small>Profile / 01</small><strong>About</strong></a>
+                            <a class="dev-route" href="/projects/"><small>Systems / 02</small><strong>Projects</strong></a>
+                            <a class="dev-route" href="/blog/"><small>Writing / 03</small><strong>Blog</strong></a>
+                            <a class="dev-route" href="/certifications/"><small>Learning / 04</small><strong>Certifications</strong></a>
+                        </nav>
+                    </div>
+                </div>
+            </section>
+        </main>
+
         <footer class="footer-minimal footer-split footer-home">
             <div class="footer-container">
                 <div class="footer-split-left"><span class="footer-copyright-line">&copy; <span data-current-year></span> Patrick Araujo</span></div>
