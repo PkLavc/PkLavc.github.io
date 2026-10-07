@@ -23,8 +23,1470 @@
     <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Raleway:wght@300;400;500;600;700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Raleway:wght@300;400;500;600;700&display=swap"></noscript>
 
-    <link rel="stylesheet" href="/css/global.css?v=20261001layout2">
-    <link rel="stylesheet" href="/css/skylet-widget.css?v=4d85970dfe">
+    <style id="snapshot-global-css" data-source="5b41fe0b/css/global.css">
+﻿/* Global styles: Reset, Typography, Variables, Header, Footer */
+
+:root{
+    /* default theme variables (can be overridden by theme files like color-blue.css) */
+    --clr-primary: #00d1ff;
+    --clr-primary-variant: #00a8cc;
+    --app-viewport-height: 100vh;
+}
+
+@supports (height: 100dvh) {
+    :root {
+        --app-viewport-height: 100dvh;
+    }
+}
+
+/* Reset */
+*{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar{
+    width: 4px;
+    color:var(--clr-primary);
+    transition: all .4s ease;
+}
+::-webkit-scrollbar-thumb {
+    background: var(--clr-primary);
+    border-radius: 4px;
+    width: 4px;
+    transition: all .4s ease;
+}
+::-webkit-scrollbar-track {
+    background: #101010;
+    border-radius: 4px;
+    width: 4px;
+}
+
+.page-index-root,
+.page-index-root body {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.page-index-root::-webkit-scrollbar,
+.page-index-root body::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+    display: none;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+/* Firefox number input */
+input[type=number] {
+    appearance: textfield;
+    -moz-appearance: textfield;
+}
+
+/* Base layout */
+html{ background: #101010; }
+html, body {
+    min-height: 100%;
+    min-height: var(--app-viewport-height);
+}
+
+body{
+    display: flex;
+    flex-direction: column;
+    user-select: none;
+    min-height: 100vh;
+    min-height: var(--app-viewport-height);
+    overflow-x: hidden;
+    width: 100%;
+    background: #171717;
+    font-family: Raleway, Poppins, sans-serif;
+}
+
+#breaker, #breaker-two {
+    display: none; /* Ensure these are hidden by default */
+}
+
+#all { display: block !important; flex: 1; }
+
+body.page-index,
+body.page-index #all {
+    min-height: var(--app-viewport-height);
+}
+
+.footer-minimal {
+    margin-top: auto;
+    position: relative;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.25s ease, visibility 0.25s ease;
+}
+
+body.ready .footer-minimal {
+    opacity: 1;
+    visibility: visible;
+}
+body.seo-layout .footer-minimal {
+    visibility: visible;
+    opacity: 1;
+}
+#loader{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    height:100vh;
+    position: fixed;
+    z-index:100;
+    font-family: Poppins, sans-serif;
+    background-color: #202020;
+    color: whitesmoke;
+    font-size: 70px;
+    width: 100%;
+    display: none !important;
+}
+
+/* Header / Navigation (shared across pages) */
+#header{
+    background:
+        radial-gradient(circle at 52% 44%, rgba(0, 209, 255, 0.12), transparent 28%),
+        radial-gradient(circle at 72% 68%, rgba(255, 42, 170, 0.08), transparent 30%),
+        linear-gradient(135deg, #06080f 0%, #090b14 58%, #120717 100%);
+    height: 100vh;
+    height: var(--app-viewport-height);
+    min-height: 100vh;
+    min-height: var(--app-viewport-height);
+    width: 100%;
+    overflow: hidden;
+    position:relative;
+    display: block;
+}
+
+#particles{
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    min-height: var(--app-viewport-height);
+    width: 100%;
+    background:
+        radial-gradient(circle at 52% 44%, rgba(0, 209, 255, 0.12), transparent 28%),
+        radial-gradient(circle at 72% 68%, rgba(255, 42, 170, 0.08), transparent 30%),
+        linear-gradient(135deg, #06080f 0%, #090b14 58%, #120717 100%);
+    background-size: cover;
+    background-position: 50% 50%;
+    display: block;
+}
+
+
+
+.header-content{ height: 100vh; height: var(--app-viewport-height); min-height: var(--app-viewport-height); width: 100%; display: flex; position: absolute; align-items: center; justify-content: center; color: whitesmoke; font-family: raleway; font-weight: 400; letter-spacing: 1px; flex-direction: column; font-size: 50px; z-index: 1; }
+.header-content-box{ z-index: 2; text-align: center; height: auto; width: auto; padding: 0 60px; margin-bottom: 40px; }
+.header-content .firstline{ z-index: 2; font-weight:700; font-family: poppins; font-size: 65px; }
+.header-content .secondline{ z-index: 2; font-size: 30px; padding-top:20px ; font-weight:500; color: rgb(255, 255, 255,.8); }
+.remote-text{ font-size: 18px; font-weight: 400; color: var(--clr-primary); text-align: center; margin-top: 10px; opacity: 0.9; font-family: 'Poppins', sans-serif; }
+.txt-rotate { text-shadow: 0 0 10px rgba(0,0,0,1); font-weight: 700; background: rgba(0, 0, 0, 0.7); padding: 2px 8px; border-radius: 4px; }
+.slash{ animation-name: animateslash; animation-duration: .8s; animation-iteration-count: infinite; animation-play-state: running; }
+@keyframes animateslash{ 0%{ opacity: 1; z-index: 2;} 100%{ opacity: 0; z-index: 0;} }
+
+.identity-shift-heading {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.18em;
+}
+
+.identity-shift-word {
+    display: inline-block;
+    min-width: 7ch;
+    text-align: left;
+    transform-origin: center;
+    transition: opacity 0.18s ease, transform 0.18s ease, filter 0.18s ease;
+    will-change: opacity, transform, filter;
+}
+
+.identity-shift-word.is-heading-switching {
+    opacity: 0;
+    transform: translateY(-0.18em) skewX(-8deg);
+    filter: blur(4px);
+}
+
+.binary-shift-heading {
+    display: inline-block;
+    min-width: min(100%, 28ch);
+}
+
+.binary-heading-char {
+    display: inline-block;
+    min-width: 0.58ch;
+    text-align: center;
+    transform-origin: center;
+    transition: color 0.16s ease, filter 0.16s ease, opacity 0.16s ease;
+    will-change: filter, opacity;
+}
+
+.binary-heading-char.is-binary-switching {
+    opacity: 0.45;
+    filter: blur(2px);
+}
+
+.binary-heading-char.is-binary-active {
+    font-family: "Courier New", monospace;
+    color: #ff2aaa;
+    text-shadow: 0 0 10px rgba(255, 42, 170, 0.38), 0 0 16px rgba(0, 209, 255, 0.18);
+    animation: binaryTitlePulse 0.9s ease both;
+}
+
+@keyframes binaryTitlePulse {
+    0%, 100% {
+        filter: none;
+        transform: translateY(0);
+    }
+    38% {
+        filter: brightness(1.45);
+        transform: translateY(-0.04em);
+    }
+    62% {
+        filter: brightness(0.82);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .identity-shift-word,
+    .binary-heading-char {
+        transition: none;
+        animation: none;
+    }
+}
+
+.page-index .header-content .firstline,
+.page-index .header-content .secondline,
+.page-index .remote-text,
+.page-index .social-media-links a,
+.page-index .contactpic,
+.page-index #index-skylet-btn img {
+    --intro-end-opacity: 1;
+    animation: foregroundIntro 0.95s cubic-bezier(0.22, 1, 0.36, 1) both;
+    transform-origin: center;
+}
+
+.page-index .header-content .secondline { animation-delay: 0.06s; }
+.page-index .remote-text { --intro-end-opacity: 0.9; animation-delay: 0.12s; }
+.page-index .social-media-links a { animation-delay: 0.18s; }
+.page-index .contactpic { --intro-end-opacity: 0.72; animation-delay: 0.2s; }
+.page-index #index-skylet-btn img { animation-delay: 0.24s; }
+
+@keyframes foregroundIntro {
+    from {
+        opacity: 0;
+        transform: scale(0.94);
+    }
+    to {
+        opacity: var(--intro-end-opacity, 1);
+        transform: scale(1);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .page-index .header-content .firstline,
+    .page-index .header-content .secondline,
+    .page-index .remote-text,
+    .page-index .social-media-links a,
+    .page-index .contactpic,
+    .page-index #index-skylet-btn img {
+        animation: none;
+    }
+}
+
+.social-media-links{ height: 100vh; height: var(--app-viewport-height); position: absolute; z-index: 2; padding: 60px; width: auto; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.social-media{
+    color: white;
+    width: 60px;
+    height: 60px;
+    min-width: 60px;
+    min-height: 60px;
+    opacity: .6;
+    margin: 8px;
+    transition: all .4s ease;
+    display: inline-block;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+.social-media:hover{ opacity: 1; transform: scale(1.1); }
+
+.social-media, lottie-player.social-media,
+.contactpic, lottie-player.contactpic {
+    display: inline-block;
+}
+
+.navigation-links{ display: flex; align-items: center; justify-content: center; flex-direction: column; font-family: 'Poppins', 'Inter', 'Segoe UI', Arial, sans-serif; }
+.navigation-links a{ padding:10px; text-decoration: none; color: white; font-size: 30px; font-family: 'Poppins', 'Inter', 'Segoe UI', Arial, sans-serif; font-weight: 600; opacity: .7; transition: all .4s ease; }
+.navigation-links a:hover{ opacity: 1; }
+.navigation-links a::before{ content: ""; position: absolute; top:50%; left: 50%; display: flex; justify-content: center; transform: translate(-50%,-50%); align-items: center; font-size: clamp(4.4rem, 12vw, 8rem); font-weight: 700; font-family: 'Inter', 'Poppins', 'Segoe UI', Arial, sans-serif; color: transparent; -webkit-text-stroke: 1px rgba(0, 209, 255, 0.18); text-shadow: 0 0 34px rgba(0, 209, 255, 0.12); z-index: 1; pointer-events: none; opacity: 0; letter-spacing: 0.28em; transition: opacity .4s ease, letter-spacing .4s ease, text-shadow .4s ease; }
+.navigation-links a:hover::before{ content: attr(data-text); opacity: 1; letter-spacing: 0.08em; }
+.navigation-links a.is-navigation-enhanced::before,
+.navigation-links a.is-navigation-enhanced:hover::before{ content: none; display: none; }
+.navigation-link-text{ position: relative; z-index: 2; }
+.navigation-menu-letter-miami{ color: inherit; text-shadow: none; }
+.navigation-hover-text{ position: fixed; top: 50%; left: 50%; display: flex; justify-content: center; align-items: center; transform: translate(-50%,-50%); font-size: clamp(4.4rem, 12vw, 8rem); font-weight: 700; font-family: 'Inter', 'Poppins', 'Segoe UI', Arial, sans-serif; color: transparent; -webkit-text-stroke: 1px rgba(0, 209, 255, 0.18); text-shadow: 0 0 34px rgba(0, 209, 255, 0.12); z-index: 1; pointer-events: none; opacity: 0; letter-spacing: 0.28em; transition: opacity .4s ease, letter-spacing .4s ease, text-shadow .4s ease; }
+.navigation-hover-text .navigation-menu-letter-miami{ color: transparent; -webkit-text-stroke: 1px rgba(255, 42, 170, .5); text-shadow: 0 0 18px rgba(255, 42, 170, .44), 0 0 34px rgba(255, 42, 170, .18); }
+.navigation-links a:hover .navigation-hover-text{ opacity: 1; letter-spacing: 0.08em; }
+
+@media (max-width: 768px), (hover: none), (pointer: coarse) {
+    .navigation-links a::before,
+    .navigation-links a:hover::before,
+    .navigation-hover-text {
+        content: none;
+        display: none;
+    }
+}
+
+.contact{
+    display: flex;
+    position: absolute;
+    right: max(12px, 1.8vw);
+    top: 110px;
+    height: calc(100% - 130px);
+    width: 76px;
+    align-items: flex-start;
+    justify-content: center;
+    flex-direction: column;
+    z-index: 3;
+    pointer-events: none;
+}
+.contact a{ z-index: 3; }
+.contact img{ margin:8px auto; height:32px; opacity: .72; transition: all .4s ease; }
+.contact img:hover{ opacity: 1; transform: scale(1.1); }
+
+.techstack-carousel {
+    width: 100%;
+    max-height: min(66vh, 460px);
+    overflow: hidden;
+    pointer-events: auto;
+    mask-image: linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%);
+}
+
+.techstack-track {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    animation: techstackScrollDown 22s linear infinite;
+    will-change: transform;
+}
+
+@keyframes techstackScrollDown {
+    from {
+        transform: translateY(-50%);
+    }
+    to {
+        transform: translateY(0);
+    }
+}
+
+/* keep scale animation globally available */
+@keyframes scale{ 0%{ transform: scale(.6);} 100%{ transform: scale(1);} }
+
+/* Footer basic fallback (some pages use .footer or .footer-minimal) */
+.footer{ background: #080808; width: 100%; padding: 20px; color: whitesmoke; display: flex; flex-direction: row; font-family: poppins; align-items: center; justify-content: center; }
+.footer .footer-text{ position: relative; display: inline; font-size: 18px; font-weight: 400; opacity: 1; }
+
+/* small helpers */
+.color{ color: var(--clr-primary); transition: all .4s ease; }
+
+.cursor {
+    display: none !important;
+}
+
+.cv a button, button, .btn {
+    background: var(--clr-primary) !important;
+    color: #000 !important;
+}
+
+.credits-trigger {
+    background: none !important;
+    color: var(--clr-primary-variant) !important;
+}
+
+.lordicon-credit {
+    color: #555;
+    text-decoration: none;
+    transition: color 0.3s ease;
+    margin-left: 5px;
+}
+
+.lordicon-credit:hover {
+    color: var(--clr-primary, #00d1ff);
+}
+
+.footer-minimal {
+    padding: 30px 0;
+    text-align: center;
+    border-top: 1px solid rgba(255,255,255,0.05);
+}
+
+.footer-minimal p {
+    font-size: 13px;
+    color: #bcc5ca;
+}
+
+.footer-minimal .github-dev-badge,
+.footer-minimal b {
+    color: #e4edf1;
+}
+
+.footer-minimal .footer-container {
+    width: min(92%, 900px);
+    margin: 0 auto;
+}
+
+.footer-link-list {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin: 14px 0 10px;
+}
+
+.footer-link-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 36px;
+    padding: 0 14px;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 999px;
+    color: #c4ccd1;
+    text-decoration: none;
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    transition: border-color 0.3s ease, color 0.3s ease, transform 0.3s ease, background-color 0.3s ease;
+}
+
+.footer-link-pill:hover {
+    color: var(--clr-primary);
+    border-color: rgba(0, 209, 255, 0.35);
+    background: rgba(255,255,255,0.03);
+    transform: translateY(-1px);
+}
+
+.footer-link-pill-accent {
+    color: #d8f7ff;
+    border-color: rgba(0, 209, 255, 0.45);
+    background: rgba(0, 209, 255, 0.08);
+}
+
+.footer-copyright-line {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    white-space: nowrap;
+}
+
+.footer-meta {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 4px;
+    line-height: 1.7;
+}
+
+.footer-legal-inline {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.footer-legal-link {
+    color: var(--clr-primary-variant);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    transition: color 0.3s ease;
+}
+
+.footer-minimal .footer-legal-link {
+    color: #a7b1b7;
+}
+
+.footer-legal-link:hover,
+.footer-legal-link:focus-visible {
+    color: var(--clr-primary);
+    outline: none;
+}
+
+.footer-meta-separator {
+    color: rgba(188, 197, 202, 0.72);
+}
+
+.footer-split-left,
+.footer-split-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+    color: #bcc5ca;
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+.footer-split-right {
+    justify-content: flex-end;
+    flex-wrap: wrap;
+}
+
+.footer-social-icons {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.footer-social-icon-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    flex: 0 0 34px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 9px;
+    color: #aeb8be;
+    background: rgba(255, 255, 255, 0.025);
+    text-decoration: none;
+    transition: color 0.2s ease, border-color 0.2s ease, background-color 0.2s ease, transform 0.2s ease;
+}
+
+.footer-social-icon-link:hover,
+.footer-social-icon-link:focus-visible {
+    color: var(--clr-primary);
+    border-color: rgba(0, 209, 255, 0.36);
+    background: rgba(0, 209, 255, 0.07);
+    transform: translateY(-1px);
+    outline: none;
+}
+
+.footer-social-icon {
+    width: 18px;
+    height: 18px;
+    background-color: currentColor;
+    -webkit-mask: var(--footer-social-icon) center / contain no-repeat;
+    mask: var(--footer-social-icon) center / contain no-repeat;
+}
+
+.footer-social-icon-github {
+    --footer-social-icon: url("/assets/icons/footer/github.svg");
+}
+
+.footer-social-icon-linkedin {
+    --footer-social-icon: url("/assets/icons/footer/linkedin.svg");
+}
+
+.footer-social-icon-mail {
+    --footer-social-icon: url("/assets/icons/footer/mail.svg");
+}
+
+.footer-social-icon-heart {
+    --footer-social-icon: url("/assets/icons/footer/heart.svg");
+}
+
+.footer-social-lottie {
+    display: block;
+    width: 28px;
+    height: 28px;
+    pointer-events: none;
+}
+
+.footer-projects .footer-split-left {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+}
+
+.footer-projects .footer-split-left .footer-legal-inline {
+    justify-content: flex-start;
+    margin: 0;
+}
+
+.footer-projects .footer-social-icon-link {
+    width: 40px;
+    height: 40px;
+    flex-basis: 40px;
+    border-color: transparent;
+    background: transparent;
+}
+
+.footer-projects .footer-social-icon-link:hover,
+.footer-projects .footer-social-icon-link:focus-visible {
+    border-color: rgba(0, 209, 255, 0.2);
+}
+
+.footer-projects .footer-social-icon-link .footer-social-icon {
+    background-color: var(--clr-primary);
+}
+
+.footer-projects .footer-social-icon-heart {
+    background-color: var(--clr-primary);
+}
+
+@media screen and (min-width: 1100px) {
+    .footer-minimal.footer-split .footer-container {
+        width: min(calc(100% - 48px), 1480px);
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(390px, 430px) minmax(0, 1fr);
+        align-items: center;
+        gap: 18px;
+    }
+
+    .footer-split-left {
+        justify-content: flex-start;
+        flex-wrap: wrap;
+        text-align: left;
+    }
+
+    .footer-split-spacer {
+        min-height: 48px;
+    }
+
+    .footer-split-right {
+        text-align: right;
+    }
+
+    .footer-minimal.footer-split .credits-hidden {
+        grid-column: 1 / -1;
+        margin-top: 2px;
+    }
+}
+
+.credits-trigger {
+    background: none;
+    border: none;
+    padding: 0;
+    font: inherit;
+    color: var(--clr-primary-variant);
+    cursor: pointer;
+    text-decoration: underline;
+    transition: color 0.3s;
+}
+
+.credits-trigger:hover {
+    color: var(--clr-primary);
+}
+
+.footer-minimal .credits-trigger,
+.footer-minimal .credits-trigger:hover {
+    color: inherit !important;
+}
+
+.footer-map-link {
+    font: inherit;
+    color: var(--clr-primary-variant);
+    text-decoration: underline;
+    opacity: 1;
+    transition: color 0.3s;
+}
+
+.footer-map-link:hover,
+.footer-map-link:focus-visible {
+    color: var(--clr-primary);
+    outline: none;
+}
+
+.footer-minimal .footer-map-link,
+.footer-minimal .footer-map-link:hover,
+.footer-minimal .footer-map-link:focus-visible {
+    color: inherit;
+}
+
+.credits-hidden {
+    display: none;
+    margin-top: 15px;
+    animation: fadeIn 0.5s ease;
+}
+
+.credits-grid {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+    font-size: 11px;
+    color: #a7b1b7;
+}
+
+.credits-grid a,
+.credits-detail-trigger,
+.credits-detail-text {
+    font-size: 11px;
+    color: #a7b1b7 !important;
+    -webkit-text-fill-color: #a7b1b7 !important;
+    text-decoration: none;
+}
+
+.credits-detail-text {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    line-height: 1.3;
+}
+
+.credits-detail-trigger {
+    padding: 0;
+    border: 0 !important;
+    background: transparent !important;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.credits-grid a:hover,
+.credits-detail-trigger:hover,
+.credits-detail-text a:hover {
+    color: var(--clr-primary) !important;
+    -webkit-text-fill-color: var(--clr-primary) !important;
+}
+
+@media screen and (max-width: 550px) {
+    .footer-minimal {
+        padding: 24px 0 28px;
+    }
+
+    .footer-link-list {
+        gap: 10px;
+        margin: 10px 0 12px;
+    }
+
+    .footer-link-list .footer-link-pill:not(.footer-link-pill-accent) {
+        display: none;
+    }
+
+    .footer-link-pill {
+        width: auto;
+        max-width: 100%;
+        min-width: min(180px, 100%);
+    }
+
+    .footer-meta {
+        flex-direction: row;
+        gap: 5px 8px;
+        line-height: 1.55;
+    }
+
+    .footer-copyright-line {
+        flex: 0 0 auto;
+    }
+
+    .footer-legal-inline {
+        flex: 1 0 100%;
+        flex-direction: row;
+        gap: 6px 10px;
+        line-height: 1.5;
+        margin-top: 2px;
+    }
+
+    .footer-meta-separator,
+    .footer-legal-inline span[aria-hidden="true"] {
+        display: none;
+    }
+}
+
+@media screen and (max-width: 1099px) {
+    .footer-minimal.footer-split .footer-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .footer-split-left,
+    .footer-split-right {
+        justify-content: center;
+        flex-wrap: wrap;
+        text-align: center;
+    }
+
+    .footer-split-spacer {
+        display: none;
+    }
+
+    .footer-projects .footer-split-right {
+        order: -1;
+    }
+
+    .footer-projects .footer-split-left {
+        order: 0;
+        align-items: center;
+    }
+
+    .footer-projects .footer-split-left .footer-legal-inline {
+        justify-content: center;
+    }
+}
+
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Particles Fallback Styles */
+.particles-fallback {
+    background:
+        radial-gradient(circle at 52% 44%, rgba(0, 209, 255, 0.12), transparent 28%),
+        radial-gradient(circle at 72% 68%, rgba(255, 42, 170, 0.08), transparent 30%),
+        linear-gradient(135deg, #06080f 0%, #090b14 58%, #120717 100%) !important;
+}
+
+.particles-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    min-height: var(--app-viewport-height);
+    z-index: 1;
+}
+
+.particles-container canvas {
+    display: block;
+    width: 100% !important;
+    height: 100% !important;
+}
+
+/* End of global.css */
+
+
+/* Mobile footer social alignment: keep icons clear of Skylet on the right. */
+@media screen and (max-width: 768px) {
+    .footer-minimal .footer-split-right {
+        width: 100%;
+        align-self: stretch;
+        justify-content: flex-start;
+        text-align: left;
+    }
+
+    .footer-minimal .footer-social-icons {
+        width: 100%;
+        justify-content: flex-start;
+        margin-left: -16px;
+    }
+}
+
+</style>
+    <style id="snapshot-skylet-css" data-source="5b41fe0b/css/skylet-widget.css">
+﻿.about-chat-launcher {
+    position: fixed;
+    right: 24px;
+    bottom: calc(24px + var(--skylet-footer-offset, 0px));
+    z-index: 9999;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: none !important;
+    border-radius: 0 !important;
+    background: none !important;
+    box-shadow: none !important;
+    cursor: pointer;
+    padding: 0 !important;
+    outline: none;
+}
+
+.about-chat-launcher img {
+    width: 108px;
+    height: 108px;
+    display: block;
+}
+
+.about-chat-launcher:hover {
+    transform: translateY(-2px) scale(1.05);
+}
+
+.about-chat-widget {
+    --skylet-widget-primary: var(--clr-primary, #00d1ff);
+    --skylet-widget-pink: #ff2aaa;
+    --skylet-widget-bg: #06080f;
+    position: fixed;
+    right: 24px;
+    bottom: calc(92px + var(--skylet-footer-offset, 0px));
+    z-index: 9999;
+    width: min(390px, calc(100vw - 24px));
+    height: min(calc(100vh - 100px), 90vh);
+    display: none;
+    flex-direction: column;
+    border: 1px solid rgba(0, 209, 255, 0.24);
+    border-radius: 22px;
+    background:
+        radial-gradient(circle at 16% 0%, rgba(0, 209, 255, 0.12), transparent 34%),
+        radial-gradient(circle at 100% 18%, rgba(255, 42, 170, 0.12), transparent 34%),
+        linear-gradient(180deg, rgba(6, 8, 15, 0.98), rgba(18, 7, 23, 0.96));
+    overflow: hidden;
+    box-shadow:
+        0 24px 54px rgba(0, 0, 0, 0.38),
+        0 0 34px rgba(0, 209, 255, 0.09);
+}
+
+.about-chat-widget.is-open {
+    display: flex;
+    bottom: calc(24px + var(--skylet-footer-offset, 0px));
+}
+
+.about-chat-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 16px 18px;
+    border-bottom: 1px solid rgba(0, 209, 255, 0.12);
+    background:
+        linear-gradient(135deg, rgba(0, 209, 255, 0.075), rgba(255, 42, 170, 0.04)),
+        rgba(255, 255, 255, 0.018);
+    backdrop-filter: blur(14px);
+}
+
+.about-chat-title {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.about-chat-title strong {
+    font-size: 1rem;
+    color: #f7fbff;
+}
+
+.about-chat-title span {
+    font-size: 0.78rem;
+    color: rgba(219, 238, 255, 0.7);
+}
+
+.about-chat-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.about-chat-action-btn {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    border: 1px solid rgba(181, 219, 255, 0.18);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.045);
+    color: #e8f4ff;
+    padding: 0;
+    cursor: pointer;
+    font: inherit;
+    overflow: hidden;
+    transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.about-chat-action-btn:hover {
+    transform: translateY(-1px);
+    border-color: rgba(0, 209, 255, 0.38);
+    background: rgba(0, 209, 255, 0.09);
+}
+
+.about-chat-action-btn.is-active {
+    color: var(--skylet-widget-primary);
+    background: linear-gradient(135deg, rgba(0, 209, 255, 0.18), rgba(255, 42, 170, 0.1));
+    border-color: rgba(0, 209, 255, 0.44);
+}
+
+.about-chat-clear-btn svg {
+    width: 17px;
+    height: 17px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.about-chat-close-btn:hover {
+    color: #ff8bd8;
+    border-color: rgba(255, 42, 170, 0.42);
+    background: rgba(255, 42, 170, 0.08);
+}
+
+.about-chat-action-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+.about-chat-action-icon,
+.about-chat-close-icon {
+    position: relative;
+    display: block;
+    width: 18px;
+    height: 18px;
+}
+
+.about-chat-voice-icon::before {
+    content: "";
+    position: absolute;
+    left: 5px;
+    top: 1px;
+    width: 8px;
+    height: 11px;
+    border: 2px solid currentColor;
+    border-radius: 999px;
+    box-sizing: border-box;
+}
+
+.about-chat-voice-icon::after {
+    content: "";
+    position: absolute;
+    left: 8px;
+    top: 12px;
+    width: 2px;
+    height: 4px;
+    border-radius: 999px;
+    background: currentColor;
+    box-shadow: -4px 4px 0 -1px currentColor, 4px 4px 0 -1px currentColor;
+}
+
+.about-chat-voice-slash {
+    position: absolute;
+    left: 1px;
+    top: 8px;
+    width: 16px;
+    height: 2px;
+    border-radius: 999px;
+    background: var(--skylet-widget-pink);
+    box-shadow: 0 0 10px rgba(255, 42, 170, 0.52);
+    transform: rotate(-42deg);
+    transition: opacity 0.2s ease;
+}
+
+.about-chat-voice-toggle.is-active .about-chat-voice-slash {
+    opacity: 0;
+}
+
+.about-chat-close-icon::before,
+.about-chat-close-icon::after {
+    content: "";
+    position: absolute;
+    left: 2px;
+    top: 8px;
+    width: 14px;
+    height: 2px;
+    border-radius: 999px;
+    background: currentColor;
+}
+
+.about-chat-close-icon::before {
+    transform: rotate(45deg);
+}
+
+.about-chat-close-icon::after {
+    transform: rotate(-45deg);
+}
+
+.about-chat-log {
+    position: relative;
+    isolation: isolate;
+    flex: 1;
+    padding: 16px;
+    padding-right: 10px;
+    user-select: text !important;
+    -webkit-user-select: text !important;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    overflow: auto;
+    scrollbar-gutter: stable;
+    min-height: 0;
+    background:
+        radial-gradient(circle at 52% 44%, rgba(0, 209, 255, 0.12), transparent 28%),
+        radial-gradient(circle at 72% 68%, rgba(255, 42, 170, 0.08), transparent 30%),
+        linear-gradient(135deg, #06080f 0%, #090b14 58%, #120717 100%);
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+}
+
+.about-chat-backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+    will-change: transform;
+}
+
+.about-chat-backdrop-item {
+    --base-rotate: 0deg;
+    position: absolute;
+    left: var(--x);
+    top: var(--y);
+    color: var(--particle-color);
+    opacity: var(--alpha);
+    animation: skyletChatParticleFloat var(--duration) ease-in-out infinite;
+    animation-delay: var(--delay);
+    will-change: transform, opacity;
+}
+
+.about-chat-backdrop-item.is-dot {
+    width: var(--size);
+    height: var(--size);
+    border-radius: 50%;
+    background: currentColor;
+    box-shadow: 0 0 12px currentColor;
+}
+
+.about-chat-backdrop-item.is-arrow {
+    --base-rotate: -90deg;
+    font-size: var(--size);
+    font-weight: 700;
+    line-height: 1;
+    text-shadow: 0 0 14px currentColor;
+}
+
+.about-chat-message {
+    position: relative;
+    z-index: 1;
+    max-width: 88%;
+    padding: 11px 13px;
+    border-radius: 16px;
+    line-height: 1.5;
+    font-size: 0.95rem;
+    white-space: pre-wrap;
+    user-select: text !important;
+    -webkit-user-select: text !important;
+    cursor: text;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.18);
+}
+
+#about-chat-widget .about-chat-message,
+#about-chat-widget .about-chat-message * {
+    user-select: text !important;
+    -webkit-user-select: text !important;
+}
+
+.about-chat-message.user {
+    margin-left: auto;
+    background: linear-gradient(135deg, rgba(0, 209, 255, 0.24), rgba(255, 42, 170, 0.12));
+    border: 1px solid rgba(0, 209, 255, 0.32);
+    color: #f3fbff;
+}
+
+.about-chat-message.assistant {
+    background: rgba(7, 12, 20, 0.74);
+    border: 1px solid rgba(232, 251, 255, 0.14);
+    color: #edf4ff;
+}
+
+.about-chat-status {
+    align-self: flex-start;
+    max-width: calc(100% - 32px);
+    margin: -34px 16px 10px;
+    padding: 5px 10px;
+    border: 1px solid rgba(0, 209, 255, 0.16);
+    border-radius: 999px;
+    font-size: 0.8rem;
+    color: rgba(213, 231, 248, 0.68);
+    background: rgba(6, 8, 15, 0.34);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18);
+    pointer-events: none;
+    position: relative;
+    z-index: 2;
+}
+
+.about-chat-status:empty {
+    display: none;
+}
+
+.about-chat-form {
+    padding: 14px 16px 16px;
+    border-top: 1px solid rgba(0, 209, 255, 0.12);
+    background:
+        linear-gradient(135deg, rgba(0, 209, 255, 0.05), rgba(255, 42, 170, 0.03)),
+        rgba(6, 8, 15, 0.9);
+    display: flex;
+    align-items: flex-end;
+    gap: 10px;
+}
+
+.about-chat-input-wrap {
+    flex: 1;
+    border: 1px solid rgba(181, 219, 255, 0.18);
+    border-radius: 14px;
+    background: rgba(4, 10, 16, 0.82);
+    overflow: hidden;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.about-chat-input-wrap:focus-within {
+    border-color: rgba(0, 209, 255, 0.42);
+    box-shadow: 0 0 0 3px rgba(0, 209, 255, 0.08);
+}
+
+.about-chat-input {
+    width: 100%;
+    min-height: 44px;
+    height: 44px;
+    max-height: 180px;
+    resize: none;
+    overflow-y: auto;
+    border: none;
+    border-radius: 0;
+    background: transparent;
+    color: #eef7ff;
+    padding: 12px 14px;
+    font: inherit;
+    display: block;
+}
+
+.about-chat-log::-webkit-scrollbar,
+.about-chat-input::-webkit-scrollbar {
+    width: 8px;
+}
+
+.about-chat-log::-webkit-scrollbar-track,
+.about-chat-input::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.about-chat-log::-webkit-scrollbar-thumb,
+.about-chat-input::-webkit-scrollbar-thumb {
+    background: rgba(0, 209, 255, 0.46);
+    border-radius: 999px;
+}
+
+.about-chat-log::-webkit-scrollbar-thumb:hover,
+.about-chat-input::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 42, 170, 0.58);
+}
+
+.about-chat-send {
+    border: 0;
+    border-radius: 999px;
+    background: linear-gradient(135deg, var(--skylet-widget-primary), #ff2aaa);
+    color: #04121c;
+    font: inherit;
+    font-weight: 700;
+    width: 44px;
+    min-width: 44px;
+    height: 44px;
+    padding: 0;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 44px;
+}
+
+.about-chat-send-icon {
+    width: 20px;
+    height: 20px;
+    stroke: currentColor;
+    stroke-width: 2.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    fill: none;
+}
+
+@keyframes skyletChatParticleFloat {
+    0%, 100% {
+        transform: translate3d(0, 0, 0) rotate(var(--base-rotate)) scale(0.94);
+    }
+
+    45% {
+        transform: translate3d(var(--drift-x), var(--drift-y), 0) rotate(var(--base-rotate)) scale(1.12);
+    }
+
+    72% {
+        transform: translate3d(var(--drift-x-alt), var(--drift-y-alt), 0) rotate(var(--base-rotate)) scale(0.98);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .about-chat-backdrop-item {
+        animation: none;
+    }
+}
+
+@media (max-width: 768px) {
+    .about-chat-launcher {
+        right: 16px;
+        bottom: calc(16px + var(--skylet-footer-offset, 0px));
+    }
+
+    .about-chat-launcher img {
+        width: 94px;
+        height: 94px;
+    }
+
+    .about-chat-widget {
+        right: 12px;
+        left: 12px;
+        bottom: calc(78px + var(--skylet-footer-offset, 0px));
+        width: auto;
+        height: min(calc(100vh - 80px), 94vh);
+    }
+
+    .about-chat-widget.is-open {
+        bottom: calc(12px + var(--skylet-footer-offset, 0px));
+    }
+}
+
+/* Prevent page-level form/button rules from deforming widget controls */
+#about-chat-widget .about-chat-form {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: flex-end !important;
+    justify-content: space-between !important;
+    gap: 10px !important;
+    width: 100% !important;
+    margin: 0 !important;
+    position: static !important;
+}
+
+#about-chat-widget .about-chat-input-wrap {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+}
+
+#about-chat-widget .about-chat-input {
+    width: 100% !important;
+    margin: 0 !important;
+    line-height: 1.35 !important;
+}
+
+#about-chat-widget .about-chat-send {
+    margin: 0 !important;
+    width: 44px !important;
+    min-width: 44px !important;
+    height: 44px !important;
+    min-height: 44px !important;
+    align-self: flex-end !important;
+    border: 0 !important;
+    border-radius: 999px !important;
+    background: linear-gradient(135deg, var(--skylet-widget-primary), #ff2aaa) !important;
+    color: #04121c !important;
+    box-shadow: none !important;
+}
+
+#about-chat-widget .about-chat-action-btn {
+    box-shadow: none !important;
+}
+
+/* ── Inline links inside messages ───────────────────────────── */
+.skylet-inline-link {
+    color: #7ecfff;
+    text-decoration: underline;
+    word-break: break-all;
+    cursor: pointer;
+}
+
+.skylet-inline-link:hover {
+    color: #aaddff;
+}
+
+/* ── Action buttons below assistant messages ─────────────────── */
+.skylet-action-btns {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 10px;
+    white-space: normal;
+}
+
+.skylet-action-btn {
+    display: inline-flex;
+    align-items: center;
+    background: rgba(100, 200, 255, 0.1);
+    border: 1px solid rgba(100, 200, 255, 0.28);
+    border-radius: 6px;
+    color: #86d8ff;
+    font-size: 0.82rem;
+    font-weight: 600;
+    padding: 5px 12px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.18s, border-color 0.18s, color 0.18s;
+    user-select: none !important;
+}
+
+#about-chat-widget .skylet-action-btn {
+    user-select: none !important;
+    -webkit-user-select: none !important;
+}
+
+.skylet-action-btn:hover {
+    background: rgba(100, 200, 255, 0.22);
+    border-color: rgba(100, 200, 255, 0.5);
+    color: #c0edff;
+}
+
+/* Markdown formatting inside chat messages */
+.about-chat-message strong { font-weight: 700; }
+.about-chat-message em { font-style: italic; }
+.about-chat-message del { text-decoration: line-through; opacity: 0.75; }
+.about-chat-message .skylet-heading {
+    display: block;
+    font-weight: 700;
+    margin-bottom: 3px;
+}
+.about-chat-message code.skylet-code {
+    background: rgba(255,255,255,0.12);
+    border-radius: 3px;
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 0.85em;
+    padding: 1px 5px;
+}
+.about-chat-message pre.skylet-pre {
+    background: rgba(0,0,0,0.35);
+    border-radius: 6px;
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 0.82em;
+    margin: 8px 0;
+    overflow-x: auto;
+    padding: 10px 12px;
+    white-space: pre;
+}
+.about-chat-message pre.skylet-pre code { background: none; padding: 0; }
+.about-chat-message ul.skylet-ul,
+.about-chat-message ol.skylet-ol {
+    margin: 6px 0 6px 18px;
+    padding: 0;
+}
+.about-chat-message ul.skylet-ul { list-style-type: disc; }
+.about-chat-message ol.skylet-ol { list-style-type: decimal; }
+.about-chat-message ul.skylet-ul li,
+.about-chat-message ol.skylet-ol li { margin-bottom: 3px; }
+
+</style>
 
     <style>
         :root {
@@ -1397,7 +2859,1084 @@
         </footer>
     </div>
 
-    <script src="/js/skylet-widget.js?v=20261002desktop6" defer></script>
+    <script id="snapshot-skylet-js" data-source="5b41fe0b/js/skylet-widget.js">
+(function () {
+  var state = {
+    apiBase: "https://api.pklavc.com",
+    conversationId: "",
+    voiceEnabled: false,
+  };
+
+  var els = {};
+  var skyletVisitorId = getOrCreateVisitorId();
+
+  function getOrCreateVisitorId() {
+    try {
+      var stored = localStorage.getItem("skyletVisitorId");
+      if (stored && /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(stored)) return stored;
+      if (!window.crypto || typeof window.crypto.randomUUID !== "function") return null;
+      var visitorId = window.crypto.randomUUID();
+      localStorage.setItem("skyletVisitorId", visitorId);
+      return visitorId;
+    } catch (_) { return null; }
+  }
+
+  function skyletFetch(url, options) {
+    var requestOptions = options || {};
+    var headers = new Headers(requestOptions.headers || {});
+    if (skyletVisitorId) headers.set("X-Skylet-Visitor-Id", skyletVisitorId);
+    return fetch(url, Object.assign({}, requestOptions, { headers: headers }));
+  }
+
+  var COPY = {
+    en: {
+      launcherLabel: "Open or close Skylet chat",
+      launcherAlt: "Skylet chat icon",
+      widgetLabel: "Skylet chat widget",
+      subtitle: "Portfolio assistant",
+      voiceOn: "Voice on",
+      voiceOff: "Voice off",
+      closeChat: "Close chat",
+      clearConversation: "Delete conversation",
+      confirmClearConversation: "Delete this conversation from this browser?",
+      statusPrompt: "Ask about projects, stack, and experience.",
+      placeholder: "Type your message here...",
+      sendMessage: "Send message",
+      thinking: "Thinking...",
+      noResponse: "No response.",
+      unavailableMessage: "I could not answer right now.",
+      unavailableStatus: "Chat temporarily unavailable.",
+      voiceEnabledStatus: "Voice mode enabled.",
+      intro: "Hi, I am Skylet. Ask about Patrick's experience, projects, stack, or architecture work.",
+      links: {
+        email: "Send Email",
+        linkedin: "Open LinkedIn",
+        github: "View GitHub",
+        sponsor: "Sponsor Patrick",
+        portfolio: "Open Portfolio",
+        projects: "Browse Projects",
+        blog: "Read Blog",
+        about: "About Patrick",
+        lavc: "View Lavc Systems",
+        skyletProject: "View Skylet Assistant",
+        skyletApp: "Open Skylet Assistant",
+        codepulse: "View CodePulse",
+        googleAuth: "View Google Auth Worker",
+        zoho: "View Zoho Worker",
+        hablla: "View Hablla Worker",
+        zenvia: "View Zenvia Worker",
+        sige: "View SIGE Worker",
+        omie: "View Omie Worker",
+        saas: "View SaaS Platform",
+        cipher: "View Cipher Gate",
+        eventDriven: "View Event-Driven Service",
+        aegis: "View Aegis Sentinel",
+        cloud: "View Cloud Deployment",
+        os: "View OS Optimizer",
+        githubRepo: "View on GitHub",
+        project: "View Project",
+        post: "Read Post",
+        page: "Visit Page",
+        link: "Visit Link"
+      }
+    },
+    pt: {
+      launcherLabel: "Abrir ou fechar chat da Skylet",
+      launcherAlt: "Ícone do chat da Skylet",
+      widgetLabel: "Widget de chat da Skylet",
+      subtitle: "Assistente de portfólio",
+      voiceOn: "Voz ativada",
+      voiceOff: "Voz desativada",
+      closeChat: "Fechar chat",
+      clearConversation: "Apagar conversa",
+      confirmClearConversation: "Apagar esta conversa deste navegador?",
+      statusPrompt: "Pergunte sobre projetos, stack e experiência.",
+      placeholder: "Digite sua mensagem aqui...",
+      sendMessage: "Enviar mensagem",
+      thinking: "Pensando...",
+      noResponse: "Sem resposta.",
+      unavailableMessage: "Não consegui responder agora.",
+      unavailableStatus: "Chat temporariamente indisponível.",
+      voiceEnabledStatus: "Modo de voz ativado.",
+      intro: "Oi, eu sou a Skylet. Pergunte sobre a experiência, os projetos, a stack ou o trabalho de arquitetura do Patrick.",
+      links: {
+        email: "Enviar e-mail",
+        linkedin: "Abrir LinkedIn",
+        github: "Ver GitHub",
+        sponsor: "Apoiar Patrick",
+        portfolio: "Abrir portfólio",
+        projects: "Ver projetos",
+        blog: "Ler blog",
+        about: "Sobre Patrick",
+        lavc: "Ver Lavc Systems",
+        skyletProject: "Ver Skylet Assistant",
+        skyletApp: "Abrir Skylet Assistant",
+        codepulse: "Ver CodePulse",
+        googleAuth: "Ver Google Auth Worker",
+        zoho: "Ver Zoho Worker",
+        hablla: "Ver Hablla Worker",
+        zenvia: "Ver Zenvia Worker",
+        sige: "Ver SIGE Worker",
+        omie: "Ver Omie Worker",
+        saas: "Ver plataforma SaaS",
+        cipher: "Ver Cipher Gate",
+        eventDriven: "Ver Event-Driven Service",
+        aegis: "Ver Aegis Sentinel",
+        cloud: "Ver Cloud Deployment",
+        os: "Ver OS Optimizer",
+        githubRepo: "Ver no GitHub",
+        project: "Ver projeto",
+        post: "Ler artigo",
+        page: "Abrir página",
+        link: "Abrir link"
+      }
+    },
+    es: {
+      launcherLabel: "Abrir o cerrar el chat de Skylet",
+      launcherAlt: "Ícono del chat de Skylet",
+      widgetLabel: "Widget de chat de Skylet",
+      subtitle: "Asistente de portafolio",
+      voiceOn: "Voz activada",
+      voiceOff: "Voz desactivada",
+      closeChat: "Cerrar chat",
+      clearConversation: "Borrar conversación",
+      confirmClearConversation: "¿Borrar esta conversación de este navegador?",
+      statusPrompt: "Pregunta sobre proyectos, stack y experiencia.",
+      placeholder: "Escribe tu mensaje aquí...",
+      sendMessage: "Enviar mensaje",
+      thinking: "Pensando...",
+      noResponse: "Sin respuesta.",
+      unavailableMessage: "No pude responder ahora.",
+      unavailableStatus: "Chat temporalmente no disponible.",
+      voiceEnabledStatus: "Modo de voz activado.",
+      intro: "Hola, soy Skylet. Pregunta sobre la experiencia, los proyectos, el stack o el trabajo de arquitectura de Patrick.",
+      links: {
+        email: "Enviar correo",
+        linkedin: "Abrir LinkedIn",
+        github: "Ver GitHub",
+        sponsor: "Apoyar a Patrick",
+        portfolio: "Abrir portafolio",
+        projects: "Ver proyectos",
+        blog: "Leer blog",
+        about: "Sobre Patrick",
+        lavc: "Ver Lavc Systems",
+        skyletProject: "Ver Skylet Assistant",
+        skyletApp: "Abrir Skylet Assistant",
+        codepulse: "Ver CodePulse",
+        googleAuth: "Ver Google Auth Worker",
+        zoho: "Ver Zoho Worker",
+        hablla: "Ver Hablla Worker",
+        zenvia: "Ver Zenvia Worker",
+        sige: "Ver SIGE Worker",
+        omie: "Ver Omie Worker",
+        saas: "Ver plataforma SaaS",
+        cipher: "Ver Cipher Gate",
+        eventDriven: "Ver Event-Driven Service",
+        aegis: "Ver Aegis Sentinel",
+        cloud: "Ver Cloud Deployment",
+        os: "Ver OS Optimizer",
+        githubRepo: "Ver en GitHub",
+        project: "Ver proyecto",
+        post: "Leer artículo",
+        page: "Abrir página",
+        link: "Abrir enlace"
+      }
+    }
+  };
+
+  function getLocale() {
+    if (window.PkLavcI18n && typeof window.PkLavcI18n.getCurrentLanguage === "function") {
+      return window.PkLavcI18n.getCurrentLanguage();
+    }
+
+    var path = window.location.pathname || "/";
+    if (/^\/pt(?:\/|$)/i.test(path)) return "pt";
+    if (/^\/es(?:\/|$)/i.test(path)) return "es";
+    return "en";
+  }
+
+  function getCopy() {
+    return COPY[getLocale()] || COPY.en;
+  }
+
+  function shouldRunWidget() {
+    var path = window.location.pathname || "/";
+    return !/^\/(?:(?:pt|es)\/)?ia\/?$/i.test(path);
+  }
+
+  function getVoiceToggleMarkup(isEnabled) {
+    var copy = getCopy();
+    return [
+      '<span class="about-chat-action-icon about-chat-voice-icon" aria-hidden="true">',
+      '  <span class="about-chat-voice-slash"></span>',
+      '</span>',
+      '<span class="about-chat-action-label">',
+      isEnabled ? copy.voiceOn : copy.voiceOff,
+      '</span>'
+    ].join("");
+  }
+
+  function getCloseButtonMarkup() {
+    var copy = getCopy();
+    return [
+      '<span class="about-chat-close-icon" aria-hidden="true"></span>',
+      '<span class="about-chat-action-label">' + copy.closeChat + '</span>'
+    ].join("");
+  }
+
+  function ensureMarkup() {
+    if (document.getElementById("about-chat-launcher") && document.getElementById("about-chat-widget")) {
+      return;
+    }
+
+    var copy = getCopy();
+    var launcher = document.createElement("button");
+    launcher.id = "about-chat-launcher";
+    launcher.className = "about-chat-launcher";
+    launcher.type = "button";
+    launcher.setAttribute("aria-controls", "about-chat-widget");
+    launcher.setAttribute("aria-expanded", "false");
+    launcher.setAttribute("aria-label", copy.launcherLabel);
+    launcher.innerHTML = '<img src="/images/brand/icon_skylet.webp?v=feecb6b1c7" alt="' + copy.launcherAlt + '" width="56" height="56" loading="eager" decoding="async">';
+
+    var widget = document.createElement("section");
+    widget.id = "about-chat-widget";
+    widget.className = "about-chat-widget";
+    widget.setAttribute("aria-label", copy.widgetLabel);
+    widget.setAttribute("aria-hidden", "true");
+    widget.inert = true;
+    widget.innerHTML = [
+      '<header class="about-chat-header">',
+      '  <div class="about-chat-title">',
+      '    <strong>Skylet</strong>',
+      '    <span>' + copy.subtitle + '</span>',
+      '  </div>',
+      '  <div class="about-chat-actions">',
+      '    <button id="about-chat-voice-toggle" class="about-chat-action-btn about-chat-voice-toggle" type="button" aria-pressed="false" aria-label="' + copy.voiceOff + '" title="' + copy.voiceOff + '">' + getVoiceToggleMarkup(false) + '</button>',
+      '    <button id="about-chat-clear" class="about-chat-action-btn about-chat-clear-btn" type="button" aria-label="' + copy.clearConversation + '" title="' + copy.clearConversation + '"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 7h16M9 7V4h6v3m3 0-1 13H7L6 7m4 4v5m4-5v5"></path></svg></button>',
+      '    <button id="about-chat-close" class="about-chat-action-btn about-chat-close-btn" type="button" aria-label="' + copy.closeChat + '" title="' + copy.closeChat + '">' + getCloseButtonMarkup() + '</button>',
+      '  </div>',
+      '</header>',
+      '<div id="about-chat-log" class="about-chat-log" aria-live="polite"></div>',
+      '<div id="about-chat-status" class="about-chat-status">' + copy.statusPrompt + '</div>',
+      '<form id="about-chat-form" class="about-chat-form">',
+      '  <div class="about-chat-input-wrap">',
+      '    <textarea id="about-chat-input" class="about-chat-input" placeholder="' + copy.placeholder + '"></textarea>',
+      '  </div>',
+      '  <button id="about-chat-send" class="about-chat-send" type="submit" aria-label="' + copy.sendMessage + '" title="' + copy.sendMessage + '"><svg class="about-chat-send-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h8"></path><path d="m12 5 7 7-7 7"></path></svg></button>',
+      '</form>'
+    ].join("");
+
+    document.body.appendChild(launcher);
+    document.body.appendChild(widget);
+  }
+
+  function cacheElements() {
+    els.launcher = document.getElementById("about-chat-launcher");
+    els.widget = document.getElementById("about-chat-widget");
+    els.closeBtn = document.getElementById("about-chat-close");
+    els.clearBtn = document.getElementById("about-chat-clear");
+    els.voiceToggle = document.getElementById("about-chat-voice-toggle");
+    els.log = document.getElementById("about-chat-log");
+    els.status = document.getElementById("about-chat-status");
+    els.form = document.getElementById("about-chat-form");
+    els.input = document.getElementById("about-chat-input");
+    els.send = document.getElementById("about-chat-send");
+  }
+
+  var footerClearanceFrame = 0;
+
+  function syncFooterClearance() {
+    footerClearanceFrame = 0;
+    var footer = document.querySelector("footer");
+    var root = document.documentElement;
+
+    if (!root) {
+      return;
+    }
+
+    var isMobile = typeof window.matchMedia === "function"
+      ? window.matchMedia("(max-width: 768px)").matches
+      : window.innerWidth <= 768;
+    var isStore = document.body && document.body.hasAttribute("data-store-locale");
+
+    // Store is populated asynchronously. On mobile, keep Skylet fixed above the
+    // bottom navigation so it does not jump while products and ads are loading.
+    // Desktop always uses footer-aware clearance on every page.
+    if (isStore && isMobile) {
+      root.style.setProperty("--skylet-footer-offset", "0px");
+      return;
+    }
+
+    if (!footer) {
+      return;
+    }
+
+    var viewportHeight = window.innerHeight || document.documentElement.clientHeight || 0;
+    var footerTop = footer.getBoundingClientRect().top;
+    var footerStyle = window.getComputedStyle ? window.getComputedStyle(footer) : null;
+    var reservedBottom = footerStyle ? parseFloat(footerStyle.paddingBottom) || 0 : 0;
+    var rawFooterOverlap = Math.max(0, viewportHeight - footerTop);
+    // On desktop the whole visible footer is protected, including the area reserved
+    // for the fixed navigation. On mobile that reserved area is ignored so Skylet
+    // can keep the intended partial overlap with the visual footer content.
+    var overlap = isMobile
+      ? Math.max(0, rawFooterOverlap - reservedBottom)
+      : rawFooterOverlap;
+    var allowsPartialOverlap = isMobile && footer.classList.contains("footer-projects");
+    var allowedFooterOverlap = allowsPartialOverlap ? 76 : 0;
+    var offset = overlap > allowedFooterOverlap
+      ? Math.ceil(overlap - allowedFooterOverlap + (allowsPartialOverlap ? 0 : 12))
+      : 0;
+    var maxOffset = Math.max(0, viewportHeight - 140);
+
+    root.style.setProperty("--skylet-footer-offset", Math.min(offset, maxOffset) + "px");
+
+    if (!isMobile && footerTop < viewportHeight && footer.getBoundingClientRect().bottom > 0) {
+      scheduleFooterClearance();
+    }
+  }
+
+  function scheduleFooterClearance() {
+    if (footerClearanceFrame) {
+      return;
+    }
+
+    footerClearanceFrame = window.requestAnimationFrame(syncFooterClearance);
+  }
+
+  function bindFooterClearance() {
+    syncFooterClearance();
+    window.addEventListener("scroll", scheduleFooterClearance, { passive: true });
+    window.addEventListener("resize", scheduleFooterClearance, { passive: true });
+    window.addEventListener("orientationchange", scheduleFooterClearance, { passive: true });
+
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener("resize", scheduleFooterClearance, { passive: true });
+      window.visualViewport.addEventListener("scroll", scheduleFooterClearance, { passive: true });
+    }
+
+    var footer = document.querySelector("footer");
+    if (footer && "ResizeObserver" in window) {
+      var footerObserver = new ResizeObserver(scheduleFooterClearance);
+      footerObserver.observe(footer);
+    }
+
+    if (footer && "IntersectionObserver" in window) {
+      var footerIntersectionObserver = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.target === footer) {
+            scheduleFooterClearance();
+          }
+        });
+      }, { threshold: [0, 0.01, 0.25, 0.5, 1] });
+      footerIntersectionObserver.observe(footer);
+    }
+
+    if ("ResizeObserver" in window && document.documentElement) {
+      var pageObserver = new ResizeObserver(scheduleFooterClearance);
+      pageObserver.observe(document.documentElement);
+    }
+
+    if ("MutationObserver" in window && document.body) {
+      var bodyObserver = new MutationObserver(scheduleFooterClearance);
+      bodyObserver.observe(document.body, { childList: true, subtree: true });
+    }
+  }
+
+  function localizeExistingMarkup() {
+    var copy = getCopy();
+    var title = els.widget ? els.widget.querySelector(".about-chat-title span") : null;
+    var launcherImage = els.launcher ? els.launcher.querySelector("img") : null;
+
+    if (els.launcher) {
+      els.launcher.setAttribute("aria-label", copy.launcherLabel);
+    }
+
+    if (launcherImage) {
+      launcherImage.alt = copy.launcherAlt;
+    }
+
+    if (els.widget) {
+      els.widget.setAttribute("aria-label", copy.widgetLabel);
+    }
+
+    if (title) {
+      title.textContent = copy.subtitle;
+    }
+
+    if (els.status && !els.status.textContent.trim()) {
+      els.status.textContent = copy.statusPrompt;
+    }
+
+    if (els.input) {
+      els.input.setAttribute("placeholder", copy.placeholder);
+    }
+
+    if (els.send) {
+      els.send.setAttribute("aria-label", copy.sendMessage);
+      els.send.setAttribute("title", copy.sendMessage);
+    }
+  }
+
+  function randomBetween(min, max) {
+    return min + Math.random() * (max - min);
+  }
+
+  function syncChatBackdrop() {
+    if (!els.log) {
+      return;
+    }
+
+    var backdrop = els.log.querySelector(".about-chat-backdrop");
+    if (backdrop) {
+      backdrop.style.transform = "translateY(" + els.log.scrollTop + "px)";
+    }
+  }
+
+  function ensureChatBackdrop() {
+    if (!els.log || els.log.querySelector(".about-chat-backdrop")) {
+      return;
+    }
+
+    var colors = [
+      "rgba(0, 209, 255, 0.86)",
+      "rgba(255, 42, 170, 0.74)",
+      "rgba(232, 251, 255, 0.72)"
+    ];
+    var isCompact = window.matchMedia && window.matchMedia("(max-width: 768px)").matches;
+    var count = isCompact ? 24 : 36;
+    var backdrop = document.createElement("div");
+
+    backdrop.className = "about-chat-backdrop";
+    backdrop.setAttribute("aria-hidden", "true");
+
+    for (var i = 0; i < count; i++) {
+      var item = document.createElement("span");
+      var isArrow = i % 5 === 0 || Math.random() > 0.84;
+      var driftX = randomBetween(-18, 18);
+      var driftY = randomBetween(-16, 16);
+
+      item.className = "about-chat-backdrop-item " + (isArrow ? "is-arrow" : "is-dot");
+      if (isArrow) {
+        item.textContent = "\u27a3";
+      }
+
+      item.style.setProperty("--x", randomBetween(4, 94).toFixed(2) + "%");
+      item.style.setProperty("--y", randomBetween(5, 92).toFixed(2) + "%");
+      item.style.setProperty("--size", (isArrow ? randomBetween(22, 34) : randomBetween(2, 4.6)).toFixed(1) + "px");
+      item.style.setProperty("--alpha", (isArrow ? randomBetween(0.15, 0.28) : randomBetween(0.26, 0.52)).toFixed(2));
+      item.style.setProperty("--duration", randomBetween(9, 19).toFixed(2) + "s");
+      item.style.setProperty("--delay", "-" + randomBetween(0, 19).toFixed(2) + "s");
+      item.style.setProperty("--drift-x", driftX.toFixed(1) + "px");
+      item.style.setProperty("--drift-y", driftY.toFixed(1) + "px");
+      item.style.setProperty("--drift-x-alt", (-driftX * 0.45).toFixed(1) + "px");
+      item.style.setProperty("--drift-y-alt", (driftY * 0.62).toFixed(1) + "px");
+      item.style.setProperty("--particle-color", colors[Math.floor(Math.random() * colors.length)]);
+      backdrop.appendChild(item);
+    }
+
+    els.log.insertBefore(backdrop, els.log.firstChild);
+    syncChatBackdrop();
+
+    if (!els.log.dataset.skyletBackdropBound) {
+      els.log.dataset.skyletBackdropBound = "true";
+      els.log.addEventListener("scroll", syncChatBackdrop, { passive: true });
+    }
+  }
+
+  function saveSession() {
+    localStorage.setItem("aboutChatWidgetSession", JSON.stringify({
+      conversationId: state.conversationId,
+      voiceEnabled: state.voiceEnabled,
+    }));
+  }
+
+  function loadSession() {
+    var raw = localStorage.getItem("aboutChatWidgetSession");
+    if (!raw) {
+      return;
+    }
+
+    try {
+      var parsed = JSON.parse(raw);
+      state.conversationId = parsed.conversationId || "";
+      state.voiceEnabled = !!parsed.voiceEnabled;
+    } catch (err) {
+      console.warn("Invalid about chat session cache", err);
+    }
+  }
+
+  function ensureClearButton() {
+    var actions = els.widget ? els.widget.querySelector(".about-chat-actions") : null;
+    if (!actions || els.clearBtn) return;
+    var button = document.createElement("button");
+    button.id = "about-chat-clear";
+    button.className = "about-chat-action-btn about-chat-clear-btn";
+    button.type = "button";
+    button.setAttribute("aria-label", getCopy().clearConversation);
+    button.title = getCopy().clearConversation;
+    button.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 7h16M9 7V4h6v3m3 0-1 13H7L6 7m4 4v5m4-5v5"></path></svg>';
+    actions.insertBefore(button, els.closeBtn);
+    els.clearBtn = button;
+  }
+
+  function escapeHtml(s) {
+    return String(s)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  var LINK_LABEL_KEYS = {
+    "mailto:contact@pklavc.com": "email",
+    "https://www.linkedin.com/in/pklavc/": "linkedin",
+    "https://github.com/PkLavc": "github",
+    "https://github.com/PkLavc/": "github",
+    "https://github.com/sponsors/PkLavc": "sponsor",
+    "https://pklavc.com/": "portfolio",
+    "https://pklavc.com/projects/": "projects",
+    "https://pklavc.com/blog/": "blog",
+    "https://pklavc.com/about/": "about",
+    "https://pklavc.com/projects/lavc-systems/": "lavc",
+    "https://pklavc.com/projects/skylet-assistant/": "skyletProject",
+    "https://pklavc.com/ia/": "skyletApp",
+    "https://pklavc.com/pt/ia/": "skyletApp",
+    "https://pklavc.com/es/ia/": "skyletApp",
+    "https://pklavc.com/projects/codepulse-monorepo/": "codepulse",
+    "https://pklavc.com/projects/google-auth-worker/": "googleAuth",
+    "https://pklavc.com/projects/zoho-integration-worker/": "zoho",
+    "https://pklavc.com/projects/hablla-integration-worker/": "hablla",
+    "https://pklavc.com/projects/zenvia-integration-worker/": "zenvia",
+    "https://pklavc.com/projects/sige-integration-worker/": "sige",
+    "https://pklavc.com/projects/omie-integration-worker/": "omie",
+    "https://pklavc.com/projects/multi-tenant-saas-platform/": "saas",
+    "https://pklavc.com/projects/cipher-gate-proxy/": "cipher",
+    "https://pklavc.com/projects/event-driven-integration-service/": "eventDriven",
+    "https://pklavc.com/projects/aegis-sentinel/": "aegis",
+    "https://pklavc.com/projects/cloud-deployment-showcase/": "cloud",
+    "https://pklavc.com/projects/os-resource-optimizer/": "os",
+    "https://github.com/PkLavc/codepulse-monorepo": "githubRepo",
+    "https://github.com/PkLavc/codepulse-monorepo/": "githubRepo",
+  };
+
+  function getLinkLabel(href) {
+    var links = getCopy().links;
+    if (LINK_LABEL_KEYS[href]) return links[LINK_LABEL_KEYS[href]];
+    var alt = href.endsWith("/") ? href.slice(0, -1) : href + "/";
+    if (LINK_LABEL_KEYS[alt]) return links[LINK_LABEL_KEYS[alt]];
+    if (href.startsWith("mailto:")) return links.email;
+    if (href.includes("linkedin.com")) return links.linkedin;
+    if (href.includes("github.com/PkLavc") || href.includes("github.com/pklavc")) return links.github;
+    if (href.includes("pklavc.com/projects/")) return links.project;
+    if (href.includes("pklavc.com/blog/")) return links.post;
+    if (href.includes("pklavc.com")) return links.page;
+    return links.link;
+  }
+
+  function parseMarkdown(md) {
+    var out = md;
+    // 1. Fenced code blocks
+    out = out.replace(/```(?:\w*)\n?([\s\S]*?)```/g, function (_, code) {
+      return '<pre class="skylet-pre"><code>' + code.replace(/^[\n]+|[\n]+$/g, "") + "</code></pre>";
+    });
+    // 2. Inline code
+    out = out.replace(/`([^`\n]+)`/g, '<code class="skylet-code">$1</code>');
+    // 3. Headers → bold block
+    out = out.replace(/^#{1,6}\s+(.+)$/gm, '<strong class="skylet-heading">$1</strong>');
+    // 4. Bold
+    out = out.replace(/\*\*([^*\n]+?)\*\*/g, '<strong>$1</strong>');
+    out = out.replace(/__([^_\n]+?)__/g, '<strong>$1</strong>');
+    // 5. Italic
+    out = out.replace(/\*([^*\n]+?)\*/g, '<em>$1</em>');
+    out = out.replace(/_([^_\n]+?)_/g, '<em>$1</em>');
+    // 6. Strikethrough
+    out = out.replace(/~~([^~\n]+?)~~/g, '<del>$1</del>');
+    // 7. Unordered lists
+    out = out.replace(/((?:^[*\-+] .+$\n?)+)/gm, function (block) {
+      var items = block.trim().split("\n").map(function (line) {
+        return "<li>" + line.replace(/^[*\-+] /, "") + "</li>";
+      });
+      return '<ul class="skylet-ul">' + items.join("") + "</ul>";
+    });
+    // 8. Ordered lists
+    out = out.replace(/((?:^\d+\.\s+.+$\n?)+)/gm, function (block) {
+      var items = block.trim().split("\n").map(function (line) {
+        return "<li>" + line.replace(/^\d+\.\s+/, "") + "</li>";
+      });
+      return '<ol class="skylet-ol">' + items.join("") + "</ol>";
+    });
+    // 9. Newlines to <br>
+    out = out.replace(/\n/g, "<br>");
+    return out;
+  }
+
+  function renderMessageContent(text) {
+    var seenHrefs = Object.create(null);
+    var buttons = [];
+
+    function trackHref(href) {
+      var key = href.endsWith("/") ? href : href + "/";
+      if (seenHrefs[key] || seenHrefs[href]) return false;
+      seenHrefs[key] = seenHrefs[href] = true;
+      return true;
+    }
+
+    // Escape HTML first so user-supplied text cannot inject markup
+    var html = escapeHtml(text);
+
+    // Parse markdown formatting
+    html = parseMarkdown(html);
+
+    // Replace email addresses
+    html = html.replace(/([a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,})/g, function (email) {
+      var href = "mailto:" + email;
+      if (trackHref(href)) buttons.push(href);
+      return '<a href="' + href + '" class="skylet-inline-link">' + email + "</a>";
+    });
+
+    // Replace https URLs (strip trailing punctuation)
+    html = html.replace(/(https?:\/\/[^\s<>"']+)/g, function (raw) {
+      var clean = raw.replace(/[.,;:!?'")\]]+$/, "");
+      var tail = raw.slice(clean.length);
+      if (trackHref(clean)) buttons.push(clean);
+      return (
+        '<a href="' + clean + '" class="skylet-inline-link" target="_blank" rel="noopener noreferrer">' +
+        clean +
+        "</a>" +
+        (tail ? escapeHtml(tail) : "")
+      );
+    });
+
+    if (buttons.length) {
+      // When a parent section page is present, collapse individual sub-page buttons
+      var sectionParents = ["https://pklavc.com/projects/", "https://pklavc.com/blog/"];
+      var activeParents = sectionParents.filter(function (p) {
+        return buttons.some(function (b) { return (b.endsWith("/") ? b : b + "/") === p; });
+      });
+      var displayButtons = activeParents.length ? buttons.filter(function (href) {
+        var norm = href.endsWith("/") ? href : href + "/";
+        for (var i = 0; i < activeParents.length; i++) {
+          if (norm !== activeParents[i] && norm.startsWith(activeParents[i])) return false;
+        }
+        return true;
+      }) : buttons;
+      html += '<div class="skylet-action-btns">';
+      displayButtons.forEach(function (href) {
+        var isExternal = !href.startsWith("mailto:") && !href.includes("pklavc.com");
+        var label = getLinkLabel(href);
+        html +=
+          '<a href="' +
+          href +
+          '" class="skylet-action-btn"' +
+          (isExternal ? ' target="_blank" rel="noopener noreferrer"' : "") +
+          ">" +
+          escapeHtml(label) +
+          "</a>";
+      });
+      html += "</div>";
+    }
+
+    return html;
+  }
+
+  function appendMessage(role, text, rawText) {
+    if (!els.log) {
+      return null;
+    }
+
+    var node = document.createElement("article");
+    node.className = "about-chat-message " + role;
+    if (rawText) {
+      node.textContent = text;
+    } else {
+      node.innerHTML = renderMessageContent(text);
+    }
+    els.log.appendChild(node);
+    els.log.scrollTop = els.log.scrollHeight;
+    syncChatBackdrop();
+    return node;
+  }
+
+  function openWidget() {
+    if (!els.widget || !els.launcher) {
+      return;
+    }
+
+    els.widget.inert = false;
+    els.widget.classList.add("is-open");
+    els.widget.setAttribute("aria-hidden", "false");
+    els.launcher.setAttribute("aria-expanded", "true");
+    if (els.input && !isMobileViewport()) {
+      try {
+        els.input.focus({ preventScroll: true });
+      } catch (err) {
+        els.input.focus();
+      }
+    }
+  }
+
+  function isMobileViewport() {
+    if (window.matchMedia) {
+      return window.matchMedia("(max-width: 768px), (hover: none), (pointer: coarse)").matches;
+    }
+
+    return window.innerWidth < 768;
+  }
+
+  function closeWidget() {
+    if (!els.widget || !els.launcher) {
+      return;
+    }
+
+    if (els.widget.contains(document.activeElement)) {
+      try {
+        els.launcher.focus({ preventScroll: true });
+      } catch (err) {
+        els.launcher.focus();
+      }
+    }
+
+    els.widget.classList.remove("is-open");
+    els.widget.setAttribute("aria-hidden", "true");
+    els.widget.inert = true;
+    els.launcher.setAttribute("aria-expanded", "false");
+  }
+
+  function autoResizeInput() {
+    if (!els.input) {
+      return;
+    }
+
+    els.input.style.height = "44px";
+    var nextHeight = Math.min(els.input.scrollHeight, 180);
+    els.input.style.height = nextHeight + "px";
+  }
+
+  function setStatus(text) {
+    if (els.status) {
+      els.status.textContent = text;
+    }
+  }
+
+  function updateVoiceToggle() {
+    if (!els.voiceToggle) {
+      return;
+    }
+
+    els.voiceToggle.classList.toggle("is-active", state.voiceEnabled);
+    els.voiceToggle.setAttribute("aria-pressed", state.voiceEnabled ? "true" : "false");
+    els.voiceToggle.setAttribute("aria-label", state.voiceEnabled ? getCopy().voiceOn : getCopy().voiceOff);
+    els.voiceToggle.setAttribute("title", state.voiceEnabled ? getCopy().voiceOn : getCopy().voiceOff);
+    els.voiceToggle.innerHTML = getVoiceToggleMarkup(state.voiceEnabled);
+  }
+
+  function updateCloseButton() {
+    if (!els.closeBtn) {
+      return;
+    }
+
+    els.closeBtn.classList.add("about-chat-close-btn");
+    els.closeBtn.setAttribute("aria-label", getCopy().closeChat);
+    els.closeBtn.setAttribute("title", getCopy().closeChat);
+
+    if (!els.closeBtn.querySelector(".about-chat-close-icon")) {
+      els.closeBtn.innerHTML = getCloseButtonMarkup();
+    }
+  }
+
+  function pickPreferredFemaleVoice(language) {
+    if (!("speechSynthesis" in window)) {
+      return null;
+    }
+
+    var voices = window.speechSynthesis.getVoices() || [];
+    if (!voices.length) {
+      return null;
+    }
+
+    var femaleHints = /female|woman|samantha|victoria|ava|allison|jenny|aria|sara|sonia|karen|moira|tessa|zira|hazel|susan|luciana|helena/i;
+    var langPrefix = (language || navigator.language || "en").slice(0, 2).toLowerCase();
+
+    var exact = voices.find(function (voice) {
+      return femaleHints.test(voice.name) && voice.lang && voice.lang.toLowerCase().slice(0, 2) === langPrefix;
+    });
+
+    if (exact) {
+      return exact;
+    }
+
+    return voices.find(function (voice) {
+      return femaleHints.test(voice.name);
+    }) || null;
+  }
+
+  function speakIfEnabled(text) {
+    if (!state.voiceEnabled || !("speechSynthesis" in window)) {
+      return;
+    }
+
+    var utter = new SpeechSynthesisUtterance(text);
+    utter.lang = navigator.language || "en-US";
+    utter.voice = pickPreferredFemaleVoice(utter.lang);
+    utter.pitch = 1.12;
+    utter.rate = 0.98;
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(utter);
+  }
+
+  function readVoiceInput() {
+    var Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!Recognition || !els.input) {
+      return;
+    }
+
+    var recognition = new Recognition();
+    recognition.lang = navigator.language || "en-US";
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+    recognition.onresult = function (event) {
+      if (event.results && event.results[0] && event.results[0][0]) {
+        els.input.value = event.results[0][0].transcript;
+      }
+    };
+    recognition.start();
+  }
+
+  var humanReplyCursor = 0;
+  var humanReplyTimer = null;
+  var restoringConversation = false;
+  var conversationRestoreGeneration = 0;
+  async function pollHumanReplies() {
+    if (!state.conversationId) return;
+    try {
+      var poll = await skyletFetch(state.apiBase + "/conversations/messages?conversation_id=" + encodeURIComponent(state.conversationId) + "&after_id=" + humanReplyCursor);
+      if (!poll.ok) return;
+      var result = await poll.json();
+      (result.items || []).forEach(function (item) { humanReplyCursor = Math.max(humanReplyCursor, Number(item.id) || 0); appendMessage("assistant", item.content, true); });
+    } catch (_) { /* Resume on the next interval. */ }
+  }
+
+  async function restoreConversationHistory() {
+    if (!state.conversationId) return;
+    var restoringId = state.conversationId;
+    var restoreGeneration = ++conversationRestoreGeneration;
+    restoringConversation = true;
+    try {
+      var response = await skyletFetch(state.apiBase + "/conversations/history?conversation_id=" + encodeURIComponent(restoringId));
+      if (restoreGeneration !== conversationRestoreGeneration || state.conversationId !== restoringId) return;
+      if (response.status === 404) {
+        state.conversationId = "";
+        saveSession();
+        return;
+      }
+      if (!response.ok) return;
+      var history = await response.json();
+      if (restoreGeneration !== conversationRestoreGeneration || state.conversationId !== restoringId) return;
+      if (els.log) els.log.querySelectorAll(".about-chat-message").forEach(function (node) { node.remove(); });
+      (history.items || []).forEach(function (item) {
+        appendMessage(item.role === "user" ? "user" : "assistant", item.content, true);
+        humanReplyCursor = Math.max(humanReplyCursor, Number(item.id) || 0);
+      });
+      if (!humanReplyTimer) humanReplyTimer = window.setInterval(pollHumanReplies, 3000);
+    } catch (_) { /* Keep the local reference so the next load can retry. */ }
+    finally { if (restoreGeneration === conversationRestoreGeneration) restoringConversation = false; }
+  }
+
+  function clearConversation() {
+    if (!window.confirm(getCopy().confirmClearConversation)) return;
+    conversationRestoreGeneration += 1;
+    restoringConversation = false;
+    var oldConversationId = state.conversationId;
+    state.conversationId = "";
+    humanReplyCursor = 0;
+    saveSession();
+    if (els.log) els.log.querySelectorAll(".about-chat-message").forEach(function (node) { node.remove(); });
+    if (oldConversationId) {
+      skyletFetch(state.apiBase + "/conversations/close", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ conversation_id: oldConversationId }),
+        keepalive: true,
+      }).catch(function () {});
+    }
+  }
+
+  async function sendChat() {
+    if (!els.input || restoringConversation) {
+      return;
+    }
+
+    var text = (els.input.value || "").trim();
+    if (!text) {
+      return;
+    }
+
+    els.input.value = "";
+    autoResizeInput();
+    appendMessage("user", text, true);
+    setStatus("");
+    var thinking = appendMessage("assistant", getCopy().thinking, true);
+
+    try {
+      var chatPayload = {
+        message: text,
+        conversation_id: state.conversationId || null,
+        voice_reply: state.voiceEnabled,
+      };
+      var res = await skyletFetch(state.apiBase + "/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(chatPayload),
+      });
+
+      var data = await res.json();
+      if (res.status === 409 && data.error === "conversation_closed" && state.conversationId) {
+        state.conversationId = "";
+        saveSession();
+        chatPayload.conversation_id = null;
+        res = await skyletFetch(state.apiBase + "/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(chatPayload),
+        });
+        data = await res.json();
+      }
+      if (!res.ok) {
+        throw new Error(data.error || "Chat failed");
+      }
+
+      state.conversationId = data.conversation_id || state.conversationId;
+      saveSession();
+      if (!humanReplyTimer && state.conversationId) humanReplyTimer = window.setInterval(pollHumanReplies, 3000);
+      if (thinking) {
+        if (data.human_takeover) thinking.remove();
+        else thinking.innerHTML = renderMessageContent(data.reply || getCopy().noResponse);
+      }
+      setStatus("");
+      speakIfEnabled(data.reply || "");
+    } catch (err) {
+      if (thinking) {
+        thinking.textContent = getCopy().unavailableMessage;
+      }
+      setStatus(getCopy().unavailableStatus);
+      console.error(err);
+    }
+  }
+
+  function bindEvents() {
+    if (els.launcher) {
+      els.launcher.addEventListener("click", function () {
+        if (els.widget && els.widget.classList.contains("is-open")) {
+          closeWidget();
+          return;
+        }
+        openWidget();
+      });
+    }
+
+    if (els.closeBtn) {
+      els.closeBtn.addEventListener("click", closeWidget);
+    }
+
+    if (els.voiceToggle) {
+      els.voiceToggle.addEventListener("click", function () {
+        state.voiceEnabled = !state.voiceEnabled;
+        updateVoiceToggle();
+        saveSession();
+      });
+
+      els.voiceToggle.addEventListener("contextmenu", function (event) {
+        event.preventDefault();
+        readVoiceInput();
+      });
+    }
+
+    if (els.form) {
+      els.form.addEventListener("submit", function (event) {
+        event.preventDefault();
+        sendChat();
+      });
+    }
+
+    if (els.input) {
+      els.input.addEventListener("input", function () {
+        autoResizeInput();
+      });
+
+      els.input.addEventListener("keydown", function (event) {
+        if (event.key === "Enter" && !event.shiftKey) {
+          event.preventDefault();
+          sendChat();
+        }
+      });
+    }
+
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Escape") {
+        closeWidget();
+      }
+    });
+  }
+
+  function init() {
+    if (!shouldRunWidget()) {
+      return;
+    }
+
+    ensureMarkup();
+    cacheElements();
+
+    if (!els.launcher || !els.widget) {
+      return;
+    }
+
+    loadSession();
+    ensureClearButton();
+    localizeExistingMarkup();
+    updateVoiceToggle();
+    updateCloseButton();
+    ensureChatBackdrop();
+    if (!els.widget.classList.contains("is-open")) {
+      els.widget.inert = true;
+    }
+    bindEvents();
+    bindFooterClearance();
+    if (els.clearBtn) els.clearBtn.addEventListener("click", clearConversation);
+    autoResizeInput();
+
+    if (els.log && !els.log.querySelector(".about-chat-message")) {
+      appendMessage("assistant", getCopy().intro);
+    }
+    restoreConversationHistory();
+
+    setStatus(state.voiceEnabled ? getCopy().voiceEnabledStatus : "");
+
+    if ("speechSynthesis" in window) {
+      window.speechSynthesis.getVoices();
+      window.speechSynthesis.addEventListener("voiceschanged", function () {
+        updateVoiceToggle();
+      }, { once: true });
+    }
+  }
+
+  function initAndExpose() {
+    init();
+    window.openSkyletWidget = openWidget;
+    window.closeSkyletWidget = closeWidget;
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initAndExpose, { once: true });
+  } else {
+    initAndExpose();
+  }
+})();
+
+</script>
     <script>
         (function () {
             var identity = document.getElementById('identity');
