@@ -38,6 +38,14 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Checkout Autotrader dashboard
+        uses: actions/checkout@v4
+        with:
+          repository: PkLavc/Autotrader
+          ref: main
+          path: .autotrader-dashboard
+          fetch-depth: 1
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
