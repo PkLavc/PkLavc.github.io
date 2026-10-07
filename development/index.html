@@ -1535,13 +1535,7 @@ body.seo-layout .footer-minimal {
             inset: 0;
             z-index: -3;
             pointer-events: none;
-            opacity: .52;
-            background-image:
-                linear-gradient(var(--home-line-soft) 1px, transparent 1px),
-                linear-gradient(90deg, var(--home-line-soft) 1px, transparent 1px);
-            background-size: 72px 72px;
-            mask-image: linear-gradient(to bottom, #000 0%, rgba(0,0,0,.75) 48%, transparent 92%);
-            -webkit-mask-image: linear-gradient(to bottom, #000 0%, rgba(0,0,0,.75) 48%, transparent 92%);
+            opacity: 0;
         }
 
         .signal-glow {
@@ -2004,11 +1998,7 @@ body.seo-layout .footer-minimal {
             max-width: var(--glyph-width);
         }
 
-        .identity.expand-first .first-insert:nth-of-type(2) { transition-delay: .02s; }
-        .identity.expand-first .first-insert:nth-of-type(3) { transition-delay: .08s; }
-        .identity.expand-first .first-insert:nth-of-type(4) { transition-delay: .14s; }
-        .identity.expand-first .first-insert:nth-of-type(5) { transition-delay: .20s; }
-        .identity.expand-first .first-insert:nth-of-type(6) { transition-delay: .26s; }
+        .identity.expand-first .first-insert { transition-delay: 0s; }
 
         .morph-glyph .from,
         .morph-glyph .to {
@@ -2054,17 +2044,10 @@ body.seo-layout .footer-minimal {
             filter: blur(0);
         }
 
-        .identity.morph-second .second-insert:nth-of-type(3) { transition-delay: .16s; }
-        .identity.morph-second .second-insert:nth-of-type(4) { transition-delay: .24s; }
+        .identity.morph-second .second-insert { transition-delay: 0s; }
 
-        .identity.morph-second .morph-glyph:nth-of-type(1) .from,
-        .identity.morph-second .morph-glyph:nth-of-type(1) .to { transition-delay: .02s; }
-        .identity.morph-second .morph-glyph:nth-of-type(2) .from,
-        .identity.morph-second .morph-glyph:nth-of-type(2) .to { transition-delay: .10s; }
-        .identity.morph-second .morph-glyph:nth-of-type(5) .from,
-        .identity.morph-second .morph-glyph:nth-of-type(5) .to { transition-delay: .30s; }
-        .identity.morph-second .morph-glyph:nth-of-type(6) .from,
-        .identity.morph-second .morph-glyph:nth-of-type(6) .to { transition-delay: .38s; }
+        .identity.morph-second .morph-glyph .from,
+        .identity.morph-second .morph-glyph .to { transition-delay: 0s; }
 
         .identity::after {
             content: "";
@@ -2554,6 +2537,13 @@ body.seo-layout .footer-minimal {
         }
 
         @media (max-width: 650px) {
+            /* Keep the animated name hidden until its webfont is ready. On
+               mobile Safari, swapping from the fallback font mid-animation
+               changes the measured word width and visibly shifts the name. */
+            body:not(.identity-font-ready) .identity {
+                visibility: hidden;
+            }
+
             .site-rail {
                 display: none;
             }
@@ -3513,10 +3503,10 @@ body.page-index.spotlight-navigation-enabled .footer-minimal {
                                 <span class="project-arrow" aria-hidden="true">→</span>
                             </a>
 
-                            <a class="project" href="/projects/equiptrack/">
+                            <a class="project" href="/projects/autotrader/">
                                 <span class="project-code">OPS / 03</span>
-                                <h3>EquipTrack</h3>
-                                <p>Inventory and rental operations with availability controls, movement history, maintenance records, permissions, and automated deployment.</p>
+                                <h3>Autotrader</h3>
+                                <p>Autonomous paper trading with Kronos-base forecasts, portfolio risk limits, simulated execution, and a public dashboard.</p>
                                 <span class="project-arrow" aria-hidden="true">→</span>
                             </a>
 
@@ -5087,45 +5077,80 @@ body.page-index.spotlight-navigation-enabled .footer-minimal {
                 document.body.classList.add('ready');
             }
 
-            finishReadyState();
+            function waitForIdentityFont() {
+                var stylesheet = document.querySelector('link[href*="fonts.googleapis.com/css2"]');
 
-            if (reducedMotion) {
-                document.body.classList.add('loaded');
-                identity.classList.add('split', 'expand-first', 'morph-second', 'settle');
-                hero.classList.add('reveal-copy');
-                document.body.dataset.heroContentReady = 'true';
-                window.dispatchEvent(new Event('pklavc:hero-content-ready'));
-                return;
+                function loadFont() {
+                    if (!document.fonts || typeof document.fonts.load !== 'function') {
+                        return Promise.resolve();
+                    }
+
+                    return document.fonts.load('500 11vw Raleway').catch(function () {});
+                }
+
+                if (!stylesheet || stylesheet.rel === 'stylesheet') {
+                    return loadFont();
+                }
+
+                return new Promise(function (resolve) {
+                    var completed = false;
+
+                    function stylesheetReady() {
+                        if (completed) return;
+                        completed = true;
+                        loadFont().then(resolve);
+                    }
+
+                    stylesheet.addEventListener('load', stylesheetReady, { once: true });
+                    stylesheet.addEventListener('error', function () {
+                        if (completed) return;
+                        completed = true;
+                        resolve();
+                    }, { once: true });
+
+                    /* The preload can finish just before its load listener is
+                       attached and switch itself to a stylesheet. */
+                    if (stylesheet.rel === 'stylesheet') stylesheetReady();
+                });
             }
+
+            finishReadyState();
+            document.body.classList.add('loaded');
 
             /* Pk opens to Patrick while Lavc moves below and becomes Araujo. */
             function startIdentityAnimation() {
-                document.body.classList.add('loaded');
+                document.body.classList.add('identity-font-ready');
 
-                window.setTimeout(function () {
-                    identity.classList.add('split');
-                }, 650);
-
-                window.setTimeout(function () {
-                    identity.classList.add('expand-first');
-                }, 1300);
-
-                window.setTimeout(function () {
-                    identity.classList.add('morph-second');
-                }, 3000);
-
-                window.setTimeout(function () {
-                    identity.classList.add('settle');
-                }, 4600);
-
-                window.setTimeout(function () {
+                if (reducedMotion) {
+                    identity.classList.add('split', 'expand-first', 'morph-second', 'settle');
                     hero.classList.add('reveal-copy');
                     document.body.dataset.heroContentReady = 'true';
                     window.dispatchEvent(new Event('pklavc:hero-content-ready'));
-                }, 5000);
+                    return;
+                }
+
+                var splitDuration = 1150;
+                var firstNameDuration = 1150;
+                var secondNameDuration = 1150;
+
+                window.setTimeout(function () {
+                    identity.classList.add('split');
+                    window.setTimeout(function () {
+                        identity.classList.add('expand-first');
+                        window.setTimeout(function () {
+                            identity.classList.add('morph-second');
+                            window.setTimeout(function () {
+                                identity.classList.add('settle');
+                                hero.classList.add('reveal-copy');
+                                document.body.dataset.heroContentReady = 'true';
+                                window.dispatchEvent(new Event('pklavc:hero-content-ready'));
+                            }, secondNameDuration);
+                        }, firstNameDuration);
+                    }, splitDuration);
+                }, 250);
             }
 
-            startIdentityAnimation();
+            waitForIdentityFont().then(startIdentityAnimation);
         }());
     </script>
     <script src="/js/home-particles.js"></script>

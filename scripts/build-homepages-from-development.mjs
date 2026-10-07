@@ -45,7 +45,7 @@ const copy = {
     workIntro: "The projects below are not isolated visual demos. They document implementation choices, data flows, system responsibilities, and the engineering constraints behind each build.",
     lavc: "Multi-agent orchestration, Kanban execution, RAG knowledge, vector memory, local models, and real-time observability.",
     pipeline: "Replayable ingestion across operational APIs with normalization, idempotent identifiers, SQL persistence, and scheduled execution.",
-    equiptrack: "Inventory and rental operations with availability controls, movement history, maintenance records, permissions, and automated deployment.",
+    autotrader: "Autonomous paper trading with Kronos-base forecasts, portfolio risk limits, simulated execution, and a public dashboard.",
     skylet: "A contextual assistant using Cloudflare infrastructure, manual RAG, multilingual conversation, sessions, caching, and provider fallback.",
     sectionWriting: "Writing",
     writingTitle: "Technical context",
@@ -72,7 +72,7 @@ const copy = {
     terms: "Terms of Use",
     editorial: "Editorial Policy",
     credits: "Credits",
-    projectLinks: ["/projects/lavc-systems/", "/projects/api-integrations/", "/projects/equiptrack/", "/projects/skylet-assistant/"],
+    projectLinks: ["/projects/lavc-systems/", "/projects/api-integrations/", "/projects/autotrader/", "/projects/skylet-assistant/"],
     routeLinks: ["/about/", "/projects/", "/blog/", "/certifications/"]
   },
   pt: {
@@ -98,7 +98,7 @@ const copy = {
     workIntro: "Os projetos abaixo n&atilde;o s&atilde;o demonstra&ccedil;&otilde;es visuais isoladas. Eles documentam escolhas de implementa&ccedil;&atilde;o, fluxos de dados, responsabilidades do sistema e as restri&ccedil;&otilde;es de engenharia de cada constru&ccedil;&atilde;o.",
     lavc: "Orquestra&ccedil;&atilde;o multiagente, execu&ccedil;&atilde;o Kanban, conhecimento RAG, mem&oacute;ria vetorial, modelos locais e observabilidade em tempo real.",
     pipeline: "Ingest&atilde;o reprocess&aacute;vel de APIs operacionais com normaliza&ccedil;&atilde;o, identificadores idempotentes, persist&ecirc;ncia SQL e execu&ccedil;&atilde;o agendada.",
-    equiptrack: "Opera&ccedil;&otilde;es de invent&aacute;rio e loca&ccedil;&atilde;o com controles de disponibilidade, hist&oacute;rico de movimenta&ccedil;&atilde;o, manuten&ccedil;&atilde;o, permiss&otilde;es e implanta&ccedil;&atilde;o automatizada.",
+    autotrader: "Paper trading aut&ocirc;nomo com previs&otilde;es do Kronos-base, limites de risco da carteira, execu&ccedil;&atilde;o simulada e dashboard p&uacute;blico.",
     skylet: "Assistente contextual com infraestrutura Cloudflare, RAG manual, conversa multil&iacute;ngue, sess&otilde;es, cache e fallback de provedores.",
     sectionWriting: "Conte&uacute;do",
     writingTitle: "Contexto t&eacute;cnico",
@@ -125,7 +125,7 @@ const copy = {
     terms: "Termos de Uso",
     editorial: "Pol&iacute;tica Editorial",
     credits: "Cr&eacute;ditos",
-    projectLinks: ["/pt/projetos/lavc-systems/", "/pt/projetos/integracoes-api/", "/pt/projetos/equiptrack/", "/pt/projetos/skylet-assistant/"],
+    projectLinks: ["/pt/projetos/lavc-systems/", "/pt/projetos/integracoes-api/", "/pt/projetos/autotrader/", "/pt/projetos/skylet-assistant/"],
     routeLinks: ["/pt/sobre/", "/pt/projetos/", "/pt/blog/", "/certifications/"]
   },
   es: {
@@ -151,7 +151,7 @@ const copy = {
     workIntro: "Los proyectos siguientes no son demostraciones visuales aisladas. Documentan decisiones de implementaci&oacute;n, flujos de datos, responsabilidades del sistema y las restricciones de ingenier&iacute;a detr&aacute;s de cada construcci&oacute;n.",
     lavc: "Orquestaci&oacute;n multiagente, ejecuci&oacute;n Kanban, conocimiento RAG, memoria vectorial, modelos locales y observabilidad en tiempo real.",
     pipeline: "Ingesta reprocesable de APIs operativas con normalizaci&oacute;n, identificadores idempotentes, persistencia SQL y ejecuci&oacute;n programada.",
-    equiptrack: "Operaciones de inventario y alquiler con controles de disponibilidad, historial de movimientos, mantenimiento, permisos y despliegue automatizado.",
+    autotrader: "Paper trading aut&oacute;nomo con pron&oacute;sticos de Kronos-base, l&iacute;mites de riesgo de cartera, ejecuci&oacute;n simulada y dashboard p&uacute;blico.",
     skylet: "Asistente contextual con infraestructura Cloudflare, RAG manual, conversaci&oacute;n multiling&uuml;e, sesiones, cach&eacute; y fallback de proveedores.",
     sectionWriting: "Contenido",
     writingTitle: "Contexto t&eacute;cnico",
@@ -178,7 +178,7 @@ const copy = {
     terms: "T&eacute;rminos de Uso",
     editorial: "Pol&iacute;tica Editorial",
     credits: "Cr&eacute;ditos",
-    projectLinks: ["/es/proyectos/lavc-systems/", "/es/proyectos/integraciones-api/", "/es/proyectos/equiptrack/", "/es/proyectos/skylet-assistant/"],
+    projectLinks: ["/es/proyectos/lavc-systems/", "/es/proyectos/integraciones-api/", "/es/proyectos/autotrader/", "/es/proyectos/skylet-assistant/"],
     routeLinks: ["/es/sobre/", "/es/proyectos/", "/es/blog/", "/certifications/"]
   }
 };
@@ -302,7 +302,7 @@ function localize(html, locale) {
     ["Applied AI", item.ai], ["RAG, contextual assistants, multi-agent workflows, vector memory, controlled tool execution, fallback behavior, and observable AI processes.", item.aiText],
     ["Automation &amp; data", item.automation], ["Scheduled jobs, ETL, validation, reporting pipelines, dashboards, business rules, and workflows that replace repetitive manual operations.", item.automationText],
     ["02 / Work", `02 / ${item.sectionWork}`], ["Selected systems", item.workTitle], ["The projects below are not isolated visual demos. They document implementation choices, data flows, system responsibilities, and the engineering constraints behind each build.", item.workIntro],
-    ["Multi-agent orchestration, Kanban execution, RAG knowledge, vector memory, local models, and real-time observability.", item.lavc], ["Replayable ingestion across operational APIs with normalization, idempotent identifiers, SQL persistence, and scheduled execution.", item.pipeline], ["Inventory and rental operations with availability controls, movement history, maintenance records, permissions, and automated deployment.", item.equiptrack], ["A contextual assistant using Cloudflare infrastructure, manual RAG, multilingual conversation, sessions, caching, and provider fallback.", item.skylet],
+    ["Multi-agent orchestration, Kanban execution, RAG knowledge, vector memory, local models, and real-time observability.", item.lavc], ["Replayable ingestion across operational APIs with normalization, idempotent identifiers, SQL persistence, and scheduled execution.", item.pipeline], ["Autonomous paper trading with Kronos-base forecasts, portfolio risk limits, simulated execution, and a public dashboard.", item.autotrader], ["A contextual assistant using Cloudflare infrastructure, manual RAG, multilingual conversation, sessions, caching, and provider fallback.", item.skylet],
     ["03 / Writing", `03 / ${item.sectionWriting}`], ["Technical context", item.writingTitle], ["The portfolio shows finished systems. The blog is where I expand the reasoning around them: backend patterns, APIs, automation, cloud infrastructure, developer tooling, applied AI, data workflows, and the practical decisions that appear while building and maintaining software.", item.writingIntro],
     ["Engineering notes beyond the project page.", item.notesTitle], ["Open the blog", item.openBlog], ["Coverage", item.coverage],
     ["04 / Patrick", `04 / ${item.sectionPatrick}`], ["About the engineer", item.aboutTitle], ["I am Patrick Araujo, a Backend Software Engineer based in Belo Horizonte, Brazil. I work with backend platforms, internal systems, applied AI, integrations, data pipelines, automation, and cloud infrastructure. My professional work has involved systems used for operational, administrative, financial, inventory, reporting, and customer-service workflows.", item.aboutIntro], ["This homepage is intentionally an overview. The About page contains the full professional timeline and stack, Projects contains implementation-specific material, and Certifications documents training and continued technical development.", item.aboutDetail],

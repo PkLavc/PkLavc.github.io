@@ -2565,6 +2565,13 @@ body.seo-layout .footer-minimal {
         }
 
         @media (max-width: 650px) {
+            /* Keep the animated name hidden until its webfont is ready. On
+               mobile Safari, swapping from the fallback font mid-animation
+               changes the measured word width and visibly shifts the name. */
+            body:not(.identity-font-ready) .identity {
+                visibility: hidden;
+            }
+
             .site-rail {
                 display: none;
             }
@@ -3524,10 +3531,10 @@ body.page-index.spotlight-navigation-enabled .footer-minimal {
                                 <span class="project-arrow" aria-hidden="true">→</span>
                             </a>
 
-                            <a class="project" href="/projects/equiptrack/">
+                            <a class="project" href="/projects/autotrader/">
                                 <span class="project-code">OPS / 03</span>
-                                <h3>EquipTrack</h3>
-                                <p>Inventory and rental operations with availability controls, movement history, maintenance records, permissions, and automated deployment.</p>
+                                <h3>Autotrader</h3>
+                                <p>Autonomous paper trading with Kronos-base forecasts, portfolio risk limits, simulated execution, and a public dashboard.</p>
                                 <span class="project-arrow" aria-hidden="true">→</span>
                             </a>
 
@@ -5098,20 +5105,58 @@ body.page-index.spotlight-navigation-enabled .footer-minimal {
                 document.body.classList.add('ready');
             }
 
-            finishReadyState();
+            function waitForIdentityFont() {
+                var stylesheet = document.querySelector('link[href*="fonts.googleapis.com/css2"]');
 
-            if (reducedMotion) {
-                document.body.classList.add('loaded');
-                identity.classList.add('split', 'expand-first', 'morph-second', 'settle');
-                hero.classList.add('reveal-copy');
-                document.body.dataset.heroContentReady = 'true';
-                window.dispatchEvent(new Event('pklavc:hero-content-ready'));
-                return;
+                function loadFont() {
+                    if (!document.fonts || typeof document.fonts.load !== 'function') {
+                        return Promise.resolve();
+                    }
+
+                    return document.fonts.load('500 11vw Raleway').catch(function () {});
+                }
+
+                if (!stylesheet || stylesheet.rel === 'stylesheet') {
+                    return loadFont();
+                }
+
+                return new Promise(function (resolve) {
+                    var completed = false;
+
+                    function stylesheetReady() {
+                        if (completed) return;
+                        completed = true;
+                        loadFont().then(resolve);
+                    }
+
+                    stylesheet.addEventListener('load', stylesheetReady, { once: true });
+                    stylesheet.addEventListener('error', function () {
+                        if (completed) return;
+                        completed = true;
+                        resolve();
+                    }, { once: true });
+
+                    /* The preload can finish just before its load listener is
+                       attached and switch itself to a stylesheet. */
+                    if (stylesheet.rel === 'stylesheet') stylesheetReady();
+                });
             }
+
+            finishReadyState();
+            document.body.classList.add('loaded');
 
             /* Pk opens to Patrick while Lavc moves below and becomes Araujo. */
             function startIdentityAnimation() {
-                document.body.classList.add('loaded');
+                document.body.classList.add('identity-font-ready');
+
+                if (reducedMotion) {
+                    identity.classList.add('split', 'expand-first', 'morph-second', 'settle');
+                    hero.classList.add('reveal-copy');
+                    document.body.dataset.heroContentReady = 'true';
+                    window.dispatchEvent(new Event('pklavc:hero-content-ready'));
+                    return;
+                }
+
                 var splitDuration = 1150;
                 var firstNameDuration = 1150;
                 var secondNameDuration = 1150;
@@ -5133,7 +5178,7 @@ body.page-index.spotlight-navigation-enabled .footer-minimal {
                 }, 250);
             }
 
-            startIdentityAnimation();
+            waitForIdentityFont().then(startIdentityAnimation);
         }());
     </script>
     <script src="/js/home-particles.js"></script>
