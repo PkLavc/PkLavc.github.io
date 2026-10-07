@@ -2595,12 +2595,34 @@ body.seo-layout .footer-minimal {
                 letter-spacing: -.062em;
             }
 
-            .identity.split .identity-second {
-                transform: translateX(calc(-50% + .56em)) translateY(1.08em);
+            /* On iOS Safari, percentage transforms on an auto-width absolute
+               track are recalculated while Patrick grows from Pk. Give both
+               name tracks the full hero width on mobile so their anchors stay
+               fixed while the letters animate. */
+            .identity-track {
+                left: 0;
+                width: 100%;
+                text-align: center;
             }
 
+            .identity-first {
+                transform: translateX(-.9em);
+            }
+
+            .identity.expand-first .identity-first,
+            .identity.morph-second .identity-first,
+            .identity.settle .identity-first {
+                transform: translateX(-.56em);
+            }
+
+            .identity-second {
+                transform: translateX(.6em);
+            }
+
+            .identity.split .identity-second,
+            .identity.morph-second .identity-second,
             .identity.settle .identity-second {
-                transform: translateX(calc(-50% + .56em)) translateY(1.08em);
+                transform: translateX(.56em) translateY(1.08em);
                 margin-left: 0;
             }
 
