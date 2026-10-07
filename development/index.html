@@ -890,7 +890,7 @@ body.seo-layout .footer-minimal {
 }
 
 </style>
-    <style id="snapshot-skylet-css" data-source="5b41fe0b/css/skylet-widget.css">
+    <style id="snapshot-skylet-css" data-source="current-site-standard">
 ﻿.about-chat-launcher {
     position: fixed;
     right: 24px;
@@ -2618,6 +2618,509 @@ body.seo-layout .footer-minimal {
             }
         }
     </style>
+<style id="snapshot-spotlight-css" data-source="current-site-standard">
+/*
+ * Bottom spotlight navigation.
+ * Adapted for the static site from the Spotlight Button component by
+ * Waleed Kibhen (21st.dev). Everything required to render it lives locally.
+ */
+
+:root {
+    --spotlight-nav-accent: var(--clr-primary, #00d1ff);
+    --spotlight-nav-footer-space: calc(104px + env(safe-area-inset-bottom));
+}
+
+.spotlight-navigation-shell {
+    position: fixed;
+    left: 50%;
+    bottom: 0;
+    z-index: 9998;
+    display: flex;
+    justify-content: center;
+    max-width: calc(100vw - 24px);
+    transform: translateX(-50%);
+    pointer-events: none;
+}
+
+.spotlight-navigation {
+    --spotlight-active-index: 0;
+    --spotlight-indicator-left: 16px;
+    --spotlight-indicator-width: 48px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding: 11px 7px calc(11px + env(safe-area-inset-bottom));
+    border: 1px solid transparent;
+    border-bottom: 0;
+    border-radius: 14px 14px 0 0;
+    background:
+        linear-gradient(180deg, rgba(8, 11, 18, 0.88), rgba(5, 7, 12, 0.94)) padding-box,
+        linear-gradient(110deg, rgba(0, 209, 255, 0.24), rgba(255, 255, 255, 0.07) 48%, rgba(255, 42, 170, 0.16)) border-box;
+    box-shadow:
+        0 -10px 32px rgba(5, 7, 12, 0.2),
+        0 0 28px rgba(0, 209, 255, 0.045),
+        inset 0 1px 0 rgba(255, 255, 255, 0.025);
+    -webkit-backdrop-filter: blur(18px) saturate(1.12);
+    backdrop-filter: blur(18px) saturate(1.12);
+    isolation: isolate;
+    overflow: hidden;
+    pointer-events: auto;
+}
+
+.spotlight-navigation::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: var(--spotlight-indicator-left);
+    z-index: 0;
+    width: var(--spotlight-indicator-width);
+    height: 96px;
+    border-radius: 999px;
+    background: linear-gradient(to bottom, rgba(0, 209, 255, 0.48), rgba(0, 209, 255, 0));
+    filter: blur(16px);
+    opacity: var(--spotlight-halo-opacity, 1);
+    transform: translateY(-50%);
+    transition: left 400ms ease-in-out, width 360ms cubic-bezier(0.22, 1, 0.36, 1), opacity 120ms ease;
+    pointer-events: none;
+}
+
+.spotlight-navigation::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: var(--spotlight-indicator-left);
+    z-index: 2;
+    width: var(--spotlight-indicator-width);
+    height: 2px;
+    background: var(--spotlight-nav-accent);
+    box-shadow:
+        0 0 8px rgba(0, 209, 255, 0.9),
+        0 0 18px rgba(0, 209, 255, 0.56);
+    transform: translateY(-1px);
+    transition: left 400ms ease-in-out, width 360ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.spotlight-navigation-item {
+    position: relative;
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+    margin: 0 4px;
+    padding: 0;
+    border: 0;
+    border-radius: 8px;
+    color: #6b7280;
+    background: transparent;
+    text-decoration: none;
+    cursor: pointer;
+    outline: none;
+    transition:
+        flex-basis 360ms cubic-bezier(0.22, 1, 0.36, 1),
+        width 360ms cubic-bezier(0.22, 1, 0.36, 1),
+        padding 360ms cubic-bezier(0.22, 1, 0.36, 1),
+        color 200ms ease,
+        transform 200ms ease;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.spotlight-navigation-item::before {
+    content: none;
+}
+
+.spotlight-navigation-item:hover {
+    color: #6b7280;
+    transform: none;
+}
+
+/* Neutralize the site's legacy global button theme for the language control. */
+button.spotlight-navigation-item {
+    border: 0 !important;
+    background: transparent !important;
+    color: #6b7280 !important;
+}
+
+.spotlight-navigation-item.is-presented {
+    width: auto;
+    padding-inline: 8px;
+    justify-content: flex-start;
+    color: var(--spotlight-nav-accent);
+}
+
+.spotlight-navigation.is-moving .spotlight-navigation-item {
+    color: #6b7280 !important;
+}
+
+.spotlight-navigation.is-moving .spotlight-navigation-item::before {
+    opacity: 0 !important;
+}
+
+.spotlight-navigation.is-moving {
+    --spotlight-halo-opacity: 0;
+}
+
+.spotlight-navigation.is-moving .spotlight-navigation-item .spotlight-navigation-icon {
+    filter: none !important;
+}
+
+.spotlight-navigation.is-moving .spotlight-navigation-label {
+    opacity: 0 !important;
+}
+
+button.spotlight-navigation-item.is-presented {
+    color: var(--spotlight-nav-accent) !important;
+}
+
+.spotlight-navigation-item.is-presented::before {
+    left: 20px;
+}
+
+.spotlight-navigation-item:focus-visible {
+    box-shadow: 0 0 0 2px #05070b, 0 0 0 4px var(--spotlight-nav-accent);
+}
+
+.spotlight-navigation-icon {
+    position: relative;
+    z-index: 1;
+    display: block;
+    width: 24px;
+    height: 24px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: color 200ms ease, stroke-width 200ms ease;
+    pointer-events: none;
+}
+
+.spotlight-navigation-icon-mask {
+    flex: 0 0 24px;
+    background-color: currentColor;
+    -webkit-mask: var(--spotlight-icon-url) center / contain no-repeat;
+    mask: var(--spotlight-icon-url) center / contain no-repeat;
+}
+
+.spotlight-navigation-item.is-presented .spotlight-navigation-icon {
+    stroke-width: 2.5;
+    filter: drop-shadow(0 0 7px rgba(0, 209, 255, 0.55));
+}
+
+.spotlight-navigation-label {
+    position: relative;
+    z-index: 1;
+    display: block;
+    max-width: 0;
+    margin-left: 0;
+    overflow: hidden;
+    color: var(--spotlight-nav-accent);
+    font-family: Poppins, Inter, "Segoe UI", sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1.2;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    opacity: 0;
+    transform: translateX(-4px);
+    transition:
+        max-width 360ms cubic-bezier(0.22, 1, 0.36, 1),
+        margin-left 220ms ease,
+        opacity 190ms ease,
+        transform 220ms ease;
+    pointer-events: none;
+}
+
+.spotlight-navigation-item.is-presented .spotlight-navigation-label {
+    max-width: 80px;
+    margin-left: 6px;
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.spotlight-language-menu {
+    position: absolute;
+    right: 0;
+    bottom: calc(100% + 10px);
+    z-index: 3;
+    display: grid;
+    min-width: 164px;
+    padding: 7px;
+    border: 1px solid rgba(0, 209, 255, 0.16);
+    border-radius: 12px;
+    background:
+        radial-gradient(circle at 100% 100%, rgba(255, 42, 170, 0.09), transparent 52%),
+        rgba(7, 10, 17, 0.94);
+    box-shadow: 0 18px 38px rgba(0, 0, 0, 0.42), 0 0 24px rgba(0, 209, 255, 0.06);
+    -webkit-backdrop-filter: blur(18px);
+    backdrop-filter: blur(18px);
+    pointer-events: auto;
+}
+
+.spotlight-language-menu[hidden] {
+    display: none;
+}
+
+.spotlight-language-option {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 38px;
+    padding: 0 11px;
+    border-radius: 8px;
+    color: #aab4c1;
+    font-family: Poppins, Inter, "Segoe UI", sans-serif;
+    font-size: 12px;
+    text-decoration: none;
+    transition: color 180ms ease, background-color 180ms ease;
+}
+
+.spotlight-language-option:hover,
+.spotlight-language-option:focus-visible,
+.spotlight-language-option.is-current-language {
+    color: var(--spotlight-nav-accent);
+    background: rgba(0, 209, 255, 0.08);
+    outline: none;
+}
+
+.spotlight-language-option.is-current-language::after {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--spotlight-nav-accent);
+    box-shadow: 0 0 9px rgba(0, 209, 255, 0.72);
+}
+
+/* The fixed menu overlays this reserved footer area without covering content. */
+body.spotlight-navigation-enabled footer {
+    padding-bottom: var(--spotlight-nav-footer-space) !important;
+}
+
+@media (min-width: 1100px) {
+    body.spotlight-navigation-enabled .store-footer {
+        padding-bottom: calc(22px + env(safe-area-inset-bottom)) !important;
+    }
+
+    body.spotlight-navigation-enabled .footer-minimal.footer-split {
+        min-height: 82px;
+        box-sizing: border-box;
+        padding: 17px 0 calc(17px + env(safe-area-inset-bottom)) !important;
+    }
+}
+
+body.page-index.spotlight-navigation-enabled .footer-minimal {
+    border-top-color: rgba(0, 209, 255, 0.07);
+    background:
+        radial-gradient(circle at 72% 0%, rgba(255, 42, 170, 0.055), transparent 36%),
+        linear-gradient(135deg, #06080f 0%, #090b14 58%, #120717 100%);
+}
+
+/* Keep the Skylet launcher clear of the centered navigation on compact screens. */
+@media (max-width: 620px) {
+    body.spotlight-navigation-enabled .about-chat-launcher {
+        bottom: calc(var(--spotlight-nav-footer-space) + 10px + var(--skylet-footer-offset, 0px)) !important;
+    }
+
+    body.spotlight-navigation-enabled .about-chat-widget.is-open {
+        bottom: calc(var(--spotlight-nav-footer-space) + 10px + var(--skylet-footer-offset, 0px)) !important;
+        max-height: calc(100dvh - var(--spotlight-nav-footer-space) - 30px);
+    }
+
+    .spotlight-navigation-shell {
+        width: calc(100vw - 24px);
+    }
+
+    .spotlight-navigation {
+        width: 100%;
+        justify-content: space-evenly;
+        padding-inline: 4px;
+    }
+
+    .spotlight-navigation-item,
+    .spotlight-navigation-item.is-presented {
+        flex: 1 1 16.6667%;
+        width: auto;
+        margin-inline: 0;
+        padding-inline: 0;
+        min-width: 48px;
+        max-width: 60px;
+        justify-content: center;
+    }
+
+    .spotlight-navigation-item.is-presented::before {
+        left: 50%;
+    }
+
+    .spotlight-navigation-label {
+        display: none;
+    }
+}
+
+@media (max-width: 360px) {
+    .spotlight-navigation-shell {
+        max-width: calc(100vw - 16px);
+        width: calc(100vw - 16px);
+    }
+
+    .spotlight-navigation-item {
+        min-width: 44px;
+        height: 46px;
+    }
+
+    .spotlight-navigation::before {
+        width: 44px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .spotlight-navigation::before,
+    .spotlight-navigation::after,
+    .spotlight-navigation-item,
+    .spotlight-navigation-item::before,
+    .spotlight-navigation-icon,
+    .spotlight-navigation-label {
+        transition: none;
+    }
+}
+
+
+@media (max-width: 620px) {
+    body.spotlight-language-menu-open .about-chat-launcher {
+        bottom: calc(var(--spotlight-nav-footer-space) + 150px + var(--skylet-footer-offset, 0px)) !important;
+    }
+
+    body.spotlight-language-menu-open .about-chat-widget.is-open {
+        bottom: calc(var(--spotlight-nav-footer-space) + 150px + var(--skylet-footer-offset, 0px)) !important;
+        max-height: calc(100vh - var(--spotlight-nav-footer-space) - 174px);
+    }
+}
+
+</style>
+    <script src="https://cdn.jsdelivr.net/npm/@lottiefiles/lottie-player@2.0.12/dist/lottie-player.js" defer></script>
+
+    <style id="development-site-integration-style">
+        /* Keep the 5b41fe0b visual concept, but use the site's current navigation,
+           Skylet launcher and footer conventions. */
+        .topbar {
+            grid-template-columns: 1fr auto 1fr;
+        }
+
+        .topbar .brand-mark {
+            grid-column: 1;
+        }
+
+        .topbar .topbar-index {
+            grid-column: 2;
+        }
+
+        .dev-tech-carousel {
+            position: absolute;
+            top: 118px;
+            right: clamp(22px, 2.4vw, 44px);
+            bottom: 154px;
+            z-index: 8;
+            width: 54px;
+            overflow: hidden;
+            pointer-events: none;
+            mask-image: linear-gradient(to bottom, transparent 0%, #000 10%, #000 90%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 10%, #000 90%, transparent 100%);
+        }
+
+        .dev-tech-track {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 18px;
+            width: 100%;
+            animation: devTechScrollY 24s linear infinite;
+            will-change: transform;
+        }
+
+        .dev-tech-track img {
+            display: block;
+            width: 31px;
+            height: 31px;
+            object-fit: contain;
+            opacity: .66;
+            filter: drop-shadow(0 0 8px rgba(0, 209, 255, .10));
+        }
+
+        @keyframes devTechScrollY {
+            from { transform: translateY(-50%); }
+            to { transform: translateY(0); }
+        }
+
+        /* The footer itself is final HTML, not replaced after load. */
+        .page-home-dev .footer-minimal {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .page-home-dev .footer-minimal.footer-projects {
+            background: #101010;
+        }
+
+        /* Let the standard floating Skylet widget handle the assistant. */
+        .page-home-dev #index-skylet-btn {
+            display: none !important;
+        }
+
+        @media (max-width: 900px) {
+            .dev-tech-carousel {
+                top: 82px;
+                left: 0;
+                right: 0;
+                bottom: auto;
+                width: 100%;
+                height: 38px;
+                mask-image: linear-gradient(to right, transparent 0%, #000 8%, #000 92%, transparent 100%);
+                -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 8%, #000 92%, transparent 100%);
+            }
+
+            .dev-tech-track {
+                flex-direction: row;
+                gap: 18px;
+                width: max-content;
+                height: 38px;
+                animation: devTechScrollX 22s linear infinite;
+            }
+
+            .dev-tech-track img {
+                width: 26px;
+                height: 26px;
+            }
+
+            @keyframes devTechScrollX {
+                from { transform: translateX(-50%); }
+                to { transform: translateX(0); }
+            }
+        }
+
+        @media (max-width: 650px) {
+            .topbar {
+                grid-template-columns: 1fr;
+            }
+
+            .topbar .topbar-index {
+                display: none;
+            }
+
+            .hero {
+                padding-top: 128px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .dev-tech-track {
+                animation: none !important;
+                transform: none !important;
+            }
+        }
+    </style>
+
 </head>
 
 <body class="page-home-dev">
@@ -2632,15 +3135,41 @@ body.seo-layout .footer-minimal {
         <header class="topbar">
             <a class="brand-mark" href="/development/" aria-label="PkLavc development home">PK<span>/</span>LAVC</a>
             <span class="topbar-index">Portfolio / Engineering / 2026</span>
-            <nav class="topnav" aria-label="Primary navigation">
-                <a href="/about/">About</a>
-                <a href="/projects/">Projects</a>
-                <a href="/blog/">Blog</a>
-                <a href="/store/">Store</a>
-            </nav>
         </header>
 
         <section class="hero" id="top" aria-labelledby="identity-label">
+            
+            <aside class="dev-tech-carousel" aria-label="Technology stack">
+                <div class="dev-tech-track" aria-hidden="true">
+                    <img src="/images/techstack/python-icon.svg?v=7e7266b29c" alt="">
+                    <img src="/images/techstack/js-icon.svg?v=fb8c820909" alt="">
+                    <img src="/images/techstack/mysql-icon.svg?v=ef168c99f5" alt="">
+                    <img src="/images/techstack/restapi-icon.svg?v=18e66675ff" alt="">
+                    <img src="/images/techstack/aws-icon.svg?v=86c4203d82" alt="">
+                    <img src="/images/techstack/docker-icon.svg?v=fe4ce38462" alt="">
+                    <img src="/images/techstack/django-icon.svg?v=a849c7126f" alt="">
+                    <img src="/images/techstack/ts-icon.svg?v=049d3cb481" alt="">
+                    <img src="/images/techstack/github-icon.svg?v=7b8e3a8d79" alt="">
+                    <img src="/images/techstack/react-icon.svg?v=ef70909a97" alt="">
+                    <img src="/images/techstack/java-icon.svg?v=3f7d9ff23e" alt="">
+                    <img src="/images/techstack/csharp-icon.svg?v=3e8102b629" alt="">
+                    <img src="/images/techstack/cpp-icon.svg?v=0c10b6a4d2" alt="">
+                    <img src="/images/techstack/python-icon.svg?v=7e7266b29c" alt="">
+                    <img src="/images/techstack/js-icon.svg?v=fb8c820909" alt="">
+                    <img src="/images/techstack/mysql-icon.svg?v=ef168c99f5" alt="">
+                    <img src="/images/techstack/restapi-icon.svg?v=18e66675ff" alt="">
+                    <img src="/images/techstack/aws-icon.svg?v=86c4203d82" alt="">
+                    <img src="/images/techstack/docker-icon.svg?v=fe4ce38462" alt="">
+                    <img src="/images/techstack/django-icon.svg?v=a849c7126f" alt="">
+                    <img src="/images/techstack/ts-icon.svg?v=049d3cb481" alt="">
+                    <img src="/images/techstack/github-icon.svg?v=7b8e3a8d79" alt="">
+                    <img src="/images/techstack/react-icon.svg?v=ef70909a97" alt="">
+                    <img src="/images/techstack/java-icon.svg?v=3f7d9ff23e" alt="">
+                    <img src="/images/techstack/csharp-icon.svg?v=3e8102b629" alt="">
+                    <img src="/images/techstack/cpp-icon.svg?v=0c10b6a4d2" alt="">
+                </div>
+            </aside>
+
             <div class="hero-core">
                 <div class="hero-eyebrow" id="identity-label">Backend Software Engineer</div>
 
@@ -2686,10 +3215,6 @@ body.seo-layout .footer-minimal {
             </div>
 
             <a class="scroll-cue" href="#systems">Explore</a>
-
-            <button id="index-skylet-btn" type="button" aria-label="Open Skylet assistant" onclick="if(window.openSkyletWidget)window.openSkyletWidget()">
-                <img src="/images/brand/icon_skylet.webp?v=feecb6b1c7" alt="Skylet" width="108" height="108" loading="eager" decoding="async">
-            </button>
         </section>
 
         <main class="content">
@@ -2850,16 +3375,403 @@ body.seo-layout .footer-minimal {
             </section>
         </main>
 
-        <footer class="footer-minimal footer-split footer-home">
+        <footer class="footer-minimal footer-split footer-home footer-projects" data-unified-footer="true">
             <div class="footer-container">
-                <div class="footer-split-left"><span class="footer-copyright-line">&copy; <span data-current-year></span> Patrick Araujo</span></div>
+                <div class="footer-split-left">
+                    <span class="footer-copyright-line">&copy; <span data-current-year></span> Patrick Araujo</span>
+                    <span class="footer-legal-inline" aria-label="Legal links">
+                        <a class="footer-legal-link" href="/privacy-policy/">Privacy Policy</a><span aria-hidden="true">/</span>
+                        <a class="footer-legal-link" href="/terms-of-use/">Terms of Use</a><span aria-hidden="true">/</span>
+                        <a class="footer-legal-link" href="/editorial-policy/">Editorial Policy</a><span aria-hidden="true">/</span>
+                        <a class="footer-legal-link" href="/credits/">Credits</a>
+                    </span>
+                </div>
                 <span class="footer-split-spacer" aria-hidden="true"></span>
-                <div class="footer-split-right"><span class="footer-legal-inline" aria-label="Legal links"><a class="footer-legal-link" href="/privacy-policy/">Privacy Policy</a><span aria-hidden="true">/</span><a class="footer-legal-link" href="/terms-of-use/">Terms of Use</a><span aria-hidden="true">/</span><a class="footer-legal-link" href="/editorial-policy/">Editorial Policy</a><span aria-hidden="true">/</span><a class="footer-legal-link" href="/credits/">Credits</a></span></div>
+                <div class="footer-split-right">
+                    <nav class="footer-social-icons" aria-label="Social and contact links">
+                        <a class="footer-social-icon-link" href="https://github.com/PkLavc" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><lottie-player src="/images/lottie/github.json?v=50cdc84fd8" background="transparent" speed="1" loop autoplay class="footer-social-lottie" aria-hidden="true"></lottie-player></a>
+                        <a class="footer-social-icon-link" href="https://www.linkedin.com/in/pklavc/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><lottie-player src="/images/lottie/linkedin.json?v=86d0c9e071" background="transparent" speed="1" loop autoplay class="footer-social-lottie" aria-hidden="true"></lottie-player></a>
+                        <a class="footer-social-icon-link" href="https://www.instagram.com/pklavc/" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><lottie-player src="/images/lottie/instagram-pklavc-blue-20261002.json" background="transparent" speed="1" loop autoplay class="footer-social-lottie" aria-hidden="true"></lottie-player></a>
+                        <a class="footer-social-icon-link" href="https://www.youtube.com/@PkLavc" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><lottie-player src="/images/lottie/youtube-pklavc-blue-20261002.json" background="transparent" speed="1" loop autoplay class="footer-social-lottie" aria-hidden="true"></lottie-player></a>
+                        <a class="footer-social-icon-link" href="mailto:contact@pklavc.com" aria-label="Email"><lottie-player src="/images/lottie/mail.json?v=895f6ab30e" background="transparent" speed="1" loop autoplay class="footer-social-lottie" aria-hidden="true"></lottie-player></a>
+                        <a class="footer-social-icon-link" href="https://github.com/sponsors/PkLavc" target="_blank" rel="noopener noreferrer" aria-label="Sponsor me"><lottie-player src="/images/lottie/sponsor-pklavc-blue-20261002.json" background="transparent" speed="1" loop autoplay class="footer-social-lottie" aria-hidden="true"></lottie-player></a>
+                    </nav>
+                </div>
             </div>
         </footer>
     </div>
 
-    <script id="snapshot-skylet-js" data-source="5b41fe0b/js/skylet-widget.js">
+    <script id="snapshot-spotlight-js" data-source="current-site-standard">
+(function () {
+  'use strict';
+
+  if (window.PkLavcSpotlightNavigation) {
+    return;
+  }
+
+  // Inline Lucide icons retained from the source component.
+  var ICONS = {
+    home: '<path d="m3 11 9-8 9 8"></path><path d="M5 10v10h14V10"></path><path d="M9 20v-6h6v6"></path>',
+    user: '<path d="M19 21a7 7 0 0 0-14 0"></path><circle cx="12" cy="7" r="4"></circle>',
+    settings: '<path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.38a2 2 0 0 0-.73-2.73l-.15-.09a2 2 0 0 1-1-1.74v-.51a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path><circle cx="12" cy="12" r="3"></circle>'
+  };
+
+  // Official Lucide SVG files kept locally so their color remains CSS-editable.
+  var ICON_FILES = {
+    layers: '/assets/icons/navigation/layers.svg',
+    newspaper: '/assets/icons/navigation/newspaper.svg',
+    store: '/assets/icons/navigation/store.svg'
+  };
+
+  var COPY = {
+    en: {
+      navigation: 'Primary navigation',
+      items: ['Home', 'About', 'Projects', 'Blog', 'Store', 'Language'],
+      languageMenu: 'Choose language'
+    },
+    pt: {
+      navigation: 'Navega\u00e7\u00e3o principal',
+      items: ['In\u00edcio', 'Sobre', 'Projetos', 'Blog', 'Loja', 'Idioma'],
+      languageMenu: 'Escolher idioma'
+    },
+    es: {
+      navigation: 'Navegaci\u00f3n principal',
+      items: ['Inicio', 'Sobre', 'Proyectos', 'Blog', 'Tienda', 'Idioma'],
+      languageMenu: 'Elegir idioma'
+    }
+  };
+
+  var LANGUAGES = [
+    { locale: 'en', label: 'English' },
+    { locale: 'pt', label: 'Portugu\u00eas' },
+    { locale: 'es', label: 'Espa\u00f1ol' }
+  ];
+
+  var state = {
+    navigationObserver: null
+  };
+
+  function normalizePath(path) {
+    var normalized = String(path || '/').replace(/\/index\.html$/i, '/');
+    if (normalized.charAt(0) !== '/') normalized = '/' + normalized;
+    if (!/\.[a-z0-9]+$/i.test(normalized) && normalized.slice(-1) !== '/') normalized += '/';
+    return normalized;
+  }
+
+  function getLocale() {
+    if (window.PkLavcI18n && typeof window.PkLavcI18n.getCurrentLanguage === 'function') {
+      return window.PkLavcI18n.getCurrentLanguage();
+    }
+
+    var path = normalizePath(window.location.pathname);
+    if (/^\/blog\/(?:pt|es)\//.test(path) || /^\/store\/(?:pt|es)\//.test(path)) {
+      return path.split('/')[2];
+    }
+    if (/^\/(?:pt|es)\//.test(path)) return path.split('/')[1];
+    return 'en';
+  }
+
+  function localizedRoute(route, locale) {
+    if (window.PkLavcI18n && typeof window.PkLavcI18n.getLocalizedRoute === 'function') {
+      return window.PkLavcI18n.getLocalizedRoute(route, locale);
+    }
+
+    if (route === '/') return locale === 'en' ? '/' : '/' + locale + '/';
+    if (route === '/blog/') return locale === 'en' ? '/blog/' : '/blog/' + locale + '/';
+    if (route === '/store/') return locale === 'en' ? '/store/' : '/store/' + locale + '/';
+
+    var translated = {
+      pt: { '/about/': '/pt/sobre/', '/projects/': '/pt/projetos/' },
+      es: { '/about/': '/es/sobre/', '/projects/': '/es/proyectos/' }
+    };
+
+    return locale === 'en' ? route : translated[locale][route];
+  }
+
+  function getActiveIndex(path) {
+    var normalized = normalizePath(path);
+    var parts = normalized.split('/').filter(Boolean);
+    var first = parts[0] || '';
+    if (document.documentElement.hasAttribute('data-blog-navigation') && (first === '' || first === 'en' || first === 'pt' || first === 'es')) return 3;
+    var section = first === 'pt' || first === 'es' ? (parts[1] || '') : first;
+
+    if (first === 'blog' || section === 'blog') return 3;
+    if (first === 'store' || section === 'store') return 4;
+    if (['projects', 'projetos', 'proyectos', 'collections', 'colecoes', 'colecciones', 'stacks'].indexOf(section) !== -1) return 2;
+    if (['about', 'sobre', 'resume', 'uses', 'now', 'certifications', 'visitors', 'visitantes'].indexOf(section) !== -1) return 1;
+    return 0;
+  }
+
+  function createIcon(markup) {
+    return '<svg class="spotlight-navigation-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">' + markup + '</svg>';
+  }
+
+  function appendCurrentLocation(targetPath) {
+    return targetPath + String(window.location.search || '') + String(window.location.hash || '');
+  }
+
+  function getLanguageTarget(locale) {
+    var i18n = window.PkLavcI18n;
+
+    if (i18n && typeof i18n.getEnglishRoute === 'function' && typeof i18n.getLocalizedRoute === 'function') {
+      return appendCurrentLocation(i18n.getLocalizedRoute(i18n.getEnglishRoute(window.location.pathname), locale));
+    }
+
+    return appendCurrentLocation(localizedRoute('/', locale));
+  }
+
+  function setCurrentItem(items, activeIndex) {
+    items.forEach(function (item, index) {
+      item.classList.toggle('is-active', index === activeIndex);
+
+      if (index === activeIndex) {
+        item.setAttribute('aria-current', 'page');
+      } else {
+        item.removeAttribute('aria-current');
+      }
+    });
+  }
+
+  function updateIndicator(nav, item) {
+    if (!item) return;
+
+    var icon = item.querySelector('.spotlight-navigation-icon');
+    if (!icon) return;
+
+    var navRect = nav.getBoundingClientRect();
+    var isCompact = window.innerWidth <= 620;
+    var indicatorWidth = isCompact ? (window.innerWidth <= 360 ? 44 : 48) : item.getBoundingClientRect().width;
+    var itemRect = item.getBoundingClientRect();
+    var iconRect = icon.getBoundingClientRect();
+    var indicatorLeft = isCompact
+      ? iconRect.left - navRect.left + (iconRect.width / 2) - (indicatorWidth / 2)
+      : itemRect.left - navRect.left;
+
+    nav.style.setProperty('--spotlight-indicator-left', indicatorLeft + 'px');
+    nav.style.setProperty('--spotlight-indicator-width', indicatorWidth + 'px');
+    nav.style.setProperty('--spotlight-item-left', (itemRect.left - navRect.left) + 'px');
+  }
+
+  function setPresentedItem(nav, items, presentedIndex, animate) {
+    nav.style.setProperty('--spotlight-active-index', String(presentedIndex));
+    nav.classList.toggle('is-moving', animate === true);
+
+    items.forEach(function (item, index) {
+      var isPresented = index === presentedIndex;
+      item.style.setProperty('--spotlight-opacity', isPresented ? '1' : '0');
+      item.classList.toggle('is-presented', isPresented && animate !== true);
+    });
+
+    updateIndicator(nav, items[presentedIndex]);
+    if (animate === true) {
+      window.setTimeout(function () {
+        if (!nav.isConnected || Number(nav.style.getPropertyValue('--spotlight-active-index')) !== presentedIndex) return;
+        nav.classList.remove('is-moving');
+        items[presentedIndex].classList.add('is-presented');
+      }, 420);
+    }
+  }
+
+  function createNavigation() {
+    if (document.getElementById('spotlight-navigation')) return;
+
+    var locale = getLocale();
+    var copy = COPY[locale] || COPY.en;
+    var activeIndex = getActiveIndex(window.location.pathname);
+    var definitions = [
+      { icon: ICONS.home, route: '/' },
+      { icon: ICONS.user, route: '/about/' },
+      { iconFile: ICON_FILES.layers, route: '/projects/' },
+      { iconFile: ICON_FILES.newspaper, route: '/blog/' },
+      { iconFile: ICON_FILES.store, route: '/store/' },
+      { icon: ICONS.settings, action: 'language' }
+    ];
+    var shell = document.createElement('div');
+    var nav = document.createElement('nav');
+
+    shell.className = 'spotlight-navigation-shell';
+    shell.id = 'spotlight-navigation-shell';
+    nav.className = 'spotlight-navigation';
+    nav.id = 'spotlight-navigation';
+    nav.setAttribute('aria-label', copy.navigation);
+
+    definitions.forEach(function (definition, index) {
+      var control = document.createElement(definition.action ? 'button' : 'a');
+      control.className = 'spotlight-navigation-item';
+
+      if (definition.action) {
+        control.type = 'button';
+        control.dataset.spotlightAction = definition.action;
+        control.setAttribute('aria-haspopup', 'menu');
+        control.setAttribute('aria-expanded', 'false');
+        control.setAttribute('aria-controls', 'spotlight-language-menu');
+      } else {
+        control.href = localizedRoute(definition.route, locale);
+      }
+
+      control.setAttribute('aria-label', copy.items[index]);
+      control.dataset.spotlightIndex = String(index);
+
+      if (definition.iconFile) {
+        var iconMask = document.createElement('span');
+        iconMask.className = 'spotlight-navigation-icon spotlight-navigation-icon-mask';
+        iconMask.setAttribute('aria-hidden', 'true');
+        iconMask.style.setProperty('--spotlight-icon-url', 'url("' + definition.iconFile + '")');
+        control.appendChild(iconMask);
+      } else {
+        control.innerHTML = createIcon(definition.icon);
+      }
+
+      var label = document.createElement('span');
+      label.className = 'spotlight-navigation-label';
+      label.setAttribute('aria-hidden', 'true');
+      label.textContent = copy.items[index];
+      control.appendChild(label);
+      nav.appendChild(control);
+    });
+
+    shell.appendChild(nav);
+    document.body.appendChild(shell);
+    document.body.classList.add('spotlight-navigation-enabled');
+
+    var items = Array.prototype.slice.call(nav.querySelectorAll('.spotlight-navigation-item'));
+    var languageIndex = definitions.length - 1;
+    var languageButton = items[languageIndex];
+    var presentedIndex = activeIndex;
+    setCurrentItem(items, activeIndex);
+    setPresentedItem(nav, items, presentedIndex);
+
+    function present(index, animate) {
+      presentedIndex = index;
+      setPresentedItem(nav, items, presentedIndex, animate);
+    }
+
+    var languageMenu = document.createElement('div');
+    languageMenu.className = 'spotlight-language-menu';
+    languageMenu.id = 'spotlight-language-menu';
+    languageMenu.setAttribute('role', 'menu');
+    languageMenu.setAttribute('aria-label', copy.languageMenu);
+    languageMenu.hidden = true;
+
+    LANGUAGES.forEach(function (language) {
+      var option = document.createElement('a');
+      var isCurrent = language.locale === locale;
+      option.className = 'spotlight-language-option';
+      option.href = getLanguageTarget(language.locale);
+      option.textContent = language.label;
+      option.setAttribute('role', 'menuitem');
+      option.dataset.languageOption = language.locale;
+      option.classList.toggle('is-current-language', isCurrent);
+
+      if (isCurrent) option.setAttribute('aria-current', 'true');
+
+      option.addEventListener('click', function (event) {
+        var i18n = window.PkLavcI18n;
+        if (i18n && typeof i18n.setStoredLanguage === 'function') {
+          i18n.setStoredLanguage(language.locale);
+        }
+
+        if (language.locale === locale) {
+          event.preventDefault();
+          setLanguageMenuOpen(false);
+          languageButton.focus();
+          return;
+        }
+
+        if (i18n && typeof i18n.getEnglishRoute === 'function' && typeof i18n.resolveLocalizedRoute === 'function') {
+          event.preventDefault();
+          i18n.resolveLocalizedRoute(i18n.getEnglishRoute(window.location.pathname), language.locale).then(function (targetPath) {
+            window.location.assign(appendCurrentLocation(targetPath));
+          });
+        }
+      });
+
+      languageMenu.appendChild(option);
+    });
+
+    shell.insertBefore(languageMenu, nav);
+
+    function setLanguageMenuOpen(shouldOpen) {
+      shell.classList.toggle('is-language-menu-open', shouldOpen);
+      document.body.classList.toggle('spotlight-language-menu-open', shouldOpen);
+      languageMenu.hidden = !shouldOpen;
+      languageButton.setAttribute('aria-expanded', shouldOpen ? 'true' : 'false');
+      present(shouldOpen ? languageIndex : activeIndex, true);
+    }
+
+    languageButton.addEventListener('click', function (event) {
+      event.preventDefault();
+      event.stopPropagation();
+      setLanguageMenuOpen(languageMenu.hidden);
+    });
+
+    items.forEach(function (item, index) {
+      item.addEventListener('pointerenter', function () {
+        present(index, true);
+      });
+      item.addEventListener('focus', function () {
+        present(index, true);
+      });
+    });
+
+    nav.addEventListener('pointerleave', function () {
+      present(languageMenu.hidden ? activeIndex : languageIndex, true);
+    });
+
+    nav.addEventListener('focusout', function (event) {
+      if (!nav.contains(event.relatedTarget)) present(languageMenu.hidden ? activeIndex : languageIndex, true);
+    });
+
+    document.addEventListener('click', function (event) {
+      if (!languageMenu.hidden && !shell.contains(event.target)) {
+        setLanguageMenuOpen(false);
+      }
+    });
+
+    document.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape' && !languageMenu.hidden) {
+        setLanguageMenuOpen(false);
+        languageButton.focus();
+      }
+    });
+
+    window.addEventListener('resize', function () {
+      updateIndicator(nav, items[presentedIndex]);
+    }, { passive: true });
+
+    window.addEventListener('load', function () {
+      updateIndicator(nav, items[presentedIndex]);
+    }, { once: true });
+
+    if ('ResizeObserver' in window) {
+      state.navigationObserver = new ResizeObserver(function () {
+        updateIndicator(nav, items[presentedIndex]);
+      });
+      state.navigationObserver.observe(nav);
+      items.forEach(function (item) {
+        state.navigationObserver.observe(item);
+      });
+    }
+  }
+
+  function init() {
+    createNavigation();
+  }
+
+  window.PkLavcSpotlightNavigation = {
+    init: init
+  };
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init, { once: true });
+  } else {
+    init();
+  }
+}());
+
+</script>
+
+    <script id="snapshot-skylet-js" data-source="current-site-standard">
 (function () {
   var state = {
     apiBase: "https://api.pklavc.com",
