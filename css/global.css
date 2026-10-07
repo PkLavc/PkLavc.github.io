@@ -864,14 +864,21 @@ body.seo-layout .footer-minimal {
 }
 
 
-/* Final unified footer is present in HTML on home pages.
-   Keep it visible from first paint so no legacy/gray footer flashes underneath. */
+/* Home footer must use its final visual from first paint.
+   This prevents the old solid footer color from flashing before Spotlight JS enables the navigation. */
 .footer-minimal[data-unified-footer="true"] {
     opacity: 1;
     visibility: visible;
     transition: none;
 }
 
-.footer-minimal.footer-projects {
+body.page-index .footer-minimal.footer-projects {
+    border-top-color: rgba(0, 209, 255, 0.07);
+    background:
+        radial-gradient(circle at 72% 0%, rgba(255, 42, 170, 0.055), transparent 36%),
+        linear-gradient(135deg, #06080f 0%, #090b14 58%, #120717 100%);
+}
+
+body:not(.page-index) .footer-minimal.footer-projects {
     background: #101010;
 }
