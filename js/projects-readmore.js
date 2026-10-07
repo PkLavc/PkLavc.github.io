@@ -63,18 +63,13 @@
     function createReadMoreForCard(card, index) {
         const titleNode = card.querySelector("h2");
         const featuresNode = card.querySelector(".project-features");
-        const githubLink = card.querySelector(".project-link[href*='github.com']");
         const projectPageLink = titleNode ? titleNode.querySelector("a[href]") : null;
 
-        if (!titleNode || !featuresNode || !githubLink) {
+        if (!titleNode || !featuresNode || !projectPageLink) {
             return;
         }
 
         if (card.querySelector(".project-readmore-toggle-wrap")) {
-            return;
-        }
-
-        if (!projectPageLink) {
             return;
         }
 
@@ -99,7 +94,8 @@
         const button = document.createElement("button");
         button.className = "project-readmore-toggle";
         button.type = "button";
-        button.textContent = "Read more";
+        const lang = (document.documentElement.lang || "en").toLowerCase();
+        button.textContent = lang.startsWith("pt") ? "Leia mais" : (lang.startsWith("es") ? "Leer más" : "Read more");
 
         button.addEventListener("click", function () {
             window.location.href = projectPageLink.getAttribute("href");
