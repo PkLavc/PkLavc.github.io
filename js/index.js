@@ -1281,6 +1281,15 @@ function normalizeUnifiedFooter() {
     document.body.appendChild(footer);
   }
 
+  // Home pages already ship the final footer in the HTML. Do not replace it
+  // after DOMContentLoaded; replacing it caused the legacy footer flash.
+  if (footer.getAttribute('data-unified-footer') === 'true') {
+    footer.querySelectorAll('[data-current-year]').forEach(function(node) {
+      node.textContent = String(new Date().getFullYear());
+    });
+    return;
+  }
+
   footer.classList.add('footer-minimal', 'footer-split', 'footer-projects');
   footer.setAttribute('data-unified-footer', 'true');
   footer.innerHTML =
