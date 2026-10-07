@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>Connect TikTok | PkLavc</title>
+  <style>
+    :root{color-scheme:dark}
+    *{box-sizing:border-box}
+    body{margin:0;min-height:100vh;display:grid;place-items:center;background:#0b0b0d;color:#f5f5f5;font:16px/1.5 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    main{width:min(92vw,560px);padding:32px;border:1px solid #2b2b31;border-radius:18px;background:#121217}
+    h1{margin:0 0 10px;font-size:28px}
+    p{margin:0 0 24px;color:#b9b9c2}
+    button{width:100%;border:0;border-radius:12px;padding:14px 18px;background:#fff;color:#111;font:600 16px system-ui;cursor:pointer}
+    button:hover{opacity:.92}
+    small{display:block;margin-top:18px;color:#777985}
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Connect TikTok</h1>
+    <p>Authorize the PkLavc TikTok account so PkLavc Social can publish short-form videos.</p>
+    <button id="connect" type="button">Continue with TikTok</button>
+    <small>Sandbox authorization for PkLavc Social.</small>
+  </main>
+  <script>
+    (() => {
+      const CLIENT_KEY = "sbawqjk2nzczkc3b0r";
+      const REDIRECT_URI = "https://pklavc.com/tiktok/callback/";
+      const SCOPES = "user.info.basic,video.publish,video.upload";
+
+      const randomState = () => {
+        const bytes = new Uint8Array(24);
+        crypto.getRandomValues(bytes);
+        return Array.from(bytes, b => b.toString(16).padStart(2, "0")).join("");
+      };
+
+      document.getElementById("connect").addEventListener("click", () => {
+        const state = randomState();
+        sessionStorage.setItem("tiktok_oauth_state", state);
+
+        const url = new URL("https://www.tiktok.com/v2/auth/authorize/");
+        url.searchParams.set("client_key", CLIENT_KEY);
+        url.searchParams.set("response_type", "code");
+        url.searchParams.set("scope", SCOPES);
+        url.searchParams.set("redirect_uri", REDIRECT_URI);
+        url.searchParams.set("state", state);
+
+        location.href = url.toString();
+      });
+    })();
+  </script>
+</body>
+</html>
