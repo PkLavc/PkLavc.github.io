@@ -62,6 +62,7 @@ const publicEntries = [
   "ia",
   "stacks",
   "store",
+  "tiktok",
   "visitors",
   "ags",
 ];
