@@ -1,0 +1,65 @@
+name: TikTok Sandbox Direct Post Test
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/tiktok-sandbox-test.yml"
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: tiktok-sandbox-test
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout private blog repository
+        uses: actions/checkout@v4
+        with:
+          repository: PkLavc/blog
+          ref: main
+          token: ${{ secrets.PRIVATE_BLOG_REPO_TOKEN }}
+          path: private-blog
+          fetch-depth: 1
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install lightweight renderer dependencies
+        working-directory: private-blog
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg espeak-ng fonts-dejavu-core
+          python -m pip install pillow boto3 requests
+
+      - name: Mint GitHub OIDC token for TikTok publisher
+        id: oidc
+        shell: bash
+        run: |
+          response="$(curl -fsSL \
+            -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
+            "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=https%3A%2F%2Fapi.pklavc.com%2Ftiktok%2Fpublish")"
+          token="$(printf '%s' "$response" | python -c 'import json,sys; print(json.load(sys.stdin)["value"])')"
+          echo "::add-mask::$token"
+          echo "token=$token" >> "$GITHUB_OUTPUT"
+
+      - name: Publish one private TikTok sandbox test
+        working-directory: private-blog
+        env:
+          TIKTOK_PUBLISH_OIDC_TOKEN: ${{ steps.oidc.outputs.token }}
+          SOCIAL_MAX_VIDEO_MB: ${{ vars.SOCIAL_MAX_VIDEO_MB || '25' }}
+          SOCIAL_ALLOW_ESPEAK_FALLBACK: "true"
+          CLOUDFLARE_R2_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_R2_ACCOUNT_ID }}
+          CLOUDFLARE_R2_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_R2_ACCESS_KEY_ID }}
+          CLOUDFLARE_R2_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_R2_SECRET_ACCESS_KEY }}
+          CLOUDFLARE_R2_BUCKET: ${{ secrets.CLOUDFLARE_R2_BUCKET }}
+          CLOUDFLARE_R2_PUBLIC_BASE_URL: ${{ secrets.CLOUDFLARE_R2_PUBLIC_BASE_URL }}
+        run: python -m scripts.social_video.tiktok_test
