@@ -191,7 +191,10 @@
       return '/blog/' + locale + (segments.length > 1 ? '/' + segments.slice(1).join('/') : '') + '/';
     }
     if (segments[0] === 'store') {
-      return locale === 'en' ? '/store/' : '/store/' + locale + '/';
+      var storeSuffix = segments.length > 1 ? segments.slice(1).join('/') + '/' : '';
+      return locale === 'en'
+        ? '/store/' + storeSuffix
+        : '/store/' + locale + '/' + storeSuffix;
     }
 
     // Skylet uses the same final /ia slug in every localized route.
@@ -301,10 +304,9 @@
       : [navigator.language || navigator.userLanguage || ''];
 
     for (var index = 0; index < languages.length; index += 1) {
-      var locale = normalizeLocale(languages[index]);
-
-      if (locale === 'pt' || locale === 'es') {
-        return locale;
+      var raw = String(languages[index] || '').toLowerCase().split('-')[0];
+      if (isSupportedLocale(raw)) {
+        return raw;
       }
     }
 
