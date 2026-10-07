@@ -169,7 +169,7 @@ export async function handleTikTokDirectPost(
       ok: true,
       publish_id: envelope.data.publish_id,
       status: "SUBMITTED",
-      privacy_level: requestedPrivacy,
+      privacy_level: "SELF_ONLY",
       creator_username: creator.creator_username || "",
       creator_nickname: creator.creator_nickname || "",
       media_url: mediaUrl,
