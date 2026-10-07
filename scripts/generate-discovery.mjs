@@ -5,9 +5,14 @@ import { pathToFileURL } from "node:url";
 const SITE = "https://pklavc.com";
 
 function decode(value) {
-  return value.replace(/&(?:amp|lt|gt|quot|apos|#39|#(\d+)|#x([\da-f]+));/gi, (match, decimal, hex) => {
+  return value.replace(/&(?:[a-z]+|#39|#(\d+)|#x([\da-f]+));/gi, (match, decimal, hex) => {
     if (decimal || hex) return String.fromCodePoint(parseInt(decimal || hex, hex ? 16 : 10));
-    return ({ "&amp;": "&", "&lt;": "<", "&gt;": ">", "&quot;": '"', "&apos;": "'", "&#39;": "'" })[match.toLowerCase()] || match;
+    return ({
+      "&amp;": "&", "&lt;": "<", "&gt;": ">", "&quot;": '"', "&apos;": "'", "&#39;": "'",
+      "&aacute;": "á", "&acirc;": "â", "&agrave;": "à", "&atilde;": "ã", "&ccedil;": "ç",
+      "&eacute;": "é", "&ecirc;": "ê", "&iacute;": "í", "&ntilde;": "ñ", "&oacute;": "ó",
+      "&ocirc;": "ô", "&otilde;": "õ", "&uacute;": "ú", "&uuml;": "ü", "&mdash;": "—"
+    })[match.toLowerCase()] || match;
   }).replace(/\s+/g, " ").trim();
 }
 

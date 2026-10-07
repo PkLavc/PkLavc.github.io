@@ -1694,7 +1694,29 @@ body.seo-layout .footer-minimal {
             align-items: center;
             justify-content: center;
             overflow: hidden;
-            padding: 132px clamp(22px, 7vw, 110px) 92px;
+            /* Reserve space for the fixed bottom navigation, so the entire
+               hero copy stays inside the first viewport. */
+            padding: clamp(80px, 9vh, 108px) clamp(22px, 7vw, 110px) calc(128px + env(safe-area-inset-bottom));
+        }
+
+        .home-particles {
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            overflow: hidden;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity .8s ease;
+        }
+
+        .home-particles.is-ready {
+            opacity: .76;
+        }
+
+        .home-particles canvas {
+            display: block;
+            width: 100% !important;
+            height: 100% !important;
         }
 
         .hero::before {
@@ -1709,6 +1731,8 @@ body.seo-layout .footer-minimal {
         }
 
         .hero-core {
+            position: relative;
+            z-index: 1;
             width: min(1220px, 100%);
             display: flex;
             flex-direction: column;
@@ -1716,11 +1740,18 @@ body.seo-layout .footer-minimal {
             text-align: center;
         }
 
+        @media (min-width: 651px) {
+            .hero-core {
+                /* Keep the metadata clear of the fixed bottom navigation. */
+                transform: translateY(clamp(-40px, -4vh, -22px));
+            }
+        }
+
         .hero-eyebrow {
             display: inline-flex;
             align-items: center;
             gap: 10px;
-            margin-bottom: clamp(24px, 4vh, 44px);
+            margin-bottom: clamp(20px, 3vh, 32px);
             color: rgba(255,255,255,.42);
             font-size: 10px;
             font-weight: 600;
@@ -1785,22 +1816,133 @@ body.seo-layout .footer-minimal {
             margin-left: .24em;
         }
 
+        /* The two names are composed from inline text, then moved as whole
+           words. This preserves a normal baseline throughout the morph. */
+        .identity {
+            display: block;
+            width: 100%;
+            min-height: 2.1em;
+            height: 2.1em;
+        }
+
+        .identity-track {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            white-space: nowrap;
+            line-height: .95;
+            transition: transform 1.15s cubic-bezier(.2,.8,.2,1);
+        }
+
+        .identity-first {
+            transform: translateX(calc(-50% - .9em));
+        }
+
+        .identity-second {
+            transform: translateX(calc(-50% + .6em));
+            margin: 0;
+        }
+
+        .identity-letter,
+        .identity-insert,
+        .identity-morph {
+            display: inline-block;
+            vertical-align: top;
+            line-height: .95;
+        }
+
+        .identity-insert {
+            width: 0;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateX(-.1em);
+            transition: width 1.15s cubic-bezier(.2,.8,.2,1), opacity .65s ease, transform 1.15s cubic-bezier(.2,.8,.2,1);
+        }
+
+        .identity-insert-a { --letter-width: .5em; }
+        .identity-insert-t { --letter-width: .32em; }
+        .identity-insert-r { --letter-width: .38em; }
+        .identity-insert-i { --letter-width: .18em; }
+        .identity-insert-c { --letter-width: .46em; }
+        .identity-insert-u { --letter-width: .56em; }
+
+        .identity.expand-first .identity-first {
+            /* The two final lines are offset symmetrically, keeping their
+               combined bounding box centered in the hero. */
+            transform: translateX(calc(-50% - .56em));
+        }
+
+        .identity.expand-first .identity-first .identity-insert,
+        .identity.morph-second .identity-second .identity-insert {
+            width: var(--letter-width);
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .identity.split .identity-second,
+        .identity.morph-second .identity-second,
+        .identity.settle .identity-second {
+            transform: translateX(calc(-50% + .56em)) translateY(1.08em);
+            margin-left: 0;
+        }
+
+        .identity-morph {
+            position: relative;
+            width: var(--from-width);
+            height: .95em;
+            transition: width 1.15s cubic-bezier(.2,.8,.2,1);
+        }
+
+        .identity-morph > span {
+            position: absolute;
+            inset: 0;
+            display: block;
+            text-align: center;
+            transition: opacity .7s ease, transform 1.05s cubic-bezier(.2,.8,.2,1), filter .7s ease;
+        }
+
+        .identity-morph .to {
+            opacity: 0;
+            transform: translateY(.16em) scale(.9);
+            filter: blur(4px);
+        }
+
+        .identity.morph-second .identity-morph {
+            width: var(--to-width);
+        }
+
+        .identity.morph-second .identity-morph .from {
+            opacity: 0;
+            transform: translateY(-.16em) scale(.9);
+            filter: blur(4px);
+        }
+
+        .identity.morph-second .identity-morph .to {
+            opacity: 1;
+            transform: none;
+            filter: none;
+        }
+
         .glyph {
             position: relative;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             flex: 0 0 auto;
-            min-width: .56em;
+            /* Let the letters that are already visible use their real font width.
+               A shared minimum width made narrow glyphs (t, r and i) look as if
+               they had arbitrary gaps around them. */
+            min-width: 0;
             height: 1em;
             line-height: 1;
         }
 
         .glyph-narrow {
-            min-width: .38em;
+            --glyph-width: .18em;
         }
 
         .insert-glyph {
+            --glyph-width: .5em;
             display: inline-flex;
             align-items: center;
             justify-content: center;
@@ -1821,25 +1963,45 @@ body.seo-layout .footer-minimal {
 
         .insert-glyph > span {
             display: block;
-            min-width: .56em;
+            min-width: var(--glyph-width);
             text-align: center;
         }
 
         .first-insert.glyph-narrow > span {
-            min-width: .38em;
+            min-width: var(--glyph-width);
         }
 
+        /* Widths approximate Raleway's natural character advances, so the
+           completed name reads as one word instead of a fixed-width grid. */
+        .identity-first .first-insert:nth-of-type(2) { --glyph-width: .5em; }
+        .identity-first .first-insert:nth-of-type(3) { --glyph-width: .32em; }
+        .identity-first .first-insert:nth-of-type(4) { --glyph-width: .38em; }
+        .identity-first .first-insert:nth-of-type(6) { --glyph-width: .46em; }
+        .identity-second .second-insert:nth-of-type(3) { --glyph-width: .5em; }
+        .identity-second .second-insert:nth-of-type(4) { --glyph-width: .56em; }
+
+        /* Morphing glyphs use absolutely positioned characters, so unlike the
+           regular letters they need an explicit box while they transition. */
+        .identity-second .morph-glyph { transition: min-width .72s cubic-bezier(.2,.8,.2,1); }
+        .identity-second .morph-glyph:nth-of-type(1) { min-width: .5em; }
+        .identity-second .morph-glyph:nth-of-type(2) { min-width: .5em; }
+        .identity-second .morph-glyph:nth-of-type(5) { min-width: .5em; }
+        .identity-second .morph-glyph:nth-of-type(6) { min-width: .46em; }
+
+        .identity.morph-second .identity-second .morph-glyph:nth-of-type(1) { min-width: .65em; }
+        .identity.morph-second .identity-second .morph-glyph:nth-of-type(2) { min-width: .38em; }
+
         .identity.expand-first .first-insert {
-            width: .56em;
-            max-width: .56em;
+            width: var(--glyph-width);
+            max-width: var(--glyph-width);
             opacity: 1;
             transform: translateX(0) scale(1);
             filter: blur(0);
         }
 
         .identity.expand-first .first-insert.glyph-narrow {
-            width: .38em;
-            max-width: .38em;
+            width: var(--glyph-width);
+            max-width: var(--glyph-width);
         }
 
         .identity.expand-first .first-insert:nth-of-type(2) { transition-delay: .02s; }
@@ -1885,8 +2047,8 @@ body.seo-layout .footer-minimal {
         }
 
         .identity.morph-second .second-insert {
-            width: .56em;
-            max-width: .56em;
+            width: var(--glyph-width);
+            max-width: var(--glyph-width);
             opacity: 1;
             transform: translateX(0) scale(1);
             filter: blur(0);
@@ -1925,7 +2087,7 @@ body.seo-layout .footer-minimal {
 
         .hero-description {
             width: min(760px, 100%);
-            margin: clamp(42px, 6vh, 62px) auto 0;
+            margin: clamp(28px, 4vh, 42px) auto 0;
             color: var(--home-muted);
             font-size: clamp(14px, 1.25vw, 17px);
             line-height: 1.72;
@@ -1942,7 +2104,7 @@ body.seo-layout .footer-minimal {
 
         .hero-meta {
             width: min(760px, 100%);
-            margin-top: 27px;
+            margin-top: 20px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -2421,7 +2583,7 @@ body.seo-layout .footer-minimal {
 
             .hero {
                 min-height: 100svh;
-                padding: 108px 15px 90px;
+                padding: 76px 15px calc(116px + env(safe-area-inset-bottom));
             }
 
             .hero::before {
@@ -2441,16 +2603,16 @@ body.seo-layout .footer-minimal {
             }
 
             .identity.split .identity-second {
-                transform: translateY(.68em);
+                transform: translateX(calc(-50% + .56em)) translateY(1.08em);
             }
 
             .identity.settle .identity-second {
-                transform: translateY(0);
-                margin-left: .22em;
+                transform: translateX(calc(-50% + .56em)) translateY(1.08em);
+                margin-left: 0;
             }
 
             .hero-description {
-                margin-top: 44px;
+                margin-top: 28px;
                 width: min(92%, 540px);
                 font-size: 13px;
                 line-height: 1.68;
@@ -2458,7 +2620,7 @@ body.seo-layout .footer-minimal {
 
             .hero-meta {
                 width: 92%;
-                margin-top: 20px;
+                margin-top: 16px;
                 gap: 8px 14px;
             }
 
@@ -2578,16 +2740,23 @@ body.seo-layout .footer-minimal {
 
             .identity .first-insert,
             .identity .second-insert {
-                width: .56em;
-                max-width: .56em;
+                width: var(--glyph-width);
+                max-width: var(--glyph-width);
                 opacity: 1;
                 transform: none;
                 filter: none;
             }
 
             .identity .first-insert.glyph-narrow {
-                width: .38em;
-                max-width: .38em;
+                width: var(--glyph-width);
+                max-width: var(--glyph-width);
+            }
+
+            .identity-track,
+            .identity-insert,
+            .identity-morph,
+            .identity-morph > span {
+                transition: none;
             }
 
             .morph-glyph .from {
@@ -2601,8 +2770,8 @@ body.seo-layout .footer-minimal {
             }
 
             .identity-second {
-                transform: none !important;
-                margin-left: .24em;
+                transform: translateX(calc(-50% + .56em)) translateY(1.08em) !important;
+                margin-left: 0;
             }
 
             .hero-description,
@@ -3018,9 +3187,9 @@ body.page-index.spotlight-navigation-enabled .footer-minimal {
 
         .dev-tech-carousel {
             position: absolute;
-            top: 118px;
+            top: 44px;
             right: clamp(22px, 2.4vw, 44px);
-            bottom: 154px;
+            bottom: 82px;
             z-index: 8;
             width: 54px;
             overflow: hidden;
@@ -3066,6 +3235,14 @@ body.page-index.spotlight-navigation-enabled .footer-minimal {
         /* Let the standard floating Skylet widget handle the assistant. */
         .page-home-dev #index-skylet-btn {
             display: none !important;
+        }
+
+        .page-home-dev .scroll-cue {
+            display: none;
+        }
+
+        .page-home-dev .hero::before {
+            display: none;
         }
 
         @media (max-width: 900px) {
@@ -3203,7 +3380,8 @@ body.page-index.spotlight-navigation-enabled .footer-minimal {
         </div>
 
         <section class="hero" id="top" aria-labelledby="identity-label">
-            
+            <div id="home-particles" class="home-particles" aria-hidden="true"></div>
+
             <aside class="dev-tech-carousel" aria-label="Technology stack">
                 <div class="dev-tech-track" aria-hidden="true">
                     <img src="/images/techstack/python-icon.svg?v=7e7266b29c" alt="">
@@ -3239,36 +3417,17 @@ body.page-index.spotlight-navigation-enabled .footer-minimal {
                 <div class="hero-eyebrow" id="identity-label">Backend Software Engineer</div>
 
                 <div class="identity" id="identity" aria-label="Patrick Araujo">
-                    <span class="identity-word identity-first" aria-hidden="true">
-                        <span class="glyph">P</span>
-                        <span class="insert-glyph first-insert"><span>a</span></span>
-                        <span class="insert-glyph first-insert"><span>t</span></span>
-                        <span class="insert-glyph first-insert"><span>r</span></span>
-                        <span class="insert-glyph first-insert glyph-narrow"><span>i</span></span>
-                        <span class="insert-glyph first-insert"><span>c</span></span>
-                        <span class="glyph">k</span>
+                    <span class="visually-hidden">Patrick Araujo</span>
+                    <span class="identity-track identity-first" aria-hidden="true">
+                        <span class="identity-letter">P</span><span class="identity-insert identity-insert-a">a</span><span class="identity-insert identity-insert-t">t</span><span class="identity-insert identity-insert-r">r</span><span class="identity-insert identity-insert-i">i</span><span class="identity-insert identity-insert-c">c</span><span class="identity-letter">k</span>
                     </span>
-
-                    <span class="identity-word identity-second" aria-hidden="true">
-                        <span class="glyph morph-glyph">
-                            <span class="from">L</span><span class="to">A</span>
-                        </span>
-                        <span class="glyph morph-glyph">
-                            <span class="from">a</span><span class="to">r</span>
-                        </span>
-                        <span class="insert-glyph second-insert"><span>a</span></span>
-                        <span class="insert-glyph second-insert"><span>u</span></span>
-                        <span class="glyph morph-glyph">
-                            <span class="from">v</span><span class="to">j</span>
-                        </span>
-                        <span class="glyph morph-glyph">
-                            <span class="from">c</span><span class="to">o</span>
-                        </span>
+                    <span class="identity-track identity-second" aria-hidden="true">
+                        <span class="identity-morph" style="--from-width: .5em; --to-width: .65em"><span class="from">L</span><span class="to">A</span></span><span class="identity-morph" style="--from-width: .5em; --to-width: .38em"><span class="from">a</span><span class="to">r</span></span><span class="identity-insert identity-insert-a">a</span><span class="identity-insert identity-insert-u">u</span><span class="identity-morph" style="--from-width: .5em; --to-width: .28em"><span class="from">v</span><span class="to">j</span></span><span class="identity-morph" style="--from-width: .46em; --to-width: .54em"><span class="from">c</span><span class="to">o</span></span>
                     </span>
                 </div>
 
                 <p class="hero-description">
-                    I design <strong>backend systems, applied AI, automation, and API integrations</strong> for real operational environments — with traceable data flows, observable execution, and software that can keep evolving after deployment.
+                    I design <strong>backend systems, applied AI, automation, and API integrations</strong> for real operational environments &mdash; with traceable data flows, observable execution, and software that can keep evolving after deployment.
                 </p>
 
                 <div class="hero-meta" aria-label="Primary technical areas">
@@ -3388,7 +3547,7 @@ body.page-index.spotlight-navigation-enabled .footer-minimal {
                             <div class="writing-main">
                                 <h3>Engineering notes beyond the project page.</h3>
                                 <p>
-                                    Articles are used to document implementation details, explain technologies in context, compare approaches, and keep a public record of what I am testing or improving. The goal is useful technical material, not a second copy of the résumé.
+                                    Articles are used to document implementation details, explain technologies in context, compare approaches, and keep a public record of what I am testing or improving. The goal is useful technical material, not a second copy of the resume.
                                 </p>
                                 <a class="text-link" href="/blog/">Open the blog</a>
                             </div>
@@ -4928,48 +5087,47 @@ body.page-index.spotlight-navigation-enabled .footer-minimal {
                 document.body.classList.add('ready');
             }
 
-            if (document.readyState === 'complete') {
-                finishReadyState();
-            } else {
-                window.addEventListener('load', finishReadyState, { once: true });
-            }
+            finishReadyState();
 
             if (reducedMotion) {
                 document.body.classList.add('loaded');
                 identity.classList.add('split', 'expand-first', 'morph-second', 'settle');
                 hero.classList.add('reveal-copy');
+                document.body.dataset.heroContentReady = 'true';
+                window.dispatchEvent(new Event('pklavc:hero-content-ready'));
                 return;
             }
 
-            /*
-             * The identity animation starts only after the full page load:
-             * PkLavc -> Patrick Araujo.
-             * Pk expands first while Lavc drops, then Lavc morphs/opens into Araujo.
-             */
-            window.addEventListener('load', function () {
+            /* Pk opens to Patrick while Lavc moves below and becomes Araujo. */
+            function startIdentityAnimation() {
                 document.body.classList.add('loaded');
 
                 window.setTimeout(function () {
                     identity.classList.add('split');
-                }, 420);
+                }, 650);
 
                 window.setTimeout(function () {
                     identity.classList.add('expand-first');
-                }, 720);
+                }, 1300);
 
                 window.setTimeout(function () {
                     identity.classList.add('morph-second');
-                }, 1780);
+                }, 3000);
 
                 window.setTimeout(function () {
                     identity.classList.add('settle');
-                }, 2920);
+                }, 4600);
 
                 window.setTimeout(function () {
                     hero.classList.add('reveal-copy');
-                }, 3260);
-            }, { once: true });
+                    document.body.dataset.heroContentReady = 'true';
+                    window.dispatchEvent(new Event('pklavc:hero-content-ready'));
+                }, 5000);
+            }
+
+            startIdentityAnimation();
         }());
     </script>
+    <script src="/js/home-particles.js"></script>
 </body>
 </html>
