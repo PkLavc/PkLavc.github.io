@@ -10,7 +10,6 @@ const root = process.cwd();
 const outDir = path.join(root, ".pages-dist");
 
 const publicEntries = [
-  "Autotrader",
   "404.html",
   "410.html",
   "503.html",
@@ -114,6 +113,21 @@ function copyEntry(source, target) {
   fs.copyFileSync(source, target);
 }
 
+function publishAutotraderDashboard() {
+  const source = path.join(root, ".autotrader-dashboard");
+  const target = path.join(outDir, "Autotrader");
+
+  const index = path.join(source, "index.html");
+  const assets = path.join(source, "assets");
+
+  if (!fs.existsSync(index) || !fs.existsSync(assets)) {
+    throw new Error("Autotrader dashboard checkout is missing index.html or assets/.");
+  }
+
+  copyEntry(index, path.join(target, "index.html"));
+  copyEntry(assets, path.join(target, "assets"));
+}
+
 function walkFiles(dir) {
   const result = [];
   if (!fs.existsSync(dir)) return result;
@@ -207,6 +221,8 @@ function main() {
   for (const entry of publicEntries) {
     copyEntry(path.join(root, entry), path.join(outDir, entry));
   }
+
+  publishAutotraderDashboard();
 
   const storeStats = enhanceStoreArtifact(outDir);
   console.log(`Store prerender: ${storeStats.pages} page(s), ${storeStats.products} product(s).`);
