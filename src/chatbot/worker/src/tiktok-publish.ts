@@ -87,6 +87,37 @@ export async function handleTikTokMediaProxy(
   });
 }
 
+export async function handleTikTokUserInfo(env: TikTokPublishEnv): Promise<Response> {
+  try {
+    const tokens = await getTikTokTokens(env);
+    const response = await fetch(
+      `${TIKTOK_API_ROOT}/v2/user/info/?fields=open_id,union_id,avatar_url,display_name`,
+      {
+        method: "GET",
+        headers: { Authorization: `Bearer ${tokens.access_token}` },
+      },
+    );
+    const envelope = await parseEnvelope<{ user?: {
+      open_id?: string;
+      union_id?: string;
+      avatar_url?: string;
+      display_name?: string;
+    } }>(response);
+    if (!response.ok || envelope.error?.code !== "ok" || !envelope.data?.user) {
+      return tiktokFailure("tiktok_user_info_failed", response.status, envelope.error);
+    }
+    const user = envelope.data.user;
+    return json({
+      ok: true,
+      open_id: user.open_id || "",
+      display_name: user.display_name || "",
+      avatar_url: user.avatar_url || "",
+    });
+  } catch (error) {
+    return json({ error: errorName(error) }, 502);
+  }
+}
+
 export async function handleTikTokCreatorInfo(env: TikTokPublishEnv): Promise<Response> {
   try {
     const creator = await queryCreatorInfo(env);
