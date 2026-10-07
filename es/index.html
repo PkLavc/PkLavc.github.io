@@ -3,6 +3,13 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style id="home-footer-critical">
+            body.page-index:not(.ready) .footer-minimal {
+                opacity: 0 !important;
+                visibility: hidden !important;
+            }
+        </style>
+        <noscript><style>body.page-index .footer-minimal{opacity:1!important;visibility:visible!important}</style></noscript>
         <meta name="author" content="PkLavc" />
         <title>Patrick Araujo | Ingeniero de Software Backend</title>
         <link rel="canonical" href="https://pklavc.com/es/">
@@ -62,8 +69,12 @@
     <link rel="preload" href="/css/index.css?v=20261001home3" as="style">
     <link rel="stylesheet" href="/css/global.css?v=20261006footer-final1">
 <link rel="stylesheet" href="/css/index.css?v=20261001home3">
+    <link id="spotlight-navigation-style" rel="stylesheet" href="/css/spotlight-navigation.css?v=20261001k">
+    <link id="skylet-widget-style" rel="stylesheet" href="/css/skylet-widget.css?v=4d85970dfe">
         <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.2.6/gsap.min.js" async></script>
-        <script src="https://cdn.jsdelivr.net/npm/@lottiefiles/lottie-player@2.0.12/dist/lottie-player.js" async></script>
+        <script src="https://cdn.jsdelivr.net/npm/@lottiefiles/lottie-player@2.0.12/dist/lottie-player.js" defer></script>
+        <script id="spotlight-navigation-script" src="/js/spotlight-navigation.js?v=20261001j" defer></script>
+        <script id="skylet-widget-script" src="/js/skylet-widget.js?v=20261002desktop6" defer></script>
         <meta name="theme-color" content="#101114">
     <link rel="search" type="application/opensearchdescription+xml" title="PkLavc" href="/opensearch.xml">
         <link rel="manifest" href="/manifest.webmanifest?v=291169f445">
