@@ -54,10 +54,14 @@ describe("TikTok sandbox OAuth exchange", () => {
     expect(body.open_id).toBe("open-id");
     expect(JSON.stringify(body)).not.toContain("access-secret");
     expect(JSON.stringify(body)).not.toContain("refresh-secret");
-    expect(put).toHaveBeenCalledTimes(1);
-    const stored = String(put.mock.calls[0][1]);
+    expect(put).toHaveBeenCalledTimes(2);
+    const tokenWrite = put.mock.calls.find((call) => call[0] === "tiktok:sandbox:tokens");
+    expect(tokenWrite).toBeTruthy();
+    const stored = String(tokenWrite?.[1] || "");
     expect(stored).toContain("access-secret");
     expect(stored).toContain("refresh-secret");
+    const sessionWrite = put.mock.calls.find((call) => String(call[0]).startsWith("tiktok:review-session:"));
+    expect(sessionWrite).toBeTruthy();
   });
 
   it("rejects a redirect URI different from the registered callback", async () => {
