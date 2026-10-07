@@ -169,7 +169,7 @@ export async function handleTikTokDirectPost(
       ok: true,
       publish_id: envelope.data.publish_id,
       status: "SUBMITTED",
-      privacy_level: "SELF_ONLY",
+      privacy_level: requestedPrivacy,
       creator_username: creator.creator_username || "",
       creator_nickname: creator.creator_nickname || "",
       media_url: mediaUrl,
@@ -201,22 +201,32 @@ export async function handleTikTokDirectFilePost(
     const tokens = await getTikTokTokens(env);
     const creator = await queryCreatorInfoWithToken(tokens.access_token);
     const privacyOptions = creator.privacy_level_options || [];
-    if (!privacyOptions.includes("SELF_ONLY")) {
+    const requestedPrivacy = String(url.searchParams.get("privacy_level") || "SELF_ONLY");
+    if (!privacyOptions.includes(requestedPrivacy)) {
       return json({
-        error: "self_only_unavailable",
+        error: "privacy_level_option_mismatch",
+        privacy_level_options: privacyOptions,
+      }, 409);
+    }
+    if (requestedPrivacy !== "SELF_ONLY") {
+      return json({
+        error: "sandbox_requires_self_only",
         privacy_level_options: privacyOptions,
       }, 409);
     }
 
     const title = String(url.searchParams.get("title") || "").trim().slice(0, 2200);
     const isAigc = url.searchParams.get("is_aigc") !== "false";
+    const disableComment = Boolean(creator.comment_disabled) || parseBoolean(url.searchParams.get("disable_comment"), false);
+    const disableDuet = Boolean(creator.duet_disabled) || parseBoolean(url.searchParams.get("disable_duet"), false);
+    const disableStitch = Boolean(creator.stitch_disabled) || parseBoolean(url.searchParams.get("disable_stitch"), false);
     const payload = {
       post_info: {
         title,
-        privacy_level: "SELF_ONLY",
-        disable_duet: Boolean(creator.duet_disabled),
-        disable_comment: Boolean(creator.comment_disabled),
-        disable_stitch: Boolean(creator.stitch_disabled),
+        privacy_level: requestedPrivacy,
+        disable_duet: disableDuet,
+        disable_comment: disableComment,
+        disable_stitch: disableStitch,
         is_aigc: isAigc,
       },
       source_info: {
@@ -267,6 +277,72 @@ export async function handleTikTokDirectFilePost(
       creator_username: creator.creator_username || "",
       creator_nickname: creator.creator_nickname || "",
       uploaded_bytes: bytes.byteLength,
+    });
+  } catch (error) {
+    return json({ error: errorName(error) }, 502);
+  }
+}
+
+export async function handleTikTokDraftFileUpload(
+  request: Request,
+  env: TikTokPublishEnv,
+): Promise<Response> {
+  const contentType = (request.headers.get("Content-Type") || "").split(";")[0].trim().toLowerCase();
+  if (contentType !== "video/mp4" && contentType !== "video/quicktime" && contentType !== "video/webm") {
+    return json({ error: "unsupported_media_type" }, 415);
+  }
+
+  const bytes = new Uint8Array(await request.arrayBuffer());
+  if (!bytes.byteLength) return json({ error: "empty_video" }, 400);
+  if (bytes.byteLength > 64 * 1024 * 1024) {
+    return json({ error: "video_too_large_for_single_chunk_test" }, 413);
+  }
+
+  try {
+    const tokens = await getTikTokTokens(env);
+    const initResponse = await fetch(`${TIKTOK_API_ROOT}/v2/post/publish/inbox/video/init/`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${tokens.access_token}`,
+        "Content-Type": "application/json; charset=UTF-8",
+      },
+      body: JSON.stringify({
+        source_info: {
+          source: "FILE_UPLOAD",
+          video_size: bytes.byteLength,
+          chunk_size: bytes.byteLength,
+          total_chunk_count: 1,
+        },
+      }),
+    });
+
+    const initEnvelope = await parseEnvelope<PublishInitData>(initResponse);
+    const uploadUrl = initEnvelope.data?.upload_url || "";
+    const publishId = initEnvelope.data?.publish_id || "";
+    if (!initResponse.ok || initEnvelope.error?.code !== "ok" || !uploadUrl || !publishId) {
+      return tiktokFailure("tiktok_draft_init_failed", initResponse.status, initEnvelope.error);
+    }
+
+    const uploadResponse = await fetch(uploadUrl, {
+      method: "PUT",
+      headers: {
+        "Content-Type": contentType,
+        "Content-Length": String(bytes.byteLength),
+        "Content-Range": `bytes 0-${bytes.byteLength - 1}/${bytes.byteLength}`,
+      },
+      body: bytes,
+    });
+
+    if (![200, 201, 206].includes(uploadResponse.status)) {
+      return json({ error: "tiktok_draft_upload_failed", upload_status: uploadResponse.status }, 502);
+    }
+
+    return json({
+      ok: true,
+      publish_id: publishId,
+      status: "SUBMITTED",
+      uploaded_bytes: bytes.byteLength,
+      requires_tiktok_inbox_completion: true,
     });
   } catch (error) {
     return json({ error: errorName(error) }, 502);
@@ -380,6 +456,12 @@ function tiktokFailure(prefix: string, httpStatus: number, error?: TikTokError):
     message: error?.message || "",
     log_id: error?.log_id || "",
   }, httpStatus >= 400 && httpStatus < 600 ? httpStatus : 502);
+}
+
+function parseBoolean(value: string | null, fallback: boolean): boolean {
+  if (value === "true") return true;
+  if (value === "false") return false;
+  return fallback;
 }
 
 function errorName(error: unknown): string {
