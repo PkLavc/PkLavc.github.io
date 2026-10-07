@@ -3,6 +3,7 @@ import { handleDiscordInteraction } from "./discord-interactions";
 import { closeDiscordConversation, drainDiscordMessageQueue, enqueueDiscordMessage, getConversationControl } from "./discord-conversations";
 import { decryptInstagramRecipient, deriveInstagramIdentity, encryptInstagramRecipient, sendInstagramMessage } from "./instagram-messaging";
 import { parseInstagramWebhook } from "./instagram-webhook";
+import { handleTikTokOAuthExchange } from "./tiktok-oauth";
 
 export interface Env {
   DB: D1Database;
@@ -45,6 +46,8 @@ export interface Env {
   INSTAGRAM_WEBHOOK_VERIFY_TOKEN?: string;
   INSTAGRAM_API_MODE?: string;
   INSTAGRAM_GRAPH_API_VERSION?: string;
+  TIKTOK_SANDBOX_CLIENT_KEY?: string;
+  TIKTOK_SANDBOX_CLIENT_SECRET?: string;
 }
 
 type ChatPayload = {
@@ -158,6 +161,13 @@ export default {
 
     try {
       const spanStart = Date.now();
+
+      if (url.pathname === "/tiktok/oauth/exchange" && request.method === "POST") {
+        if (!isAllowedOrigin(env, origin)) {
+          return withCors(json({ error: "origin_not_allowed" }, 403), env, origin);
+        }
+        return withCors(await handleTikTokOAuthExchange(request, env), env, origin);
+      }
 
       if (url.pathname === "/health" && request.method === "GET") {
         const siteRagStatus = await getSiteRagCacheStatus(env);
