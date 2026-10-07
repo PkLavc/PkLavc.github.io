@@ -93,7 +93,7 @@ jobs:
           python -m unittest scripts.social_video.test_render scripts.social_video.test_products scripts.blog_automation.test_json_safe
 
   publish:
-    if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && (inputs.mode == 'publish' || inputs.mode == 'store-products-preview' || inputs.mode == 'store-products-publish'))
+    if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && (inputs.mode == 'publish' || inputs.mode == 'store-products-preview' || inputs.mode == 'store-products-publish')) || (github.event_name == 'push' && contains(github.event.head_commit.message, '[social-publish-now]'))
     runs-on: ubuntu-latest
     timeout-minutes: 90
     env:
@@ -118,6 +118,12 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Refill article social queues from existing blog posts
+        working-directory: private-blog
+        env:
+          SOCIAL_DAILY_TARGET: ${{ vars.SOCIAL_DAILY_TARGET || '4' }}
+        run: python -m scripts.social_video.backfill --daily-target "$SOCIAL_DAILY_TARGET"
+
       - name: Check pending publications and due Analytics snapshots
         id: pending
         working-directory: private-blog
@@ -126,6 +132,7 @@ jobs:
           EVENT_NAME: ${{ github.event_name }}
           EVENT_SCHEDULE: ${{ github.event.schedule }}
           DISPATCH_MODE: ${{ inputs.mode }}
+          COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
         run: |
           python - <<'PY'
           import json, os
@@ -143,7 +150,8 @@ jobs:
           has_store = schedule_run or dispatch_mode in {"store-products-preview", "store-products-publish"}
           store_dry_run = dispatch_mode == "store-products-preview"
           publish_queue = ((os.environ.get("EVENT_NAME") == "schedule" and not schedule_run)
-                           or dispatch_mode == "publish")
+                           or dispatch_mode == "publish"
+                           or (os.environ.get("EVENT_NAME") == "push" and "[social-publish-now]" in os.environ.get("COMMIT_MESSAGE", "")))
           now = datetime.now(timezone.utc)
           due = False
           for record in load("youtube-analytics.json", "videos"):
