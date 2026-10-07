@@ -7,7 +7,7 @@ describe("TikTok sandbox OAuth exchange", () => {
   });
 
   it("exchanges the authorization code server-side and never returns tokens to the browser", async () => {
-    const put = vi.fn(async () => undefined);
+    const put = vi.fn(async (_key: string, _value: string, _options?: { expirationTtl?: number }) => undefined);
     const tokenPayload = {
       access_token: "access-secret",
       refresh_token: "refresh-secret",
