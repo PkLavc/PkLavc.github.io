@@ -463,11 +463,24 @@ class Audit:
             if not target or not target.is_file():
                 self.report("robots-sitemap", f"robots.txt sitemap missing: {url}")
 
+    def comparison_source_file(self, source, relative):
+        original = source / relative
+        if original.is_file():
+            return original
+
+        external = getattr(self.args, "autotrader_dashboard_source", None)
+        if external and relative.parts and relative.parts[0] == "Autotrader":
+            candidate = external.resolve().joinpath(*relative.parts[1:])
+            if candidate.is_file():
+                return candidate
+
+        return original
+
     def compare_source(self):
         source = self.args.compare_source.resolve()
         for path in self.pages:
             relative = path.relative_to(self.root)
-            original = source / relative
+            original = self.comparison_source_file(source, relative)
             if not original.is_file():
                 self.report("visual-source", f"{relative}: missing source comparison file")
                 continue
@@ -481,7 +494,7 @@ class Audit:
                 self.report("visual-contract", f"{relative}: visible DOM/assets changed at token {first}; source={str(before[first:first+1])[:170]}; artifact={str(after[first:first+1])[:170]}")
         for path in sorted(self.root.rglob("*.css")):
             relative = path.relative_to(self.root)
-            original = source / relative
+            original = self.comparison_source_file(source, relative)
             self.counts["visual_css_compared"] += 1
             if not original.is_file() or unversion_text(original.read_text(encoding="utf-8-sig")) != unversion_text(path.read_text(encoding="utf-8-sig")):
                 self.report("visual-css", f"{relative}: CSS differs beyond asset cache versions")
@@ -516,6 +529,7 @@ def main():
     parser.add_argument("--root", type=Path, default=Path(".pages-dist"))
     parser.add_argument("--site", default="https://pklavc.com")
     parser.add_argument("--compare-source", type=Path, help="Check visible HTML and CSS against this source root")
+    parser.add_argument("--autotrader-dashboard-source", type=Path, help="Source root for the artifact-only /Autotrader dashboard")
     parser.add_argument("--allow-ad-injection", "--allow-adsense-injection", dest="allow_ad_injection", action="store_true", help="Permit the build's validated blog ad assets and optional AdSense config in the visual comparison")
     parser.add_argument("--allow-store-prerender", action="store_true", help="Permit only generated .store-intro and [data-prerendered-product] markup in the artifact visual comparison")
     parser.add_argument("--strict-links", action="store_true", help="Treat unresolved local references as errors")
