@@ -2309,3 +2309,82 @@ body {
     .about-profile-singularity.black-hole-ready:hover .img-border,
     .about-profile-singularity.black-hole-ready:focus-within .img-border { transform: scale(.1); filter: none; opacity: .15; }
 }
+
+
+/* About-page logo rails: soft edge fade + horizontal tech stack */
+.professional-experience-section .brands-section .slider {
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 10%, #000 90%, transparent 100%);
+    mask-image: linear-gradient(to right, transparent 0%, #000 10%, #000 90%, transparent 100%);
+}
+
+.about-techstack-carousel {
+    width: 100%;
+    overflow: hidden;
+    margin: 12px 0 18px;
+    padding: 7px 0;
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 8%, #000 92%, transparent 100%);
+    mask-image: linear-gradient(to right, transparent 0%, #000 8%, #000 92%, transparent 100%);
+}
+
+.about-techstack-track {
+    display: flex;
+    width: max-content;
+    will-change: transform;
+    animation: aboutTechstackScroll 28s linear infinite;
+}
+
+.about-techstack-set {
+    display: flex;
+    flex: none;
+    align-items: center;
+    gap: clamp(24px, 3vw, 46px);
+    padding-right: clamp(24px, 3vw, 46px);
+}
+
+.about-techstack-set img {
+    display: block;
+    flex: none;
+    width: auto;
+    height: 34px;
+    opacity: 0.72;
+    filter: grayscale(18%);
+    transition: opacity 0.3s ease, filter 0.3s ease, transform 0.3s ease;
+}
+
+.about-techstack-set img:hover {
+    opacity: 1;
+    filter: grayscale(0%);
+    transform: scale(1.08);
+}
+
+@keyframes aboutTechstackScroll {
+    from { transform: translate3d(0, 0, 0); }
+    to { transform: translate3d(-50%, 0, 0); }
+}
+
+@media (max-width: 768px) {
+    .about-techstack-carousel {
+        margin: 8px 0 14px;
+        padding: 5px 0;
+    }
+
+    .about-techstack-track {
+        animation-duration: 20s;
+    }
+
+    .about-techstack-set {
+        gap: 24px;
+        padding-right: 24px;
+    }
+
+    .about-techstack-set img {
+        height: 25px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .about-techstack-track {
+        animation: none;
+        transform: none;
+    }
+}
