@@ -38,6 +38,14 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Checkout Autotrader dashboard
+        uses: actions/checkout@v4
+        with:
+          repository: PkLavc/Autotrader
+          ref: main
+          path: .autotrader-dashboard
+          fetch-depth: 1
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
@@ -54,7 +62,7 @@ jobs:
           cp .pages-dist/store/index.html store/index.html
           cp .pages-dist/store/pt/index.html store/pt/index.html
           cp .pages-dist/store/es/index.html store/es/index.html
-          python3 scripts/audit-seo.py --root .pages-dist --compare-source . --strict-links --allow-ad-injection --allow-store-prerender
+          python3 scripts/audit-seo.py --root .pages-dist --compare-source . --autotrader-dashboard-source .autotrader-dashboard --strict-links --allow-ad-injection --allow-store-prerender
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
