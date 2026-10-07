@@ -55,6 +55,11 @@
   }
 
   function getLocale() {
+    var storeLocale = document.body && document.body.getAttribute('data-store-locale');
+    if (storeLocale === 'en' || storeLocale === 'pt' || storeLocale === 'es') {
+      return storeLocale;
+    }
+
     if (window.PkLavcI18n && typeof window.PkLavcI18n.getCurrentLanguage === 'function') {
       return window.PkLavcI18n.getCurrentLanguage();
     }
