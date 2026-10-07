@@ -3,9 +3,9 @@ import { handleDiscordInteraction } from "./discord-interactions";
 import { closeDiscordConversation, drainDiscordMessageQueue, enqueueDiscordMessage, getConversationControl } from "./discord-conversations";
 import { decryptInstagramRecipient, deriveInstagramIdentity, encryptInstagramRecipient, sendInstagramMessage } from "./instagram-messaging";
 import { parseInstagramWebhook } from "./instagram-webhook";
-import { handleTikTokOAuthExchange } from "./tiktok-oauth";
+import { handleTikTokOAuthExchange, hasTikTokReviewSession } from "./tiktok-oauth";
 import { verifyGithubActionsOidc } from "./github-oidc";
-import { handleTikTokCreatorInfo, handleTikTokDirectFilePost, handleTikTokDirectPost, handleTikTokMediaProxy, handleTikTokPostStatus } from "./tiktok-publish";
+import { handleTikTokCreatorInfo, handleTikTokDirectFilePost, handleTikTokDirectPost, handleTikTokDraftFileUpload, handleTikTokMediaProxy, handleTikTokPostStatus } from "./tiktok-publish";
 
 export interface Env {
   DB: D1Database;
@@ -182,31 +182,43 @@ export default {
           url.pathname === "/tiktok/creator-info" ||
           url.pathname === "/tiktok/publish/video" ||
           url.pathname === "/tiktok/publish/file" ||
+          url.pathname === "/tiktok/upload/draft" ||
           url.pathname === "/tiktok/publish/status"
         )
       ) {
+        let authorized = false;
         try {
           await verifyGithubActionsOidc(request);
+          authorized = true;
         } catch (error) {
-          console.log(JSON.stringify({
-            level: "warn",
-            event: "tiktok_github_oidc_rejected",
-            reason: error instanceof Error ? error.message : "unknown",
-            trace_id: traceId,
-          }));
-          return json({ error: "unauthorized" }, 401);
+          if (isAllowedOrigin(env, origin) && await hasTikTokReviewSession(request, env)) {
+            authorized = true;
+          } else {
+            console.log(JSON.stringify({
+              level: "warn",
+              event: "tiktok_publish_auth_rejected",
+              reason: error instanceof Error ? error.message : "unknown",
+              trace_id: traceId,
+            }));
+          }
+        }
+        if (!authorized) {
+          return withCors(json({ error: "unauthorized" }, 401), env, origin);
         }
 
         if (url.pathname === "/tiktok/creator-info") {
-          return handleTikTokCreatorInfo(env);
+          return withCors(await handleTikTokCreatorInfo(env), env, origin);
         }
         if (url.pathname === "/tiktok/publish/video") {
-          return handleTikTokDirectPost(request, env);
+          return withCors(await handleTikTokDirectPost(request, env), env, origin);
         }
         if (url.pathname === "/tiktok/publish/file") {
-          return handleTikTokDirectFilePost(request, env);
+          return withCors(await handleTikTokDirectFilePost(request, env), env, origin);
         }
-        return handleTikTokPostStatus(request, env);
+        if (url.pathname === "/tiktok/upload/draft") {
+          return withCors(await handleTikTokDraftFileUpload(request, env), env, origin);
+        }
+        return withCors(await handleTikTokPostStatus(request, env), env, origin);
       }
 
       if (url.pathname === "/health" && request.method === "GET") {
