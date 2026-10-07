@@ -23,8 +23,10 @@ type GithubOidcClaims = {
   [key: string]: unknown;
 };
 
+type JwkWithKid = JsonWebKey & { kid?: string };
+
 type Jwks = {
-  keys?: JsonWebKey[];
+  keys?: JwkWithKid[];
 };
 
 export async function verifyGithubActionsOidc(request: Request): Promise<GithubOidcClaims> {
