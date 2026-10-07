@@ -9,6 +9,9 @@ const TIKTOK_TOKEN_ENDPOINT = "https://open.tiktokapis.com/v2/oauth/token/";
 const TIKTOK_REDIRECT_URI = "https://pklavc.com/tiktok/callback/";
 const TIKTOK_SANDBOX_TOKEN_KEY = "tiktok:sandbox:tokens";
 const ACCESS_TOKEN_REFRESH_SKEW_SECONDS = 15 * 60;
+const TIKTOK_REVIEW_SESSION_PREFIX = "tiktok:review-session:";
+const TIKTOK_REVIEW_SESSION_TTL_SECONDS = 2 * 60 * 60;
+const TIKTOK_REVIEW_COOKIE = "__Host-pklavc_tiktok_review";
 
 export type TikTokStoredTokens = {
   access_token: string;
@@ -95,7 +98,12 @@ export async function handleTikTokOAuthExchange(
   const stored = tokenBundle(payload);
   await saveTikTokTokens(env, stored);
 
-  return json({
+  const reviewSession = crypto.randomUUID();
+  await env.SESSIONS.put(TIKTOK_REVIEW_SESSION_PREFIX + reviewSession, "1", {
+    expirationTtl: TIKTOK_REVIEW_SESSION_TTL_SECONDS,
+  });
+
+  const response = json({
     ok: true,
     environment: "sandbox",
     open_id: stored.open_id,
@@ -103,6 +111,26 @@ export async function handleTikTokOAuthExchange(
     expires_in: Number(payload.expires_in || 0),
     refresh_expires_in: Number(payload.refresh_expires_in || 0),
   });
+  response.headers.append(
+    "Set-Cookie",
+    `${TIKTOK_REVIEW_COOKIE}=${reviewSession}; Path=/; Max-Age=${TIKTOK_REVIEW_SESSION_TTL_SECONDS}; Secure; HttpOnly; SameSite=Strict`,
+  );
+  return response;
+}
+
+export async function hasTikTokReviewSession(
+  request: Request,
+  env: TikTokOAuthEnv,
+): Promise<boolean> {
+  const cookies = request.headers.get("Cookie") || "";
+  const match = cookies
+    .split(";")
+    .map((part) => part.trim())
+    .find((part) => part.startsWith(TIKTOK_REVIEW_COOKIE + "="));
+  if (!match) return false;
+  const sessionId = match.slice(TIKTOK_REVIEW_COOKIE.length + 1).trim();
+  if (!/^[0-9a-f-]{36}$/i.test(sessionId)) return false;
+  return (await env.SESSIONS.get(TIKTOK_REVIEW_SESSION_PREFIX + sessionId)) === "1";
 }
 
 export async function getTikTokTokens(env: TikTokOAuthEnv): Promise<TikTokStoredTokens> {
