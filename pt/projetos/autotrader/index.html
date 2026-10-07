@@ -31,6 +31,7 @@
     <link rel="stylesheet" href="/css/global.css?v=6d8a856a8a">
     <link rel="stylesheet" href="/css/projects.css?v=40b82e0f27">
     <link rel="stylesheet" href="/css/omnichannel-case-study.css?v=c663924895">
+    <link rel="stylesheet" href="/css/autotrader-case-study.css?v=1">
     <link rel="preload" as="style" href="/css/github-markdown-local.css?v=01d37f05ee">
     <link rel="stylesheet" href="/css/github-markdown-local.css?v=01d37f05ee" media="print" onload="this.media='all'">
     <noscript><link rel="stylesheet" href="/css/github-markdown-local.css?v=01d37f05ee"></noscript>
@@ -181,94 +182,220 @@
     <div id="breaker-two"></div>
     <div id="all">
 
-        <main role="main" class="omni-case">
+        <main role="main" class="omni-case autotrader-case">
     <section class="project-hero">
-      <span class="project-category-badge">IA Quantitativa</span>
+      <span class="project-category-badge">IA Quantitativa · Paper Trading Autônomo</span>
       <div class="project-hero-title"><h1>Autotrader</h1></div>
-      <p style="color:#aaa;font-size:1.1rem;margin-top:15px;">Sistema autônomo de pesquisa de mercado que usa Kronos-base para prever ativos, montar uma carteira simulada, rebalancear automaticamente e registrar cada decisão.</p>
+      <p style="color:#aaa;font-size:1.1rem;margin-top:15px;">Um experimento quantitativo autônomo que usa o <strong>Kronos-base</strong> como motor de previsão, transforma previsões de candles em sinais comparáveis, aplica regras determinísticas de carteira e registra cada decisão em público.</p>
     </section>
-    <section class="full-readme-section" aria-label="Estudo de caso visual do Autotrader"><div class="full-readme-container">
-      <h2 style="color:#fff;margin-bottom:20px;">Arquitetura, execução e histórico da estratégia</h2>
+
+    <section class="full-readme-section" aria-label="Estudo de caso técnico do Autotrader"><div class="full-readme-container">
+      <h2 style="color:#fff;margin-bottom:20px;">Como o modelo, a estratégia e a automação trabalham juntos</h2>
       <article class="markdown-body">
         <h2>Autotrader</h2>
-        <p class="omni-intro"><strong>Autotrader</strong> é um experimento autônomo de paper trading. O sistema coleta dados de mercado, executa o Kronos-base, compara as previsões, aplica limites fixos de risco, simula compras e vendas e persiste o resultado pelo GitHub Actions sem exigir decisões manuais a cada execução.</p>
-        <div class="omni-legend"><span class="omni-chip" style="--chip:#69b7ff">Dados OHLCV</span><span class="omni-chip" style="--chip:#a88bff">Kronos-base</span><span class="omni-chip" style="--chip:#58d6a9">Carteira + risco</span><span class="omni-chip" style="--chip:#f4c86a">GitHub Actions</span></div>
-        <div class="omni-kpis"><div class="omni-kpi"><strong>20</strong><span>ativos monitorados</span></div><div class="omni-kpi"><strong>5</strong><span>posições máximas</span></div><div class="omni-kpi"><strong>18%</strong><span>limite por posição</span></div><div class="omni-kpi"><strong>10%</strong><span>caixa mínimo</span></div></div>
+        <p class="omni-intro"><strong>Autotrader não é o Kronos renomeado.</strong> Kronos é o modelo de previsão financeira. O Autotrader é a camada construída ao redor dele: aquisição de dados, execução do modelo, comparação entre ativos, construção da carteira, regras de risco, paper execution, persistência, atualização segura do upstream e visualização do histórico.</p>
 
-        <section class="omni-section"><div class="omni-section-heading"><div><span class="omni-label">Mapa do sistema</span><h3>Da cotação ao registro da carteira</h3></div><p>O modelo não envia ordens diretamente. Ele produz previsões; uma camada separada transforma esses sinais em alocações sob limites explícitos e registra a simulação.</p></div>
-          <figure class="omni-stage"><div class="omni-stage-title"><span>Arquitetura ponta a ponta</span><span class="omni-stage-dots" aria-hidden="true"><i></i><i></i><i></i></span></div><div class="omni-architecture">
-            <div class="omni-arch-column"><span class="omni-arch-title">Mercado</span><div class="omni-node"><strong>20 ativos líquidos</strong><small>Ações e ETFs dos EUA</small></div><div class="omni-node"><strong>OHLCV diário</strong><small>Histórico recente por ativo</small></div><div class="omni-node"><strong>Validação</strong><small>Dados ausentes não viram ordens</small></div></div><div class="omni-arrow-column" aria-hidden="true">→</div>
-            <div class="omni-arch-column"><div class="omni-node omni-node--core"><strong>Kronos-base</strong><small>Previsão probabilística de 5 pregões</small></div><div class="omni-node omni-node--core"><strong>Ranking</strong><small>Retorno esperado por ativo</small></div><div class="omni-node"><strong>Construtor de carteira</strong><small>Seleciona os sinais elegíveis</small></div><div class="omni-node"><strong>Gestão de risco</strong><small>Limites de posição e caixa</small></div><div class="omni-node"><strong>Paper executor</strong><small>Compras, vendas e slippage simulados</small></div></div><div class="omni-arrow-column" aria-hidden="true">↔</div>
-            <div class="omni-arch-column"><div class="omni-node omni-node--data"><strong>state.json</strong><small>Caixa, posições, trades e NAV</small></div><div class="omni-node omni-node--data"><strong>latest.json</strong><small>Previsões e métricas da execução</small></div><div class="omni-node omni-node--data"><strong>Dashboard público</strong><small>Gráficos, sinais e histórico</small></div></div>
-          </div><figcaption class="omni-caption">Dados → Kronos-base → ranking → carteira limitada → execução simulada → histórico público.</figcaption></figure>
+        <div class="omni-legend">
+          <span class="omni-chip" style="--chip:#69b7ff">OHLCV + amount</span>
+          <span class="omni-chip" style="--chip:#a88bff">Kronos-base · 102,3M</span>
+          <span class="omni-chip" style="--chip:#58d6a9">Portfolio engine</span>
+          <span class="omni-chip" style="--chip:#f4c86a">GitHub Actions</span>
+          <span class="omni-chip" style="--chip:#ff8585">Paper execution</span>
+        </div>
+
+        <div class="omni-kpis">
+          <div class="omni-kpi"><strong>45+</strong><span>bolsas globais usadas no pré-treinamento do Kronos, segundo o projeto original</span></div>
+          <div class="omni-kpi"><strong>102,3M</strong><span>parâmetros no Kronos-base usado pelo Autotrader</span></div>
+          <div class="omni-kpi"><strong>400</strong><span>candles diários de contexto usados por ativo</span></div>
+          <div class="omni-kpi"><strong>5</strong><span>pregões previstos à frente em cada rodada</span></div>
+        </div>
+
+        <section class="omni-section">
+          <div class="omni-section-heading"><div><span class="omni-label">Kronos por dentro</span><h3>O que o Kronos faz antes de existir qualquer “compra”</h3></div><p>O Kronos foi criado como um foundation model para sequências de candles financeiros. Ele não recebe “AAPL” e responde “compre”; recebe uma sequência numérica de mercado e gera uma continuação provável dessa sequência.</p></div>
+          <figure class="omni-stage">
+            <div class="omni-stage-title"><span>Pipeline real usado pelo Kronos</span><span class="omni-stage-dots" aria-hidden="true"><i></i><i></i><i></i></span></div>
+            <div class="auto-kronos-pipeline">
+              <div class="auto-kronos-step"><code>01 · INPUT</code><b>Candles contínuos</b><span>Open, High, Low, Close, Volume e Amount formam uma sequência multidimensional de mercado.</span></div>
+              <div class="auto-kronos-step"><code>02 · NORMALIZE</code><b>Escala por série</b><span>O predictor calcula média e desvio por coluna, normaliza os valores e aplica clipping para reduzir extremos.</span></div>
+              <div class="auto-kronos-step"><code>03 · TOKENIZE</code><b>Tokenizer financeiro</b><span>Um encoder Transformer comprime a sequência contínua antes da quantização.</span></div>
+              <div class="auto-kronos-step"><code>04 · BSQ</code><b>Tokens hierárquicos</b><span>Binary Spherical Quantization converte o estado contínuo em dois níveis discretos: s1 e s2.</span></div>
+              <div class="auto-kronos-step"><code>05 · TRANSFORMER</code><b>Decoder autoregressivo</b><span>O Kronos-base modela a sequência de tokens com atenção causal e informação temporal.</span></div>
+              <div class="auto-kronos-step"><code>06 · SAMPLE</code><b>Próximos tokens</b><span>s1 é amostrado primeiro; s2 é previsto condicionado ao contexto e ao s1 escolhido.</span></div>
+              <div class="auto-kronos-step"><code>07 · DECODE</code><b>Volta para preços</b><span>Os tokens são decodificados e a normalização é invertida para recuperar OHLCV/amount previstos.</span></div>
+            </div>
+            <figcaption class="omni-caption">O ponto importante: o modelo aprende e gera uma “linguagem” discreta de candles. A decisão de carteira vem depois, fora do Kronos.</figcaption>
+          </figure>
         </section>
 
-        <section class="omni-section"><div class="omni-section-heading"><div><span class="omni-label">Execução</span><h3>O que acontece em cada rodada automática</h3></div><p>O workflow só persiste um novo estado depois que dependências, testes, coleta de dados e inferência terminam com sucesso.</p></div>
-          <div class="omni-stage"><div class="omni-stage-title"><span>Execução agendada</span><span class="omni-stage-dots" aria-hidden="true"><i></i><i></i><i></i></span></div><div class="omni-sequence">
-            <div class="omni-sequence-step"><strong>Preparar</strong><span>Checkout, Python e cache do modelo.</span></div>
-            <div class="omni-sequence-step"><strong>Fixar</strong><span>Carrega a revisão validada do Kronos.</span></div>
-            <div class="omni-sequence-step"><strong>Testar</strong><span>Testes de carteira e persistência precisam passar.</span></div>
-            <div class="omni-sequence-step"><strong>Coletar</strong><span>Baixa o histórico diário dos 20 ativos.</span></div>
-            <div class="omni-sequence-step"><strong>Prever</strong><span>Kronos-base estima os próximos cinco pregões.</span></div>
-            <div class="omni-sequence-step"><strong>Ranquear</strong><span>Retornos esperados são ordenados.</span></div>
-            <div class="omni-sequence-step"><strong>Rebalancear</strong><span>Aplica limites e simula as ordens.</span></div>
-            <div class="omni-sequence-step"><strong>Persistir</strong><span>Estado e relatório são gravados na main.</span></div>
-          </div></div>
+        <section class="omni-section">
+          <div class="omni-section-heading"><div><span class="omni-label">Tokenização</span><h3>Como uma sequência numérica vira algo que um Transformer consegue prever</h3></div><p>O diferencial central do Kronos é não tratar cada preço como um token textual. Ele aprende um tokenizer próprio para K-lines e produz uma representação discreta hierárquica.</p></div>
+          <figure class="omni-stage">
+            <div class="omni-stage-title"><span>Continuous K-line → hierarchical tokens → autoregressive forecast</span><span class="omni-stage-dots" aria-hidden="true"><i></i><i></i><i></i></span></div>
+            <div class="auto-token-grid">
+              <div class="auto-token-box"><h4>Candle contínuo</h4><p>Cada passo carrega múltiplas dimensões correlacionadas: preço de abertura, máxima, mínima, fechamento, volume e valor negociado.</p><div class="auto-token-pair"><div class="auto-token"><strong>OHLC</strong><span>estrutura de preço</span></div><div class="auto-token"><strong>V + Amount</strong><span>atividade negociada</span></div></div></div>
+              <div class="auto-token-arrow">→</div>
+              <div class="auto-token-box"><h4>KronosTokenizer</h4><p>O código original combina blocos Transformer de encoder/decoder com <strong>Binary Spherical Quantization</strong>. A representação quantizada é dividida em subtokens hierárquicos.</p><div class="auto-token-pair"><div class="auto-token"><strong>s1</strong><span>token “pre” / nível principal</span></div><div class="auto-token"><strong>s2</strong><span>token “post” condicionado</span></div></div></div>
+              <div class="auto-token-arrow">→</div>
+              <div class="auto-token-box"><h4>Kronos-base</h4><p>HierarchicalEmbedding funde s1+s2, embeddings temporais entram no contexto e blocos Transformer causais geram a sequência futura de forma autoregressiva.</p><div class="auto-token-pair"><div class="auto-token"><strong>RoPE</strong><span>posição/atenção</span></div><div class="auto-token"><strong>DualHead</strong><span>s1 e s2</span></div></div></div>
+            </div>
+            <figcaption class="omni-caption">No código do Kronos, a segunda cabeça de saída é dependency-aware: o token s2 é condicionado pelo contexto do Transformer e pelo s1 amostrado.</figcaption>
+          </figure>
+
+          <div class="auto-compare-grid" style="margin-top:16px">
+            <div class="auto-compare"><h4>Normalização</h4><p>Para cada série, o KronosPredictor calcula média e desvio de OHLCV/amount, transforma os valores em z-scores e faz clipping em ±5 antes da inferência.</p></div>
+            <div class="auto-compare"><h4>Tempo</h4><p>Além dos candles, o modelo recebe minute, hour, weekday, day e month como sinais temporais. No nosso caso diário, os componentes relevantes ainda ajudam a localizar cada passo no calendário.</p></div>
+            <div class="auto-compare"><h4>Amostragem probabilística</h4><p>O Autotrader usa temperatura 1.0, top-p 0.9 e 3 trajetórias por ativo. As três sequências geradas são decodificadas e então médias pelo pipeline do Kronos.</p></div>
+          </div>
         </section>
 
-        <section class="omni-section"><div class="omni-section-heading"><div><span class="omni-label">Motor e estratégia</span><h3>Previsão e decisão permanecem separadas</h3></div><p>O Kronos responde pela previsão de preço. O Autotrader responde por transformar essa previsão em uma carteira, sem dar ao modelo liberdade para ignorar os limites definidos no código.</p></div>
-          <figure class="omni-stage"><div class="omni-stage-title"><span>Responsabilidades do sistema</span><span class="omni-stage-dots" aria-hidden="true"><i></i><i></i><i></i></span></div><div class="omni-agent-scroll"><svg class="omni-agent-svg" viewBox="0 0 1000 540" role="img" aria-labelledby="autotrader-graph-pt"><title id="autotrader-graph-pt">Motor e estratégia do Autotrader</title>
-            <line x1="500" y1="260" x2="190" y2="100" class="link"/><line x1="500" y1="260" x2="190" y2="430" class="link"/><line x1="500" y1="260" x2="810" y2="100" class="link"/><line x1="500" y1="260" x2="810" y2="430" class="link"/><line x1="500" y1="310" x2="500" y2="435" class="link link--quality"/>
-            <rect x="370" y="205" width="260" height="110" rx="16" class="agent-box agent-box--hub"/><text x="500" y="242" class="agent-name">Autotrader</text><text x="500" y="267" class="agent-desc">Orquestração da carteira</text>
-            <rect x="55" y="50" width="270" height="95" rx="16" class="agent-box"/><text x="190" y="87" class="agent-name">Dados</text><text x="190" y="112" class="agent-desc">OHLCV validado</text>
-            <rect x="55" y="382" width="270" height="95" rx="16" class="agent-box"/><text x="190" y="419" class="agent-name">Kronos-base</text><text x="190" y="444" class="agent-desc">Previsão de 5 pregões</text>
-            <rect x="675" y="50" width="270" height="95" rx="16" class="agent-box"/><text x="810" y="87" class="agent-name">Ranking</text><text x="810" y="112" class="agent-desc">Score por retorno esperado</text>
-            <rect x="675" y="382" width="270" height="95" rx="16" class="agent-box"/><text x="810" y="419" class="agent-name">Paper executor</text><text x="810" y="444" class="agent-desc">Simulação + slippage</text>
-            <rect x="370" y="430" width="260" height="90" rx="16" class="agent-box agent-box--quality"/><text x="500" y="467" class="agent-name">Risk rules</text><text x="500" y="492" class="agent-desc">Limites não delegados ao modelo</text>
-          </svg></div><figcaption class="omni-caption">Um modelo maior não recebe permissão maior: as regras de risco continuam fora do Kronos e permanecem determinísticas.</figcaption></figure>
+        <section class="omni-section">
+          <div class="omni-section-heading"><div><span class="omni-label">Família de modelos</span><h3>Por que esta versão usa Kronos-base</h3></div><p>O repositório original publica modelos com capacidades diferentes. O Autotrader fixa o base porque o runner do GitHub consegue executá-lo em CPU e ele é a maior versão aberta da família principal.</p></div>
+          <div class="omni-stage">
+            <div class="omni-stage-title"><span>Model zoo do projeto Kronos</span><span class="omni-stage-dots" aria-hidden="true"><i></i><i></i><i></i></span></div>
+            <div class="auto-table-scroll" style="padding:22px"><table class="auto-model-table"><thead><tr><th>Modelo</th><th>Tokenizer</th><th>Contexto</th><th>Parâmetros</th><th>Aberto</th><th>Uso aqui</th></tr></thead><tbody>
+              <tr><td>Kronos-mini</td><td>Tokenizer-2k</td><td>2048</td><td>4,1M</td><td>Sim</td><td>Não</td></tr>
+              <tr><td>Kronos-small</td><td>Tokenizer-base</td><td>512</td><td>24,7M</td><td>Sim</td><td>Não</td></tr>
+              <tr class="active"><td>Kronos-base</td><td>Tokenizer-base</td><td>512</td><td>102,3M</td><td>Sim</td><td><strong>Ativo</strong></td></tr>
+              <tr><td>Kronos-large</td><td>Tokenizer-base</td><td>512</td><td>499,2M</td><td>Não</td><td>Não disponível</td></tr>
+            </tbody></table></div>
+          </div>
+          <div class="auto-param-grid">
+            <div class="auto-param"><b>lookback = 400</b><span>abaixo do limite 512 do base</span></div>
+            <div class="auto-param"><b>pred_len = 5</b><span>cinco pregões futuros</span></div>
+            <div class="auto-param"><b>sample_count = 3</b><span>três trajetórias médias</span></div>
+            <div class="auto-param"><b>T = 1.0</b><span>temperatura de sampling</span></div>
+            <div class="auto-param"><b>top_p = 0.9</b><span>nucleus sampling</span></div>
+            <div class="auto-param"><b>device = CPU</b><span>runner Linux do Actions</span></div>
+          </div>
         </section>
 
-        <section class="omni-section"><div class="omni-section-heading"><div><span class="omni-label">Seleção</span><h3>Como os sinais viram uma carteira</h3></div><p>A estratégia inicial privilegia simplicidade e auditabilidade: somente sinais acima do limiar entram, os melhores são selecionados e nenhum ativo pode dominar a carteira.</p></div>
-          <div class="omni-stage"><div class="omni-stage-title"><span>Pipeline de alocação</span><span class="omni-stage-dots" aria-hidden="true"><i></i><i></i><i></i></span></div>
-            <div class="omni-dual-flow">
-              <div class="omni-flow-panel"><h4>Entrada</h4><div class="omni-pipeline"><span>20 ativos</span><b>→</b><span>Kronos-base</span><b>→</b><span>Retorno esperado</span><b>→</b><span>Filtro ≥ 1%</span><b>→</b><span>Top 5</span></div></div>
-              <div class="omni-flow-panel"><h4>Proteções</h4><div class="omni-pipeline"><span>Máx. 18% / ativo</span><b>→</b><span>Caixa ≥ 10%</span><b>→</b><span>Sem margem</span><b>→</b><span>Rebalanceamento com limiar</span></div><div class="omni-note">O resultado é uma carteira simulada verificável. A escolha do modelo não elimina risco de previsão, regime de mercado ou erro de dados.</div></div>
+        <section class="omni-section">
+          <div class="omni-section-heading"><div><span class="omni-label">Autotrader por dentro</span><h3>Onde termina o Kronos e começa a lógica deste projeto</h3></div><p>Kronos gera uma previsão por ativo. A partir daí o Autotrader calcula um score simples e comparável e só então decide quais ativos entram na carteira simulada.</p></div>
+          <figure class="omni-stage">
+            <div class="omni-stage-title"><span>Grafo operacional completo</span><span class="omni-stage-dots" aria-hidden="true"><i></i><i></i><i></i></span></div>
+            <div class="omni-agent-scroll">
+              <svg class="omni-agent-svg" viewBox="0 0 1200 720" role="img" aria-labelledby="auto-graph-title">
+                <title id="auto-graph-title">Grafo operacional do Autotrader</title>
+                <defs><marker id="autoArrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#58d6a9"/></marker></defs>
+                <line x1="205" y1="125" x2="430" y2="125" class="link" marker-end="url(#autoArrow)"/>
+                <line x1="565" y1="170" x2="565" y2="270" class="link" marker-end="url(#autoArrow)"/>
+                <line x1="690" y1="320" x2="915" y2="210" class="link" marker-end="url(#autoArrow)"/>
+                <line x1="690" y1="340" x2="915" y2="340" class="link" marker-end="url(#autoArrow)"/>
+                <line x1="690" y1="360" x2="915" y2="470" class="link" marker-end="url(#autoArrow)"/>
+                <line x1="1040" y1="470" x2="1040" y2="610" class="link link--quality" marker-end="url(#autoArrow)"/>
+                <line x1="915" y1="610" x2="690" y2="610" class="link link--quality" marker-end="url(#autoArrow)"/>
+                <line x1="430" y1="610" x2="205" y2="610" class="link link--quality" marker-end="url(#autoArrow)"/>
+
+                <rect x="55" y="75" width="150" height="100" rx="16" class="agent-box"/><text x="130" y="112" class="agent-name">Mercado</text><text x="130" y="137" class="agent-desc">20 símbolos</text>
+                <rect x="430" y="65" width="270" height="120" rx="16" class="agent-box agent-box--hub"/><text x="565" y="105" class="agent-name">Data layer</text><text x="565" y="132" class="agent-desc">400 candles + validação</text>
+                <rect x="430" y="270" width="270" height="125" rx="16" class="agent-box agent-box--hub"/><text x="565" y="310" class="agent-name">Kronos-base</text><text x="565" y="337" class="agent-desc">102,3M · 5 sessões</text><text x="565" y="360" class="agent-desc">3 amostras médias</text>
+
+                <rect x="915" y="160" width="250" height="100" rx="16" class="agent-box"/><text x="1040" y="198" class="agent-name">Score</text><text x="1040" y="224" class="agent-desc">(closê / close) - 1</text>
+                <rect x="915" y="290" width="250" height="100" rx="16" class="agent-box"/><text x="1040" y="328" class="agent-name">Ranking</text><text x="1040" y="354" class="agent-desc">filtro + top sinais</text>
+                <rect x="915" y="420" width="250" height="100" rx="16" class="agent-box agent-box--quality"/><text x="1040" y="458" class="agent-name">Risk rules</text><text x="1040" y="484" class="agent-desc">18% · 5 posições · 10% caixa</text>
+                <rect x="915" y="575" width="250" height="95" rx="16" class="agent-box agent-box--quality"/><text x="1040" y="610" class="agent-name">Paper executor</text><text x="1040" y="636" class="agent-desc">fills + slippage</text>
+                <rect x="430" y="565" width="270" height="105" rx="16" class="agent-box"/><text x="565" y="603" class="agent-name">Estado persistente</text><text x="565" y="629" class="agent-desc">state.json + latest.json</text>
+                <rect x="55" y="560" width="150" height="110" rx="16" class="agent-box"/><text x="130" y="600" class="agent-name">Dashboard</text><text x="130" y="626" class="agent-desc">gráficos + trades</text>
+              </svg>
+            </div>
+            <figcaption class="omni-caption">A seta mais importante é a separação Kronos → score → risk rules. O modelo não escolhe diretamente o tamanho de uma posição e não pode ultrapassar os limites da carteira.</figcaption>
+          </figure>
+
+          <div class="auto-formula" style="margin-top:16px">score(ativo) = (fechamento_previsto_no_5º_pregão / fechamento_atual) - 1
+entrada = score ≥ 1%
+universo = 20 ativos
+seleção = até os 5 maiores scores elegíveis
+peso máximo = 18% por ativo
+caixa mínimo = 10%
+slippage simulado = 10 bps</div>
+        </section>
+
+        <section class="omni-section">
+          <div class="omni-section-heading"><div><span class="omni-label">Dados ao vivo</span><h3>O experimento atual dentro da própria página</h3></div><p id="autoLiveStatus">Esta seção lê os arquivos públicos gerados pelo último workflow. Não é uma captura estática: novos pontos, sinais e operações aparecem conforme o robô executa.</p></div>
+          <div class="auto-live-kpis">
+            <div class="auto-live-kpi"><strong id="autoLiveNav">—</strong><span>valor atual da carteira</span></div>
+            <div class="auto-live-kpi"><strong id="autoLiveReturn">—</strong><span>retorno acumulado</span></div>
+            <div class="auto-live-kpi"><strong id="autoLiveCash">—</strong><span>caixa atual</span></div>
+            <div class="auto-live-kpi"><strong id="autoLivePositions">—</strong><span>posições abertas</span></div>
+          </div>
+          <div class="auto-live-grid">
+            <div class="auto-chart-card"><div class="auto-card-head"><div><h4>Curva temporal da carteira</h4><small>NAV persistido após cada execução</small></div><small id="autoLiveRun">—</small></div><div class="auto-chart-wrap"><canvas id="autoEquityChart"></canvas></div></div>
+            <div class="auto-side-card"><div class="auto-card-head"><div><h4>Alocação atual</h4><small id="autoLiveModel">Kronos-base</small></div></div><div class="auto-allocation" id="autoPositions"></div></div>
+          </div>
+          <div class="auto-chart-card" style="margin-top:16px"><div class="auto-card-head"><div><h4>Previsões de retorno</h4><small>verde = fechamento previsto acima do atual · vermelho = abaixo</small></div></div><div class="auto-signal-list" id="autoSignals"></div></div>
+          <div class="auto-table-scroll" style="margin-top:16px"><table class="auto-trades"><thead><tr><th>Ação</th><th>Ativo</th><th>Quantidade</th><th>Preço simulado</th><th>Notional</th><th>Horário</th></tr></thead><tbody id="autoTradesBody"><tr><td colspan="6">Carregando operações…</td></tr></tbody></table></div>
+          <p class="auto-mini-note">Com apenas uma execução ainda existe apenas um ponto na curva temporal. O gráfico cresce sozinho conforme o histórico de NAV acumula novas rodadas.</p>
+        </section>
+
+        <section class="omni-section">
+          <div class="omni-section-heading"><div><span class="omni-label">Construção da carteira</span><h3>Previsão forte não significa liberdade total para o modelo</h3></div><p>A camada de carteira foi deliberadamente mantida simples e auditável para que seja possível saber exatamente por que uma posição apareceu.</p></div>
+          <div class="omni-stage"><div class="omni-stage-title"><span>Do universo ao portfólio</span><span class="omni-stage-dots" aria-hidden="true"><i></i><i></i><i></i></span></div>
+            <div class="omni-sequence">
+              <div class="omni-sequence-step"><strong>Universo</strong><span>SPY, QQQ, IWM e grandes ações líquidas dos EUA.</span></div>
+              <div class="omni-sequence-step"><strong>Histórico</strong><span>400 candles diários válidos por ativo.</span></div>
+              <div class="omni-sequence-step"><strong>Forecast</strong><span>Fechamento previsto no 5º pregão pelo Kronos-base.</span></div>
+              <div class="omni-sequence-step"><strong>Score</strong><span>Variação percentual entre close atual e close previsto.</span></div>
+              <div class="omni-sequence-step"><strong>Filtro</strong><span>Ignora sinais abaixo de +1% para novas posições.</span></div>
+              <div class="omni-sequence-step"><strong>Top N</strong><span>Seleciona no máximo cinco ativos elegíveis.</span></div>
+              <div class="omni-sequence-step"><strong>Risco</strong><span>Limita cada ativo a 18% e reserva caixa.</span></div>
+              <div class="omni-sequence-step"><strong>Execução</strong><span>Simula compra/venda com 10 bps de slippage.</span></div>
             </div>
           </div>
         </section>
 
-        <section class="omni-section"><div class="omni-section-heading"><div><span class="omni-label">Atualização governada</span><h3>O upstream não entra direto na estratégia</h3></div><p>O projeto acompanha o Kronos original, mas não faz pull cego para a versão em uso. Uma revisão candidata precisa passar pelos testes antes de ser fixada.</p></div>
-          <figure class="omni-stage"><div class="omni-stage-title"><span>Atualização segura do Kronos</span><span class="omni-stage-dots" aria-hidden="true"><i></i><i></i><i></i></span></div><div class="omni-learning">
-            <div class="omni-learning-step"><em>01</em><strong>Detectar</strong><span>Nova revisão upstream</span></div>
-            <div class="omni-learning-step"><em>02</em><strong>Baixar</strong><span>Código e pesos candidatos</span></div>
-            <div class="omni-learning-step"><em>03</em><strong>Regression</strong><span>Testes oficiais do Kronos</span></div>
-            <div class="omni-learning-step"><em>04</em><strong>Autotrader</strong><span>Testes de carteira e risco</span></div>
-            <div class="omni-learning-step omni-learning-step--gate"><em>05</em><strong>Compatibilidade</strong><span>Inferência end-to-end</span></div>
-            <div class="omni-learning-step omni-learning-step--gate"><em>06</em><strong>Falhou?</strong><span>Mantém a versão anterior</span></div>
-            <div class="omni-learning-step omni-learning-step--release"><em>07</em><strong>Passou</strong><span>Atualiza os refs fixados</span></div>
-            <div class="omni-learning-step omni-learning-step--release"><em>08</em><strong>Próxima rodada</strong><span>Nova versão entra em uso</span></div>
-          </div><figcaption class="omni-caption">Código upstream é testado em job sem permissão de escrita; a persistência fica em uma etapa separada.</figcaption></figure>
+        <section class="omni-section">
+          <div class="omni-section-heading"><div><span class="omni-label">GitHub Actions</span><h3>Como ele consegue rodar sozinho sem um servidor permanente</h3></div><p>O runner existe somente durante a execução. Pesos, PyTorch e código são carregados, o cálculo acontece e o runner desaparece. O estado mínimo necessário continua no Git.</p></div>
+          <figure class="omni-stage"><div class="omni-stage-title"><span>Runtime efêmero + estado persistente</span><span class="omni-stage-dots" aria-hidden="true"><i></i><i></i><i></i></span></div><div class="omni-data-map">
+            <div class="omni-data-stack"><h4>Job de inferência · read-only</h4><div class="omni-data-box"><strong>Checkout</strong><small>Código do Autotrader</small></div><div class="omni-data-box"><strong>Kronos fixado</strong><small>Commit definido em UPSTREAM_REF</small></div><div class="omni-data-box"><strong>Modelo fixado</strong><small>Revisões do Hugging Face</small></div><div class="omni-data-box"><strong>CPU inference</strong><small>PyTorch CPU-only + cache</small></div></div>
+            <div class="omni-data-arrow">→</div>
+            <div class="omni-data-stack"><h4>Job de persistência · write</h4><div class="omni-data-box"><strong>Artifact</strong><small>state.json + latest.json</small></div><div class="omni-data-box"><strong>Commit</strong><small>Nova carteira e histórico</small></div><div class="omni-data-box"><strong>Dashboard</strong><small>Lê os dados publicados</small></div><div class="omni-data-box"><strong>Próxima rodada</strong><small>Continua do estado anterior</small></div></div>
+          </div><figcaption class="omni-caption">Código do Kronos roda em uma etapa sem permissão de escrita. A única etapa com contents: write recebe os JSONs já gerados e persiste o estado.</figcaption></figure>
         </section>
 
-        <section class="omni-section"><div class="omni-section-heading"><div><span class="omni-label">Observabilidade</span><h3>O histórico deixa de ser apenas um JSON</h3></div><p>Os arquivos continuam sendo a fonte de dados, mas a interface pública transforma o histórico em uma leitura visual contínua.</p></div>
-          <div class="omni-mockups">
-            <figure class="omni-window"><div class="omni-window-bar"><span>Autotrader Dashboard</span><span class="omni-stage-dots"><i></i><i></i><i></i></span></div><div class="omni-window-body"><aside class="omni-mock-sidebar"><div class="omni-mock-brand">AUTO</div><div class="omni-mock-nav"><span class="active">Portfolio</span><span>Forecasts</span><span>Positions</span><span>Trades</span><span>Risk</span></div></aside><div class="omni-mock-main"><div class="omni-mock-title"><span>Paper Portfolio</span><span class="omni-mock-pill">Kronos-base</span></div><div class="omni-mock-grid"><div class="omni-mock-stat"><b>$9,991</b><small>NAV</small></div><div class="omni-mock-stat"><b>5</b><small>posições</small></div><div class="omni-mock-stat"><b>20</b><small>ativos analisados</small></div></div><div class="omni-mock-table"><div class="omni-mock-row"><span>Ativo</span><span>Sinal</span><span>Peso</span></div><div class="omni-mock-row"><span>NFLX</span><span>+25.25%</span><span>18%</span></div><div class="omni-mock-row"><span>HD</span><span>+12.31%</span><span>18%</span></div><div class="omni-mock-row"><span>WMT</span><span>+4.37%</span><span>18%</span></div></div></div></div></figure>
-            <figure class="omni-window omni-chat-window"><div class="omni-window-bar"><span>Execution log</span><span>● paper</span></div><div class="omni-window-body"><div class="omni-chat-area"><div class="omni-chat-head">Últimas decisões</div><div class="omni-chat-messages"><div class="omni-bubble omni-bubble--bot">↗ BUY NFLX · 18%</div><div class="omni-bubble omni-bubble--bot">↗ BUY HD · 18%</div><div class="omni-bubble omni-bubble--bot">↗ BUY WMT · 18%</div><div class="omni-bubble">Próximas execuções atualizam o histórico automaticamente.</div></div><div class="omni-chat-input">Dados públicos e reproduzíveis</div></div></div></figure>
+        <section class="omni-section">
+          <div class="omni-section-heading"><div><span class="omni-label">Atualização automática</span><h3>O Kronos pode evoluir sem fazer pull cego para cima da estratégia</h3></div><p>Uma segunda automação verifica upstream semanalmente. Mudança nova só entra em produção depois de passar por regressão, nossos testes e uma inferência real de compatibilidade.</p></div>
+          <figure class="omni-stage"><div class="omni-stage-title"><span>Gate de atualização</span><span class="omni-stage-dots" aria-hidden="true"><i></i><i></i><i></i></span></div>
+            <div class="omni-learning">
+              <div class="omni-learning-step"><em>01</em><strong>Resolver refs</strong><span>Compara commits do Kronos e revisões dos modelos.</span></div>
+              <div class="omni-learning-step"><em>02</em><strong>Candidate</strong><span>Baixa a versão nova em ambiente temporário.</span></div>
+              <div class="omni-learning-step"><em>03</em><strong>Regressão</strong><span>Executa os testes oficiais do upstream.</span></div>
+              <div class="omni-learning-step"><em>04</em><strong>Autotrader tests</strong><span>Valida carteira, caixa, drawdown e persistência.</span></div>
+              <div class="omni-learning-step omni-learning-step--gate"><em>05</em><strong>Smoke inference</strong><span>Carrega tokenizer + base e gera previsão real.</span></div>
+              <div class="omni-learning-step omni-learning-step--gate"><em>06</em><strong>Falhou</strong><span>Nenhuma referência é alterada.</span></div>
+              <div class="omni-learning-step omni-learning-step--release"><em>07</em><strong>Passou</strong><span>Atualiza UPSTREAM_REF, MODEL_REF e TOKENIZER_REF.</span></div>
+              <div class="omni-learning-step omni-learning-step--release"><em>08</em><strong>Ativo</strong><span>A próxima rodada passa a usar a revisão validada.</span></div>
+            </div>
+          </figure>
+        </section>
+
+        <section class="omni-section">
+          <div class="omni-section-heading"><div><span class="omni-label">Limitações</span><h3>O que este sistema ainda não tenta fingir que resolveu</h3></div><p>O próprio projeto Kronos diferencia previsão bruta de uma estratégia quantitativa de produção. O Autotrader adiciona portfolio/risk logic, mas continua sendo um experimento de paper trading.</p></div>
+          <div class="omni-safety-grid">
+            <div class="omni-safety"><strong>Previsão ≠ alpha garantido</strong><span>Acertar uma trajetória média não garante retorno líquido positivo depois de custos, regime e correlação entre posições.</span></div>
+            <div class="omni-safety"><strong>Sem neutralização de fatores</strong><span>A estratégia atual não neutraliza beta, size, value ou exposições setoriais como um portfólio quantitativo institucional poderia fazer.</span></div>
+            <div class="omni-safety"><strong>Universo fixo</strong><span>O scanner atualmente analisa 20 símbolos definidos no código; ainda não seleciona dinamicamente todo o mercado.</span></div>
+            <div class="omni-safety"><strong>Frequência diária</strong><span>É uma estratégia de horizonte em dias, não high-frequency trading. GitHub Actions não é infraestrutura de baixa latência.</span></div>
+            <div class="omni-safety"><strong>Paper trading</strong><span>Não há credencial de corretora nem dinheiro real conectado nesta fase.</span></div>
+            <div class="omni-safety"><strong>Histórico ainda curto</strong><span>O experimento acabou de começar. Retorno e drawdown só ganham significado depois de uma sequência longa de execuções.</span></div>
           </div>
         </section>
 
-        <section class="omni-section"><div class="omni-section-heading"><div><span class="omni-label">Persistência</span><h3>Estado pequeno, execução descartável</h3></div><p>O runner do GitHub pode desaparecer depois de cada job. O estado necessário para continuar a simulação permanece no repositório, enquanto modelo e dependências podem ser recuperados novamente.</p></div>
-          <figure class="omni-stage"><div class="omni-stage-title"><span>O que permanece e o que é efêmero</span><span class="omni-stage-dots" aria-hidden="true"><i></i><i></i><i></i></span></div><div class="omni-data-map"><div class="omni-data-stack"><h4>GitHub Actions</h4><div class="omni-data-box"><strong>Runner temporário</strong><small>CPU, Python e PyTorch</small></div><div class="omni-data-box"><strong>Kronos-base</strong><small>Baixado/cacheado</small></div><div class="omni-data-box"><strong>Market data</strong><small>Coletado a cada rodada</small></div><div class="omni-data-box"><strong>Inferência</strong><small>Descartada após o job</small></div></div><div class="omni-data-arrow" aria-hidden="true">⇄</div><div class="omni-data-stack"><h4>Repositório</h4><div class="omni-data-box"><strong>state.json</strong><small>Carteira e histórico</small></div><div class="omni-data-box"><strong>latest.json</strong><small>Última análise</small></div><div class="omni-data-box"><strong>Refs fixados</strong><small>Versões validadas</small></div><div class="omni-data-box"><strong>Dashboard</strong><small>Visualização pública</small></div></div></div><figcaption class="omni-caption">O dinheiro real não faz parte desta fase. Toda execução mostrada no dashboard é paper trading.</figcaption></figure>
+        <section class="omni-section">
+          <div class="omni-section-heading"><div><span class="omni-label">Créditos técnicos</span><h3>O que pertence ao Kronos e o que pertence ao Autotrader</h3></div><p>A licença MIT permite esta composição, mas a origem do motor de previsão permanece explicitamente atribuída.</p></div>
+          <div class="auto-compare-grid">
+            <div class="auto-compare"><h4>Kronos · ShiYu e colaboradores</h4><p>Tokenizer financeiro, BSQ, modelo foundation autoregressivo, predictor, pesos pré-treinados e arquitetura de forecasting. Projeto original treinado em dados de mais de 45 bolsas globais.</p></div>
+            <div class="auto-compare"><h4>Autotrader · PkLavc</h4><p>Scanner de ativos, score, seleção da carteira, limites de risco, paper executor, persistência, workflows, atualização governada, métricas e dashboard.</p></div>
+            <div class="auto-compare"><h4>Separação intencional</h4><p>O upstream pode evoluir sem reescrever a lógica de investimento. A estratégia pode evoluir sem modificar o código interno do modelo.</p></div>
+          </div>
+          <p style="margin-top:18px"><a href="https://github.com/shiyu-coder/Kronos" target="_blank" rel="noopener noreferrer">Kronos original</a> · <a href="https://arxiv.org/abs/2508.02739" target="_blank" rel="noopener noreferrer">paper do Kronos</a> · <a href="https://github.com/PkLavc/Autotrader" target="_blank" rel="noopener noreferrer">código do Autotrader</a></p>
         </section>
-
-        <section class="omni-section"><div class="omni-section-heading"><div><span class="omni-label">Confiança e segurança</span><h3>Controles em torno de cada rodada</h3></div><p>Automação não significa ausência de limites. O sistema foi estruturado para falhar sem inventar preço, sem gravar estado parcial e sem permitir que código upstream tenha permissão de escrita.</p></div>
-          <div class="omni-safety-grid"><div class="omni-safety"><strong>Dados incompletos</strong><span>Ativos sem histórico suficiente são ignorados em vez de gerar uma posição artificial.</span></div><div class="omni-safety"><strong>Preço anterior</strong><span>Uma cotação temporariamente ausente usa a última marca conhecida para não zerar posição por erro.</span></div><div class="omni-safety"><strong>Slippage</strong><span>Compras e vendas simulam um custo de execução em vez de assumir preenchimento perfeito.</span></div><div class="omni-safety"><strong>Separação de permissões</strong><span>Inferência roda read-only; somente o job de persistência recebe contents: write.</span></div><div class="omni-safety"><strong>Concorrência</strong><span>Execuções simultâneas são bloqueadas para não disputarem o mesmo estado da carteira.</span></div><div class="omni-safety"><strong>Paper trading</strong><span>Nenhuma credencial de corretora ou ordem de dinheiro real está ativa nesta versão.</span></div></div>
-        </section>
-
-        <section class="omni-section"><h3>Um experimento contínuo, não um resultado escolhido à mão</h3><p class="omni-intro">A proposta é deixar o sistema acumular decisões e desempenho ao longo do tempo. Acertos, erros, drawdowns e trocas de posição permanecem visíveis no mesmo histórico.</p></section>
       </article>
     </div></section>
-    <section class="cta-section" aria-label="Links do projeto"><a class="cta-button" href="https://pklavc.com/Autotrader/">Abrir dashboard do Autotrader</a> <a class="cta-button" style="margin-left:10px" href="https://github.com/PkLavc/Autotrader" target="_blank" rel="noopener noreferrer">Ver código no GitHub</a></section>
+
+    <section class="cta-section" aria-label="Links do projeto">
+      <a class="cta-button" href="https://pklavc.com/Autotrader/">Abrir dashboard ao vivo</a>
+      <a class="cta-button" style="margin-left:10px" href="https://github.com/PkLavc/Autotrader" target="_blank" rel="noopener noreferrer">Ver código no GitHub</a>
+    </section>
   </main>
     </div>
 
@@ -295,5 +422,6 @@
         <script src="/js/i18n.js?v=397fd68aed" defer></script>
     <script src="/js/jquery.min.js?v=d482871a5e" defer></script>
     <script src="/js/index.js?v=20261005amazon-white-logo1" defer></script>
+    <script src="/js/autotrader-case-study.js?v=1" defer></script>
 </body>
 </html>
