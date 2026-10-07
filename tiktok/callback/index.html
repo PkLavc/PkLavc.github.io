@@ -64,7 +64,7 @@
         const response = await fetch("https://api.pklavc.com/tiktok/oauth/exchange", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          credentials: "omit",
+          credentials: "include",
           body: JSON.stringify({
             code,
             redirect_uri: "https://pklavc.com/tiktok/callback/"
@@ -81,8 +81,9 @@
         sessionStorage.removeItem("tiktok_authorization_code");
         sessionStorage.setItem("tiktok_granted_scopes", payload.scope || "");
 
-        message.textContent = "Authorization and secure token exchange completed successfully.";
+        message.textContent = "Authorization and secure token exchange completed successfully. Returning to PkLavc Social…";
         history.replaceState({}, document.title, location.pathname);
+        setTimeout(() => location.replace("/tiktok/?connected=1"), 650);
       } catch (exchangeError) {
         fail(exchangeError instanceof Error ? exchangeError.message : "Token exchange failed.");
       }
