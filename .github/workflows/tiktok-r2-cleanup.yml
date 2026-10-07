@@ -1,0 +1,62 @@
+name: Clean TikTok Sandbox R2 Test Media
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/tiktok-r2-cleanup.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install boto3
+        run: python -m pip install boto3
+
+      - name: Remove stale TikTok sandbox test objects
+        env:
+          CLOUDFLARE_R2_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_R2_ACCOUNT_ID }}
+          CLOUDFLARE_R2_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_R2_ACCESS_KEY_ID }}
+          CLOUDFLARE_R2_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_R2_SECRET_ACCESS_KEY }}
+          CLOUDFLARE_R2_BUCKET: ${{ secrets.CLOUDFLARE_R2_BUCKET }}
+        run: |
+          python - <<'PY'
+          import os
+          import boto3
+
+          client = boto3.client(
+              "s3",
+              endpoint_url=f"https://{os.environ['CLOUDFLARE_R2_ACCOUNT_ID']}.r2.cloudflarestorage.com",
+              aws_access_key_id=os.environ["CLOUDFLARE_R2_ACCESS_KEY_ID"],
+              aws_secret_access_key=os.environ["CLOUDFLARE_R2_SECRET_ACCESS_KEY"],
+              region_name="auto",
+          )
+          bucket = os.environ["CLOUDFLARE_R2_BUCKET"]
+          prefix = "social/tiktok-test/"
+          deleted = 0
+          token = None
+
+          while True:
+              kwargs = {"Bucket": bucket, "Prefix": prefix, "MaxKeys": 1000}
+              if token:
+                  kwargs["ContinuationToken"] = token
+              page = client.list_objects_v2(**kwargs)
+              objects = [{"Key": item["Key"]} for item in page.get("Contents", [])]
+              if objects:
+                  client.delete_objects(Bucket=bucket, Delete={"Objects": objects, "Quiet": True})
+                  deleted += len(objects)
+              if not page.get("IsTruncated"):
+                  break
+              token = page.get("NextContinuationToken")
+
+          print(f"Deleted {deleted} stale TikTok sandbox test object(s).")
+          PY
