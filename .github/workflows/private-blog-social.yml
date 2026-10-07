@@ -2,9 +2,8 @@ name: Process private blog social on public runner
 
 on:
   schedule:
-    # 00:47, 06:47, 12:47 and 18:47 America/Sao_Paulo.
-    # The 12:47 run follows the daily 12:17 article generation by ~30 minutes.
-    - cron: "47 3,9,15,21 * * *"
+    # Every hour at :47, about 30 minutes after hourly article generation at :17.
+    - cron: "47 * * * *"
     # One dedicated Store product post at 09:00 America/Sao_Paulo.
     - cron: "0 12 * * *"
   workflow_dispatch:
