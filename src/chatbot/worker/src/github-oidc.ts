@@ -3,7 +3,10 @@ const GITHUB_OIDC_JWKS = "https://token.actions.githubusercontent.com/.well-know
 const EXPECTED_AUDIENCE = "https://api.pklavc.com/tiktok/publish";
 const EXPECTED_REPOSITORY = "PkLavc/PkLavc.github.io";
 const EXPECTED_REF = "refs/heads/main";
-const EXPECTED_WORKFLOW_REF = "PkLavc/PkLavc.github.io/.github/workflows/private-blog-social.yml@refs/heads/main";
+const EXPECTED_WORKFLOW_REFS = new Set([
+  "PkLavc/PkLavc.github.io/.github/workflows/private-blog-social.yml@refs/heads/main",
+  "PkLavc/PkLavc.github.io/.github/workflows/tiktok-sandbox-test.yml@refs/heads/main",
+]);
 
 type JwtHeader = {
   alg?: string;
@@ -114,7 +117,7 @@ function validateClaims(claims: GithubOidcClaims): void {
   if (claims.ref !== EXPECTED_REF) {
     throw new Error("github_oidc_ref_invalid");
   }
-  if (claims.workflow_ref !== EXPECTED_WORKFLOW_REF) {
+  if (!EXPECTED_WORKFLOW_REFS.has(String(claims.workflow_ref || ""))) {
     throw new Error("github_oidc_workflow_invalid");
   }
   if (!["workflow_dispatch", "schedule", "push"].includes(String(claims.event_name || ""))) {
