@@ -42,7 +42,8 @@
       },
       interactivity: {
         detect_on: "window",
-        events: { onhover: { enable: false }, onclick: { enable: false }, resize: true }
+        events: { onhover: { enable: true, mode: "grab" }, onclick: { enable: false }, resize: true },
+        modes: { grab: { distance: compact ? 120 : 180, line_linked: { opacity: compact ? 0.28 : 0.42 } } }
       },
       retina_detect: true
     };

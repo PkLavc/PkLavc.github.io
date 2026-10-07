@@ -1562,13 +1562,7 @@ body.seo-layout .footer-minimal {
             inset: 0;
             z-index: -3;
             pointer-events: none;
-            opacity: .52;
-            background-image:
-                linear-gradient(var(--home-line-soft) 1px, transparent 1px),
-                linear-gradient(90deg, var(--home-line-soft) 1px, transparent 1px);
-            background-size: 72px 72px;
-            mask-image: linear-gradient(to bottom, #000 0%, rgba(0,0,0,.75) 48%, transparent 92%);
-            -webkit-mask-image: linear-gradient(to bottom, #000 0%, rgba(0,0,0,.75) 48%, transparent 92%);
+            opacity: 0;
         }
 
         .signal-glow {
@@ -2031,11 +2025,7 @@ body.seo-layout .footer-minimal {
             max-width: var(--glyph-width);
         }
 
-        .identity.expand-first .first-insert:nth-of-type(2) { transition-delay: .02s; }
-        .identity.expand-first .first-insert:nth-of-type(3) { transition-delay: .08s; }
-        .identity.expand-first .first-insert:nth-of-type(4) { transition-delay: .14s; }
-        .identity.expand-first .first-insert:nth-of-type(5) { transition-delay: .20s; }
-        .identity.expand-first .first-insert:nth-of-type(6) { transition-delay: .26s; }
+        .identity.expand-first .first-insert { transition-delay: 0s; }
 
         .morph-glyph .from,
         .morph-glyph .to {
@@ -2081,17 +2071,10 @@ body.seo-layout .footer-minimal {
             filter: blur(0);
         }
 
-        .identity.morph-second .second-insert:nth-of-type(3) { transition-delay: .16s; }
-        .identity.morph-second .second-insert:nth-of-type(4) { transition-delay: .24s; }
+        .identity.morph-second .second-insert { transition-delay: 0s; }
 
-        .identity.morph-second .morph-glyph:nth-of-type(1) .from,
-        .identity.morph-second .morph-glyph:nth-of-type(1) .to { transition-delay: .02s; }
-        .identity.morph-second .morph-glyph:nth-of-type(2) .from,
-        .identity.morph-second .morph-glyph:nth-of-type(2) .to { transition-delay: .10s; }
-        .identity.morph-second .morph-glyph:nth-of-type(5) .from,
-        .identity.morph-second .morph-glyph:nth-of-type(5) .to { transition-delay: .30s; }
-        .identity.morph-second .morph-glyph:nth-of-type(6) .from,
-        .identity.morph-second .morph-glyph:nth-of-type(6) .to { transition-delay: .38s; }
+        .identity.morph-second .morph-glyph .from,
+        .identity.morph-second .morph-glyph .to { transition-delay: 0s; }
 
         .identity::after {
             content: "";
@@ -5128,28 +5111,25 @@ body.page-index.spotlight-navigation-enabled .footer-minimal {
             /* Pk opens to Patrick while Lavc moves below and becomes Araujo. */
             function startIdentityAnimation() {
                 document.body.classList.add('loaded');
+                var splitDuration = 1150;
+                var firstNameDuration = 1150;
+                var secondNameDuration = 1150;
 
                 window.setTimeout(function () {
                     identity.classList.add('split');
-                }, 650);
-
-                window.setTimeout(function () {
-                    identity.classList.add('expand-first');
-                }, 1300);
-
-                window.setTimeout(function () {
-                    identity.classList.add('morph-second');
-                }, 3000);
-
-                window.setTimeout(function () {
-                    identity.classList.add('settle');
-                }, 4600);
-
-                window.setTimeout(function () {
-                    hero.classList.add('reveal-copy');
-                    document.body.dataset.heroContentReady = 'true';
-                    window.dispatchEvent(new Event('pklavc:hero-content-ready'));
-                }, 5000);
+                    window.setTimeout(function () {
+                        identity.classList.add('expand-first');
+                        window.setTimeout(function () {
+                            identity.classList.add('morph-second');
+                            window.setTimeout(function () {
+                                identity.classList.add('settle');
+                                hero.classList.add('reveal-copy');
+                                document.body.dataset.heroContentReady = 'true';
+                                window.dispatchEvent(new Event('pklavc:hero-content-ready'));
+                            }, secondNameDuration);
+                        }, firstNameDuration);
+                    }, splitDuration);
+                }, 250);
             }
 
             startIdentityAnimation();
