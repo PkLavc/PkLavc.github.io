@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <script>
+    if (window.location.hostname === "pklavc.github.io") {
+      window.location.replace("https://pklavc.com" + window.location.pathname + window.location.search + window.location.hash);
+    }
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="PkLavc">
+  <meta name="description" content="Produtos e ofertas do AliExpress selecionados pela PkLavc Store.">
+  <meta name="robots" content="noindex, follow">
+  <meta property="og:title" content="AliExpress | PkLavc Store">
+  <meta property="og:description" content="Veja produtos e ofertas do AliExpress selecionados pela PkLavc Store.">
+  <meta property="og:url" content="https://pklavc.com/store/aliexpress/">
+  <meta property="og:type" content="website">
+  <link rel="canonical" href="https://pklavc.com/store/aliexpress/">
+  <title>AliExpress | PkLavc Store</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=d15fe4e492">
+  <link rel="stylesheet" href="/css/global.css?v=428a2933af">
+  <style>
+    *{box-sizing:border-box}
+    body{margin:0;background:#0c1018;color:#eef2f6;font-family:Inter,Arial,sans-serif}
+    .top{display:flex;align-items:center;justify-content:space-between;padding:18px 24px;border-bottom:1px solid #242d39;background:#0a0e15ed;position:sticky;top:0;z-index:10}
+    .brand{color:#f5f7fa;text-decoration:none;font-size:.95rem;font-weight:900;letter-spacing:.1em}.brand span{color:#50e3e9;margin-left:7px}
+    .back{color:#aeb8c3;text-decoration:none;font-size:.86rem}.back:hover{color:#50e3e9}
+    main{max-width:1120px;margin:0 auto;padding:42px 20px 60px}
+    .hero{margin-bottom:28px}
+    .eyebrow{margin:0 0 8px;color:#50e3e9;font-size:.72rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase}
+    h1{margin:0;color:#fff;font-size:clamp(2rem,5vw,3.4rem);letter-spacing:-.05em}
+    .intro{max-width:720px;margin:12px 0 0;color:#9da9b7;line-height:1.6}
+    .grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px}
+    .product{display:flex;flex-direction:column;overflow:hidden;background:#131923;border:1px solid #27313e;border-radius:14px;min-width:0}
+    .product img{width:100%;aspect-ratio:1.18/1;object-fit:contain;background:#fff;padding:14px}
+    .body{display:flex;flex-direction:column;gap:10px;padding:16px;flex:1}
+    .meta{color:#50e3e9;font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em}
+    .product h2{font-size:.98rem;line-height:1.42;margin:0;color:#f4f7fa;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden}
+    .price{margin-top:auto;color:#fff;font-size:1.2rem;font-weight:850}
+    .cta{display:flex;align-items:center;justify-content:center;text-decoration:none;padding:11px 13px;border-radius:8px;background:#50e3e9;color:#071114;font-weight:850}
+    .cta:hover{background:#91fbfa}
+    .notice{margin:24px 0 0;color:#758291;font-size:.74rem;line-height:1.55}
+    .state{padding:30px;border:1px dashed #35414e;border-radius:13px;color:#9da8b6;text-align:center}
+    .general{display:inline-flex;margin-top:18px;color:#50e3e9;text-decoration:none;font-weight:750}
+    footer{padding:22px;text-align:center;color:#65717e;font-size:.72rem;border-top:1px solid #242d39}
+    @media(max-width:900px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+    @media(max-width:650px){.top{padding:15px 16px}.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.body{padding:13px}.product h2{font-size:.9rem}.price{font-size:1.05rem}}
+  </style>
+</head>
+<body>
+  <header class="top">
+    <a class="brand" href="/store/pt/">PKLAVC<span>STORE</span></a>
+    <a class="back" href="/store/pt/">Voltar à loja</a>
+  </header>
+  <main>
+    <section class="hero">
+      <p class="eyebrow">Ofertas de parceiro</p>
+      <h1>AliExpress</h1>
+      <p class="intro" id="intro">Produtos selecionados da sua Store. O preço e a disponibilidade finais são confirmados no AliExpress.</p>
+      <a class="general" href="https://rzekl.com/c/1e8d1144942fa9b296a416525dc3e8/" target="_blank" rel="sponsored noopener noreferrer">Abrir AliExpress ↗</a>
+    </section>
+    <section class="grid" id="products" aria-live="polite">
+      <p class="state">Carregando produtos...</p>
+    </section>
+    <p class="notice">Os links desta página podem gerar comissão para a PkLavc sem custo adicional para você. Pagamento, entrega, devolução, garantia e atendimento são de responsabilidade da loja parceira.</p>
+  </main>
+  <footer>© 2026 PkLavc Store</footer>
+  <script>
+    (function () {
+      var grid = document.getElementById('products');
+      var intro = document.getElementById('intro');
+      var requestedId = new URLSearchParams(location.search).get('id');
+
+      function money(value, currency) {
+        var amount = Number(value);
+        if (!Number.isFinite(amount)) return 'Consultar preço';
+        try {
+          return new Intl.NumberFormat('pt-BR', {
+            style: 'currency',
+            currency: currency || 'USD',
+            maximumFractionDigits: 2
+          }).format(amount);
+        } catch (e) {
+          return amount.toFixed(2) + ' ' + (currency || '');
+        }
+      }
+
+      function render(products) {
+        if (!products.length) {
+          grid.innerHTML = '<p class="state">Produto não encontrado. Veja outras ofertas do AliExpress na PkLavc Store.</p>';
+          return;
+        }
+
+        if (requestedId) {
+          intro.textContent = 'Oferta selecionada na PkLavc Store. O preço e a disponibilidade finais são confirmados no AliExpress.';
+        }
+
+        grid.innerHTML = '';
+        products.forEach(function (product) {
+          var article = document.createElement('article');
+          article.className = 'product';
+
+          var image = document.createElement('img');
+          image.src = product.picture || '';
+          image.alt = product.name || 'Produto AliExpress';
+          image.loading = 'lazy';
+          image.referrerPolicy = 'no-referrer';
+
+          var body = document.createElement('div');
+          body.className = 'body';
+
+          var meta = document.createElement('div');
+          meta.className = 'meta';
+          meta.textContent = 'AliExpress';
+
+          var title = document.createElement('h2');
+          title.textContent = product.name || 'Produto';
+
+          var price = document.createElement('div');
+          price.className = 'price';
+          price.textContent = money(product.price, product.currency);
+
+          var cta = document.createElement('a');
+          cta.className = 'cta';
+          cta.href = product.url;
+          cta.target = '_blank';
+          cta.rel = 'sponsored noopener noreferrer';
+          cta.textContent = 'Ver oferta ↗';
+
+          body.append(meta, title, price, cta);
+          article.append(image, body);
+          grid.appendChild(article);
+        });
+      }
+
+      fetch('/store/products.json', { cache: 'no-store' })
+        .then(function (response) {
+          if (!response.ok) throw new Error('HTTP ' + response.status);
+          return response.json();
+        })
+        .then(function (payload) {
+          var list = Array.isArray(payload) ? payload : (Array.isArray(payload.products) ? payload.products : []);
+          var ali = list.filter(function (p) {
+            return /aliexpress/i.test(String(p.program || '') + ' ' + String(p.url || ''));
+          });
+
+          if (requestedId) {
+            ali = ali.filter(function (p) { return String(p.id) === requestedId; });
+          } else {
+            ali.sort(function (a, b) {
+              return Number(b.importanceScore || 0) - Number(a.importanceScore || 0);
+            });
+            ali = ali.slice(0, 12);
+          }
+
+          render(ali);
+        })
+        .catch(function () {
+          grid.innerHTML = '<p class="state">Não foi possível carregar os produtos agora. Use o link acima para acessar as ofertas do AliExpress.</p>';
+        });
+    })();
+  </script>
+</body>
+</html>
