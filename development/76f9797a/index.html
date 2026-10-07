@@ -3121,6 +3121,55 @@ body.page-index.spotlight-navigation-enabled .footer-minimal {
         }
     </style>
 
+
+    <style id="development-final-overrides">
+        /* Remove the old top masthead entirely. */
+        .page-home-dev .topbar {
+            display: none !important;
+        }
+
+        /* The historical 5b41fe0b CSS hides the standard Skylet launcher on desktop.
+           Override it so this preview behaves like the rest of the site. */
+        .page-home-dev .about-chat-launcher {
+            display: inline-flex !important;
+            position: fixed !important;
+            right: 24px !important;
+            bottom: calc(24px + var(--skylet-footer-offset, 0px)) !important;
+            z-index: 10001 !important;
+        }
+
+        .page-home-dev .about-chat-launcher img {
+            width: 108px !important;
+            height: 108px !important;
+        }
+
+        .page-home-dev .about-chat-widget {
+            z-index: 10001 !important;
+        }
+
+        /* Transparent footer instead of the solid old block. */
+        .page-home-dev .footer-minimal.footer-projects,
+        .page-home-dev footer.footer-minimal {
+            background:
+                linear-gradient(180deg, rgba(7, 9, 13, 0.16), rgba(7, 9, 13, 0.34)) !important;
+            -webkit-backdrop-filter: blur(14px) saturate(1.08);
+            backdrop-filter: blur(14px) saturate(1.08);
+            border-top: 1px solid rgba(255, 255, 255, 0.065);
+        }
+
+        @media (max-width: 620px) {
+            .page-home-dev .about-chat-launcher {
+                right: 16px !important;
+                bottom: calc(var(--spotlight-nav-footer-space) + 10px + var(--skylet-footer-offset, 0px)) !important;
+            }
+
+            .page-home-dev .about-chat-launcher img {
+                width: 84px !important;
+                height: 84px !important;
+            }
+        }
+    </style>
+
 </head>
 
 <body class="page-home-dev">
@@ -3131,11 +3180,6 @@ body.page-index.spotlight-navigation-enabled .footer-minimal {
         <div class="site-rail" aria-hidden="true">
             <span>pklavc / systems</span>
         </div>
-
-        <header class="topbar">
-            <a class="brand-mark" href="/development/76f9797a/" aria-label="PkLavc development preview">PK<span>/</span>LAVC</a>
-            <span class="topbar-index">Portfolio / Engineering / 2026</span>
-        </header>
 
         <section class="hero" id="top" aria-labelledby="identity-label">
             
