@@ -23,7 +23,7 @@
     <a href="/tiktok/" id="retry" hidden>Try again</a>
   </main>
   <script>
-    (() => {
+    (async () => {
       const params = new URLSearchParams(location.search);
       const code = params.get("code");
       const state = params.get("state");
@@ -56,14 +56,36 @@
         return;
       }
 
-      sessionStorage.removeItem("tiktok_oauth_state");
-      sessionStorage.setItem("tiktok_authorization_code", code);
-      sessionStorage.setItem("tiktok_granted_scopes", params.get("scopes") || "");
-
       title.textContent = "TikTok authorized";
       title.className = "ok";
-      message.textContent = "Authorization was received successfully. The secure server-side token exchange is the next step.";
-      history.replaceState({}, document.title, location.pathname);
+      message.textContent = "Completing the secure server-side token exchange…";
+
+      try {
+        const response = await fetch("https://api.pklavc.com/tiktok/oauth/exchange", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "omit",
+          body: JSON.stringify({
+            code,
+            redirect_uri: "https://pklavc.com/tiktok/callback/"
+          })
+        });
+
+        const payload = await response.json().catch(() => ({}));
+
+        if (!response.ok || !payload.ok) {
+          throw new Error(payload.error_description || payload.error || "Token exchange failed.");
+        }
+
+        sessionStorage.removeItem("tiktok_oauth_state");
+        sessionStorage.removeItem("tiktok_authorization_code");
+        sessionStorage.setItem("tiktok_granted_scopes", payload.scope || "");
+
+        message.textContent = "Authorization and secure token exchange completed successfully.";
+        history.replaceState({}, document.title, location.pathname);
+      } catch (exchangeError) {
+        fail(exchangeError instanceof Error ? exchangeError.message : "Token exchange failed.");
+      }
     })();
   </script>
 </body>
