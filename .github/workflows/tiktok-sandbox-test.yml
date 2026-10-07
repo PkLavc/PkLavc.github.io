@@ -69,7 +69,7 @@ jobs:
           EVENT_NAME: ${{ github.event_name }}
           TEST_MODE: ${{ inputs.mode }}
         run: |
-          if [ "$EVENT_NAME" = "push" ] || [ "$TEST_MODE" = "draft" ]; then
+          if [ "$TEST_MODE" = "draft" ]; then
             python -m scripts.social_video.tiktok_draft_test
           else
             python -m scripts.social_video.tiktok_test
