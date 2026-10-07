@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="PkLavc">
+  <title>Autotrader | Investigación Cuantitativa Autónoma | Patrick Araujo</title>
+  <meta name="description" content="Sistema autónomo de paper trading con Kronos-base, PyTorch, límites de cartera, GitHub Actions, pronósticos y dashboard público de rendimiento.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://pklavc.com/es/proyectos/autotrader/">
+  <link rel="alternate" href="https://pklavc.com/projects/autotrader/" hreflang="en">
+  <link rel="alternate" href="https://pklavc.com/pt/projetos/autotrader/" hreflang="pt-BR">
+  <link rel="alternate" href="https://pklavc.com/es/proyectos/autotrader/" hreflang="es">
+  <link rel="alternate" href="https://pklavc.com/projects/autotrader/" hreflang="x-default">
+  <meta property="og:title" content="Autotrader | Investigación Cuantitativa Autónoma | Patrick Araujo">
+  <meta property="og:description" content="Sistema autónomo de paper trading con Kronos-base, PyTorch, límites de cartera, GitHub Actions, pronósticos y dashboard público de rendimiento.">
+  <meta property="og:url" content="https://pklavc.com/es/proyectos/autotrader/">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://pklavc.com/images/brand/lavc.webp?v=5e84850f26">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Autotrader | Investigación Cuantitativa Autónoma | Patrick Araujo">
+  <meta name="twitter:description" content="Sistema autónomo de paper trading con Kronos-base, PyTorch, límites de cartera, GitHub Actions, pronósticos y dashboard público de rendimiento.">
+  <meta name="twitter:image" content="https://pklavc.com/images/brand/lavc.webp?v=5e84850f26">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=d15fe4e492">
+  <link rel="stylesheet" href="/css/global.css?v=20261001layout2">
+  <link rel="stylesheet" href="/css/projects.css?v=40b82e0f27">
+  <style>
+    .project-hero{padding:70px 20px 54px;text-align:center;background:radial-gradient(circle at 50% 0,rgba(46,229,157,.09),transparent 34rem)}
+    .project-hero h1{font-size:clamp(2.4rem,6vw,4.8rem);margin:14px 0;color:#fff;letter-spacing:-.04em}
+    .project-hero p{max-width:820px;margin:0 auto;color:#aaa;font-size:1.05rem;line-height:1.75}
+    .project-category-badge{display:inline-block;background:rgba(46,229,157,.08);border:1px solid rgba(46,229,157,.35);color:#5ce7ab;padding:8px 16px;border-radius:999px;font-size:.84rem}
+    .hero-actions{display:flex;justify-content:center;flex-wrap:wrap;gap:12px;margin-top:28px}
+    .hero-actions a{display:inline-block;padding:12px 20px;border-radius:8px;text-decoration:none;font-weight:700}
+    .hero-actions .primary{background:#5ce7ab;color:#07110d}
+    .hero-actions .secondary{border:1px solid #345246;color:#c9d2d7}
+    .project-context-section,.architecture-section,.flow-section,.notes-section{padding:44px 20px}
+    .project-context-container,.section-inner{max-width:1000px;margin:0 auto}
+    .project-context-section{background:rgba(46,229,157,.035)}
+    h2{color:#fff;margin:0 0 18px}.project-context-section p,.project-context-section li,.section-inner p,.section-inner li{color:#c7cdd3;line-height:1.75}
+    .stack-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin-top:22px}
+    .stack-card{background:#0e1116;border:1px solid #20262e;border-radius:10px;padding:18px}
+    .stack-card strong{display:block;color:#5ce7ab;margin-bottom:7px}.stack-card span{color:#8f99a6;font-size:.92rem;line-height:1.55}
+    .flow{display:grid;grid-template-columns:repeat(5,1fr);gap:9px;align-items:stretch;margin-top:24px}.flow-step{position:relative;background:#101419;border:1px solid #252c35;border-radius:10px;padding:18px 14px;text-align:center;color:#c7cdd3;font-size:.84rem}.flow-step b{display:block;color:#fff;margin-bottom:7px}.flow-step:not(:last-child)::after{content:"→";position:absolute;right:-10px;top:50%;transform:translateY(-50%);color:#5ce7ab;z-index:2}
+    .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:24px}.stat{background:#0d1116;border:1px solid #20262e;border-radius:10px;padding:18px}.stat strong{display:block;color:#fff;font-size:1.7rem}.stat span{color:#808a97;font-size:.8rem}
+    .notes-section{background:rgba(255,255,255,.02)}.warning{border-left:3px solid #5ce7ab;padding:10px 0 10px 16px;color:#aeb7c2!important}
+    .breadcrumb-nav{padding:12px 20px;border-bottom:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.02)}.breadcrumb{max-width:1000px;margin:0 auto;padding:0;display:flex;gap:8px;list-style:none;color:#888;font-size:.9rem}.breadcrumb li:not(:last-child)::after{content:"/";margin-left:8px;color:#555}.breadcrumb a{color:#5caeff;text-decoration:none}
+    .footer-minimal{margin-top:0}
+    @media(max-width:760px){.flow{grid-template-columns:1fr}.flow-step:not(:last-child)::after{content:"↓";right:auto;left:50%;top:auto;bottom:-16px;transform:translateX(-50%)}.stats{grid-template-columns:1fr 1fr}.project-hero{padding-top:44px}}
+  </style>
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"SoftwareSourceCode",
+    "name":"Autotrader",
+    "description":"Sistema autónomo de paper trading con Kronos-base, PyTorch, límites de cartera, GitHub Actions, pronósticos y dashboard público de rendimiento.",
+    "url":"https://pklavc.com/es/proyectos/autotrader/",
+    "codeRepository":"https://github.com/PkLavc/Autotrader",
+    "author":{"@type":"Person","name":"Patrick Araujo","url":"https://pklavc.com/about/"},
+    "programmingLanguage":["Python","JavaScript","HTML","CSS"],
+    "runtimePlatform":"GitHub Actions",
+    "license":"https://opensource.org/licenses/MIT"
+  }
+  </script>
+</head>
+<body>
+  <div id="breaker"></div><div id="breaker-two"></div>
+  <div id="all">
+    <main role="main">
+      <nav class="breadcrumb-nav" aria-label="Breadcrumb"><ol class="breadcrumb"><li><a href="/">Inicio</a></li><li><a href="/es/proyectos/">Proyectos</a></li><li aria-current="page">Autotrader</li></ol></nav>
+      <section class="project-hero">
+        <span class="project-category-badge">IA Cuantitativa</span>
+        <h1>Autotrader</h1>
+        <p>Sistema autónomo de investigación de mercado que convierte pronósticos de Kronos-base en una cartera simulada con límites estrictos, funciona mediante GitHub Actions y expone cada decisión en un dashboard público.</p>
+        <div class="hero-actions">
+          <a class="primary" href="https://pklavc.com/Autotrader/">Abrir dashboard en vivo</a>
+          <a class="secondary" href="https://github.com/PkLavc/Autotrader" target="_blank" rel="noopener noreferrer">Ver en GitHub</a>
+        </div>
+      </section>
+
+      <section class="project-context-section"><div class="project-context-container">
+        <h2>Investigación autónoma de cartera, no una demo estática</h2>
+        <p>Autotrader fue creado para responder una pregunta de ingeniería: ¿qué ocurre cuando un modelo fundacional financiero puede analizar por sí mismo un universo fijo de activos líquidos, ordenar sus pronósticos, construir una cartera bajo límites de riesgo y repetir el proceso automáticamente con el tiempo?</p>
+        <div class="stats">
+          <div class="stat"><strong>20</strong><span>market assets scanned</span></div>
+          <div class="stat"><strong>5</strong><span>maximum positions</span></div>
+          <div class="stat"><strong>18%</strong><span>max weight per asset</span></div>
+          <div class="stat"><strong>10%</strong><span>minimum cash buffer</span></div>
+        </div>
+      </div></section>
+
+      <section class="flow-section"><div class="section-inner">
+        <h2>Pipeline de decisión</h2>
+        <p>Cada ejecución programada descarga datos diarios, genera un pronóstico de cinco sesiones con Kronos para cada activo, ordena los retornos esperados y rebalancea una cuenta simulada respetando límites de efectivo y concentración.</p>
+        <div class="flow">
+          <div class="flow-step"><b>1. Market data</b>Daily OHLCV history</div>
+          <div class="flow-step"><b>2. Kronos-base</b>5-session forecast</div>
+          <div class="flow-step"><b>3. Ranking</b>Expected-return score</div>
+          <div class="flow-step"><b>4. Portfolio</b>Risk-constrained targets</div>
+          <div class="flow-step"><b>5. Record</b>Trades + equity history</div>
+        </div>
+      </div></section>
+
+      <section class="architecture-section"><div class="section-inner">
+        <h2>Arquitectura y protecciones</h2>
+        <p>El proyecto separa deliberadamente la inferencia del modelo de los permisos de escritura del repositorio. Las actualizaciones de Kronos se fijan y prueban antes de adoptarse, mientras que el estado de la cartera solo se guarda después de una simulación exitosa.</p>
+        <div class="stack-grid">
+          <div class="stack-card"><strong>Kronos-base</strong><span>102.3M-parameter financial foundation model used as the forecasting engine.</span></div>
+          <div class="stack-card"><strong>Python + PyTorch</strong><span>CPU inference, market-data processing, ranking, portfolio construction and simulation.</span></div>
+          <div class="stack-card"><strong>GitHub Actions</strong><span>Scheduled execution, tests, state persistence and autonomous operation.</span></div>
+          <div class="stack-card"><strong>Safe upstream sync</strong><span>New Kronos revisions are adopted only after regression and compatibility tests pass.</span></div>
+          <div class="stack-card"><strong>Public dashboard</strong><span>Equity curve, bullish/bearish forecast bars, allocation and complete execution log.</span></div>
+          <div class="stack-card"><strong>Paper execution</strong><span>Simulated fills include slippage and preserve a reproducible history before any live-broker integration.</span></div>
+        </div>
+      </div></section>
+
+      <section class="notes-section"><div class="section-inner">
+        <h2>Experimento público</h2>
+        <p>El dashboard mantiene el experimento observable: valor de la cartera a lo largo del tiempo, pronósticos positivos y negativos del modelo, asignación actual y una tabla cronológica de compras y ventas simuladas.</p>
+        <p class="warning">Autotrader currently uses simulated capital. The live dashboard is a research record, not financial advice and not evidence of future returns.</p>
+      </div></section>
+    </main>
+  </div>
+
+  <footer class="footer-minimal">
+    <div class="footer-container">
+      <div class="footer-link-list" aria-label="Footer links">
+        <a class="footer-link-pill" href="https://github.com/PkLavc" target="_blank" rel="noopener noreferrer">GitHub</a>
+        <a class="footer-link-pill" href="https://www.linkedin.com/in/pklavc/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+        <a class="footer-link-pill" href="mailto:contact@pklavc.com">Email</a>
+      </div>
+      <p class="footer-meta"><span>&copy; <span data-current-year></span> Patrick Araujo</span> <span class="footer-meta-separator">&bull;</span><span class="footer-legal-inline"><a class="footer-legal-link" href="/es/politica-de-privacidad/">Privacy</a><span>/</span><a class="footer-legal-link" href="/es/terminos-de-uso/">Terms</a><span>/</span><a class="footer-legal-link" href="/es/politica-editorial/">Editorial</a><span>/</span><a class="footer-legal-link" href="/es/creditos/">Credits</a></span></p>
+    </div>
+  </footer>
+  <script>document.querySelectorAll('[data-current-year]').forEach(n=>n.textContent=String(new Date().getFullYear()))</script>
+  <script src="/js/i18n.js?v=397fd68aed" defer></script>
+  <script src="/js/jquery.min.js?v=d482871a5e" defer></script>
+  <script src="/js/index.js?v=20261005amazon-white-logo1" defer></script>
+</body>
+</html>
