@@ -122,6 +122,7 @@ jobs:
           NODE
 
       - name: Notify participating search engines after publication
+        continue-on-error: true
         env:
           INDEXNOW_BEFORE: ${{ github.event.before }}
         run: |
