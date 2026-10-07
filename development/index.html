@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en" class="page-index-root">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="PkLavc">
+    <title>Patrick Araujo | Backend Software Engineer</title>
+    <meta name="description" content="Backend Software Engineer building applied AI, backend platforms, automation, API integrations, data pipelines, and reliable operational systems with Python, FastAPI, Node.js, TypeScript, SQL, and cloud infrastructure.">
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="googlebot" content="noindex, nofollow">
+    <meta name="theme-color" content="#101114">
+    <script>
+        const { hostname, pathname, search, hash } = window.location;
+        const host = hostname.toLowerCase();
+        const redirectHosts = ["pklavc.github.io"];
+        if (redirectHosts.includes(host)) {
+            window.location.replace("https://pklavc.com" + pathname + search + hash);
+        }
+    </script>
+
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=d15fe4e492">
+    <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Monoton&family=Poppins:wght@500&family=Raleway:wght@300&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Monoton&family=Poppins:wght@500&family=Raleway:wght@300&display=swap"></noscript>
+    <link rel="stylesheet" href="/css/global.css?v=20261001layout2">
+    <link rel="stylesheet" href="/css/index.css?v=20261001home3">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.2.6/gsap.min.js" async></script>
+    <script src="https://cdn.jsdelivr.net/npm/@lottiefiles/lottie-player@2.0.12/dist/lottie-player.js" async></script>
+    <link rel="manifest" href="/manifest.webmanifest?v=291169f445">
+    <link rel="icon" href="/favicon.ico?v=3582ecf86f" sizes="any">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=54c3825150">
+
+    <style>
+        .page-index-development {
+            background: #0b0d12;
+            color: #f4f5f7;
+        }
+
+        .page-index-development #header {
+            position: relative;
+        }
+
+        .page-index-development .home-depth {
+            position: relative;
+            z-index: 2;
+            overflow: hidden;
+            background:
+                radial-gradient(circle at 12% 8%, rgba(0, 209, 255, .08), transparent 27rem),
+                radial-gradient(circle at 88% 38%, rgba(199, 0, 57, .08), transparent 24rem),
+                #0b0d12;
+            border-top: 1px solid rgba(255,255,255,.06);
+        }
+
+        .page-index-development .home-depth-inner {
+            width: min(1180px, calc(100% - 48px));
+            margin: 0 auto;
+            padding: clamp(72px, 8vw, 118px) 0 clamp(84px, 9vw, 132px);
+        }
+
+        .page-index-development .home-section {
+            margin-top: clamp(74px, 8vw, 116px);
+        }
+
+        .page-index-development .home-section:first-child {
+            margin-top: 0;
+        }
+
+        .page-index-development .home-kicker {
+            margin: 0 0 14px;
+            color: var(--clr-primary);
+            font: 600 12px/1.3 Inter, sans-serif;
+            letter-spacing: .18em;
+            text-transform: uppercase;
+        }
+
+        .page-index-development .home-section h2 {
+            max-width: 860px;
+            margin: 0;
+            color: #fff;
+            font: 600 clamp(31px, 4vw, 52px)/1.05 Raleway, Inter, sans-serif;
+            letter-spacing: -.035em;
+        }
+
+        .page-index-development .home-lead {
+            max-width: 850px;
+            margin: 24px 0 0;
+            color: rgba(244,245,247,.76);
+            font: 400 clamp(16px, 1.55vw, 19px)/1.75 Inter, sans-serif;
+        }
+
+        .page-index-development .home-lead + .home-lead {
+            margin-top: 14px;
+        }
+
+        .page-index-development .home-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 18px;
+            margin-top: 34px;
+        }
+
+        .page-index-development .home-card {
+            min-width: 0;
+            padding: 27px;
+            border: 1px solid rgba(255,255,255,.08);
+            border-radius: 18px;
+            background: linear-gradient(180deg, rgba(255,255,255,.045), rgba(255,255,255,.018));
+            box-shadow: 0 22px 60px rgba(0,0,0,.16);
+        }
+
+        .page-index-development .home-card-label {
+            display: block;
+            margin-bottom: 13px;
+            color: rgba(244,245,247,.48);
+            font: 600 11px/1.3 Inter, sans-serif;
+            letter-spacing: .14em;
+            text-transform: uppercase;
+        }
+
+        .page-index-development .home-card h3 {
+            margin: 0 0 12px;
+            color: #fff;
+            font: 600 21px/1.25 Inter, sans-serif;
+        }
+
+        .page-index-development .home-card p {
+            margin: 0;
+            color: rgba(244,245,247,.68);
+            font: 400 14px/1.68 Inter, sans-serif;
+        }
+
+        .page-index-development .home-card a,
+        .page-index-development .home-inline-link {
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .page-index-development .home-card-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 22px;
+            padding-bottom: 3px;
+            border-bottom: 1px solid rgba(255,255,255,.32);
+            color: #fff;
+            font: 600 13px/1.3 Inter, sans-serif;
+            text-decoration: none;
+            transition: border-color .25s ease, color .25s ease;
+        }
+
+        .page-index-development .home-card-link:hover,
+        .page-index-development .home-card-link:focus-visible {
+            color: var(--clr-primary);
+            border-color: var(--clr-primary);
+        }
+
+        .page-index-development .home-feature {
+            display: grid;
+            grid-template-columns: minmax(0, 1.25fr) minmax(280px, .75fr);
+            gap: 18px;
+            margin-top: 34px;
+        }
+
+        .page-index-development .home-feature-main,
+        .page-index-development .home-feature-side {
+            padding: clamp(28px, 4vw, 46px);
+            border: 1px solid rgba(255,255,255,.08);
+            border-radius: 20px;
+            background: rgba(255,255,255,.025);
+        }
+
+        .page-index-development .home-feature-main p,
+        .page-index-development .home-feature-side p {
+            margin: 0;
+            color: rgba(244,245,247,.72);
+            font: 400 15px/1.75 Inter, sans-serif;
+        }
+
+        .page-index-development .home-feature-main p + p {
+            margin-top: 15px;
+        }
+
+        .page-index-development .home-feature-side h3 {
+            margin: 0 0 12px;
+            color: #fff;
+            font: 600 19px/1.3 Inter, sans-serif;
+        }
+
+        .page-index-development .home-route-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 12px;
+            margin-top: 30px;
+        }
+
+        .page-index-development .home-route {
+            display: block;
+            padding: 19px 20px;
+            border: 1px solid rgba(255,255,255,.08);
+            border-radius: 14px;
+            color: #fff;
+            background: rgba(255,255,255,.025);
+            text-decoration: none;
+            font: 600 14px/1.35 Inter, sans-serif;
+            transition: transform .25s ease, border-color .25s ease, background .25s ease;
+        }
+
+        .page-index-development .home-route span {
+            display: block;
+            margin-top: 6px;
+            color: rgba(244,245,247,.52);
+            font-size: 12px;
+            font-weight: 400;
+        }
+
+        .page-index-development .home-route:hover,
+        .page-index-development .home-route:focus-visible {
+            transform: translateY(-2px);
+            border-color: rgba(255,255,255,.2);
+            background: rgba(255,255,255,.045);
+        }
+
+        .page-index-development .footer-minimal {
+            margin-top: 0;
+        }
+
+        @media (max-width: 960px) {
+            .page-index-development .home-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .page-index-development .home-grid .home-card:last-child {
+                grid-column: 1 / -1;
+            }
+
+            .page-index-development .home-feature {
+                grid-template-columns: 1fr;
+            }
+
+            .page-index-development .home-route-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 550px) {
+            .page-index-development #header {
+                height: var(--app-viewport-height);
+                min-height: var(--app-viewport-height);
+            }
+
+            .page-index-development .header-content {
+                height: var(--app-viewport-height);
+                min-height: var(--app-viewport-height);
+            }
+
+            .page-index-development .social-media-links {
+                position: absolute;
+                bottom: 0;
+            }
+
+            .page-index-development .contact {
+                position: absolute;
+            }
+
+            .page-index-development .home-depth-inner {
+                width: min(100% - 30px, 1180px);
+                padding-top: 62px;
+                padding-bottom: 78px;
+            }
+
+            .page-index-development .home-section {
+                margin-top: 68px;
+            }
+
+            .page-index-development .home-section h2 {
+                font-size: clamp(29px, 9.3vw, 40px);
+                line-height: 1.08;
+            }
+
+            .page-index-development .home-lead {
+                margin-top: 20px;
+                font-size: 15px;
+                line-height: 1.72;
+            }
+
+            .page-index-development .home-grid,
+            .page-index-development .home-route-grid {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .page-index-development .home-grid .home-card:last-child {
+                grid-column: auto;
+            }
+
+            .page-index-development .home-card {
+                padding: 23px 21px;
+            }
+
+            .page-index-development .home-feature-main,
+            .page-index-development .home-feature-side {
+                padding: 24px 21px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .page-index-development .home-card-link,
+            .page-index-development .home-route {
+                transition: none;
+            }
+        }
+    </style>
+</head>
+
+<body class="page-index page-index-development">
+    <div id="all">
+        <div class="cursor"></div>
+
+        <div id="header">
+            <div id="particles" class="particles-container"></div>
+
+            <div class="social-media-links">
+                <a href="https://github.com/PkLavc" target="_blank" rel="noopener noreferrer"><lottie-player src="/images/lottie/github.json?v=50cdc84fd8" background="transparent" speed="1" loop autoplay class="social-media social-media-icon" title="Patrick Araujo - GitHub Portfolio and Open Source Projects"></lottie-player></a>
+                <a href="https://www.linkedin.com/in/pklavc/" target="_blank" rel="noopener noreferrer"><lottie-player src="/images/lottie/linkedin.json?v=86d0c9e071" background="transparent" speed="1" loop autoplay class="social-media social-media-icon" title="LinkedIn Profile"></lottie-player></a>
+                <a href="#contact-email" class="email-link" data-email-user="contact" data-email-domain="pklavc.com" aria-label="Send email to Patrick Araujo"><lottie-player src="/images/lottie/mail.json?v=895f6ab30e" background="transparent" speed="1" loop autoplay class="social-media social-media-icon" title="Contact via Email"></lottie-player></a>
+            </div>
+
+            <header class="header-content">
+                <div class="header-content-box">
+                    <h1 class="firstline"><span class="color">Patrick Araujo</span></h1>
+                    <div class="secondline">
+                        <h2 class="main-info">Backend Software Engineer<br>| Applied AI, API Integrations &amp; Systems Integration</h2>
+                        <div class="remote-text">
+                            Designing Python, FastAPI, Node.js, TypeScript, and SQL systems that automate operations, connect business-critical platforms, and support variable-volume applied AI workflows.
+                        </div>
+                    </div>
+
+                    <section class="contact" aria-labelledby="techstack-title">
+                        <h2 id="techstack-title" class="visually-hidden">Technical skills and technologies</h2>
+                        <p class="visually-hidden">Python, FastAPI, Node.js, TypeScript, SQL, JavaScript, REST APIs, AWS, Google Cloud, Cloudflare Workers, Docker, GitHub Actions, React, RAG, and LLM integrations.</p>
+                        <div class="techstack-carousel" aria-hidden="true">
+                            <div class="techstack-track">
+                                <img src="/images/techstack/python-icon.svg?v=7e7266b29c" alt="Python icon" class="contactpic">
+                                <img src="/images/techstack/js-icon.svg?v=fb8c820909" alt="Node.js icon" class="contactpic">
+                                <img src="/images/techstack/mysql-icon.svg?v=ef168c99f5" alt="SQL icon" class="contactpic">
+                                <img src="/images/techstack/js-icon.svg?v=fb8c820909" alt="JavaScript icon" class="contactpic">
+                                <img src="/images/techstack/restapi-icon.svg?v=18e66675ff" alt="REST API icon" class="contactpic">
+                                <img src="/images/techstack/aws-icon.svg?v=86c4203d82" alt="AWS icon" class="contactpic">
+                                <img src="/images/techstack/docker-icon.svg?v=fe4ce38462" alt="Docker icon" class="contactpic">
+                                <img src="/images/techstack/django-icon.svg?v=a849c7126f" alt="Django icon" class="contactpic">
+                                <img src="/images/techstack/ts-icon.svg?v=049d3cb481" alt="TypeScript icon" class="contactpic">
+                                <img src="/images/techstack/github-icon.svg?v=7b8e3a8d79" alt="GitHub icon" class="contactpic">
+                                <img src="/images/techstack/react-icon.svg?v=ef70909a97" alt="React icon" class="contactpic">
+                                <img src="/images/techstack/java-icon.svg?v=3f7d9ff23e" alt="Java icon" class="contactpic">
+                                <img src="/images/techstack/csharp-icon.svg?v=3e8102b629" alt="C Sharp icon" class="contactpic">
+                                <img src="/images/techstack/cpp-icon.svg?v=0c10b6a4d2" alt="C Plus Plus icon" class="contactpic">
+                                <img src="/images/techstack/python-icon.svg?v=7e7266b29c" alt="" class="contactpic" aria-hidden="true">
+                                <img src="/images/techstack/js-icon.svg?v=fb8c820909" alt="" class="contactpic" aria-hidden="true">
+                                <img src="/images/techstack/mysql-icon.svg?v=ef168c99f5" alt="" class="contactpic" aria-hidden="true">
+                                <img src="/images/techstack/js-icon.svg?v=fb8c820909" alt="" class="contactpic" aria-hidden="true">
+                                <img src="/images/techstack/restapi-icon.svg?v=18e66675ff" alt="" class="contactpic" aria-hidden="true">
+                                <img src="/images/techstack/aws-icon.svg?v=86c4203d82" alt="" class="contactpic" aria-hidden="true">
+                                <img src="/images/techstack/docker-icon.svg?v=fe4ce38462" alt="" class="contactpic" aria-hidden="true">
+                                <img src="/images/techstack/django-icon.svg?v=a849c7126f" alt="" class="contactpic" aria-hidden="true">
+                                <img src="/images/techstack/ts-icon.svg?v=049d3cb481" alt="" class="contactpic" aria-hidden="true">
+                                <img src="/images/techstack/github-icon.svg?v=7b8e3a8d79" alt="" class="contactpic" aria-hidden="true">
+                                <img src="/images/techstack/react-icon.svg?v=ef70909a97" alt="" class="contactpic" aria-hidden="true">
+                                <img src="/images/techstack/java-icon.svg?v=3f7d9ff23e" alt="" class="contactpic" aria-hidden="true">
+                                <img src="/images/techstack/csharp-icon.svg?v=3e8102b629" alt="" class="contactpic" aria-hidden="true">
+                                <img src="/images/techstack/cpp-icon.svg?v=0c10b6a4d2" alt="" class="contactpic" aria-hidden="true">
+                            </div>
+                        </div>
+                    </section>
+                </div>
+
+                <button id="index-skylet-btn" type="button" aria-label="Open Skylet assistant" onclick="if(window.openSkyletWidget)window.openSkyletWidget()">
+                    <img src="/images/brand/icon_skylet.webp?v=feecb6b1c7" alt="Skylet" width="60" height="60" loading="eager" decoding="async">
+                </button>
+            </header>
+        </div>
+    </div>
+
+    <main class="home-depth" aria-label="Patrick Araujo engineering overview">
+        <div class="home-depth-inner">
+            <section class="home-section" aria-labelledby="engineering-title">
+                <p class="home-kicker">Engineering in practice</p>
+                <h2 id="engineering-title">Software built around real operational work.</h2>
+                <p class="home-lead">
+                    I build backend platforms, applied AI systems, automation, data pipelines, and API integrations for environments where software has to do more than look finished. The work is centered on clear system boundaries, traceable execution, reliable data movement, and interfaces that reduce manual steps instead of creating new ones.
+                </p>
+                <p class="home-lead">
+                    My projects combine Python, FastAPI, Node.js, TypeScript, SQL, Cloudflare, AWS, Google Cloud, GitHub Actions, and business platforms when those tools fit the problem. This site documents that work through project breakdowns, engineering notes, implementation details, and technical experiments rather than presenting only a short portfolio landing page.
+                </p>
+
+                <div class="home-grid">
+                    <article class="home-card">
+                        <span class="home-card-label">Backend &amp; integrations</span>
+                        <h3>Systems that connect operational platforms</h3>
+                        <p>REST APIs, workers, authentication flows, webhooks, SQL persistence, ETL pipelines, and integration layers designed so failures can be inspected, retried, and audited.</p>
+                        <a class="home-card-link" href="/collections/api-integration-projects/">Explore integration work <span aria-hidden="true">→</span></a>
+                    </article>
+
+                    <article class="home-card">
+                        <span class="home-card-label">Automation &amp; data</span>
+                        <h3>Repeatable workflows instead of manual routines</h3>
+                        <p>Scheduled jobs, data normalization, reporting pipelines, business rules, and operational automation focused on reducing repetitive work while keeping the resulting data understandable.</p>
+                        <a class="home-card-link" href="/collections/automation-projects/">Explore automation work <span aria-hidden="true">→</span></a>
+                    </article>
+
+                    <article class="home-card">
+                        <span class="home-card-label">Applied AI</span>
+                        <h3>AI as part of the software architecture</h3>
+                        <p>RAG, multi-agent orchestration, contextual assistants, vector memory, tool execution, queues, logs, and fallback behavior integrated into systems with observable and controllable workflows.</p>
+                        <a class="home-card-link" href="/projects/ai-engineer/">Explore applied AI <span aria-hidden="true">→</span></a>
+                    </article>
+                </div>
+            </section>
+
+            <section class="home-section" aria-labelledby="selected-title">
+                <p class="home-kicker">Selected work</p>
+                <h2 id="selected-title">Projects with implementation context, not just screenshots.</h2>
+
+                <div class="home-grid">
+                    <article class="home-card">
+                        <span class="home-card-label">FastAPI · React · RAG</span>
+                        <h3>Lavc Systems</h3>
+                        <p>A local multi-agent AI orchestration platform with Kanban task management, a RAG knowledge base, autonomous goals, vector memory, and real-time WebSocket observability.</p>
+                        <a class="home-card-link" href="/projects/lavc-systems/">View project <span aria-hidden="true">→</span></a>
+                    </article>
+
+                    <article class="home-card">
+                        <span class="home-card-label">Node.js · SQL · GitHub Actions</span>
+                        <h3>API Integration Pipeline</h3>
+                        <p>A replayable data pipeline that collects, normalizes, and persists operational data across multiple APIs, using idempotent identifiers and reproducible collection windows.</p>
+                        <a class="home-card-link" href="/projects/api-integrations/">View project <span aria-hidden="true">→</span></a>
+                    </article>
+
+                    <article class="home-card">
+                        <span class="home-card-label">Workers · D1 · JavaScript</span>
+                        <h3>EquipTrack</h3>
+                        <p>An equipment inventory and rental system for concurrent events, including availability controls, movement history, maintenance records, authentication, and automated deployment.</p>
+                        <a class="home-card-link" href="/projects/equiptrack/">View project <span aria-hidden="true">→</span></a>
+                    </article>
+                </div>
+            </section>
+
+            <section class="home-section" aria-labelledby="writing-title">
+                <p class="home-kicker">Writing &amp; documentation</p>
+                <h2 id="writing-title">The blog extends the portfolio with technical context.</h2>
+
+                <div class="home-feature">
+                    <div class="home-feature-main">
+                        <p>
+                            The <a class="home-inline-link" href="/blog/">PkLavc Blog</a> is where I publish engineering notes, technology explainers, project-oriented articles, and coverage of tools and systems I work with. The purpose is to make the site useful beyond a résumé: visitors can move from a technology or project to longer-form material that explains decisions, trade-offs, implementation patterns, and practical use cases.
+                        </p>
+                        <p>
+                            Project pages provide the implementation view; the blog provides the broader context. Together they cover backend architecture, APIs, automation, applied AI, cloud infrastructure, data workflows, developer tooling, and related technical subjects. Editorial and legal pages are also available so authorship, content standards, privacy, and site policies are explicit.
+                        </p>
+                        <a class="home-card-link" href="/blog/">Read the blog <span aria-hidden="true">→</span></a>
+                    </div>
+
+                    <aside class="home-feature-side">
+                        <h3>Why the site is structured this way</h3>
+                        <p>A homepage should explain what the site is, establish who is responsible for it, and guide visitors toward substantial content. Detailed biography remains on About; project evidence remains on Projects; longer editorial content remains in the Blog.</p>
+                    </aside>
+                </div>
+            </section>
+
+            <section class="home-section" aria-labelledby="about-title">
+                <p class="home-kicker">About the author</p>
+                <h2 id="about-title">Backend engineering, systems integration, and applied AI.</h2>
+                <p class="home-lead">
+                    I am Patrick Araujo, a Backend Software Engineer based in Belo Horizonte, Brazil. My current work spans backend platforms, internal systems, API integrations, automation, data pipelines, cloud infrastructure, and AI-assisted operational software. I focus on systems that can be observed, maintained, and evolved after the first successful deployment.
+                </p>
+                <p class="home-lead">
+                    The full About page documents professional experience, stack, engineering approach, and curated technical paths in more detail. The Projects section contains individual implementations, while Certifications and the Blog provide additional context around training and ongoing technical work.
+                </p>
+
+                <nav class="home-route-grid" aria-label="Explore Patrick Araujo's site">
+                    <a class="home-route" href="/about/">About<span>Experience, stack, and engineering approach</span></a>
+                    <a class="home-route" href="/projects/">Projects<span>Public systems and implementation details</span></a>
+                    <a class="home-route" href="/blog/">Blog<span>Engineering notes and technical articles</span></a>
+                    <a class="home-route" href="/certifications/">Certifications<span>Training and professional development</span></a>
+                </nav>
+            </section>
+        </div>
+    </main>
+
+    <footer class="footer-minimal footer-split footer-home">
+        <div class="footer-container">
+            <div class="footer-split-left"><span class="footer-copyright-line">&copy; <span data-current-year></span> Patrick Araujo</span></div>
+            <span class="footer-split-spacer" aria-hidden="true"></span>
+            <div class="footer-split-right"><span class="footer-legal-inline" aria-label="Legal links"><a class="footer-legal-link" href="/privacy-policy/">Privacy Policy</a><span aria-hidden="true">/</span><a class="footer-legal-link" href="/terms-of-use/">Terms of Use</a><span aria-hidden="true">/</span><a class="footer-legal-link" href="/editorial-policy/">Editorial Policy</a><span aria-hidden="true">/</span><a class="footer-legal-link" href="/credits/">Credits</a></span></div>
+        </div>
+    </footer>
+
+    <script>
+        (function(){
+            document.querySelectorAll('[data-current-year]').forEach(function(node){
+                node.textContent = String(new Date().getFullYear());
+            });
+        }());
+    </script>
+    <script src="/js/i18n.js?v=397fd68aed" defer></script>
+    <script src="/js/jquery.min.js?v=d482871a5e" defer></script>
+    <script src="/js/particles.min.js?v=faee7815a5" defer></script>
+    <script src="/js/index.js?v=20261001layout2" defer></script>
+</body>
+</html>
