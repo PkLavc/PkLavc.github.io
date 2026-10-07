@@ -1,0 +1,36 @@
+﻿:root {
+  --globe-cyan: #13d8ff;
+  --globe-pink: #ff4fb8;
+  --globe-violet: #8d6bff;
+}
+
+[data-interactive-globe] {
+  position: relative;
+  isolation: isolate;
+  overflow: visible;
+  touch-action: none;
+}
+
+.interactive-globe-canvas {
+  display: block;
+  cursor: grab;
+}
+
+[data-interactive-globe].is-dragging .interactive-globe-canvas { cursor: grabbing; }
+
+.about-globe-frame {
+  width: min(100%, 230px);
+  height: 208px;
+  background: transparent;
+}
+
+.visitor-hero-globe {
+  width: 260px;
+  height: 260px;
+  flex: 0 0 260px;
+  background: transparent;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .interactive-globe-canvas { cursor: default; }
+}

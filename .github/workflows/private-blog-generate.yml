@@ -1,0 +1,180 @@
+name: Generate private blog on public runner
+# Smoke test refreshes when this workflow changes.
+
+on:
+  schedule:
+    - cron: "17 * * * *" # Every hour at :17 UTC (:17 local minute as well)
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "Generate a real article or run a non-publishing smoke test"
+        required: true
+        type: choice
+        default: smoke
+        options:
+          - smoke
+          - generate
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/private-blog-generate.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: private-blog-public-runner
+  cancel-in-progress: false
+
+jobs:
+  smoke:
+    if: github.event_name == 'push' || inputs.mode == 'smoke'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      PRIVATE_BLOG_REPO_TOKEN: ${{ secrets.PRIVATE_BLOG_REPO_TOKEN }}
+      GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+      OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - name: Verify required generation secrets are configured
+        shell: bash
+        run: |
+          missing=0
+          for name in PRIVATE_BLOG_REPO_TOKEN GEMINI_API_KEY OPENROUTER_API_KEY CLOUDFLARE_API_TOKEN CLOUDFLARE_ACCOUNT_ID; do
+            if [[ -z "${!name}" ]]; then
+              echo "::error::Missing required secret: $name"
+              missing=1
+            fi
+          done
+          exit "$missing"
+
+      - name: Checkout private blog repository
+        uses: actions/checkout@v4
+        with:
+          repository: PkLavc/blog
+          ref: main
+          token: ${{ secrets.PRIVATE_BLOG_REPO_TOKEN }}
+          path: private-blog
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Install article dependencies
+        working-directory: private-blog
+        run: python -m pip install -r scripts/blog_automation/requirements.txt
+
+      - name: Verify private repository token can push
+        working-directory: private-blog
+        run: git push --dry-run origin HEAD:main
+
+      - name: Validate private generation pipeline without API calls or publishing
+        working-directory: private-blog
+        run: |
+          python -m unittest scripts.blog_automation.test_publish_paths scripts.test_newsletter_assembly
+          node --test scripts/test-blog-discovery.mjs scripts/test-newsletter-content.mjs
+          (cd newsletter-worker && npm test)
+          python -m scripts.blog_automation.run --root . --offline-fixture --dry-run
+
+  generate:
+    if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.mode == 'generate')
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    outputs:
+      changed: ${{ steps.changes.outputs.changed }}
+    steps:
+      - name: Checkout private blog repository
+        uses: actions/checkout@v4
+        with:
+          repository: PkLavc/blog
+          ref: main
+          token: ${{ secrets.PRIVATE_BLOG_REPO_TOKEN }}
+          path: private-blog
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Install article image dependency
+        working-directory: private-blog
+        run: python -m pip install -r scripts/blog_automation/requirements.txt
+
+      - name: Test generated article source and public paths
+        working-directory: private-blog
+        run: |
+          python -m unittest scripts.blog_automation.test_publish_paths
+          node --test scripts/test-blog-discovery.mjs
+
+      - name: Collect, select, generate and validate
+        working-directory: private-blog
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_MODEL: ${{ vars.GEMINI_MODEL || 'gemini-2.5-flash' }}
+          MAX_GEMINI_HTTP_REQUESTS_PER_RUN: ${{ vars.MAX_GEMINI_HTTP_REQUESTS_PER_RUN || '6' }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          OPENROUTER_MODEL: ${{ vars.OPENROUTER_MODEL || 'openrouter/free' }}
+          MAX_OPENROUTER_HTTP_REQUESTS_PER_RUN: ${{ vars.MAX_OPENROUTER_HTTP_REQUESTS_PER_RUN || '3' }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_AI_MODEL: ${{ vars.CLOUDFLARE_AI_MODEL || '@cf/openai/gpt-oss-120b' }}
+          MAX_CLOUDFLARE_AI_HTTP_REQUESTS_PER_RUN: ${{ vars.MAX_CLOUDFLARE_AI_HTTP_REQUESTS_PER_RUN || '3' }}
+          DRY_RUN: "false"
+        run: python -m scripts.blog_automation.run --root .
+
+      - name: Refresh AI discovery directory
+        working-directory: private-blog
+        run: node scripts/generate-blog-discovery.mjs
+
+      - name: Sync English landing page to repository root
+        working-directory: private-blog
+        run: cp en/index.html index.html
+
+      - name: Validate newsletter and assembled publication before commit
+        working-directory: private-blog
+        run: |
+          node --test scripts/test-newsletter-content.mjs
+          python -m unittest scripts.test_newsletter_assembly
+          (cd newsletter-worker && npm test)
+          node scripts/generate-rss.mjs
+          git diff --exit-code -- en/feed.xml en/posts.json
+          python scripts/assemble_pages.py --root . --output _site
+          rm -rf _site
+
+      - name: Detect publication changes
+        id: changes
+        working-directory: private-blog
+        shell: bash
+        run: |
+          if [[ -z "$(git status --porcelain)" ]]; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Commit validated article and indexes to private repository
+        if: steps.changes.outputs.changed == 'true'
+        working-directory: private-blog
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "blog: publish engineering story"
+          git pull --rebase origin main
+          git push origin HEAD:main
+
+      - name: Report publication result
+        run: |
+          echo "Private blog changed: ${{ steps.changes.outputs.changed }}"
+          echo "The private repository push triggers the lightweight AWS delta deployment."

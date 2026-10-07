@@ -1,0 +1,132 @@
+name: Deploy GitHub Pages
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - ".github/workflows/about-me-bot.yml"
+      - ".github/workflows/chatbot-ci.yml"
+      - ".github/workflows/deploy-cloudflare-worker.yml"
+      - ".github/workflows/private-blog-generate.yml"
+      - ".github/workflows/private-blog-social.yml"
+      - ".github/workflows/private-blog-preview.yml"
+      - ".github/workflows/sitemap-maintenance.yml"
+      - "src/**"
+      - "README.md"
+      - "LICENSE.txt"
+      - "portfolio-rag.txt"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Checkout Autotrader dashboard
+        uses: actions/checkout@v4
+        with:
+          repository: PkLavc/Autotrader
+          ref: main
+          path: .autotrader-dashboard
+          fetch-depth: 1
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Build Pages artifact
+        run: node scripts/build-pages-artifact.mjs
+
+      - name: Test SEO normalization
+        run: node --test scripts/normalize-seo.test.mjs scripts/indexnow.test.mjs
+
+      - name: Validate SEO and preserve visual content
+        run: |
+          cp .pages-dist/store/index.html store/index.html
+          cp .pages-dist/store/pt/index.html store/pt/index.html
+          cp .pages-dist/store/es/index.html store/es/index.html
+          python3 scripts/audit-seo.py --root .pages-dist --compare-source . --autotrader-dashboard-source .autotrader-dashboard --strict-links --allow-ad-injection --allow-store-prerender
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload static site artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: .pages-dist
+
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v4
+        with:
+          timeout: 1800000
+          reporting_interval: 15000
+
+      - name: Purge Cloudflare cache after publication
+        continue-on-error: true
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          node <<'NODE'
+          const token = process.env.CLOUDFLARE_API_TOKEN?.trim();
+          if (!token) {
+            console.log("Cloudflare purge skipped: CLOUDFLARE_API_TOKEN is not configured.");
+            process.exit(0);
+          }
+
+          const headers = {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          };
+
+          const zonesResponse = await fetch(
+            "https://api.cloudflare.com/client/v4/zones?name=pklavc.com&status=active",
+            { headers }
+          );
+          const zonesPayload = await zonesResponse.json();
+          const zoneId = zonesPayload?.result?.[0]?.id;
+          if (!zonesResponse.ok || !zonesPayload?.success || !zoneId) {
+            throw new Error("Unable to resolve the Cloudflare zone for pklavc.com.");
+          }
+
+          const purgeResponse = await fetch(
+            `https://api.cloudflare.com/client/v4/zones/${zoneId}/purge_cache`,
+            {
+              method: "POST",
+              headers,
+              body: JSON.stringify({ purge_everything: true }),
+            }
+          );
+          const purgePayload = await purgeResponse.json();
+          if (!purgeResponse.ok || !purgePayload?.success) {
+            throw new Error("Cloudflare cache purge failed.");
+          }
+
+          console.log("Cloudflare cache purged successfully.");
+          NODE
+
+      - name: Notify participating search engines after publication
+        env:
+          INDEXNOW_BEFORE: ${{ github.event.before }}
+        run: |
+          if [ -n "$INDEXNOW_BEFORE" ]; then
+            node scripts/indexnow.mjs --root .pages-dist --since "$INDEXNOW_BEFORE"
+          else
+            node scripts/indexnow.mjs --root .pages-dist --all
+          fi

@@ -1,0 +1,119 @@
+{
+  "name": "Telegram About Me Bridge",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "id": "Telegram_Trigger",
+      "name": "Telegram Trigger",
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        220,
+        280
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const message = $json.message?.text || '';\nconst chatId = $json.message?.chat?.id;\nreturn [{ json: { message, chatId } }];"
+      },
+      "id": "Code_Prepare",
+      "name": "Code Prepare",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        450,
+        280
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.pklavc.com/chat",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "Bearer {{$env.CHATBOT_API_TOKEN}}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"message\": \"{{$json.message}}\",\n  \"conversation_id\": \"telegram-{{$json.chatId}}\"\n}",
+        "options": {}
+      },
+      "id": "HTTP_Chat_API",
+      "name": "HTTP Chat API",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        690,
+        280
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{$node['Code Prepare'].json['chatId']}}",
+        "text": "={{$json.reply}}",
+        "additionalFields": {}
+      },
+      "id": "Telegram_Send",
+      "name": "Telegram Send Message",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        940,
+        280
+      ]
+    }
+  ],
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Code Prepare",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code Prepare": {
+      "main": [
+        [
+          {
+            "node": "HTTP Chat API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Chat API": {
+      "main": [
+        [
+          {
+            "node": "Telegram Send Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

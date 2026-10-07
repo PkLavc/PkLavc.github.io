@@ -1,0 +1,89 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Monoton&family=Poppins:wght@500;600;700&family=Raleway:wght@300&display=swap');
+
+body.seo-layout {
+    background: #171717;
+    color: #e0e0e0;
+    font-family: 'Inter', sans-serif;
+}
+
+main.seo-page,
+main.wrap {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 100px 20px 60px;
+}
+
+main.seo-page > h1,
+main.wrap > h1 {
+    font-size: clamp(2rem, 4vw, 3.1rem);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin-bottom: 20px;
+    color: #ffffff;
+}
+
+main.seo-page > h2,
+main.wrap > h2 {
+    margin-top: 26px;
+    margin-bottom: 10px;
+    color: #ffffff;
+    font-size: clamp(1.25rem, 2vw, 1.65rem);
+}
+
+main.seo-page p,
+main.wrap p,
+main.seo-page li,
+main.wrap li {
+    color: #b9b9b9;
+    line-height: 1.8;
+}
+
+main.seo-page a,
+main.wrap a {
+    color: var(--clr-primary);
+}
+
+main.seo-page a:hover,
+main.wrap a:hover {
+    color: #ffffff;
+}
+
+.seo-grid {
+    gap: 20px;
+}
+
+.seo-card {
+    background: #101010;
+    border: 1px solid #1a1a1a;
+    border-radius: 10px;
+    transition: border-color 0.3s ease, transform 0.3s ease;
+}
+
+.seo-card:hover {
+    background: #101010;
+    border-color: var(--clr-primary);
+    transform: translateY(-4px);
+}
+
+.tech-tag {
+    background: rgba(255, 255, 255, 0.08);
+    color: #d5e8f2;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+@media (max-width: 768px) {
+    main.seo-page,
+    main.wrap {
+        padding: 88px 14px 48px;
+    }
+
+    main.seo-page > h1,
+    main.wrap > h1 {
+        font-size: clamp(1.8rem, 7.2vw, 2.35rem);
+    }
+
+    .seo-card {
+        padding: 18px;
+        border-radius: 8px;
+    }
+}

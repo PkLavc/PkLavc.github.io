@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="PkLavc" />
+    <title>Autotrader | Autonomous Paper Trading System | Patrick Araujo</title>
+
+    <meta name="description" content="Autonomous paper-trading system using Kronos-base, PyTorch, GitHub Actions, portfolio constraints, safe model updates and a public dashboard.">
+    <meta property="og:title" content="Autotrader | Autonomous Paper Trading System | Patrick Araujo">
+    <meta property="og:description" content="Kronos-base forecasting, autonomous simulated portfolio management, GitHub Actions, public history and safe upstream updates.">
+    <meta property="og:url" content="https://pklavc.com/projects/autotrader/">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Autotrader | Autonomous Paper Trading System | Patrick Araujo">
+    <meta name="twitter:description" content="Kronos-base forecasting, autonomous simulated portfolio management, GitHub Actions, public history and safe upstream updates.">
+    <link rel="canonical" href="https://pklavc.com/projects/autotrader/">
+    <link rel="alternate" href="https://pklavc.com/projects/autotrader/" hreflang="en">
+    <link rel="alternate" href="https://pklavc.com/pt/projetos/autotrader/" hreflang="pt-BR">
+    <link rel="alternate" href="https://pklavc.com/es/proyectos/autotrader/" hreflang="es">
+    <link rel="alternate" href="https://pklavc.com/projects/autotrader/" hreflang="x-default">
+
+
+<meta name="robots" content="index, follow">
+
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=d15fe4e492">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Monoton&family=Poppins:wght@500&family=Raleway:wght@300&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Monoton&family=Poppins:wght@500&family=Raleway:wght@300&display=swap"></noscript>
+    <link rel="stylesheet" href="/css/global.css?v=6d8a856a8a">
+    <link rel="stylesheet" href="/css/projects.css?v=40b82e0f27">
+    <link rel="stylesheet" href="/css/omnichannel-case-study.css?v=c663924895">
+    <link rel="preload" as="style" href="/css/github-markdown-local.css?v=01d37f05ee">
+    <link rel="stylesheet" href="/css/github-markdown-local.css?v=01d37f05ee" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="/css/github-markdown-local.css?v=01d37f05ee"></noscript>
+
+    <style>
+        .project-hero {
+            padding: 60px 20px;
+            text-align: center;
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.12), rgba(0, 0, 0, 0.05));
+        }
+        .project-hero h1 {
+            font-size: 2.5rem;
+            margin: 20px 0;
+            color: #fff;
+        }
+        .project-category-badge {
+            display: inline-block;
+            background: rgba(120, 80, 255, 0.2);
+            border: 1px solid rgba(120, 80, 255, 0.5);
+            color: #a88bff;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+        .full-readme-section {
+            padding: 50px 20px;
+            background: rgba(255, 255, 255, 0.02);
+        }
+        .full-readme-container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        .full-readme-container .markdown-body {
+            background: #0d1117;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 10px;
+            padding: 24px;
+        }
+        .meta-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 10px;
+            margin: 16px 0 24px;
+        }
+        .meta-item {
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 10px;
+            padding: 10px 12px;
+            background: rgba(255, 255, 255, 0.02);
+        }
+        .meta-item strong {
+            display: block;
+            color: #fff;
+            margin-bottom: 4px;
+            font-size: 0.9rem;
+        }
+        .flowchart {
+            margin: 14px 0 24px;
+            padding: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            background: rgba(7, 12, 20, 0.8);
+        }
+        .flow-lane {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 8px;
+            margin: 6px 0;
+        }
+        .flow-step {
+            border: 1px solid rgba(168, 139, 255, 0.4);
+            border-radius: 8px;
+            padding: 8px 10px;
+            background: rgba(168, 139, 255, 0.08);
+            color: #e2d9ff;
+            font-size: 0.9rem;
+        }
+        .flow-arrow {
+            color: #a88bff;
+            font-weight: 700;
+            font-size: 1rem;
+            padding: 0 2px;
+        }
+        .section-spacer {
+            margin-top: 26px;
+        }
+        .stack-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 14px 0 24px;
+            font-size: 0.92rem;
+        }
+        .stack-table th,
+        .stack-table td {
+            padding: 10px 14px;
+            text-align: left;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .stack-table th {
+            background: rgba(168, 139, 255, 0.12);
+            color: #c4aeff;
+            font-weight: 600;
+        }
+        .stack-table td {
+            color: #ccc;
+        }
+        .stack-table tr:hover td {
+            background: rgba(255,255,255,0.02);
+        }
+        .project-visual-section {
+            padding: 36px 20px;
+            background: rgba(255, 255, 255, 0.02);
+        }
+        .project-visual-container {
+            max-width: 1040px;
+            margin: 0 auto;
+        }
+        .project-visual-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 16px;
+        }
+        .project-visual-grid-secondary {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 16px;
+        }
+        .project-visual-card {
+            margin: 0;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 10px;
+            overflow: hidden;
+            background: #0d1117;
+        }
+        .project-visual-card img {
+            display: block;
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+        }
+        .project-visual-card figcaption {
+            padding: 12px 14px;
+            color: #bfcbd3;
+            line-height: 1.6;
+            font-size: 0.92rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        @media (max-width: 860px) {
+            .project-visual-grid-secondary {
+                grid-template-columns: 1fr;
+            }
+        }
+        .cta-section {
+            padding: 40px 20px 60px;
+            text-align: center;
+        }
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #a88bff, #7c3aed);
+            color: #fff;
+            padding: 14px 34px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(168, 139, 255, 0.3);
+        }
+    </style>
+    <script type="application/ld+json" data-schema="software-source-code">{"@context":"https://schema.org","@type":"SoftwareSourceCode","name":"Autotrader | Autonomous Paper Trading System | Patrick Araujo","description":"Autonomous paper-trading system using Kronos-base, PyTorch, GitHub Actions, portfolio constraints, safe model updates and a public dashboard.","url":"https://pklavc.com/projects/autotrader/","author":{"@type":"Person","name":"Patrick Araujo","url":"https://pklavc.com/about/"},"creator":{"@type":"Person","name":"Patrick Araujo"},"programmingLanguage":["Python","JavaScript","PyTorch"],"runtimePlatform":"GitHub Actions","codeRepository":"https://github.com/PkLavc/Autotrader"}</script>
+    <link rel="search" type="application/opensearchdescription+xml" title="PkLavc" href="/opensearch.xml">
+</head>
+<body>
+    <div id="breaker"></div>
+    <div id="breaker-two"></div>
+    <div id="all">
+
+        <main role="main" class="omni-case">
+    <section class="project-hero">
+      <span class="project-category-badge">Quantitative AI</span>
+      <div class="project-hero-title"><img src="/images/projects/autotrader.png?v=4cc0596f" alt="" class="project-hero-logo" width="76" height="76" loading="eager" decoding="async"><h1>Autotrader</h1></div>
+      <p style="color:#aaa;font-size:1.1rem;margin-top:15px;">Autonomous market-research system that uses Kronos-base to forecast assets, build a simulated portfolio, rebalance automatically and record every decision.</p>
+    </section>
+    <section class="full-readme-section" aria-label="Autotrader visual case study"><div class="full-readme-container">
+      <h2 style="color:#fff;margin-bottom:20px;">Architecture, execution and strategy history</h2>
+      <article class="markdown-body">
+        <h2>Autotrader</h2>
+        <p class="omni-intro"><strong>Autotrader</strong> is an autonomous paper-trading experiment. The system collects market data, runs Kronos-base, compares forecasts, applies fixed risk limits, simulates buys and sells, and persists the result through GitHub Actions without requiring manual decisions on each run.</p>
+        <div class="omni-legend"><span class="omni-chip" style="--chip:#69b7ff">OHLCV data</span><span class="omni-chip" style="--chip:#a88bff">Kronos-base</span><span class="omni-chip" style="--chip:#58d6a9">Portfolio + risk</span><span class="omni-chip" style="--chip:#f4c86a">GitHub Actions</span></div>
+        <div class="omni-kpis"><div class="omni-kpi"><strong>20</strong><span>assets monitored</span></div><div class="omni-kpi"><strong>5</strong><span>maximum positions</span></div><div class="omni-kpi"><strong>18%</strong><span>max position weight</span></div><div class="omni-kpi"><strong>10%</strong><span>minimum cash</span></div></div>
+
+        <section class="omni-section"><div class="omni-section-heading"><div><span class="omni-label">System map</span><h3>From market data to portfolio history</h3></div><p>The model does not place orders directly. It produces forecasts; a separate layer converts those signals into allocations under explicit limits and records the simulation.</p></div>
+          <figure class="omni-stage"><div class="omni-stage-title"><span>End-to-end architecture</span><span class="omni-stage-dots" aria-hidden="true"><i></i><i></i><i></i></span></div><div class="omni-architecture">
+            <div class="omni-arch-column"><span class="omni-arch-title">Market</span><div class="omni-node"><strong>20 liquid assets</strong><small>US stocks and ETFs</small></div><div class="omni-node"><strong>Daily OHLCV</strong><small>Recent history per asset</small></div><div class="omni-node"><strong>Validation</strong><small>Missing data never becomes an order</small></div></div><div class="omni-arrow-column" aria-hidden="true">→</div>
+            <div class="omni-arch-column"><div class="omni-node omni-node--core"><strong>Kronos-base</strong><small>Probabilistic 5-session forecast</small></div><div class="omni-node omni-node--core"><strong>Ranking</strong><small>Expected return per asset</small></div><div class="omni-node"><strong>Portfolio builder</strong><small>Selects eligible signals</small></div><div class="omni-node"><strong>Risk management</strong><small>Position and cash limits</small></div><div class="omni-node"><strong>Paper executor</strong><small>Simulated buys, sells and slippage</small></div></div><div class="omni-arrow-column" aria-hidden="true">↔</div>
+            <div class="omni-arch-column"><div class="omni-node omni-node--data"><strong>state.json</strong><small>Cash, positions, trades and NAV</small></div><div class="omni-node omni-node--data"><strong>latest.json</strong><small>Forecasts and run metrics</small></div><div class="omni-node omni-node--data"><strong>Public dashboard</strong><small>Charts, signals and history</small></div></div>
+          </div><figcaption class="omni-caption">Data → Kronos-base → ranking → constrained portfolio → simulated execution → public history.</figcaption></figure>
+        </section>
+
+        <section class="omni-section"><div class="omni-section-heading"><div><span class="omni-label">Execution</span><h3>What happens in each autonomous run</h3></div><p>The workflow only persists a new state after dependencies, tests, market-data collection and inference complete successfully.</p></div>
+          <div class="omni-stage"><div class="omni-stage-title"><span>Execution agendada</span><span class="omni-stage-dots" aria-hidden="true"><i></i><i></i><i></i></span></div><div class="omni-sequence">
+            <div class="omni-sequence-step"><strong>Prepare</strong><span>Checkout, Python and model cache.</span></div>
+            <div class="omni-sequence-step"><strong>Pin</strong><span>Loads the validated Kronos revision.</span></div>
+            <div class="omni-sequence-step"><strong>Test</strong><span>Portfolio and persistence tests must pass.</span></div>
+            <div class="omni-sequence-step"><strong>Collect</strong><span>Downloads daily history for 20 assets.</span></div>
+            <div class="omni-sequence-step"><strong>Forecast</strong><span>Kronos-base forecasts the next five sessions.</span></div>
+            <div class="omni-sequence-step"><strong>Rank</strong><span>Expected returns are ranked.</span></div>
+            <div class="omni-sequence-step"><strong>Rebalance</strong><span>Applies limits and simulates orders.</span></div>
+            <div class="omni-sequence-step"><strong>Persist</strong><span>State and report are written to main.</span></div>
+          </div></div>
+        </section>
+
+        <section class="omni-section"><div class="omni-section-heading"><div><span class="omni-label">Engine and strategy</span><h3>Forecasting and decision logic remain separate</h3></div><p>Kronos is responsible for price forecasting. Autotrader converts that forecast into a portfolio without allowing the model to bypass limits defined in code.</p></div>
+          <figure class="omni-stage"><div class="omni-stage-title"><span>System responsibilities</span><span class="omni-stage-dots" aria-hidden="true"><i></i><i></i><i></i></span></div><div class="omni-agent-scroll"><svg class="omni-agent-svg" viewBox="0 0 1000 540" role="img" aria-labelledby="autotrader-graph-pt"><title id="autotrader-graph-pt">Engine and strategy do Autotrader</title>
+            <line x1="500" y1="260" x2="190" y2="100" class="link"/><line x1="500" y1="260" x2="190" y2="430" class="link"/><line x1="500" y1="260" x2="810" y2="100" class="link"/><line x1="500" y1="260" x2="810" y2="430" class="link"/><line x1="500" y1="310" x2="500" y2="435" class="link link--quality"/>
+            <rect x="370" y="205" width="260" height="110" rx="16" class="agent-box agent-box--hub"/><text x="500" y="242" class="agent-name">Autotrader</text><text x="500" y="267" class="agent-desc">Portfolio orchestration</text>
+            <rect x="55" y="50" width="270" height="95" rx="16" class="agent-box"/><text x="190" y="87" class="agent-name">Data</text><text x="190" y="112" class="agent-desc">Validated OHLCV</text>
+            <rect x="55" y="382" width="270" height="95" rx="16" class="agent-box"/><text x="190" y="419" class="agent-name">Kronos-base</text><text x="190" y="444" class="agent-desc">5-session forecast</text>
+            <rect x="675" y="50" width="270" height="95" rx="16" class="agent-box"/><text x="810" y="87" class="agent-name">Ranking</text><text x="810" y="112" class="agent-desc">Expected-return score</text>
+            <rect x="675" y="382" width="270" height="95" rx="16" class="agent-box"/><text x="810" y="419" class="agent-name">Paper executor</text><text x="810" y="444" class="agent-desc">Simulation + slippage</text>
+            <rect x="370" y="430" width="260" height="90" rx="16" class="agent-box agent-box--quality"/><text x="500" y="467" class="agent-name">Risk rules</text><text x="500" y="492" class="agent-desc">Limits not delegated to the model</text>
+          </svg></div><figcaption class="omni-caption">A larger model does not receive broader authority: risk rules remain outside Kronos and deterministic.</figcaption></figure>
+        </section>
+
+        <section class="omni-section"><div class="omni-section-heading"><div><span class="omni-label">Selection</span><h3>How signals become a portfolio</h3></div><p>The initial strategy favors simplicity and auditability: only signals above the threshold qualify, the strongest are selected, and no asset can dominate the portfolio.</p></div>
+          <div class="omni-stage"><div class="omni-stage-title"><span>Allocation pipeline</span><span class="omni-stage-dots" aria-hidden="true"><i></i><i></i><i></i></span></div>
+            <div class="omni-dual-flow">
+              <div class="omni-flow-panel"><h4>Entrada</h4><div class="omni-pipeline"><span>20 assets</span><b>→</b><span>Kronos-base</span><b>→</b><span>Expected return</span><b>→</b><span>Filter ≥ 1%</span><b>→</b><span>Top 5</span></div></div>
+              <div class="omni-flow-panel"><h4>Proteções</h4><div class="omni-pipeline"><span>Max. 18% / ativo</span><b>→</b><span>Cash ≥ 10%</span><b>→</b><span>No margin</span><b>→</b><span>Thresholded rebalance</span></div><div class="omni-note">The result is a verifiable simulated portfolio. Model choice does not remove forecast, market-regime or data risk.</div></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="omni-section"><div class="omni-section-heading"><div><span class="omni-label">Governed updates</span><h3>Upstream changes never enter the strategy blindly</h3></div><p>The project tracks upstream Kronos, but never blindly pulls it into the active strategy. A candidate revision must pass tests before being pinned.</p></div>
+          <figure class="omni-stage"><div class="omni-stage-title"><span>Safe Kronos update</span><span class="omni-stage-dots" aria-hidden="true"><i></i><i></i><i></i></span></div><div class="omni-learning">
+            <div class="omni-learning-step"><em>01</em><strong>Detect</strong><span>New upstream revision</span></div>
+            <div class="omni-learning-step"><em>02</em><strong>Download</strong><span>Candidate code and weights</span></div>
+            <div class="omni-learning-step"><em>03</em><strong>Regression</strong><span>Official Kronos tests</span></div>
+            <div class="omni-learning-step"><em>04</em><strong>Autotrader</strong><span>Portfolio and risk tests</span></div>
+            <div class="omni-learning-step omni-learning-step--gate"><em>05</em><strong>Compatibility</strong><span>End-to-end inference</span></div>
+            <div class="omni-learning-step omni-learning-step--gate"><em>06</em><strong>Failed?</strong><span>Keep previous version</span></div>
+            <div class="omni-learning-step omni-learning-step--release"><em>07</em><strong>Passed</strong><span>Update pinned refs</span></div>
+            <div class="omni-learning-step omni-learning-step--release"><em>08</em><strong>Next run</strong><span>New revision becomes active</span></div>
+          </div><figcaption class="omni-caption">Upstream code is tested in a job without write permission; persistence remains a separate step.</figcaption></figure>
+        </section>
+
+        <section class="omni-section"><div class="omni-section-heading"><div><span class="omni-label">Observability</span><h3>The history becomes more than a JSON file</h3></div><p>The files remain the data source, while the public interface turns the history into a continuous visual record.</p></div>
+          <div class="omni-mockups">
+            <figure class="omni-window"><div class="omni-window-bar"><span>Autotrader Dashboard</span><span class="omni-stage-dots"><i></i><i></i><i></i></span></div><div class="omni-window-body"><aside class="omni-mock-sidebar"><div class="omni-mock-brand">AUTO</div><div class="omni-mock-nav"><span class="active">Portfolio</span><span>Forecasts</span><span>Positions</span><span>Trades</span><span>Risk</span></div></aside><div class="omni-mock-main"><div class="omni-mock-title"><span>Paper Portfolio</span><span class="omni-mock-pill">Kronos-base</span></div><div class="omni-mock-grid"><div class="omni-mock-stat"><b>$9,991</b><small>NAV</small></div><div class="omni-mock-stat"><b>5</b><small>positions</small></div><div class="omni-mock-stat"><b>20</b><small>assets analisados</small></div></div><div class="omni-mock-table"><div class="omni-mock-row"><span>Ativo</span><span>Sinal</span><span>Peso</span></div><div class="omni-mock-row"><span>NFLX</span><span>+25.25%</span><span>18%</span></div><div class="omni-mock-row"><span>HD</span><span>+12.31%</span><span>18%</span></div><div class="omni-mock-row"><span>WMT</span><span>+4.37%</span><span>18%</span></div></div></div></div></figure>
+            <figure class="omni-window omni-chat-window"><div class="omni-window-bar"><span>Execution log</span><span>● paper</span></div><div class="omni-window-body"><div class="omni-chat-area"><div class="omni-chat-head">Latest decisions</div><div class="omni-chat-messages"><div class="omni-bubble omni-bubble--bot">↗ BUY NFLX · 18%</div><div class="omni-bubble omni-bubble--bot">↗ BUY HD · 18%</div><div class="omni-bubble omni-bubble--bot">↗ BUY WMT · 18%</div><div class="omni-bubble">Future runs update the history automatically.</div></div><div class="omni-chat-input">Data públicos e reproduzíveis</div></div></div></figure>
+          </div>
+        </section>
+
+        <section class="omni-section"><div class="omni-section-heading"><div><span class="omni-label">Persistence</span><h3>Small persistent state, disposable execution</h3></div><p>The GitHub runner can disappear after every job. The state required to continue the simulation remains in the repository, while the model and dependencies can be restored again.</p></div>
+          <figure class="omni-stage"><div class="omni-stage-title"><span>Persistent vs ephemeral</span><span class="omni-stage-dots" aria-hidden="true"><i></i><i></i><i></i></span></div><div class="omni-data-map"><div class="omni-data-stack"><h4>GitHub Actions</h4><div class="omni-data-box"><strong>Temporary runner</strong><small>CPU, Python e PyTorch</small></div><div class="omni-data-box"><strong>Kronos-base</strong><small>Downloaded/cached</small></div><div class="omni-data-box"><strong>Market data</strong><small>Collected each run</small></div><div class="omni-data-box"><strong>Inferência</strong><small>Discarded after the job</small></div></div><div class="omni-data-arrow" aria-hidden="true">⇄</div><div class="omni-data-stack"><h4>Repository</h4><div class="omni-data-box"><strong>state.json</strong><small>Portfolio and history</small></div><div class="omni-data-box"><strong>latest.json</strong><small>Latest analysis</small></div><div class="omni-data-box"><strong>Refs fixados</strong><small>Validated revisions</small></div><div class="omni-data-box"><strong>Dashboard</strong><small>Public visualization</small></div></div></div><figcaption class="omni-caption">Real money is not part of this phase. Every execution shown in the dashboard is paper trading.</figcaption></figure>
+        </section>
+
+        <section class="omni-section"><div class="omni-section-heading"><div><span class="omni-label">Trust and safety</span><h3>Controls around every run</h3></div><p>Automation does not mean absence of limits. The system is designed to fail without inventing prices, without persisting partial state, and without granting upstream code write permission.</p></div>
+          <div class="omni-safety-grid"><div class="omni-safety"><strong>Data incompletos</strong><span>Assets without enough history are skipped instead of generating an artificial position.</span></div><div class="omni-safety"><strong>Previous mark</strong><span>A temporarily missing quote uses the last known mark so a position is not zeroed by error.</span></div><div class="omni-safety"><strong>Slippage</strong><span>Simulated buys and sells include execution cost instead of assuming perfect fills.</span></div><div class="omni-safety"><strong>Permission separation</strong><span>Inference runs read-only; only the persistence job receives contents: write.</span></div><div class="omni-safety"><strong>Concurrency</strong><span>Concurrent runs are blocked so they cannot race over the same portfolio state.</span></div><div class="omni-safety"><strong>Paper trading</strong><span>No broker credentials or real-money orders are active in this version.</span></div></div>
+        </section>
+
+        <section class="omni-section"><h3>A continuous experiment, not a hand-picked result</h3><p class="omni-intro">The goal is to let the system accumulate decisions and performance over time. Wins, errors, drawdowns and position changes remain visible in the same history.</p></section>
+      </article>
+    </div></section>
+    <section class="cta-section" aria-label="Project links"><a class="cta-button" href="https://pklavc.com/Autotrader/">Open Autotrader dashboard</a> <a class="cta-button" style="margin-left:10px" href="https://github.com/PkLavc/Autotrader" target="_blank" rel="noopener noreferrer">View code on GitHub</a></section>
+  </main>
+    </div>
+
+<footer class="footer-minimal">
+        <div class="footer-container">
+            <div class="footer-link-list" aria-label="Footer links">
+                <a class="footer-link-pill" href="https://github.com/PkLavc" target="_blank" rel="noopener noreferrer">GitHub</a>
+                <a class="footer-link-pill" href="https://www.linkedin.com/in/pklavc/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+                <a class="footer-link-pill" href="mailto:contact@pklavc.com">Email</a>
+                <a class="footer-link-pill footer-link-pill-accent" href="https://github.com/sponsors/PkLavc" target="_blank" rel="noopener noreferrer">Sponsor me</a>
+            </div>
+            <p class="footer-meta"><span class="footer-copyright-line">&copy; <span data-current-year></span> Patrick Araujo</span> <span class="footer-meta-separator">&bull;</span><span class="footer-legal-inline" aria-label="Legal links"><a class="footer-legal-link" href="/privacy-policy/">Privacy Policy</a><span aria-hidden="true">/</span><a class="footer-legal-link" href="/terms-of-use/">Terms of Use</a><span aria-hidden="true">/</span><a class="footer-legal-link" href="/editorial-policy/">Editorial Policy</a><span aria-hidden="true">/</span><a class="footer-legal-link" href="/credits/">Credits</a></span></p>
+        </div>
+    </footer>
+
+    <script>
+        (function() {
+            document.querySelectorAll('[data-current-year]').forEach(function(node) {
+                node.textContent = String(new Date().getFullYear());
+            });
+        }());
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.2.6/gsap.min.js" defer></script>
+        <script src="/js/i18n.js?v=397fd68aed" defer></script>
+    <script src="/js/jquery.min.js?v=d482871a5e" defer></script>
+    <script src="/js/index.js?v=20261005amazon-white-logo1" defer></script>
+</body>
+</html>

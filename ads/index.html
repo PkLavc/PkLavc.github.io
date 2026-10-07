@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Prévia local dos banners | PkLavc</title>
+  <link rel="stylesheet" href="/ads/ads.css?v=20261007conflicts-resolved1">
+  <style>
+    :root{color-scheme:dark;font-family:Inter,system-ui,"Segoe UI",sans-serif;background:#090d14;color:#edf2f7}
+    *{box-sizing:border-box}
+    body{margin:0;padding:32px 20px 80px}
+    main{width:min(1120px,100%);margin:0 auto}
+    h1{margin:0 0 8px;font-size:clamp(1.6rem,4vw,2.4rem)}
+    .intro{margin:0 0 24px;color:#aab6c4;line-height:1.5}
+    .preview-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:18px}
+    .pklavc-ad{margin:0 0 18px}
+    .pklavc-ad::before{content:attr(data-ad-campaign);display:block;margin:0 0 8px;color:#78dce8;font:700 11px/1.3 ui-monospace,monospace;letter-spacing:.08em;text-transform:uppercase}
+    .pklavc-ad__link{pointer-events:none;cursor:default}
+    @media(max-width:760px){body{padding:22px 12px 54px}}
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Prévia local dos banners</h1>
+    <p class="intro">Esta página usa as campanhas e o renderizador compartilhado da Store. Os links estão desativados e nenhuma consulta de localização é feita.</p>
+    <section class="preview-grid" data-ad-preview-grid aria-label="Campanhas de anúncio"></section>
+  </main>
+  <script>window.PKLAVC_ADS_TEST_PREVIEW = true;</script>
+  <script src="/ads/config.js?v=20261007conflicts-resolved1"></script>
+  <script>
+    (function(){
+      var ads = window.PKLAVC_BLOG_ADS;
+      if (!ads) return;
+      ads.geoEndpoint = '';
+      var campaigns = Object.keys(ads.campaigns).filter(function(id){
+        var campaign = ads.campaigns[id];
+        return campaign.type === 'image' && campaign.locales && campaign.locales.pt;
+      });
+      window.PKLAVC_ADS_TEST_CAMPAIGNS = campaigns;
+    })();
+  </script>
+  <script src="/ads/ads.js?v=20261007conflicts-resolved1"></script>
+</body>
+</html>

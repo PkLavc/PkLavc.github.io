@@ -1,0 +1,255 @@
+import crypto from "node:crypto";
+import { execFileSync } from "node:child_process";
+import fs from "node:fs";
+import path from "node:path";
+import { normalizeSeoDirectory } from "./normalize-seo.mjs";
+import { generateDiscovery } from "./generate-discovery.mjs";
+import { enhanceStoreArtifact } from "./enhance-store-artifact.mjs";
+
+const root = process.cwd();
+const outDir = path.join(root, ".pages-dist");
+
+const publicEntries = [
+  "404.html",
+  "410.html",
+  "503.html",
+  ".well-known",
+  "ads.txt",
+  "ai.txt",
+  "apple-touch-icon.png",
+  "browserconfig.xml",
+  "certifications",
+  "changelog",
+  "context.txt",
+  "credits",
+  "development",
+  "editorial-policy",
+  "favicon.ico",
+  "favicon.svg",
+  "humans.txt",
+  "llms-full.txt",
+  "llms.txt",
+  "indexnow-key.txt",
+  "index.html",
+  "maintenance",
+  "manifest.webmanifest",
+  "media-kit",
+  "now",
+  "opensearch.xml",
+  "portfolio-context.txt",
+  "privacy-policy",
+  "resume",
+  "robots.txt",
+  "search",
+  "sitemap.xml",
+  "sitemap-index.xml",
+  "sitemaps",
+  "status",
+  "terms-of-use",
+  "uses",
+  "about",
+  "adm",
+  "ads",
+  "assets",
+  "collections",
+  "css",
+  "es",
+  "images",
+  "js",
+  "lab",
+  "projects",
+  "pt",
+  "ia",
+  "stacks",
+  "store",
+  "visitors",
+  "ags",
+];
+
+const textExtensions = new Set([".html", ".css", ".js"]);
+const assetExtensions = new Set([
+  ".css",
+  ".js",
+  ".svg",
+  ".webp",
+  ".png",
+  ".jpg",
+  ".jpeg",
+  ".gif",
+  ".ico",
+  ".json",
+  ".webmanifest",
+  ".glb",
+  ".wasm",
+]);
+
+const localAssetPattern =
+  /(?<prefix>["'(=\s])(?<url>https:\/\/pklavc\.com\/[^"'\s<>?#)]+\.(?:css|js|svg|webp|png|jpg|jpeg|gif|ico|json|webmanifest|glb|wasm)|(?:\/|\.\.?\/|[A-Za-z0-9_.-]+\/)[^"'\s<>?#)]+\.(?:css|js|svg|webp|png|jpg|jpeg|gif|ico|json|webmanifest|glb|wasm))(\?v=(?<version>[A-Za-z0-9._-]+))?/gi;
+
+
+function removeDirectory(target) {
+  if (path.resolve(target) !== path.join(root, ".pages-dist") || (fs.existsSync(target) && fs.lstatSync(target).isSymbolicLink())) {
+    throw new Error("Refusing to clean an unexpected Pages output directory.");
+  }
+  fs.rmSync(target, { recursive: true, force: true });
+}
+
+function copyEntry(source, target) {
+  if (!fs.existsSync(source)) return;
+
+  const stat = fs.statSync(source);
+  if (stat.isDirectory()) {
+    fs.mkdirSync(target, { recursive: true });
+    for (const name of fs.readdirSync(source)) {
+      if (name === "desktop.ini" || name === ".DS_Store" || name === "Thumbs.db") {
+        continue;
+      }
+      copyEntry(path.join(source, name), path.join(target, name));
+    }
+    return;
+  }
+
+  fs.mkdirSync(path.dirname(target), { recursive: true });
+  fs.copyFileSync(source, target);
+}
+
+function publishAutotraderDashboard() {
+  const source = path.join(root, ".autotrader-dashboard");
+  const target = path.join(outDir, "Autotrader");
+
+  const index = path.join(source, "index.html");
+  const assets = path.join(source, "assets");
+
+  if (!fs.existsSync(index) || !fs.existsSync(assets)) {
+    throw new Error("Autotrader dashboard checkout is missing index.html or assets/.");
+  }
+
+  copyEntry(index, path.join(target, "index.html"));
+  copyEntry(assets, path.join(target, "assets"));
+}
+
+function walkFiles(dir) {
+  const result = [];
+  if (!fs.existsSync(dir)) return result;
+
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    const fullPath = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      result.push(...walkFiles(fullPath));
+    } else if (entry.isFile()) {
+      result.push(fullPath);
+    }
+  }
+
+  return result;
+}
+
+function toPosixPath(filePath) {
+  return filePath.split(path.sep).join("/");
+}
+
+function getHash(filePath) {
+  return crypto.createHash("sha256").update(fs.readFileSync(filePath)).digest("hex").slice(0, 10);
+}
+
+function resolveAsset(fromFile, rawUrl) {
+  if (rawUrl.includes("*")) return null;
+
+  let urlPath = rawUrl;
+  if (urlPath.startsWith("https://pklavc.com/")) {
+    urlPath = urlPath.replace("https://pklavc.com", "");
+  }
+
+  const cleanPath = urlPath.split("?")[0];
+  let candidate;
+  if (cleanPath.startsWith("/")) {
+    candidate = path.join(outDir, cleanPath.slice(1));
+  } else {
+    candidate = path.resolve(path.dirname(fromFile), cleanPath);
+  }
+
+  if (!candidate.startsWith(outDir) || !fs.existsSync(candidate)) {
+    return null;
+  }
+
+  const stat = fs.statSync(candidate);
+  if (!stat.isFile() || !assetExtensions.has(path.extname(candidate).toLowerCase())) {
+    return null;
+  }
+
+  return candidate;
+}
+
+function updateCacheBusting() {
+  const hashCache = new Map();
+  let updatedFiles = 0;
+  let updatedRefs = 0;
+
+  for (const file of walkFiles(outDir)) {
+    if (!textExtensions.has(path.extname(file).toLowerCase())) continue;
+
+    const original = fs.readFileSync(file, "utf8");
+    const updated = original.replace(localAssetPattern, (match, ...args) => {
+      const groups = args[args.length - 1];
+      const rawUrl = groups.url;
+      const asset = resolveAsset(file, rawUrl);
+      if (!asset) return match;
+
+      if (!hashCache.has(asset)) {
+        hashCache.set(asset, getHash(asset));
+      }
+
+      const hash = hashCache.get(asset);
+      const next = `${groups.prefix}${rawUrl}?v=${hash}`;
+      if (next !== match) updatedRefs += 1;
+      return next;
+    });
+
+    if (updated !== original) {
+      fs.writeFileSync(file, updated);
+      updatedFiles += 1;
+    }
+  }
+
+  return { updatedFiles, updatedRefs, assets: hashCache.size };
+}
+
+function main() {
+  removeDirectory(outDir);
+  fs.mkdirSync(outDir, { recursive: true });
+
+  for (const entry of publicEntries) {
+    copyEntry(path.join(root, entry), path.join(outDir, entry));
+  }
+
+  publishAutotraderDashboard();
+
+  const storeStats = enhanceStoreArtifact(outDir);
+  console.log(`Store prerender: ${storeStats.pages} page(s), ${storeStats.products} product(s).`);
+
+  // Generate discovery from the exact HTML that will be deployed on every build.
+  const seoStats = normalizeSeoDirectory(outDir);
+  console.log(`SEO normalization: ${seoStats.updated} of ${seoStats.pages} HTML files updated.`);
+  execFileSync(process.execPath, [path.join(root, "scripts", "generate-sitemaps.mjs"), "--root", outDir], { cwd: root, stdio: "inherit" });
+  generateDiscovery(outDir);
+  const commit = execFileSync("git", ["rev-parse", "HEAD"], { cwd: root, encoding: "utf8" }).trim();
+  fs.mkdirSync(path.join(outDir, ".well-known"), { recursive: true });
+  fs.writeFileSync(path.join(outDir, ".well-known", "site-deployment.json"), JSON.stringify({ commit }) + "\n");
+
+  const files = walkFiles(outDir);
+  const totalBytes = files.reduce((sum, file) => sum + fs.statSync(file).size, 0);
+  const cacheStats = updateCacheBusting();
+  const finalFiles = walkFiles(outDir);
+  const finalBytes = finalFiles.reduce((sum, file) => sum + fs.statSync(file).size, 0);
+
+  console.log(`Pages artifact: ${toPosixPath(outDir)}`);
+  console.log(`Copied files: ${files.length}`);
+  console.log(`Initial size: ${(totalBytes / 1024 / 1024).toFixed(2)} MB`);
+  console.log(`Cache-busted files: ${cacheStats.updatedFiles}`);
+  console.log(`Cache-busted refs: ${cacheStats.updatedRefs}`);
+  console.log(`Referenced assets hashed: ${cacheStats.assets}`);
+  console.log(`Final files: ${finalFiles.length}`);
+  console.log(`Final size: ${(finalBytes / 1024 / 1024).toFixed(2)} MB`);
+}
+
+main();

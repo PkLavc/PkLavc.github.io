@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <!-- Store shell is static. Product data is loaded from /store/products.json. -->
+  <script>
+    if (window.location.hostname === "pklavc.github.io") {
+      window.location.replace("https://pklavc.com" + window.location.pathname + window.location.search + window.location.hash);
+    }
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="PkLavc">
+  <meta name="description" content="Produtos e serviços de diferentes lojas, que podem incluir parceiras.">
+  <meta name="robots" content="index, follow">
+  <meta property="og:title" content="Loja | PkLavc">
+  <meta property="og:description" content="Produtos e serviços de diferentes lojas, que podem incluir parceiras.">
+  <meta property="og:url" content="https://pklavc.com/store/pt/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="PkLavc Store">
+  <link rel="canonical" href="https://pklavc.com/store/pt/">
+  <link rel="alternate" href="https://pklavc.com/store/" hreflang="en">
+  <link rel="alternate" href="https://pklavc.com/store/pt/" hreflang="pt-BR">
+  <link rel="alternate" href="https://pklavc.com/store/es/" hreflang="es">
+  <link rel="alternate" href="https://pklavc.com/store/" hreflang="x-default">
+  <title>Loja | PkLavc</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=d15fe4e492">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Monoton&family=Poppins:wght@500&family=Raleway:wght@300&display=optional" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Monoton&family=Poppins:wght@500&family=Raleway:wght@300&display=optional"></noscript>
+  <link rel="stylesheet" href="/css/global.css?v=428a2933af">
+  <link rel="stylesheet" href="/store/assets/spotlight-navigation.css?v=0195e5f140">
+  <link rel="stylesheet" href="/store/assets/store.css?v=5c19c3dc71">
+</head>
+<body class="seo-layout ready" data-store-locale="pt">
+  <div id="all">
+    <header class="store-site-header"><a class="store-wordmark" href="#store-products">PKLAVC<span>STORE</span></a><input class="store-search" type="search" placeholder="Buscar produtos" aria-label="Buscar produtos" data-store-search></header>
+    <main class="store-main">
+      <div class="catalog-layout">
+        <aside class="filter-sidebar" aria-label="Categoria">
+          <div class="filter-sidebar-heading"><h2>Filtrar</h2><button type="button" data-clear-filters>Limpar filtros</button></div>
+          <label class="filter-price-title">Moeda <select data-currency><option value="auto">Automática (localização)</option></select></label>
+          <p class="filter-currency-note" data-currency-note>Conversão diária estimada; o preço final é definido pela loja.</p>
+          <div class="filter-price-inputs"><label><span>Mín.</span><input type="number" data-min-price value="" step="any" disabled></label><label><span>Máx.</span><input type="number" data-max-price value="" step="any" disabled></label></div>
+          <label class="filter-option filter-stock"><input type="checkbox" data-in-stock><span>Em estoque</span></label>
+          <div data-dynamic-filters></div>
+        </aside>
+        <section class="store-results" aria-label="Loja">
+          <div class="results-toolbar"><p><strong data-result-count>0</strong> produtos</p><div class="results-controls"><label>Ordenar <select data-sort><option value="featured">Destaques</option><option value="price-asc">Menor preço</option><option value="price-desc">Maior preço</option><option value="name">Nome</option></select></label><div class="column-picker" role="group" aria-label="Produtos por linha"><span>Produtos por linha</span><button type="button" data-columns="2" aria-label="2" title="2" aria-pressed="false">2</button><button type="button" data-columns="3" aria-label="3" title="3" aria-pressed="false">3</button><button type="button" data-columns="4" aria-label="4" title="4" aria-pressed="true">4</button></div></div></div>
+          <p class="store-empty store-loading" data-store-loading>Carregando produtos...</p>
+          <section class="store-grid" id="store-products" data-store-grid data-columns="4"></section>
+          <p class="store-empty store-no-results" data-no-results hidden>Nenhum produto encontrado.</p>
+        </section>
+      </div>
+    </main>
+  </div>
+  <footer class="store-footer">
+    <div class="store-footer-inner">
+      <div class="store-footer-left">
+        <a class="store-footer-brand" href="#store-products">PKLAVC<span>STORE</span></a>
+        <p class="store-footer-note">&copy; 2026 PkLavc Store</p>
+        <nav aria-label="Links institucionais">
+          <a href="/pt/politica-de-privacidade/">Política de Privacidade</a><a href="/pt/termos-de-uso/">Termos de Uso</a><a href="/pt/politica-editorial/">Política Editorial</a>
+        </nav>
+      </div>
+      <p class="store-footer-disclosure" id="store-notice"><strong>Aviso</strong>Produtos e serviços podem ser oferecidos por lojas parceiras. O pklavc.com não se responsabiliza por nenhuma compra, pagamento, entrega, prestação de serviço, devolução ou garantia.</p>
+    </div>
+  </footer>
+  <script src="/store/assets/store-currency.js?v=7cd0bba638" defer></script>
+  <script src="/store/assets/store-runtime.js?v=67046b1f02" defer></script>
+  <script src="/js/i18n.js?v=1e03250d74" defer></script>
+  <script src="/js/jquery.min.js?v=d482871a5e" defer></script>
+  <script src="/store/assets/spotlight-navigation.js?v=095cade3ba" defer></script>
+  <script src="/js/index.js?v=20261005amazon-logo-restore1" defer></script>
+</body>
+</html>
