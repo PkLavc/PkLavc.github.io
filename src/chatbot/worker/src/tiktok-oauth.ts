@@ -1,3 +1,4 @@
+// TikTok sandbox OAuth exchange; secrets are injected by the deploy workflow.
 export interface TikTokOAuthEnv {
   SESSIONS: KVNamespace;
   TIKTOK_SANDBOX_CLIENT_KEY?: string;
