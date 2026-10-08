@@ -3,13 +3,11 @@ const GITHUB_OIDC_JWKS = "https://token.actions.githubusercontent.com/.well-know
 const EXPECTED_AUDIENCE = "https://api.pklavc.com/tiktok/publish";
 const EXPECTED_REPOSITORIES = new Set([
   "PkLavc/PkLavc.github.io",
-  "Macca-the-Gator/lab",
 ]);
 const EXPECTED_REF = "refs/heads/main";
 const EXPECTED_WORKFLOW_REFS = new Set([
   "PkLavc/PkLavc.github.io/.github/workflows/private-blog-social.yml@refs/heads/main",
   "PkLavc/PkLavc.github.io/.github/workflows/tiktok-sandbox-test.yml@refs/heads/main",
-  "Macca-the-Gator/lab/.github/workflows/gta-blog.yml@refs/heads/main",
 ]);
 
 type JwtHeader = {
