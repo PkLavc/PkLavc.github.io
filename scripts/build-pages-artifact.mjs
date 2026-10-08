@@ -51,6 +51,7 @@ const publicEntries = [
   "adm",
   "ads",
   "assets",
+  "blog",
   "collections",
   "css",
   "es",
@@ -221,6 +222,12 @@ function main() {
 
   for (const entry of publicEntries) {
     copyEntry(path.join(root, entry), path.join(outDir, entry));
+  }
+
+  // Blog is synced as compiled public HTML by the private blog workflow.
+  // Never build or publish its private source code here.
+  if (!fs.existsSync(path.join(outDir, "blog", "index.html"))) {
+    console.warn("Blog output is not synced yet; keeping the rest of the website deployable.");
   }
 
   publishAutotraderDashboard();
