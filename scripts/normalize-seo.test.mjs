@@ -43,7 +43,7 @@ test("public Pages contains the compiled blog while private source stays absent"
 
 test("root sitemap includes blog discovery on GitHub Pages", () => {
   const xml = read("sitemap.xml");
-  assert.doesNotMatch(xml, /<loc>https:\/\/pklavc\.com\/(?:pt\/|es\/)?blog\/<\/loc>/i);
+  assert.match(xml, /<loc>https:\/\/pklavc\.com\/blog\/<\/loc>/i);
   const index = read("sitemap-index.xml");
   assert.match(index, /<loc>https:\/\/pklavc\.com\/sitemap\.xml<\/loc>/);
   assert.doesNotMatch(index, /<loc>https:\/\/pklavc\.com\/blog\/sitemap\.xml<\/loc>/);
