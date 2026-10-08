@@ -1,0 +1,378 @@
+/*
+ * Bottom spotlight navigation.
+ * Adapted for the static site from the Spotlight Button component by
+ * Waleed Kibhen (21st.dev). Everything required to render it lives locally.
+ */
+
+:root {
+    --spotlight-nav-accent: var(--clr-primary, #00d1ff);
+    --spotlight-nav-footer-space: calc(104px + env(safe-area-inset-bottom));
+}
+
+.spotlight-navigation-shell {
+    position: fixed;
+    left: 50%;
+    bottom: 0;
+    z-index: 9998;
+    display: flex;
+    justify-content: center;
+    max-width: calc(100vw - 24px);
+    transform: translateX(-50%);
+    pointer-events: none;
+}
+
+.spotlight-navigation {
+    --spotlight-active-index: 0;
+    --spotlight-indicator-left: 16px;
+    --spotlight-indicator-width: 48px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding: 11px 7px calc(11px + env(safe-area-inset-bottom));
+    border: 1px solid transparent;
+    border-bottom: 0;
+    border-radius: 14px 14px 0 0;
+    background:
+        linear-gradient(180deg, rgba(8, 11, 18, 0.88), rgba(5, 7, 12, 0.94)) padding-box,
+        linear-gradient(110deg, rgba(0, 209, 255, 0.24), rgba(255, 255, 255, 0.07) 48%, rgba(255, 42, 170, 0.16)) border-box;
+    box-shadow:
+        0 -10px 32px rgba(5, 7, 12, 0.2),
+        0 0 28px rgba(0, 209, 255, 0.045),
+        inset 0 1px 0 rgba(255, 255, 255, 0.025);
+    -webkit-backdrop-filter: blur(18px) saturate(1.12);
+    backdrop-filter: blur(18px) saturate(1.12);
+    isolation: isolate;
+    overflow: hidden;
+    pointer-events: auto;
+}
+
+.spotlight-navigation::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: var(--spotlight-indicator-left);
+    z-index: 0;
+    width: var(--spotlight-indicator-width);
+    height: 96px;
+    border-radius: 999px;
+    background: linear-gradient(to bottom, rgba(0, 209, 255, 0.48), rgba(0, 209, 255, 0));
+    filter: blur(16px);
+    opacity: var(--spotlight-halo-opacity, 1);
+    transform: translateY(-50%);
+    transition: left 400ms ease-in-out, width 360ms cubic-bezier(0.22, 1, 0.36, 1), opacity 120ms ease;
+    pointer-events: none;
+}
+
+.spotlight-navigation::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: var(--spotlight-indicator-left);
+    z-index: 2;
+    width: var(--spotlight-indicator-width);
+    height: 2px;
+    background: var(--spotlight-nav-accent);
+    box-shadow:
+        0 0 8px rgba(0, 209, 255, 0.9),
+        0 0 18px rgba(0, 209, 255, 0.56);
+    transform: translateY(-1px);
+    transition: left 400ms ease-in-out, width 360ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.spotlight-navigation-item {
+    position: relative;
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+    margin: 0 4px;
+    padding: 0;
+    border: 0;
+    border-radius: 8px;
+    color: #6b7280;
+    background: transparent;
+    text-decoration: none;
+    cursor: pointer;
+    outline: none;
+    transition:
+        flex-basis 360ms cubic-bezier(0.22, 1, 0.36, 1),
+        width 360ms cubic-bezier(0.22, 1, 0.36, 1),
+        padding 360ms cubic-bezier(0.22, 1, 0.36, 1),
+        color 200ms ease,
+        transform 200ms ease;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.spotlight-navigation-item::before {
+    content: none;
+}
+
+.spotlight-navigation-item:hover {
+    color: #6b7280;
+    transform: none;
+}
+
+/* Neutralize the site's legacy global button theme for the language control. */
+button.spotlight-navigation-item {
+    border: 0 !important;
+    background: transparent !important;
+    color: #6b7280 !important;
+}
+
+.spotlight-navigation-item.is-presented {
+    width: auto;
+    padding-inline: 8px;
+    justify-content: flex-start;
+    color: var(--spotlight-nav-accent);
+}
+
+.spotlight-navigation.is-moving .spotlight-navigation-item {
+    color: #6b7280 !important;
+}
+
+.spotlight-navigation.is-moving .spotlight-navigation-item::before {
+    opacity: 0 !important;
+}
+
+.spotlight-navigation.is-moving {
+    --spotlight-halo-opacity: 0;
+}
+
+.spotlight-navigation.is-moving .spotlight-navigation-item .spotlight-navigation-icon {
+    filter: none !important;
+}
+
+.spotlight-navigation.is-moving .spotlight-navigation-label {
+    opacity: 0 !important;
+}
+
+button.spotlight-navigation-item.is-presented {
+    color: var(--spotlight-nav-accent) !important;
+}
+
+.spotlight-navigation-item.is-presented::before {
+    left: 20px;
+}
+
+.spotlight-navigation-item:focus-visible {
+    box-shadow: 0 0 0 2px #05070b, 0 0 0 4px var(--spotlight-nav-accent);
+}
+
+.spotlight-navigation-icon {
+    position: relative;
+    z-index: 1;
+    display: block;
+    width: 24px;
+    height: 24px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: color 200ms ease, stroke-width 200ms ease;
+    pointer-events: none;
+}
+
+.spotlight-navigation-icon-mask {
+    flex: 0 0 24px;
+    background-color: currentColor;
+    -webkit-mask: var(--spotlight-icon-url) center / contain no-repeat;
+    mask: var(--spotlight-icon-url) center / contain no-repeat;
+}
+
+.spotlight-navigation-item.is-presented .spotlight-navigation-icon {
+    stroke-width: 2.5;
+    filter: drop-shadow(0 0 7px rgba(0, 209, 255, 0.55));
+}
+
+.spotlight-navigation-label {
+    position: relative;
+    z-index: 1;
+    display: block;
+    max-width: 0;
+    margin-left: 0;
+    overflow: hidden;
+    color: var(--spotlight-nav-accent);
+    font-family: Poppins, Inter, "Segoe UI", sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1.2;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    opacity: 0;
+    transform: translateX(-4px);
+    transition:
+        max-width 360ms cubic-bezier(0.22, 1, 0.36, 1),
+        margin-left 220ms ease,
+        opacity 190ms ease,
+        transform 220ms ease;
+    pointer-events: none;
+}
+
+.spotlight-navigation-item.is-presented .spotlight-navigation-label {
+    max-width: 80px;
+    margin-left: 6px;
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.spotlight-language-menu {
+    position: absolute;
+    right: 0;
+    bottom: calc(100% + 10px);
+    z-index: 3;
+    display: grid;
+    min-width: 164px;
+    padding: 7px;
+    border: 1px solid rgba(0, 209, 255, 0.16);
+    border-radius: 12px;
+    background:
+        radial-gradient(circle at 100% 100%, rgba(255, 42, 170, 0.09), transparent 52%),
+        rgba(7, 10, 17, 0.94);
+    box-shadow: 0 18px 38px rgba(0, 0, 0, 0.42), 0 0 24px rgba(0, 209, 255, 0.06);
+    -webkit-backdrop-filter: blur(18px);
+    backdrop-filter: blur(18px);
+    pointer-events: auto;
+}
+
+.spotlight-language-menu[hidden] {
+    display: none;
+}
+
+.spotlight-language-option {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 38px;
+    padding: 0 11px;
+    border-radius: 8px;
+    color: #aab4c1;
+    font-family: Poppins, Inter, "Segoe UI", sans-serif;
+    font-size: 12px;
+    text-decoration: none;
+    transition: color 180ms ease, background-color 180ms ease;
+}
+
+.spotlight-language-option:hover,
+.spotlight-language-option:focus-visible,
+.spotlight-language-option.is-current-language {
+    color: var(--spotlight-nav-accent);
+    background: rgba(0, 209, 255, 0.08);
+    outline: none;
+}
+
+.spotlight-language-option.is-current-language::after {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--spotlight-nav-accent);
+    box-shadow: 0 0 9px rgba(0, 209, 255, 0.72);
+}
+
+/* The fixed menu overlays this reserved footer area without covering content. */
+body.spotlight-navigation-enabled footer {
+    padding-bottom: var(--spotlight-nav-footer-space) !important;
+}
+
+@media (min-width: 1100px) {
+    body.spotlight-navigation-enabled .store-footer {
+        padding-bottom: calc(22px + env(safe-area-inset-bottom)) !important;
+    }
+
+    body.spotlight-navigation-enabled .footer-minimal.footer-split {
+        min-height: 82px;
+        box-sizing: border-box;
+        padding: 17px 0 calc(17px + env(safe-area-inset-bottom)) !important;
+    }
+}
+
+body.page-index.spotlight-navigation-enabled .footer-minimal {
+    border-top-color: rgba(0, 209, 255, 0.07);
+    background:
+        radial-gradient(circle at 72% 0%, rgba(255, 42, 170, 0.055), transparent 36%),
+        linear-gradient(135deg, #06080f 0%, #090b14 58%, #120717 100%);
+}
+
+/* Keep the Skylet launcher clear of the centered navigation on compact screens. */
+@media (max-width: 620px) {
+    body.spotlight-navigation-enabled .about-chat-launcher {
+        bottom: calc(var(--spotlight-nav-footer-space) + 10px + var(--skylet-footer-offset, 0px)) !important;
+    }
+
+    body.spotlight-navigation-enabled .about-chat-widget.is-open {
+        bottom: calc(var(--spotlight-nav-footer-space) + 10px + var(--skylet-footer-offset, 0px)) !important;
+        max-height: calc(100dvh - var(--spotlight-nav-footer-space) - 30px);
+    }
+
+    .spotlight-navigation-shell {
+        width: calc(100vw - 24px);
+    }
+
+    .spotlight-navigation {
+        width: 100%;
+        justify-content: space-evenly;
+        padding-inline: 4px;
+    }
+
+    .spotlight-navigation-item,
+    .spotlight-navigation-item.is-presented {
+        flex: 1 1 16.6667%;
+        width: auto;
+        margin-inline: 0;
+        padding-inline: 0;
+        min-width: 48px;
+        max-width: 60px;
+        justify-content: center;
+    }
+
+    .spotlight-navigation-item.is-presented::before {
+        left: 50%;
+    }
+
+    .spotlight-navigation-label {
+        display: none;
+    }
+}
+
+@media (max-width: 360px) {
+    .spotlight-navigation-shell {
+        max-width: calc(100vw - 16px);
+        width: calc(100vw - 16px);
+    }
+
+    .spotlight-navigation-item {
+        min-width: 44px;
+        height: 46px;
+    }
+
+    .spotlight-navigation::before {
+        width: 44px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .spotlight-navigation::before,
+    .spotlight-navigation::after,
+    .spotlight-navigation-item,
+    .spotlight-navigation-item::before,
+    .spotlight-navigation-icon,
+    .spotlight-navigation-label {
+        transition: none;
+    }
+}
+
+
+@media (max-width: 620px) {
+    body.spotlight-language-menu-open .about-chat-launcher {
+        bottom: calc(var(--spotlight-nav-footer-space) + 150px + var(--skylet-footer-offset, 0px)) !important;
+    }
+
+    body.spotlight-language-menu-open .about-chat-widget.is-open {
+        bottom: calc(var(--spotlight-nav-footer-space) + 150px + var(--skylet-footer-offset, 0px)) !important;
+        max-height: calc(100vh - var(--spotlight-nav-footer-space) - 174px);
+    }
+}
