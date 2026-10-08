@@ -232,7 +232,7 @@
         stage.style.setProperty('--hero-progress', scrollProgress.toFixed(4));
         var introOpacity = scrollProgress <= 0.18 ? 1 : Math.max(0, 1 - (scrollProgress - 0.18) / 0.12);
         var cosmosOpacity = scrollProgress < 0.24 ? 0 : scrollProgress < 0.34 ? (scrollProgress - 0.24) / 0.1 : scrollProgress <= 0.5 ? 1 : Math.max(0, 1 - (scrollProgress - 0.5) / 0.12);
-        var infinityOpacity = scrollProgress < 0.58 ? 0 : scrollProgress < 0.68 ? (scrollProgress - 0.58) / 0.1 : scrollProgress <= 0.8 ? 1 : Math.max(0, 1 - (scrollProgress - 0.8) / 0.1);
+        var infinityOpacity = scrollProgress < 0.58 ? 0 : scrollProgress < 0.68 ? (scrollProgress - 0.58) / 0.1 : scrollProgress <= 0.94 ? 1 : Math.max(0, 1 - (scrollProgress - 0.94) / 0.06);
         var copy = stage.querySelector('.blog-horizon-copy');
         if (copy) copy.style.opacity = introOpacity.toFixed(3);
         if (contentSections[0]) contentSections[0].style.opacity = cosmosOpacity.toFixed(3);
@@ -477,7 +477,7 @@
       stage.style.setProperty('--hero-progress', scrollProgress.toFixed(4));
       var introOpacity = scrollProgress <= 0.18 ? 1 : Math.max(0, 1 - (scrollProgress - 0.18) / 0.12);
       var cosmosOpacity = scrollProgress < 0.24 ? 0 : scrollProgress < 0.34 ? (scrollProgress - 0.24) / 0.1 : scrollProgress <= 0.5 ? 1 : Math.max(0, 1 - (scrollProgress - 0.5) / 0.12);
-      var infinityOpacity = scrollProgress < 0.58 ? 0 : scrollProgress < 0.68 ? (scrollProgress - 0.58) / 0.1 : scrollProgress <= 0.8 ? 1 : Math.max(0, 1 - (scrollProgress - 0.8) / 0.1);
+      var infinityOpacity = scrollProgress < 0.58 ? 0 : scrollProgress < 0.68 ? (scrollProgress - 0.58) / 0.1 : scrollProgress <= 0.94 ? 1 : Math.max(0, 1 - (scrollProgress - 0.94) / 0.06);
       if (stage.querySelector('.blog-horizon-copy')) stage.querySelector('.blog-horizon-copy').style.opacity = introOpacity.toFixed(3);
       if (contentSections[0]) contentSections[0].style.opacity = cosmosOpacity.toFixed(3);
       if (contentSections[1]) contentSections[1].style.opacity = infinityOpacity.toFixed(3);
