@@ -87,10 +87,11 @@ jobs:
       - name: Validate private generation pipeline without API calls or publishing
         working-directory: private-blog
         run: |
-          python -m unittest scripts.blog_automation.test_publish_paths scripts.test_newsletter_assembly scripts.social_video.test_render
+          python -m unittest scripts.blog_automation.test_publish_paths scripts.blog_automation.test_game_lane scripts.test_newsletter_assembly scripts.social_video.test_render
           node --test scripts/test-blog-discovery.mjs scripts/test-newsletter-content.mjs
           (cd newsletter-worker && npm test)
           python -m scripts.blog_automation.run --root . --offline-fixture --dry-run
+          python -m scripts.blog_automation.run --root . --offline-fixture --dry-run --blog-category games
 
   generate:
     if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.mode == 'generate')
