@@ -1332,6 +1332,10 @@ body.blog-layout .footer-projects .footer-copyright-row {
 body.blog-layout .footer-projects .pklavc-newsletter-footer-trigger-mobile { display: none; }
 body.blog-layout .footer-projects .pklavc-newsletter-footer-trigger-desktop { display: inline-flex; }
 @media (max-width: 1099px) {
+    body.blog-layout .footer-minimal.footer-split.footer-projects,
+    body.blog-layout.spotlight-navigation-enabled .footer-minimal.footer-split.footer-projects {
+        padding-bottom: var(--spotlight-nav-footer-space, calc(104px + env(safe-area-inset-bottom))) !important;
+    }
     body.blog-layout .footer-projects .pklavc-newsletter-footer-trigger-mobile { display: inline-flex; }
     body.blog-layout .footer-projects .pklavc-newsletter-footer-trigger-desktop { display: none; }
     body.blog-layout .footer-projects .pklavc-newsletter-footer-trigger-mobile {
@@ -1341,14 +1345,15 @@ body.blog-layout .footer-projects .pklavc-newsletter-footer-trigger-desktop { di
         border: 0;
         border-radius: 0 !important;
         background: transparent !important;
-        color: var(--clr-primary, #00d1ff);
+        color: var(--clr-primary, #00d1ff) !important;
         box-shadow: none !important;
         font: inherit;
         line-height: inherit;
     }
     body.blog-layout .footer-projects .footer-legal-inline {
         display: flex;
-        flex: 1 0 100%;
+        flex: 0 0 auto;
+        width: 100%;
         flex-wrap: wrap;
         justify-content: center;
         gap: 2px 6px;
@@ -1361,6 +1366,8 @@ body.blog-layout .footer-projects .pklavc-newsletter-footer-trigger-desktop { di
 @media (max-width: 760px) {
     .blog-horizon { min-height: 280svh; }
     .blog-horizon-stage.hero-container { height: 100%; min-height: 0; }
+    body.blog-layout .footer-projects .footer-social-icons { gap: 4px; margin-left: -26px; }
+    body.blog-layout .footer-projects .footer-social-icon-link { width: 24px; height: 24px; flex-basis: 24px; }
     .side-menu { left: 8px; top: 50%; transform: translateY(-50%); }
     .side-menu-posts { font-size: .58rem; letter-spacing: .2em; }
     .blog-horizon-copy.hero-content { padding: max(28px, env(safe-area-inset-top)) 18px 72px; }
