@@ -204,7 +204,7 @@ export function normalizeSeoHtml(original, { directory = process.cwd(), filename
       head = setMeta(head, "og:image:width", dimensions[0], "property");
       head = setMeta(head, "og:image:height", dimensions[1], "property");
     }
-    if (/^\/(?:pt\/|es\/)?blog\/[^/]+\/$/.test(pathname)) head = setMeta(head, "article:author", PROFILE_URL, "property");
+    if (/^\/blog\/(?:en|pt|es)\/(?:tech|games)\/[^/]+\/$/.test(pathname)) head = setMeta(head, "article:author", PROFILE_URL, "property");
     return `${start}${head}${end}`;
   });
 

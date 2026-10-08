@@ -28,11 +28,11 @@ test("public Pages contains the compiled blog while private source stays absent"
   for (const relative of ["scripts/blog_automation", "js/blog-related-posts.js", "css/blog.css"]) {
     assert.equal(fs.existsSync(path.join(ROOT, relative)), false, `${relative} must remain private`);
   }
-  for (const relative of ["blog/index.html", "blog/pt/index.html", "blog/es/index.html", "blog/feed.xml", "blog/sitemap.xml", "blog/posts.json"]) {
+  for (const relative of ["blog/index.html", "blog/en/tech/index.html", "blog/pt/tech/index.html", "blog/es/tech/index.html", "blog/en/games/index.html", "blog/feed.xml", "blog/sitemap.xml", "blog/posts.json"]) {
     assert.equal(fs.existsSync(path.join(ROOT, relative)), true, `${relative} must be synced`);
   }
-  assert.ok(read("pt/blog/index.html").includes("https://pklavc.com/blog/pt/"));
-  assert.ok(read("es/blog/index.html").includes("https://pklavc.com/blog/es/"));
+  assert.ok(read("pt/blog/index.html").includes("https://pklavc.com/blog/pt/tech/"));
+  assert.ok(read("es/blog/index.html").includes("https://pklavc.com/blog/es/tech/"));
 });
 
 test("root sitemap includes blog discovery on GitHub Pages", () => {

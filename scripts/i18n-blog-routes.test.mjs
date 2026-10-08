@@ -18,16 +18,16 @@ function i18n(pathname) {
   return window.PkLavcI18n;
 }
 
-test("English blog root localizes to the existing PT-BR and Spanish institutional routes", () => {
+test("blog portal localizes to the language-first Tech roots", () => {
   const routes = i18n("/blog/");
-  assert.equal(routes.getLocalizedRoute("/blog/", "pt"), "/pt/blog/");
-  assert.equal(routes.getLocalizedRoute("/blog/", "es"), "/es/blog/");
+  assert.equal(routes.getLocalizedRoute("/blog/", "en"), "/blog/en/tech/");
+  assert.equal(routes.getLocalizedRoute("/blog/", "pt"), "/blog/pt/tech/");
+  assert.equal(routes.getLocalizedRoute("/blog/", "es"), "/blog/es/tech/");
 });
 
-test("localized blog roots map back to the English root and never expose /blog/en/", () => {
-  const routes = i18n("/pt/blog/");
-  assert.equal(routes.getEnglishRoute("/pt/blog/"), "/blog/");
-  assert.equal(routes.getLocalizedRoute("/pt/blog/", "en"), "/blog/");
-  assert.equal(routes.getLocalizedRoute("/pt/blog/", "es"), "/es/blog/");
-  assert.notEqual(routes.getLocalizedRoute("/blog/", "en"), "/blog/en/");
+test("localized category and article routes keep language before category", () => {
+  const routes = i18n("/blog/pt/tech/example/");
+  assert.equal(routes.getEnglishRoute("/blog/pt/tech/example/"), "/blog/en/tech/example/");
+  assert.equal(routes.getLocalizedRoute("/blog/pt/tech/example/", "en"), "/blog/en/tech/example/");
+  assert.equal(routes.getLocalizedRoute("/blog/pt/tech/example/", "es"), "/blog/es/tech/example/");
 });

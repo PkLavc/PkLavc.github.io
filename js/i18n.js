@@ -140,7 +140,7 @@
 
   function getLanguageFromPath(path) {
     var segments = splitPath(path);
-    if (segments[0] === 'blog' && (segments[1] === 'pt' || segments[1] === 'es')) return segments[1];
+    if (segments[0] === 'blog' && (segments[1] === 'en' || segments[1] === 'pt' || segments[1] === 'es')) return segments[1];
     if (segments[0] === 'store' && (segments[1] === 'pt' || segments[1] === 'es')) return segments[1];
     var firstSegment = segments[0];
     return LOCALE_PREFIXES[firstSegment] ? firstSegment : 'en';
@@ -152,8 +152,8 @@
 
   function getEnglishRoute(path) {
     var segments = splitPath(path);
-    if (segments[0] === 'blog' && (segments[1] === 'pt' || segments[1] === 'es')) {
-      segments.splice(1, 1);
+    if (segments[0] === 'blog' && (segments[1] === 'en' || segments[1] === 'pt' || segments[1] === 'es')) {
+      segments[1] = 'en';
       return '/' + segments.join('/') + '/';
     }
     if (segments[0] === 'store' && (segments[1] === 'pt' || segments[1] === 'es')) {
@@ -187,8 +187,11 @@
     var route = getEnglishRoute(englishRoute);
     var segments = splitPath(route);
 
-    if (segments[0] === 'blog' && (locale === 'pt' || locale === 'es')) {
-      return '/blog/' + locale + (segments.length > 1 ? '/' + segments.slice(1).join('/') : '') + '/';
+    if (segments[0] === 'blog') {
+      if (segments[1] === 'en') segments[1] = locale;
+      else segments.splice(1, 0, locale);
+      if (segments.length === 2) segments.push('tech');
+      return '/' + segments.join('/') + '/';
     }
     if (segments[0] === 'store') {
       var storeSuffix = segments.length > 1 ? segments.slice(1).join('/') + '/' : '';
@@ -223,7 +226,9 @@
   function getLanguageFallback(englishRoute, locale) {
     var route = getEnglishRoute(englishRoute);
     if (route === '/blog/' || route.indexOf('/blog/') === 0) {
-      return locale === 'en' ? '/blog/' : '/blog/' + locale + '/';
+      var parts = splitPath(route);
+      var category = parts[0] === 'blog' && parts[1] === 'en' && parts[2] ? parts[2] : 'tech';
+      return '/blog/' + locale + '/' + category + '/';
     }
     if (route === '/store/' || route.indexOf('/store/') === 0) {
       return locale === 'en' ? '/store/' : '/store/' + locale + '/';
@@ -256,7 +261,6 @@
     var targetLocale = normalizeLocale(locale);
     var candidate = getLocalizedRoute(englishRoute, targetLocale);
     var fallback = getLanguageFallback(englishRoute, targetLocale);
-    if (candidate.indexOf('/blog/en/') === 0) candidate = fallback;
     if (candidate === fallback) return Promise.resolve(fallback);
     return pageExists(candidate).then(function(exists) {
       return exists ? candidate : fallback;

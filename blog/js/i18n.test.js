@@ -23,31 +23,31 @@ function loadI18n(existingRoutes = []) {
 
 async function run() {
   {
-    const { i18n, requests } = loadI18n(['/blog/pt/post-x/']);
-    const route = await i18n.resolveLocalizedRoute(i18n.getEnglishRoute('/blog/post-x/'), 'pt');
-    assert.equal(route, '/blog/pt/post-x/');
-    assert.deepEqual(requests.map((request) => request.url), ['/blog/pt/post-x/']);
+    const { i18n, requests } = loadI18n(['/blog/pt/tech/post-x/']);
+    const route = await i18n.resolveLocalizedRoute(i18n.getEnglishRoute('/blog/en/tech/post-x/'), 'pt');
+    assert.equal(route, '/blog/pt/tech/post-x/');
+    assert.deepEqual(requests.map((request) => request.url), ['/blog/pt/tech/post-x/']);
     assert.equal(requests[0].options.method, 'HEAD');
   }
   {
     const { i18n } = loadI18n([]);
-    const route = await i18n.resolveLocalizedRoute(i18n.getEnglishRoute('/blog/post-x/'), 'pt');
-    assert.equal(route, '/blog/pt/');
+    const route = await i18n.resolveLocalizedRoute(i18n.getEnglishRoute('/blog/en/tech/post-x/'), 'pt');
+    assert.equal(route, '/blog/pt/tech/');
   }
   {
     const { i18n } = loadI18n([]);
-    const englishRoute = i18n.getEnglishRoute('/blog/pt/post-x/');
-    assert.equal(await i18n.resolveLocalizedRoute(englishRoute, 'es'), '/blog/es/');
+    const englishRoute = i18n.getEnglishRoute('/blog/pt/tech/post-x/');
+    assert.equal(await i18n.resolveLocalizedRoute(englishRoute, 'es'), '/blog/es/tech/');
   }
   {
     const { i18n } = loadI18n(['/pt/sobre/']);
     assert.equal(await i18n.resolveLocalizedRoute('/about/', 'pt'), '/pt/sobre/');
     assert.equal(await i18n.resolveLocalizedRoute('/projects/missing/', 'pt'), '/pt/');
-    assert.doesNotMatch(i18n.getLocalizedRoute('/blog/post-x/', 'en'), /^\/blog\/en\//);
+    assert.equal(i18n.getLocalizedRoute('/blog/en/tech/post-x/', 'en'), '/blog/en/tech/post-x/');
   }
   {
     const { i18n, requests } = loadI18n([]);
-    const route = i18n.getEnglishRoute('/blog/post-x/');
+    const route = i18n.getEnglishRoute('/blog/en/tech/post-x/');
     await i18n.resolveLocalizedRoute(route, 'es');
     await i18n.resolveLocalizedRoute(route, 'es');
     assert.equal(requests.length, 1, 'HEAD existence checks are cached per target route');
