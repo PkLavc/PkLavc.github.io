@@ -436,6 +436,29 @@ body.blog-layout::before {
     min-width: 0;
 }
 
+/* Keep article hero backgrounds inside their grid track, including posts
+   appended by the continuous reader. Do not cover the sidebar or the next card. */
+.blog-columns > div:first-child,
+.blog-columns > aside.blog-article-grid {
+    min-width: 0;
+    max-width: 100%;
+}
+
+.blog-columns > div:first-child > .blog-post-hero,
+.pklavc-continuous-article > .blog-post-hero {
+    position: relative;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
+    isolation: isolate;
+}
+
+.blog-columns > aside.blog-article-grid {
+    position: relative;
+    z-index: 1;
+}
+
 .blog-post-hero,
 .blog-article,
 .blog-sidebar-card,
