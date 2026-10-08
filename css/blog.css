@@ -1031,15 +1031,15 @@ body.blog-layout::before {
     max-width: none;
     min-height: 300vh;
     margin: 0 0 0 -50vw;
-    background: #02030d;
+    background: transparent;
 }
 .blog-horizon-stage.hero-container {
-    position: sticky;
-    top: 0;
+    position: absolute;
+    inset: 0;
     isolation: isolate;
     width: 100%;
-    height: 100svh;
-    min-height: 620px;
+    height: 100%;
+    min-height: 0;
     overflow: hidden;
     display: block;
     background:
@@ -1187,20 +1187,18 @@ body.blog-layout::before {
     text-shadow: 0 3px 24px #02030d;
 }
 .blog-carousel-stack {
-    --blog-carousel-blend-height: clamp(90px, 9vw, 150px);
+    --blog-carousel-blend-height: clamp(110px, 11vw, 170px);
     position: relative;
     z-index: 2;
     left: 50%;
     width: 100vw;
-    margin: calc(-1 * var(--blog-carousel-blend-height)) 0 0 -50vw;
-    padding: calc(var(--blog-carousel-blend-height) + clamp(26px, 3vw, 42px)) 0 clamp(28px, 5vw, 62px);
+    margin: calc(-1 * (var(--blog-carousel-blend-height) + 42px)) 0 0 -50vw;
+    padding: calc(var(--blog-carousel-blend-height) + 42px) 0 clamp(28px, 5vw, 62px);
     background: linear-gradient(
         180deg,
         transparent 0,
-        #3b5897 var(--blog-carousel-blend-height),
-        #202e6e 38%,
-        #172253 72%,
-        #081126 100%
+        rgba(59, 88, 151, .84) 45%,
+        #3b5897 100%
     );
 }
 .blog-carousel-group + .blog-carousel-group { margin-top: clamp(24px, 4vw, 54px); }
@@ -1362,7 +1360,7 @@ body.blog-layout .footer-projects .pklavc-newsletter-footer-trigger-desktop { di
 
 @media (max-width: 760px) {
     .blog-horizon { min-height: 280svh; }
-    .blog-horizon-stage.hero-container { height: 100svh; min-height: 0; }
+    .blog-horizon-stage.hero-container { height: 100%; min-height: 0; }
     .side-menu { left: 8px; top: 50%; transform: translateY(-50%); }
     .side-menu-posts { font-size: .58rem; letter-spacing: .2em; }
     .blog-horizon-copy.hero-content { padding: max(28px, env(safe-area-inset-top)) 18px 72px; }
