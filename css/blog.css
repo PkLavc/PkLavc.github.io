@@ -1561,3 +1561,58 @@ body.blog-layout .footer-projects .pklavc-newsletter-footer-trigger-desktop { di
         margin-bottom: 18px;
     }
 }
+
+
+/* Source-attributed covers on the Tech and Games landing carousels. */
+.blog-card > .blog-card-cover {
+    display: block;
+    overflow: hidden;
+    flex: 0 0 auto;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #111e2b, #1a1330);
+    border: 1px solid rgba(255,255,255,.11);
+}
+.blog-card > .blog-card-cover img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    transition: transform .3s ease;
+}
+.blog-card:hover > .blog-card-cover img { transform: scale(1.025); }
+.blog-carousel-card > .blog-card-cover {
+    aspect-ratio: 16 / 9;
+    max-height: 170px;
+}
+.blog-card > .blog-card-cover:focus-visible { outline: 2px solid #88e7f2; }
+@media (max-width: 760px) {
+    .blog-carousel-card > .blog-card-cover { max-height: 138px; }
+}
+
+
+/* Image-first carousel sizing: keep the existing coverflow and prevent crop
+   of headlines/buttons when a 16:9 photo is present. */
+.blog-featured-carousel { height: clamp(450px, 50vw, 550px); }
+.blog-carousel-card {
+    height: clamp(390px, 37vw, 450px);
+    padding: 15px;
+    gap: 9px;
+}
+.blog-carousel-card > .blog-card-cover {
+    height: 140px;
+    max-height: 140px;
+    aspect-ratio: auto;
+}
+.blog-carousel-card .blog-tag-row { display: none; }
+.blog-carousel-card .blog-card-meta { max-height: 38px; overflow: hidden; }
+.blog-carousel-card .blog-card-meta span:nth-child(n + 3) { display: none; }
+.blog-carousel-card h3 { max-height: 3.9em; }
+@media (max-width: 760px) {
+    .blog-featured-carousel { height: 425px; }
+    .blog-carousel-card { width: min(76vw, 280px); height: 370px; padding: 14px; gap: 7px; }
+    .blog-carousel-card > .blog-card-cover { height: 116px; max-height: 116px; }
+    .blog-carousel-card .blog-card-meta { max-height: 36px; }
+}
