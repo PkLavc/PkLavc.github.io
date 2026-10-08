@@ -1378,6 +1378,8 @@ if (document.readyState === 'loading') {
 (function loadDynamicAdvertising() {
   var path = String(window.location.pathname || '/').replace(/\/index\.html$/i, '/');
   var shouldLoad =
+    /^\/blog\/(?:en|pt|es)(?:\/(?:tech|games)(?:\/[^/]+)?)?\/?$/.test(path) ||
+    /^\/blog\/?$/.test(path) ||
     /^\/blog\/(?:(?:en|pt|es)\/)?[^/]+\/?$/.test(path) ||
     /^\/(?:pt|es)\/blog\/[^/]+\/?$/.test(path) ||
     /^\/store(?:\/(?:pt|es))?\/?$/.test(path);

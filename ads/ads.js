@@ -5,6 +5,10 @@
     var path = String(pathname || '/').replace(/\/index\.html$/i, '/');
     var blogHome = /^\/blog\/(?:(en|pt|es)\/)?$/.exec(path);
     if (blogHome) return { type: 'blog-index', locale: blogHome[1] || 'en' };
+    var blogCategory = /^\/blog\/(en|pt|es)\/(tech|games)\/?$/.exec(path);
+    if (blogCategory) return { type: 'blog-index', locale: blogCategory[1], category: blogCategory[2] };
+    var categorizedBlog = /^\/blog\/(en|pt|es)\/(tech|games)\/([^/]+)\/?$/.exec(path);
+    if (categorizedBlog) return { type: 'blog', locale: categorizedBlog[1], category: categorizedBlog[2] };
     var legacyBlogHome = /^\/(pt|es)\/blog\/$/.exec(path);
     if (legacyBlogHome) return { type: 'blog-index', locale: legacyBlogHome[1] };
     var blog = /^\/blog\/(?:(en|pt|es)\/)?([^/]+)\/?$/.exec(path);

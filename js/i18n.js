@@ -341,6 +341,16 @@
   }
 
   function redirectToPreferredLanguage() {
+    var currentPath = normalizePath(window.location.pathname);
+    var preferredLanguage = getPreferredLanguage();
+
+    // /blog/ is a language router, not the English edition. Always send it
+    // to the visitor's preferred locale, including English.
+    if (currentPath === '/blog/') {
+      window.location.replace(addCurrentQueryAndHash('/blog/' + preferredLanguage + '/'));
+      return;
+    }
+
     var currentLanguage = getLanguageFromPath(window.location.pathname);
 
     if (currentLanguage !== 'en') {
@@ -348,13 +358,10 @@
       return;
     }
 
-    var preferredLanguage = getPreferredLanguage();
-
     if (preferredLanguage === 'en') {
       return;
     }
 
-    var currentPath = normalizePath(window.location.pathname);
     var targetPath = buildCurrentPageRoute(preferredLanguage);
     if (targetPath === currentPath) return;
     resolveLocalizedRoute(getEnglishRoute(currentPath), preferredLanguage).then(function(existingPath) {
