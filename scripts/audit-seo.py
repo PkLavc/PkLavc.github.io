@@ -27,7 +27,7 @@ ROBOTS = ("Googlebot", "bingbot", "OAI-SearchBot", "ChatGPT-User", "Amzn-SearchB
 # Verified live HTTP 200 on 2026-09-08: this GitHub Pages project is served
 # independently of the portfolio artifact. Only this exact project route and
 # its descendants bypass the artifact-file check; unknown local paths do not.
-SEPARATELY_HOSTED_PROJECTS = ("/codepulse-monorepo/", "/blog/")
+SEPARATELY_HOSTED_PROJECTS = ("/codepulse-monorepo/",)
 # Remove only the legacy keyword paragraph at the end of a document. Accessible
 # labels, carousel descriptions, hidden controls, and all other text are retained.
 TAIL_KEYWORDS = re.compile(r'<div\s+class=[\"\']visually-hidden[\"\']\s*>\s*<p>[^<]*</p>\s*</div>\s*(?=</body>)', re.I)
