@@ -140,7 +140,22 @@
   function promoteArticleArtwork() {
     if (!global.document) return;
     var hero = global.document.querySelector(".blog-post-hero");
-    if (!hero || hero.querySelector(".blog-story-hero-image")) return;
+    if (!hero) return;
+
+    // The hero image is decorative: the visible heading already describes the article.
+    // Broken image alt text must never appear over the heading or breadcrumb.
+    var existing = hero.querySelector(".blog-story-hero-image");
+    if (existing) {
+      existing.alt = "";
+      function removeBrokenImage() {
+        existing.remove();
+        hero.classList.remove("blog-story-hero");
+      }
+      existing.addEventListener("error", removeBrokenImage, { once: true });
+      if (existing.complete && existing.naturalWidth === 0) removeBrokenImage();
+      return;
+    }
+
     var figure = global.document.querySelector(".blog-article > .blog-source-image");
     var sourceImage = figure && figure.querySelector("img");
     var image = null;
@@ -149,28 +164,40 @@
     } else {
       var socialImage = global.document.querySelector('meta[property="og:image"]');
       if (!socialImage || !socialImage.content) return;
+      // The generic site portrait is metadata, not an article background.
+      if (/\/(?:assets\/)?images\/brand\//i.test(socialImage.content)) return;
       image = global.document.createElement("img");
       image.src = socialImage.content;
-      image.alt = (global.document.querySelector("h1") || {}).textContent || "Article artwork";
     }
 
+    image.alt = "";
     image.className = "blog-story-hero-image";
     image.removeAttribute("loading");
     image.setAttribute("fetchpriority", "high");
     image.setAttribute("decoding", "async");
     var sourceLink = figure && figure.querySelector("a[href]");
     if (sourceLink) image.setAttribute("data-source-url", sourceLink.href);
-    hero.classList.add("blog-story-hero");
-    hero.insertBefore(image, hero.firstChild);
 
-    var originalCaption = figure && figure.querySelector("figcaption");
-    if (originalCaption) {
-      var credit = global.document.createElement("span");
-      credit.className = "blog-story-image-credit";
-      credit.innerHTML = originalCaption.innerHTML;
-      hero.appendChild(credit);
+    // Do not turn the card into an image hero until the image actually loads.
+    // On 404, retain the original text-only card and its normal layout.
+    var presented = false;
+    function presentImage() {
+      if (presented || !image.naturalWidth) return;
+      presented = true;
+      hero.classList.add("blog-story-hero");
+      hero.insertBefore(image, hero.firstChild);
+
+      var originalCaption = figure && figure.querySelector("figcaption");
+      if (originalCaption) {
+        var credit = global.document.createElement("span");
+        credit.className = "blog-story-image-credit";
+        credit.innerHTML = originalCaption.innerHTML;
+        hero.appendChild(credit);
+      }
+      if (figure) figure.hidden = true;
     }
-    if (figure) figure.hidden = true;
+    image.addEventListener("load", presentImage, { once: true });
+    if (image.complete && image.naturalWidth > 0) presentImage();
   }
 
   if (typeof module !== "undefined" && module.exports) module.exports = { select: select, normalizedPath: normalizedPath };

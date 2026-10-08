@@ -1314,10 +1314,10 @@ function loadBlogRelatedPostNavigation() {
   var path = window.location.pathname || '';
   if (!path.startsWith('/blog/') || path === '/blog/' || path === '/blog/index.html') return;
   if (!document.querySelector('.blog-article-grid') || !document.querySelector('.blog-post-hero')) return;
-  if (document.querySelector('script[src*="/blog/assets/js/blog-related-posts.js?v=9d770ec31d"]')) return;
+  if (document.querySelector('script[src*="/blog/assets/js/blog-related-posts.js?v=0679c1581d"]')) return;
 
   var script = document.createElement('script');
-  script.src = '/blog/assets/js/blog-related-posts.js?v=9d770ec31d';
+  script.src = '/blog/assets/js/blog-related-posts.js?v=0679c1581d';
   script.defer = true;
   script.setAttribute('data-blog-related-posts-loader', 'true');
   document.body.appendChild(script);
