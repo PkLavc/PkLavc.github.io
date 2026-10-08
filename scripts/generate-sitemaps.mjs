@@ -182,12 +182,9 @@ fs.writeFileSync(path.join(ROOT, "sitemap-index.xml"), `<?xml version="1.0" enco
   <sitemap>
     <loc>${SITE}/sitemap.xml</loc>
   </sitemap>
-  <sitemap>
-    <loc>${SITE}/blog/sitemap.xml</loc>
-  </sitemap>
 </sitemapindex>
 `, "utf8");
 
 console.log(`Generated sitemap.xml with ${allPages.length} canonical URLs (${excluded} excluded pages, ${excludedAlternates} excluded alternates).`);
-console.log("sitemap-index.xml links the public root sitemap and the AWS-hosted blog sitemap.");
+console.log("sitemap-index.xml links the unified GitHub Pages sitemap.");
 for (const [name, entries] of Object.entries(groups)) console.log(`- sitemaps/${name}.xml: ${entries.length} URLs`);
