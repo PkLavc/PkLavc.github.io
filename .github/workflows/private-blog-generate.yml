@@ -3,9 +3,18 @@ name: Generate private blog on public runner
 
 on:
   schedule:
-    - cron: "17 * * * *" # Every hour at :17 UTC (:17 local minute as well)
+    - cron: "17 12,18 * * *" # Tech: 09:17 and 15:17 Brazil time
+    - cron: "17 15,21 * * *" # GTA/Rockstar: 12:17 and 18:17 Brazil time
   workflow_dispatch:
     inputs:
+      category:
+        description: "Editorial category for manual generation"
+        required: true
+        type: choice
+        default: tech
+        options:
+          - tech
+          - games
       mode:
         description: "Generate a real article or run a non-publishing smoke test"
         required: true
@@ -78,7 +87,7 @@ jobs:
       - name: Validate private generation pipeline without API calls or publishing
         working-directory: private-blog
         run: |
-          python -m unittest scripts.blog_automation.test_publish_paths scripts.test_newsletter_assembly
+          python -m unittest scripts.blog_automation.test_publish_paths scripts.test_newsletter_assembly scripts.social_video.test_render
           node --test scripts/test-blog-discovery.mjs scripts/test-newsletter-content.mjs
           (cd newsletter-worker && npm test)
           python -m scripts.blog_automation.run --root . --offline-fixture --dry-run
@@ -114,7 +123,7 @@ jobs:
       - name: Test generated article source and public paths
         working-directory: private-blog
         run: |
-          python -m unittest scripts.blog_automation.test_publish_paths
+          python -m unittest scripts.blog_automation.test_publish_paths scripts.blog_automation.test_game_lane scripts.social_video.test_render
           node --test scripts/test-blog-discovery.mjs
 
       - name: Collect, select, generate and validate
@@ -131,6 +140,7 @@ jobs:
           CLOUDFLARE_AI_MODEL: ${{ vars.CLOUDFLARE_AI_MODEL || '@cf/openai/gpt-oss-120b' }}
           MAX_CLOUDFLARE_AI_HTTP_REQUESTS_PER_RUN: ${{ vars.MAX_CLOUDFLARE_AI_HTTP_REQUESTS_PER_RUN || '3' }}
           DRY_RUN: "false"
+          BLOG_CATEGORY: ${{ github.event_name == 'schedule' && contains('17 15,21 * * *', github.event.schedule) && 'games' || (github.event_name == 'workflow_dispatch' && inputs.category || 'tech') }}
         run: python -m scripts.blog_automation.run --root .
 
       - name: Refresh AI discovery directory
@@ -170,7 +180,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add -A
-          git commit -m "blog: publish engineering story"
+          git commit -m "blog: publish scheduled Tech/Games story"
           git pull --rebase origin main
           git push origin HEAD:main
 
