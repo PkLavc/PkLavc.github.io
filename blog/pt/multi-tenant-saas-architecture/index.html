@@ -26,13 +26,13 @@
     <meta property="article:tag" content="saas multilocatário">
     <meta property="article:tag" content="RBAC">
     <meta property="article:tag" content="API escalável">
-    <meta property="og:image" content="https://pklavc.com/blog/assets/images/brand/lavc.webp?v=5e84850f26">
+    <meta property="og:image" content="https://pklavc.com/assets/images/brand/lavc.webp?v=5e84850f26">
     <meta property="og:site_name" content="Patrick Araujo">
     <meta property="og:locale" content="pt_BR">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Arquitetura SaaS multilocatário: padrões para APIs seguras e escaláveis">
     <meta name="twitter:description" content="Padrões para backends de SaaS seguros e escaláveis, desde o isolamento de dados até o processamento de trabalhos em segundo plano.">
-    <meta name="twitter:image" content="https://pklavc.com/blog/assets/images/brand/lavc.webp?v=5e84850f26">
+    <meta name="twitter:image" content="https://pklavc.com/assets/images/brand/lavc.webp?v=5e84850f26">
     <meta name="twitter:site" content="@PkLavc">
     <meta name="twitter:creator" content="@PkLavc">
     <link rel="icon" type="image/svg+xml" href="/blog/assets/favicon.svg?v=d15fe4e492">
@@ -154,7 +154,7 @@
                     <article class="blog-article">
                         <h2>O isolamento do inquilino é a primeira decisão arquitetônica</h2>
                         <p>Quando um backend SaaS oferece suporte a várias organizações, a questão principal não é apenas como modelar os dados. É como garantir que cada leitura, gravação, trabalho em segundo plano e ação administrativa permaneça dentro dos limites corretos do locatário. Se esta regra não estiver incorporada na arquitetura, as correções posteriores tendem a ser parciais e arriscadas.</p>
-                        <p>A página do projeto para <a href="/blog/pt/projetos/multi-tenant-saas-platform/">Multi-Tenant SaaS Platform</a> demonstra esse problema diretamente: o isolamento do locatário, o RBAC e a execução assíncrona são tratados como responsabilidades centrais de backend, e não como reflexões posteriores.</p>
+                        <p>A página do projeto para <a href="/pt/projetos/multi-tenant-saas-platform/">Multi-Tenant SaaS Platform</a> demonstra esse problema diretamente: o isolamento do locatário, o RBAC e a execução assíncrona são tratados como responsabilidades centrais de backend, e não como reflexões posteriores.</p>
 
                         <h2>A autorização precisa de mais do que autenticação</h2>
                         <p>A autenticação responde quem é o usuário. A autorização decide o que esse usuário pode fazer no contexto de locatário atual. Em sistemas multilocatários, essa distinção é crítica porque os usuários podem pertencer a organizações diferentes, desempenhar funções diferentes e acionar operações com raios de impacto muito diferentes.</p>
@@ -179,7 +179,7 @@
                         <p>O que mais importa é a consistência. Se uma parte do sistema usa filtros rígidos de locatário e outra depende de convenções opcionais, a arquitetura já é frágil.</p>
 
                         <h2>A observabilidade deve rastrear o comportamento consciente do inquilino</h2>
-                        <p>A depuração de produção fica mais difícil quando cada sintoma precisa ser mapeado de volta para a organização, função de usuário e tipo de carga de trabalho corretos. Logs, rastreamentos e métricas devem, portanto, incluir as dimensões que são importantes operacionalmente. Isso faz parte do mesmo modelo de confiabilidade descrito em <a href="/blog/pt/event-driven-api-integrations/">Integrações orientadas a eventos API</a> e visível em trabalhos mais amplos de engenharia de backend em <a href="/blog/pt/stacks/backend-nodejs/">Backend Node.js</a>.</p>
+                        <p>A depuração de produção fica mais difícil quando cada sintoma precisa ser mapeado de volta para a organização, função de usuário e tipo de carga de trabalho corretos. Logs, rastreamentos e métricas devem, portanto, incluir as dimensões que são importantes operacionalmente. Isso faz parte do mesmo modelo de confiabilidade descrito em <a href="/blog/pt/event-driven-api-integrations/">Integrações orientadas a eventos API</a> e visível em trabalhos mais amplos de engenharia de backend em <a href="/pt/stacks/backend-nodejs/">Backend Node.js</a>.</p>
 
                         <h2>Por que este tópico oferece suporte a SEO de portfólio</h2>
                         <p>A arquitetura SaaS multilocatário é uma ponte de tópico forte entre engenharia de backend, design de APIs em Node.js, controles de segurança e design de sistema escalonável. Ao vincular este artigo à implementação detalhada do projeto, o site constrói um mapa de autoridade mais confiável em torno do trabalho real de engenharia de software, em vez de páginas de palavras-chave isoladas.</p>
@@ -189,7 +189,7 @@
                         <h2 id="saas-related-title">Leitura relacionada</h2>
                         <div class="blog-related-grid">
                             <article class="blog-related-card">
-                                <h3><a href="/blog/pt/projetos/multi-tenant-saas-platform/">Multi-Tenant SaaS Platform</a></h3>
+                                <h3><a href="/pt/projetos/multi-tenant-saas-platform/">Multi-Tenant SaaS Platform</a></h3>
                                 <p>Página de implementação que abrange isolamento de locatário, RBAC e processamento apoiado por fila.</p>
                             </article>
                             <article class="blog-related-card">
@@ -197,7 +197,7 @@
                                 <p>Por que as filas e os limites de execução são importantes para operações confiáveis.</p>
                             </article>
                             <article class="blog-related-card">
-                                <h3><a href="/blog/pt/stacks/backend-nodejs/">Backend Node.js</a></h3>
+                                <h3><a href="/pt/stacks/backend-nodejs/">Backend Node.js</a></h3>
                                 <p>Contexto de portfólio mais amplo para APIs e trabalho de plataforma backend.</p>
                             </article>
                         </div>
@@ -217,10 +217,10 @@
                     <section class="blog-sidebar-card">
                         <h2>Continue explorando</h2>
                         <ul>
-                            <li><a href="/blog/pt/projetos/event-driven-integration-service/">Event-Driven Integration Service</a></li>
-                            <li><a href="/blog/pt/colecoes/projetos-javascript/">Projetos JavaScript</a></li>
-                            <li><a href="/blog/pt/stacks/automacao-backend/">Automação de backend</a></li>
-                            <li><a href="/blog/pt/sobre/">Sobre Patrick Araujo</a></li>
+                            <li><a href="/pt/projetos/event-driven-integration-service/">Event-Driven Integration Service</a></li>
+                            <li><a href="/pt/colecoes/projetos-javascript/">Projetos JavaScript</a></li>
+                            <li><a href="/pt/stacks/automacao-backend/">Automação de backend</a></li>
+                            <li><a href="/pt/sobre/">Sobre Patrick Araujo</a></li>
                         </ul>
                     </section>
                 </aside>

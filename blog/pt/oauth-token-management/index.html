@@ -27,13 +27,13 @@
     <meta property="article:tag" content="gerenciamento de tokens">
     <meta property="article:tag" content="segurança da API">
     <meta property="article:tag" content="worker de integração Node.js.">
-    <meta property="og:image" content="https://pklavc.com/blog/assets/images/brand/lavc.webp?v=5e84850f26">
+    <meta property="og:image" content="https://pklavc.com/assets/images/brand/lavc.webp?v=5e84850f26">
     <meta property="og:site_name" content="Patrick Araujo">
     <meta property="og:locale" content="pt_BR">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="OAuth Gerenciamento de token em workers de backend: fluxo seguro de credenciais para integrações de APIs">
     <meta name="twitter:description" content="Como estruturar a aquisição e distribuição de credenciais OAuth em workers backend Node.js para confiabilidade de integração.">
-    <meta name="twitter:image" content="https://pklavc.com/blog/assets/images/brand/lavc.webp?v=5e84850f26">
+    <meta name="twitter:image" content="https://pklavc.com/assets/images/brand/lavc.webp?v=5e84850f26">
     <meta name="twitter:site" content="@PkLavc">
     <meta name="twitter:creator" content="@PkLavc">
     <link rel="icon" type="image/svg+xml" href="/blog/assets/favicon.svg?v=d15fe4e492">
@@ -135,7 +135,7 @@
                     <article class="blog-article">
                         <h2>Por que o gerenciamento de credenciais pertence à camada de infraestrutura</h2>
                         <p>Os workers de integração que gerenciam seus próprios tokens inline têm um problema estrutural: eles misturam o estado de autenticação com a lógica de negócios. Quando o token expira no meio da execução, o worker precisa decidir se tenta novamente, atualiza ou falha, e essa decisão geralmente é inconsistente entre os workers. Um design mais limpo separa a aquisição de credenciais em um serviço dedicado que outros workers consomem.</p>
-                        <p>Esse é o design por trás <a href="/blog/pt/projetos/google-auth-worker/">Google Auth Worker</a>, que lida com a geração de token OAuth e distribui credenciais para serviços de integração downstream, em vez de permitir que cada worker gerencie seu próprio ciclo de vida de autenticação de forma independente.</p>
+                        <p>Esse é o design por trás <a href="/pt/projetos/google-auth-worker/">Google Auth Worker</a>, que lida com a geração de token OAuth e distribui credenciais para serviços de integração downstream, em vez de permitir que cada worker gerencie seu próprio ciclo de vida de autenticação de forma independente.</p>
 
                         <h2>O ciclo de vida do OAuth tem três problemas distintos</h2>
                         <p>O gerenciamento de tokens na produção abrange mais do que o handshake inicial. As três áreas que requerem design explícito são:</p>
@@ -161,14 +161,14 @@
 
                         <h2>Workers de autenticação como dependências de infraestrutura</h2>
                         <p>Quando um worker de autenticação dedicado alimenta vários workers de integração, ele se torna uma dependência upstream com seus próprios requisitos de disponibilidade e confiabilidade. Isso significa monitorar a latência de geração de tokens, alertar sobre falhas de aquisição consecutivas e projetar os consumidores para falharem normalmente quando o serviço de autenticação estiver temporariamente indisponível, em vez de entrar em loops de repetição indefinidos.</p>
-                        <p>O <a href="/blog/pt/colecoes/projetos-integracao-api/">Projetos de Integração de APIs</a> coleção mostra como esse modelo de credencial oferece suporte a vários workers downstream, incluindo <a href="/blog/pt/projetos/zoho-integration-worker/">Zoho Integration Worker</a>, <a href="/blog/pt/projetos/sige-integration-worker/">SIGE Integration Worker</a> e <a href="/blog/pt/projetos/omie-integration-worker/">Omie Integration Worker</a>.</p>
+                        <p>O <a href="/pt/colecoes/projetos-integracao-api/">Projetos de Integração de APIs</a> coleção mostra como esse modelo de credencial oferece suporte a vários workers downstream, incluindo <a href="/pt/projetos/zoho-integration-worker/">Zoho Integration Worker</a>, <a href="/pt/projetos/sige-integration-worker/">SIGE Integration Worker</a> e <a href="/pt/projetos/omie-integration-worker/">Omie Integration Worker</a>.</p>
                     </article>
 
                     <section aria-labelledby="oauth-related-title">
                         <h2 id="oauth-related-title">Leitura relacionada</h2>
                         <div class="blog-related-grid">
                             <article class="blog-related-card">
-                                <h3><a href="/blog/pt/projetos/google-auth-worker/">Google Auth Worker</a></h3>
+                                <h3><a href="/pt/projetos/google-auth-worker/">Google Auth Worker</a></h3>
                                 <p>Worker Node.js que gera e distribui tokens do Google OAuth para serviços de integração downstream.</p>
                             </article>
                             <article class="blog-related-card">
@@ -176,7 +176,7 @@
                                 <p>Políticas de repetição, idempotência e padrões de rastreabilidade para serviços de integração.</p>
                             </article>
                             <article class="blog-related-card">
-                                <h3><a href="/blog/pt/colecoes/projetos-integracao-api/">Projetos de Integração de APIs</a></h3>
+                                <h3><a href="/pt/colecoes/projetos-integracao-api/">Projetos de Integração de APIs</a></h3>
                                 <p>Cluster de workers de integração que dependem de padrões de gerenciamento de credenciais compartilhados.</p>
                             </article>
                         </div>
@@ -196,10 +196,10 @@
                     <section class="blog-sidebar-card">
                         <h2>Continue explorando</h2>
                         <ul>
-                            <li><a href="/blog/pt/projetos/google-auth-worker/">Google Auth Worker</a></li>
-                            <li><a href="/blog/pt/projetos/hablla-integration-worker/">Hablla Integration Worker</a></li>
-                            <li><a href="/blog/pt/stacks/engenheiro-integracao-api/">Engenheiro de Integração de APIs</a></li>
-                            <li><a href="/blog/pt/sobre/">Sobre Patrick Araujo</a></li>
+                            <li><a href="/pt/projetos/google-auth-worker/">Google Auth Worker</a></li>
+                            <li><a href="/pt/projetos/hablla-integration-worker/">Hablla Integration Worker</a></li>
+                            <li><a href="/pt/stacks/engenheiro-integracao-api/">Engenheiro de Integração de APIs</a></li>
+                            <li><a href="/pt/sobre/">Sobre Patrick Araujo</a></li>
                         </ul>
                     </section>
                 </aside>

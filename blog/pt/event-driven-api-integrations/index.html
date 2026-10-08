@@ -26,13 +26,13 @@
     <meta property="article:tag" content="integração orientada a eventos">
     <meta property="article:tag" content="idempotência">
     <meta property="article:tag" content="webhooks">
-    <meta property="og:image" content="https://pklavc.com/blog/assets/images/brand/lavc.webp?v=5e84850f26">
+    <meta property="og:image" content="https://pklavc.com/assets/images/brand/lavc.webp?v=5e84850f26">
     <meta property="og:site_name" content="Patrick Araujo">
     <meta property="og:locale" content="pt_BR">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Integrações API orientadas a eventos: novas tentativas, idempotência e rastreabilidade">
     <meta name="twitter:description" content="Como construir integrações de APIs orientadas a eventos que sobrevivam à instabilidade do provedor, eventos repetidos e falhas parciais de downstream.">
-    <meta name="twitter:image" content="https://pklavc.com/blog/assets/images/brand/lavc.webp?v=5e84850f26">
+    <meta name="twitter:image" content="https://pklavc.com/assets/images/brand/lavc.webp?v=5e84850f26">
     <meta name="twitter:site" content="@PkLavc">
     <meta name="twitter:creator" content="@PkLavc">
     <link rel="icon" type="image/svg+xml" href="/blog/assets/favicon.svg?v=d15fe4e492">
@@ -154,7 +154,7 @@
                     <article class="blog-article">
                         <h2>Por que as integrações orientadas a eventos falham na prática</h2>
                         <p>Muitas falhas de integração não são causadas por uma chamada API incorreta. Eles acontecem porque o sistema em torno da chamada não foi projetado para o comportamento real do provedor. Plataformas de terceiros tentam novamente de forma agressiva, enviam notificações duplicadas, alteram o tempo de resposta ou produzem inconsistência temporária entre endpoints. Um serviço robusto espera esses comportamentos em vez de tratá-los como casos extremos.</p>
-                        <p>Este é o principal problema de engenharia abordado em <a href="/blog/pt/projetos/event-driven-integration-service/">Event-Driven Integration Service</a>, onde o processamento de webhook, o rastreamento distribuído e os limites de execução segura são tão importantes quanto o payload real do negócio.</p>
+                        <p>Este é o principal problema de engenharia abordado em <a href="/pt/projetos/event-driven-integration-service/">Event-Driven Integration Service</a>, onde o processamento de webhook, o rastreamento distribuído e os limites de execução segura são tão importantes quanto o payload real do negócio.</p>
 
                         <h2>Idempotência é a proteção básica</h2>
                         <p>Se o mesmo evento puder ser entregue mais de uma vez, a integração deverá produzir o mesmo resultado em processamento repetido. Isso significa que cada evento precisa de uma identidade estável e cada efeito colateral precisa de uma estratégia segura de desduplicação. Sem isso, as novas tentativas se transformam em corrupção de dados.</p>
@@ -177,10 +177,10 @@
                         <p>Quando um evento atravessa vários serviços, apenas os logs ficam barulhentos. Um padrão melhor é a execução rastreável com IDs de correlação, IDs de eventos do provedor, IDs de trabalho e identificadores de locatários ou clientes, quando relevante. A questão não é apenas observar a latência. É reconstruir o caminho completo de um evento de negócios através de autenticação, ingestão, transformação e persistência.</p>
 
                         <h2>Os fluxos de segurança e autenticação fazem parte do modelo de confiabilidade</h2>
-                        <p>Muitas falhas de integração parecem operacionais, mas têm origem em problemas do ciclo de vida da autenticação. A aquisição, atualização e envio seguro de token são dependências do pipeline de eventos. É por isso <a href="/blog/pt/projetos/google-auth-worker/">Google Auth Worker</a> é uma página complementar importante para este tópico. O processamento confiável de eventos geralmente começa antes mesmo de o primeiro evento ser consumido.</p>
+                        <p>Muitas falhas de integração parecem operacionais, mas têm origem em problemas do ciclo de vida da autenticação. A aquisição, atualização e envio seguro de token são dependências do pipeline de eventos. É por isso <a href="/pt/projetos/google-auth-worker/">Google Auth Worker</a> é uma página complementar importante para este tópico. O processamento confiável de eventos geralmente começa antes mesmo de o primeiro evento ser consumido.</p>
 
                         <h2>Use links internos para reforçar o contexto de engenharia</h2>
-                        <p>Este tema se conecta naturalmente a <a href="/blog/pt/colecoes/projetos-integracao-api/">Projetos de Integração de APIs</a>, <a href="/blog/pt/projetos/zoho-integration-worker/">Zoho Integration Worker</a>, <a href="/blog/pt/projetos/hablla-integration-worker/">Hablla Integration Worker</a> e <a href="/blog/pt/stacks/engenheiro-integracao-api/">Engenheiro de Integração de APIs</a>. Essas conexões ajudam a classificação desta página de forma mais coerente porque o site não está discutindo a teoria da integração isoladamente. O objetivo é conectar a teoria a implementações concretas.</p>
+                        <p>Este tema se conecta naturalmente a <a href="/pt/colecoes/projetos-integracao-api/">Projetos de Integração de APIs</a>, <a href="/pt/projetos/zoho-integration-worker/">Zoho Integration Worker</a>, <a href="/pt/projetos/hablla-integration-worker/">Hablla Integration Worker</a> e <a href="/pt/stacks/engenheiro-integracao-api/">Engenheiro de Integração de APIs</a>. Essas conexões ajudam a classificação desta página de forma mais coerente porque o site não está discutindo a teoria da integração isoladamente. O objetivo é conectar a teoria a implementações concretas.</p>
 
                         <h2>Design confiável orientado a eventos é simplicidade disciplinada</h2>
                         <p>Os melhores sistemas orientados a eventos não são aqueles com peças mais móveis. Eles são aqueles com identidade de evento clara, tentativas controladas, gravações seguras e observabilidade suficiente para explicar o comportamento sob estresse. É isso que torna a arquitetura confiável para pagamentos, relatórios operacionais e sincronização entre plataformas.</p>
@@ -190,15 +190,15 @@
                         <h2 id="integration-related-title">Leitura relacionada</h2>
                         <div class="blog-related-grid">
                             <article class="blog-related-card">
-                                <h3><a href="/blog/pt/projetos/event-driven-integration-service/">Event-Driven Integration Service</a></h3>
+                                <h3><a href="/pt/projetos/event-driven-integration-service/">Event-Driven Integration Service</a></h3>
                                 <p>Página do projeto focada no processamento de webhook, verificações HMAC e execução rastreável.</p>
                             </article>
                             <article class="blog-related-card">
-                                <h3><a href="/blog/pt/projetos/google-auth-worker/">Google Auth Worker</a></h3>
+                                <h3><a href="/pt/projetos/google-auth-worker/">Google Auth Worker</a></h3>
                                 <p>Orquestração de autenticação que oferece suporte à confiabilidade da integração downstream.</p>
                             </article>
                             <article class="blog-related-card">
-                                <h3><a href="/blog/pt/colecoes/projetos-integracao-api/">Projetos de Integração de APIs</a></h3>
+                                <h3><a href="/pt/colecoes/projetos-integracao-api/">Projetos de Integração de APIs</a></h3>
                                 <p>Página de coleção para arquitetura de integração entre sistemas e fluxos baseados em workers.</p>
                             </article>
                         </div>
@@ -218,10 +218,10 @@
                     <section class="blog-sidebar-card">
                         <h2>Continue explorando</h2>
                         <ul>
-                            <li><a href="/blog/pt/projetos/zenvia-integration-worker/">Zenvia Integration Worker</a></li>
-                            <li><a href="/blog/pt/projetos/omie-integration-worker/">Omie Integration Worker</a></li>
-                            <li><a href="/blog/pt/stacks/engenheiro-integracao-api/">Engenheiro de Integração de APIs</a></li>
-                            <li><a href="/blog/pt/sobre/">Sobre Patrick Araujo</a></li>
+                            <li><a href="/pt/projetos/zenvia-integration-worker/">Zenvia Integration Worker</a></li>
+                            <li><a href="/pt/projetos/omie-integration-worker/">Omie Integration Worker</a></li>
+                            <li><a href="/pt/stacks/engenheiro-integracao-api/">Engenheiro de Integração de APIs</a></li>
+                            <li><a href="/pt/sobre/">Sobre Patrick Araujo</a></li>
                         </ul>
                     </section>
                 </aside>

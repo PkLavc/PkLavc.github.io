@@ -28,7 +28,7 @@
     <meta property="article:tag" content="langógrafo">
     <meta property="article:tag" content="fastapi">
     <meta property="article:tag" content="cromadb">
-    <meta property="og:image" content="https://pklavc.com/projects/lavc-systems/blog/assets/lavc-ai-operation-dashboard.webp?v=8081b617f4">
+    <meta property="og:image" content="https://pklavc.com/projects/lavc-systems/assets/lavc-ai-operation-dashboard.webp?v=8081b617f4">
     <meta property="og:image:width" content="1280">
     <meta property="og:image:height" content="548">
     <meta property="og:image:alt" content="Lavc Systems painel de operação da plataforma de IA local com orquestração de agentes e controles de sistema">
@@ -37,7 +37,7 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Construindo Lavc Systems: Arquitetura de uma plataforma local de IA multiagente">
     <meta name="twitter:description" content="Decisões de engenharia por trás de uma plataforma multiagente local: FastAPI, LangGraph, Ollama, ChromaDB, HybridMemory e eventos WebSocket em tempo real.">
-    <meta name="twitter:image" content="https://pklavc.com/projects/lavc-systems/blog/assets/lavc-ai-operation-dashboard.webp?v=8081b617f4">
+    <meta name="twitter:image" content="https://pklavc.com/projects/lavc-systems/assets/lavc-ai-operation-dashboard.webp?v=8081b617f4">
     <meta name="twitter:image:alt" content="Lavc Systems painel de operação da plataforma de IA local com orquestração de agentes e controles de sistema">
     <meta name="twitter:site" content="@PkLavc">
     <meta name="twitter:creator" content="@PkLavc">
@@ -57,7 +57,7 @@
                 "@type": "BlogPosting",
                 "headline": "Building Lavc Systems: Architecture of a Local Multi-Agent AI Platform",
                 "description": "A deep dive into the engineering decisions behind Lavc Systems: FastAPI, LangGraph multi-agent orchestration, Ollama local LLM, ChromaDB RAG, HybridMemory, APScheduler, and real-time WebSocket observability.",
-                "image": "https://pklavc.com/projects/lavc-systems/blog/assets/lavc-ai-operation-dashboard.webp?v=8081b617f4",
+                "image": "https://pklavc.com/projects/lavc-systems/assets/lavc-ai-operation-dashboard.webp?v=8081b617f4",
                 "datePublished": "2026-05-12",
                 "dateModified": "2026-05-12",
                 "author": {
@@ -143,15 +143,15 @@
 
                     <section class="blog-media-grid" aria-label="Lavc Systems recursos visuais da interface">
                         <figure class="blog-media-panel blog-media-panel-wide">
-                            <img src="https://pklavc.com/projects/lavc-systems/blog/assets/lavc-ai-operation-dashboard.webp?v=8081b617f4" width="1280" height="548" alt="Painel de operação Lavc Systems mostrando agentes locais de IA, status da tarefa e sinais de observabilidade" loading="eager" decoding="async">
+                            <img src="https://pklavc.com/projects/lavc-systems/assets/lavc-ai-operation-dashboard.webp?v=8081b617f4" width="1280" height="548" alt="Painel de operação Lavc Systems mostrando agentes locais de IA, status da tarefa e sinais de observabilidade" loading="eager" decoding="async">
                             <figcaption>Painel de operação para agentes locais de IA, tarefas autônomas, status do sistema e observabilidade em tempo real.</figcaption>
                         </figure>
                         <figure class="blog-media-panel">
-                            <img src="https://pklavc.com/projects/lavc-systems/blog/assets/lavc-ai-agent-orchestration-graph.webp?v=7ba29e7ca7" width="1280" height="550" alt="Lavc Systems gráfico de orquestração de agentes com nós de fluxo de trabalho multiagentes e caminhos de execução" loading="lazy" decoding="async">
+                            <img src="https://pklavc.com/projects/lavc-systems/assets/lavc-ai-agent-orchestration-graph.webp?v=7ba29e7ca7" width="1280" height="550" alt="Lavc Systems gráfico de orquestração de agentes com nós de fluxo de trabalho multiagentes e caminhos de execução" loading="lazy" decoding="async">
                             <figcaption>Gráfico de orquestração de agentes mostrando fluxo do coordenador, agentes especializados, acesso à memória e caminhos de execução de ferramentas.</figcaption>
                         </figure>
                         <figure class="blog-media-panel">
-                            <img src="https://pklavc.com/projects/lavc-systems/blog/assets/lavc-ai-system-control-metrics.webp?v=75aeee3a79" width="1280" height="546" alt="Painel de métricas de controle Lavc Systems para tempo de execução local LLM, memória, agendador e integridade de execução" loading="lazy" decoding="async">
+                            <img src="https://pklavc.com/projects/lavc-systems/assets/lavc-ai-system-control-metrics.webp?v=75aeee3a79" width="1280" height="546" alt="Painel de métricas de controle Lavc Systems para tempo de execução local LLM, memória, agendador e integridade de execução" loading="lazy" decoding="async">
                             <figcaption>Os controles do sistema expõem o tempo de execução local LLM, a integridade do agendador, o comportamento da memória e os sinais de confiabilidade de execução.</figcaption>
                         </figure>
                     </section>
@@ -213,7 +213,7 @@
                         <p>O cofre não é intencionalmente um gerenciador de segredos da nuvem. Armazenar credenciais localmente em um cofre que a camada do agente possa ler em tempo de execução mantém os segredos fora de qualquer serviço externo, ao mesmo tempo que permite a automação que os exige. A desvantagem é que a segurança do cofre local é tão forte quanto a máquina em que ele é executado – o que é um limite aceitável para um sistema projetado explicitamente para operação local.</p>
 
                         <h2>Skylet: o mesmo assistente, um ambiente de execução diferente</h2>
-                        <p>Skylet aparece em dois lugares no portfólio Lavc. A versão pública - <a href="/blog/pt/ia/">Skylet Assistant</a> — roda em Cloudflare Workers com RAG manual, fallback de provedor e um modelo de orquestração leve projetado para visitantes de portfólio público. Ele responde a perguntas sobre o trabalho, a stack e a experiência de Patrick. Não tem acesso a dados privados. Não executa tarefas. É uma interface conversacional somente leitura em uma base de conhecimento fixa.</p>
+                        <p>Skylet aparece em dois lugares no portfólio Lavc. A versão pública - <a href="/pt/ia/">Skylet Assistant</a> — roda em Cloudflare Workers com RAG manual, fallback de provedor e um modelo de orquestração leve projetado para visitantes de portfólio público. Ele responde a perguntas sobre o trabalho, a stack e a experiência de Patrick. Não tem acesso a dados privados. Não executa tarefas. É uma interface conversacional somente leitura em uma base de conhecimento fixa.</p>
                         <p>Skylet dentro de Lavc Systems é uma implementação diferente na mesma função conceitual. Ela é executada dentro do backend FastAPI, tem acesso ao banco de dados SQLite, pode consultar ChromaDB, pode criar tarefas, ler arquivos carregados, gravar credenciais no cofre local e gerar um rastreamento operacional de suas próprias respostas. O rastreamento não é uma prosa gerada pelo modelo sobre o que o modelo pensou — é um registro estruturado das transições de estado reais executadas durante a resposta: intenção detectada, fonte de contexto consultada, ação tomada, próxima etapa recomendada.</p>
                         <p>A lição arquitetônica de ambas as versões é que a qualidade de um assistente de IA não é determinada principalmente pelo modelo. É determinado pelos dados que o assistente pode obter, pelas ações que lhe é permitido tomar e pela transparência do seu raciocínio para as pessoas que nele dependem. O público Skylet é útil porque possui a base de conhecimento correta e regras de resposta claras. O sistema Skylet é mais capaz porque tem acesso a todo o contexto operacional da plataforma em que vive.</p>
 
@@ -231,7 +231,7 @@
                         <h2 id="lavc-related-title">Leitura relacionada</h2>
                         <div class="blog-related-grid">
                             <article class="blog-related-card">
-                                <h3><a href="/blog/pt/projetos/skylet-assistant/">Skylet Assistant</a></h3>
+                                <h3><a href="/pt/projetos/skylet-assistant/">Skylet Assistant</a></h3>
                                 <p>A versão do portfólio público de Skylet — um Cloudflare Worker com RAG manual, provedor substituto e suporte de voz. O irmão mais leve do assistente empresarial incorporado em Lavc Systems.</p>
                             </article>
                             <article class="blog-related-card">
@@ -263,11 +263,11 @@
                     <section class="blog-sidebar-card">
                         <h2>Continue explorando</h2>
                         <ul>
-                            <li><a href="/blog/pt/projetos/lavc-systems/">Lavc Systems página do projeto</a></li>
-                            <li><a href="/blog/pt/ia/">Skylet Assistant (versão pública)</a></li>
+                            <li><a href="/pt/projetos/lavc-systems/">Lavc Systems página do projeto</a></li>
+                            <li><a href="/pt/ia/">Skylet Assistant (versão pública)</a></li>
                             <li><a href="/blog/pt/backend-automation-systems/">Sistemas de automação de backend</a></li>
                             <li><a href="/blog/pt/multi-tenant-saas-architecture/">Arquitetura SaaS multilocatário</a></li>
-                            <li><a href="/blog/pt/sobre/">Sobre Patrick Araujo</a></li>
+                            <li><a href="/pt/sobre/">Sobre Patrick Araujo</a></li>
                         </ul>
                     </section>
                 </aside>

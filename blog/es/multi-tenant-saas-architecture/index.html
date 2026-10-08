@@ -26,13 +26,13 @@
     <meta property="article:tag" content="saas multi-tenant">
     <meta property="article:tag" content="RBAC">
     <meta property="article:tag" content="APIs escalables">
-    <meta property="og:image" content="https://pklavc.com/blog/assets/images/brand/lavc.webp?v=5e84850f26">
+    <meta property="og:image" content="https://pklavc.com/assets/images/brand/lavc.webp?v=5e84850f26">
     <meta property="og:site_name" content="Patrick Araujo">
     <meta property="og:locale" content="es_ES">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Arquitectura SaaS multi-tenant: patrones para APIs seguros y escalables">
     <meta name="twitter:description" content="Patrones para backends SaaS seguros y escalables, desde el aislamiento de datos hasta el procesamiento de trabajos en segundo plano.">
-    <meta name="twitter:image" content="https://pklavc.com/blog/assets/images/brand/lavc.webp?v=5e84850f26">
+    <meta name="twitter:image" content="https://pklavc.com/assets/images/brand/lavc.webp?v=5e84850f26">
     <meta name="twitter:site" content="@PkLavc">
     <meta name="twitter:creator" content="@PkLavc">
     <link rel="icon" type="image/svg+xml" href="/blog/assets/favicon.svg?v=d15fe4e492">
@@ -154,7 +154,7 @@
                     <article class="blog-article">
                         <h2>El aislamiento de los tenants es la primera decisión arquitectónica</h2>
                         <p>Cuando un backend SaaS admite varias organizaciones, la pregunta principal no es solo cómo modelar los datos. Es cómo garantizar que cada lectura, escritura, trabajo en segundo plano y acción administrativa permanezca dentro de los límites correctos del tenant. Si esta regla no está integrada en la arquitectura, las correcciones posteriores tienden a ser parciales y arriesgadas.</p>
-                        <p>La página del proyecto para <a href="/blog/es/proyectos/multi-tenant-saas-platform/">Multi-Tenant SaaS Platform</a> demuestra este espacio problemático directamente: el aislamiento de tenants, RBAC y la ejecución asincrónica se tratan como responsabilidades centrales del backend, no como ideas posteriores.</p>
+                        <p>La página del proyecto para <a href="/es/proyectos/multi-tenant-saas-platform/">Multi-Tenant SaaS Platform</a> demuestra este espacio problemático directamente: el aislamiento de tenants, RBAC y la ejecución asincrónica se tratan como responsabilidades centrales del backend, no como ideas posteriores.</p>
 
                         <h2>La autorización necesita más que autenticación</h2>
                         <p>La autenticación responde quién es el usuario. La autorización decide qué puede hacer ese usuario en el contexto del tenant actual. En los sistemas multi-tenant, esa distinción es fundamental porque los usuarios pueden pertenecer a diferentes organizaciones, desempeñar diferentes roles y desencadenar operaciones con radios de explosión muy diferentes.</p>
@@ -179,7 +179,7 @@
                         <p>Lo que más importa es la coherencia. Si una parte del sistema utiliza filtros de tenants estrictos y otra se basa en convenciones opcionales, la arquitectura ya es frágil.</p>
 
                         <h2>La observabilidad debe rastrear el comportamiento consciente de los tenants</h2>
-                        <p>La depuración de producción se vuelve más difícil cuando es necesario asignar cada síntoma a la organización, función de usuario y tipo de carga de trabajo correctos. Por lo tanto, los registros, seguimientos y métricas deben incluir las dimensiones que importan desde el punto de vista operativo. Esto es parte del mismo modelo de confiabilidad descrito en <a href="/blog/es/event-driven-api-integrations/">Integraciones de APIs basadas en eventos</a> y visible en trabajos de ingeniería backend más amplios bajo <a href="/blog/es/stacks/backend-nodejs/">Backend Node.js</a>.</p>
+                        <p>La depuración de producción se vuelve más difícil cuando es necesario asignar cada síntoma a la organización, función de usuario y tipo de carga de trabajo correctos. Por lo tanto, los registros, seguimientos y métricas deben incluir las dimensiones que importan desde el punto de vista operativo. Esto es parte del mismo modelo de confiabilidad descrito en <a href="/blog/es/event-driven-api-integrations/">Integraciones de APIs basadas en eventos</a> y visible en trabajos de ingeniería backend más amplios bajo <a href="/es/stacks/backend-nodejs/">Backend Node.js</a>.</p>
 
                         <h2>Por qué este tema respalda el SEO de portafolio</h2>
                         <p>La arquitectura SaaS multi-tenant es un sólido puente entre la ingeniería de backend, el diseño de APIs con Node.js, los controles de seguridad y el diseño de sistemas escalables. Al vincular este artículo a la implementación detallada del proyecto, el sitio crea un mapa de autoridad más creíble en torno al trabajo real de ingeniería de software en lugar de páginas de palabras clave aisladas.</p>
@@ -189,7 +189,7 @@
                         <h2 id="saas-related-title">Lectura relacionada</h2>
                         <div class="blog-related-grid">
                             <article class="blog-related-card">
-                                <h3><a href="/blog/es/proyectos/multi-tenant-saas-platform/">Multi-Tenant SaaS Platform</a></h3>
+                                <h3><a href="/es/proyectos/multi-tenant-saas-platform/">Multi-Tenant SaaS Platform</a></h3>
                                 <p>Página de implementación que cubre el aislamiento de tenants, RBAC y el procesamiento respaldado por colas.</p>
                             </article>
                             <article class="blog-related-card">
@@ -197,7 +197,7 @@
                                 <p>Por qué las colas y los límites de ejecución son importantes para operaciones confiables.</p>
                             </article>
                             <article class="blog-related-card">
-                                <h3><a href="/blog/es/stacks/backend-nodejs/">Backend Node.js</a></h3>
+                                <h3><a href="/es/stacks/backend-nodejs/">Backend Node.js</a></h3>
                                 <p>Contexto de portafolio más amplio para APIs y el trabajo de plataforma backend.</p>
                             </article>
                         </div>
@@ -217,10 +217,10 @@
                     <section class="blog-sidebar-card">
                         <h2>Continuar explorando</h2>
                         <ul>
-                            <li><a href="/blog/es/proyectos/event-driven-integration-service/">Event-Driven Integration Service</a></li>
-                            <li><a href="/blog/es/colecciones/proyectos-javascript/">Proyectos JavaScript</a></li>
-                            <li><a href="/blog/es/stacks/automatizacion-backend/">Automatización de backend</a></li>
-                            <li><a href="/blog/es/sobre/">Acerca de Patrick Araujo</a></li>
+                            <li><a href="/es/proyectos/event-driven-integration-service/">Event-Driven Integration Service</a></li>
+                            <li><a href="/es/colecciones/proyectos-javascript/">Proyectos JavaScript</a></li>
+                            <li><a href="/es/stacks/automatizacion-backend/">Automatización de backend</a></li>
+                            <li><a href="/es/sobre/">Acerca de Patrick Araujo</a></li>
                         </ul>
                     </section>
                 </aside>

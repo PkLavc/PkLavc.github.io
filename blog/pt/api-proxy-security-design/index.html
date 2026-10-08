@@ -27,13 +27,13 @@
     <meta property="article:tag" content="criptografia aes-256">
     <meta property="article:tag" content="proxy de API">
     <meta property="article:tag" content="detecção de pii">
-    <meta property="og:image" content="https://pklavc.com/blog/assets/images/brand/lavc.webp?v=5e84850f26">
+    <meta property="og:image" content="https://pklavc.com/assets/images/brand/lavc.webp?v=5e84850f26">
     <meta property="og:site_name" content="Patrick Araujo">
     <meta property="og:locale" content="pt_BR">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Design de proxy zero-trust API: criptografia AES-256 e detecção de PII em Python">
     <meta name="twitter:description" content="Criptografia em nível de campo, detecção automatizada de PII e controles de privacidade de dados de confiança zero para camadas de proxy Python API.">
-    <meta name="twitter:image" content="https://pklavc.com/blog/assets/images/brand/lavc.webp?v=5e84850f26">
+    <meta name="twitter:image" content="https://pklavc.com/assets/images/brand/lavc.webp?v=5e84850f26">
     <meta name="twitter:site" content="@PkLavc">
     <meta name="twitter:creator" content="@PkLavc">
     <link rel="icon" type="image/svg+xml" href="/blog/assets/favicon.svg?v=d15fe4e492">
@@ -135,7 +135,7 @@
                     <article class="blog-article">
                         <h2>O que significa confiança zero na camada proxy</h2>
                         <p>A confiança zero não é um produto ou estrutura. É uma postura: nenhum tráfego é confiável por padrão e o acesso é verificado continuamente, em vez de uma vez no perímetro. Na camada proxy de API isso significa que mesmo o tráfego interno entre serviços passa pelas mesmas regras de inspeção e aplicação que as solicitações externas. O proxy não relaxa os controles porque a origem é interna.</p>
-                        <p><a href="/blog/pt/projetos/cipher-gate-proxy/">Cipher Gate Proxy</a> implementa essa postura com criptografia de campo AES-256, mascaramento dinâmico e detecção automatizada de PII em todo o tráfego que atravessa o proxy, tratando a privacidade dos dados como uma propriedade estrutural em vez de um filtro opcional.</p>
+                        <p><a href="/pt/projetos/cipher-gate-proxy/">Cipher Gate Proxy</a> implementa essa postura com criptografia de campo AES-256, mascaramento dinâmico e detecção automatizada de PII em todo o tráfego que atravessa o proxy, tratando a privacidade dos dados como uma propriedade estrutural em vez de um filtro opcional.</p>
 
                         <h2>Criptografia em nível de campo versus criptografia de transporte</h2>
                         <p>O TLS na camada de transporte protege os dados em movimento, mas deixa os dados expostos em logs, filas, bancos de dados e qualquer sistema que intercepte a carga descriptografada. A criptografia em nível de campo mantém os valores confidenciais criptografados mesmo após a descriptografia na camada de transporte, portanto, uma entrada de log ou registro de fila de mensagens contém o valor do campo criptografado em vez do texto simples.</p>
@@ -157,14 +157,14 @@
                         <p>Isto se conecta aos padrões de monitoramento e observabilidade explorados em <a href="/blog/pt/infrastructure-anomaly-detection/">Detecção de anomalias de infraestrutura</a>, onde o registro estruturado permite a análise pós-incidente sem expor dados no processo.</p>
 
                         <h2>Onde a aplicação da segurança do proxy se encaixa na stack</h2>
-                        <p>Uma camada de segurança de proxy não substitui a validação em nível de aplicativo ou segmentação de rede. É um ponto de fiscalização consistente que aplica controles de privacidade de dados de maneira uniforme. O <a href="/blog/pt/stacks/engenheiro-python/">Python Stack de engenheiro</a> descreve como esses recursos de proxy se conectam à arquitetura mais ampla de segurança e integração em todo o portfólio de projetos.</p>
+                        <p>Uma camada de segurança de proxy não substitui a validação em nível de aplicativo ou segmentação de rede. É um ponto de fiscalização consistente que aplica controles de privacidade de dados de maneira uniforme. O <a href="/pt/stacks/engenheiro-python/">Python Stack de engenheiro</a> descreve como esses recursos de proxy se conectam à arquitetura mais ampla de segurança e integração em todo o portfólio de projetos.</p>
                     </article>
 
                     <section aria-labelledby="proxy-related-title">
                         <h2 id="proxy-related-title">Leitura relacionada</h2>
                         <div class="blog-related-grid">
                             <article class="blog-related-card">
-                                <h3><a href="/blog/pt/projetos/cipher-gate-proxy/">Cipher Gate Proxy</a></h3>
+                                <h3><a href="/pt/projetos/cipher-gate-proxy/">Cipher Gate Proxy</a></h3>
                                 <p>Python proxy implementando criptografia AES-256, mascaramento dinâmico e detecção de PII em fluxos de confiança zero.</p>
                             </article>
                             <article class="blog-related-card">
@@ -172,7 +172,7 @@
                                 <p>Padrões de monitoramento e autocorreção que complementam a aplicação da segurança na camada de infraestrutura.</p>
                             </article>
                             <article class="blog-related-card">
-                                <h3><a href="/blog/pt/colecoes/projetos-python/">Projetos Python</a></h3>
+                                <h3><a href="/pt/colecoes/projetos-python/">Projetos Python</a></h3>
                                 <p>projetos Python de backend cobrindo segurança, automação e resiliência de infraestrutura.</p>
                             </article>
                         </div>
@@ -192,10 +192,10 @@
                     <section class="blog-sidebar-card">
                         <h2>Continue explorando</h2>
                         <ul>
-                            <li><a href="/blog/pt/projetos/cipher-gate-proxy/">Cipher Gate Proxy</a></li>
-                            <li><a href="/blog/pt/projetos/aegis-sentinel/">Aegis Sentinel</a></li>
-                            <li><a href="/blog/pt/stacks/engenheiro-python/">Python Stack de Engenheiro</a></li>
-                            <li><a href="/blog/pt/sobre/">Sobre Patrick Araujo</a></li>
+                            <li><a href="/pt/projetos/cipher-gate-proxy/">Cipher Gate Proxy</a></li>
+                            <li><a href="/pt/projetos/aegis-sentinel/">Aegis Sentinel</a></li>
+                            <li><a href="/pt/stacks/engenheiro-python/">Python Stack de Engenheiro</a></li>
+                            <li><a href="/pt/sobre/">Sobre Patrick Araujo</a></li>
                         </ul>
                     </section>
                 </aside>

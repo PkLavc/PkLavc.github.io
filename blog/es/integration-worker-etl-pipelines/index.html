@@ -27,13 +27,13 @@
     <meta property="article:tag" content="worker de integración de APIs">
     <meta property="article:tag" content="normalización de payload">
     <meta property="article:tag" content="integración crm erp">
-    <meta property="og:image" content="https://pklavc.com/blog/assets/images/brand/lavc.webp?v=5e84850f26">
+    <meta property="og:image" content="https://pklavc.com/assets/images/brand/lavc.webp?v=5e84850f26">
     <meta property="og:site_name" content="Patrick Araujo">
     <meta property="og:locale" content="es_ES">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="ETL Pipelines en workers de integración de APIs: extracción, normalización y sincronización de datos">
     <meta name="twitter:description" content="Patrones confiables de ETL para workers de integración de CRM y ERP: extracción, normalización y sincronización de informes en Node.js.">
-    <meta name="twitter:image" content="https://pklavc.com/blog/assets/images/brand/lavc.webp?v=5e84850f26">
+    <meta name="twitter:image" content="https://pklavc.com/assets/images/brand/lavc.webp?v=5e84850f26">
     <meta name="twitter:site" content="@PkLavc">
     <meta name="twitter:creator" content="@PkLavc">
     <link rel="icon" type="image/svg+xml" href="/blog/assets/favicon.svg?v=d15fe4e492">
@@ -135,7 +135,7 @@
                     <article class="blog-article">
                         <h2>Por qué los workers de integración necesitan un contrato de normalización compartido</h2>
                         <p>Cuando varios workers extraen datos de una fuente diferente (Zoho Creator, Omie ERP, SIGE, Hablla, Zenvia), el sistema de informes posterior no debería necesitar saber qué worker produjo qué registro. Un contrato de normalización compartido define la forma de producción que producen todos los workers, por lo que la capa de informes puede consumir la producción de cualquier worker a través de la misma interfaz.</p>
-                        <p>Este es el patrón estructural en todo el conjunto de workers de integración: <a href="/blog/es/proyectos/zoho-integration-worker/">Zoho Integration Worker</a>, <a href="/blog/es/proyectos/omie-integration-worker/">Omie Integration Worker</a>, <a href="/blog/es/proyectos/sige-integration-worker/">SIGE Integration Worker</a>, <a href="/blog/es/proyectos/hablla-integration-worker/">Hablla Integration Worker</a> y <a href="/blog/es/proyectos/zenvia-integration-worker/">Zenvia Integration Worker</a> todos se extraen de diferentes APIs y se normalizan en una estructura de payload consistente antes de sincronizarse con los objetivos de informes.</p>
+                        <p>Este es el patrón estructural en todo el conjunto de workers de integración: <a href="/es/proyectos/zoho-integration-worker/">Zoho Integration Worker</a>, <a href="/es/proyectos/omie-integration-worker/">Omie Integration Worker</a>, <a href="/es/proyectos/sige-integration-worker/">SIGE Integration Worker</a>, <a href="/es/proyectos/hablla-integration-worker/">Hablla Integration Worker</a> y <a href="/es/proyectos/zenvia-integration-worker/">Zenvia Integration Worker</a> todos se extraen de diferentes APIs y se normalizan en una estructura de payload consistente antes de sincronizarse con los objetivos de informes.</p>
 
                         <h2>Estrategias de extracción para fuentes de datos respaldadas por API</h2>
                         <p>La extracción de API no es lo mismo que la extracción de consultas de la base de datos. APIimponen límites de velocidad, paginan los resultados de manera diferente y es posible que no admitan la recuperación masiva completa. Las estrategias de extracción efectivas abordan tres áreas:</p>
@@ -162,14 +162,14 @@
                         <p>Esta separación de fases de pipeline se conecta con los patrones más amplios de procesamiento impulsado por eventos en <a href="/blog/es/event-driven-api-integrations/">Integraciones de APIs basadas en eventos</a>, donde el aislamiento de etapas evita que las fallas parciales produzcan un estado inconsistente.</p>
 
                         <h2>Patrones compartidos en todo el conjunto de workers</h2>
-                        <p>La creación de cinco workers de integración con el mismo patrón estructural produce un conjunto de workers donde la depuración, el monitoreo y la extensión de cualquier worker se transfiere inmediatamente a los demás. el <a href="/blog/es/colecciones/proyectos-integracion-api/">Proyectos de integración de APIs</a> La colección muestra cómo estos workers forman una familia consistente de servicios de extracción y sincronización.</p>
+                        <p>La creación de cinco workers de integración con el mismo patrón estructural produce un conjunto de workers donde la depuración, el monitoreo y la extensión de cualquier worker se transfiere inmediatamente a los demás. el <a href="/es/colecciones/proyectos-integracion-api/">Proyectos de integración de APIs</a> La colección muestra cómo estos workers forman una familia consistente de servicios de extracción y sincronización.</p>
                     </article>
 
                     <section aria-labelledby="etl-related-title">
                         <h2 id="etl-related-title">Lectura relacionada</h2>
                         <div class="blog-related-grid">
                             <article class="blog-related-card">
-                                <h3><a href="/blog/es/proyectos/zoho-integration-worker/">Zoho Integration Worker</a></h3>
+                                <h3><a href="/es/proyectos/zoho-integration-worker/">Zoho Integration Worker</a></h3>
                                 <p>Node.js worker extrayendo Zoho registros de creador, normalizando payloads y sincronizando con Google Sheets.</p>
                             </article>
                             <article class="blog-related-card">
@@ -177,7 +177,7 @@
                                 <p>Procesamiento basado en colas, política de reintento y patrones de idempotencia para servicios de integración.</p>
                             </article>
                             <article class="blog-related-card">
-                                <h3><a href="/blog/es/colecciones/proyectos-integracion-api/">Proyectos de integración de APIs</a></h3>
+                                <h3><a href="/es/colecciones/proyectos-integracion-api/">Proyectos de integración de APIs</a></h3>
                                 <p>Grupo completo de workers de integración construido sobre ETL y patrones de normalización compartidos.</p>
                             </article>
                         </div>
@@ -197,11 +197,11 @@
                     <section class="blog-sidebar-card">
                         <h2>Continuar explorando</h2>
                         <ul>
-                            <li><a href="/blog/es/proyectos/omie-integration-worker/">Omie Integration Worker</a></li>
-                            <li><a href="/blog/es/proyectos/sige-integration-worker/">SIGE Integration Worker</a></li>
-                            <li><a href="/blog/es/proyectos/hablla-integration-worker/">Hablla Integration Worker</a></li>
-                            <li><a href="/blog/es/proyectos/zenvia-integration-worker/">Zenvia Integration Worker</a></li>
-                            <li><a href="/blog/es/stacks/ingeniero-integracion-api/">Stack de ingeniería de integración de APIs</a></li>
+                            <li><a href="/es/proyectos/omie-integration-worker/">Omie Integration Worker</a></li>
+                            <li><a href="/es/proyectos/sige-integration-worker/">SIGE Integration Worker</a></li>
+                            <li><a href="/es/proyectos/hablla-integration-worker/">Hablla Integration Worker</a></li>
+                            <li><a href="/es/proyectos/zenvia-integration-worker/">Zenvia Integration Worker</a></li>
+                            <li><a href="/es/stacks/ingeniero-integracion-api/">Stack de ingeniería de integración de APIs</a></li>
                         </ul>
                     </section>
                 </aside>

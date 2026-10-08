@@ -26,13 +26,13 @@
     <meta property="article:tag" content="automação de backend">
     <meta property="article:tag" content="orquestração de fluxo de trabalho">
     <meta property="article:tag" content="workers da fila">
-    <meta property="og:image" content="https://pklavc.com/blog/assets/images/brand/lavc.webp?v=5e84850f26">
+    <meta property="og:image" content="https://pklavc.com/assets/images/brand/lavc.webp?v=5e84850f26">
     <meta property="og:site_name" content="Patrick Araujo">
     <meta property="og:locale" content="pt_BR">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Sistemas de automação de backend: reduza as operações manuais sem quebrar a confiabilidade">
     <meta name="twitter:description" content="Como projetar sistemas de automação de backend com confiabilidade, novas tentativas, auditabilidade e segurança operacional.">
-    <meta name="twitter:image" content="https://pklavc.com/blog/assets/images/brand/lavc.webp?v=5e84850f26">
+    <meta name="twitter:image" content="https://pklavc.com/assets/images/brand/lavc.webp?v=5e84850f26">
     <meta name="twitter:site" content="@PkLavc">
     <meta name="twitter:creator" content="@PkLavc">
     <link rel="icon" type="image/svg+xml" href="/blog/assets/favicon.svg?v=d15fe4e492">
@@ -154,7 +154,7 @@
                     <article class="blog-article">
                         <h2>Comece com dor operacional repetitiva, não com ferramentas</h2>
                         <p>Os candidatos mais fortes à automação são tarefas que acontecem com frequência, seguem regras de negócios estáveis e já consomem a atenção humana em uma sequência repetida. Consolidação de relatórios, sincronização via API, exportações de faturamento, fluxos de atualização de credenciais e envio de workers downstream são bons exemplos porque geralmente têm etapas determinísticas e resultados mensuráveis.</p>
-                        <p>Esse padrão aparece em diversas implementações de portfólio, incluindo <a href="/blog/pt/projetos/google-auth-worker/">Google Auth Worker</a>, <a href="/blog/pt/projetos/zoho-integration-worker/">Zoho Integration Worker</a> e <a href="/blog/pt/projetos/sige-integration-worker/">SIGE Integration Worker</a>. O valor prático da automação nesses casos não é abstrato. É menor carga de trabalho manual, menos atualizações perdidas e resultados mais confiáveis ​​para equipes financeiras e operacionais.</p>
+                        <p>Esse padrão aparece em diversas implementações de portfólio, incluindo <a href="/pt/projetos/google-auth-worker/">Google Auth Worker</a>, <a href="/pt/projetos/zoho-integration-worker/">Zoho Integration Worker</a> e <a href="/pt/projetos/sige-integration-worker/">SIGE Integration Worker</a>. O valor prático da automação nesses casos não é abstrato. É menor carga de trabalho manual, menos atualizações perdidas e resultados mais confiáveis ​​para equipes financeiras e operacionais.</p>
 
                         <div class="blog-callout">
                             A automação deve eliminar o esforço do operador e, ao mesmo tempo, preservar a visibilidade. Se um fluxo de trabalho se tornar mais rápido, mas mais difícil de depurar, o sistema ainda terá um problema de confiabilidade.
@@ -173,7 +173,7 @@
 
                         <h2>Os sistemas de filas não servem apenas para escala</h2>
                         <p>As filas são importantes mesmo em ambientes de volume moderado porque criam limites de execução. Eles ajudam a absorver cargas de trabalho intermitentes, suavizar a instabilidade do provedor e tornar tarefas de longa duração menos frágeis do que cadeias de solicitações síncronas. Eles também criam uma superfície de auditoria: quando um trabalho foi criado, qual carga ele recebeu, quantas vezes ele tentou novamente e qual estado final atingiu.</p>
-                        <p>Essa mesma lógica de design suporta um trabalho de backend mais amplo em <a href="/blog/pt/projetos/event-driven-integration-service/">Event-Driven Integration Service</a> e <a href="/blog/pt/projetos/multi-tenant-saas-platform/">Multi-Tenant SaaS Platform</a>, onde o processamento assíncrono faz parte da segurança do sistema, não apenas uma otimização de desempenho.</p>
+                        <p>Essa mesma lógica de design suporta um trabalho de backend mais amplo em <a href="/pt/projetos/event-driven-integration-service/">Event-Driven Integration Service</a> e <a href="/pt/projetos/multi-tenant-saas-platform/">Multi-Tenant SaaS Platform</a>, onde o processamento assíncrono faz parte da segurança do sistema, não apenas uma otimização de desempenho.</p>
 
                         <h2>A confiabilidade depende da estratégia de falha explícita</h2>
                         <p>Um trabalho automatizado que falha silenciosamente costuma ser pior do que um fluxo de trabalho manual. A automação da produção precisa de tratamento deliberado para falhas parciais, desvios inesperados de esquema, expiração de autenticação e limites de taxa do provedor. No mínimo, o sistema deve suportar regras de repetição, tratamento de mensagens mortas ou escalonamento equivalente, registros com registro de data e hora e contexto suficiente para reconstruir o motivo da falha de uma execução.</p>
@@ -185,7 +185,7 @@
                         </ul>
 
                         <h2>A vinculação interna deve refletir o contexto real de execução</h2>
-                        <p>Para SEO e para clareza técnica, o conteúdo de automação tem melhor desempenho quando vinculado a sistemas reais em vez de resumos genéricos. Este artigo fica naturalmente ao lado <a href="/blog/pt/colecoes/projetos-automacao/">Projetos de Automação</a>, <a href="/blog/pt/colecoes/projetos-integracao-api/">Projetos de Integração de APIs</a> e <a href="/blog/pt/stacks/automacao-backend/">Automação de backend</a>. Esse estrutura interna de links informa aos usuários e aos mecanismos de pesquisa que o tópico de automação tem profundidade de implementação no site.</p>
+                        <p>Para SEO e para clareza técnica, o conteúdo de automação tem melhor desempenho quando vinculado a sistemas reais em vez de resumos genéricos. Este artigo fica naturalmente ao lado <a href="/pt/colecoes/projetos-automacao/">Projetos de Automação</a>, <a href="/pt/colecoes/projetos-integracao-api/">Projetos de Integração de APIs</a> e <a href="/pt/stacks/automacao-backend/">Automação de backend</a>. Esse estrutura interna de links informa aos usuários e aos mecanismos de pesquisa que o tópico de automação tem profundidade de implementação no site.</p>
 
                         <h2>Qual é geralmente a aparência de uma arquitetura de automação forte</h2>
                         <p>Na prática, sistemas fortes de automação de backend compartilham as mesmas características: responsabilidades restritas por worker, novas tentativas previsíveis, resultados normalizados e observabilidade operacional. O valor é cumulativo. Com o tempo, as equipes obtêm relatórios mais rápidos, menos reconciliações manuais e movimentação de dados entre sistemas mais confiável.</p>
@@ -199,11 +199,11 @@
                                 <p>Projetando novas tentativas, idempotência e rastreabilidade para serviços de integração.</p>
                             </article>
                             <article class="blog-related-card">
-                                <h3><a href="/blog/pt/projetos/google-auth-worker/">Google Auth Worker</a></h3>
+                                <h3><a href="/pt/projetos/google-auth-worker/">Google Auth Worker</a></h3>
                                 <p>Orquestração de autenticação que alimenta trabalhos de automação downstream.</p>
                             </article>
                             <article class="blog-related-card">
-                                <h3><a href="/blog/pt/colecoes/projetos-automacao/">Projetos de Automação</a></h3>
+                                <h3><a href="/pt/colecoes/projetos-automacao/">Projetos de Automação</a></h3>
                                 <p>Cluster de portfólio para automação de fluxo de trabalho e trabalho de confiabilidade operacional.</p>
                             </article>
                         </div>
@@ -223,10 +223,10 @@
                     <section class="blog-sidebar-card">
                         <h2>Continue explorando</h2>
                         <ul>
-                            <li><a href="/blog/pt/projetos/zoho-integration-worker/">Zoho Integration Worker</a></li>
-                            <li><a href="/blog/pt/projetos/sige-integration-worker/">SIGE Integration Worker</a></li>
-                            <li><a href="/blog/pt/stacks/engenheiro-integracao-api/">Engenheiro de Integração de APIs</a></li>
-                            <li><a href="/blog/pt/sobre/">Sobre Patrick Araujo</a></li>
+                            <li><a href="/pt/projetos/zoho-integration-worker/">Zoho Integration Worker</a></li>
+                            <li><a href="/pt/projetos/sige-integration-worker/">SIGE Integration Worker</a></li>
+                            <li><a href="/pt/stacks/engenheiro-integracao-api/">Engenheiro de Integração de APIs</a></li>
+                            <li><a href="/pt/sobre/">Sobre Patrick Araujo</a></li>
                         </ul>
                     </section>
                 </aside>
