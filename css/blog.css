@@ -1187,12 +1187,20 @@ body.blog-layout::before {
     text-shadow: 0 3px 24px #02030d;
 }
 .blog-carousel-stack {
+    --blog-carousel-blend-height: clamp(120px, 12vw, 200px);
     position: relative;
+    z-index: 2;
     left: 50%;
     width: 100vw;
-    margin-left: -50vw;
-    padding: clamp(42px, 6vw, 78px) 0 clamp(28px, 5vw, 62px);
-    background: linear-gradient(180deg, #02030d, #081126 48%, #02030d);
+    margin: calc(-1 * var(--blog-carousel-blend-height)) 0 0 -50vw;
+    padding: calc(var(--blog-carousel-blend-height) + clamp(42px, 6vw, 78px)) 0 clamp(28px, 5vw, 62px);
+    background: linear-gradient(
+        180deg,
+        transparent 0,
+        #02030d var(--blog-carousel-blend-height),
+        #081126 55%,
+        #02030d 100%
+    );
 }
 .blog-carousel-group + .blog-carousel-group { margin-top: clamp(24px, 4vw, 54px); }
 .blog-carousel-title {
