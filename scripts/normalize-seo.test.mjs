@@ -31,8 +31,8 @@ test("public Pages contains the compiled blog while private source stays absent"
   for (const relative of ["blog/index.html", "blog/pt/index.html", "blog/es/index.html", "blog/feed.xml", "blog/sitemap.xml", "blog/posts.json"]) {
     assert.equal(fs.existsSync(path.join(ROOT, relative)), true, `${relative} must be synced`);
   }
-  assert.match(read("pt/blog/index.html"), /https:\\/\\/pklavc\\.com\\/blog\\/pt\\//);
-  assert.match(read("es/blog/index.html"), /https:\\/\\/pklavc\\.com\\/blog\\/es\\//);
+  assert.ok(read("pt/blog/index.html").includes("https://pklavc.com/blog/pt/"));
+  assert.ok(read("es/blog/index.html").includes("https://pklavc.com/blog/es/"));
 });
 
 test("root sitemap delegates blog discovery to the AWS-hosted blog sitemap", () => {
