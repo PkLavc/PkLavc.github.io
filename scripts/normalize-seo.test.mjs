@@ -25,8 +25,11 @@ test("profile pages resolve to the same Patrick identity", () => {
 });
 
 test("public Pages contains the compiled blog while private source stays absent", () => {
-  for (const relative of ["scripts/blog_automation", "js/blog-related-posts.js", "css/blog.css"]) {
+  for (const relative of ["scripts/blog_automation", "blog/assets", "blog/css", "blog/js", "blog/images", "blog/404.html", "blog/manifest.webmanifest", "blog/browserconfig.xml"]) {
     assert.equal(fs.existsSync(path.join(ROOT, relative)), false, `${relative} must remain private`);
+  }
+  for (const relative of ["js/blog-related-posts.js", "js/newsletter.js", "js/reader-recirculation.js", "css/blog.css", "css/newsletter.css", "css/reader-recirculation.css", "images/og/blog"]) {
+    assert.equal(fs.existsSync(path.join(ROOT, relative)), true, `${relative} must be shared from the site root`);
   }
   for (const relative of ["blog/index.html", "blog/en/tech/index.html", "blog/pt/tech/index.html", "blog/es/tech/index.html", "blog/en/games/index.html", "blog/feed.xml", "blog/sitemap.xml", "blog/posts.json"]) {
     assert.equal(fs.existsSync(path.join(ROOT, relative)), true, `${relative} must be synced`);

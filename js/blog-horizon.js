@@ -50,11 +50,21 @@
     function populateCarousel() {
       if (!track || !source.length || cards.length) return;
       var fragment = document.createDocumentFragment();
-      Array.prototype.slice.call(source).forEach(function (card) {
+      Array.prototype.slice.call(source).forEach(function (card, index) {
         card.classList.add('blog-carousel-card');
         card.setAttribute('data-glow', '');
         card.querySelectorAll('[id]').forEach(function (node) { node.removeAttribute('id'); });
         fragment.appendChild(card);
+
+        // Keep this as a regular carousel card so the promotional panel is
+        // reached by the same scroll, drag and keyboard controls as articles.
+        if (index === 0 && source.length > 1) {
+          var adSlot = document.createElement('div');
+          adSlot.className = 'blog-carousel-card blog-carousel-ad-slot';
+          adSlot.setAttribute('data-blog-feed-ad', '');
+          adSlot.setAttribute('aria-label', 'Advertisement');
+          fragment.appendChild(adSlot);
+        }
       });
       track.appendChild(fragment);
       cards = Array.prototype.slice.call(track.querySelectorAll('.blog-carousel-card'));
@@ -118,6 +128,16 @@
       activeCard = ((index % cards.length) + cards.length) % cards.length;
       renderCoverflow(activeCard);
     }
+
+    document.addEventListener('pklavc:blog-feed-ad-empty', function (event) {
+      var emptySlotIndex = cards.indexOf(event.detail);
+      if (emptySlotIndex < 0) return;
+      cards.splice(emptySlotIndex, 1);
+      if (emptySlotIndex < activeCard) activeCard -= 1;
+      if (activeCard >= cards.length) activeCard = 0;
+      renderCoverflow(activeCard);
+      scheduleAutoplay(autoplayDelay);
+    });
 
     function scheduleAutoplay(delay) {
       window.clearTimeout(autoplayTimer);
@@ -427,8 +447,10 @@
       refs.scene.add(refs.atmosphere);
     }
 
-    createNebula();
-    createAtmosphere();
+    // Terrain is the first visual priority. Build it before the heavier
+    // star/nebula layers so visitors see the mountain immediately.
+    createMountains();
+    refs.foregroundStartTime = performance.now();
 
     function resize() {
       var bounds = stage.getBoundingClientRect();
@@ -461,11 +483,11 @@
       refs.mountains.forEach(function (mountain, index) {
         var speed = 1 + index * 0.9;
         var targetZ = mountain.userData.baseZ + (-bounds.top) * speed * 0.5;
-        refs.nebula.position.z = targetZ + scrollProgress * speed * 0.01 - 100;
+        if (refs.nebula) refs.nebula.position.z = targetZ + scrollProgress * speed * 0.01 - 100;
         mountain.userData.targetZ = targetZ;
         mountain.position.z = scrollProgress > 0.7 ? 600000 : refs.locations[index];
       });
-      if (refs.mountains.length) refs.nebula.position.z = refs.mountains[refs.mountains.length - 1].position.z;
+      if (refs.nebula && refs.mountains.length) refs.nebula.position.z = refs.mountains[refs.mountains.length - 1].position.z;
       stage.style.setProperty('--hero-progress', scrollProgress.toFixed(4));
       var introOpacity = scrollProgress <= 0.18 ? 1 : Math.max(0, 1 - (scrollProgress - 0.18) / 0.12);
       var cosmosOpacity = scrollProgress < 0.24 ? 0 : scrollProgress < 0.34 ? (scrollProgress - 0.24) / 0.1 : scrollProgress <= 0.5 ? 1 : Math.max(0, 1 - (scrollProgress - 0.5) / 0.12);
@@ -495,8 +517,8 @@
         starField.material.uniforms.time.value = reduced ? 0 : time;
         starField.material.uniforms.foregroundOpacity.value = refs.foregroundOpacity;
       });
-      refs.nebula.material.uniforms.time.value = reduced ? 0 : time * 0.5;
-      refs.atmosphere.material.uniforms.time.value = reduced ? 0 : time;
+      if (refs.nebula) refs.nebula.material.uniforms.time.value = reduced ? 0 : time * 0.5;
+      if (refs.atmosphere) refs.atmosphere.material.uniforms.time.value = reduced ? 0 : time;
       var smoothingFactor = reduced ? 1 : 0.05;
       smoothCameraPos.x += (refs.targetCameraX - smoothCameraPos.x) * smoothingFactor;
       smoothCameraPos.y += (refs.targetCameraY - smoothCameraPos.y) * smoothingFactor;
@@ -519,13 +541,21 @@
     updateScroll();
     animate();
     stage.classList.add('horizon-scene-ready');
-    refs.foregroundTimer = window.setTimeout(function () {
+
+    function loadDeferredSkyEffects() {
       if (!stage.isConnected) return;
-      createStarField();
-      createMountains();
-      refs.foregroundStartTime = performance.now();
+      if (!refs.nebula) createNebula();
+      if (!refs.atmosphere) createAtmosphere();
+      if (!refs.stars.length) createStarField();
       updateScroll();
-    }, 1250);
+    }
+
+    // Let the first mountain frame paint before allocating particles/shaders.
+    if ('requestIdleCallback' in window) {
+      refs.foregroundTimer = window.requestIdleCallback(loadDeferredSkyEffects, { timeout: 700 });
+    } else {
+      refs.foregroundTimer = window.setTimeout(loadDeferredSkyEffects, 180);
+    }
     if ('IntersectionObserver' in window) {
       var sceneObserver = new IntersectionObserver(function (entries) {
         refs.sceneVisible = entries[0].isIntersecting;

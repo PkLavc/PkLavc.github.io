@@ -68,7 +68,7 @@
       if (!englishSlug) return null;
       return {
         slug: englishSlug,
-        url: '/blog/' + encodeURIComponent(englishSlug) + '/',
+        url: post.url,
         title: String(post.title || ''),
         description: String(post.description || ''),
         category: String(post.category || ''),

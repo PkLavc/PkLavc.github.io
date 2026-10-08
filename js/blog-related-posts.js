@@ -204,7 +204,7 @@
   if (!global.document || typeof global.fetch !== "function") return;
   promoteArticleArtwork();
   ensureSidebarLists();
-  var postsIndex = isProjectMounted() ? "/blog/posts.json" : "/en/posts.json";
+  var postsIndex = "/blog/posts.json";
   global.fetch(postsIndex, { credentials: "same-origin" }).then(function (response) {
     if (!response.ok) return null;
     return response.json();
