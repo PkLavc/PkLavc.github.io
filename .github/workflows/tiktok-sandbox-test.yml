@@ -1,8 +1,20 @@
 name: TikTok Sandbox Content Posting Test
 
 on:
+  schedule:
+    - cron: "20 13 * * *" # Tech after morning blog generation (UTC)
+    - cron: "20 22 * * *" # GTA/Rockstar after evening blog generation (UTC)
   workflow_dispatch:
     inputs:
+      category:
+        description: "Use a PkLavc article from this category"
+        required: true
+        type: choice
+        default: any
+        options:
+          - any
+          - tech
+          - games
       mode:
         description: "Sandbox Content Posting API test"
         required: true
@@ -26,6 +38,7 @@ concurrency:
 
 jobs:
   test:
+    if: github.event_name != 'push' # Never publish during code checks
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -68,9 +81,30 @@ jobs:
           SOCIAL_ALLOW_ESPEAK_FALLBACK: "true"
           EVENT_NAME: ${{ github.event_name }}
           TEST_MODE: ${{ inputs.mode }}
+          TIKTOK_SOURCE_CATEGORY: ${{ github.event_name == 'schedule' && (github.event.schedule == '20 22 * * *' && 'games' || 'tech') || inputs.category || 'any' }}
         run: |
           if [ "$TEST_MODE" = "draft" ]; then
             python -m scripts.social_video.tiktok_draft_test
           else
             python -m scripts.social_video.tiktok_test
           fi
+      - name: Save successful sandbox TikTok history
+        if: success()
+        working-directory: private-blog
+        shell: bash
+        run: |
+          if [ ! -f social-state/tiktok-test-published.json ]; then
+            echo "No completed TikTok posts to save."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add social-state/tiktok-test-published.json
+          if git diff --cached --quiet; then
+            echo "TikTok history unchanged."
+            exit 0
+          fi
+          git commit -m "Record PKLavc TikTok sandbox publication"
+          git pull --rebase origin main
+          git push origin HEAD:main
+
