@@ -932,13 +932,14 @@
                     </div>
                 </div>
             </section>
-            <section class="blog-featured-carousel" data-blog-carousel aria-label="Artigos de engenharia">
-                <div class="blog-carousel-track" aria-label="Artigos técnicos recentes"></div>
-            </section>
-            <section class="blog-section blog-library" aria-labelledby="blog-posts-title" hidden>
+            <div class="blog-carousel-stack" data-blog-carousel-stack>
+                <section class="blog-carousel-group" aria-labelledby="tech-carousel-title"><h2 class="blog-carousel-title" id="tech-carousel-title">Tech</h2><div class="blog-featured-carousel" data-blog-carousel="tech" aria-label="Artigos de tecnologia"><div class="blog-carousel-track" aria-label="Artigos recentes de tecnologia"></div></div></section>
+                <section class="blog-carousel-group" aria-labelledby="games-carousel-title"><h2 class="blog-carousel-title" id="games-carousel-title">Games</h2><div class="blog-featured-carousel" data-blog-carousel="games" aria-label="Artigos de games"><div class="blog-carousel-track" aria-label="Artigos recentes de games"></div><p class="blog-carousel-empty">Os artigos de games aparecerão aqui em breve.</p></div></section>
+            </div>
+            <section class="blog-section blog-library" data-blog-library="tech" aria-labelledby="blog-posts-title" hidden>
                 <h2 id="blog-posts-title">Postagens em destaque</h2>
                 <p>Artigos t&eacute;cnicos sobre backend, automa&ccedil;&atilde;o, APIs, cloud, dados, integra&ccedil;&otilde;es e IA aplicada a sistemas reais.</p>
-                <div class="blog-grid">
+                <div class="blog-grid" data-blog-grid="tech">
                     <!-- strategic-blog-cards:start -->
 
 
@@ -1196,6 +1197,7 @@
 
                 </div>
             </section>
+            <section class="blog-section blog-library" data-blog-library="games" hidden><div class="blog-grid" data-blog-grid="games"></div></section>
 </main>
     </div>
 
@@ -1233,7 +1235,7 @@
     <script src="/js/jquery.min.js?v=d482871a5e" defer></script>
     <script src="/js/index.js?v=20261005amazon-white-logo1" defer></script>
     <script src="/js/blog-horizon-loader.js" defer></script>
-    <script src="/js/blog-horizon.js?v=20261005prime-real-art4" defer></script>
+    <script src="/js/blog-horizon.js?v=20261008categories" defer></script>
 
     <div class="visually-hidden">
         <p>Blog de engenharia sobre fluxos de trabalho de agentes de IA, agentes de codificação autônomos, protocolo MCP, orquestração multiagente, sistemas de automação, integrações de APIs, arquitetura de backend Node.js, fluxos de trabalho Python, sistemas orientados a eventos, design de plataforma SaaS, software automotivo incorporado e padrões de implantação em nuvem.</p>

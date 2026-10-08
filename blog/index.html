@@ -975,13 +975,14 @@
                     </div>
                 </div>
             </section>
-            <section class="blog-featured-carousel" data-blog-carousel aria-label="Engineering articles">
-                <div class="blog-carousel-track" aria-label="Latest technical articles"></div>
-            </section>
-            <section class="blog-section blog-library" aria-labelledby="blog-posts-title" hidden>
+            <div class="blog-carousel-stack" data-blog-carousel-stack>
+                <section class="blog-carousel-group" aria-labelledby="tech-carousel-title"><h2 class="blog-carousel-title" id="tech-carousel-title">Tech</h2><div class="blog-featured-carousel" data-blog-carousel="tech" aria-label="Tech articles"><div class="blog-carousel-track" aria-label="Latest Tech articles"></div></div></section>
+                <section class="blog-carousel-group" aria-labelledby="games-carousel-title"><h2 class="blog-carousel-title" id="games-carousel-title">Games</h2><div class="blog-featured-carousel" data-blog-carousel="games" aria-label="Games articles"><div class="blog-carousel-track" aria-label="Latest Games articles"></div><p class="blog-carousel-empty">Games articles will appear here soon.</p></div></section>
+            </div>
+            <section class="blog-section blog-library" data-blog-library="tech" aria-labelledby="blog-posts-title" hidden>
                 <h2 id="blog-posts-title">Featured posts</h2>
                 <p>Technical articles about backend, automation, APIs, cloud, data, integrations, and applied AI for real software systems.</p>
-                <div class="blog-grid">
+                <div class="blog-grid" data-blog-grid="tech">
 <article class="blog-card" role="article" data-auto-post="true">
 <div class="blog-card-meta"><span>AI and Models</span><span>Confirmed</span><span>10 min read</span></div>
 <h3><a href="/blog/en/tech/ibm-bob-self-hosted-ai-sovereignty-governance/">IBM Bob Offers Self-Hosted Deployment for AI Sovereignty and Governance</a></h3><p>IBM has launched a self-hosted deployment option for its AI-powered software development and modernization tool, IBM Bob. This new offering empowers enterprises to maintain AI sovereignty and enhance governance by keeping sensitive code, data, and workflows within their own controlled infrastructure, addressing key concerns for secure and compliant AI adoption.</p>
@@ -1245,6 +1246,7 @@
 
                 </div>
             </section>
+            <section class="blog-section blog-library" data-blog-library="games" hidden><div class="blog-grid" data-blog-grid="games"></div></section>
 </main>
     </div>
 
@@ -1282,7 +1284,7 @@
     <script src="/js/jquery.min.js?v=d482871a5e" defer></script>
     <script src="/js/index.js?v=20261005amazon-white-logo1" defer></script>
     <script src="/js/blog-horizon-loader.js" defer></script>
-    <script src="/js/blog-horizon.js?v=20260924b" defer></script>
+    <script src="/js/blog-horizon.js?v=20261008categories" defer></script>
 
     <div class="visually-hidden">
         <p>Engineering blog about AI agent workflows, autonomous coding agents, MCP protocol, multi-agent orchestration, automation systems, API integrations, Node.js backend architecture, Python workflows, event-driven systems, SaaS platform design, automotive embedded software, and cloud deployment patterns.</p>

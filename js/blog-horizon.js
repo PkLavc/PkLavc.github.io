@@ -6,49 +6,39 @@
     var stage = horizon && horizon.querySelector('.blog-horizon-stage');
     var canvas = stage && stage.querySelector('[data-horizon-canvas]');
     var contentSections = stage ? stage.querySelectorAll('[data-horizon-section]') : [];
-    var carousel = document.querySelector('[data-blog-carousel]');
-    var track = carousel && carousel.querySelector('.blog-carousel-track');
-    var library = document.querySelector('.blog-library');
-    var footer = document.querySelector('.footer-minimal');
+    var carouselStack = document.querySelector('[data-blog-carousel-stack]');
+    var carouselControllers = [];
     var skipButton = stage && stage.querySelector('[data-skip-to-posts]');
-    var source = library ? library.querySelectorAll('.blog-card') : [];
-    var cards = [];
-    var activeCard = 0;
-    var autoplayTimer = 0;
     var autoplayDelay = 8000;
-    var dragPointer = null;
-    var dragStartX = 0;
-    var dragOffset = 0;
-    var dragBaseCard = 0;
-    var dragMoved = false;
-    var suppressClickUntil = 0;
     var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     var totalSections = 2;
     var scrollProgress = 0;
 
     if (!horizon || !stage || !canvas) return;
 
-    if (carousel) {
-      stage.appendChild(carousel);
-      carousel.classList.add('is-in-scene');
-      carousel.setAttribute('aria-hidden', 'true');
-      // The carousel is visually and pointer-event hidden until its scene is
-      // active. Do not use `inert` here: it remains active after the scene is
-      // revealed and makes every article link unclickable.
-    }
-    if (footer) {
-      stage.appendChild(footer);
-      footer.classList.add('blog-footer-overlay');
-      footer.setAttribute('aria-hidden', 'true');
-      function syncFooterHeight() {
-        stage.style.setProperty('--blog-footer-height', footer.offsetHeight + 'px');
-      }
-      syncFooterHeight();
-      if ('ResizeObserver' in window) new ResizeObserver(syncFooterHeight).observe(footer);
-    }
+    function createCarousel(carousel) {
+      var category = carousel.getAttribute('data-blog-carousel');
+      var track = carousel.querySelector('.blog-carousel-track');
+      var library = document.querySelector('[data-blog-library="' + category + '"]');
+      var source = library ? library.querySelectorAll('.blog-card') : [];
+      var cards = [];
+      var activeCard = 0;
+      var autoplayTimer = 0;
+      var dragPointer = null;
+      var dragStartX = 0;
+      var dragOffset = 0;
+      var dragBaseCard = 0;
+      var dragMoved = false;
+      var suppressClickUntil = 0;
 
-    function populateCarousel() {
-      if (!track || !source.length || cards.length) return;
+      if (!track) return null;
+
+      if (!source.length) {
+        carousel.classList.add('is-empty');
+        if (library) library.remove();
+        return { cards: cards, render: function () {} };
+      }
+
       var fragment = document.createDocumentFragment();
       Array.prototype.slice.call(source).forEach(function (card, index) {
         card.classList.add('blog-carousel-card');
@@ -58,7 +48,7 @@
 
         // Keep this as a regular carousel card so the promotional panel is
         // reached by the same scroll, drag and keyboard controls as articles.
-        if (index === 0 && source.length > 1) {
+        if (category === 'tech' && index === 0 && source.length > 1) {
           var adSlot = document.createElement('div');
           adSlot.className = 'blog-carousel-card blog-carousel-ad-slot';
           adSlot.setAttribute('data-blog-feed-ad', '');
@@ -69,29 +59,8 @@
       track.appendChild(fragment);
       cards = Array.prototype.slice.call(track.querySelectorAll('.blog-carousel-card'));
       if (library) library.remove();
-      renderCoverflow(activeCard);
-    }
 
-    function syncGlowPointer(event) {
-      if (!stage.classList.contains('show-carousel')) return;
-      cards.forEach(function (card) {
-        if (card.style.visibility !== 'visible') return;
-        var rect = card.getBoundingClientRect();
-        var x = event.clientX - rect.left;
-        var y = event.clientY - rect.top;
-        // Blend the site's cyan (#00d1ff) into pink (#ff2aaa) across the card.
-        var pinkAmount = Math.max(0, Math.min(1, x / Math.max(rect.width, 1)));
-        card.style.setProperty('--x', x.toFixed(2) + 'px');
-        card.style.setProperty('--y', y.toFixed(2) + 'px');
-        card.style.setProperty('--spotlight-color', 'rgb(' +
-          Math.round(255 * pinkAmount) + ' ' +
-          Math.round(209 - 167 * pinkAmount) + ' ' +
-          Math.round(255 - 85 * pinkAmount) + ')');
-      });
-    }
-    document.addEventListener('pointermove', syncGlowPointer, { passive: true });
-
-    function renderCoverflow(position) {
+      function renderCoverflow(position) {
       if (!cards.length) return;
       var spacing = Math.max(86, Math.min(window.innerWidth * 0.22, 290));
       var visualPosition = position == null ? activeCard : position;
@@ -121,38 +90,27 @@
         });
       });
       track.dataset.activeIndex = String(activeCard);
-    }
+      }
 
-    function setActiveCard(index) {
-      if (!cards.length) return;
-      activeCard = ((index % cards.length) + cards.length) % cards.length;
-      renderCoverflow(activeCard);
-    }
+      function setActiveCard(index) {
+        if (!cards.length) return;
+        activeCard = ((index % cards.length) + cards.length) % cards.length;
+        renderCoverflow(activeCard);
+      }
 
-    document.addEventListener('pklavc:blog-feed-ad-empty', function (event) {
-      var emptySlotIndex = cards.indexOf(event.detail);
-      if (emptySlotIndex < 0) return;
-      cards.splice(emptySlotIndex, 1);
-      if (emptySlotIndex < activeCard) activeCard -= 1;
-      if (activeCard >= cards.length) activeCard = 0;
-      renderCoverflow(activeCard);
-      scheduleAutoplay(autoplayDelay);
-    });
-
-    function scheduleAutoplay(delay) {
-      window.clearTimeout(autoplayTimer);
-      if (reduced || cards.length < 2 || document.hidden || !stage.classList.contains('show-carousel')) return;
-      autoplayTimer = window.setTimeout(function advanceCarousel() {
-        if (dragPointer !== null || track.matches(':focus-within')) {
+      function scheduleAutoplay(delay) {
+        window.clearTimeout(autoplayTimer);
+        if (reduced || cards.length < 2 || document.hidden) return;
+        autoplayTimer = window.setTimeout(function advanceCarousel() {
+          if (dragPointer !== null || track.matches(':focus-within')) {
+            scheduleAutoplay(autoplayDelay);
+            return;
+          }
+          setActiveCard(activeCard + 1);
           scheduleAutoplay(autoplayDelay);
-          return;
-        }
-        setActiveCard(activeCard + 1);
-        scheduleAutoplay(autoplayDelay);
-      }, delay == null ? autoplayDelay : delay);
-    }
+        }, delay == null ? autoplayDelay : delay);
+      }
 
-    if (track) {
       track.tabIndex = 0;
       track.addEventListener('keydown', function (event) {
         if (event.key === 'ArrowLeft') { event.preventDefault(); setActiveCard(activeCard - 1); scheduleAutoplay(autoplayDelay); }
@@ -172,6 +130,7 @@
         if (event.pointerId !== dragPointer) return;
         dragOffset = event.clientX - dragStartX;
         if (Math.abs(dragOffset) > 6) dragMoved = true;
+        if (!cards.length) return;
         var spacing = Math.max(86, Math.min(window.innerWidth * 0.22, 290));
         var visualPosition = dragBaseCard - dragOffset / spacing;
         activeCard = ((Math.round(visualPosition) % cards.length) + cards.length) % cards.length;
@@ -214,19 +173,52 @@
       track.addEventListener('focusin', function () { window.clearTimeout(autoplayTimer); });
       track.addEventListener('focusout', function () { scheduleAutoplay(autoplayDelay); });
       document.addEventListener('visibilitychange', function () { scheduleAutoplay(autoplayDelay); });
-      new MutationObserver(function () {
-        if (stage.classList.contains('show-carousel')) scheduleAutoplay(autoplayDelay);
-        else window.clearTimeout(autoplayTimer);
-      }).observe(stage, { attributes: true, attributeFilter: ['class'] });
+
+      renderCoverflow(activeCard);
+      scheduleAutoplay(autoplayDelay);
+      window.addEventListener('resize', function () { renderCoverflow(activeCard); });
+      return {
+        cards: cards,
+        removeCard: function (card) {
+          var index = cards.indexOf(card);
+          if (index < 0) return false;
+          cards.splice(index, 1);
+          if (index < activeCard) activeCard -= 1;
+          if (activeCard >= cards.length) activeCard = 0;
+          renderCoverflow(activeCard);
+          scheduleAutoplay(autoplayDelay);
+          return true;
+        },
+        render: function () { renderCoverflow(activeCard); }
+      };
     }
-    renderCoverflow(activeCard);
-    scheduleAutoplay(autoplayDelay);
-    window.addEventListener('resize', function () { renderCoverflow(activeCard); });
+
+    document.querySelectorAll('[data-blog-carousel]').forEach(function (carousel) {
+      var controller = createCarousel(carousel);
+      if (controller) carouselControllers.push(controller);
+    });
+
+    document.addEventListener('pklavc:blog-feed-ad-empty', function (event) {
+      carouselControllers.some(function (controller) { return controller.removeCard && controller.removeCard(event.detail); });
+    });
+
+    document.addEventListener('pointermove', function (event) {
+      carouselControllers.forEach(function (controller) {
+        controller.cards.forEach(function (card) {
+          if (card.style.visibility !== 'visible') return;
+          var rect = card.getBoundingClientRect();
+          var x = event.clientX - rect.left;
+          var y = event.clientY - rect.top;
+          var pinkAmount = Math.max(0, Math.min(1, x / Math.max(rect.width, 1)));
+          card.style.setProperty('--x', x.toFixed(2) + 'px');
+          card.style.setProperty('--y', y.toFixed(2) + 'px');
+          card.style.setProperty('--spotlight-color', 'rgb(' + Math.round(255 * pinkAmount) + ' ' + Math.round(209 - 167 * pinkAmount) + ' ' + Math.round(255 - 85 * pinkAmount) + ')');
+        });
+      });
+    }, { passive: true });
 
     if (skipButton) skipButton.addEventListener('click', function () {
-      var horizonTop = horizon.getBoundingClientRect().top + window.scrollY;
-      var destination = horizonTop + Math.max(1, horizon.offsetHeight - window.innerHeight);
-      window.scrollTo({ top: destination, behavior: reduced ? 'auto' : 'smooth' });
+      (carouselStack || horizon).scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' });
     });
 
     var fallbackHandlers = null;
@@ -245,12 +237,6 @@
         if (copy) copy.style.opacity = introOpacity.toFixed(3);
         if (contentSections[0]) contentSections[0].style.opacity = cosmosOpacity.toFixed(3);
         if (contentSections[1]) contentSections[1].style.opacity = infinityOpacity.toFixed(3);
-        var pageEnd = window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 1;
-        var finalStage = scrollProgress >= 0.999 && pageEnd;
-        if (finalStage) populateCarousel();
-        stage.classList.toggle('show-carousel', finalStage);
-        if (carousel) carousel.setAttribute('aria-hidden', finalStage ? 'false' : 'true');
-        if (footer) footer.setAttribute('aria-hidden', finalStage ? 'false' : 'true');
       }
       updateFallbackScroll();
       window.addEventListener('scroll', updateFallbackScroll, { passive: true });
@@ -495,12 +481,6 @@
       if (stage.querySelector('.blog-horizon-copy')) stage.querySelector('.blog-horizon-copy').style.opacity = introOpacity.toFixed(3);
       if (contentSections[0]) contentSections[0].style.opacity = cosmosOpacity.toFixed(3);
       if (contentSections[1]) contentSections[1].style.opacity = infinityOpacity.toFixed(3);
-      var pageEnd = window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 1;
-      var finalStage = scrollProgress >= 0.999 && pageEnd;
-      if (finalStage) populateCarousel();
-      stage.classList.toggle('show-carousel', finalStage);
-      if (carousel) carousel.setAttribute('aria-hidden', finalStage ? 'false' : 'true');
-      if (footer) footer.setAttribute('aria-hidden', finalStage ? 'false' : 'true');
     }
 
     function animate(frameTime) {
