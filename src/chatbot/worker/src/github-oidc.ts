@@ -1,11 +1,15 @@
 const GITHUB_OIDC_ISSUER = "https://token.actions.githubusercontent.com";
 const GITHUB_OIDC_JWKS = "https://token.actions.githubusercontent.com/.well-known/jwks";
 const EXPECTED_AUDIENCE = "https://api.pklavc.com/tiktok/publish";
-const EXPECTED_REPOSITORY = "PkLavc/PkLavc.github.io";
+const EXPECTED_REPOSITORIES = new Set([
+  "PkLavc/PkLavc.github.io",
+  "Macca-the-Gator/lab",
+]);
 const EXPECTED_REF = "refs/heads/main";
 const EXPECTED_WORKFLOW_REFS = new Set([
   "PkLavc/PkLavc.github.io/.github/workflows/private-blog-social.yml@refs/heads/main",
   "PkLavc/PkLavc.github.io/.github/workflows/tiktok-sandbox-test.yml@refs/heads/main",
+  "Macca-the-Gator/lab/.github/workflows/gta-blog.yml@refs/heads/main",
 ]);
 
 type JwtHeader = {
@@ -111,7 +115,7 @@ function validateClaims(claims: GithubOidcClaims): void {
   if (claims.nbf && claims.nbf > now + 30) {
     throw new Error("github_oidc_not_yet_valid");
   }
-  if (claims.repository !== EXPECTED_REPOSITORY) {
+  if (!EXPECTED_REPOSITORIES.has(String(claims.repository || ""))) {
     throw new Error("github_oidc_repository_invalid");
   }
   if (claims.ref !== EXPECTED_REF) {
