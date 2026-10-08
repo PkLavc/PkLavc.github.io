@@ -35,12 +35,12 @@ test("public Pages contains the compiled blog while private source stays absent"
   assert.ok(read("es/blog/index.html").includes("https://pklavc.com/blog/es/"));
 });
 
-test("root sitemap delegates blog discovery to the AWS-hosted blog sitemap", () => {
+test("root sitemap includes blog discovery on GitHub Pages", () => {
   const xml = read("sitemap.xml");
   assert.doesNotMatch(xml, /<loc>https:\/\/pklavc\.com\/(?:pt\/|es\/)?blog\/<\/loc>/i);
   const index = read("sitemap-index.xml");
   assert.match(index, /<loc>https:\/\/pklavc\.com\/sitemap\.xml<\/loc>/);
-  assert.match(index, /<loc>https:\/\/pklavc\.com\/blog\/sitemap\.xml<\/loc>/);
+  assert.doesNotMatch(index, /<loc>https:\/\/pklavc\.com\/blog\/sitemap\.xml<\/loc>/);
 });
 
 test("repository and language markup uses project evidence and preserves coauthors", () => {
