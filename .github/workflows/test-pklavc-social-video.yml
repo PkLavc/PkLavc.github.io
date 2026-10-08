@@ -1,0 +1,57 @@
+name: Verify PkLavc social video template
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/test-pklavc-social-video.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - name: Read private PkLavc blog articles and renderer
+        uses: actions/checkout@v4
+        with:
+          repository: PkLavc/blog
+          ref: main
+          token: ${{ secrets.PRIVATE_BLOG_REPO_TOKEN }}
+          path: blog
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install local rendering tools (no paid APIs)
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg espeak-ng fonts-dejavu-core
+          python -m pip install "Pillow>=10,<13"
+      - name: Test PkLavc branded and unbranded MP4 outputs
+        working-directory: blog
+        env:
+          SOCIAL_TTS: espeak-ng-fallback
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from tempfile import TemporaryDirectory
+          from PIL import Image
+          from scripts.social_video.render import load_article, render
+          slug = "spec-driven-development"
+          assert load_article(Path.cwd(), slug)["category"] == "tech"
+          with TemporaryDirectory() as directory:
+              for branded in (True, False):
+                  out = Path(directory) / ("branded" if branded else "neutral")
+                  result = render(Path.cwd(), slug, out, branded=branded)
+                  assert result["cardCount"] <= 4
+                  assert 15 <= result["durationSeconds"] <= 20.1
+                  assert result["video"] == {"codec": "h264", "width": 1080, "height": 1920, "fps": "30/1"}
+                  assert result["audio"]["codec"] == "aac"
+                  assert Path(result["videoPath"]).stat().st_size > 100000
+                  with Image.open(out / "card-01.png") as frame:
+                      assert frame.size == (1080, 1920)
+                  print(("PKLAVC SHORT/REEL" if branded else "NEUTRAL TIKTOK"), result["durationSeconds"], "seconds: PASS")
+          PY
