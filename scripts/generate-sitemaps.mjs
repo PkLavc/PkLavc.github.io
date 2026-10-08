@@ -170,8 +170,8 @@ for (const [name, entries] of Object.entries(groups)) {
 }
 
 // Keep the primary sitemap at the domain root so its scope covers the whole site.
-// The blog is deployed independently from the private blog repository through
-// S3/CloudFront. Keep its sitemap discoverable without copying blog pages here.
+// The private blog syncs its compiled pages to the public blog/ folder.
+// Include their canonical routes in the unified GitHub Pages sitemap.
 const allPages = [...pages.values()].sort((a, b) => a.loc.localeCompare(b.loc));
 if (allPages.length > 50000) throw new Error("Root sitemap exceeds 50,000 URLs; split into root-level sitemap files.");
 const sitemap = renderUrlset(allPages);
