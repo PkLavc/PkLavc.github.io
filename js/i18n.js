@@ -190,7 +190,6 @@
     if (segments[0] === 'blog') {
       if (segments[1] === 'en') segments[1] = locale;
       else segments.splice(1, 0, locale);
-      if (segments.length === 2) segments.push('tech');
       return '/' + segments.join('/') + '/';
     }
     if (segments[0] === 'store') {
@@ -227,8 +226,10 @@
     var route = getEnglishRoute(englishRoute);
     if (route === '/blog/' || route.indexOf('/blog/') === 0) {
       var parts = splitPath(route);
-      var category = parts[0] === 'blog' && parts[1] === 'en' && parts[2] ? parts[2] : 'tech';
-      return '/blog/' + locale + '/' + category + '/';
+      var category = parts[0] === 'blog' && parts[1] === 'en' && parts[2] ? parts[2] : '';
+      return category && category !== 'tech'
+        ? '/blog/' + locale + '/' + category + '/'
+        : '/blog/' + locale + '/';
     }
     if (route === '/store/' || route.indexOf('/store/') === 0) {
       return locale === 'en' ? '/store/' : '/store/' + locale + '/';

@@ -18,11 +18,11 @@ function i18n(pathname) {
   return window.PkLavcI18n;
 }
 
-test("blog portal localizes to the language-first Tech roots", () => {
+test("blog portal localizes to the language landing pages", () => {
   const routes = i18n("/blog/");
-  assert.equal(routes.getLocalizedRoute("/blog/", "en"), "/blog/en/tech/");
-  assert.equal(routes.getLocalizedRoute("/blog/", "pt"), "/blog/pt/tech/");
-  assert.equal(routes.getLocalizedRoute("/blog/", "es"), "/blog/es/tech/");
+  assert.equal(routes.getLocalizedRoute("/blog/", "en"), "/blog/en/");
+  assert.equal(routes.getLocalizedRoute("/blog/", "pt"), "/blog/pt/");
+  assert.equal(routes.getLocalizedRoute("/blog/", "es"), "/blog/es/");
 });
 
 test("localized category and article routes keep language before category", () => {

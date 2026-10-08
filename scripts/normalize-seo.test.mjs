@@ -31,11 +31,14 @@ test("public Pages contains the compiled blog while private source stays absent"
   for (const relative of ["js/blog-related-posts.js", "js/newsletter.js", "js/reader-recirculation.js", "css/blog.css", "css/newsletter.css", "css/reader-recirculation.css", "images/og/blog"]) {
     assert.equal(fs.existsSync(path.join(ROOT, relative)), true, `${relative} must be shared from the site root`);
   }
-  for (const relative of ["blog/index.html", "blog/en/tech/index.html", "blog/pt/tech/index.html", "blog/es/tech/index.html", "blog/en/games/index.html", "blog/feed.xml", "blog/sitemap.xml", "blog/posts.json"]) {
+  for (const relative of ["blog/index.html", "blog/en/index.html", "blog/pt/index.html", "blog/es/index.html", "blog/en/games/index.html", "blog/feed.xml", "blog/sitemap.xml", "blog/posts.json"]) {
     assert.equal(fs.existsSync(path.join(ROOT, relative)), true, `${relative} must be synced`);
   }
-  assert.ok(read("pt/blog/index.html").includes("https://pklavc.com/blog/pt/tech/"));
-  assert.ok(read("es/blog/index.html").includes("https://pklavc.com/blog/es/tech/"));
+  for (const relative of ["blog/en/tech/index.html", "blog/pt/tech/index.html", "blog/es/tech/index.html"]) {
+    assert.equal(fs.existsSync(path.join(ROOT, relative)), false, `${relative} must not replace the language index`);
+  }
+  assert.ok(read("pt/blog/index.html").includes("https://pklavc.com/blog/pt/"));
+  assert.ok(read("es/blog/index.html").includes("https://pklavc.com/blog/es/"));
 });
 
 test("root sitemap includes blog discovery on GitHub Pages", () => {
