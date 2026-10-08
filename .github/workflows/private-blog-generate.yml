@@ -78,7 +78,7 @@ jobs:
 
       - name: Install article dependencies
         working-directory: private-blog
-        run: python -m pip install -r scripts/blog_automation/requirements.txt
+        run: python -m pip install -r scripts/blog_automation/requirements.txt 'requests>=2.32,<3'
 
       - name: Verify private repository token can push
         working-directory: private-blog
@@ -118,7 +118,7 @@ jobs:
 
       - name: Install article image dependency
         working-directory: private-blog
-        run: python -m pip install -r scripts/blog_automation/requirements.txt
+        run: python -m pip install -r scripts/blog_automation/requirements.txt 'requests>=2.32,<3'
 
       - name: Test generated article source and public paths
         working-directory: private-blog
