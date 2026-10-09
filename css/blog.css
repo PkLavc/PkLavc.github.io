@@ -1052,6 +1052,10 @@ body.blog-layout.blog-landing::before { display: none; }
         radial-gradient(ellipse 70% 52% at 19% 73%, rgba(67, 112, 205, .2) 0%, transparent 100%),
         linear-gradient(180deg, #172253 0%, #202e6e 47%, #3b5897 100%);
 }
+.blog-horizon-stage.hero-container.is-carousel-backdrop {
+    position: fixed;
+    inset: 0;
+}
 .blog-horizon-stage::after {
     content: '';
     position: absolute;
@@ -1208,12 +1212,11 @@ body.blog-layout.blog-landing::before { display: none; }
 .blog-carousel-stack {
     --carousel-reveal: 1;
     --carousel-shift: 0svh;
-    --carousel-stack-offset: -100svh;
     position: relative;
     z-index: 9;
     left: 50%;
     width: 100vw;
-    margin: var(--carousel-stack-offset) 0 0 -50vw;
+    margin: -100svh 0 0 -50vw;
     padding: clamp(36px, 6vw, 84px) 0 clamp(28px, 5vw, 62px);
     background: transparent;
 }
