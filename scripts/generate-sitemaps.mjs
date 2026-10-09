@@ -133,6 +133,7 @@ ${body}
 
 const dates = gitLastmods();
 const pages = new Map();
+const fileByRoute = new Map();
 let excluded = 0;
 for (const filePath of walk(ROOT)) {
   const route = routeFromFile(filePath);
@@ -145,11 +146,13 @@ for (const filePath of walk(ROOT)) {
   }
   if (pages.has(metadata.loc)) throw new Error(`Duplicate sitemap URL: ${metadata.loc}`);
   pages.set(metadata.loc, { ...metadata, lastmod: dates.get(toPosix(path.relative(ROOT, filePath))) });
+  fileByRoute.set(new URL(metadata.loc).pathname, filePath);
 }
 
 let excludedAlternates = 0;
 for (const page of pages.values()) {
   const seen = new Set();
+  const originalAlternates = page.alternates;
   page.alternates = page.alternates.filter((alternate) => {
     const target = pages.get(alternate.href);
     const reciprocal = target && (target.loc === page.loc || target.alternates.some((other) => other.href === page.loc));
@@ -160,6 +163,18 @@ for (const page of pages.values()) {
     seen.add(alternate.hreflang.toLowerCase());
     return true;
   });
+  const validTargets = new Set(page.alternates.map((alternate) => alternate.href));
+  const htmlPath = fileByRoute.get(new URL(page.loc).pathname);
+  if (htmlPath && page.alternates.length !== originalAlternates.length) {
+    const html = fs.readFileSync(htmlPath, "utf8");
+    const cleaned = html.replace(/\s*<link\b[^>]*>/gi, (tag) => {
+      const attrs = parseAttributes(tag);
+      if (!(attrs.rel || "").toLowerCase().split(/\s+/).includes("alternate") || !attrs.hreflang) return tag;
+      const target = siteUrl(attrs.href, new URL(page.loc).pathname);
+      return target && validTargets.has(target) ? tag : "";
+    });
+    if (cleaned !== html) fs.writeFileSync(htmlPath, cleaned, "utf8");
+  }
   groups[classify(new URL(page.loc).pathname)].push(page);
 }
 

@@ -99,6 +99,7 @@ jobs:
     timeout-minutes: 35
     outputs:
       changed: ${{ steps.changes.outputs.changed }}
+      translated: ${{ steps.blog_translation.outputs.changed }}
     steps:
       - name: Checkout private blog repository
         uses: actions/checkout@v4
@@ -174,7 +175,14 @@ jobs:
           OPENROUTER_TRANSLATION_MODEL: ${{ vars.OPENROUTER_TRANSLATION_MODEL || 'meta-llama/llama-3.1-8b-instruct' }}
           MAX_CLOUDFLARE_AI_HTTP_REQUESTS_PER_RUN: ${{ vars.MAX_CLOUDFLARE_AI_HTTP_REQUESTS_PER_RUN || '3' }}
           MAX_OPENROUTER_HTTP_REQUESTS_PER_RUN: ${{ vars.MAX_OPENROUTER_HTTP_REQUESTS_PER_RUN || '3' }}
-        run: python -m scripts.blog_automation.translate_pending --root .
+        id: blog_translation
+        run: |
+          python -m scripts.blog_automation.translate_pending --root .
+          if git diff --quiet -- en games; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Refresh AI discovery directory
         working-directory: private-blog
@@ -216,3 +224,40 @@ jobs:
         run: |
           echo "Private blog changed: ${{ steps.changes.outputs.changed }}"
           echo "The private repository push triggers the static blog sync to GitHub Pages."
+
+  sync-private-blog:
+    needs: generate
+    if: needs.generate.result == 'success' && needs.generate.outputs.translated == 'true' && needs.generate.outputs.changed == 'false'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout public website
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PRIVATE_BLOG_REPO_TOKEN }}
+          fetch-depth: 0
+
+      - name: Checkout updated private blog source
+        uses: actions/checkout@v4
+        with:
+          repository: PkLavc/blog
+          ref: main
+          path: private-blog
+          fetch-depth: 1
+
+      - name: Build public blog routes
+        run: python3 private-blog/scripts/assemble_pages.py --root private-blog --output private-blog/_site
+
+      - name: Sync generated pages
+        shell: bash
+        run: |
+          rsync -a private-blog/_site/ blog/
+          git add blog
+          if git diff --cached --quiet; then
+            echo "Public blog output is already synchronized."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git commit -m "Sync localized blog corrections"
+          git pull --rebase origin main
+          git push origin HEAD:main

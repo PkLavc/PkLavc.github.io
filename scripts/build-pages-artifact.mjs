@@ -238,6 +238,9 @@ function main() {
   // Generate discovery from the exact HTML that will be deployed on every build.
   const seoStats = normalizeSeoDirectory(outDir);
   console.log(`SEO normalization: ${seoStats.updated} of ${seoStats.pages} HTML files updated.`);
+  // Run once to remove stale hreflang targets from HTML after SEO normalization.
+  execFileSync(process.execPath, [path.join(root, "scripts", "generate-sitemaps.mjs"), "--root", outDir], { cwd: root, stdio: "inherit" });
+  // Rebuild from the cleaned HTML so the sitemap and page alternates match.
   execFileSync(process.execPath, [path.join(root, "scripts", "generate-sitemaps.mjs"), "--root", outDir], { cwd: root, stdio: "inherit" });
   generateDiscovery(outDir);
   const commit = execFileSync("git", ["rev-parse", "HEAD"], { cwd: root, encoding: "utf8" }).trim();
