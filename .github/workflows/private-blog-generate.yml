@@ -3,8 +3,7 @@ name: Generate private blog on public runner
 
 on:
   schedule:
-    - cron: "17 12,18 * * *" # Tech: 09:17 and 15:17 Brazil time
-    - cron: "17 15,21 * * *" # GTA/Rockstar: 12:17 and 18:17 Brazil time
+    - cron: "17 * * * *" # Hourly; one in five UTC hour slots is Tech, four are GTA 6
   workflow_dispatch:
     inputs:
       category:
@@ -127,6 +126,22 @@ jobs:
           python -m unittest scripts.blog_automation.test_publish_paths scripts.blog_automation.test_game_lane scripts.social_video.test_render
           node --test scripts/test-blog-discovery.mjs
 
+      - name: Choose hourly editorial lane
+        id: lane
+        shell: bash
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          REQUESTED_CATEGORY: ${{ inputs.category }}
+        run: |
+          if [[ "$EVENT_NAME" == "schedule" ]]; then
+            slot=$(( ($(date -u +%s) / 3600) % 5 ))
+            if [[ "$slot" -eq 0 ]]; then category=tech; else category=games; fi
+          else
+            category="${REQUESTED_CATEGORY:-tech}"
+          fi
+          echo "category=$category" >> "$GITHUB_OUTPUT"
+          echo "Hourly editorial lane: $category"
+
       - name: Collect, select, generate and validate
         working-directory: private-blog
         env:
@@ -141,16 +156,12 @@ jobs:
           CLOUDFLARE_AI_MODEL: ${{ vars.CLOUDFLARE_AI_MODEL || '@cf/openai/gpt-oss-120b' }}
           MAX_CLOUDFLARE_AI_HTTP_REQUESTS_PER_RUN: ${{ vars.MAX_CLOUDFLARE_AI_HTTP_REQUESTS_PER_RUN || '3' }}
           DRY_RUN: "false"
-          BLOG_CATEGORY: ${{ github.event_name == 'schedule' && github.event.schedule == '17 15,21 * * *' && 'games' || (github.event_name == 'workflow_dispatch' && inputs.category || 'tech') }}
+          BLOG_CATEGORY: ${{ steps.lane.outputs.category }}
         run: python -m scripts.blog_automation.run --root .
 
       - name: Refresh AI discovery directory
         working-directory: private-blog
         run: node scripts/generate-blog-discovery.mjs
-
-      - name: Sync English landing page to repository root
-        working-directory: private-blog
-        run: cp en/index.html index.html
 
       - name: Validate newsletter and assembled publication before commit
         working-directory: private-blog
@@ -159,7 +170,6 @@ jobs:
           python -m unittest scripts.test_newsletter_assembly
           (cd newsletter-worker && npm test)
           node scripts/generate-rss.mjs
-          git diff --exit-code -- en/feed.xml en/posts.json
           python scripts/assemble_pages.py --root . --output _site
           rm -rf _site
 

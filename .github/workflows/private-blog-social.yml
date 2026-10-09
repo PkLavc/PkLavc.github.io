@@ -139,13 +139,21 @@ jobs:
           import json, os
           from datetime import datetime, timedelta, timezone
           from pathlib import Path
+          from zoneinfo import ZoneInfo
+          from scripts.social_video.limits import DAILY_LIMITS, category_of, published_counts
+          from scripts.blog_automation.games_topic import is_gta6_title
           root = Path("social-state")
           def load(name, key):
               path = root / name
               return json.loads(path.read_text(encoding="utf-8")).get(key, []) if path.exists() else []
-          videos = any(item.get("status", "pending") == "pending"
-              for name in ("instagram-queue.json", "youtube-queue.json")
-              for item in load(name, "items"))
+          today = datetime.now(ZoneInfo("America/Sao_Paulo")).date().isoformat()
+          videos = any(
+              item.get("status", "pending") == "pending" and
+              (category_of(item) != "games" or is_gta6_title(str(item.get("title") or ""))) and
+              published_counts(load(f"{platform}-published.json", "items"), today)[category_of(item)] < DAILY_LIMITS[category_of(item)]
+              for platform in ("instagram", "youtube")
+              for item in load(f"{platform}-queue.json", "items")
+          )
           schedule_run = os.environ.get("EVENT_NAME") == "schedule" and os.environ.get("EVENT_SCHEDULE") == "0 12 * * *"
           dispatch_mode = os.environ.get("DISPATCH_MODE", "")
           has_store = schedule_run or dispatch_mode in {"store-products-preview", "store-products-publish"}
