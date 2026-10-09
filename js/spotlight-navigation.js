@@ -277,7 +277,13 @@
         if (i18n && typeof i18n.getEnglishRoute === 'function' && typeof i18n.resolveLocalizedRoute === 'function') {
           event.preventDefault();
           i18n.resolveLocalizedRoute(i18n.getEnglishRoute(window.location.pathname), language.locale).then(function (targetPath) {
-            window.location.assign(appendCurrentLocation(targetPath));
+            if (targetPath) {
+              window.location.assign(appendCurrentLocation(targetPath));
+            } else if (typeof i18n.showTranslationNotice === 'function') {
+              i18n.showTranslationNotice(language.locale);
+              setLanguageMenuOpen(false);
+              languageButton.focus();
+            }
           });
         }
       });

@@ -15,13 +15,14 @@ on:
           - tech
           - games
       mode:
-        description: "Generate a real article or run a non-publishing smoke test"
+        description: "Generate an article, translate pending content, or run a smoke test"
         required: true
         type: choice
         default: smoke
         options:
           - smoke
           - generate
+          - translate
   push:
     branches: [main]
     paths:
@@ -93,7 +94,7 @@ jobs:
           python -m scripts.blog_automation.run --root . --offline-fixture --dry-run --blog-category games
 
   generate:
-    if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.mode == 'generate')
+    if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && (inputs.mode == 'generate' || inputs.mode == 'translate'))
     runs-on: ubuntu-latest
     timeout-minutes: 35
     outputs:
@@ -128,6 +129,7 @@ jobs:
 
       - name: Choose hourly editorial lane
         id: lane
+        if: github.event_name == 'schedule' || inputs.mode == 'generate'
         shell: bash
         env:
           EVENT_NAME: ${{ github.event_name }}
@@ -143,6 +145,7 @@ jobs:
           echo "Hourly editorial lane: $category"
 
       - name: Collect, select, generate and validate
+        if: github.event_name == 'schedule' || inputs.mode == 'generate'
         working-directory: private-blog
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
@@ -154,10 +157,21 @@ jobs:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           CLOUDFLARE_AI_MODEL: ${{ vars.CLOUDFLARE_AI_MODEL || '@cf/openai/gpt-oss-120b' }}
+          CLOUDFLARE_TRANSLATION_MODEL: ${{ vars.CLOUDFLARE_TRANSLATION_MODEL || '@cf/meta/llama-3.1-8b-instruct-fp8' }}
           MAX_CLOUDFLARE_AI_HTTP_REQUESTS_PER_RUN: ${{ vars.MAX_CLOUDFLARE_AI_HTTP_REQUESTS_PER_RUN || '3' }}
           DRY_RUN: "false"
           BLOG_CATEGORY: ${{ steps.lane.outputs.category }}
         run: python -m scripts.blog_automation.run --root .
+
+      - name: Translate the newest pending English article with the low-cost model
+        if: github.event_name == 'workflow_dispatch' && inputs.mode == 'translate'
+        working-directory: private-blog
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_TRANSLATION_MODEL: ${{ vars.CLOUDFLARE_TRANSLATION_MODEL || '@cf/meta/llama-3.1-8b-instruct-fp8' }}
+          MAX_CLOUDFLARE_AI_HTTP_REQUESTS_PER_RUN: ${{ vars.MAX_CLOUDFLARE_AI_HTTP_REQUESTS_PER_RUN || '3' }}
+        run: python -m scripts.blog_automation.translate_pending --root .
 
       - name: Refresh AI discovery directory
         working-directory: private-blog

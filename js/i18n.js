@@ -262,10 +262,56 @@
     var targetLocale = normalizeLocale(locale);
     var candidate = getLocalizedRoute(englishRoute, targetLocale);
     var fallback = getLanguageFallback(englishRoute, targetLocale);
-    if (candidate === fallback) return Promise.resolve(fallback);
+    var route = getEnglishRoute(englishRoute);
+    var parts = splitPath(route);
+    var isBlogArticle = parts[0] === 'blog' && parts[1] === 'en' &&
+      (parts[2] === 'tech' || parts[2] === 'games') && parts.length >= 4;
+
+    if (candidate === fallback && !isBlogArticle) return Promise.resolve(fallback);
     return pageExists(candidate).then(function(exists) {
-      return exists ? candidate : fallback;
+      if (exists) return candidate;
+      return isBlogArticle ? null : fallback;
     });
+  }
+
+  function showTranslationNotice(locale) {
+    var copy = {
+      pt: {
+        title: 'Esta matéria ainda não tem tradução para português.',
+        message: 'Você continua na versão em inglês. Use a opção “Traduzir página” do seu navegador para ver uma tradução automática.',
+        close: 'Fechar aviso'
+      },
+      es: {
+        title: 'Este artículo todavía no está traducido al español.',
+        message: 'Sigues en la versión en inglés. Usa la opción “Traducir página” de tu navegador para ver una traducción automática.',
+        close: 'Cerrar aviso'
+      },
+      en: {
+        title: 'This article is not available in the selected language yet.',
+        message: 'You are still viewing the English version. Use your browser’s “Translate page” option for an automatic translation.',
+        close: 'Close notice'
+      }
+    }[normalizeLocale(locale)];
+
+    if (!copy || !document.createElement || document.getElementById('blog-translation-unavailable')) return;
+    var notice = document.createElement('aside');
+    notice.id = 'blog-translation-unavailable';
+    notice.className = 'editorial-notice';
+    notice.setAttribute('role', 'status');
+    notice.setAttribute('aria-live', 'polite');
+    var title = document.createElement('strong');
+    title.textContent = copy.title + ' ';
+    var message = document.createElement('span');
+    message.textContent = copy.message + ' ';
+    var close = document.createElement('button');
+    close.type = 'button';
+    close.textContent = copy.close;
+    close.addEventListener('click', function() { notice.remove(); });
+    notice.appendChild(title);
+    notice.appendChild(message);
+    notice.appendChild(close);
+    var main = document.querySelector('.blog-shell') || document.querySelector('main') || document.body;
+    main.insertBefore(notice, main.firstChild);
   }
 
   function addCurrentQueryAndHash(path) {
@@ -362,10 +408,10 @@
       return;
     }
 
-    var targetPath = buildCurrentPageRoute(preferredLanguage);
-    if (targetPath === currentPath) return;
     resolveLocalizedRoute(getEnglishRoute(currentPath), preferredLanguage).then(function(existingPath) {
-      if (existingPath !== currentPath) {
+      if (existingPath === null) {
+        showTranslationNotice(preferredLanguage);
+      } else if (existingPath !== currentPath) {
         window.location.replace(addCurrentQueryAndHash(existingPath));
       }
     });
@@ -380,7 +426,8 @@
     getEnglishRoute: getEnglishRoute,
     getLocalizedRoute: getLocalizedRoute,
     resolveLocalizedRoute: resolveLocalizedRoute,
-    setStoredLanguage: setStoredLanguage
+    setStoredLanguage: setStoredLanguage,
+    showTranslationNotice: showTranslationNotice
   };
 
   }());
