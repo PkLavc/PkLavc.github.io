@@ -170,7 +170,10 @@ jobs:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           CLOUDFLARE_TRANSLATION_MODEL: ${{ vars.CLOUDFLARE_TRANSLATION_MODEL || '@cf/meta/llama-3.1-8b-instruct-fp8' }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          OPENROUTER_TRANSLATION_MODEL: ${{ vars.OPENROUTER_TRANSLATION_MODEL || 'openrouter/free' }}
           MAX_CLOUDFLARE_AI_HTTP_REQUESTS_PER_RUN: ${{ vars.MAX_CLOUDFLARE_AI_HTTP_REQUESTS_PER_RUN || '3' }}
+          MAX_OPENROUTER_HTTP_REQUESTS_PER_RUN: ${{ vars.MAX_OPENROUTER_HTTP_REQUESTS_PER_RUN || '3' }}
         run: python -m scripts.blog_automation.translate_pending --root .
 
       - name: Refresh AI discovery directory
