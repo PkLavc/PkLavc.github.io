@@ -725,7 +725,9 @@
       var slots = document.querySelectorAll('[data-blog-feed-ad]');
       slots.forEach(function (slot, index) {
         if (slot.dataset.blogFeedAdReady === 'true') return;
-        var feed = placementAd('feed', geo, index);
+        var requestedCampaign = (slot.getAttribute('data-blog-feed-ad') || '').trim();
+        var requestedAd = requestedCampaign && createAd(requestedCampaign, 'feed', geo);
+        var feed = requestedCampaign ? (requestedAd ? { ad: requestedAd, selection: null } : null) : placementAd('feed', geo, index);
         if (!feed) {
           slot.remove();
           document.dispatchEvent(new CustomEvent('pklavc:blog-feed-ad-empty', { detail: slot }));
@@ -733,7 +735,7 @@
         }
         slot.appendChild(feed.ad);
         slot.dataset.blogFeedAdReady = 'true';
-        rotatePlacement(feed, 'feed', geo);
+        if (feed.selection) rotatePlacement(feed, 'feed', geo);
       });
       return slots.length > 0;
     }

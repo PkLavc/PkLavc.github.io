@@ -37,7 +37,7 @@
       }),
       // Blog home: a dedicated card is inserted between editorial cards.
       feed: rotatingPlacement({
-        default: ['shopee', 'aliexpress'],
+        default: ['shopee', 'amazon_prime_video', 'aliexpress'],
         rotateEverySeconds: 0
       }),
       bottom: rotatingPlacement(),
@@ -70,6 +70,7 @@
             imageAlt: 'Prime Video 30-day free trial for eligible new subscribers',
             sidebar: { title: '30 days free with Prime Video', body: 'For eligible new subscribers. Terms apply.', cta: 'Start free trial', href: 'https://kdbov.com/g/6osk6x1ky42fa9b296a4ce4f0d0bb0/' },
             inline: { title: 'Try Prime Video free for 30 days', body: 'For eligible new subscribers. Terms apply.', cta: 'Start free trial', href: 'https://kdbov.com/g/6osk6x1ky42fa9b296a4ce4f0d0bb0/' },
+            feed: { title: 'Try Prime Video free for 30 days', body: 'For eligible new subscribers. Terms apply.', cta: 'Start free trial', href: 'https://kdbov.com/g/6osk6x1ky42fa9b296a4ce4f0d0bb0/' },
             bottom: { title: '30 days free with Prime Video', body: 'For eligible new subscribers. Terms apply.', cta: 'Start free trial', href: 'https://kdbov.com/g/6osk6x1ky42fa9b296a4ce4f0d0bb0/' },
             mobile: { title: 'Prime Video — 30 days free', body: 'Eligible new subscribers. Terms apply.', cta: 'Try free', href: 'https://kdbov.com/g/6osk6x1ky42fa9b296a4ce4f0d0bb0/' }
           },
@@ -78,6 +79,7 @@
             imageAlt: 'Prime Video com teste grátis de 30 dias para novos assinantes elegíveis',
             sidebar: { title: '30 dias grátis de Prime Video', body: 'Para novos assinantes elegíveis. Termos se aplicam.', cta: 'Experimentar grátis', href: 'https://kdbov.com/g/6osk6x1ky42fa9b296a4ce4f0d0bb0/' },
             inline: { title: 'Experimente Prime Video grátis por 30 dias', body: 'Para novos assinantes elegíveis. Termos se aplicam.', cta: 'Experimentar grátis', href: 'https://kdbov.com/g/6osk6x1ky42fa9b296a4ce4f0d0bb0/' },
+            feed: { title: 'Experimente Prime Video grátis por 30 dias', body: 'Para novos assinantes elegíveis. Termos se aplicam.', cta: 'Experimentar grátis', href: 'https://kdbov.com/g/6osk6x1ky42fa9b296a4ce4f0d0bb0/' },
             bottom: { title: '30 dias grátis de Prime Video', body: 'Para novos assinantes elegíveis. Termos se aplicam.', cta: 'Experimentar grátis', href: 'https://kdbov.com/g/6osk6x1ky42fa9b296a4ce4f0d0bb0/' },
             mobile: { title: 'Prime Video — 30 dias grátis', body: 'Novos assinantes elegíveis. Termos se aplicam.', cta: 'Testar grátis', href: 'https://kdbov.com/g/6osk6x1ky42fa9b296a4ce4f0d0bb0/' }
           },
@@ -86,6 +88,7 @@
             imageAlt: 'Prime Video con prueba gratis de 30 días para nuevos suscriptores elegibles',
             sidebar: { title: '30 días gratis de Prime Video', body: 'Para nuevos suscriptores elegibles. Se aplican términos.', cta: 'Probar gratis', href: 'https://kdbov.com/g/6osk6x1ky42fa9b296a4ce4f0d0bb0/' },
             inline: { title: 'Prueba Prime Video gratis durante 30 días', body: 'Para nuevos suscriptores elegibles. Se aplican términos.', cta: 'Probar gratis', href: 'https://kdbov.com/g/6osk6x1ky42fa9b296a4ce4f0d0bb0/' },
+            feed: { title: 'Prueba Prime Video gratis durante 30 días', body: 'Para nuevos suscriptores elegibles. Se aplican términos.', cta: 'Probar gratis', href: 'https://kdbov.com/g/6osk6x1ky42fa9b296a4ce4f0d0bb0/' },
             bottom: { title: '30 días gratis de Prime Video', body: 'Para nuevos suscriptores elegibles. Se aplican términos.', cta: 'Probar gratis', href: 'https://kdbov.com/g/6osk6x1ky42fa9b296a4ce4f0d0bb0/' },
             mobile: { title: 'Prime Video — 30 días gratis', body: 'Nuevos suscriptores elegibles. Se aplican términos.', cta: 'Probar gratis', href: 'https://kdbov.com/g/6osk6x1ky42fa9b296a4ce4f0d0bb0/' }
           }

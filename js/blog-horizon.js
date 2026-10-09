@@ -13,6 +13,8 @@
     var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     var totalSections = contentSections.length;
     var scrollProgress = 0;
+    var locale = (document.documentElement.lang || 'en').toLowerCase().split('-')[0];
+    var maxCarouselArticles = 18;
 
     if (!horizon || !stage || !canvas) return;
 
@@ -42,6 +44,121 @@
       }
     }
 
+    function normalizedPath(href) {
+      try {
+        return new URL(href, window.location.href).pathname.replace(/\/+$/, '') + '/';
+      } catch (error) {
+        return String(href || '');
+      }
+    }
+
+    function createCatalogCard(post, category) {
+      var localized = locale === 'en' ? post : post.localized && post.localized[locale];
+      if (!localized || !localized.url || !localized.title) return null;
+
+      var card = document.createElement('article');
+      var cover = document.createElement('a');
+      var image = document.createElement('img');
+      var meta = document.createElement('div');
+      var title = document.createElement('h3');
+      var titleLink = document.createElement('a');
+      var description = document.createElement('p');
+      var tags = document.createElement('div');
+      var readLink = document.createElement('a');
+      var imageUrl = localized.image || post.image || '';
+      var copy = {
+        en: { read: 'Read article', confirmed: 'Confirmed' },
+        pt: { read: 'Ler artigo', confirmed: 'Confirmado' },
+        es: { read: 'Leer artículo', confirmed: 'Confirmado' }
+      }[locale] || { read: 'Read article', confirmed: 'Confirmed' };
+
+      card.className = 'blog-card';
+      card.setAttribute('role', 'article');
+      card.dataset.catalogCard = 'true';
+
+      if (imageUrl) {
+        cover.className = 'blog-card-cover';
+        cover.href = localized.url;
+        cover.tabIndex = -1;
+        cover.setAttribute('aria-hidden', 'true');
+        image.src = imageUrl;
+        image.alt = '';
+        image.loading = 'lazy';
+        image.decoding = 'async';
+        image.addEventListener('error', function () { cover.remove(); }, { once: true });
+        cover.appendChild(image);
+      }
+
+      meta.className = 'blog-card-meta';
+      [localized.category || post.category || category, copy.confirmed].forEach(function (value) {
+        var item = document.createElement('span');
+        item.textContent = value;
+        meta.appendChild(item);
+      });
+
+      titleLink.href = localized.url;
+      titleLink.textContent = localized.title;
+      title.appendChild(titleLink);
+      description.textContent = localized.description || post.description || '';
+
+      tags.className = 'blog-tag-row';
+      (localized.tags || post.tags || []).slice(0, 3).forEach(function (tag) {
+        var item = document.createElement('span');
+        item.textContent = tag;
+        tags.appendChild(item);
+      });
+
+      readLink.className = 'blog-link';
+      readLink.href = localized.url;
+      readLink.textContent = copy.read;
+      if (imageUrl) card.appendChild(cover);
+      card.append(meta, title, description);
+      if (tags.childElementCount) card.appendChild(tags);
+      card.appendChild(readLink);
+      return card;
+    }
+
+    function expandCarouselLibraries() {
+      var libraries = document.querySelectorAll('[data-blog-library]');
+      if (!libraries.length || !window.fetch) return Promise.resolve();
+
+      return fetch('/blog/posts.json', { credentials: 'same-origin', cache: 'no-store' })
+        .then(function (response) {
+          if (!response.ok) throw new Error('Unable to load blog catalog');
+          return response.json();
+        })
+        .then(function (posts) {
+          if (!Array.isArray(posts)) return;
+          var now = new Date();
+          var today = new Date(now.getTime() - now.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+
+          libraries.forEach(function (library) {
+            var category = library.getAttribute('data-blog-library');
+            var grid = library.querySelector('[data-blog-grid]');
+            if (!grid) return;
+
+            var seen = new Set();
+            grid.querySelectorAll('.blog-card').forEach(function (card) {
+              var link = card.querySelector('h3 a, .blog-link');
+              if (link) seen.add(normalizedPath(link.href));
+            });
+
+            posts.some(function (post) {
+              if (seen.size >= maxCarouselArticles) return true;
+              if ((post.blog_category || 'tech') !== category || (post.date && post.date > today)) return false;
+              var localized = locale === 'en' ? post : post.localized && post.localized[locale];
+              var key = localized && normalizedPath(localized.url);
+              if (!key || seen.has(key)) return false;
+              var card = createCatalogCard(post, category);
+              if (!card) return false;
+              grid.appendChild(card);
+              seen.add(key);
+              return false;
+            });
+          });
+        });
+    }
+
     function createCarousel(carousel) {
       var category = carousel.getAttribute('data-blog-carousel');
       var track = carousel.querySelector('.blog-carousel-track');
@@ -65,25 +182,57 @@
         return { cards: cards, render: function () {} };
       }
 
-      var fragment = document.createDocumentFragment();
-      Array.prototype.slice.call(source).forEach(function (card, index) {
+      var uniqueCards = [];
+      var seenCards = new Set();
+      Array.prototype.slice.call(source).forEach(function (card) {
+        var link = card.querySelector('h3 a, .blog-link');
+        var key = link ? normalizedPath(link.href) : '';
+        if (key && seenCards.has(key)) {
+          card.remove();
+          return;
+        }
+        if (key) seenCards.add(key);
         card.classList.add('blog-carousel-card');
         card.setAttribute('data-glow', '');
         card.querySelectorAll('[id]').forEach(function (node) { node.removeAttribute('id'); });
-        fragment.appendChild(card);
+        uniqueCards.push(card);
+      });
 
-        // Keep this as a regular carousel card so the promotional panel is
-        // reached by the same scroll, drag and keyboard controls as articles.
-        if (category === 'tech' && index === 0 && source.length > 1) {
+      var fragment = document.createDocumentFragment();
+      var adCampaigns = ['shopee', 'amazon_prime_video', 'aliexpress'];
+      var adCount = category === 'tech' ? Math.min(adCampaigns.length, Math.floor(uniqueCards.length / 4)) : 0;
+      var cardIndex = 0;
+      var articleGroups = adCount ? Math.floor(uniqueCards.length / adCount) : uniqueCards.length;
+      var extraArticles = adCount ? uniqueCards.length % adCount : 0;
+      var adLabels = {
+        en: { shopee: 'Advertisement: Shopee', amazon_prime_video: 'Advertisement: Amazon Prime Video', aliexpress: 'Advertisement: AliExpress' },
+        pt: { shopee: 'Publicidade: Shopee', amazon_prime_video: 'Publicidade: Amazon Prime Video', aliexpress: 'Publicidade: AliExpress' },
+        es: { shopee: 'Publicidad: Shopee', amazon_prime_video: 'Publicidad: Amazon Prime Video', aliexpress: 'Publicidad: AliExpress' }
+      }[locale] || {};
+
+      if (!adCount) uniqueCards.forEach(function (card) { fragment.appendChild(card); });
+      for (var groupIndex = 0; groupIndex < adCount; groupIndex += 1) {
+        var groupSize = articleGroups + (groupIndex < extraArticles ? 1 : 0);
+        for (var groupCard = 0; groupCard < groupSize; groupCard += 1) {
+          fragment.appendChild(uniqueCards[cardIndex]);
+          cardIndex += 1;
+        }
+
+        // Ads are regular carousel cards so scroll, drag and keyboard controls
+        // preserve the same behavior as editorial cards.
+        if (cardIndex <= uniqueCards.length) {
+          var campaign = adCampaigns[groupIndex];
           var adSlot = document.createElement('div');
           adSlot.className = 'blog-carousel-card blog-carousel-ad-slot';
-          adSlot.setAttribute('data-blog-feed-ad', '');
-          adSlot.setAttribute('aria-label', 'Advertisement');
+          adSlot.setAttribute('data-blog-feed-ad', campaign);
+          adSlot.setAttribute('aria-label', adLabels[campaign] || 'Advertisement');
           fragment.appendChild(adSlot);
         }
-      });
+      }
       track.appendChild(fragment);
       cards = Array.prototype.slice.call(track.querySelectorAll('.blog-carousel-card'));
+      track.dataset.articleCount = String(uniqueCards.length);
+      track.dataset.adCount = String(adCount);
       if (library) library.remove();
 
       function renderCoverflow(position) {
@@ -219,10 +368,16 @@
       };
     }
 
-    document.querySelectorAll('[data-blog-carousel]').forEach(function (carousel) {
-      var controller = createCarousel(carousel);
-      if (controller) carouselControllers.push(controller);
-    });
+    function initializeCarousels() {
+      document.querySelectorAll('[data-blog-carousel]').forEach(function (carousel) {
+        var controller = createCarousel(carousel);
+        if (controller) carouselControllers.push(controller);
+      });
+    }
+
+    expandCarouselLibraries().catch(function () {
+      // The curated cards remain a complete fallback if the catalog is unavailable.
+    }).then(initializeCarousels);
 
     document.addEventListener('pklavc:blog-feed-ad-empty', function (event) {
       carouselControllers.some(function (controller) { return controller.removeCard && controller.removeCard(event.detail); });
