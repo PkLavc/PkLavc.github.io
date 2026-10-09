@@ -11,10 +11,36 @@
     var skipButton = stage && stage.querySelector('[data-skip-to-posts]');
     var autoplayDelay = 8000;
     var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    var totalSections = 2;
+    var totalSections = contentSections.length;
     var scrollProgress = 0;
 
     if (!horizon || !stage || !canvas) return;
+
+    document.documentElement.classList.add('blog-horizon-enhanced');
+
+    function updateNarrativeOpacity() {
+      var introOpacity = scrollProgress <= 0.12 ? 1 : Math.max(0, 1 - (scrollProgress - 0.12) / 0.1);
+      var copy = stage.querySelector('.blog-horizon-copy');
+      if (copy) copy.style.opacity = introOpacity.toFixed(3);
+
+      var sectionWindow = totalSections ? 0.72 / totalSections : 0;
+      Array.prototype.forEach.call(contentSections, function (section, index) {
+        var start = 0.18 + sectionWindow * index;
+        var fade = Math.min(0.08, sectionWindow / 3);
+        var holdEnd = start + sectionWindow - fade;
+        var opacity = scrollProgress < start ? 0 :
+          scrollProgress < start + fade ? (scrollProgress - start) / fade :
+          scrollProgress <= holdEnd ? 1 :
+          Math.max(0, 1 - (scrollProgress - holdEnd) / fade);
+        section.style.opacity = opacity.toFixed(3);
+      });
+
+      if (carouselStack) {
+        var carouselReveal = scrollProgress < 0.9 ? 0 : Math.min(1, (scrollProgress - 0.9) / 0.1);
+        carouselStack.style.setProperty('--carousel-reveal', carouselReveal.toFixed(3));
+        carouselStack.style.setProperty('--carousel-shift', ((1 - carouselReveal) * 8).toFixed(3) + 'svh');
+      }
+    }
 
     function createCarousel(carousel) {
       var category = carousel.getAttribute('data-blog-carousel');
@@ -230,13 +256,7 @@
         var travel = Math.max(1, horizon.offsetHeight - window.innerHeight);
         scrollProgress = Math.max(0, Math.min(1, -bounds.top / travel));
         stage.style.setProperty('--hero-progress', scrollProgress.toFixed(4));
-        var introOpacity = scrollProgress <= 0.18 ? 1 : Math.max(0, 1 - (scrollProgress - 0.18) / 0.12);
-        var cosmosOpacity = scrollProgress < 0.24 ? 0 : scrollProgress < 0.34 ? (scrollProgress - 0.24) / 0.1 : scrollProgress <= 0.5 ? 1 : Math.max(0, 1 - (scrollProgress - 0.5) / 0.12);
-        var infinityOpacity = scrollProgress < 0.58 ? 0 : scrollProgress < 0.68 ? (scrollProgress - 0.58) / 0.1 : scrollProgress <= 0.94 ? 1 : Math.max(0, 1 - (scrollProgress - 0.94) / 0.06);
-        var copy = stage.querySelector('.blog-horizon-copy');
-        if (copy) copy.style.opacity = introOpacity.toFixed(3);
-        if (contentSections[0]) contentSections[0].style.opacity = cosmosOpacity.toFixed(3);
-        if (contentSections[1]) contentSections[1].style.opacity = infinityOpacity.toFixed(3);
+        updateNarrativeOpacity();
       }
       updateFallbackScroll();
       window.addEventListener('scroll', updateFallbackScroll, { passive: true });
@@ -459,7 +479,8 @@
       var currentSection = Math.min(totalSections, Math.floor(totalProgress));
       var sectionProgress = totalProgress % 1;
       var cameraPositions = [
-        { x: 0, y: 30, z: 300 }, { x: 0, y: 40, z: -50 }, { x: 0, y: 50, z: -700 }
+        { x: 0, y: 30, z: 300 }, { x: 0, y: 40, z: -50 },
+        { x: 0, y: 50, z: -700 }, { x: 0, y: 54, z: -1120 }
       ];
       var currentPos = cameraPositions[currentSection] || cameraPositions[0];
       var nextPos = cameraPositions[currentSection + 1] || currentPos;
@@ -475,12 +496,7 @@
       });
       if (refs.nebula && refs.mountains.length) refs.nebula.position.z = refs.mountains[refs.mountains.length - 1].position.z;
       stage.style.setProperty('--hero-progress', scrollProgress.toFixed(4));
-      var introOpacity = scrollProgress <= 0.18 ? 1 : Math.max(0, 1 - (scrollProgress - 0.18) / 0.12);
-      var cosmosOpacity = scrollProgress < 0.24 ? 0 : scrollProgress < 0.34 ? (scrollProgress - 0.24) / 0.1 : scrollProgress <= 0.5 ? 1 : Math.max(0, 1 - (scrollProgress - 0.5) / 0.12);
-      var infinityOpacity = scrollProgress < 0.58 ? 0 : scrollProgress < 0.68 ? (scrollProgress - 0.58) / 0.1 : scrollProgress <= 0.94 ? 1 : Math.max(0, 1 - (scrollProgress - 0.94) / 0.06);
-      if (stage.querySelector('.blog-horizon-copy')) stage.querySelector('.blog-horizon-copy').style.opacity = introOpacity.toFixed(3);
-      if (contentSections[0]) contentSections[0].style.opacity = cosmosOpacity.toFixed(3);
-      if (contentSections[1]) contentSections[1].style.opacity = infinityOpacity.toFixed(3);
+      updateNarrativeOpacity();
     }
 
     function animate(frameTime) {

@@ -1023,13 +1023,17 @@ body.blog-layout::before {
 .blog-layout #all,
 .blog-shell { overflow: visible; }
 .blog-shell { padding-top: 0; padding-bottom: 0; }
+body.blog-layout.blog-landing {
+    background: #3b5897;
+}
+body.blog-layout.blog-landing::before { display: none; }
 .blog-horizon {
     --hero-progress: 0;
     position: relative;
     left: 50%;
     width: 100vw;
     max-width: none;
-    min-height: 300vh;
+    min-height: 400vh;
     margin: 0 0 0 -50vw;
     background: transparent;
 }
@@ -1186,20 +1190,36 @@ body.blog-layout::before {
     font: 400 clamp(1rem, 1.75vw, 1.55rem)/1.6 Inter, sans-serif;
     text-shadow: 0 3px 24px #02030d;
 }
+.content-section--mystery h2 {
+    color: rgba(236, 244, 255, .78);
+    font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
+    max-width: 92vw;
+    font-size: clamp(2.2rem, 6vw, 6rem);
+    letter-spacing: .03em;
+    overflow-wrap: anywhere;
+    text-shadow: none;
+}
+.content-section--mystery p {
+    color: rgba(220, 232, 255, .68);
+    font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
+    letter-spacing: .04em;
+    text-shadow: none;
+}
 .blog-carousel-stack {
-    --blog-carousel-blend-height: clamp(110px, 11vw, 170px);
+    --carousel-reveal: 1;
+    --carousel-shift: 0svh;
     position: relative;
-    z-index: 2;
+    z-index: 9;
     left: 50%;
     width: 100vw;
-    margin: calc(-1 * (var(--blog-carousel-blend-height) + 42px)) 0 0 -50vw;
-    padding: calc(var(--blog-carousel-blend-height) + 42px) 0 clamp(28px, 5vw, 62px);
-    background: linear-gradient(
-        180deg,
-        transparent 0,
-        rgba(59, 88, 151, .84) 45%,
-        #3b5897 100%
-    );
+    margin: -100svh 0 0 -50vw;
+    padding: clamp(36px, 6vw, 84px) 0 clamp(28px, 5vw, 62px);
+    background: transparent;
+}
+.blog-horizon-enhanced .blog-carousel-stack {
+    opacity: var(--carousel-reveal);
+    transform: translateY(var(--carousel-shift));
+    will-change: opacity, transform;
 }
 .blog-carousel-group + .blog-carousel-group { margin-top: clamp(24px, 4vw, 54px); }
 .blog-carousel-title {
@@ -1254,8 +1274,8 @@ body.blog-layout::before {
     transform: translate(-50%, -50%) translateX(var(--coverflow-x)) translateZ(var(--coverflow-z)) rotateY(var(--coverflow-rotate)) scale(var(--coverflow-scale));
     transform-style: preserve-3d;
     opacity: var(--coverflow-opacity);
-    box-shadow: 0 26px 60px rgba(0, 0, 0, .52);
-    transition: transform .82s cubic-bezier(.2, .72, .16, 1), opacity .68s ease, border-color .55s ease, box-shadow .55s ease;
+    box-shadow: none;
+    transition: transform .82s cubic-bezier(.2, .72, .16, 1), opacity .68s ease, border-color .55s ease;
     will-change: transform, opacity;
 }
 .blog-carousel-card[data-glow] {
@@ -1271,7 +1291,7 @@ body.blog-layout::before {
         linear-gradient(#1a1a1a, #1a1a1a) border-box;
 }
 .blog-carousel-card.is-active {
-    box-shadow: 0 30px 80px rgba(0, 0, 0, .62);
+    box-shadow: none;
 }
 .blog-carousel-card:hover {
     transform: translate(-50%, -50%) translateX(var(--coverflow-x)) translateZ(var(--coverflow-z)) rotateY(var(--coverflow-rotate)) scale(var(--coverflow-scale));
@@ -1364,7 +1384,7 @@ body.blog-layout .footer-projects .pklavc-newsletter-footer-trigger-desktop { di
 }
 
 @media (max-width: 760px) {
-    .blog-horizon { min-height: 280svh; }
+    .blog-horizon { min-height: 400svh; }
     .blog-horizon-stage.hero-container { height: 100svh; min-height: 0; }
     body.blog-layout .footer-projects .footer-social-icons { gap: 4px; margin-left: -26px; }
     body.blog-layout .footer-projects .footer-social-icon-link { width: 24px; height: 24px; flex-basis: 24px; }
@@ -1396,8 +1416,9 @@ body.blog-layout .footer-projects .pklavc-newsletter-footer-trigger-desktop { di
     .blog-carousel-card .blog-link { font-size: .72rem; }
 }
 @media (prefers-reduced-motion: reduce) {
-    .blog-horizon { min-height: 200vh; }
+    .blog-horizon { min-height: 300vh; }
     .hero-canvas { transition: none; }
+    .blog-horizon-enhanced .blog-carousel-stack { transform: none; }
 }
 
 
