@@ -1208,11 +1208,12 @@ body.blog-layout.blog-landing::before { display: none; }
 .blog-carousel-stack {
     --carousel-reveal: 1;
     --carousel-shift: 0svh;
+    --carousel-stack-offset: -100svh;
     position: relative;
     z-index: 9;
     left: 50%;
     width: 100vw;
-    margin: -100svh 0 0 -50vw;
+    margin: var(--carousel-stack-offset) 0 0 -50vw;
     padding: clamp(36px, 6vw, 84px) 0 clamp(28px, 5vw, 62px);
     background: transparent;
 }

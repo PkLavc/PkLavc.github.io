@@ -8,10 +8,13 @@
     var contentSections = stage ? stage.querySelectorAll('[data-horizon-section]') : [];
     var carouselStack = document.querySelector('[data-blog-carousel-stack]');
     var carouselControllers = [];
+    var carouselResizeObserver = null;
     var skipButton = stage && stage.querySelector('[data-skip-to-posts]');
     var autoplayDelay = 8000;
     var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     var totalSections = contentSections.length;
+    var sectionWindow = totalSections ? 0.72 / totalSections : 0;
+    var mysterySectionStart = totalSections > 1 ? 0.18 + sectionWindow * (totalSections - 1) : 1;
     var scrollProgress = 0;
     var locale = (document.documentElement.lang || 'en').toLowerCase().split('-')[0];
     var maxCarouselArticles = 18;
@@ -25,7 +28,6 @@
       var copy = stage.querySelector('.blog-horizon-copy');
       if (copy) copy.style.opacity = introOpacity.toFixed(3);
 
-      var sectionWindow = totalSections ? 0.72 / totalSections : 0;
       Array.prototype.forEach.call(contentSections, function (section, index) {
         var start = 0.18 + sectionWindow * index;
         var fade = Math.min(0.08, sectionWindow / 3);
@@ -373,11 +375,24 @@
         var controller = createCarousel(carousel);
         if (controller) carouselControllers.push(controller);
       });
+      updateCarouselOverlayDepth();
+    }
+
+    function updateCarouselOverlayDepth() {
+      if (!carouselStack) return;
+      var stackHeight = Math.ceil(carouselStack.getBoundingClientRect().height);
+      if (stackHeight > 0) carouselStack.style.setProperty('--carousel-stack-offset', '-' + stackHeight + 'px');
     }
 
     expandCarouselLibraries().catch(function () {
       // The curated cards remain a complete fallback if the catalog is unavailable.
     }).then(initializeCarousels);
+
+    window.addEventListener('resize', updateCarouselOverlayDepth, { passive: true });
+    if (carouselStack && 'ResizeObserver' in window) {
+      carouselResizeObserver = new ResizeObserver(updateCarouselOverlayDepth);
+      carouselResizeObserver.observe(carouselStack);
+    }
 
     document.addEventListener('pklavc:blog-feed-ad-empty', function (event) {
       carouselControllers.some(function (controller) { return controller.removeCard && controller.removeCard(event.detail); });
@@ -647,8 +662,9 @@
         var targetZ = mountain.userData.baseZ + (-bounds.top) * speed * 0.5;
         if (refs.nebula) refs.nebula.position.z = targetZ + scrollProgress * speed * 0.01 - 100;
         mountain.userData.targetZ = targetZ;
-        mountain.position.z = scrollProgress > 0.7 ? 600000 : refs.locations[index];
+        mountain.position.z = scrollProgress >= mysterySectionStart ? 600000 : refs.locations[index];
       });
+      if (refs.atmosphere) refs.atmosphere.visible = scrollProgress < mysterySectionStart;
       if (refs.nebula && refs.mountains.length) refs.nebula.position.z = refs.mountains[refs.mountains.length - 1].position.z;
       stage.style.setProperty('--hero-progress', scrollProgress.toFixed(4));
       updateNarrativeOpacity();
