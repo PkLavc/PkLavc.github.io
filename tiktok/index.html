@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="robots" content="noindex,nofollow">
   <meta name="color-scheme" content="dark">
-  <title>TikTok Sandbox Review | PkLavc Social</title>
+  <title>TikTok Publishing | PkLavc Social</title>
   <style>
     :root{color-scheme:dark;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
     *{box-sizing:border-box}
@@ -44,7 +44,7 @@
 <body>
   <main>
     <section class="card">
-      <div class="eyebrow">PkLavc Social · TikTok Sandbox</div>
+      <div class="eyebrow">PkLavc Social · TikTok</div>
       <h1>Content Posting API review</h1>
       <p>This page demonstrates Login Kit, account authorization, Direct Post and draft upload with explicit user confirmation before content is sent to TikTok.</p>
     </section>
@@ -67,7 +67,7 @@
               <span id="creatorMeta"></span>
             </div>
           </div>
-          <span class="badge">Sandbox</span>
+          <span id="environmentBadge" class="badge">Checking…</span>
         </div>
       </section>
 
@@ -98,7 +98,7 @@
           <label class="check"><input id="aigc" type="checkbox" checked> This video contains AI-generated content</label>
         </div>
 
-        <div class="notice">This unaudited Sandbox can Direct Post only with <strong>Only me (SELF_ONLY)</strong>. Other privacy options are shown exactly as returned by TikTok Creator Info, but cannot be submitted during Sandbox testing.</div>
+        <div id="environmentNotice" class="notice">Checking app authorization and available visibility options…</div>
 
         <label class="check" style="margin-top:18px">
           <input id="consent" type="checkbox">
@@ -117,7 +117,21 @@
   <script>
     (() => {
       const API = "https://api.pklavc.com";
-      const CLIENT_KEY = "sbawqjk2nzczkc3b0r";
+      let CLIENT_KEY = "";
+      let ACTIVE_ENV = "sandbox";
+      let configPromise;
+      async function loadConfig() {
+        const response = await fetch(API + "/tiktok/config", {credentials: "include"});
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok || !data.client_key) throw new Error("TikTok app credentials are not configured.");
+        CLIENT_KEY = data.client_key;
+        ACTIVE_ENV = data.environment;
+        document.getElementById("environmentBadge").textContent = ACTIVE_ENV === "production" ? "Production" : "Sandbox";
+        document.getElementById("environmentNotice").textContent = ACTIVE_ENV === "production" ?
+          "Public publishing is available only when enabled for this app and account by TikTok. Review each video and explicitly confirm before posting." :
+          "Sandbox Direct Post is restricted to Only me (SELF_ONLY).";
+        return data;
+      }
       const REDIRECT_URI = "https://pklavc.com/tiktok/callback/";
       const SCOPES = "user.info.basic,video.publish,video.upload";
       const connectCard = document.getElementById("connectCard");
@@ -152,7 +166,9 @@
         return Array.from(bytes, b => b.toString(16).padStart(2, "0")).join("");
       };
 
-      document.getElementById("connect").addEventListener("click", () => {
+      document.getElementById("connect").addEventListener("click", async () => {
+        try { await configPromise; }
+        catch (error) { setStatus(error.message || "TikTok configuration unavailable.", "error"); return; }
         const state = randomState();
         sessionStorage.setItem("tiktok_oauth_state", state);
         const url = new URL("https://www.tiktok.com/v2/auth/authorize/");
@@ -236,7 +252,7 @@
       function validateSelection(requirePrivacy) {
         if (!video.files || !video.files[0]) throw new Error("Choose a video file first.");
         if (requirePrivacy && !privacy.value) throw new Error("Choose who can view the post.");
-        if (requirePrivacy && privacy.value !== "SELF_ONLY") {
+        if (requirePrivacy && ACTIVE_ENV !== "production" && privacy.value !== "SELF_ONLY") {
           throw new Error("Sandbox Direct Post is currently restricted to Only me (SELF_ONLY).");
         }
         if (!consent.checked) throw new Error("Confirm the consent checkbox before sending content to TikTok.");
@@ -268,7 +284,7 @@
           const state = result.status || "PROCESSING";
           setStatus("TikTok status: " + state);
           if (state === "PUBLISH_COMPLETE") {
-            setStatus("Direct Post completed successfully. The Sandbox post is private (Only me).", "ok");
+            setStatus("Direct Post completed successfully with the selected visibility settings.", "ok");
             return;
           }
           if (state === "SEND_TO_USER_INBOX") {
@@ -320,7 +336,14 @@
         }
       });
 
-      loadCreator();
+      configPromise = loadConfig();
+      configPromise.then(loadCreator).catch(error => {
+        publisher.classList.add("hidden");
+        connectCard.classList.remove("hidden");
+        const note = document.createElement("small");
+        note.textContent = error.message || "TikTok configuration unavailable.";
+        connectCard.appendChild(note);
+      });
     })();
   </script>
 </body>
