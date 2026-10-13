@@ -93,6 +93,43 @@ jobs:
           python -m scripts.blog_automation.run --root . --offline-fixture --dry-run
           python -m scripts.blog_automation.run --root . --offline-fixture --dry-run --blog-category games
 
+  offline-translation-integration:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout private blog source
+        uses: actions/checkout@v4
+        with:
+          repository: PkLavc/blog
+          ref: main
+          token: ${{ secrets.PRIVATE_BLOG_REPO_TOKEN }}
+          path: private-blog
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Verify English to Brazilian Portuguese and Spanish without LLM keys
+        working-directory: private-blog
+        env:
+          ARGOS_DEVICE_TYPE: cpu
+        run: |
+          python -m pip install "argostranslate>=1.10,<2"
+          python -m scripts.blog_automation.install_offline_translations
+          python - <<'PY'
+          from scripts.blog_automation.translate_pending import _translation_map
+          content = (
+              "<html><title>GTA 6 news update</title><main>"
+              "<h1>Rockstar Games confirms a new update</h1>"
+              "<p>The new release includes more details about the game and its soundtrack.</p>"
+              "</main></html>"
+          )
+          for locale in ("pt", "es"):
+              translated = _translation_map(content, locale)
+              assert len(translated) == 3, (locale, translated)
+              assert "Rockstar Games" in translated["Rockstar Games confirms a new update"]
+              assert translated["The new release includes more details about the game and its soundtrack."] != "The new release includes more details about the game and its soundtrack."
+              print(f"Offline {locale.upper()} article translation: PASS")
+          PY
   generate:
     if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && (inputs.mode == 'generate' || inputs.mode == 'translate'))
     runs-on: ubuntu-latest
