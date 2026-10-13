@@ -29,7 +29,7 @@ jobs:
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y -qq ffmpeg espeak-ng fonts-dejavu-core
-          python -m pip install "Pillow>=10,<13"
+          python -m pip install "Pillow>=10,<13" "requests>=2,<3"
       - name: Test PkLavc branded and unbranded MP4 outputs
         working-directory: blog
         env:
