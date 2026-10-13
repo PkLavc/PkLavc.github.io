@@ -87,9 +87,9 @@ export async function handleTikTokMediaProxy(
   });
 }
 
-export async function handleTikTokUserInfo(env: TikTokPublishEnv): Promise<Response> {
+export async function handleTikTokUserInfo(env: TikTokPublishEnv, request?: Request): Promise<Response> {
   try {
-    const tokens = await getTikTokTokens(env);
+    const tokens = await getTikTokTokens(env, request);
     const response = await fetch(
       `${TIKTOK_API_ROOT}/v2/user/info/?fields=open_id,union_id,avatar_url,display_name`,
       {
@@ -118,9 +118,9 @@ export async function handleTikTokUserInfo(env: TikTokPublishEnv): Promise<Respo
   }
 }
 
-export async function handleTikTokCreatorInfo(env: TikTokPublishEnv): Promise<Response> {
+export async function handleTikTokCreatorInfo(env: TikTokPublishEnv, request?: Request): Promise<Response> {
   try {
-    const creator = await queryCreatorInfo(env);
+    const creator = await queryCreatorInfo(env, request);
     return json({
       ok: true,
       creator_username: creator.creator_username || "",
@@ -224,12 +224,12 @@ export async function handleTikTokDirectFilePost(
   if (!bytes.byteLength) {
     return json({ error: "empty_video" }, 400);
   }
-  if (bytes.byteLength > 64 * 1024 * 1024) {
+  if (bytes.byteLength > 50 * 1024 * 1024) {
     return json({ error: "video_too_large_for_single_chunk_test" }, 413);
   }
 
   try {
-    const tokens = await getTikTokTokens(env);
+    const tokens = await getTikTokTokens(env, request);
     const creator = await queryCreatorInfoWithToken(tokens.access_token);
     const privacyOptions = creator.privacy_level_options || [];
     const requestedPrivacy = String(url.searchParams.get("privacy_level") || "").trim();
@@ -342,12 +342,12 @@ export async function handleTikTokDraftFileUpload(
 
   const bytes = new Uint8Array(await request.arrayBuffer());
   if (!bytes.byteLength) return json({ error: "empty_video" }, 400);
-  if (bytes.byteLength > 64 * 1024 * 1024) {
+  if (bytes.byteLength > 50 * 1024 * 1024) {
     return json({ error: "video_too_large_for_single_chunk_test" }, 413);
   }
 
   try {
-    const tokens = await getTikTokTokens(env);
+    const tokens = await getTikTokTokens(env, request);
     const initResponse = await fetch(`${TIKTOK_API_ROOT}/v2/post/publish/inbox/video/init/`, {
       method: "POST",
       headers: {
@@ -400,6 +400,7 @@ export async function handleTikTokDraftFileUpload(
 export async function handleTikTokPostStatus(
   request: Request,
   env: TikTokPublishEnv,
+  creatorRequest?: Request,
 ): Promise<Response> {
   let body: { publish_id?: string };
   try {
@@ -414,7 +415,7 @@ export async function handleTikTokPostStatus(
   }
 
   try {
-    const tokens = await getTikTokTokens(env);
+    const tokens = await getTikTokTokens(env, creatorRequest);
     const response = await fetch(`${TIKTOK_API_ROOT}/v2/post/publish/status/fetch/`, {
       method: "POST",
       headers: {
@@ -442,8 +443,8 @@ export async function handleTikTokPostStatus(
   }
 }
 
-async function queryCreatorInfo(env: TikTokPublishEnv): Promise<CreatorInfo> {
-  const tokens = await getTikTokTokens(env);
+async function queryCreatorInfo(env: TikTokPublishEnv, request?: Request): Promise<CreatorInfo> {
+  const tokens = await getTikTokTokens(env, request);
   return queryCreatorInfoWithToken(tokens.access_token);
 }
 
