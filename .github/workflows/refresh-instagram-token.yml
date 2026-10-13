@@ -43,7 +43,7 @@ jobs:
       - name: Validate GitHub/Instagram access or refresh tokens in both repositories
         env:
           INSTAGRAM_ACCESS_TOKEN: ${{ secrets.INSTAGRAM_ACCESS_TOKEN }}
-          INSTAGRAM_ROTATION_GITHUB_TOKEN: ${{ secrets.INSTAGRAM_ROTATION_GITHUB_TOKEN }}
+          INSTAGRAM_ROTATION_GITHUB_TOKEN: ${{ secrets.INSTAGRAM_TOKEN_ROTACION }}
         shell: bash
         run: |
           if [[ "${{ github.event_name }}" == "push" || "${{ inputs.mode }}" == "preflight" ]]; then
