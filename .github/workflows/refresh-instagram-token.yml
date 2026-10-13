@@ -5,6 +5,10 @@ on:
     # Instagram Login long-lived tokens last ~60 days. Rotate monthly (UTC).
     - cron: "23 6 1 * *"
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/refresh-instagram-token.yml"
 
 permissions:
   contents: read
@@ -26,7 +30,7 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Refresh Instagram and update both repositories' secrets
+      - name: Refresh Instagram and update site repository secrets
         env:
           INSTAGRAM_ACCESS_TOKEN: ${{ secrets.INSTAGRAM_ACCESS_TOKEN }}
           INSTAGRAM_ROTATION_GITHUB_TOKEN: ${{ secrets.INSTAGRAM_ROTATION_GITHUB_TOKEN }}
