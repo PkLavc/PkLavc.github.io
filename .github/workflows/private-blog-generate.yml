@@ -181,6 +181,8 @@ jobs:
           # Deliberately no GEMINI, OPENROUTER or CLOUDFLARE keys in this stage.
           ARGOS_DEVICE_TYPE: cpu
         run: |
+          # Include the brand-new English article in the translation catalog now.
+          node scripts/generate-rss.mjs
           python -m pip install "argostranslate>=1.10,<2"
           python -m scripts.blog_automation.install_offline_translations
           python -m scripts.blog_automation.translate_pending --root .
