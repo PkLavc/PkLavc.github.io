@@ -124,6 +124,11 @@ describe("TikTok multi-creator production OAuth", () => {
     const aliceRequest = new Request(api + "/tiktok/oauth/logout", { headers: { Cookie: alice.cookie } });
     const logout = await handleTikTokLogout(aliceRequest, env);
     expect(logout.status).toBe(200);
+    const clearCookies = logout.headers.getSetCookie().join("\\n");
+    expect(clearCookies).toContain("__Host-pklavc_tiktok_review=;");
+    expect(clearCookies).toContain("__Host-pklavc_tiktok_oauth_state=;");
+    expect(clearCookies).toContain("Max-Age=0");
+    expect(clearCookies).toContain("HttpOnly");
     expect(await hasTikTokReviewSession(aliceRequest, env)).toBe(false);
     expect(await hasTikTokReviewSession(new Request(api, { headers: { Cookie: bob.cookie } }), env)).toBe(true);
   });
