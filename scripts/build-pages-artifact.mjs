@@ -121,13 +121,15 @@ function publishAutotraderDashboard() {
 
   const index = path.join(source, "index.html");
   const assets = path.join(source, "assets");
+  const account = path.join(source, "account");
 
-  if (!fs.existsSync(index) || !fs.existsSync(assets)) {
-    throw new Error("Autotrader dashboard checkout is missing index.html or assets/.");
+  if (!fs.existsSync(index) || !fs.existsSync(assets) || !fs.existsSync(path.join(account, "index.html"))) {
+    throw new Error("Autotrader dashboard checkout is missing index.html, assets/, or account/index.html.");
   }
 
   copyEntry(index, path.join(target, "index.html"));
   copyEntry(assets, path.join(target, "assets"));
+  copyEntry(account, path.join(target, "account"));
 }
 
 function walkFiles(dir) {
