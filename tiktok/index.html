@@ -92,12 +92,13 @@
         </div>
 
         <div class="switches">
-          <label class="check"><input id="comments" type="checkbox" checked> Allow comments</label>
-          <label class="check"><input id="duet" type="checkbox" checked> Allow Duet</label>
-          <label class="check"><input id="stitch" type="checkbox" checked> Allow Stitch</label>
+          <label class="check"><input id="comments" type="checkbox"> Allow comments</label>
+          <label class="check"><input id="duet" type="checkbox"> Allow Duet</label>
+          <label class="check"><input id="stitch" type="checkbox"> Allow Stitch</label>
           <label class="check"><input id="aigc" type="checkbox" checked> This video contains AI-generated content</label>
         </div>
 
+        <video id="videoPreview" controls playsinline style="display:none;width:100%;max-height:400px;margin-top:14px;border-radius:10px;background:#000" aria-label="Preview the video before publishing"></video>
         <div id="environmentNotice" class="notice">Checking app authorization and available visibility options…</div>
 
         <label class="check" style="margin-top:18px">
@@ -138,6 +139,16 @@
       const publisher = document.getElementById("publisher");
       const status = document.getElementById("status");
       const video = document.getElementById("video");
+      const videoPreview = document.getElementById("videoPreview");
+      let previewUrl;
+      video.addEventListener("change", () => {
+        if (previewUrl) URL.revokeObjectURL(previewUrl);
+        previewUrl = video.files?.[0] ? URL.createObjectURL(video.files[0]) : undefined;
+        videoPreview.style.display = previewUrl ? "block" : "none";
+        if (previewUrl) videoPreview.src = previewUrl;
+        else videoPreview.removeAttribute("src");
+        consent.checked = false;
+      });
       const privacy = document.getElementById("privacy");
       const caption = document.getElementById("caption");
       const comments = document.getElementById("comments");
