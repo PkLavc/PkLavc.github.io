@@ -35,7 +35,7 @@ jobs:
         env:
           SOCIAL_TTS: espeak-ng-fallback
         run: |
-          python -m unittest scripts.social_video.test_direct_upload scripts.social_video.test_render
+          python -m unittest scripts.social_video.test_motion scripts.social_video.test_direct_upload scripts.social_video.test_render
           python - <<'PY'
           from pathlib import Path
           from shutil import copy2
@@ -49,6 +49,8 @@ jobs:
                   out = Path(directory) / ("branded" if branded else "neutral")
                   result = render(Path.cwd(), slug, out, branded=branded)
                   assert result["cardCount"] <= 4
+                  assert result["estimatedVisualCuts"] >= 2
+                  assert result["renderMode"] == "multi-shot-editorial-montage-zoom-transitions-subtitles"
                   assert 20 <= result["durationSeconds"] <= 34.1
                   assert result["video"] == {"codec": "h264", "width": 1080, "height": 1920, "fps": "30/1"}
                   assert result["audio"]["codec"] == "aac"
