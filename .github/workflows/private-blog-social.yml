@@ -87,7 +87,7 @@ jobs:
         working-directory: private-blog
         run: |
           python -m compileall -q scripts/social_video
-          python -m unittest scripts.social_video.test_motion scripts.social_video.test_direct_upload scripts.social_video.test_render scripts.social_video.test_products scripts.social_video.test_limits scripts.blog_automation.test_game_lane scripts.blog_automation.test_json_safe
+          python -m unittest scripts.social_video.test_motion scripts.social_video.test_direct_upload scripts.social_video.test_render scripts.social_video.test_products scripts.social_video.test_limits scripts.social_video.test_analytics scripts.social_video.test_instagram_analytics scripts.blog_automation.test_game_lane scripts.blog_automation.test_json_safe
 
   publish:
     if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && (inputs.mode == 'publish' || inputs.mode == 'store-products-preview' || inputs.mode == 'store-products-publish')) || (github.event_name == 'push' && contains(github.event.head_commit.message, '[social-publish-now]'))
@@ -260,6 +260,15 @@ jobs:
             echo "No social state changes to persist."
           fi
 
+      - name: Collect Instagram Reel and Store Insights (never blocks publication)
+        id: instagram_analytics
+        if: always() && (github.event_name == 'schedule' || inputs.mode == 'publish')
+        continue-on-error: true
+        working-directory: private-blog
+        env:
+          INSTAGRAM_ACCESS_TOKEN: ${{ secrets.INSTAGRAM_ACCESS_TOKEN }}
+        run: python -m scripts.social_video.instagram_analytics
+
       - name: Install Analytics client without video renderer
         if: steps.pending.outputs.has_analytics == 'true' && (steps.pending.outputs.has_video != 'true' || steps.pending.outputs.publish_video_queue != 'true')
         working-directory: private-blog
@@ -277,14 +286,14 @@ jobs:
         run: python -m scripts.social_video.analytics
 
       - name: Persist Analytics state
-        if: always() && steps.analytics.outcome != 'skipped'
+        if: always() && (steps.analytics.outcome != 'skipped' || steps.instagram_analytics.outcome != 'skipped')
         working-directory: private-blog
         run: |
           if [[ -n "$(git status --porcelain -- social-state/)" ]]; then
             git config user.name "github-actions[bot]"
             git config user.email "github-actions[bot]@users.noreply.github.com"
             git add social-state/
-            git commit -m "social: save YouTube Analytics snapshots"
+            git commit -m "social: save YouTube and Instagram Analytics snapshots"
             git pull --rebase origin main
             git push origin HEAD:main
           else
