@@ -64,7 +64,9 @@ export async function handleTikTokLogout(request: Request, env: TikTokOAuthEnv):
   if (id) await env.SESSIONS.delete(TIKTOK_REVIEW_SESSION_PREFIX + id);
   const response = json({ ok: true });
   response.headers.append("Set-Cookie",
-    `${TIKTOK_REVIEW_COOKIE}=; Path=/; Max-Age=0; Secure; HttpOnly; SameSite=Strict`);
+    `${TIKTOK_REVIEW_COOKIE}=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Max-Age=0; Secure; HttpOnly; SameSite=Strict`);
+  response.headers.append("Set-Cookie",
+    `${TIKTOK_OAUTH_STATE_COOKIE}=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Max-Age=0; Secure; HttpOnly; SameSite=Strict`);
   return response;
 }
 
