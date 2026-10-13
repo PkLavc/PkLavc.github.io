@@ -115,6 +115,7 @@ jobs:
         run: |
           python -m pip install "argostranslate>=1.10,<2"
           python -m scripts.blog_automation.install_offline_translations
+          python -m unittest scripts.blog_automation.test_offline_translation_integration
           python - <<'PY'
           from scripts.blog_automation.translate_pending import _translation_map
           content = (
