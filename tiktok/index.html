@@ -235,6 +235,9 @@
           videoPreview.duration > maxVideoDuration;
         directPost.disabled = uploading || !hasVideo || !privacy.value ||
           !commercialOk || !consent.checked || tooLong;
+        directPost.title = commercial.checked && !commercialOk
+          ? "You need to indicate if your content promotes yourself, a third party, or both."
+          : "";
         draftUpload.disabled = uploading || !hasVideo || !consent.checked;
       }
 
@@ -307,9 +310,6 @@
           publisher.classList.remove("hidden");
 
           maxVideoDuration = Number(creator.max_video_post_duration_sec || 0);
-          if (creator.creator_can_post === false) {
-            setStatus("TikTok is temporarily preventing new posts from this account. Try again later.", "error");
-          }
           const username = creator.creator_username ? "@" + creator.creator_username : "Authorized TikTok account";
           document.getElementById("creatorName").textContent = user.display_name || creator.creator_nickname || username;
           document.getElementById("creatorMeta").textContent =
