@@ -1,9 +1,9 @@
-"""Refresh Instagram Login long-lived token and rotate GitHub Actions secrets.
+"""Refresh Instagram Login long-lived token and rotate site GitHub Actions secrets.
 
 Never log, print, or check in the current or refreshed access token.
 Expected secrets:
   INSTAGRAM_ACCESS_TOKEN (existing Instagram Login long-lived token)
-  PRIVATE_BLOG_REPO_TOKEN (existing credential, if it can write Secrets to both repos)
+  PRIVATE_BLOG_REPO_TOKEN (existing credential, if it can write site Actions Secrets)
   INSTAGRAM_ROTATION_GITHUB_TOKEN (optional dedicated credential if necessary)
 """
 from __future__ import annotations
@@ -21,7 +21,6 @@ VERIFY_URL = "https://graph.instagram.com/me"
 TARGETS = (
     ("PkLavc/PkLavc.github.io", "INSTAGRAM_ACCESS_TOKEN"),
     ("PkLavc/PkLavc.github.io", "INSTAGRAM_ANALYTICS_ACCESS_TOKEN"),
-    ("PkLavc/blog", "INSTAGRAM_ACCESS_TOKEN"),
 )
 
 
@@ -49,7 +48,7 @@ def rotate() -> None:
         raise RuntimeError("Missing Instagram token or existing GitHub credential.")
 
     # Check GitHub secret access before attempting to refresh the Meta token.
-    # Fine-grained tokens need Secrets:read and Secrets:write on both repos.
+    # The credential must have Secrets:read and Secrets:write on the site repo.
     env = os.environ.copy()
     env["GH_TOKEN"] = github_token
     for repository in sorted({repo for repo, _ in TARGETS}):
@@ -60,7 +59,7 @@ def rotate() -> None:
         if result.returncode or not result.stdout.strip():
             raise RuntimeError(
                 f"GitHub credential cannot read Actions secrets in {repository}; "
-                "grant Secrets:read and Secrets:write on both repositories."
+                "grant Secrets:read and Secrets:write on the site repository."
             )
 
     refreshed = fetch_json(
@@ -94,7 +93,7 @@ def rotate() -> None:
             # Suppress CLI output to avoid accidental disclosure of credentials.
             raise RuntimeError(f"Failed to update {name} in {repository}; exit={result.returncode}.")
         print(f"Updated {repository}: {name}", flush=True)
-    print("Instagram token renewed and synchronized to both GitHub repositories.", flush=True)
+    print("Instagram token renewed and synchronized to the site GitHub repository.", flush=True)
 
 
 if __name__ == "__main__":
