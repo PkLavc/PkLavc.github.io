@@ -3,7 +3,7 @@ import { handleDiscordInteraction } from "./discord-interactions";
 import { closeDiscordConversation, drainDiscordMessageQueue, enqueueDiscordMessage, getConversationControl } from "./discord-conversations";
 import { decryptInstagramRecipient, deriveInstagramIdentity, encryptInstagramRecipient, sendInstagramMessage } from "./instagram-messaging";
 import { parseInstagramWebhook } from "./instagram-webhook";
-import { handleTikTokOAuthExchange, hasTikTokReviewSession } from "./tiktok-oauth";
+import { handleTikTokOAuthExchange, hasTikTokReviewSession, publicTikTokConfig } from "./tiktok-oauth";
 import { verifyGithubActionsOidc } from "./github-oidc";
 import { handleTikTokCreatorInfo, handleTikTokDirectFilePost, handleTikTokDirectPost, handleTikTokDraftFileUpload, handleTikTokMediaProxy, handleTikTokPostStatus, handleTikTokUserInfo } from "./tiktok-publish";
 
@@ -50,6 +50,8 @@ export interface Env {
   INSTAGRAM_GRAPH_API_VERSION?: string;
   TIKTOK_SANDBOX_CLIENT_KEY?: string;
   TIKTOK_SANDBOX_CLIENT_SECRET?: string;
+  TIKTOK_PRODUCTION_CLIENT_KEY?: string;
+  TIKTOK_PRODUCTION_CLIENT_SECRET?: string;
   CLOUDFLARE_R2_PUBLIC_BASE_URL?: string;
 }
 
@@ -169,6 +171,12 @@ export default {
     try {
       const spanStart = Date.now();
 
+      if (url.pathname === "/tiktok/config" && request.method === "GET") {
+        if (!isAllowedOrigin(env, origin)) return withCors(json({ error: "origin_not_allowed" }, 403), env, origin);
+        const config = publicTikTokConfig(env);
+        return withCors(json(config.client_key ? { ok: true, ...config } : { error: "tiktok_not_configured" }, config.client_key ? 200 : 503), env, origin);
+      }
+
       if (url.pathname === "/tiktok/oauth/exchange" && request.method === "POST") {
         if (!isAllowedOrigin(env, origin)) {
           return withCors(json({ error: "origin_not_allowed" }, 403), env, origin);
@@ -205,6 +213,12 @@ export default {
         }
         if (!authorized) {
           return withCors(json({ error: "unauthorized" }, 401), env, origin);
+        }
+        // Public Direct Posts require a fresh interactive login session and per-video consent.
+        // A GitHub Actions OIDC token alone may not publish to PUBLIC_TO_EVERYONE.
+        if (url.pathname === "/tiktok/publish/file" && url.searchParams.get("privacy_level") === "PUBLIC_TO_EVERYONE" &&
+            !(isAllowedOrigin(env, origin) && await hasTikTokReviewSession(request, env))) {
+          return withCors(json({ error: "public_post_requires_user_review" }, 403), env, origin);
         }
 
         if (url.pathname === "/tiktok/creator-info") {
