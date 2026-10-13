@@ -122,7 +122,7 @@ jobs:
       - name: Refill article social queues from existing blog posts
         working-directory: private-blog
         env:
-          SOCIAL_DAILY_TARGET: ${{ vars.SOCIAL_DAILY_TARGET || '4' }}
+          SOCIAL_DAILY_TARGET: ${{ vars.SOCIAL_DAILY_TARGET || '8' }}
         run: python -m scripts.social_video.backfill --daily-target "$SOCIAL_DAILY_TARGET"
 
       - name: Check pending publications and due Analytics snapshots
@@ -141,7 +141,7 @@ jobs:
           from pathlib import Path
           from zoneinfo import ZoneInfo
           from scripts.social_video.limits import DAILY_LIMITS, category_of, published_counts
-          from scripts.blog_automation.games_topic import is_gta6_title
+          from scripts.blog_automation.games_topic import is_games_title
           root = Path("social-state")
           def load(name, key):
               path = root / name
@@ -149,7 +149,7 @@ jobs:
           today = datetime.now(ZoneInfo("America/Sao_Paulo")).date().isoformat()
           videos = any(
               item.get("status", "pending") == "pending" and
-              (category_of(item) != "games" or is_gta6_title(str(item.get("title") or ""))) and
+              (category_of(item) != "games" or is_games_title(str(item.get("title") or "") + " " + str(item.get("description") or ""))) and
               published_counts(load(f"{platform}-published.json", "items"), today)[category_of(item)] < DAILY_LIMITS[category_of(item)]
               for platform in ("instagram", "youtube")
               for item in load(f"{platform}-queue.json", "items")

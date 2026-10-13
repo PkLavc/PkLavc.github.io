@@ -1,4 +1,4 @@
-import { getTikTokTokens, type TikTokOAuthEnv } from "./tiktok-oauth";
+import { activeTikTokEnvironment, getTikTokTokens, type TikTokOAuthEnv } from "./tiktok-oauth";
 
 const TIKTOK_API_ROOT = "https://open.tiktokapis.com";
 const MEDIA_PROXY_PREFIX = "/tiktok/media/";
@@ -239,7 +239,7 @@ export async function handleTikTokDirectFilePost(
         privacy_level_options: privacyOptions,
       }, 409);
     }
-    if (requestedPrivacy !== "SELF_ONLY") {
+    if (activeTikTokEnvironment(env) !== "production" && requestedPrivacy !== "SELF_ONLY") {
       return json({
         error: "sandbox_requires_self_only",
         privacy_level_options: privacyOptions,
@@ -304,7 +304,7 @@ export async function handleTikTokDirectFilePost(
       ok: true,
       publish_id: publishId,
       status: "SUBMITTED",
-      privacy_level: "SELF_ONLY",
+      privacy_level: requestedPrivacy,
       creator_username: creator.creator_username || "",
       creator_nickname: creator.creator_nickname || "",
       uploaded_bytes: bytes.byteLength,

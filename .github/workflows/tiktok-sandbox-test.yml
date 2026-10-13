@@ -1,9 +1,7 @@
 name: TikTok Sandbox Content Posting Test
 
 on:
-  schedule:
-    - cron: "20 13 * * *" # Tech after morning blog generation (UTC)
-    - cron: "20 22 * * *" # GTA/Rockstar after evening blog generation (UTC)
+  # Audited Direct Posts require per-video user review. No unattended schedules.
   workflow_dispatch:
     inputs:
       category:
