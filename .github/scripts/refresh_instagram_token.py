@@ -43,7 +43,8 @@ def fetch_json(url: str, *, params: dict[str, str]) -> dict:
 
 def rotate() -> None:
     old_token = os.environ.get("INSTAGRAM_ACCESS_TOKEN", "").strip()
-    github_token = (os.environ.get("INSTAGRAM_ROTATION_GITHUB_TOKEN", "").strip()\n                    or os.environ.get("PRIVATE_BLOG_REPO_TOKEN", "").strip())
+    github_token = (os.environ.get("INSTAGRAM_ROTATION_GITHUB_TOKEN", "").strip()
+                    or os.environ.get("PRIVATE_BLOG_REPO_TOKEN", "").strip())
     if not old_token or not github_token:
         raise RuntimeError("Missing Instagram token or existing GitHub credential.")
 
