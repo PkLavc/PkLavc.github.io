@@ -4,11 +4,13 @@ on:
   pull_request:
     paths:
       - src/chatbot/**
+      - tiktok/**
       - .github/workflows/chatbot-ci.yml
   push:
     branches: [main]
     paths:
       - src/chatbot/**
+      - tiktok/**
       - .github/workflows/chatbot-ci.yml
 
 jobs:
@@ -40,6 +42,9 @@ jobs:
 
       - name: Tests
         run: npm run test
+
+      - name: Validate TikTok audit page UX and JavaScript
+        run: node scripts/validate-tiktok-ui.mjs
 
       - name: Validate JSON
         run: npm run validate:json
