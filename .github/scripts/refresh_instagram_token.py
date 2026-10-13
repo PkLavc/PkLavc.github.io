@@ -3,7 +3,8 @@
 Never log, print, or check in the current or refreshed access token.
 Expected secrets:
   INSTAGRAM_ACCESS_TOKEN (existing Instagram Login long-lived token)
-  PRIVATE_BLOG_REPO_TOKEN (existing credential, if it can write Secrets to both repos)\n  INSTAGRAM_ROTATION_GITHUB_TOKEN (optional dedicated credential if necessary)
+  PRIVATE_BLOG_REPO_TOKEN (existing credential, if it can write Secrets to both repos)
+  INSTAGRAM_ROTATION_GITHUB_TOKEN (optional dedicated credential if necessary)
 """
 from __future__ import annotations
 
@@ -46,6 +47,21 @@ def rotate() -> None:
     if not old_token or not github_token:
         raise RuntimeError("Missing Instagram token or existing GitHub credential.")
 
+    # Check GitHub secret access before attempting to refresh the Meta token.
+    # Fine-grained tokens need Secrets:read and Secrets:write on both repos.
+    env = os.environ.copy()
+    env["GH_TOKEN"] = github_token
+    for repository in sorted({repo for repo, _ in TARGETS}):
+        result = subprocess.run(
+            ["gh", "api", f"repos/{repository}/actions/secrets/public-key", "--jq", ".key_id"],
+            text=True, capture_output=True, env=env, timeout=30,
+        )
+        if result.returncode or not result.stdout.strip():
+            raise RuntimeError(
+                f"GitHub credential cannot read Actions secrets in {repository}; "
+                "grant Secrets:read and Secrets:write on both repositories."
+            )
+
     refreshed = fetch_json(
         REFRESH_URL,
         params={"grant_type": "ig_refresh_token", "access_token": old_token},
@@ -64,8 +80,6 @@ def rotate() -> None:
     if not identity.get("id"):
         raise RuntimeError("Refreshed token did not validate against Instagram.")
 
-    env = os.environ.copy()
-    env["GH_TOKEN"] = github_token
     for repository, name in TARGETS:
         result = subprocess.run(
             ["gh", "secret", "set", name, "--repo", repository],
