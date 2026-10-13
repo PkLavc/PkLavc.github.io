@@ -3,7 +3,7 @@
 Never log, print, or check in the current or refreshed access token.
 Expected secrets:
   INSTAGRAM_ACCESS_TOKEN (existing Instagram Login long-lived token)
-  INSTAGRAM_ROTATION_GITHUB_TOKEN (GitHub credential with Secrets write to both repos)
+  PRIVATE_BLOG_REPO_TOKEN (existing credential, if it can write Secrets to both repos)\n  INSTAGRAM_ROTATION_GITHUB_TOKEN (optional dedicated credential if necessary)
 """
 from __future__ import annotations
 
@@ -42,9 +42,9 @@ def fetch_json(url: str, *, params: dict[str, str]) -> dict:
 
 def rotate() -> None:
     old_token = os.environ.get("INSTAGRAM_ACCESS_TOKEN", "").strip()
-    github_token = os.environ.get("INSTAGRAM_ROTATION_GITHUB_TOKEN", "").strip()
+    github_token = (os.environ.get("INSTAGRAM_ROTATION_GITHUB_TOKEN", "").strip()\n                    or os.environ.get("PRIVATE_BLOG_REPO_TOKEN", "").strip())
     if not old_token or not github_token:
-        raise RuntimeError("Missing Instagram token or GitHub Secrets-write credential.")
+        raise RuntimeError("Missing Instagram token or existing GitHub credential.")
 
     refreshed = fetch_json(
         REFRESH_URL,
