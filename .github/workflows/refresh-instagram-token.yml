@@ -18,6 +18,7 @@ on:
     branches: [main]
     paths:
       - ".github/workflows/refresh-instagram-token.yml"
+      - ".github/scripts/refresh_instagram_token.py"
 
 permissions:
   contents: read
@@ -43,7 +44,6 @@ jobs:
         env:
           INSTAGRAM_ACCESS_TOKEN: ${{ secrets.INSTAGRAM_ACCESS_TOKEN }}
           INSTAGRAM_ROTATION_GITHUB_TOKEN: ${{ secrets.INSTAGRAM_ROTATION_GITHUB_TOKEN }}
-          PRIVATE_BLOG_REPO_TOKEN: ${{ secrets.PRIVATE_BLOG_REPO_TOKEN }}
         shell: bash
         run: |
           if [[ "${{ github.event_name }}" == "push" || "${{ inputs.mode }}" == "preflight" ]]; then
