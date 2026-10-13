@@ -36,6 +36,14 @@
     .status{margin-top:16px;padding:13px 14px;border:1px solid #2d2d35;border-radius:11px;background:#0b0b0f;white-space:pre-wrap;color:#c8c8d0;font-size:14px}
     .status.ok{border-color:#275c3a;color:#9ae3b0}.status.error{border-color:#643636;color:#ffaaaa}
     .hidden{display:none!important}
+    .disclosure{margin-top:18px;padding:15px;border:1px solid #34343d;border-radius:11px;background:#141419}
+    .disclosure .check{margin-bottom:10px}
+    .disclosure .notice{margin-top:10px}
+    .terms{margin-top:18px;font-size:13px;line-height:1.6;color:#dadade}
+    a{color:#d5d5ee;text-underline-offset:3px}
+    .notice.warn{color:#e4bdb8;border:1px solid #6d413d}
+    .check:has(input:disabled){opacity:.48}
+    .status a{color:inherit}
     .connect{margin-top:22px;width:100%}
     small{display:block;color:#777985;margin-top:12px}
     @media(max-width:650px){main{padding:24px 0 48px}.card{padding:20px}.grid,.actions{grid-template-columns:1fr}.account{align-items:flex-start;flex-direction:column}}
@@ -98,12 +106,22 @@
           <label class="check"><input id="aigc" type="checkbox" checked> This video contains AI-generated content</label>
         </div>
 
+        <div class="disclosure">
+          <label class="check"><input id="commercial" type="checkbox"> Disclose commercial content — This post promotes a brand, product or service</label>
+          <div id="brandChoices" class="hidden">
+            <label class="check"><input id="ownBrand" type="checkbox"> Your brand — promoting yourself or your own business</label>
+            <label class="check"><input id="brandedContent" type="checkbox"> Branded content — promoting a third-party business or brand</label>
+            <div id="brandLabel" class="notice" aria-live="polite">Select at least one commercial content category.</div>
+          </div>
+        </div>
+
         <video id="videoPreview" controls playsinline style="display:none;width:100%;max-height:400px;margin-top:14px;border-radius:10px;background:#000" aria-label="Preview the video before publishing"></video>
         <div id="environmentNotice" class="notice">Checking app authorization and available visibility options…</div>
 
-        <label class="check" style="margin-top:18px">
+        <p id="musicTerms" class="terms">By posting, you agree to TikTok's <a href="https://www.tiktok.com/legal/page/global/music-usage-confirmation/en" target="_blank" rel="noopener noreferrer">Music Usage Confirmation</a>.</p>
+        <label class="check" style="margin-top:12px">
           <input id="consent" type="checkbox">
-          I confirm the selected video and settings above may now be sent to TikTok.
+          I have reviewed this video, its caption, visibility and disclosures, and explicitly consent to sending it to TikTok.
         </label>
 
         <div class="actions">
@@ -148,6 +166,7 @@
         if (previewUrl) videoPreview.src = previewUrl;
         else videoPreview.removeAttribute("src");
         consent.checked = false;
+        updatePublishControls();
       });
       const privacy = document.getElementById("privacy");
       const caption = document.getElementById("caption");
@@ -155,6 +174,14 @@
       const duet = document.getElementById("duet");
       const stitch = document.getElementById("stitch");
       const aigc = document.getElementById("aigc");
+      const commercial = document.getElementById("commercial");
+      const ownBrand = document.getElementById("ownBrand");
+      const brandedContent = document.getElementById("brandedContent");
+      const brandChoices = document.getElementById("brandChoices");
+      const brandLabel = document.getElementById("brandLabel");
+      const musicTerms = document.getElementById("musicTerms");
+      let maxVideoDuration = 0;
+      let uploading = false;
       const consent = document.getElementById("consent");
       const directPost = document.getElementById("directPost");
       const draftUpload = document.getElementById("draftUpload");
@@ -165,6 +192,68 @@
         FOLLOWER_OF_CREATOR: "Followers",
         SELF_ONLY: "Only me"
       };
+
+      const musicLink = '<a href="https://www.tiktok.com/legal/page/global/music-usage-confirmation/en" target="_blank" rel="noopener noreferrer">Music Usage Confirmation</a>';
+      const brandedLink = '<a href="https://www.tiktok.com/legal/page/global/bc-policy/en" target="_blank" rel="noopener noreferrer">Branded Content Policy</a>';
+
+      function updateDisclosure() {
+        const enabled = commercial.checked;
+        brandChoices.classList.toggle("hidden", !enabled);
+        if (!enabled) {
+          ownBrand.checked = false;
+          brandedContent.checked = false;
+        }
+        // TikTok forbids paid branded content with SELF_ONLY visibility.
+        brandedContent.disabled = enabled && privacy.value === "SELF_ONLY";
+        if (brandedContent.disabled) brandedContent.checked = false;
+        const onlyMeOption = privacy.querySelector('option[value="SELF_ONLY"]');
+        if (onlyMeOption) onlyMeOption.disabled = enabled && brandedContent.checked;
+        if (enabled && brandedContent.checked) {
+          brandLabel.textContent = "Your video will be labeled as 'Paid partnership'";
+        } else if (enabled && ownBrand.checked) {
+          brandLabel.textContent = "Your video will be labeled as 'Promotional content'";
+        } else {
+          brandLabel.textContent = "Select at least one commercial content category.";
+        }
+        if (brandedContent.disabled) {
+          brandedContent.parentElement.title = "Branded content visibility cannot be set to private.";
+        } else {
+          brandedContent.parentElement.removeAttribute("title");
+        }
+        if (onlyMeOption && onlyMeOption.disabled) {
+          onlyMeOption.title = "Branded content visibility cannot be set to private.";
+        }
+        musicTerms.innerHTML = "By posting, you agree to TikTok's " +
+          (enabled && brandedContent.checked ? brandedLink + " and " : "") + musicLink + ".";
+        updatePublishControls();
+      }
+
+      function updatePublishControls() {
+        const hasVideo = Boolean(video.files && video.files[0]);
+        const commercialOk = !commercial.checked || ownBrand.checked || brandedContent.checked;
+        const tooLong = maxVideoDuration > 0 && Number.isFinite(videoPreview.duration) &&
+          videoPreview.duration > maxVideoDuration;
+        directPost.disabled = uploading || !hasVideo || !privacy.value ||
+          !commercialOk || !consent.checked || tooLong;
+        draftUpload.disabled = uploading || !hasVideo || !consent.checked;
+      }
+
+      publisher.addEventListener("change", event => {
+        if (event.target === consent) {
+          updatePublishControls();
+          return;
+        }
+        if (event.target !== video) consent.checked = false;
+        updateDisclosure();
+      });
+      caption.addEventListener("input", () => { consent.checked = false; updatePublishControls(); });
+      videoPreview.addEventListener("loadedmetadata", () => {
+        if (maxVideoDuration > 0 && Number.isFinite(videoPreview.duration) &&
+            videoPreview.duration > maxVideoDuration) {
+          setStatus("This video exceeds the TikTok account maximum duration of " + maxVideoDuration + " seconds.", "error");
+        }
+        updatePublishControls();
+      });
 
       const setStatus = (message, kind = "") => {
         status.textContent = message;
@@ -217,6 +306,10 @@
           connectCard.classList.add("hidden");
           publisher.classList.remove("hidden");
 
+          maxVideoDuration = Number(creator.max_video_post_duration_sec || 0);
+          if (creator.creator_can_post === false) {
+            setStatus("TikTok is temporarily preventing new posts from this account. Try again later.", "error");
+          }
           const username = creator.creator_username ? "@" + creator.creator_username : "Authorized TikTok account";
           document.getElementById("creatorName").textContent = user.display_name || creator.creator_nickname || username;
           document.getElementById("creatorMeta").textContent =
@@ -249,6 +342,7 @@
             stitch.checked = false;
             stitch.disabled = true;
           }
+          updateDisclosure();
         } catch (error) {
           publisher.classList.add("hidden");
           connectCard.classList.remove("hidden");
@@ -266,7 +360,17 @@
         if (requirePrivacy && ACTIVE_ENV !== "production" && privacy.value !== "SELF_ONLY") {
           throw new Error("Sandbox Direct Post is currently restricted to Only me (SELF_ONLY).");
         }
-        if (!consent.checked) throw new Error("Confirm the consent checkbox before sending content to TikTok.");
+        if (requirePrivacy && commercial.checked && !ownBrand.checked && !brandedContent.checked) {
+          throw new Error("Choose at least one commercial content category.");
+        }
+        if (requirePrivacy && brandedContent.checked && privacy.value === "SELF_ONLY") {
+          throw new Error("Branded content visibility cannot be set to private.");
+        }
+        if (maxVideoDuration > 0 && Number.isFinite(videoPreview.duration) &&
+            videoPreview.duration > maxVideoDuration) {
+          throw new Error("The video exceeds the maximum permitted duration of " + maxVideoDuration + " seconds.");
+        }
+        if (!consent.checked) throw new Error("Review the video and explicitly consent before sending content to TikTok.");
         return video.files[0];
       }
 
@@ -313,7 +417,8 @@
       directPost.addEventListener("click", async () => {
         try {
           const file = validateSelection(true);
-          directPost.disabled = draftUpload.disabled = true;
+          uploading = true;
+          updatePublishControls();
           setStatus("Uploading the video to TikTok for Direct Post…");
           const result = await sendVideo("/tiktok/publish/file", file, {
             title: caption.value.trim(),
@@ -321,21 +426,27 @@
             disable_comment: !comments.checked,
             disable_duet: !duet.checked,
             disable_stitch: !stitch.checked,
-            is_aigc: aigc.checked
+            is_aigc: aigc.checked,
+            commercial_content: commercial.checked,
+            brand_organic_toggle: commercial.checked && ownBrand.checked,
+            brand_content_toggle: commercial.checked && brandedContent.checked
           });
           setStatus("Video uploaded. TikTok is processing the Direct Post…");
           await pollStatus(result.publish_id, false);
         } catch (error) {
           setStatus(error instanceof Error ? error.message : "TikTok Direct Post failed.", "error");
         } finally {
-          directPost.disabled = draftUpload.disabled = false;
+          uploading = false;
+          consent.checked = false;
+          updatePublishControls();
         }
       });
 
       draftUpload.addEventListener("click", async () => {
         try {
           const file = validateSelection(false);
-          directPost.disabled = draftUpload.disabled = true;
+          uploading = true;
+          updatePublishControls();
           setStatus("Uploading the video to TikTok as a draft…");
           const result = await sendVideo("/tiktok/upload/draft", file, {});
           setStatus("Draft uploaded. Waiting for TikTok to send it to the account Inbox…");
@@ -343,10 +454,13 @@
         } catch (error) {
           setStatus(error instanceof Error ? error.message : "TikTok draft upload failed.", "error");
         } finally {
-          directPost.disabled = draftUpload.disabled = false;
+          uploading = false;
+          consent.checked = false;
+          updatePublishControls();
         }
       });
 
+      updateDisclosure();
       configPromise = loadConfig();
       configPromise.then(loadCreator).catch(error => {
         publisher.classList.add("hidden");
