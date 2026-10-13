@@ -220,9 +220,13 @@ jobs:
         run: |
           # Include the brand-new English article in the translation catalog now.
           node scripts/generate-rss.mjs
-          python -m pip install "argostranslate>=1.10,<2"
-          python -m scripts.blog_automation.install_offline_translations
-          python -m scripts.blog_automation.translate_pending --root .
+          if python -m pip install "argostranslate>=1.10,<2" &&
+             python -m scripts.blog_automation.install_offline_translations; then
+            python -m scripts.blog_automation.translate_pending --root . ||
+              echo "::warning::Offline translation failed; English article will still publish, and translation remains pending."
+          else
+            echo "::warning::Offline Argos setup unavailable; English article will still publish without spending AI credits."
+          fi
           if git diff --quiet -- en games; then
             echo "changed=false" >> "$GITHUB_OUTPUT"
           else
