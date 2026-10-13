@@ -164,19 +164,25 @@ jobs:
           BLOG_CATEGORY: ${{ steps.lane.outputs.category }}
         run: python -m scripts.blog_automation.run --root .
 
-      - name: Translate the newest pending English article with the low-cost model
-        if: github.event_name == 'workflow_dispatch' && inputs.mode == 'translate'
+      - name: Cache free offline translation models
+        if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && (inputs.mode == 'generate' || inputs.mode == 'translate'))
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.local/share/argos-translate
+            ~/.cache/argos-translate
+          key: ${{ runner.os }}-argos-en-pt-es-v1
+
+      - name: Translate new English articles immediately with free offline models
+        if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && (inputs.mode == 'generate' || inputs.mode == 'translate'))
         working-directory: private-blog
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          CLOUDFLARE_TRANSLATION_MODEL: ${{ vars.CLOUDFLARE_TRANSLATION_MODEL || '@cf/meta/llama-3.1-8b-instruct-fp8' }}
-          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
-          OPENROUTER_TRANSLATION_MODEL: ${{ vars.OPENROUTER_TRANSLATION_MODEL || 'meta-llama/llama-3.1-8b-instruct' }}
-          MAX_CLOUDFLARE_AI_HTTP_REQUESTS_PER_RUN: ${{ vars.MAX_CLOUDFLARE_AI_HTTP_REQUESTS_PER_RUN || '3' }}
-          MAX_OPENROUTER_HTTP_REQUESTS_PER_RUN: ${{ vars.MAX_OPENROUTER_HTTP_REQUESTS_PER_RUN || '3' }}
         id: blog_translation
+        env:
+          # Deliberately no GEMINI, OPENROUTER or CLOUDFLARE keys in this stage.
+          ARGOS_DEVICE_TYPE: cpu
         run: |
+          python -m pip install "argostranslate>=1.10,<2"
+          python -m scripts.blog_automation.install_offline_translations
           python -m scripts.blog_automation.translate_pending --root .
           if git diff --quiet -- en games; then
             echo "changed=false" >> "$GITHUB_OUTPUT"
