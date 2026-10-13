@@ -173,7 +173,7 @@ export async function handleTikTokOAuthExchange(
   }
 
   const stored = tokenBundle(payload, environment);
-  if (!stored.open_id || !stored.scope.split(/[\\s,]+/).includes("video.publish")) {
+  if (!stored.open_id || !stored.scope.split(/[\s,]+/).includes("video.publish")) {
     return json({ error: "tiktok_video_publish_not_authorized" }, 403);
   }
   // Each creator receives an isolated, short-lived secure session. Never overwrite
@@ -200,7 +200,7 @@ export async function handleTikTokOAuthExchange(
 
 export async function hasTikTokReviewSession(request: Request, env: TikTokOAuthEnv): Promise<boolean> {
   const stored = await creatorSession(request, env);
-  return Boolean(stored && stored.scope.split(/[\\s,]+/).includes("video.publish") &&
+  return Boolean(stored && stored.scope.split(/[\s,]+/).includes("video.publish") &&
     stored.refresh_expires_at > Math.floor(Date.now() / 1000));
 }
 
@@ -222,7 +222,7 @@ export async function getTikTokTokens(env: TikTokOAuthEnv, request?: Request): P
 
   const now = Math.floor(Date.now() / 1000);
   if (stored.environment !== environment) throw new Error("tiktok_reauthorization_required");
-  if (!stored.scope.split(/[\\s,]+/).includes("video.publish")) throw new Error("tiktok_video_publish_not_authorized");
+  if (!stored.scope.split(/[\s,]+/).includes("video.publish")) throw new Error("tiktok_video_publish_not_authorized");
   if (!stored.access_token || !stored.refresh_token || stored.refresh_expires_at <= now) {
     throw new Error("tiktok_reauthorization_required");
   }
