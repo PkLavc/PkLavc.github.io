@@ -97,6 +97,9 @@ jobs:
       SOCIAL_MAX_ITEMS_PER_RUN: ${{ vars.SOCIAL_MAX_ITEMS_PER_RUN || '2' }}
       # Avoid any billable Cloudflare storage on the default publishing path.
       SOCIAL_IG_UPLOAD_MODE: direct
+      # Reels use authorized trending catalog audio, not the MP4 narration.
+      INSTAGRAM_TREND_AUDIO_VOLUME: "100"
+      INSTAGRAM_VIDEO_AUDIO_VOLUME: "0"
       SOCIAL_MAX_VIDEO_MB: ${{ vars.SOCIAL_MAX_VIDEO_MB || '25' }}
       SOCIAL_TTS: kokoro
       SOCIAL_ALLOW_ESPEAK_FALLBACK: "true"
