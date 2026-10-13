@@ -3,8 +3,7 @@
 Never log, print, or check in the current or refreshed access token.
 Expected secrets:
   INSTAGRAM_ACCESS_TOKEN (existing Instagram Login long-lived token)
-  PRIVATE_BLOG_REPO_TOKEN (existing credential, if it can write site Actions Secrets)
-  INSTAGRAM_ROTATION_GITHUB_TOKEN (optional dedicated credential if necessary)
+  INSTAGRAM_ROTATION_GITHUB_TOKEN (dedicated Secrets write credential for both repositories)
 """
 from __future__ import annotations
 
@@ -44,10 +43,11 @@ def fetch_json(url: str, *, params: dict[str, str]) -> dict:
 
 def rotate(*, preflight: bool = False) -> None:
     old_token = os.environ.get("INSTAGRAM_ACCESS_TOKEN", "").strip()
-    github_token = (os.environ.get("INSTAGRAM_ROTATION_GITHUB_TOKEN", "").strip()
-                    or os.environ.get("PRIVATE_BLOG_REPO_TOKEN", "").strip())
-    if not old_token or not github_token:
-        raise RuntimeError("Missing Instagram token or existing GitHub credential; configure INSTAGRAM_ROTATION_GITHUB_TOKEN in site Actions secrets.")
+    github_token = os.environ.get("INSTAGRAM_ROTATION_GITHUB_TOKEN", "").strip()
+    if not old_token:
+        raise RuntimeError("Missing INSTAGRAM_ACCESS_TOKEN in site Actions secrets.")
+    if not github_token:
+        raise RuntimeError("Missing INSTAGRAM_ROTATION_GITHUB_TOKEN in site Actions secrets.")
 
     # Check GitHub secret access before attempting to refresh the Meta token.
     # The credential must have Secrets:read and Secrets:write on both repositories.
@@ -69,10 +69,11 @@ def rotate(*, preflight: bool = False) -> None:
     if preflight:
         probe_name = "IG_ROTATION_PROBE_" + secrets.token_hex(6).upper()
         for repository in sorted({repo for repo, _ in TARGETS}):
+            probe = None
             try:
                 probe = subprocess.run(
                     ["gh", "secret", "set", probe_name, "--repo", repository],
-                    input="nonsecret-probe-value\\n", text=True, capture_output=True,
+                    input="nonsecret-probe-value\n", text=True, capture_output=True,
                     env=env, timeout=45,
                 )
                 if probe.returncode:
@@ -82,7 +83,7 @@ def rotate(*, preflight: bool = False) -> None:
                     ["gh", "secret", "delete", probe_name, "--repo", repository],
                     text=True, capture_output=True, env=env, timeout=30,
                 )
-                if deletion.returncode and probe.returncode == 0:
+                if deletion.returncode and probe is not None and probe.returncode == 0:
                     raise RuntimeError(f"Could not remove test secret in {repository}.")
             print(f"GitHub secrets WRITE verified for {repository}.", flush=True)
         identity = fetch_json(VERIFY_URL, params={
