@@ -2,9 +2,18 @@ name: Renew Instagram token automatically
 
 on:
   schedule:
-    # Instagram Login long-lived tokens last ~60 days. Rotate monthly (UTC).
-    - cron: "23 6 1 * *"
+    # Instagram Login long-lived tokens last ~60 days. Rotate twice monthly (UTC) for extra failure margin.
+    - cron: "23 6 1,15 * *"
   workflow_dispatch:
+    inputs:
+      mode:
+        type: choice
+        description: "Preflight permissions without refreshing or renew live token"
+        required: true
+        default: preflight
+        options:
+          - preflight
+          - renew
   push:
     branches: [main]
     paths:
@@ -30,9 +39,15 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Refresh Instagram and update site repository secrets
+      - name: Validate GitHub/Instagram access or refresh tokens in both repositories
         env:
           INSTAGRAM_ACCESS_TOKEN: ${{ secrets.INSTAGRAM_ACCESS_TOKEN }}
           INSTAGRAM_ROTATION_GITHUB_TOKEN: ${{ secrets.INSTAGRAM_ROTATION_GITHUB_TOKEN }}
           PRIVATE_BLOG_REPO_TOKEN: ${{ secrets.PRIVATE_BLOG_REPO_TOKEN }}
-        run: python .github/scripts/refresh_instagram_token.py
+        shell: bash
+        run: |
+          if [[ "${{ github.event_name }}" == "push" || "${{ inputs.mode }}" == "preflight" ]]; then
+            python .github/scripts/refresh_instagram_token.py --preflight
+          else
+            python .github/scripts/refresh_instagram_token.py
+          fi
