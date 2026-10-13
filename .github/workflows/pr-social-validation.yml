@@ -41,4 +41,4 @@ jobs:
         run: |
           python -m pip install "Pillow>=10,<13"
           python -m compileall -q scripts/blog_automation scripts/social_video
-          python -m unittest scripts.blog_automation.test_game_lane scripts.blog_automation.test_publish_paths scripts.social_video.test_limits
+          python -m unittest scripts.blog_automation.test_game_lane scripts.blog_automation.test_publish_paths scripts.blog_automation.test_duplicate_candidates scripts.blog_automation.test_article_quality scripts.social_video.test_limits
