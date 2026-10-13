@@ -53,13 +53,14 @@
   <main>
     <section class="card">
       <div class="eyebrow">PkLavc Social · TikTok</div>
-      <h1>Content Posting API review</h1>
-      <p>This page demonstrates Login Kit, account authorization, Direct Post and draft upload with explicit user confirmation before content is sent to TikTok.</p>
+      <h1>Post to TikTok</h1>
+      <p>A free upload tool for creators. Connect your own TikTok account, review your video, caption, privacy and disclosures, and choose whether to post or save a draft. Only you approve each upload.</p>
+      <small>Unaudited TikTok apps can post only privately and have a limit of five active creators per 24 hours. Public visibility becomes available only after TikTok audits the app. Videos are sent to TikTok and are not permanently stored here.</small>
     </section>
 
     <section id="connectCard" class="card hidden">
       <h2>Connect TikTok</h2>
-      <p>Authorize the PkLavc TikTok account before publishing or uploading content.</p>
+      <p>Connect your own TikTok account securely. Your videos will only go to the account you authorize.</p>
       <button id="connect" class="primary connect" type="button">Continue with TikTok</button>
       <small>Scopes requested: user.info.basic, video.publish and video.upload.</small>
     </section>
@@ -75,7 +76,10 @@
               <span id="creatorMeta"></span>
             </div>
           </div>
-          <span id="environmentBadge" class="badge">Checking…</span>
+          <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+            <span id="environmentBadge" class="badge">Checking…</span>
+            <button id="logout" class="secondary" type="button">Disconnect</button>
+          </div>
         </div>
       </section>
 
@@ -85,6 +89,7 @@
           <div>
             <label for="video">Video file</label>
             <input id="video" type="file" accept="video/mp4,video/quicktime,video/webm">
+            <small>Maximum 50 MB per upload. The video is transferred directly to TikTok without permanent PkLavc storage.</small>
           </div>
           <div>
             <label for="privacy">Who can view this post?</label>
@@ -147,7 +152,7 @@
         ACTIVE_ENV = data.environment;
         document.getElementById("environmentBadge").textContent = ACTIVE_ENV === "production" ? "Production" : "Sandbox";
         document.getElementById("environmentNotice").textContent = ACTIVE_ENV === "production" ?
-          "Public publishing is available only when enabled for this app and account by TikTok. Review each video and explicitly confirm before posting." :
+          "TikTok restricts unaudited applications to private uploads. Public posting requires approval of this app and account. Review each video and explicitly confirm." :
           "Sandbox Direct Post is restricted to Only me (SELF_ONLY).";
         return data;
       }
@@ -166,6 +171,9 @@
         if (previewUrl) videoPreview.src = previewUrl;
         else videoPreview.removeAttribute("src");
         consent.checked = false;
+        if (video.files?.[0] && video.files[0].size > 50 * 1024 * 1024) {
+          setStatus("The video exceeds 50 MB. Choose a smaller file.", "error");
+        }
         updatePublishControls();
       });
       const privacy = document.getElementById("privacy");
@@ -185,6 +193,18 @@
       const consent = document.getElementById("consent");
       const directPost = document.getElementById("directPost");
       const draftUpload = document.getElementById("draftUpload");
+      document.getElementById("logout").addEventListener("click", async () => {
+        directPost.disabled = draftUpload.disabled = true;
+        try {
+          const result = await apiJson("/tiktok/oauth/logout", {});
+          if (!result.ok) throw new Error("Disconnect failed.");
+          location.replace("/tiktok/");
+        } catch (error) {
+          setStatus(error instanceof Error ? error.message : "Unable to disconnect.", "error");
+        } finally {
+          updatePublishControls();
+        }
+      });
 
       const privacyLabels = {
         PUBLIC_TO_EVERYONE: "Everyone",
@@ -229,7 +249,7 @@
       }
 
       function updatePublishControls() {
-        const hasVideo = Boolean(video.files && video.files[0]);
+        const hasVideo = Boolean(video.files && video.files[0]) && video.files[0].size <= 50 * 1024 * 1024;
         const commercialOk = !commercial.checked || ownBrand.checked || brandedContent.checked;
         const tooLong = maxVideoDuration > 0 && Number.isFinite(videoPreview.duration) &&
           videoPreview.duration > maxVideoDuration;
@@ -263,16 +283,21 @@
         status.className = "status" + (kind ? " " + kind : "");
       };
 
-      const randomState = () => {
-        const bytes = new Uint8Array(24);
-        crypto.getRandomValues(bytes);
-        return Array.from(bytes, b => b.toString(16).padStart(2, "0")).join("");
-      };
-
       document.getElementById("connect").addEventListener("click", async () => {
         try { await configPromise; }
         catch (error) { setStatus(error.message || "TikTok configuration unavailable.", "error"); return; }
-        const state = randomState();
+        let state;
+        try {
+          const response = await fetch(API + "/tiktok/oauth/start", {credentials: "include"});
+          const payload = await response.json().catch(() => ({}));
+          if (!response.ok || !payload.ok || !payload.state) throw new Error(payload.error || "TikTok login unavailable.");
+          state = payload.state;
+        } catch (error) {
+          const note = document.createElement("small");
+          note.textContent = error.message || "Unable to start TikTok authorization.";
+          connectCard.appendChild(note);
+          return;
+        }
         sessionStorage.setItem("tiktok_oauth_state", state);
         const url = new URL("https://www.tiktok.com/v2/auth/authorize/");
         url.searchParams.set("client_key", CLIENT_KEY);
@@ -356,6 +381,7 @@
 
       function validateSelection(requirePrivacy) {
         if (!video.files || !video.files[0]) throw new Error("Choose a video file first.");
+        if (video.files[0].size > 50 * 1024 * 1024) throw new Error("Video exceeds the 50 MB upload limit.");
         if (requirePrivacy && !privacy.value) throw new Error("Choose who can view the post.");
         if (requirePrivacy && ACTIVE_ENV !== "production" && privacy.value !== "SELF_ONLY") {
           throw new Error("Sandbox Direct Post is currently restricted to Only me (SELF_ONLY).");
