@@ -267,6 +267,7 @@ jobs:
         working-directory: private-blog
         env:
           INSTAGRAM_ACCESS_TOKEN: ${{ secrets.INSTAGRAM_ACCESS_TOKEN }}
+          INSTAGRAM_ANALYTICS_ACCESS_TOKEN: ${{ secrets.INSTAGRAM_ANALYTICS_ACCESS_TOKEN }}
         run: python -m scripts.social_video.instagram_analytics
 
       - name: Install Analytics client without video renderer
