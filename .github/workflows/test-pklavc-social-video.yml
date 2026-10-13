@@ -42,8 +42,8 @@ jobs:
           from tempfile import TemporaryDirectory
           from PIL import Image
           from scripts.social_video.render import load_article, render
-          slug = "spec-driven-development"
-          assert load_article(Path.cwd(), slug)["category"] == "tech"
+          slug = "gta-6-album-new-singles-release"
+          assert load_article(Path.cwd(), slug)["category"] == "games"
           with TemporaryDirectory() as directory:
               for branded in (True, False):
                   out = Path(directory) / ("branded" if branded else "neutral")
