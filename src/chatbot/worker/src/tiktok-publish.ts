@@ -232,7 +232,8 @@ export async function handleTikTokDirectFilePost(
     const tokens = await getTikTokTokens(env);
     const creator = await queryCreatorInfoWithToken(tokens.access_token);
     const privacyOptions = creator.privacy_level_options || [];
-    const requestedPrivacy = String(url.searchParams.get("privacy_level") || "SELF_ONLY");
+    const requestedPrivacy = String(url.searchParams.get("privacy_level") || "").trim();
+    if (!requestedPrivacy) return json({ error: "privacy_level_required" }, 400);
     if (!privacyOptions.includes(requestedPrivacy)) {
       return json({
         error: "privacy_level_option_mismatch",
@@ -246,8 +247,22 @@ export async function handleTikTokDirectFilePost(
       }, 409);
     }
 
+    // Disclosure must be explicitly provided for each reviewed video.
+    const disclosureValues = ["commercial_content", "brand_organic_toggle", "brand_content_toggle"]
+      .map((name) => url.searchParams.get(name));
+    if (disclosureValues.some((value) => value !== "true" && value !== "false")) {
+      return json({ error: "commercial_content_declaration_required" }, 400);
+    }
+    const [commercial, brandOrganic, brandContent] = disclosureValues.map((value) => value === "true");
+    if (commercial !== (brandOrganic || brandContent)) {
+      return json({ error: "commercial_content_declaration_invalid" }, 400);
+    }
+    if (brandContent && requestedPrivacy === "SELF_ONLY") {
+      return json({ error: "branded_content_cannot_be_private" }, 409);
+    }
+
     const title = String(url.searchParams.get("title") || "").trim().slice(0, 2200);
-    const isAigc = url.searchParams.get("is_aigc") !== "false";
+    const isAigc = url.searchParams.get("is_aigc") === "true";
     const disableComment = Boolean(creator.comment_disabled) || parseBoolean(url.searchParams.get("disable_comment"), false);
     const disableDuet = Boolean(creator.duet_disabled) || parseBoolean(url.searchParams.get("disable_duet"), false);
     const disableStitch = Boolean(creator.stitch_disabled) || parseBoolean(url.searchParams.get("disable_stitch"), false);
@@ -259,6 +274,8 @@ export async function handleTikTokDirectFilePost(
         disable_comment: disableComment,
         disable_stitch: disableStitch,
         is_aigc: isAigc,
+        brand_organic_toggle: brandOrganic,
+        brand_content_toggle: brandContent,
       },
       source_info: {
         source: "FILE_UPLOAD",
