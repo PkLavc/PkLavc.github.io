@@ -62,6 +62,7 @@
       <h2>Connect TikTok</h2>
       <p>Connect your own TikTok account securely. Your videos will only go to the account you authorize.</p>
       <button id="connect" class="primary connect" type="button">Continue with TikTok</button>
+      <div id="connectStatus" class="status hidden" role="status" aria-live="polite"></div>
       <small>Scopes requested: user.info.basic, video.publish and video.upload.</small>
     </section>
 
@@ -81,6 +82,7 @@
             <button id="logout" class="secondary" type="button">Disconnect</button>
           </div>
         </div>
+        <div id="disconnectStatus" class="status hidden" role="alert" aria-live="assertive"></div>
       </section>
 
       <section class="card">
@@ -199,15 +201,44 @@
       const consent = document.getElementById("consent");
       const directPost = document.getElementById("directPost");
       const draftUpload = document.getElementById("draftUpload");
-      document.getElementById("logout").addEventListener("click", async () => {
-        directPost.disabled = draftUpload.disabled = true;
+      const disconnectButton = document.getElementById("logout");
+      const disconnectStatus = document.getElementById("disconnectStatus");
+      const connectStatus = document.getElementById("connectStatus");
+      disconnectButton.addEventListener("click", async () => {
+        if (uploading) return;
+        disconnectButton.disabled = true;
+        disconnectButton.textContent = "Disconnecting…";
+        disconnectStatus.classList.add("hidden");
         try {
-          const result = await apiJson("/tiktok/oauth/logout", {});
-          if (!result.ok) throw new Error("Disconnect failed.");
-          location.replace("/tiktok/");
+          await apiJson("/tiktok/oauth/logout", {});
+          // Do not navigate back to the same URL: the page might immediately
+          // redraw a stale cached creator session. Show the login screen now.
+          sessionStorage.removeItem("tiktok_oauth_state");
+          sessionStorage.removeItem("tiktok_granted_scopes");
+          video.value = "";
+          caption.value = "";
+          privacy.value = "";
+          consent.checked = false;
+          if (previewUrl) URL.revokeObjectURL(previewUrl);
+          previewUrl = undefined;
+          videoPreview.pause();
+          videoPreview.removeAttribute("src");
+          videoPreview.style.display = "none";
+          videoPreview.load();
+          publisher.classList.add("hidden");
+          connectCard.classList.remove("hidden");
+          connectStatus.textContent = "Disconnected from PkLavc Social. Use Continue with TikTok to authorize an account.";
+          connectStatus.className = "status ok";
+          connectCard.scrollIntoView({ behavior: "smooth", block: "start" });
         } catch (error) {
-          setStatus(error instanceof Error ? error.message : "Unable to disconnect.", "error");
+          // Display errors next to Disconnect, not below the video preview.
+          disconnectStatus.textContent = error instanceof Error
+            ? "Disconnect failed: " + error.message
+            : "Disconnect failed. Please try again.";
+          disconnectStatus.className = "status error";
         } finally {
+          disconnectButton.disabled = false;
+          disconnectButton.textContent = "Disconnect";
           updatePublishControls();
         }
       });
@@ -290,6 +321,7 @@
       };
 
       document.getElementById("connect").addEventListener("click", async () => {
+        connectStatus.classList.add("hidden");
         try { await configPromise; }
         catch (error) { setStatus(error.message || "TikTok configuration unavailable.", "error"); return; }
         let state;

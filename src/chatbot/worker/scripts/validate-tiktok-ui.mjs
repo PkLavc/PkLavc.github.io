@@ -9,7 +9,7 @@ new Script(code, { filename: "tiktok/index.html:inline-script" });
 for (const id of [
   "video", "videoPreview", "caption", "privacy", "comments", "duet", "stitch",
   "commercial", "ownBrand", "brandedContent", "brandChoices", "brandLabel",
-  "musicTerms", "consent", "directPost", "draftUpload",
+  "musicTerms", "consent", "directPost", "draftUpload", "logout", "connectStatus", "disconnectStatus",
 ]) {
   if (!html.includes(`id="${id}"`)) throw new Error(`Missing audit UI control: ${id}`);
 }
@@ -27,6 +27,11 @@ for (const required of [
   "unaudited_client_can_only_post_to_private_accounts",
   "the entire TikTok account must be Private",
   "payload.tiktok_error",
+  'apiJson("/tiktok/oauth/logout", {})',
+  'publisher.classList.add("hidden")',
+  'connectCard.classList.remove("hidden")',
+  'connectStatus.className = "status ok"',
+  'disconnectStatus.className = "status error"',
 ]) {
   if (!code.includes(required) && !html.includes(required)) {
     throw new Error(`Missing TikTok audit behavior: ${required}`);
@@ -34,3 +39,7 @@ for (const required of [
 }
 
 console.log("TikTok audit page syntax and required disclosure controls validated.");
+
+if (code.includes('location.replace("/tiktok/")')) {
+  throw new Error("Disconnect must display the login screen immediately, not reload the same URL.");
+}
