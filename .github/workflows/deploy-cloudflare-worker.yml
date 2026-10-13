@@ -66,6 +66,18 @@ jobs:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
 
+      - name: Verify existing TikTok production secrets
+        shell: bash
+        env:
+          TIKTOK_CLIENT_KEY: ${{ secrets.TIKTOK_CLIENT_KEY }}
+          TIKTOK_CLIENT_SECRET: ${{ secrets.TIKTOK_CLIENT_SECRET }}
+        run: |
+          if [[ -z "$TIKTOK_CLIENT_KEY" || -z "$TIKTOK_CLIENT_SECRET" ]]; then
+            echo "::error::Set the existing TIKTOK_CLIENT_KEY and TIKTOK_CLIENT_SECRET in this repository's Actions secrets."
+            exit 1
+          fi
+          echo "TikTok production secret names found (values remain hidden)."
+
       - name: Sync Worker secrets
         run: |
           for name in JWT_SECRET GROQ_API_KEY OPENROUTER_API_KEY ADMIN_USERNAME ADMIN_PASSWORD_HASH LANGFUSE_BASE_URL LANGFUSE_PUBLIC_KEY LANGFUSE_SECRET_KEY DISCORD_BOT_TOKEN DISCORD_PUBLIC_KEY DISCORD_CHANNEL_ID DISCORD_OWNER_USER_ID INSTAGRAM_ACCESS_TOKEN INSTAGRAM_APP_SECRET INSTAGRAM_WEBHOOK_VERIFY_TOKEN TIKTOK_SANDBOX_CLIENT_SECRET TIKTOK_CLIENT_KEY TIKTOK_CLIENT_SECRET CLOUDFLARE_R2_PUBLIC_BASE_URL; do
