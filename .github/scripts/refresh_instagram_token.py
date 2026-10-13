@@ -1,4 +1,4 @@
-"""Refresh Instagram Login long-lived token and rotate site GitHub Actions secrets.
+"""Refresh Instagram Login long-lived token and rotate GitHub Actions secrets across site and blog.
 
 Never log, print, or check in the current or refreshed access token.
 Expected secrets:
@@ -9,6 +9,7 @@ Expected secrets:
 from __future__ import annotations
 
 import json
+import secrets
 import os
 import subprocess
 import sys
@@ -21,6 +22,7 @@ VERIFY_URL = "https://graph.instagram.com/me"
 TARGETS = (
     ("PkLavc/PkLavc.github.io", "INSTAGRAM_ACCESS_TOKEN"),
     ("PkLavc/PkLavc.github.io", "INSTAGRAM_ANALYTICS_ACCESS_TOKEN"),
+    ("PkLavc/blog", "INSTAGRAM_ACCESS_TOKEN"),
 )
 
 
@@ -40,15 +42,15 @@ def fetch_json(url: str, *, params: dict[str, str]) -> dict:
     return payload
 
 
-def rotate() -> None:
+def rotate(*, preflight: bool = False) -> None:
     old_token = os.environ.get("INSTAGRAM_ACCESS_TOKEN", "").strip()
     github_token = (os.environ.get("INSTAGRAM_ROTATION_GITHUB_TOKEN", "").strip()
                     or os.environ.get("PRIVATE_BLOG_REPO_TOKEN", "").strip())
     if not old_token or not github_token:
-        raise RuntimeError("Missing Instagram token or existing GitHub credential.")
+        raise RuntimeError("Missing Instagram token or existing GitHub credential; configure INSTAGRAM_ROTATION_GITHUB_TOKEN in site Actions secrets.")
 
     # Check GitHub secret access before attempting to refresh the Meta token.
-    # The credential must have Secrets:read and Secrets:write on the site repo.
+    # The credential must have Secrets:read and Secrets:write on both repositories.
     env = os.environ.copy()
     env["GH_TOKEN"] = github_token
     for repository in sorted({repo for repo, _ in TARGETS}):
@@ -59,8 +61,37 @@ def rotate() -> None:
         if result.returncode or not result.stdout.strip():
             raise RuntimeError(
                 f"GitHub credential cannot read Actions secrets in {repository}; "
-                "grant Secrets:read and Secrets:write on the site repository."
+                "grant Secrets:read and Secrets:write on both repositories."
             )
+
+
+    # Check actual Secrets write capability with disposable, non-sensitive secrets.
+    if preflight:
+        probe_name = "IG_ROTATION_PROBE_" + secrets.token_hex(6).upper()
+        for repository in sorted({repo for repo, _ in TARGETS}):
+            try:
+                probe = subprocess.run(
+                    ["gh", "secret", "set", probe_name, "--repo", repository],
+                    input="nonsecret-probe-value\\n", text=True, capture_output=True,
+                    env=env, timeout=45,
+                )
+                if probe.returncode:
+                    raise RuntimeError(f"Cannot WRITE Actions secrets in {repository}.")
+            finally:
+                deletion = subprocess.run(
+                    ["gh", "secret", "delete", probe_name, "--repo", repository],
+                    text=True, capture_output=True, env=env, timeout=30,
+                )
+                if deletion.returncode and probe.returncode == 0:
+                    raise RuntimeError(f"Could not remove test secret in {repository}.")
+            print(f"GitHub secrets WRITE verified for {repository}.", flush=True)
+        identity = fetch_json(VERIFY_URL, params={
+            "fields": "id,username", "access_token": old_token,
+        })
+        if not identity.get("id"):
+            raise RuntimeError("Current Instagram token did not validate.")
+        print("Instagram authentication validated without early token refresh.", flush=True)
+        return
 
     refreshed = fetch_json(
         REFRESH_URL,
@@ -93,12 +124,12 @@ def rotate() -> None:
             # Suppress CLI output to avoid accidental disclosure of credentials.
             raise RuntimeError(f"Failed to update {name} in {repository}; exit={result.returncode}.")
         print(f"Updated {repository}: {name}", flush=True)
-    print("Instagram token renewed and synchronized to the site GitHub repository.", flush=True)
+    print("Instagram token renewed and synchronized to both GitHub repositories.", flush=True)
 
 
 if __name__ == "__main__":
     try:
-        rotate()
+        rotate(preflight="--preflight" in sys.argv)
     except Exception as exc:
         print("::error::Instagram token renewal failed: " + str(exc), file=sys.stderr)
         sys.exit(1)
