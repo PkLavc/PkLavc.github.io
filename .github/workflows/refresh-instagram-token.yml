@@ -1,0 +1,33 @@
+name: Renew Instagram token automatically
+
+on:
+  schedule:
+    # Instagram Login long-lived tokens last ~60 days. Rotate monthly (UTC).
+    - cron: "23 6 1 * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: instagram-token-rotation
+  cancel-in-progress: false
+
+jobs:
+  renew:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out rotation script
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Refresh Instagram and update both repositories' secrets
+        env:
+          INSTAGRAM_ACCESS_TOKEN: ${{ secrets.INSTAGRAM_ACCESS_TOKEN }}
+          INSTAGRAM_ROTATION_GITHUB_TOKEN: ${{ secrets.INSTAGRAM_ROTATION_GITHUB_TOKEN }}
+        run: python .github/scripts/refresh_instagram_token.py
