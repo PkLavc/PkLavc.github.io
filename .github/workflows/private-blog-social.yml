@@ -6,8 +6,8 @@ on:
   schedule:
     # Every hour at :47, about 30 minutes after hourly article generation at :17.
     - cron: "47 * * * *"
-    # One dedicated Store product post at 09:00 America/Sao_Paulo.
-    - cron: "0 12 * * *"
+    # Store twice weekly to prioritize GTA Shorts.
+    - cron: "0 12 * * 2,5"
   workflow_dispatch:
     inputs:
       mode:
@@ -98,8 +98,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 90
     env:
-      SOCIAL_MAX_ITEMS_PER_RUN: ${{ vars.SOCIAL_MAX_ITEMS_PER_RUN || '1' }}
-      SOCIAL_MAX_R2_UPLOADS_PER_RUN: ${{ vars.SOCIAL_MAX_R2_UPLOADS_PER_RUN || '1' }}
+      SOCIAL_MAX_ITEMS_PER_RUN: ${{ vars.SOCIAL_MAX_ITEMS_PER_RUN || '2' }}
+      SOCIAL_MAX_R2_UPLOADS_PER_RUN: ${{ vars.SOCIAL_MAX_R2_UPLOADS_PER_RUN || '2' }}
       SOCIAL_MAX_VIDEO_MB: ${{ vars.SOCIAL_MAX_VIDEO_MB || '25' }}
       SOCIAL_TTS: kokoro
       SOCIAL_ALLOW_ESPEAK_FALLBACK: "true"
@@ -154,7 +154,7 @@ jobs:
               for platform in ("instagram", "youtube")
               for item in load(f"{platform}-queue.json", "items")
           )
-          schedule_run = os.environ.get("EVENT_NAME") == "schedule" and os.environ.get("EVENT_SCHEDULE") == "0 12 * * *"
+          schedule_run = os.environ.get("EVENT_NAME") == "schedule" and os.environ.get("EVENT_SCHEDULE") == "0 12 * * 2,5"
           dispatch_mode = os.environ.get("DISPATCH_MODE", "")
           has_store = schedule_run or dispatch_mode in {"store-products-preview", "store-products-publish"}
           store_dry_run = dispatch_mode == "store-products-preview"
