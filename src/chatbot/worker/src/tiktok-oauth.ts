@@ -3,8 +3,8 @@ export interface TikTokOAuthEnv {
   SESSIONS: KVNamespace;
   TIKTOK_SANDBOX_CLIENT_KEY?: string;
   TIKTOK_SANDBOX_CLIENT_SECRET?: string;
-  TIKTOK_PRODUCTION_CLIENT_KEY?: string;
-  TIKTOK_PRODUCTION_CLIENT_SECRET?: string;
+  TIKTOK_CLIENT_KEY?: string;
+  TIKTOK_CLIENT_SECRET?: string;
 }
 
 const TIKTOK_TOKEN_ENDPOINT = "https://open.tiktokapis.com/v2/oauth/token/";
@@ -13,17 +13,17 @@ const TIKTOK_SANDBOX_TOKEN_KEY = "tiktok:sandbox:tokens";
 const TIKTOK_PRODUCTION_TOKEN_KEY = "tiktok:production:tokens";
 
 export function activeTikTokEnvironment(env: TikTokOAuthEnv): "sandbox" | "production" {
-  return env.TIKTOK_PRODUCTION_CLIENT_KEY && env.TIKTOK_PRODUCTION_CLIENT_SECRET ? "production" : "sandbox";
+  return env.TIKTOK_CLIENT_KEY && env.TIKTOK_CLIENT_SECRET ? "production" : "sandbox";
 }
 
 export function publicTikTokConfig(env: TikTokOAuthEnv): { environment: "sandbox" | "production"; client_key: string } {
   const environment = activeTikTokEnvironment(env);
-  return { environment, client_key: environment === "production" ? env.TIKTOK_PRODUCTION_CLIENT_KEY! : env.TIKTOK_SANDBOX_CLIENT_KEY || "" };
+  return { environment, client_key: environment === "production" ? env.TIKTOK_CLIENT_KEY! : env.TIKTOK_SANDBOX_CLIENT_KEY || "" };
 }
 
 function oauthCredentials(env: TikTokOAuthEnv, environment: "sandbox" | "production") {
-  const key = environment === "production" ? env.TIKTOK_PRODUCTION_CLIENT_KEY : env.TIKTOK_SANDBOX_CLIENT_KEY;
-  const secret = environment === "production" ? env.TIKTOK_PRODUCTION_CLIENT_SECRET : env.TIKTOK_SANDBOX_CLIENT_SECRET;
+  const key = environment === "production" ? env.TIKTOK_CLIENT_KEY : env.TIKTOK_SANDBOX_CLIENT_KEY;
+  const secret = environment === "production" ? env.TIKTOK_CLIENT_SECRET : env.TIKTOK_SANDBOX_CLIENT_SECRET;
   if (!key || !secret) throw new Error("tiktok_" + environment + "_not_configured");
   return { key, secret };
 }
