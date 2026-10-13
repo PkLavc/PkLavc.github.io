@@ -1,13 +1,36 @@
-// TikTok sandbox OAuth exchange and server-side token lifecycle.
+// TikTok OAuth exchange and server-side token lifecycle, isolated by environment.
 export interface TikTokOAuthEnv {
   SESSIONS: KVNamespace;
   TIKTOK_SANDBOX_CLIENT_KEY?: string;
   TIKTOK_SANDBOX_CLIENT_SECRET?: string;
+  TIKTOK_PRODUCTION_CLIENT_KEY?: string;
+  TIKTOK_PRODUCTION_CLIENT_SECRET?: string;
 }
 
 const TIKTOK_TOKEN_ENDPOINT = "https://open.tiktokapis.com/v2/oauth/token/";
 const TIKTOK_REDIRECT_URI = "https://pklavc.com/tiktok/callback/";
 const TIKTOK_SANDBOX_TOKEN_KEY = "tiktok:sandbox:tokens";
+const TIKTOK_PRODUCTION_TOKEN_KEY = "tiktok:production:tokens";
+
+export function activeTikTokEnvironment(env: TikTokOAuthEnv): "sandbox" | "production" {
+  return env.TIKTOK_PRODUCTION_CLIENT_KEY && env.TIKTOK_PRODUCTION_CLIENT_SECRET ? "production" : "sandbox";
+}
+
+export function publicTikTokConfig(env: TikTokOAuthEnv): { environment: "sandbox" | "production"; client_key: string } {
+  const environment = activeTikTokEnvironment(env);
+  return { environment, client_key: environment === "production" ? env.TIKTOK_PRODUCTION_CLIENT_KEY! : env.TIKTOK_SANDBOX_CLIENT_KEY || "" };
+}
+
+function oauthCredentials(env: TikTokOAuthEnv, environment: "sandbox" | "production") {
+  const key = environment === "production" ? env.TIKTOK_PRODUCTION_CLIENT_KEY : env.TIKTOK_SANDBOX_CLIENT_KEY;
+  const secret = environment === "production" ? env.TIKTOK_PRODUCTION_CLIENT_SECRET : env.TIKTOK_SANDBOX_CLIENT_SECRET;
+  if (!key || !secret) throw new Error("tiktok_" + environment + "_not_configured");
+  return { key, secret };
+}
+
+function tokenStorageKey(environment: "sandbox" | "production") {
+  return environment === "production" ? TIKTOK_PRODUCTION_TOKEN_KEY : TIKTOK_SANDBOX_TOKEN_KEY;
+}
 const ACCESS_TOKEN_REFRESH_SKEW_SECONDS = 15 * 60;
 const TIKTOK_REVIEW_SESSION_PREFIX = "tiktok:review-session:";
 const TIKTOK_REVIEW_SESSION_TTL_SECONDS = 2 * 60 * 60;
@@ -21,7 +44,7 @@ export type TikTokStoredTokens = {
   scope: string;
   expires_at: number;
   refresh_expires_at: number;
-  environment: "sandbox";
+  environment: "sandbox" | "production";
 };
 
 type TikTokTokenResponse = {
@@ -41,9 +64,10 @@ export async function handleTikTokOAuthExchange(
   request: Request,
   env: TikTokOAuthEnv,
 ): Promise<Response> {
-  if (!env.TIKTOK_SANDBOX_CLIENT_KEY || !env.TIKTOK_SANDBOX_CLIENT_SECRET) {
-    return json({ error: "tiktok_sandbox_not_configured" }, 503);
-  }
+  const environment = activeTikTokEnvironment(env);
+  let credentials: ReturnType<typeof oauthCredentials>;
+  try { credentials = oauthCredentials(env, environment); }
+  catch { return json({ error: "tiktok_" + environment + "_not_configured" }, 503); }
 
   let body: { code?: string; redirect_uri?: string };
   try {
@@ -64,8 +88,8 @@ export async function handleTikTokOAuthExchange(
   }
 
   const form = new URLSearchParams({
-    client_key: env.TIKTOK_SANDBOX_CLIENT_KEY,
-    client_secret: env.TIKTOK_SANDBOX_CLIENT_SECRET,
+    client_key: credentials.key,
+    client_secret: credentials.secret,
     code,
     grant_type: "authorization_code",
     redirect_uri: TIKTOK_REDIRECT_URI,
@@ -95,7 +119,7 @@ export async function handleTikTokOAuthExchange(
     }, 502);
   }
 
-  const stored = tokenBundle(payload);
+  const stored = tokenBundle(payload, environment);
   await saveTikTokTokens(env, stored);
 
   const reviewSession = crypto.randomUUID();
@@ -105,7 +129,7 @@ export async function handleTikTokOAuthExchange(
 
   const response = json({
     ok: true,
-    environment: "sandbox",
+    environment,
     open_id: stored.open_id,
     scope: stored.scope,
     expires_in: Number(payload.expires_in || 0),
@@ -134,7 +158,8 @@ export async function hasTikTokReviewSession(
 }
 
 export async function getTikTokTokens(env: TikTokOAuthEnv): Promise<TikTokStoredTokens> {
-  const raw = await env.SESSIONS.get(TIKTOK_SANDBOX_TOKEN_KEY);
+  const environment = activeTikTokEnvironment(env);
+  const raw = await env.SESSIONS.get(tokenStorageKey(environment));
   if (!raw) {
     throw new Error("tiktok_not_authorized");
   }
@@ -147,6 +172,8 @@ export async function getTikTokTokens(env: TikTokOAuthEnv): Promise<TikTokStored
   }
 
   const now = Math.floor(Date.now() / 1000);
+  if (stored.environment !== environment) throw new Error("tiktok_reauthorization_required");
+  if (!stored.scope.split(/[\s,]+/).includes("video.publish")) throw new Error("tiktok_video_publish_not_authorized");
   if (!stored.access_token || !stored.refresh_token || stored.refresh_expires_at <= now) {
     throw new Error("tiktok_reauthorization_required");
   }
@@ -155,16 +182,15 @@ export async function getTikTokTokens(env: TikTokOAuthEnv): Promise<TikTokStored
     return stored;
   }
 
-  return refreshTikTokTokens(env, stored.refresh_token);
+  return refreshTikTokTokens(env, stored.refresh_token, environment);
 }
 
 async function refreshTikTokTokens(
   env: TikTokOAuthEnv,
   refreshToken: string,
+  environment: "sandbox" | "production",
 ): Promise<TikTokStoredTokens> {
-  if (!env.TIKTOK_SANDBOX_CLIENT_KEY || !env.TIKTOK_SANDBOX_CLIENT_SECRET) {
-    throw new Error("tiktok_sandbox_not_configured");
-  }
+  const credentials = oauthCredentials(env, environment);
 
   const response = await fetch(TIKTOK_TOKEN_ENDPOINT, {
     method: "POST",
@@ -173,8 +199,8 @@ async function refreshTikTokTokens(
       "Cache-Control": "no-cache",
     },
     body: new URLSearchParams({
-      client_key: env.TIKTOK_SANDBOX_CLIENT_KEY,
-      client_secret: env.TIKTOK_SANDBOX_CLIENT_SECRET,
+      client_key: credentials.key,
+      client_secret: credentials.secret,
       grant_type: "refresh_token",
       refresh_token: refreshToken,
     }),
@@ -191,12 +217,12 @@ async function refreshTikTokTokens(
     throw new Error(payload.error || "tiktok_refresh_failed");
   }
 
-  const stored = tokenBundle(payload);
+  const stored = tokenBundle(payload, environment);
   await saveTikTokTokens(env, stored);
   return stored;
 }
 
-function tokenBundle(payload: TikTokTokenResponse): TikTokStoredTokens {
+function tokenBundle(payload: TikTokTokenResponse, environment: "sandbox" | "production"): TikTokStoredTokens {
   const now = Math.floor(Date.now() / 1000);
   return {
     access_token: String(payload.access_token || ""),
@@ -206,14 +232,14 @@ function tokenBundle(payload: TikTokTokenResponse): TikTokStoredTokens {
     scope: String(payload.scope || ""),
     expires_at: now + Number(payload.expires_in || 0),
     refresh_expires_at: now + Number(payload.refresh_expires_in || 0),
-    environment: "sandbox",
+    environment,
   };
 }
 
 async function saveTikTokTokens(env: TikTokOAuthEnv, stored: TikTokStoredTokens): Promise<void> {
   const now = Math.floor(Date.now() / 1000);
   const refreshTtl = Math.max(60, stored.refresh_expires_at - now);
-  await env.SESSIONS.put(TIKTOK_SANDBOX_TOKEN_KEY, JSON.stringify(stored), {
+  await env.SESSIONS.put(tokenStorageKey(stored.environment), JSON.stringify(stored), {
     expirationTtl: refreshTtl,
   });
 }
