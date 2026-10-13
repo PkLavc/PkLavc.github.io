@@ -224,7 +224,7 @@ export async function handleTikTokDirectFilePost(
   if (!bytes.byteLength) {
     return json({ error: "empty_video" }, 400);
   }
-  if (bytes.byteLength > 64 * 1024 * 1024) {
+  if (bytes.byteLength > 50 * 1024 * 1024) {
     return json({ error: "video_too_large_for_single_chunk_test" }, 413);
   }
 
@@ -342,7 +342,7 @@ export async function handleTikTokDraftFileUpload(
 
   const bytes = new Uint8Array(await request.arrayBuffer());
   if (!bytes.byteLength) return json({ error: "empty_video" }, 400);
-  if (bytes.byteLength > 64 * 1024 * 1024) {
+  if (bytes.byteLength > 50 * 1024 * 1024) {
     return json({ error: "video_too_large_for_single_chunk_test" }, 413);
   }
 
@@ -400,6 +400,7 @@ export async function handleTikTokDraftFileUpload(
 export async function handleTikTokPostStatus(
   request: Request,
   env: TikTokPublishEnv,
+  creatorRequest?: Request,
 ): Promise<Response> {
   let body: { publish_id?: string };
   try {
@@ -414,7 +415,7 @@ export async function handleTikTokPostStatus(
   }
 
   try {
-    const tokens = await getTikTokTokens(env, request);
+    const tokens = await getTikTokTokens(env, creatorRequest);
     const response = await fetch(`${TIKTOK_API_ROOT}/v2/post/publish/status/fetch/`, {
       method: "POST",
       headers: {
