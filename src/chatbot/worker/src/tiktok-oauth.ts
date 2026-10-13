@@ -76,6 +76,7 @@ async function creatorSession(request: Request, env: TikTokOAuthEnv): Promise<Ti
   try {
     const stored = JSON.parse(raw) as TikTokStoredTokens;
     if (!stored.open_id || !stored.access_token || !stored.refresh_token ||
+        !stored.session_expires_at || stored.session_expires_at <= Math.floor(Date.now() / 1000) ||
         stored.environment !== activeTikTokEnvironment(env)) return null;
     return stored;
   } catch {
@@ -92,6 +93,7 @@ export type TikTokStoredTokens = {
   expires_at: number;
   refresh_expires_at: number;
   environment: "sandbox" | "production";
+  session_expires_at?: number;
 };
 
 type TikTokTokenResponse = {
@@ -173,6 +175,7 @@ export async function handleTikTokOAuthExchange(
   }
 
   const stored = tokenBundle(payload, environment);
+  stored.session_expires_at = Math.floor(Date.now() / 1000) + TIKTOK_REVIEW_SESSION_TTL_SECONDS;
   if (!stored.open_id || !stored.scope.split(/[\s,]+/).includes("video.publish")) {
     return json({ error: "tiktok_video_publish_not_authorized" }, 403);
   }
@@ -227,7 +230,7 @@ export async function getTikTokTokens(env: TikTokOAuthEnv, request?: Request): P
     throw new Error("tiktok_reauthorization_required");
   }
   if (stored.expires_at > now + ACCESS_TOKEN_REFRESH_SKEW_SECONDS) return stored;
-  return refreshTikTokTokens(env, stored.refresh_token, environment, request, stored.open_id);
+  return refreshTikTokTokens(env, stored.refresh_token, environment, request, stored.open_id, stored.session_expires_at);
 }
 
 async function refreshTikTokTokens(
@@ -236,6 +239,7 @@ async function refreshTikTokTokens(
   environment: "sandbox" | "production",
   request?: Request,
   expectedOpenId?: string,
+  sessionExpiresAt?: number,
 ): Promise<TikTokStoredTokens> {
   const credentials = oauthCredentials(env, environment);
 
@@ -265,6 +269,7 @@ async function refreshTikTokTokens(
   }
 
   const stored = tokenBundle(payload, environment);
+  stored.session_expires_at = sessionExpiresAt;
   if (expectedOpenId && stored.open_id !== expectedOpenId) {
     throw new Error("tiktok_account_changed_during_refresh");
   }
@@ -291,8 +296,11 @@ async function saveTikTokTokens(env: TikTokOAuthEnv, stored: TikTokStoredTokens,
   if (request && !sessionId(request)) throw new Error("tiktok_not_authorized");
   const now = Math.floor(Date.now() / 1000);
   const refreshTtl = Math.max(60, stored.refresh_expires_at - now);
+  if (request && (!stored.session_expires_at || stored.session_expires_at <= now)) {
+    throw new Error("tiktok_reauthorization_required");
+  }
   await env.SESSIONS.put(key, JSON.stringify(stored), {
-    expirationTtl: request ? Math.min(TIKTOK_REVIEW_SESSION_TTL_SECONDS, refreshTtl) : refreshTtl,
+    expirationTtl: request ? Math.max(60, Math.min(stored.session_expires_at! - now, refreshTtl)) : refreshTtl,
   });
 }
 
