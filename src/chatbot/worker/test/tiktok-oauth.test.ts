@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { handleTikTokOAuthExchange } from "../src/tiktok-oauth";
+import { handleTikTokOAuthExchange, publicTikTokConfig } from "../src/tiktok-oauth";
 
 describe("TikTok sandbox OAuth exchange", () => {
   afterEach(() => {
@@ -62,6 +62,56 @@ describe("TikTok sandbox OAuth exchange", () => {
     expect(stored).toContain("refresh-secret");
     const sessionWrite = put.mock.calls.find((call) => String(call[0]).startsWith("tiktok:review-session:"));
     expect(sessionWrite).toBeTruthy();
+  });
+
+
+  it("uses existing production secrets and keeps production tokens separate from sandbox", async () => {
+    const written = new Map<string, string>();
+    const put = vi.fn(async (key: string, value: string) => { written.set(key, value); });
+    const productionResponse = {
+      access_token: "production-access-private",
+      refresh_token: "production-refresh-private",
+      token_type: "Bearer",
+      open_id: "production-open-id",
+      scope: "user.info.basic,video.publish,video.upload",
+      expires_in: 86400,
+      refresh_expires_in: 2592000,
+    };
+    vi.stubGlobal("fetch", vi.fn(async (_input: RequestInfo | URL, init?: RequestInit) => {
+      const form = new URLSearchParams(String(init?.body || ""));
+      expect(form.get("client_key")).toBe("already-stored-production-key");
+      expect(form.get("client_secret")).toBe("already-stored-production-secret");
+      return new Response(JSON.stringify(productionResponse), {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      });
+    }));
+    const env = {
+      SESSIONS: { put } as unknown as KVNamespace,
+      TIKTOK_CLIENT_KEY: "already-stored-production-key",
+      TIKTOK_CLIENT_SECRET: "already-stored-production-secret",
+      TIKTOK_SANDBOX_CLIENT_KEY: "sandbox-key",
+      TIKTOK_SANDBOX_CLIENT_SECRET: "sandbox-secret",
+    };
+    expect(publicTikTokConfig(env)).toEqual({
+      environment: "production",
+      client_key: "already-stored-production-key",
+    });
+    const response = await handleTikTokOAuthExchange(
+      new Request("https://api.pklavc.com/tiktok/oauth/exchange", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code: "auth-code", redirect_uri: "https://pklavc.com/tiktok/callback/" }),
+      }),
+      env,
+    );
+    expect(response.status).toBe(200);
+    const body = await response.json() as Record<string, unknown>;
+    expect(body.environment).toBe("production");
+    expect(JSON.stringify(body)).not.toContain(productionResponse.access_token);
+    expect(JSON.stringify(body)).not.toContain(productionResponse.refresh_token);
+    expect(written.has("tiktok:production:tokens")).toBe(true);
+    expect(written.has("tiktok:sandbox:tokens")).toBe(false);
   });
 
   it("rejects a redirect URI different from the registered callback", async () => {
