@@ -1,0 +1,45 @@
+name: Verify Instagram Insights permission
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/check-instagram-insights.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Check out private PkLavc blog
+        uses: actions/checkout@v4
+        with:
+          repository: PkLavc/blog
+          ref: main
+          token: ${{ secrets.PRIVATE_BLOG_REPO_TOKEN }}
+          path: private-blog
+          fetch-depth: 0
+      - name: Configure Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Test Instagram Insights and store snapshots without publishing
+        working-directory: private-blog
+        env:
+          INSTAGRAM_ACCESS_TOKEN: ${{ secrets.INSTAGRAM_ACCESS_TOKEN }}
+          INSTAGRAM_GRAPH_VERSION: ${{ vars.INSTAGRAM_GRAPH_VERSION || 'v26.0' }}
+        run: python -m scripts.social_video.instagram_analytics
+      - name: Save insights authorization result and any statistics
+        working-directory: private-blog
+        run: |
+          if [[ -n "$(git status --porcelain -- social-state/instagram-analytics.json)" ]]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git add social-state/instagram-analytics.json
+            git commit -m "instagram: verify Insights access and save snapshots"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
