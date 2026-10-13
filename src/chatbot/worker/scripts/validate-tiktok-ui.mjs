@@ -24,6 +24,9 @@ for (const required of [
   'commercial.checked && !commercialOk',
   "maxVideoDuration",
   "consent.checked",
+  "unaudited_client_can_only_post_to_private_accounts",
+  "the entire TikTok account must be Private",
+  "payload.tiktok_error",
 ]) {
   if (!code.includes(required) && !html.includes(required)) {
     throw new Error(`Missing TikTok audit behavior: ${required}`);

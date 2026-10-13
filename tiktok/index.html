@@ -158,7 +158,7 @@
         ACTIVE_ENV = data.environment;
         document.getElementById("environmentBadge").textContent = ACTIVE_ENV === "production" ? "Production" : "Sandbox";
         document.getElementById("environmentNotice").textContent = ACTIVE_ENV === "production" ?
-          "TikTok restricts unaudited applications to private uploads. Public posting requires approval of this app and account. Review each video and explicitly confirm." :
+          "Before TikTok approves this app, the entire TikTok account must be Private, and each uploaded video must be set to Only me. Choosing Only me on a public account is not enough. Review and explicitly confirm each post." :
           "Sandbox Direct Post is restricted to Only me (SELF_ONLY).";
         return data;
       }
@@ -419,7 +419,20 @@
         });
         const payload = await response.json().catch(() => ({}));
         if (!response.ok || !payload.ok) {
-          throw new Error(payload.message || payload.error || "TikTok upload failed.");
+          if (payload.tiktok_error === "unaudited_client_can_only_post_to_private_accounts") {
+            throw new Error(
+              "TikTok blocked this Direct Post because the TikTok ACCOUNT is not private. " +
+              "Until the app passes TikTok's audit, both the account must be Private AND " +
+              "the video visibility must be Only me. Changing only the video setting is not enough. " +
+              "In TikTok: Profile > Menu > Settings and privacy > Privacy > Private account. " +
+              "After changing it, confirm the consent box again and retry."
+            );
+          }
+          const code = String(payload.tiktok_error || payload.error || "");
+          throw new Error(
+            (payload.message || payload.error || "TikTok upload failed.") +
+            (code ? " (TikTok code: " + code + ")" : "")
+          );
         }
         return payload;
       }
