@@ -26,6 +26,25 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - name: Diagnose basic Reel views permission without publishing
+        working-directory: private-blog
+        env:
+          INSTAGRAM_ACCESS_TOKEN: ${{ secrets.INSTAGRAM_ACCESS_TOKEN }}
+          INSTAGRAM_GRAPH_VERSION: ${{ vars.INSTAGRAM_GRAPH_VERSION || 'v26.0' }}
+        run: |
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          from scripts.social_video.instagram_analytics import _insights, InsightsError
+          videos = json.loads(Path("social-state/instagram-published.json").read_text())["items"]
+          eligible = next((item for item in videos if item.get("instagramMediaId")), None)
+          if eligible:
+              try:
+                  stats = _insights(eligible["instagramMediaId"], os.environ["INSTAGRAM_ACCESS_TOKEN"], "views")
+                  print("Single-metric Instagram views test: AUTHORIZED, available=" + str(bool(stats)))
+              except InsightsError as exc:
+                  print("Single-metric Instagram views test: code=" + str(exc.code) + ", category=" + exc.message)
+          PY
       - name: Test Instagram Insights and store snapshots without publishing
         working-directory: private-blog
         env:
