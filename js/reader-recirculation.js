@@ -11,6 +11,7 @@
 
   var path = window.location.pathname.replace(/\/index\.html$/i, '/');
   var locale = /^\/blog\/pt\//.test(path) ? 'pt' : /^\/blog\/es\//.test(path) ? 'es' : 'en';
+  var category = /^\/blog\/(?:en|pt|es)\/games\//.test(path) ? 'games' : 'tech';
   var slug = path.split('/').filter(Boolean).pop() || '';
   if (!slug || slug === 'blog' || slug === 'en' || slug === 'pt' || slug === 'es') return;
 
@@ -96,7 +97,11 @@
         })
         .then(function (raw) {
           if (!Array.isArray(raw)) throw new Error('posts_invalid');
-          var localized = raw.map(localizedPost).filter(Boolean);
+          // Games must continuously lead to Games; Tech remains in Tech.
+          // Preserve the current language and only include translated posts.
+          var localized = raw.filter(function (post) {
+            return (post.blog_category || 'tech') === category;
+          }).map(localizedPost).filter(Boolean);
           var index = localized.findIndex(function (post) { return post.slug === slug; });
           if (index < 0) {
             nextIndex = 0;
