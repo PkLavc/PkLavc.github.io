@@ -1,0 +1,61 @@
+name: Publish PkLavc English Tech to DEV.to
+
+on:
+  schedule:
+    # 11:30 AM Miami during US daylight saving time; 10:30 AM in winter.
+    - cron: "30 15 * * *"
+  workflow_dispatch:
+    inputs:
+      mode:
+        type: choice
+        required: true
+        default: preview
+        description: "Preview only or publish one new English Tech article"
+        options:
+          - preview
+          - publish
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/devto-publish.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pklavc-devto-english-tech
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout private PkLavc blog with existing repository writer
+        uses: actions/checkout@v4
+        with:
+          repository: PkLavc/blog
+          ref: main
+          path: private-blog
+          token: ${{ secrets.PRIVATE_BLOG_REPO_TOKEN }}
+          fetch-depth: 0
+          persist-credentials: true
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Run offline publication and duplicate-prevention tests
+        working-directory: private-blog
+        run: python -m unittest scripts.social_video.test_devto_publisher -v
+
+      - name: Preview the next actual English Tech article
+        working-directory: private-blog
+        run: python -m scripts.social_video.devto_publisher --root . --mode preview
+
+      - name: Publish one Tech excerpt using DEV.to API
+        if: github.event_name == 'schedule' || github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.mode == 'publish')
+        working-directory: private-blog
+        env:
+          DEVTO_API_KEY: ${{ secrets.DEVTO_API_KEY }}
+        run: python -m scripts.social_video.devto_publisher --root . --mode publish
