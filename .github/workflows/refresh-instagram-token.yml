@@ -44,6 +44,10 @@ jobs:
         env:
           INSTAGRAM_ACCESS_TOKEN: ${{ secrets.INSTAGRAM_ACCESS_TOKEN }}
           INSTAGRAM_ROTATION_GITHUB_TOKEN: ${{ secrets.INSTAGRAM_TOKEN_ROTACION }}
+          INSTAGRAM_AUDIO_ACCESS_TOKEN: ${{ secrets.INSTAGRAM_AUDIO_ACCESS_TOKEN }}
+          INSTAGRAM_APP_SECRET: ${{ secrets.INSTAGRAM_APP_SECRET }}
+          INSTAGRAM_BUSINESS_ACCOUNT_ID: ${{ secrets.INSTAGRAM_BUSINESS_ACCOUNT_ID }}
+          INSTAGRAM_AUDIO_APP_ID: ${{ vars.INSTAGRAM_AUDIO_APP_ID }}
         shell: bash
         run: |
           if [[ "${{ github.event_name }}" == "push" || "${{ inputs.mode }}" == "preflight" ]]; then
@@ -51,3 +55,5 @@ jobs:
           else
             python .github/scripts/refresh_instagram_token.py
           fi
+          python -m unittest discover -s .github/scripts -p 'test_refresh_instagram_audio_token.py' -v
+          python .github/scripts/refresh_instagram_audio_token.py
