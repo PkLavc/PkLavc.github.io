@@ -1,5 +1,5 @@
 name: Generate private blog on public runner
-# Smoke tests include new article localization, image propagation and rumor classification.
+# Smoke tests cover Tech and Games EN/PT/ES translation, photos and summaries.
 
 on:
   schedule:
@@ -223,8 +223,16 @@ jobs:
           node scripts/generate-rss.mjs
           if python -m pip install "argostranslate>=1.10,<2" &&
              python -m scripts.blog_automation.install_offline_translations; then
-            python -m scripts.blog_automation.translate_pending --root . ||
-              echo "::warning::Offline translation failed; English article will still publish, and translation remains pending."
+            if [[ "$GITHUB_EVENT_NAME" == "push" ]]; then
+              # One-time catch-up for older Tech articles missing PT/ES.
+              python -m scripts.blog_automation.translate_pending --root . --category tech --max-posts 6 ||
+                echo "::warning::Tech translation backlog remains pending; no paid fallback."
+            else
+              # Generate first, then translate the newest Tech/Games articles
+              # and additional backlog during the same scheduled run.
+              python -m scripts.blog_automation.translate_pending --root . --max-posts 3 ||
+                echo "::warning::Offline translation failed; English article will still publish, and translation remains pending."
+            fi
           else
             echo "::warning::Offline Argos setup unavailable; English article will still publish without spending AI credits."
           fi
