@@ -131,6 +131,10 @@ jobs:
         with:
           path: public-site
 
+      - name: Install FFmpeg for temporary host test
+        if: github.event_name == 'push' && contains(github.event.head_commit.message, '[release-media-smoke]')
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+
       - name: Verify Instagram can fetch a transient GitHub Release MP4 (do not publish)
         if: github.event_name == 'push' && contains(github.event.head_commit.message, '[release-media-smoke]')
         working-directory: public-site
