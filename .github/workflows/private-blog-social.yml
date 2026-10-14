@@ -120,6 +120,10 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Install lightweight queue image parser dependency
+        working-directory: private-blog
+        run: python -m pip install 'Pillow>=10,<13'
+
       - name: Refill article social queues from existing blog posts
         working-directory: private-blog
         env:
