@@ -1,0 +1,102 @@
+name: Pinterest PkLavc organic Tech Games and Store Pins
+
+on:
+  schedule:
+    # Slots for US audience: 3 Games, 2 Tech, 2 curated Store Pins per day.
+    # Job does not start until Standard tier and public publishing are enabled.
+    - cron: "15 12,13,14,15,17,19,21 * * *"
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "Preview, check OAuth, Trial-only test, or publish Standard"
+        type: choice
+        required: true
+        default: preview
+        options: [preview, check, trial-publish, publish]
+      category:
+        description: "Post category"
+        type: choice
+        required: true
+        default: games
+        options: [games, tech, store]
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/pinterest-publish.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pklavc-pinterest-tech-games-store
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    if: github.event_name != 'schedule' || (vars.PINTEREST_API_TIER == 'standard' && vars.PINTEREST_PUBLIC_ENABLED == 'true')
+    runs-on: ubuntu-latest
+    timeout-minutes: 14
+    steps:
+      - name: Checkout private PkLavc blog publisher with durable publication state
+        uses: actions/checkout@v4
+        with:
+          repository: PkLavc/blog
+          ref: main
+          token: ${{ secrets.PRIVATE_BLOG_REPO_TOKEN }}
+          path: private-blog
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Checkout public PkLavc Store catalog
+        uses: actions/checkout@v4
+        with:
+          repository: PkLavc/PkLavc.github.io
+          ref: main
+          path: public-site
+          fetch-depth: 1
+          persist-credentials: false
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Run no-cost offline tests
+        working-directory: private-blog
+        run: |
+          python -m pip install --disable-pip-version-check Pillow
+          python -m unittest scripts.social_video.test_pinterest_publisher -v
+
+      - name: Preview actual English Games and Tech stories plus live store inventory
+        working-directory: private-blog
+        run: |
+          python -m scripts.social_video.pinterest_publisher --root . --public-site ../public-site --mode preview --category games
+          python -m scripts.social_video.pinterest_publisher --root . --public-site ../public-site --mode preview --category tech
+          python -m scripts.social_video.pinterest_publisher --root . --public-site ../public-site --mode preview --category store
+
+      - name: Verify account or publish a Pin only after explicit permission
+        working-directory: private-blog
+        env:
+          PINTEREST_ACCESS_TOKEN: ${{ secrets.PINTEREST_ACCESS_TOKEN }}
+          PINTEREST_API_TIER: ${{ vars.PINTEREST_API_TIER }}
+          PINTEREST_PUBLIC_ENABLED: ${{ vars.PINTEREST_PUBLIC_ENABLED }}
+          EVENT_NAME: ${{ github.event_name }}
+          MANUAL_MODE: ${{ inputs.mode }}
+          MANUAL_CATEGORY: ${{ inputs.category }}
+        shell: bash
+        run: |
+          if [[ "$EVENT_NAME" == "schedule" ]]; then
+            mode=publish
+            case "$(date -u +%H)" in
+              12|14|17) category=games ;;
+              13|19) category=tech ;;
+              15|21) category=store ;;
+              *) echo "No Pinterest slot matched"; exit 0 ;;
+            esac
+          elif [[ "$EVENT_NAME" == "push" ]]; then
+            mode=preview
+            category=games
+          else
+            mode="${MANUAL_MODE:-preview}"
+            category="${MANUAL_CATEGORY:-games}"
+          fi
+          python -m scripts.social_video.pinterest_publisher --root . --public-site ../public-site --mode "$mode" --category "$category"
