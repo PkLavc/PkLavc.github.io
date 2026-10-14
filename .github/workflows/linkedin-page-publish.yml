@@ -1,0 +1,68 @@
+name: Publish PkLavc Tech and Games to LinkedIn (English)
+
+on:
+  schedule:
+    # 10:30/11:30 AM and 4:30/5:30 PM US Eastern, depending on DST.
+    - cron: "30 14,20 * * *"
+  workflow_dispatch:
+    inputs:
+      mode:
+        type: choice
+        description: "Preview generated LinkedIn posts or publish with approved LinkedIn token"
+        required: true
+        default: preview
+        options:
+          - preview
+          - publish
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/linkedin-page-publish.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: linkedin-page-english-posts
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout private English Tech and Games article sources
+        uses: actions/checkout@v4
+        with:
+          repository: PkLavc/blog
+          ref: main
+          token: ${{ secrets.PRIVATE_BLOG_REPO_TOKEN }}
+          path: private-blog
+          fetch-depth: 0
+          persist-credentials: true
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Test authentic English editorial and LinkedIn API payload offline
+        working-directory: private-blog
+        run: |
+          python -m unittest scripts.social_video.test_linkedin_oauth scripts.social_video.test_linkedin_page -v
+
+      - name: Preview posts without sending to LinkedIn
+        if: github.event_name == 'push' || inputs.mode == 'preview'
+        working-directory: private-blog
+        run: python -m scripts.social_video.linkedin_page --root . --mode preview
+
+      - name: Publish only after LinkedIn Community Management authorization
+        if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.mode == 'publish')
+        working-directory: private-blog
+        env:
+          LINKEDIN_CLIENT_ID: ${{ secrets.LINKEDIN_CLIENT_ID }}
+          LINKEDIN_CLIENT_SECRET: ${{ secrets.LINKEDIN_CLIENT_SECRET }}
+          LINKEDIN_REFRESH_TOKEN: ${{ secrets.LINKEDIN_REFRESH_TOKEN }}
+          LINKEDIN_ACCESS_TOKEN: ${{ secrets.LINKEDIN_ACCESS_TOKEN }}
+          LINKEDIN_ORGANIZATION_ID: ${{ secrets.LINKEDIN_ORGANIZATION_ID }}
+          LINKEDIN_API_VERSION: "202609"
+        run: python -m scripts.social_video.linkedin_page --root . --mode publish
