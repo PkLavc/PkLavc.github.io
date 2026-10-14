@@ -65,7 +65,7 @@ jobs:
 
       - name: Run Mastodon publisher offline regression tests
         working-directory: private-blog
-        run: python -m unittest scripts.social_video.test_mastodon_publisher -v
+        run: python -m unittest scripts.social_video.test_mastodon_publisher scripts.social_video.test_post_images -v
 
       - name: Preview both English content categories
         working-directory: private-blog
