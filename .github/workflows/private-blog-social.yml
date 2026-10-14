@@ -38,6 +38,8 @@ concurrency:
 jobs:
   smoke:
     if: github.event_name == 'push' || inputs.mode == 'smoke'
+    permissions:
+      contents: write  # Only to create and delete the transient test release.
     runs-on: ubuntu-latest
     timeout-minutes: 20
     env:
@@ -122,6 +124,21 @@ jobs:
               except RuntimeError:
                   print(f"Music catalog has no matching tracks for {category}; video publication must remain paused.")
           PY
+
+      - name: Checkout current public repo for transient media-host test
+        if: github.event_name == 'push' && contains(github.event.head_commit.message, '[release-media-smoke]')
+        uses: actions/checkout@v4
+        with:
+          path: public-site
+
+      - name: Verify Instagram can fetch a transient GitHub Release MP4 (do not publish)
+        if: github.event_name == 'push' && contains(github.event.head_commit.message, '[release-media-smoke]')
+        working-directory: public-site
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          INSTAGRAM_AUDIO_ACCESS_TOKEN: ${{ secrets.INSTAGRAM_AUDIO_ACCESS_TOKEN }}
+          INSTAGRAM_BUSINESS_ACCOUNT_ID: ${{ secrets.INSTAGRAM_BUSINESS_ACCOUNT_ID }}
+        run: python .github/scripts/test_instagram_github_release_media.py
 
   publish:
     if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && (inputs.mode == 'publish' || inputs.mode == 'store-products-preview' || inputs.mode == 'store-products-publish')) || (github.event_name == 'push' && contains(github.event.head_commit.message, '[social-publish-now]'))
