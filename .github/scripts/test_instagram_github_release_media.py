@@ -99,7 +99,7 @@ def test() -> None:
             status = "UNKNOWN"
             for attempt in range(18):
                 status = meta("GET", f"/{container}",{
-                    "fields":"status_code,status", "access_token":access_token,
+                    "fields":"status_code", "access_token":access_token,
                 }).get("status_code","UNKNOWN")
                 if status in ("FINISHED","ERROR","EXPIRED"):
                     break
