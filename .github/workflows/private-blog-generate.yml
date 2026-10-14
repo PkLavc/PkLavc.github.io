@@ -4,6 +4,7 @@ name: Generate private blog on public runner
 on:
   schedule:
     - cron: "17 * * * *" # Hourly; one in five UTC hour slots is Tech, four are GTA 6
+    - cron: "43 15 * * 3" # Weekly Microsoft-only Tech spotlight, 15:43 UTC on Wednesday
   workflow_dispatch:
     inputs:
       category:
@@ -172,16 +173,24 @@ jobs:
         shell: bash
         env:
           EVENT_NAME: ${{ github.event_name }}
+          SCHEDULE_TRIGGER: ${{ github.event.schedule }}
           REQUESTED_CATEGORY: ${{ inputs.category }}
         run: |
+          focus=all
           if [[ "$EVENT_NAME" == "schedule" ]]; then
-            slot=$(( ($(date -u +%s) / 3600) % 5 ))
-            if [[ "$slot" -eq 0 ]]; then category=tech; else category=games; fi
+            if [[ "$SCHEDULE_TRIGGER" == "43 15 * * 3" ]]; then
+              category=tech
+              focus=microsoft
+            else
+              slot=$(( ($(date -u +%s) / 3600) % 5 ))
+              if [[ "$slot" -eq 0 ]]; then category=tech; else category=games; fi
+            fi
           else
             category="${REQUESTED_CATEGORY:-tech}"
           fi
           echo "category=$category" >> "$GITHUB_OUTPUT"
-          echo "Hourly editorial lane: $category"
+          echo "focus=$focus" >> "$GITHUB_OUTPUT"
+          echo "Editorial lane: $category; Tech focus: $focus"
 
       - name: Collect, select, generate and validate
         if: github.event_name == 'schedule' || inputs.mode == 'generate'
@@ -200,6 +209,7 @@ jobs:
           MAX_CLOUDFLARE_AI_HTTP_REQUESTS_PER_RUN: ${{ vars.MAX_CLOUDFLARE_AI_HTTP_REQUESTS_PER_RUN || '3' }}
           DRY_RUN: "false"
           BLOG_CATEGORY: ${{ steps.lane.outputs.category }}
+          TECH_FOCUS: ${{ steps.lane.outputs.focus }}
         run: python -m scripts.blog_automation.run --root .
 
       - name: Cache free offline translation models
