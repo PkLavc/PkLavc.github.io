@@ -1,0 +1,52 @@
+name: Check DEV.to API Key
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/devto-api-check.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Validate DEV.to authorization without publishing
+        env:
+          DEVTO_API_KEY: ${{ secrets.DEVTO_API_KEY }}
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          import urllib.error
+          import urllib.request
+
+          token = os.environ.get("DEVTO_API_KEY", "").strip()
+          if not token or token.lower() in ("null", "none", "undefined"):
+              raise SystemExit("::error::DEVTO_API_KEY is missing or a placeholder in this repository.")
+
+          request = urllib.request.Request(
+              "https://dev.to/api/users/me",
+              headers={
+                  "api-key": token,
+                  "Accept": "application/vnd.forem.api-v1+json",
+                  "User-Agent": "PkLavc-DEVto-AuthCheck/1.0",
+              },
+          )
+          try:
+              with urllib.request.urlopen(request, timeout=25) as response:
+                  data = json.load(response)
+          except urllib.error.HTTPError as exc:
+              raise SystemExit(f"::error::DEV.to rejected the API Key (HTTP {exc.code}).") from None
+          except (urllib.error.URLError, TimeoutError, ValueError):
+              raise SystemExit("::error::Could not validate DEV.to key against the official API.") from None
+          if not isinstance(data, dict) or not data.get("username"):
+              raise SystemExit("::error::DEV.to did not confirm a linked user.")
+          print("SUCCESS: DEV.to API Key works for @" + str(data["username"]))
+          print("No article was created or published.")
+          PY
