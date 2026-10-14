@@ -78,7 +78,7 @@ jobs:
         env:
           PINTEREST_ACCESS_TOKEN: ${{ secrets.PINTEREST_ACCESS_TOKEN }}
           PINTEREST_SANDBOX_ACCESS_TOKEN: ${{ secrets.PINTEREST_SANDBOX_ACCESS_TOKEN }}
-          PINTEREST_API_TIER: ${{ inputs.mode == 'trial-publish' && 'trial' || vars.PINTEREST_API_TIER }}
+          PINTEREST_API_TIER: ${{ github.event_name == 'push' && 'trial' || (inputs.mode == 'trial-publish' && 'trial' || vars.PINTEREST_API_TIER) }}
           PINTEREST_PUBLIC_ENABLED: ${{ vars.PINTEREST_PUBLIC_ENABLED }}
           EVENT_NAME: ${{ github.event_name }}
           MANUAL_MODE: ${{ inputs.mode }}
@@ -94,7 +94,8 @@ jobs:
               *) echo "No Pinterest slot matched"; exit 0 ;;
             esac
           elif [[ "$EVENT_NAME" == "push" ]]; then
-            mode=preview
+            # One owner-visible Sandbox test requested after configuring Sandbox token.
+            mode=trial-publish
             category=games
           else
             mode="${MANUAL_MODE:-preview}"
