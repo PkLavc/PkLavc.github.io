@@ -51,7 +51,7 @@ jobs:
       - name: Verify Tech-only English editorial and LinkedIn API payload offline
         working-directory: private-blog
         run: |
-          python -m unittest scripts.social_video.test_linkedin_oauth scripts.social_video.test_linkedin_page -v
+          python -m unittest scripts.social_video.test_linkedin_oauth scripts.social_video.test_linkedin_page scripts.social_video.test_post_images -v
 
       - name: Preview posts without sending to LinkedIn
         if: github.event_name == 'push' || inputs.mode == 'preview'
