@@ -1,0 +1,53 @@
+name: Verify Pinterest OAuth, store deep links and safe activation
+
+on:
+  pull_request:
+    paths:
+      - ".github/scripts/pinterest_oauth.py"
+      - ".github/scripts/test_pinterest_oauth.py"
+      - "pinterest/**"
+      - "store/assets/store-runtime.js"
+      - ".github/workflows/test-pinterest-integration.yml"
+  push:
+    branches: [main]
+    paths:
+      - ".github/scripts/pinterest_oauth.py"
+      - ".github/scripts/test_pinterest_oauth.py"
+      - "pinterest/**"
+      - "store/assets/store-runtime.js"
+      - ".github/workflows/test-pinterest-integration.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  offline:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Run 7 Pinterest OAuth and GitHub Secrets rotation tests
+        run: python -m unittest discover -s .github/scripts -p test_pinterest_oauth.py -v
+      - name: Validate Pinterest OAuth browser scripts and Store JavaScript syntax
+        run: |
+          node --check store/assets/store-runtime.js
+          python - <<'PY'
+          from pathlib import Path
+          import re, subprocess, tempfile
+          for filename in ['pinterest/connect/index.html', 'pinterest/callback/index.html']:
+              source = Path(filename).read_text()
+              js = re.search(r'<script>(.*?)</script>', source, re.S)
+              if not js: raise SystemExit('Missing OAuth browser JavaScript: ' + filename)
+              with tempfile.NamedTemporaryFile(suffix='.js') as out:
+                  out.write(js.group(1).encode())
+                  out.flush()
+                  subprocess.run(['node', '--check', out.name], check=True)
+              assert 'no-referrer' in source
+          assert 'https://pklavc.com/pinterest/callback/' in Path('pinterest/connect/index.html').read_text()
+          assert "get('product')" in Path('store/assets/store-runtime.js').read_text()
+          print('OAuth callback, CSRF state and Store deep-link scripts syntax verified')
+          PY
