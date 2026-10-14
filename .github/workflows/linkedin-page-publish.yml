@@ -45,6 +45,9 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Install first-party and source image converter
+        run: python -m pip install --disable-pip-version-check Pillow
+
       - name: Verify Tech-only English editorial and LinkedIn API payload offline
         working-directory: private-blog
         run: |
