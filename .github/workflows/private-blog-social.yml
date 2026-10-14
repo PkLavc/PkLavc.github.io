@@ -87,6 +87,7 @@ jobs:
           python -m pip install -r scripts/blog_automation/requirements.txt
           python -m pip install 'requests>=2.32,<3'
 
+      # Includes GitHub Release upload/cleanup and Meta audio-pagination tests.
       - name: Validate private social code without publishing
         working-directory: private-blog
         run: |
