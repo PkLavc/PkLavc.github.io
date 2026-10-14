@@ -101,7 +101,14 @@ test("all source pages retain visible markup, runtime scripts and styles; normal
   for (const file of pages) {
     const input = fs.readFileSync(file, "utf8");
     const output = normalize(input);
-    assert.equal(normalize(output), output, `Idempotence: ${file}`);
+    const twice = normalize(output);
+    if (twice !== output) {
+      let n = 0; while (n < Math.min(twice.length, output.length) && twice[n] === output[n]) n++;
+      console.error("SEO idempotence first difference:", path.relative(ROOT, file), "offset", n,
+        "once=", JSON.stringify(output.slice(Math.max(0,n-120), n+280)),
+        "twice=", JSON.stringify(twice.slice(Math.max(0,n-120), n+280)));
+    }
+    assert.equal(twice, output, `Idempotence: ${file}`);
     assert.equal(body(output), body(input), `Visible body: ${file}`);
     assert.deepEqual(scripts(output), scripts(input), `Runtime scripts: ${file}`);
     assert.deepEqual(styles(output), styles(input), `Styles: ${file}`);
