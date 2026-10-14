@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<meta name="referrer" content="no-referrer">
+<title>Pinterest authorization | PkLavc</title>
+<style>html{color-scheme:dark}body{font:16px/1.6 system-ui,sans-serif;background:#101010;color:#f1f1f1;margin:0;min-height:100vh;display:grid;place-items:center}main{width:min(660px,calc(100vw - 40px));padding:32px}h1{font-size:26px;font-weight:600}p{color:#c7c7c7}button{padding:12px 18px;border:1px solid #ccc;background:transparent;color:white;cursor:pointer;border-radius:5px}button:focus-visible{outline:2px solid white}code{display:block;overflow-wrap:anywhere;white-space:normal;font-size:14px;padding:16px;border:1px solid #666;color:#fff;background:#181818}a{color:#fff}</style>
+</head>
+<body><main>
+<h1>Pinterest authorization</h1>
+<p id="message">Checking Pinterest's response…</p>
+<code id="code" hidden></code>
+<button id="copy" type="button" hidden>Copy one-time authorization code</button>
+<p id="instructions" hidden>Add the copied code as <strong>PINTEREST_OAUTH_CODE</strong> in <a href="https://github.com/PkLavc/PkLavc.github.io/settings/secrets/actions" rel="noopener noreferrer">GitHub Actions Secrets</a>, then run the Pinterest token workflow in <em>bootstrap</em> mode. Never send the code in a chat.</p>
+</main>
+<script>
+(function(){
+  "use strict";
+  var params=new URLSearchParams(location.search);
+  var code=params.get("code"), returned=params.get("state");
+  var error=params.get("error");
+  // Prevent leaking an authorization code via copied address, history or referer.
+  history.replaceState(null,"",location.pathname);
+  var expected=sessionStorage.getItem("pklavc_pinterest_oauth_state");
+  sessionStorage.removeItem("pklavc_pinterest_oauth_state");
+  var message=document.getElementById("message");
+  if(error){message.textContent="Pinterest declined authorization. Check the application access status.";return;}
+  if(!code || !returned || !expected || returned!==expected){
+    message.textContent="Authorization could not be verified. Start again from pklavc.com/pinterest/connect/ in the same browser tab.";
+    return;
+  }
+  message.textContent="Authorization approved for the current browser session. The code below can be exchanged only once.";
+  var span=document.getElementById("code");
+  var button=document.getElementById("copy");
+  span.textContent=code;
+  span.hidden=false;
+  button.hidden=false;
+  document.getElementById("instructions").hidden=false;
+  button.onclick=function(){
+    if(!navigator.clipboard){span.focus();return;}
+    navigator.clipboard.writeText(code).then(function(){button.textContent="Copied";});
+  };
+}());
+</script></body></html>
