@@ -29,7 +29,7 @@ concurrency:
 
 jobs:
   oauth:
-    if: github.event_name != 'schedule' || vars.PINTEREST_API_TIER == 'trial' || vars.PINTEREST_API_TIER == 'standard'
+    # Refresh active tokens independent of manual Trial/Standard publication settings.
     runs-on: ubuntu-latest
     timeout-minutes: 8
     steps:
@@ -50,9 +50,8 @@ jobs:
         shell: bash
         run: |
           if [[ "$EVENT_NAME" == "push" ]]; then
-            # One-time authorized user request: exchange PINTEREST_OAUTH_CODE now.
-            # Restore to preflight immediately after verifying this first bootstrap.
-            mode=bootstrap
+            # OAuth bootstrap is already completed; never exchange an old code on push.
+            mode=preflight
           elif [[ "$EVENT_NAME" == "schedule" ]]; then
             mode=refresh
           else
