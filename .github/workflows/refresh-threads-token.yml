@@ -1,0 +1,51 @@
+name: Automatically refresh PkLavc Threads token
+
+on:
+  schedule:
+    # Threads long-lived access tokens last ~60 days; renew twice monthly.
+    - cron: "36 6 1,15 * *"
+  workflow_dispatch:
+    inputs:
+      mode:
+        type: choice
+        required: true
+        default: preflight
+        options: [preflight, renew]
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/refresh-threads-token.yml"
+      - ".github/scripts/refresh_threads_token.py"
+      - ".github/scripts/test_refresh_threads_token.py"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pklavc-threads-token-rotation
+  cancel-in-progress: false
+
+jobs:
+  renew:
+    runs-on: ubuntu-latest
+    timeout-minutes: 9
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Offline tests for secure token maintenance
+        run: python -m unittest discover -s .github/scripts -p test_refresh_threads_token.py -v
+      - name: Preflight or extend Threads access token and persist Secret
+        env:
+          THREADS_ACCESS_TOKEN: ${{ secrets.THREADS_ACCESS_TOKEN }}
+          INSTAGRAM_TOKEN_ROTACION: ${{ secrets.INSTAGRAM_TOKEN_ROTACION }}
+          EVENT_TYPE: ${{ github.event_name }}
+          REQUESTED_MODE: ${{ inputs.mode }}
+        shell: bash
+        run: |
+          if [[ "$EVENT_TYPE" == "push" || "$REQUESTED_MODE" == "preflight" ]]; then
+            python .github/scripts/refresh_threads_token.py --preflight
+          else
+            python .github/scripts/refresh_threads_token.py
+          fi
