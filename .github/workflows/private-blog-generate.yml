@@ -132,7 +132,7 @@ jobs:
               print(f"Offline {locale.upper()} article translation: PASS")
           PY
   generate:
-    if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && (inputs.mode == 'generate' || inputs.mode == 'translate'))
+    if: github.event_name == 'schedule' || (github.event_name == 'push' && contains(github.event.head_commit.message, '[blog-translate-backfill]')) || (github.event_name == 'workflow_dispatch' && (inputs.mode == 'generate' || inputs.mode == 'translate'))
     runs-on: ubuntu-latest
     timeout-minutes: 35
     outputs:
@@ -203,7 +203,7 @@ jobs:
         run: python -m scripts.blog_automation.run --root .
 
       - name: Cache free offline translation models
-        if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && (inputs.mode == 'generate' || inputs.mode == 'translate'))
+        if: github.event_name == 'schedule' || (github.event_name == 'push' && contains(github.event.head_commit.message, '[blog-translate-backfill]')) || (github.event_name == 'workflow_dispatch' && (inputs.mode == 'generate' || inputs.mode == 'translate'))
         uses: actions/cache@v4
         with:
           path: |
@@ -212,7 +212,7 @@ jobs:
           key: ${{ runner.os }}-argos-en-pt-es-v1
 
       - name: Translate new English articles immediately with free offline models
-        if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && (inputs.mode == 'generate' || inputs.mode == 'translate'))
+        if: github.event_name == 'schedule' || (github.event_name == 'push' && contains(github.event.head_commit.message, '[blog-translate-backfill]')) || (github.event_name == 'workflow_dispatch' && (inputs.mode == 'generate' || inputs.mode == 'translate'))
         working-directory: private-blog
         id: blog_translation
         env:
