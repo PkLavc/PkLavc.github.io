@@ -1,0 +1,50 @@
+name: Renew LinkedIn page token in both repositories
+
+on:
+  schedule:
+    # Run twice a month; new access tokens have their own lifetime.
+    - cron: "41 7 1,15 * *"
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/refresh-linkedin-token.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: linkedin-token-renewal
+  cancel-in-progress: false
+
+jobs:
+  renew:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Checkout private PkLavc publisher code
+        uses: actions/checkout@v4
+        with:
+          repository: PkLavc/blog
+          ref: main
+          token: ${{ secrets.PRIVATE_BLOG_REPO_TOKEN }}
+          path: private-blog
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Test null handling and secret rotation offline
+        working-directory: private-blog
+        run: python -m unittest scripts.social_video.test_linkedin_oauth -v
+
+      - name: Renew only when an actual refresh token is configured
+        if: github.event_name != 'push'
+        working-directory: private-blog
+        env:
+          LINKEDIN_CLIENT_ID: ${{ secrets.LINKEDIN_CLIENT_ID }}
+          LINKEDIN_CLIENT_SECRET: ${{ secrets.LINKEDIN_CLIENT_SECRET }}
+          LINKEDIN_REFRESH_TOKEN: ${{ secrets.LINKEDIN_REFRESH_TOKEN }}
+          LINKEDIN_ACCESS_TOKEN: ${{ secrets.LINKEDIN_ACCESS_TOKEN }}
+          LINKEDIN_ROTATION_GITHUB_TOKEN: ${{ secrets.LINKEDIN_ROTATION_GITHUB_TOKEN || secrets.INSTAGRAM_TOKEN_ROTACION }}
+        run: python -m scripts.social_video.rotate_linkedin_secrets
