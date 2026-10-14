@@ -189,7 +189,7 @@ jobs:
               item.get("status", "pending") == "pending" and
               (category_of(item) != "games" or is_games_title(str(item.get("title") or "") + " " + str(item.get("description") or ""))) and
               published_counts(load(f"{platform}-published.json", "items"), today)[category_of(item)] < DAILY_LIMITS[category_of(item)]
-              for platform in ("instagram", "youtube")
+              for platform in (("youtube",) if os.environ.get("SOCIAL_IG_UPLOAD_MODE", "direct") == "direct" else ("instagram", "youtube"))
               for item in load(f"{platform}-queue.json", "items")
           )
           schedule_run = os.environ.get("EVENT_NAME") == "schedule" and os.environ.get("EVENT_SCHEDULE") == "0 12 * * 2,5"
