@@ -126,10 +126,17 @@ jobs:
           PY
 
       - name: Checkout current public repo for transient media-host test
-        if: github.event_name == 'push' && contains(github.event.head_commit.message, '[release-media-smoke]')
+        if: github.event_name == 'push' && (contains(github.event.head_commit.message, '[release-media-smoke]') || contains(github.event.head_commit.message, '[inspect-ig-music]'))
         uses: actions/checkout@v4
         with:
           path: public-site
+
+      - name: Inspect past verified MUSIC choices without publishing
+        if: github.event_name == 'push' && contains(github.event.head_commit.message, '[inspect-ig-music]')
+        working-directory: public-site
+        env:
+          INSTAGRAM_AUDIO_ACCESS_TOKEN: ${{ secrets.INSTAGRAM_AUDIO_ACCESS_TOKEN }}
+        run: python .github/scripts/test_instagram_github_release_media.py --inspect-music
 
       - name: Install FFmpeg for temporary host test
         if: github.event_name == 'push' && contains(github.event.head_commit.message, '[release-media-smoke]')
