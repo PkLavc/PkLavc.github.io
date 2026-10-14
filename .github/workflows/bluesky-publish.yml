@@ -50,6 +50,12 @@ jobs:
           fetch-depth: 0
           persist-credentials: true
 
+      - name: Verify English Tech and Games source trees exist
+        working-directory: private-blog
+        run: |
+          test -d en
+          test -d games/en
+
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
