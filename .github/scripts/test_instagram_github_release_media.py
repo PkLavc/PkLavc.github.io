@@ -12,6 +12,7 @@ from pathlib import Path
 import subprocess
 import tempfile
 import time
+import sys
 import urllib.parse
 import urllib.request
 import urllib.error
@@ -117,5 +118,20 @@ def test() -> None:
                     print("::error::Temporary release cleanup failed. Manual cleanup required:", tag)
                     raise
 
+def inspect_music() -> None:
+    token = os.environ["INSTAGRAM_AUDIO_ACCESS_TOKEN"]
+    for aid in ("1893379722072857", "1064870852967241", "4582304738710634"):
+        try:
+            info = meta("GET", f"/{aid}", {
+                "fields": "id,title,display_artist,audio_type",
+                "access_token": token,
+            })
+            print("Previous successful MUSIC", aid, "metadata:", json.dumps(info, ensure_ascii=False))
+        except RuntimeError:
+            print("Previous MUSIC", aid, "metadata unavailable.")
+
 if __name__ == "__main__":
-    test()
+    if "--inspect-music" in sys.argv:
+        inspect_music()
+    else:
+        test()
