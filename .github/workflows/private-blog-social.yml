@@ -91,6 +91,22 @@ jobs:
           python -m compileall -q scripts/social_video
           python -m unittest scripts.social_video.test_motion scripts.social_video.test_direct_upload scripts.social_video.test_render scripts.social_video.test_products scripts.social_video.test_limits scripts.social_video.test_analytics scripts.social_video.test_instagram_analytics scripts.blog_automation.test_game_lane scripts.blog_automation.test_json_safe
 
+      - name: Validate relevant Instagram MUSIC is available without publishing
+        working-directory: private-blog
+        env:
+          INSTAGRAM_AUDIO_ACCESS_TOKEN: ${{ secrets.INSTAGRAM_AUDIO_ACCESS_TOKEN }}
+          INSTAGRAM_BUSINESS_ACCOUNT_ID: ${{ secrets.INSTAGRAM_BUSINESS_ACCOUNT_ID }}
+        run: |
+          python - <<'PY'
+          import os
+          from scripts.social_video.publishers import _trending_instagram_audio
+          account = os.environ["INSTAGRAM_BUSINESS_ACCOUNT_ID"]
+          for category in ("games", "tech"):
+              audio = _trending_instagram_audio(account, category)
+              assert audio["audio_type"] == "music"
+              print(f"Relevant catalog MUSIC found for {category}; nothing published.")
+          PY
+
   publish:
     if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && (inputs.mode == 'publish' || inputs.mode == 'store-products-preview' || inputs.mode == 'store-products-publish')) || (github.event_name == 'push' && contains(github.event.head_commit.message, '[social-publish-now]'))
     runs-on: ubuntu-latest
