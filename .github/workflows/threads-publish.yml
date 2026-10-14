@@ -1,0 +1,96 @@
+name: Publish PkLavc Tech and Games to Threads
+
+on:
+  schedule:
+    # Eight US Eastern daytime slots; 6 Games and 2 Tech preferred.
+    - cron: "25 12,13,14,15,16,17,19,21 * * *"
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "Check account token, preview articles or publish one"
+        required: true
+        type: choice
+        default: check
+        options: [check, preview, publish]
+      category:
+        description: "Preferred category for manual publication"
+        required: true
+        type: choice
+        default: games
+        options: [games, tech]
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/threads-publish.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pklavc-threads-english-tech-games
+  cancel-in-progress: false
+
+jobs:
+  syndicate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out private original PkLavc article sources
+        uses: actions/checkout@v4
+        with:
+          repository: PkLavc/blog
+          ref: main
+          path: private-blog
+          token: ${{ secrets.PRIVATE_BLOG_REPO_TOKEN }}
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Ensure Tech and Games sources are present
+        working-directory: private-blog
+        run: |
+          test -d en
+          test -d games/en
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install image test dependency (no external paid API)
+        run: python -m pip install --disable-pip-version-check Pillow
+
+      - name: Test official Threads publication API logic offline
+        working-directory: private-blog
+        run: python -m unittest scripts.social_video.test_threads_publisher -v
+
+      - name: Preview candidate English Games and Tech articles
+        working-directory: private-blog
+        run: |
+          python -m scripts.social_video.threads_publisher --root . --mode preview --category games
+          python -m scripts.social_video.threads_publisher --root . --mode preview --category tech
+
+      - name: Verify actual Threads account and token before publishing
+        if: github.event_name != 'workflow_dispatch' || inputs.mode != 'preview'
+        working-directory: private-blog
+        env:
+          THREADS_ACCESS_TOKEN: ${{ secrets.THREADS_ACCESS_TOKEN }}
+        run: python -m scripts.social_video.threads_publisher --root . --mode check
+
+      - name: Publish one original image news post with direct blog link
+        if: github.event_name == 'schedule' || github.event_name == 'push' || inputs.mode == 'publish'
+        working-directory: private-blog
+        env:
+          THREADS_ACCESS_TOKEN: ${{ secrets.THREADS_ACCESS_TOKEN }}
+          EVENT_NAME: ${{ github.event_name }}
+          MANUAL_CATEGORY: ${{ inputs.category }}
+        shell: bash
+        run: |
+          category="${MANUAL_CATEGORY:-games}"
+          if [[ "$EVENT_NAME" == "schedule" ]]; then
+            hour="$(date -u +%H)"
+            if [[ "$hour" == "14" || "$hour" == "19" ]]; then
+              category="tech"
+            else
+              category="games"
+            fi
+          fi
+          python -m scripts.social_video.threads_publisher --root . --mode publish --category "$category"
