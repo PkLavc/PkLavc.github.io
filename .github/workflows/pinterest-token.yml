@@ -1,0 +1,59 @@
+name: Pinterest OAuth bootstrap and automatic token refresh
+
+on:
+  schedule:
+    # Continuous refresh tokens on new Pinterest apps: access 30d, refresh 60d.
+    # Check/refresh every 15 days after approval and initial OAuth bootstrap.
+    - cron: "27 7 1,16 * *"
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "Validate GitHub/App access, exchange one-time code or renew tokens"
+        type: choice
+        required: true
+        default: preflight
+        options: [preflight, bootstrap, refresh]
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/pinterest-token.yml"
+      - ".github/scripts/pinterest_oauth.py"
+      - ".github/scripts/test_pinterest_oauth.py"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pklavc-pinterest-oauth-rotation
+  cancel-in-progress: false
+
+jobs:
+  oauth:
+    if: github.event_name != 'schedule' || vars.PINTEREST_API_TIER == 'trial' || vars.PINTEREST_API_TIER == 'standard'
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Offline OAuth and rotation tests
+        run: python -m unittest discover -s .github/scripts -p test_pinterest_oauth.py -v
+      - name: Validate or bootstrap OAuth or refresh existing Pinterest tokens
+        env:
+          PINTEREST_APP_SECRET: ${{ secrets.PINTEREST_APP_SECRET }}
+          PINTEREST_OAUTH_CODE: ${{ secrets.PINTEREST_OAUTH_CODE }}
+          PINTEREST_REFRESH_TOKEN: ${{ secrets.PINTEREST_REFRESH_TOKEN }}
+          INSTAGRAM_TOKEN_ROTACION: ${{ secrets.INSTAGRAM_TOKEN_ROTACION }}
+          EVENT_NAME: ${{ github.event_name }}
+          MANUAL_MODE: ${{ inputs.mode }}
+        shell: bash
+        run: |
+          if [[ "$EVENT_NAME" == "push" ]]; then
+            mode=preflight
+          elif [[ "$EVENT_NAME" == "schedule" ]]; then
+            mode=refresh
+          else
+            mode="${MANUAL_MODE:-preflight}"
+          fi
+          python .github/scripts/pinterest_oauth.py --mode "$mode"
