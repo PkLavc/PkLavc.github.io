@@ -409,9 +409,28 @@
     cards = products.map(productCard);
     defaultOrder = cards.slice();
     cards.forEach(function (card) { grid.appendChild(card); });
+    // Affiliate Pinterest pins deep-link to an actual product in our own store.
+    // This affects only links with ?product= and preserves normal store sorting.
+    var requestedProductId = new URLSearchParams(location.search).get('product');
+    if (requestedProductId) {
+      var featuredCard = cards.find(function (card) {
+        return card.dataset.productId === requestedProductId;
+      });
+      if (featuredCard) grid.prepend(featuredCard);
+    }
     renderFilters();
     currencyBounds();
     applyFilters();
+    if (requestedProductId) {
+      var pinnedCard = cards.find(function (card) {
+        return card.dataset.productId === requestedProductId;
+      });
+      if (pinnedCard && !pinnedCard.hidden) {
+        requestAnimationFrame(function () {
+          pinnedCard.scrollIntoView({ block: 'center', behavior: 'instant' });
+        });
+      }
+    }
   }
 
   function bindControls() {
