@@ -50,7 +50,9 @@ jobs:
         shell: bash
         run: |
           if [[ "$EVENT_NAME" == "push" ]]; then
-            mode=preflight
+            # One-time authorized user request: exchange PINTEREST_OAUTH_CODE now.
+            # Restore to preflight immediately after verifying this first bootstrap.
+            mode=bootstrap
           elif [[ "$EVENT_NAME" == "schedule" ]]; then
             mode=refresh
           else
