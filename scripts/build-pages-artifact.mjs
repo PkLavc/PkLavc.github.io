@@ -59,6 +59,7 @@ const publicEntries = [
   "js",
   "lab",
   "projects",
+  "pinterest",
   "pt",
   "ia",
   "stacks",
