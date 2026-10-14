@@ -1,4 +1,4 @@
-name: Publish PkLavc Tech and Games to LinkedIn (English)
+name: Publish PkLavc Tech to LinkedIn (English)
 
 on:
   schedule:
@@ -31,7 +31,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - name: Checkout private English Tech and Games article sources
+      - name: Checkout private English Tech articles
         uses: actions/checkout@v4
         with:
           repository: PkLavc/blog
@@ -45,7 +45,7 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Test authentic English editorial and LinkedIn API payload offline
+      - name: Verify Tech-only English editorial and LinkedIn API payload offline
         working-directory: private-blog
         run: |
           python -m unittest scripts.social_video.test_linkedin_oauth scripts.social_video.test_linkedin_page -v
