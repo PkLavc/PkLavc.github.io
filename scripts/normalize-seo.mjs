@@ -13,12 +13,22 @@ const PAGE_TYPES = new Set(["WebPage", "AboutPage", "ProfilePage", "CollectionPa
 const SKIP_DIRECTORIES = new Set([".git", ".agents", ".codex", ".pages-dist", "node_modules", "src", "scripts", "_temp"]);
 
 function decode(value) {
-  return String(value ?? "").replace(/&(?:amp|quot|apos|lt|gt|#39|#x[\da-f]+|#\d+);/gi, (entity) => {
-    const named = { "&amp;": "&", "&quot;": '"', "&apos;": "'", "&#39;": "'", "&lt;": "<", "&gt;": ">" };
-    if (named[entity.toLowerCase()]) return named[entity.toLowerCase()];
-    const number = entity.toLowerCase().startsWith("&#x") ? parseInt(entity.slice(3), 16) : parseInt(entity.slice(2), 10);
-    return number <= 0x10ffff ? String.fromCodePoint(number) : entity;
-  });
+  // Syndicated news metadata can contain nested HTML entities such as
+  // &amp;#8217;. Resolve them in one pass of SEO normalization so the
+  // resulting structured data is stable on subsequent deploys.
+  const pattern = /&(?:amp|quot|apos|lt|gt|#39|#x[\da-f]+|#\d+);/gi;
+  let result = String(value ?? "");
+  for (let pass = 0; pass < 8; pass++) {
+    const next = result.replace(pattern, (entity) => {
+      const named = { "&amp;": "&", "&quot;": '"', "&apos;": "'", "&#39;": "'", "&lt;": "<", "&gt;": ">" };
+      if (named[entity.toLowerCase()]) return named[entity.toLowerCase()];
+      const number = entity.toLowerCase().startsWith("&#x") ? parseInt(entity.slice(3), 16) : parseInt(entity.slice(2), 10);
+      return Number.isFinite(number) && number >= 0 && number <= 0x10ffff ? String.fromCodePoint(number) : entity;
+    });
+    if (next === result) break;
+    result = next;
+  }
+  return result;
 }
 
 function escapeAttribute(value) {
