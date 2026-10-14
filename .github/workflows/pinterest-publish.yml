@@ -77,7 +77,8 @@ jobs:
         working-directory: private-blog
         env:
           PINTEREST_ACCESS_TOKEN: ${{ secrets.PINTEREST_ACCESS_TOKEN }}
-          PINTEREST_API_TIER: trial # one-time test with Pinterest Trial privileges; private-only
+          PINTEREST_SANDBOX_ACCESS_TOKEN: ${{ secrets.PINTEREST_SANDBOX_ACCESS_TOKEN }}
+          PINTEREST_API_TIER: ${{ inputs.mode == 'trial-publish' && 'trial' || vars.PINTEREST_API_TIER }}
           PINTEREST_PUBLIC_ENABLED: ${{ vars.PINTEREST_PUBLIC_ENABLED }}
           EVENT_NAME: ${{ github.event_name }}
           MANUAL_MODE: ${{ inputs.mode }}
@@ -93,7 +94,7 @@ jobs:
               *) echo "No Pinterest slot matched"; exit 0 ;;
             esac
           elif [[ "$EVENT_NAME" == "push" ]]; then
-            mode=trial-publish # one-time private Pin test; restore preview after checking result
+            mode=preview
             category=games
           else
             mode="${MANUAL_MODE:-preview}"
