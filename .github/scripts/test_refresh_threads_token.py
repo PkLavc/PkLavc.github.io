@@ -2,7 +2,13 @@
 import os
 import unittest
 from unittest.mock import patch
-from . import refresh_threads_token as rot
+import importlib.util
+from pathlib import Path
+
+spec = importlib.util.spec_from_file_location(
+    "threads_token_rotation", Path(__file__).with_name("refresh_threads_token.py"))
+rot = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(rot)
 
 
 class ThreadsTokenTests(unittest.TestCase):
