@@ -152,13 +152,15 @@ jobs:
         run: python .github/scripts/test_instagram_github_release_media.py
 
   publish:
+    permissions:
+      contents: write  # Temporary GitHub Release MP4, deleted after Meta finishes.
     if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && (inputs.mode == 'publish' || inputs.mode == 'store-products-preview' || inputs.mode == 'store-products-publish')) || (github.event_name == 'push' && contains(github.event.head_commit.message, '[social-publish-now]'))
     runs-on: ubuntu-latest
     timeout-minutes: 90
     env:
       SOCIAL_MAX_ITEMS_PER_RUN: ${{ vars.SOCIAL_MAX_ITEMS_PER_RUN || '2' }}
-      # Avoid any billable Cloudflare storage on the default publishing path.
-      SOCIAL_IG_UPLOAD_MODE: direct
+      # Use only temporary GitHub Release assets; no R2 or direct Instagram upload.
+      SOCIAL_IG_UPLOAD_MODE: github-release
       # Reels use authorized trending catalog audio, not the MP4 narration.
       INSTAGRAM_TREND_AUDIO_VOLUME: "100"
       INSTAGRAM_VIDEO_AUDIO_VOLUME: "0"
@@ -217,7 +219,7 @@ jobs:
               item.get("status", "pending") == "pending" and
               (category_of(item) != "games" or is_games_title(str(item.get("title") or "") + " " + str(item.get("description") or ""))) and
               published_counts(load(f"{platform}-published.json", "items"), today)[category_of(item)] < DAILY_LIMITS[category_of(item)]
-              for platform in (("youtube",) if os.environ.get("SOCIAL_IG_UPLOAD_MODE", "direct") == "direct" else ("instagram", "youtube"))
+              for platform in ("instagram", "youtube")
               for item in load(f"{platform}-queue.json", "items")
           )
           schedule_run = os.environ.get("EVENT_NAME") == "schedule" and os.environ.get("EVENT_SCHEDULE") == "0 12 * * 2,5"
@@ -265,7 +267,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y ffmpeg espeak-ng fonts-dejavu-core
-          python -m pip install -r scripts/social_video/requirements.txt google-api-python-client google-auth boto3 requests
+          python -m pip install -r scripts/social_video/requirements.txt google-api-python-client google-auth requests
 
       - name: Publish pending Instagram Reels and YouTube Shorts
         id: social
@@ -276,6 +278,7 @@ jobs:
           INSTAGRAM_ACCESS_TOKEN: ${{ secrets.INSTAGRAM_ACCESS_TOKEN }}
           INSTAGRAM_AUDIO_ACCESS_TOKEN: ${{ secrets.INSTAGRAM_AUDIO_ACCESS_TOKEN }}
           INSTAGRAM_BUSINESS_ACCOUNT_ID: ${{ secrets.INSTAGRAM_BUSINESS_ACCOUNT_ID }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
@@ -290,6 +293,7 @@ jobs:
           INSTAGRAM_ACCESS_TOKEN: ${{ secrets.INSTAGRAM_ACCESS_TOKEN }}
           INSTAGRAM_AUDIO_ACCESS_TOKEN: ${{ secrets.INSTAGRAM_AUDIO_ACCESS_TOKEN }}
           INSTAGRAM_BUSINESS_ACCOUNT_ID: ${{ secrets.INSTAGRAM_BUSINESS_ACCOUNT_ID }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
@@ -310,6 +314,14 @@ jobs:
             private-blog/social-preview/store-products/manifest.json
           if-no-files-found: error
           retention-days: 7
+
+      - name: Remove stale temporary GitHub Instagram video releases
+        if: always()
+        continue-on-error: true
+        working-directory: private-blog
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python -m scripts.social_video.cleanup_github_releases
 
       - name: Persist queue and publication state
         if: always() && (steps.social.outcome != 'skipped' || steps.store_products.outcome != 'skipped')
