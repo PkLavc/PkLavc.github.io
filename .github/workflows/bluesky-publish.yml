@@ -1,0 +1,97 @@
+name: Publish PkLavc Tech and Games to Bluesky
+
+on:
+  schedule:
+    # Eight US Eastern daytime slots; 6 Games and 2 Tech preferred.
+    - cron: "15 12,13,14,15,16,17,19,21 * * *"
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "Validate account, preview candidates or publish one article"
+        type: choice
+        required: true
+        default: check
+        options:
+          - check
+          - preview
+          - publish
+      category:
+        description: "Preferred category for manual preview/publication"
+        type: choice
+        required: true
+        default: games
+        options:
+          - games
+          - tech
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/bluesky-publish.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pklavc-bluesky-english-tech-games
+  cancel-in-progress: false
+
+jobs:
+  syndicate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Check out private blog using existing repository write access
+        uses: actions/checkout@v4
+        with:
+          repository: PkLavc/blog
+          ref: main
+          path: private-blog
+          token: ${{ secrets.PRIVATE_BLOG_REPO_TOKEN }}
+          fetch-depth: 0
+          persist-credentials: true
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install free first-party image thumbnail encoder
+        run: python -m pip install --disable-pip-version-check Pillow
+
+      - name: Validate Bluesky publisher offline without credentials
+        working-directory: private-blog
+        run: python -m unittest scripts.social_video.test_bluesky_publisher -v
+
+      - name: Preview latest Games and Tech posts without publishing
+        working-directory: private-blog
+        run: |
+          python -m scripts.social_video.bluesky_publisher --root . --mode preview --category games
+          python -m scripts.social_video.bluesky_publisher --root . --mode preview --category tech
+
+      - name: Validate real Bluesky account and App Password (no posting)
+        if: github.event_name == 'schedule' || github.event_name == 'push' || inputs.mode == 'check' || inputs.mode == 'publish'
+        working-directory: private-blog
+        env:
+          BLUESKY_HANDLE: ${{ secrets.BLUESKY_HANDLE }}
+          BLUESKY_APP_PASSWORD: ${{ secrets.BLUESKY_APP_PASSWORD }}
+        run: python -m scripts.social_video.bluesky_publisher --root . --mode check
+
+      - name: Publish original English Games or Tech link card
+        if: github.event_name == 'schedule' || github.event_name == 'push' || inputs.mode == 'publish'
+        working-directory: private-blog
+        env:
+          BLUESKY_HANDLE: ${{ secrets.BLUESKY_HANDLE }}
+          BLUESKY_APP_PASSWORD: ${{ secrets.BLUESKY_APP_PASSWORD }}
+          EVENT_NAME: ${{ github.event_name }}
+          PREFERRED_MANUAL_CATEGORY: ${{ inputs.category }}
+        shell: bash
+        run: |
+          category="${PREFERRED_MANUAL_CATEGORY:-games}"
+          if [[ "$EVENT_NAME" == "schedule" ]]; then
+            hour="$(date -u +%H)"
+            if [[ "$hour" == "14" || "$hour" == "19" ]]; then
+              category="tech"
+            else
+              category="games"
+            fi
+          fi
+          python -m scripts.social_video.bluesky_publisher --root . --mode publish --category "$category"
