@@ -1,0 +1,101 @@
+name: Publish PkLavc Tech and Games to Mastodon
+
+on:
+  schedule:
+    # Eight opportunities/day during US Eastern daytime (6 Games, 2 Tech).
+    - cron: "45 12,13,14,15,16,17,19,21 * * *"
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "Check token, preview content or publish one real article"
+        type: choice
+        required: true
+        default: check
+        options:
+          - check
+          - preview
+          - publish
+      category:
+        description: "Which category to prioritize when posting"
+        type: choice
+        required: true
+        default: games
+        options:
+          - games
+          - tech
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/mastodon-publish.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pklavc-mastodon-english-tech-games
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout private published Tech and Games source
+        uses: actions/checkout@v4
+        with:
+          repository: PkLavc/blog
+          ref: main
+          path: private-blog
+          token: ${{ secrets.PRIVATE_BLOG_REPO_TOKEN }}
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Check Tech and Games source directories
+        working-directory: private-blog
+        run: |
+          test -d en
+          test -d games/en
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install image encoder without paid services
+        run: python -m pip install --disable-pip-version-check Pillow
+
+      - name: Run Mastodon publisher offline regression tests
+        working-directory: private-blog
+        run: python -m unittest scripts.social_video.test_mastodon_publisher -v
+
+      - name: Preview both English content categories
+        working-directory: private-blog
+        run: |
+          python -m scripts.social_video.mastodon_publisher --root . --mode preview --category games
+          python -m scripts.social_video.mastodon_publisher --root . --mode preview --category tech
+
+      - name: Validate Mastodon access token and @PkLavc account
+        if: github.event_name != 'workflow_dispatch' || inputs.mode != 'preview'
+        working-directory: private-blog
+        env:
+          MASTODON_ACCESS_TOKEN: ${{ secrets.MASTODON_ACCESS_TOKEN }}
+        run: python -m scripts.social_video.mastodon_publisher --root . --mode check
+
+      - name: Publish one real PkLavc English Tech or Games article
+        if: github.event_name == 'schedule' || github.event_name == 'push' || inputs.mode == 'publish'
+        working-directory: private-blog
+        env:
+          MASTODON_ACCESS_TOKEN: ${{ secrets.MASTODON_ACCESS_TOKEN }}
+          EVENT_NAME: ${{ github.event_name }}
+          MANUAL_CATEGORY: ${{ inputs.category }}
+        shell: bash
+        run: |
+          category="${MANUAL_CATEGORY:-games}"
+          if [[ "$EVENT_NAME" == "schedule" ]]; then
+            hour="$(date -u +%H)"
+            if [[ "$hour" == "14" || "$hour" == "19" ]]; then
+              category="tech"
+            else
+              category="games"
+            fi
+          fi
+          python -m scripts.social_video.mastodon_publisher --root . --mode publish --category "$category"
