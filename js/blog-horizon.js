@@ -68,12 +68,18 @@
       var description = document.createElement('p');
       var tags = document.createElement('div');
       var readLink = document.createElement('a');
-      var imageUrl = localized.image || post.image || '';
+      var imageSources = [localized.image, localized.imageFallback, post.image,
+        post.imageFallback].filter(function (source, index, sources) {
+          return typeof source === 'string' && source.length > 0 && sources.indexOf(source) === index;
+        });
+      // The published article is the source of truth; if a third-party hero
+      // stops serving images, retain the cover using the site's OG artwork.
+      var imageUrl = imageSources[0] || '';
       var copy = {
-        en: { read: 'Read article', confirmed: 'Confirmed' },
-        pt: { read: 'Ler artigo', confirmed: 'Confirmado' },
-        es: { read: 'Leer artículo', confirmed: 'Confirmado' }
-      }[locale] || { read: 'Read article', confirmed: 'Confirmed' };
+        en: { read: 'Read article', confirmed: 'Confirmed', unconfirmed: 'Unconfirmed', theory: 'Analysis' },
+        pt: { read: 'Ler artigo', confirmed: 'Confirmado', unconfirmed: 'Não confirmado', theory: 'Análise' },
+        es: { read: 'Leer artículo', confirmed: 'Confirmado', unconfirmed: 'Sin confirmar', theory: 'Análisis' }
+      }[locale] || { read: 'Read article', confirmed: 'Confirmed', unconfirmed: 'Unconfirmed', theory: 'Analysis' };
 
       card.className = 'blog-card';
       card.setAttribute('role', 'article');
@@ -84,16 +90,24 @@
         cover.href = localized.url;
         cover.tabIndex = -1;
         cover.setAttribute('aria-hidden', 'true');
-        image.src = imageUrl;
         image.alt = '';
         image.loading = 'lazy';
         image.decoding = 'async';
-        image.addEventListener('error', function () { cover.remove(); }, { once: true });
+        image.referrerPolicy = 'no-referrer';
+        var imageIndex = 0;
+        image.addEventListener('error', function () {
+          imageIndex += 1;
+          if (imageIndex < imageSources.length) image.src = imageSources[imageIndex];
+          else cover.remove();
+        });
+        image.src = imageUrl;
         cover.appendChild(image);
       }
 
       meta.className = 'blog-card-meta';
-      [localized.category || post.category || category, copy.confirmed].forEach(function (value) {
+      var editorialLabel = post.editorial_type === 'LEAK' ? copy.unconfirmed :
+        post.editorial_type === 'THEORY' ? copy.theory : copy.confirmed;
+      [localized.category || post.category || category, editorialLabel].forEach(function (value) {
         var item = document.createElement('span');
         item.textContent = value;
         meta.appendChild(item);
@@ -102,7 +116,12 @@
       titleLink.href = localized.url;
       titleLink.textContent = localized.title;
       title.appendChild(titleLink);
-      description.textContent = localized.description || post.description || '';
+      // WordPress RSS snippets sometimes contain escaped paragraph tags.
+      // Display plain text without injecting any publisher HTML.
+      var rawDescription = localized.description || post.description || '';
+      var readable = document.createElement('template');
+      readable.innerHTML = rawDescription;
+      description.textContent = (readable.content.textContent || '').replace(/\s+/g, ' ').trim();
 
       tags.className = 'blog-tag-row';
       (localized.tags || post.tags || []).slice(0, 3).forEach(function (tag) {
