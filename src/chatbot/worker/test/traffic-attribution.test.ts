@@ -51,6 +51,8 @@ describe("anonymous attribution dimensions", () => {
     expect(pageDimensions("/blog/pt/games/gta-6-secret/")).toEqual({ section: "games", pageKey: "games/gta-6-secret" });
     expect(pageDimensions("/blog/es/tech/more-about-ai/")).toEqual({ section: "tech", pageKey: "tech/more-about-ai" });
     expect(pageDimensions("/store/")).toEqual({ section: "store", pageKey: "store" });
+    expect(pageDimensions("/blog/pt/")).toEqual({ section: "blog", pageKey: "listing" });
+    expect(pageDimensions("/blog/en/games")).toEqual({ section: "games", pageKey: "listing" });
     expect(pageDimensions("/blog/en/games/test/?user=123")).toEqual({ section: "games", pageKey: "games/test" });
     expect(pageDimensions("/tiktok/oauth/callback?secret=123")).toEqual({ section: "portfolio", pageKey: "other" });
     expect(dimensionsOfVisit({ pathname: "/blog/en/games/hidden/", source: "instagram" })).toEqual({
