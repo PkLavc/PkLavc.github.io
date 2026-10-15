@@ -59,8 +59,12 @@ export function skyletQuickAnswer(text: string): QuickAnswer | null {
   const q = String(text || "").toLowerCase().trim();
   if (!q || !isSkyletSiteQuestion(q)) return null;
   const lang = skyletLanguage(text);
-  const simple = q.length < 150 && !/\b(?:pre[cç]o|price|cost|quanto custa|how much|últim|latest|recent|artigo sobre|post sobre|not[ií]cia sobre|d[eê] detalhes|detalhes|compare|comparar|como funciona|why|por que|problema|erro|bug|api|integr|quais produtos|which products)\b/i.test(q);
-  if (!simple) return null;
+  // Static replies handle navigation/overview only. Questions about a
+  // specific post, price, product, bug, article or service reach the AI.
+  const navigation = /^(?:blog|store|shop|loja|tienda|contato|contact|projetos|projects|visitantes|visitors)$/i.test(q)
+    || /\b(?:onde|d[oó]nde|where|link|url|acessar|acceso|access|encontrar|find|localizar|locate|entrar em contato|contatar|contact|como acessar|how to access|sobre a loja|about the store|sobre o blog|about the blog|what is on the blog)\b/i.test(q);
+  const specific = /\b(?:pre[cç]o|price|cost|quanto custa|how much|últim|latest|recent|mat[eé]ria|artigo sobre|post sobre|postagem sobre|not[ií]cia sobre|detalhes|compare|comparar|como funciona|why|por que|problema|erro|bug|api|integr|quais produtos|which products|cupom|desconto|discount|guia|miss[aã]o|mission)\b/i.test(q);
+  if (!navigation || specific || q.length > 150) return null;
   const choices: Array<[RegExp, Record<SkyletLanguage, string>, string]> = [
     [/\b(?:blog|not[ií]cias|news|mat[eé]rias|posts?|postagens?|artigos?|articles?)\b/i, {
       pt: "O blog do PkLavc reúne notícias de Games/GTA e Tecnologia em inglês, português e espanhol: https://pklavc.com/blog/",
