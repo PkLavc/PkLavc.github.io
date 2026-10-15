@@ -149,7 +149,9 @@ export function skyletQuickAnswer(text: string): QuickAnswer | null {
   // details, prices, posts and products are passed to the Cloudflare-first AI.
   const navigation = /^(?:blog|store|shop|loja|tienda|contato|contact|projetos|projects|visitantes|visitors)$/.test(q)
     || hasCanonical(q, "navigation") || /\b(?:sobre|about)\b/.test(q);
-  const specific = /\b(?:quanto custa|how much|quais produtos|which products|artigo sobre|post sobre|postagem sobre|noticia sobre|como funciona|why|por que)\b/.test(q)
+  const aboutOneArticle = /\b(?:sobre|about)\s+(?:(?:a|o|the|el|la|uma|um)\s+)?(?:materia|artigo|noticia|postagem|article|news|post)\b/.test(q);
+  const specific = aboutOneArticle
+    || /\b(?:quanto custa|how much|quais produtos|which products|artigo sobre|post sobre|postagem sobre|noticia sobre|como funciona|why|por que)\b/.test(q)
     || hasCanonical(q, "specific");
   if (!navigation || specific || q.length > 150) return null;
   const choices: Array<[RegExp, Record<SkyletLanguage, string>, string]> = [
