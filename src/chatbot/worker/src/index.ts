@@ -575,11 +575,6 @@ export default {
       }
 
       if (url.pathname === "/chat" && request.method === "POST") {
-        const rate = await rateLimitChat(request, env, traceId);
-        if (!rate.ok) {
-          return withCors(json({ error: "rate_limited" }, 429), env, origin);
-        }
-
         let payload: ChatPayload;
         try {
           payload = await request.json<ChatPayload>();
@@ -588,6 +583,16 @@ export default {
         }
         const user = await resolveChatUser(request, env, payload.conversation_id);
         const input = (payload.message || "").trim();
+        const quick = skyletQuickAnswer(input);
+        if (quick || (!isSkyletSiteQuestion(input) && !isGreetingOnly(input)
+                    && !(payload.conversation_id && isSkyletShortFollowup(input)))) {
+          return withCors(json({
+            ok: true, conversation_id: payload.conversation_id || null,
+            reply: quick?.reply || exclusiveSiteReply(input),
+            provider: "local", fallback_used: false,
+            local_reason: quick?.reason || "outside_site_scope",
+          }), env, origin);
+        }
         const conversationId = payload.conversation_id;
         if (conversationId) {
           const control = await getConversationControl(env, conversationId, user.id);
