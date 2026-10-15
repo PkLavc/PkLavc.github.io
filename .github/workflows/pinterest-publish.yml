@@ -94,11 +94,31 @@ jobs:
               *) echo "No Pinterest slot matched"; exit 0 ;;
             esac
           elif [[ "$EVENT_NAME" == "push" ]]; then
-            # One owner-visible Sandbox test requested after configuring Sandbox token.
-            mode=trial-publish
+            # Standard approval reported by account owner: verify production OAuth first.
+            # No Pin write in this activation step.
+            mode=check
             category=games
           else
             mode="${MANUAL_MODE:-preview}"
             category="${MANUAL_CATEGORY:-games}"
           fi
-          python -m scripts.social_video.pinterest_publisher --root . --public-site ../public-site --mode "$mode" --category "$category"
+          output="$(python -m scripts.social_video.pinterest_publisher --root . --public-site ../public-site --mode "$mode" --category "$category")"
+          printf '%s\n' "$output"
+          if [[ "$EVENT_NAME" == "push" && "$output" != *"AUTHENTICATED Pinterest @pklavc"* ]]; then
+            echo "::error::Production Pinterest OAuth is not validated; public publishing remains disabled."
+            exit 1
+          fi
+
+      - name: Activate approved Standard access using existing GitHub Secrets-write token
+        if: github.event_name == 'push'
+        env:
+          GH_TOKEN: ${{ secrets.INSTAGRAM_TOKEN_ROTACION }}
+        shell: bash
+        run: |
+          if [[ -z "$GH_TOKEN" || "$GH_TOKEN" == "null" ]]; then
+            echo "::error::Missing GitHub Actions write credential; variables not changed."
+            exit 1
+          fi
+          gh variable set PINTEREST_API_TIER --body standard --repo PkLavc/PkLavc.github.io
+          gh variable set PINTEREST_PUBLIC_ENABLED --body true --repo PkLavc/PkLavc.github.io
+          echo "Approved Pinterest Standard tier and public schedule activated."
