@@ -629,16 +629,22 @@ export default {
       }
 
       if (url.pathname === "/chat/stream" && request.method === "POST") {
-        const rate = await rateLimitChat(request, env, traceId);
-        if (!rate.ok) {
-          return withCors(json({ error: "rate_limited" }, 429), env, origin);
-        }
-
         let payload: ChatPayload;
         try {
           payload = await request.json<ChatPayload>();
         } catch {
           return withCors(json({ error: "invalid_json" }, 400), env, origin);
+        }
+        const question = String(payload.message || "").trim();
+        const quick = skyletQuickAnswer(question);
+        if (quick || (!isSkyletSiteQuestion(question) && !isGreetingOnly(question)
+                    && !(payload.conversation_id && isSkyletShortFollowup(question)))) {
+          const reply = quick?.reply || exclusiveSiteReply(question);
+          const body = 'data: ' + JSON.stringify({ token: reply }) + '\n\n'
+            + 'data: ' + JSON.stringify({ done: true, conversation_id: payload.conversation_id || null }) + '\n\n';
+          return withCors(new Response(body, {
+            headers: { "Content-Type": "text/event-stream", "Cache-Control": "no-cache" },
+          }), env, origin);
         }
         const user = await resolveChatUser(request, env, payload.conversation_id);
         if (payload.conversation_id) {
