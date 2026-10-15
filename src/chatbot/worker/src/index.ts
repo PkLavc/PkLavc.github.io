@@ -106,7 +106,7 @@ const SITE_RAG_META_KEY = "site_rag_cache_meta:v2";
 const SITE_RAG_CACHE_TTL_SECONDS = 21600;
 const SKYLET_DAILY_AI_LIMIT = 18;
 const GEO_ANALYTICS_DAILY_CAP = 600;
-const SITE_RAG_SOURCE_PATHS = ["/", "/about/", "/pt/sobre/", "/es/sobre/", "/projects/", "/projects/lavc-systems/", "/projects/raw-api-ingestion-pipeline/", "/projects/zoho-integration-worker/", "/stacks/zoho-deluge-developer/", "/blog/", "/blog/raw-api-ingestion-supabase-sql/"];
+const SITE_RAG_SOURCE_PATHS = ["/", "/about/", "/pt/sobre/", "/es/sobre/", "/projects/", "/projects/lavc-systems/", "/projects/raw-api-ingestion-pipeline/", "/projects/zoho-integration-worker/", "/stacks/zoho-deluge-developer/", "/blog/", "/blog/en/games/", "/blog/en/tech/", "/store/", "/blog/raw-api-ingestion-supabase-sql/"];
 const AGENT_NAME = "Skylet";
 const AGENT_PROFILE = "Skylet is a female AI assistant.";
 const INTERNAL_PORTFOLIO_CONTEXT = [
@@ -1508,7 +1508,7 @@ function inferTopic(text: string): string | null {
 }
 
 function isPortfolioIntent(text: string): boolean {
-  return /\b(patrick|pklavc|portfolio|portfólio|about|sobre|projects|projetos|blog|stacks|collections|github\.com\/pklavc|linkedin\.com\/in\/pklavc|contact@pklavc\.com|google auth worker|zoho|hablla|zenvia|sige|omie|codepulse|cipher gate|aegis sentinel|cloud deployment showcase|multi-tenant saas platform|loja do sapo|icaiu|wr auto pecas|empresa|empresas|company|companies|trabalhou|trabalha|onde trabalha|experience|experiência|career)\b/.test(text);
+  return /\b(patrick|pklavc|skylet|portfolio|portfólio|about|sobre|projects|projetos|blog|games|gaming|gta|rockstar|tech|technology|tecnologia|loja|store|produtos|products|afiliados|afiliates|notícias|news|artigos|articles|postagens|posts|instagram|pinterest|youtube|tiktok|stacks|collections|github\.com\/pklavc|linkedin\.com\/in\/pklavc|contact@pklavc\.com|google auth worker|zoho|hablla|zenvia|sige|omie|codepulse|cipher gate|aegis sentinel|cloud deployment showcase|multi-tenant saas platform|loja do sapo|icaiu|wr auto pecas|empresa|empresas|company|companies|trabalhou|trabalha|onde trabalha|experience|experiência|career)\b/.test(text);
 }
 
 function isLikelyMathPi(text: string): boolean {
@@ -2217,66 +2217,26 @@ async function rateLimitChat(request: Request, env: Env, traceId: string) {
   const ipHash = await cacheHash(rawIp);
   const date = new Date().toISOString().slice(0, 10);
   const ttlSeconds = 86400;
-
-  const perIpDailyLimit = 300;
-  const uniqueIpDailySoftLimit = 200;
-  const softPerIpDailyLimit = 120;
-
+  // Hard daily allowance protects the shared Cloudflare KV Free tier
+  // from the previous 300 requests/IP and unlimited new-IP soft mode.
+  const maxPerIp = 20;
+  const maxUniqueIps = 20;
   const ipKey = `rate:${date}:${ipHash}`;
-  const uniqueCounterKey = `rate:${date}:__unique_count`;
-  const modeKey = `rate:${date}:mode:${ipHash}`;
-
+  const uniqueKey = `rate:${date}:__unique_count`;
   try {
-    const currentRaw = await env.CACHE.get(ipKey);
-    const current = Number(currentRaw || "0");
-    const mode = await env.CACHE.get(modeKey);
-    const inSoftMode = mode === "soft";
-    const effectivePerIpLimit = inSoftMode ? softPerIpDailyLimit : perIpDailyLimit;
-
-    if (!currentRaw) {
-      const uniqueRaw = await env.CACHE.get(uniqueCounterKey);
-      const uniqueCount = Number(uniqueRaw || "0");
-
-      if (uniqueCount >= uniqueIpDailySoftLimit) {
-        await env.CACHE.put(modeKey, "soft", { expirationTtl: ttlSeconds });
-        await env.CACHE.put(ipKey, "1", { expirationTtl: ttlSeconds });
-        console.log(JSON.stringify({
-          level: "warn",
-          event: "chat_rate_limit_soft_mode_new_ip",
-          ip_hash: ipHash,
-          date,
-          unique_count: uniqueCount,
-          unique_soft_limit: uniqueIpDailySoftLimit,
-          trace_id: traceId,
-        }));
-        return { ok: true };
-      }
-
-      await env.CACHE.put(uniqueCounterKey, String(uniqueCount + 1), { expirationTtl: ttlSeconds });
-      await env.CACHE.put(ipKey, "1", { expirationTtl: ttlSeconds });
-      return { ok: true };
+    const current = Number(await env.CACHE.get(ipKey) || "0");
+    if (current >= maxPerIp) return { ok: false };
+    if (!current) {
+      const unique = Number(await env.CACHE.get(uniqueKey) || "0");
+      if (unique >= maxUniqueIps) return { ok: false };
+      await env.CACHE.put(uniqueKey, String(unique + 1), { expirationTtl: ttlSeconds });
     }
-
-    if (current >= effectivePerIpLimit) {
-      console.log(JSON.stringify({
-        level: "warn",
-        event: "chat_rate_limit_per_ip",
-        ip_hash: ipHash,
-        date,
-        current,
-        per_ip_limit: effectivePerIpLimit,
-        soft_mode: inSoftMode,
-        trace_id: traceId,
-      }));
-      return { ok: false };
-    }
-
     await env.CACHE.put(ipKey, String(current + 1), { expirationTtl: ttlSeconds });
     return { ok: true };
-  } catch (error) {
-    const message = error instanceof Error ? error.message : "cache_rate_limit_error";
-    console.error(JSON.stringify({ level: "warn", event: "chat_rate_limit_fail_open", message, trace_id: traceId }));
-    return { ok: true };
+  } catch {
+    // Fail closed; the site's essential jobs cannot depend on chat budget.
+    console.log(JSON.stringify({ level: "warn", event: "chat_budget_unavailable", trace_id: traceId }));
+    return { ok: false };
   }
 }
 
