@@ -310,7 +310,7 @@ export default {
         // Keep existing geographic totals untouched. Only aggregate a coarse,
         // allowlisted traffic channel and blog article for PkLavc, never
         // individual identities or full URLs/referrers. One row per dimension/day.
-        if (analyticsSite === "pklavc") {
+        if (analyticsSite === "pklavc" && isTikTokWebOrigin(origin)) {
           try {
             const raw = await request.text();
             const visit = raw.length <= 700 ? JSON.parse(raw || "{}") : {};
