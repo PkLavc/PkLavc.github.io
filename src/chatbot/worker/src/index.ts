@@ -787,8 +787,16 @@ async function handleChat(payload: ChatPayload, user: AuthUser, env: Env, traceI
     return { ok: false, blocked: true, reason: guardrail.reason, trace_id: traceId };
   }
 
-  const task = payload.task || "chat";
-
+  const task = "chat";
+  if (!isSkyletSiteQuestion(sanitized) && !isGreetingOnly(sanitized)) {
+    const history = payload.conversation_id ? await fetchMemory(env, payload.conversation_id, 5) : [];
+    const prior = [...history].reverse().find(row => row.role === "user")?.content || "";
+    if (!isSkyletShortFollowup(sanitized) || !isSkyletSiteQuestion(prior)) {
+      return { ok: true, conversation_id: payload.conversation_id || null,
+        reply: exclusiveSiteReply(sanitized), provider: "local", fallback_used: false,
+        local_reason: "outside_site_scope", trace_id: traceId };
+    }
+  }
   const localDecision = resolveLocalReply(sanitized, task);
   if (localDecision) {
     const conversationId = await ensureConversation(env, user.id, payload.conversation_id);
@@ -831,6 +839,11 @@ async function handleChat(payload: ChatPayload, user: AuthUser, env: Env, traceI
     }
   }
 
+  if (!await reserveSkyletDailyAi(env)) {
+    return { ok: true, conversation_id: payload.conversation_id || null,
+      reply: skyletDailyLimitReply(sanitized), provider: "local", fallback_used: true,
+      local_reason: "daily_ai_budget_protection", trace_id: traceId };
+  }
   const conversationId = await ensureConversation(env, user.id, payload.conversation_id);
   await storeMessage(env, conversationId, "user", sanitized);
   await onVisitorMessage?.(conversationId, sanitized);
