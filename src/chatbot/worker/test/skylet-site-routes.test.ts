@@ -51,6 +51,45 @@ describe("Skylet real HTTP and streaming paths", () => {
     expect(await response.text()).toContain("https://pklavc.com/blog/");
     expect(calls).toBe(0);
   });
+  it("limits model-bound site questions before allocating D1 guest users", async () => {
+    const seen: string[] = [];
+    const env = {
+      CACHE: {}, SESSIONS: {},
+      ALLOWED_ORIGINS: "https://pklavc.com",
+      DB: { prepare(sql: string) {
+        seen.push(sql);
+        if (!sql.includes("optional_daily_usage")) throw Error("Guest or AI database write after cap");
+        return { bind() { return { first: async () => null }; } };
+      } },
+      AI: { run() { throw Error("AI should not be invoked"); } },
+    } as never;
+    const response = await worker.fetch(new Request("https://api.pklavc.com/chat", {
+      method: "POST", headers: { Origin: "https://pklavc.com", "Content-Type": "application/json" },
+      body: JSON.stringify({ message: "Quais produtos tem na loja?" }),
+    }), env, { waitUntil() {} } as never);
+    expect(response.status).toBe(200);
+    const payload = await response.json() as { provider: string; local_reason: string; reply: string };
+    expect(payload.provider).toBe("local");
+    expect(payload.local_reason).toBe("daily_chat_request_budget");
+    expect(payload.reply).toContain("limite diário");
+    expect(seen).toHaveLength(1);
+  });
+  it("applies the same dynamic budget before streaming to avoid AI calls", async () => {
+    const env = {
+      CACHE: {}, SESSIONS: {}, ALLOWED_ORIGINS: "https://pklavc.com",
+      DB: { prepare(sql: string) {
+        if (!sql.includes("optional_daily_usage")) throw Error("Unexpected database call");
+        return { bind() { return { first: async () => null }; } };
+      } },
+      AI: { run() { throw Error("AI should not be invoked"); } },
+    } as never;
+    const response = await worker.fetch(new Request("https://api.pklavc.com/chat/stream", {
+      method: "POST", headers: { Origin: "https://pklavc.com", "Content-Type": "application/json" },
+      body: JSON.stringify({ message: "Quais produtos tem na loja?" }),
+    }), env, { waitUntil() {} } as never);
+    expect(response.status).toBe(200);
+    expect(await response.text()).toContain("limite diário");
+  });
   it("streaming refuses general assistant requests locally", async () => {
     const { response, calls } = await query("/chat/stream", "Tell me a joke");
     expect(response.status).toBe(200);
