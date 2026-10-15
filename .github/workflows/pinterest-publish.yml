@@ -3,7 +3,7 @@ name: Pinterest PkLavc organic Tech Games and Store Pins
 on:
   schedule:
     # Slots for US audience: 3 Games, 2 Tech, 2 curated Store Pins per day.
-    # Job does not start until Standard tier and public publishing are enabled.
+    # Standard access was approved by the app owner on 2026-10-15; public OAuth validated.
     - cron: "15 12,13,14,15,17,19,21 * * *"
   workflow_dispatch:
     inputs:
@@ -33,7 +33,6 @@ concurrency:
 
 jobs:
   publish:
-    if: github.event_name != 'schedule' || (vars.PINTEREST_API_TIER == 'standard' && vars.PINTEREST_PUBLIC_ENABLED == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 14
     steps:
@@ -78,8 +77,9 @@ jobs:
         env:
           PINTEREST_ACCESS_TOKEN: ${{ secrets.PINTEREST_ACCESS_TOKEN }}
           PINTEREST_SANDBOX_ACCESS_TOKEN: ${{ secrets.PINTEREST_SANDBOX_ACCESS_TOKEN }}
-          PINTEREST_API_TIER: ${{ github.event_name == 'push' && 'trial' || (inputs.mode == 'trial-publish' && 'trial' || vars.PINTEREST_API_TIER) }}
-          PINTEREST_PUBLIC_ENABLED: ${{ vars.PINTEREST_PUBLIC_ENABLED }}
+          PINTEREST_API_TIER: ${{ inputs.mode == 'trial-publish' && 'trial' || 'standard' }}
+          PINTEREST_PUBLIC_ENABLED: 'true'
+          PINTEREST_FIRST_PUBLIC_PIN: ${{ contains(github.event.head_commit.message, '[pinterest-public-first-pin]') }}
           EVENT_NAME: ${{ github.event_name }}
           MANUAL_MODE: ${{ inputs.mode }}
           MANUAL_CATEGORY: ${{ inputs.category }}
@@ -94,31 +94,25 @@ jobs:
               *) echo "No Pinterest slot matched"; exit 0 ;;
             esac
           elif [[ "$EVENT_NAME" == "push" ]]; then
-            # Standard approval reported by account owner: verify production OAuth first.
-            # No Pin write in this activation step.
+            # Only the explicit activation commit publishes an initial public Pin.
+            # Normal source changes only verify OAuth, avoiding unexpected Pins.
             mode=check
             category=games
+            if [[ "$PINTEREST_FIRST_PUBLIC_PIN" == "true" ]]; then
+              mode=publish
+            fi
           else
             mode="${MANUAL_MODE:-preview}"
             category="${MANUAL_CATEGORY:-games}"
           fi
           output="$(python -m scripts.social_video.pinterest_publisher --root . --public-site ../public-site --mode "$mode" --category "$category")"
           printf '%s\n' "$output"
-          if [[ "$EVENT_NAME" == "push" && "$output" != *"AUTHENTICATED Pinterest @pklavc"* ]]; then
-            echo "::error::Production Pinterest OAuth is not validated; public publishing remains disabled."
+          if [[ "$EVENT_NAME" == "push" && "$mode" == "check" && "$output" != *"AUTHENTICATED Pinterest @pklavc"* ]]; then
+            echo "::error::Production Pinterest OAuth is not validated."
             exit 1
           fi
-
-      - name: Activate approved Standard access using existing GitHub Secrets-write token
-        if: github.event_name == 'push'
-        env:
-          GH_TOKEN: ${{ secrets.INSTAGRAM_TOKEN_ROTACION }}
-        shell: bash
-        run: |
-          if [[ -z "$GH_TOKEN" || "$GH_TOKEN" == "null" ]]; then
-            echo "::error::Missing GitHub Actions write credential; variables not changed."
+          if [[ "$EVENT_NAME" == "push" && "$mode" == "publish" &&
+                "$output" != *"PUBLISHED "* && "$output" != *"ALREADY EXISTS:"* ]]; then
+            echo "::error::First public Pinterest Pin was not confirmed."
             exit 1
           fi
-          gh variable set PINTEREST_API_TIER --body standard --repo PkLavc/PkLavc.github.io
-          gh variable set PINTEREST_PUBLIC_ENABLED --body true --repo PkLavc/PkLavc.github.io
-          echo "Approved Pinterest Standard tier and public schedule activated."
