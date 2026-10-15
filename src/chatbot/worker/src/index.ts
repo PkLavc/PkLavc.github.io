@@ -102,8 +102,8 @@ const isTikTokWebOrigin = (origin: string | null): boolean =>
 const MAX_MEMORY_ITEMS = 8;
 const SITE_RAG_CACHE_KEY = "site_rag_cache:v2";
 const SITE_RAG_META_KEY = "site_rag_cache_meta:v2";
-const SITE_RAG_CACHE_TTL_SECONDS = 3600;
-const SITE_RAG_SOURCE_PATHS = ["/", "/about/", "/pt/sobre/", "/es/sobre/", "/projects/", "/projects/lavc-systems/", "/projects/raw-api-ingestion-pipeline/", "/projects/zoho-integration-worker/", "/stacks/zoho-deluge-developer/", "/blog/", "/blog/raw-api-ingestion-supabase-sql/"];
+const SITE_RAG_CACHE_TTL_SECONDS = 4 * 3600;
+const SITE_RAG_SOURCE_PATHS = ["/", "/about/", "/pt/sobre/", "/es/sobre/", "/projects/", "/projects/lavc-systems/", "/projects/raw-api-ingestion-pipeline/", "/projects/zoho-integration-worker/", "/stacks/zoho-deluge-developer/", "/blog/", "/blog/en/games/", "/blog/en/tech/", "/store/", "/blog/raw-api-ingestion-supabase-sql/"];
 const AGENT_NAME = "Skylet";
 const AGENT_PROFILE = "Skylet is a female AI assistant.";
 const INTERNAL_PORTFOLIO_CONTEXT = [
@@ -2156,74 +2156,6 @@ function validateJsonResponse(text: string, requiredKeys: string[], schema: Reco
     return { valid: true };
   } catch {
     return { valid: false, reason: "invalid_json" };
-  }
-}
-
-async function rateLimitChat(request: Request, env: Env, traceId: string) {
-  const rawIp = request.headers.get("CF-Connecting-IP") || "unknown";
-  const ipHash = await cacheHash(rawIp);
-  const date = new Date().toISOString().slice(0, 10);
-  const ttlSeconds = 86400;
-
-  const perIpDailyLimit = 300;
-  const uniqueIpDailySoftLimit = 200;
-  const softPerIpDailyLimit = 120;
-
-  const ipKey = `rate:${date}:${ipHash}`;
-  const uniqueCounterKey = `rate:${date}:__unique_count`;
-  const modeKey = `rate:${date}:mode:${ipHash}`;
-
-  try {
-    const currentRaw = await env.CACHE.get(ipKey);
-    const current = Number(currentRaw || "0");
-    const mode = await env.CACHE.get(modeKey);
-    const inSoftMode = mode === "soft";
-    const effectivePerIpLimit = inSoftMode ? softPerIpDailyLimit : perIpDailyLimit;
-
-    if (!currentRaw) {
-      const uniqueRaw = await env.CACHE.get(uniqueCounterKey);
-      const uniqueCount = Number(uniqueRaw || "0");
-
-      if (uniqueCount >= uniqueIpDailySoftLimit) {
-        await env.CACHE.put(modeKey, "soft", { expirationTtl: ttlSeconds });
-        await env.CACHE.put(ipKey, "1", { expirationTtl: ttlSeconds });
-        console.log(JSON.stringify({
-          level: "warn",
-          event: "chat_rate_limit_soft_mode_new_ip",
-          ip_hash: ipHash,
-          date,
-          unique_count: uniqueCount,
-          unique_soft_limit: uniqueIpDailySoftLimit,
-          trace_id: traceId,
-        }));
-        return { ok: true };
-      }
-
-      await env.CACHE.put(uniqueCounterKey, String(uniqueCount + 1), { expirationTtl: ttlSeconds });
-      await env.CACHE.put(ipKey, "1", { expirationTtl: ttlSeconds });
-      return { ok: true };
-    }
-
-    if (current >= effectivePerIpLimit) {
-      console.log(JSON.stringify({
-        level: "warn",
-        event: "chat_rate_limit_per_ip",
-        ip_hash: ipHash,
-        date,
-        current,
-        per_ip_limit: effectivePerIpLimit,
-        soft_mode: inSoftMode,
-        trace_id: traceId,
-      }));
-      return { ok: false };
-    }
-
-    await env.CACHE.put(ipKey, String(current + 1), { expirationTtl: ttlSeconds });
-    return { ok: true };
-  } catch (error) {
-    const message = error instanceof Error ? error.message : "cache_rate_limit_error";
-    console.error(JSON.stringify({ level: "warn", event: "chat_rate_limit_fail_open", message, trace_id: traceId }));
-    return { ok: true };
   }
 }
 
