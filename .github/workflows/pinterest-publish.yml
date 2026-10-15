@@ -33,6 +33,8 @@ concurrency:
 
 jobs:
   publish:
+    # Keep scheduled posts paused until the first confirmed production Pin.
+    if: github.event_name != 'schedule' || vars.PINTEREST_PUBLIC_ENABLED == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 14
     steps:
