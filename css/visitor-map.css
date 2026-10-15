@@ -860,3 +860,38 @@ body.visitor-map-layout {
         transition: none;
     }
 }
+
+
+/* Existing visitor map is unchanged; this is an independent, aggregate-only
+   source/content panel sharing the original dark styling and responsive grid. */
+.visitor-traffic-dashboard {
+  margin-top: 18px;
+  padding: 26px;
+  border-radius: 22px;
+  border: 1px solid var(--visitor-border);
+  background: var(--visitor-panel);
+}
+.visitor-traffic-heading,
+.visitor-traffic-columns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+}
+.visitor-traffic-heading { align-items: end; }
+.visitor-traffic-heading h2 { font: 600 clamp(1.35rem, 2.2vw, 1.9rem)/1.3 Inter, sans-serif; margin: 10px 0; color: #f2f7ff; }
+.visitor-traffic-count { text-align: right; }
+.visitor-traffic-count strong { display:block; margin-top: 9px; font: 600 2.1rem/1.1 Inter, sans-serif; color: #f2f7ff; }
+.visitor-traffic-columns { margin-top: 22px; }
+.visitor-traffic-column { min-width: 0; }
+.visitor-traffic-column h3 { color: #deeafb; font: 600 1rem/1.4 Inter, sans-serif; margin: 0 0 12px; }
+.visitor-traffic-list { list-style: none; padding: 0; margin: 0; }
+.visitor-traffic-list li { display: flex; justify-content: space-between; gap: 14px; padding: 10px 0; border-bottom: 1px solid rgba(136, 214, 255, 0.1); color: #afc0d8; font: 400 .88rem/1.5 Inter, sans-serif; }
+.visitor-traffic-list li strong { color: #e7f9ff; font-variant-numeric: tabular-nums; }
+.visitor-traffic-list li span { overflow-wrap: anywhere; }
+.visitor-traffic-note { margin: 16px 0 0; color: #8397b1; font: 400 .77rem/1.6 Inter, sans-serif; }
+@media (max-width: 680px) {
+  .visitor-traffic-dashboard { padding: 18px; }
+  .visitor-traffic-columns { grid-template-columns: minmax(0, 1fr); gap: 20px; }
+  .visitor-traffic-heading { grid-template-columns: minmax(0, 1fr) auto; gap: 10px; }
+  .visitor-traffic-count strong { font-size: 1.65rem; }
+}
