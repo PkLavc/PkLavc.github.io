@@ -1,4 +1,5 @@
 import { MANUAL_RAG_CONTEXT, MANUAL_RAG_SECTIONS } from "./manual-rag";
+import { skyletSiteScope, siteFaq, offSiteReply, siteBudgetReply } from "./skylet-scope";
 import { handleDiscordInteraction } from "./discord-interactions";
 import { closeDiscordConversation, drainDiscordMessageQueue, enqueueDiscordMessage, getConversationControl } from "./discord-conversations";
 import { decryptInstagramRecipient, deriveInstagramIdentity, encryptInstagramRecipient, sendInstagramMessage } from "./instagram-messaging";
@@ -101,7 +102,10 @@ const isTikTokWebOrigin = (origin: string | null): boolean =>
 const MAX_MEMORY_ITEMS = 8;
 const SITE_RAG_CACHE_KEY = "site_rag_cache:v2";
 const SITE_RAG_META_KEY = "site_rag_cache_meta:v2";
-const SITE_RAG_CACHE_TTL_SECONDS = 3600;
+// Longer read-only RAG cache minimizes KV writes/fetches and never blocks posts.
+const SITE_RAG_CACHE_TTL_SECONDS = 21600;
+const SKYLET_DAILY_AI_LIMIT = 18;
+const GEO_ANALYTICS_DAILY_CAP = 600;
 const SITE_RAG_SOURCE_PATHS = ["/", "/about/", "/pt/sobre/", "/es/sobre/", "/projects/", "/projects/lavc-systems/", "/projects/raw-api-ingestion-pipeline/", "/projects/zoho-integration-worker/", "/stacks/zoho-deluge-developer/", "/blog/", "/blog/raw-api-ingestion-supabase-sql/"];
 const AGENT_NAME = "Skylet";
 const AGENT_PROFILE = "Skylet is a female AI assistant.";
@@ -285,6 +289,19 @@ export default {
         const regionName = normalizeGeoValue(cf?.region, 80);
         const visitDate = new Date().toISOString().slice(0, 10);
         const updatedAt = new Date().toISOString();
+        // Counting visits must not consume the D1 daily write allowance.
+        // Geo + referrals use up to two aggregate writes per counted session.
+        // Once capped, return success (map keeps past counts) with zero writes.
+        try {
+          const daily = await env.DB.prepare(
+            `SELECT COALESCE(SUM(visits), 0) AS total FROM ${tableName} WHERE visit_date = ?`,
+          ).bind(visitDate).first<{ total: number }>();
+          if (Number(daily?.total || 0) >= GEO_ANALYTICS_DAILY_CAP) {
+            return withCors(new Response(null, { status: 204 }), env, origin);
+          }
+        } catch {
+          return withCors(new Response(null, { status: 204 }), env, origin);
+        }
 
         await env.DB.prepare(
           `INSERT INTO ${tableName} (
