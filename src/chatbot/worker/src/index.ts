@@ -1753,9 +1753,9 @@ export async function runProviderChat(
   task: string,
   fallbackText?: string,
 ): Promise<{ text: string; provider: string; fallback: boolean; promptVersion: string; stream?: ReadableStream<Uint8Array> }> {
-  // Skylet uses only the separate free Groq allowance. Never invoke
-  // Workers AI or OpenRouter here: both are reserved for article generation.
-  const providerList: Array<"groq" | "openrouter" | "cloudflare"> = ["groq"];
+  // Keep the existing Cloudflare Workers AI-first routing. Cheap local FAQ
+  // and a hard daily budget in the chat routes protect the shared quota.
+  const providerList = ["cloudflare", "groq", "openrouter"] as const;
   let lastError = "";
   const modelChoice = pickModelForTask(env, task);
 
