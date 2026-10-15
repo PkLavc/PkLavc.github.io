@@ -1,9 +1,9 @@
 import { describe, expect, it } from "vitest";
-import worker from "../src/index";
+import worker, { reserveOptionalUsage } from "../src/index";
 import { dimensionsOfVisit, pageDimensions, visitChannel } from "../src/traffic-attribution";
 
-type DbCall = { sql: string; args: unknown[]; kind: "run" | "all" };
-function mockDb() {
+type DbCall = { sql: string; args: unknown[]; kind: "run" | "all" | "first" };
+function mockDb(exhausted = false) {
   const calls: DbCall[] = [];
   const DB = {
     prepare(sql: string) {
@@ -11,6 +11,10 @@ function mockDb() {
       return {
         bind(...values: unknown[]) { args = values; return this; },
         async run() { calls.push({ sql, args, kind: "run" as const }); return { success: true }; },
+        async first() {
+          calls.push({ sql, args, kind: "first" as const });
+          return exhausted ? null : { requests: 1 };
+        },
         async all() {
           calls.push({ sql, args, kind: "all" as const });
           if (sql.includes("SUM(visits) AS visits") && sql.includes("GROUP BY channel")) {
@@ -66,11 +70,13 @@ describe("existing Worker visit and dashboard routes", () => {
     const { DB, calls } = mockDb();
     const response = await worker.fetch(visitRequest("/blog/en/games/gta-6-secret/", "instagram"), env(DB), ctx);
     expect(response.status).toBe(204);
-    expect(calls).toHaveLength(2);
-    expect(calls[0].sql).toContain("geo_visit_daily");
-    expect(calls[1].sql).toContain("traffic_source_daily");
-    expect(calls[1].args.slice(1, 4)).toEqual(["instagram", "games", "games/gta-6-secret"]);
-    expect(calls[1].args.join("|")).not.toContain("private=");
+    expect(calls).toHaveLength(3);
+    expect(calls[0].sql).toContain("optional_daily_usage");
+    expect(calls[0].args.slice(1, 3)).toEqual(["visit_pklavc", 600]);
+    expect(calls[1].sql).toContain("geo_visit_daily");
+    expect(calls[2].sql).toContain("traffic_source_daily");
+    expect(calls[2].args.slice(1, 4)).toEqual(["instagram", "games", "games/gta-6-secret"]);
+    expect(calls[2].args.join("|")).not.toContain("private=");
   });
   it("rejects origin spoofed by a different website", async () => {
     const { DB, calls } = mockDb();
@@ -87,8 +93,21 @@ describe("existing Worker visit and dashboard routes", () => {
     Object.defineProperty(requestForMacca, "cf", { value: { country: "BR", regionCode: "SP" } });
     const response = await worker.fetch(requestForMacca, env(DB), ctx);
     expect(response.status).toBe(204);
+    expect(calls).toHaveLength(2);
+    expect(calls[0].args[1]).toEqual("visit_macca");
+    expect(calls[1].sql).toContain("macca_geo_visit_daily");
+  });
+  it("stops analytics writes once the atomic daily allowance is reached", async () => {
+    const { DB, calls } = mockDb(true);
+    const response = await worker.fetch(visitRequest("/blog/en/games/gta-6-secret/", "instagram"), env(DB), ctx);
+    expect(response.status).toBe(204);
     expect(calls).toHaveLength(1);
-    expect(calls[0].sql).toContain("macca_geo_visit_daily");
+    expect(calls[0].sql).toContain("optional_daily_usage");
+    expect(calls[0].kind).toBe("first");
+  });
+  it("fails closed on missing D1 table without affecting essential routes", async () => {
+    const usageEnv = { DB: { prepare() { throw Error("D1 quota exceeded"); } } } as never;
+    expect(await reserveOptionalUsage(usageEnv, "skylet_request", 60)).toBe(false);
   });
   it("returns public aggregate totals and popular pages with matching period", async () => {
     const { DB, calls } = mockDb();
