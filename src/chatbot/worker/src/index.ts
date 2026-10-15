@@ -819,7 +819,7 @@ function localSiteStream(reply: string, conversationId: string): Response {
 
 // Atomic chat-only AI budget. Cloudflare Workers AI remains available as the
 // first provider; the blog, videos and post generators never use this counter.
-async function reserveSkyletAiBudget(env: Env): Promise<boolean> {
+export async function reserveSkyletAiBudget(env: Env): Promise<boolean> {
   try {
     const row = await env.DB.prepare(
       `INSERT INTO skylet_ai_daily_budget (visit_date, requests) VALUES (?, 1)
