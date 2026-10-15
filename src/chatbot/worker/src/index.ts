@@ -1909,44 +1909,9 @@ function cleanCloudflareResponse(text: string): string {
   return cleaned.slice(0, 4000).trim();
 }
 
-async function getEmbedding(text: string, env: Env): Promise<number[]> {
-  const cleaned = sanitizeInput(text).slice(0, 2500);
-  const key = await cacheHash(`emb:${cleaned}`);
-  const cached = await env.SESSIONS.get(`embedding:${key}`);
-  if (cached) {
-    return JSON.parse(cached) as number[];
-  }
-
-  if (env.OPENROUTER_API_KEY) {
-    const model = env.OPENROUTER_EMBED_MODEL || env.DEFAULT_EMBED_MODEL || "text-embedding-3-small";
-    const response = await fetch("https://openrouter.ai/api/v1/embeddings", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${env.OPENROUTER_API_KEY}`,
-        "HTTP-Referer": "https://pklavc.com",
-        "X-Title": "PKLAVC Chat Worker",
-      },
-      body: JSON.stringify({ model, input: cleaned }),
-    });
-
-    if (response.ok) {
-      const data = await response.json<any>();
-      const vector = data?.data?.[0]?.embedding;
-      if (Array.isArray(vector) && vector.length > 0) {
-        await env.SESSIONS.put(`embedding:${key}`, JSON.stringify(vector), {
-          expirationTtl: Number(env.EMBEDDING_CACHE_TTL || "86400"),
-        });
-        return vector;
-      }
-    }
-  }
-
-  const fallback = deterministicEmbedding(cleaned, 128);
-  await env.SESSIONS.put(`embedding:${key}`, JSON.stringify(fallback), {
-    expirationTtl: Number(env.EMBEDDING_CACHE_TTL || "86400"),
-  });
-  return fallback;
+async function getEmbedding(text: string, _env: Env): Promise<number[]> {
+  // Deterministic local embedding: zero shared OpenRouter calls or KV writes.
+  return deterministicEmbedding(sanitizeInput(text).slice(0, 2500), 128);
 }
 
 function deterministicEmbedding(text: string, size: number): number[] {
