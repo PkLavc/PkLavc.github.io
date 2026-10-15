@@ -591,19 +591,24 @@ export default {
       }
 
       if (url.pathname === "/chat" && request.method === "POST") {
-        const rate = await rateLimitChat(request, env, traceId);
-        if (!rate.ok) {
-          return withCors(json({ error: "rate_limited" }, 429), env, origin);
-        }
-
         let payload: ChatPayload;
         try {
           payload = await request.json<ChatPayload>();
         } catch {
           return withCors(json({ error: "invalid_json" }, 400), env, origin);
         }
-        const user = await resolveChatUser(request, env, payload.conversation_id);
         const input = (payload.message || "").trim();
+        if (!input || input.length > 2000) {
+          return withCors(json({ error: "message_length_invalid" }, 400), env, origin);
+        }
+        // A clearly unrelated new question costs zero KV/D1/model operations.
+        if (!payload.conversation_id && !skyletSiteScope(input)) {
+          return withCors(json({ ok: true, conversation_id: "", reply: offSiteReply(input),
+            provider: "local", fallback_used: false, local_reason: "site_scope_only" }), env, origin);
+        }
+        const rate = await rateLimitChat(request, env, traceId);
+        if (!rate.ok) return withCors(json({ error: "rate_limited" }, 429), env, origin);
+        const user = await resolveChatUser(request, env, payload.conversation_id);
         const conversationId = payload.conversation_id;
         if (conversationId) {
           const control = await getConversationControl(env, conversationId, user.id);
@@ -640,17 +645,21 @@ export default {
       }
 
       if (url.pathname === "/chat/stream" && request.method === "POST") {
-        const rate = await rateLimitChat(request, env, traceId);
-        if (!rate.ok) {
-          return withCors(json({ error: "rate_limited" }, 429), env, origin);
-        }
-
         let payload: ChatPayload;
         try {
           payload = await request.json<ChatPayload>();
         } catch {
           return withCors(json({ error: "invalid_json" }, 400), env, origin);
         }
+        const message = (payload.message || "").trim();
+        if (!message || message.length > 2000) {
+          return withCors(json({ error: "message_length_invalid" }, 400), env, origin);
+        }
+        if (!payload.conversation_id && !skyletSiteScope(message)) {
+          return withCors(localSiteStream(offSiteReply(message), ""), env, origin);
+        }
+        const rate = await rateLimitChat(request, env, traceId);
+        if (!rate.ok) return withCors(json({ error: "rate_limited" }, 429), env, origin);
         const user = await resolveChatUser(request, env, payload.conversation_id);
         if (payload.conversation_id) {
           const control = await getConversationControl(env, payload.conversation_id, user.id);
