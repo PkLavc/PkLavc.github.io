@@ -583,7 +583,6 @@ export default {
         } catch {
           return withCors(json({ error: "invalid_json" }, 400), env, origin);
         }
-        const user = await resolveChatUser(request, env, payload.conversation_id);
         const input = (payload.message || "").trim();
         const quick = skyletQuickAnswer(input);
         if (quick || (!isSkyletSiteQuestion(input) && !isGreetingOnly(input)
@@ -595,6 +594,7 @@ export default {
             local_reason: quick?.reason || "outside_site_scope",
           }), env, origin);
         }
+        const user = await resolveChatUser(request, env, payload.conversation_id);
         const conversationId = payload.conversation_id;
         if (conversationId) {
           const control = await getConversationControl(env, conversationId, user.id);
