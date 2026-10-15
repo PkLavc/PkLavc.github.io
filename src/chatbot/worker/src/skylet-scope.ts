@@ -7,11 +7,13 @@ type SkyletLanguage = "pt" | "en" | "es";
 type QuickAnswer = { reply: string; reason: string };
 
 export function skyletLanguage(text: string): SkyletLanguage {
-  // Normalize accented letters before matching word boundaries; plain JS
-  // \b considers é/á outside a word and mislabels Spanish/Portuguese replies.
-  const value = String(text || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-  if (/\b(?:hola|gracias|quien|donde|cual|cuanto|que hora|acerca de|sitio web|tienda|publicaciones|articulos|precios|misiones)\b/.test(value)) return "es";
-  if (/\b(?:oi|ola|bom dia|boa noite|voce|vc|qual|quais|quanto|onde|como|nao|sobre|loja|postagem|artigo|materia|projetos|visitantes|portfolio|preco|contato)\b/.test(value)) return "pt";
+  const value = normalizedSkyletText(text);
+  // Language detection also tolerates one-character errors in common cues.
+  if (["hola", "gracias", "quien", "donde", "cual", "tienda", "articulos", "sitio"]
+    .some(term => siteTokens(value).some(word => tokenMatches(word, term)))) return "es";
+  if (["oi", "ola", "voce", "qual", "quais", "quanto", "onde", "como", "sobre",
+    "loja", "postagem", "artigo", "materia", "projetos", "visitantes", "preco"]
+    .some(term => siteTokens(value).some(word => tokenMatches(word, term)))) return "pt";
   return "en";
 }
 
@@ -33,6 +35,80 @@ export function skyletDailyLimitReply(text: string): string {
   return "Skylet has reached its daily dynamic-answer safety limit. The website, blog and store remain available. Try again tomorrow.";
 }
 
+
+/** One language-agnostic normalization pass plus bounded Damerau-Levenshtein.
+ * Corrections are computed, never enumerated as extra spellings. Cost is
+ * bounded by the number of words (max 60) and canonical terms (small).
+ */
+export function normalizedSkyletText(value: string): string {
+  return String(value || "").slice(0, 1800).normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "").toLowerCase()
+    .replace(/[^a-z0-9]+/g, " ").trim().replace(/\s+/g, " ");
+}
+
+function typoDistance(left: string, right: string, max: number): number {
+  if (Math.abs(left.length - right.length) > max) return max + 1;
+  if (left === right) return 0;
+  const rows: number[][] = [];
+  for (let i = 0; i <= left.length; i++) {
+    rows[i] = [i];
+  }
+  for (let j = 1; j <= right.length; j++) rows[0][j] = j;
+  for (let i = 1; i <= left.length; i++) {
+    let rowMin = max + 1;
+    for (let j = 1; j <= right.length; j++) {
+      const cost = left[i - 1] === right[j - 1] ? 0 : 1;
+      let value = Math.min(
+        rows[i - 1][j] + 1, rows[i][j - 1] + 1, rows[i - 1][j - 1] + cost,
+      );
+      if (i > 1 && j > 1 && left[i - 1] === right[j - 2] &&
+          left[i - 2] === right[j - 1]) {
+        value = Math.min(value, rows[i - 2][j - 2] + 1);
+      }
+      rows[i][j] = value;
+      rowMin = Math.min(rowMin, value);
+    }
+    if (rowMin > max && i > right.length + max) return max + 1;
+  }
+  return rows[left.length][right.length];
+}
+
+const VOCABULARY = {
+  owned: ["patrick", "pklavc", "skylet", "lavc", "icaiu"],
+  blog: ["blog", "noticia", "noticias", "news", "artigo", "artigos", "articles",
+    "article", "post", "posts", "postagem", "postagens", "materia", "materias",
+    "publicacoes", "publicaciones", "publication", "publicacao"],
+  store: ["loja", "lojas", "store", "shop", "tienda"],
+  projects: ["projeto", "projetos", "projects", "project", "proyecto", "proyectos",
+    "portfolio", "portafolio"],
+  visitors: ["visitantes", "visitas", "visitors", "visitor", "traffic", "trafego"],
+  contact: ["contato", "contact", "contacto", "email", "correo"],
+  social: ["instagram", "youtube", "tiktok", "pinterest", "bluesky", "threads"],
+  navigation: ["onde", "donde", "where", "link", "url", "acessar", "acceso",
+    "access", "encontrar", "find", "localizar", "locate", "entrar",
+    "contatar", "contact", "visit", "visitar", "ver", "see", "abrir", "open"],
+  specific: ["preco", "precos", "price", "prices", "cost", "ultimo", "ultima",
+    "latest", "recent", "detalhes", "details", "compare", "comparar", "problema",
+    "erro", "bug", "api", "integracao", "integracion", "cupom", "discount",
+    "desconto", "guia", "mission", "missao"],
+} as const;
+
+function siteTokens(text: string): string[] {
+  return normalizedSkyletText(text).split(" ").filter(Boolean).slice(0, 60);
+}
+function tokenMatches(word: string, canonical: string): boolean {
+  if (word === canonical) return true;
+  // Small words are too ambiguous for typo correction. Long words may
+  // contain one typo or a transposition; never fuzzy-match multiple changes.
+  const allowance = canonical.length >= 4 ? 1 : 0;
+  return allowance > 0 && Math.abs(word.length - canonical.length) <= allowance
+    && typoDistance(word, canonical, allowance) <= allowance;
+}
+function hasCanonical(text: string, group: keyof typeof VOCABULARY): boolean {
+  const words = siteTokens(text);
+  return words.some(word => VOCABULARY[group].some(term => tokenMatches(word, term)));
+}
+
 const OWNED = /\b(?:patrick(?:\s+(?:araujo|l\.?\s*araujo))?|pklavc|pklavc\.com|skylet|lavc systems|loja do sapo|i[cç]aiu|federico nacucchio)\b/i;
 const SITE_CONTEXT = /\b(?:meu|minha|seu|sua|nosso|nossa|este|esta|aqui|nesse|neste|do|da|no|na|your|our|this|here|the|el|la|mi|mis)\s+(?:site|website|web|blog|loja|tienda|store|portfolio|portf[oó]lio|profile|perfil|projects?|projetos?|posts?|postagens?|publica[cç][oõ]es|articles?|artigos?|mat[eé]rias?|not[ií]cias?)\b/i;
 const SITE_AREA = /\b(?:blog|loja|store|shop|tienda|portf[oó]lio|portfolio|projetos?|projects?|postagens?|publica[cç][oõ]es|artigos?|articles?|mat[eé]rias?|visitas?|visitantes?|visitors?|contato|contact|bio|redes sociais|social networks|social media|links?|newsletter)\b/i;
@@ -41,14 +117,19 @@ const GENERIC_TECH = /^(?:o que [eé]|what is|explique|explain|como funciona|how
 const GENERIC_OTHER = /\b(?:previs[aã]o do tempo|weather forecast|loteria|lottery|joke|piada|receita de bolo|cake recipe|quanto [eé] 2\s*\+|what is 2\s*\+)\b/i;
 
 export function isSkyletSiteQuestion(text: string): boolean {
-  const value = String(text || "").trim();
+  const value = normalizedSkyletText(text);
   if (!value) return false;
-  if (OWNED.test(value)) return true;
+  if (OWNED.test(value) || hasCanonical(value, "owned")) return true;
   if (GENERIC_OTHER.test(value) || GENERIC_SITE_BUILD.test(value) || GENERIC_TECH.test(value)) return false;
+  // A general request to build something remains unrelated even if the word
+  // "blog" or "store" has a typo. Explicit PkLavc questions are allowed.
+  if (/^(?:como|how|teach me|ensine|explain|explique)/.test(value)
+    && /\b(?:criar|create|build|construir|make|fazer|programar)\b/.test(value)
+    && /\b(?:um|uma|a|an|un|una|my)\s+\w+/.test(value)) return false;
   if (SITE_CONTEXT.test(value)) return true;
-  // The chat is embedded in the website; short questions about site areas
-  // need not repeat "PkLavc" (e.g. "Quais produtos tem na loja?").
-  return SITE_AREA.test(value);
+  return hasCanonical(value, "blog") || hasCanonical(value, "store")
+    || hasCanonical(value, "projects") || hasCanonical(value, "visitors")
+    || hasCanonical(value, "contact");
 }
 
 export function isSkyletShortFollowup(text: string): boolean {
@@ -61,14 +142,15 @@ export function isSkyletShortFollowup(text: string): boolean {
 }
 
 export function skyletQuickAnswer(text: string): QuickAnswer | null {
-  const q = String(text || "").toLowerCase().trim();
+  const q = normalizedSkyletText(text);
   if (!q || !isSkyletSiteQuestion(q)) return null;
   const lang = skyletLanguage(text);
-  // Static replies handle navigation/overview only. Questions about a
-  // specific post, price, product, bug, article or service reach the AI.
-  const navigation = /^(?:blog|store|shop|loja|tienda|contato|contact|projetos|projects|visitantes|visitors)$/i.test(q)
-    || /\b(?:onde|d[oó]nde|where|link|url|acessar|acceso|access|encontrar|find|localizar|locate|entrar em contato|contatar|contact|como acessar|how to access|sobre a loja|about the store|sobre o blog|about the blog|what is on the blog)\b/i.test(q);
-  const specific = /\b(?:pre[cç]o|price|cost|quanto custa|how much|últim|latest|recent|mat[eé]ria|artigo sobre|post sobre|postagem sobre|not[ií]cia sobre|detalhes|compare|comparar|como funciona|why|por que|problema|erro|bug|api|integr|quais produtos|which products|cupom|desconto|discount|guia|miss[aã]o|mission)\b/i.test(q);
+  // Only stable navigation/overview replies are preprogrammed. Topic-specific
+  // details, prices, posts and products are passed to the Cloudflare-first AI.
+  const navigation = /^(?:blog|store|shop|loja|tienda|contato|contact|projetos|projects|visitantes|visitors)$/.test(q)
+    || hasCanonical(q, "navigation") || /\b(?:sobre|about)\b/.test(q);
+  const specific = /\b(?:quanto custa|how much|quais produtos|which products|artigo sobre|post sobre|postagem sobre|noticia sobre|como funciona|why|por que)\b/.test(q)
+    || hasCanonical(q, "specific");
   if (!navigation || specific || q.length > 150) return null;
   const choices: Array<[RegExp, Record<SkyletLanguage, string>, string]> = [
     [/\b(?:blog|not[ií]cias|news|mat[eé]rias|posts?|postagens?|artigos?|articles?)\b/i, {
@@ -97,8 +179,14 @@ export function skyletQuickAnswer(text: string): QuickAnswer | null {
       es: "Los proyectos y ejemplos técnicos de Patrick están disponibles en https://pklavc.com/.",
     }, "faq:projects"],
   ];
-  for (const [pattern, replies, reason] of choices) {
-    if (pattern.test(q)) return { reply: replies[lang], reason };
+  const categoryGroups: Array<keyof typeof VOCABULARY> = [
+    "blog", "store", "contact", "visitors", "projects",
+  ];
+  for (let i = 0; i < choices.length; i++) {
+    const [pattern, replies, reason] = choices[i];
+    if (pattern.test(q) || hasCanonical(q, categoryGroups[i])) {
+      return { reply: replies[lang], reason };
+    }
   }
   return null;
 }
