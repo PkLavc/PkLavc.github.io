@@ -5,6 +5,29 @@
  */
 type SkyletLanguage = "pt" | "en" | "es";
 type QuickAnswer = { reply: string; reason: string };
+export type SkyletConversationMessage = { role: "user" | "assistant"; content: string };
+
+// Cap browser-provided context before using it for site-only follow-ups.
+export function skyletClientHistory(raw: unknown): SkyletConversationMessage[] {
+  if (!Array.isArray(raw)) return [];
+  return raw.slice(-12).filter(item => item && (item.role === "user" || item.role === "assistant")
+    && typeof item.content === "string").map(item => ({
+      role: item.role as "user" | "assistant",
+      content: String(item.content).slice(0, 700).trim(),
+    })).filter(item => !!item.content).slice(-8);
+}
+
+export function skyletContextFollowup(text: string, history: SkyletConversationMessage[]): boolean {
+  if (!isSkyletShortFollowup(text)) return false;
+  return history.filter(item => item.role === "user").slice(-3)
+    .some(item => isSkyletSiteQuestion(item.content));
+}
+
+export function skyletContextLanguage(text: string, history: SkyletConversationMessage[], locale?: string): SkyletLanguage {
+  const previous = [...history].reverse().find(item => item.role === "user");
+  return skyletLanguage(text, previous ? skyletLanguage(previous.content, locale) : locale);
+}
+
 
 /** Local, limited fuzzy intent recognition for short Skylet-help questions.
  * Normalization handles accents, punctuation, common chat abbreviations and
@@ -85,8 +108,8 @@ export function isSkyletCapabilitiesQuestion(text: string): boolean {
   );
 }
 
-export function skyletCapabilitiesReply(text: string): string {
-  const language = skyletLanguage(text);
+export function skyletCapabilitiesReply(text: string, preferred?: string): string {
+  const language = skyletLanguage(text, preferred);
   if (language === "pt") {
     return "Posso ajudar com informações sobre Patrick Araujo e o PkLavc: projetos, experiência profissional, blog de Games e Tech, matérias publicadas, loja de afiliados e formas de contato. Pode perguntar sobre um produto, uma notícia ou um projeto específico. Para outros assuntos, não ofereço respostas.";
   }
@@ -96,17 +119,17 @@ export function skyletCapabilitiesReply(text: string): string {
   return "I can help with Patrick Araujo and PkLavc: projects, professional experience, Games and Tech articles, affiliate products and contact information. Ask me about a specific product, article or project. I don't answer unrelated questions.";
 }
 
-export function skyletLanguage(text: string): SkyletLanguage {
+export function skyletLanguage(text: string, preferred?: string): SkyletLanguage {
   // Normalize accented letters before matching word boundaries; plain JS
   // \b considers é/á outside a word and mislabels Spanish/Portuguese replies.
   const value = String(text || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-  if (/\b(?:hola|gracias|quien|donde|cual|cuanto|que hora|acerca de|sitio web|tienda|publicaciones|articulos|precios|misiones|puedes|puedo|hablar|hacer|preguntar|respuestas|que hay)\b/.test(value)) return "es";
-  if (/\b(?:oi|ola|bom dia|boa noite|voce|vc|vcs|qual|quais|quanto|onde|como|nao|sobre|loja|postagem|artigo|materia|projetos|visitantes|portfolio|preco|contato|falar|fala|responder|responde|pode|consegue|ajuda|oq|oque|oqe)\b/.test(value)) return "pt";
-  return "en";
+  if (/\b(?:hola|gracias|quien|donde|cual|cuanto|que hora|acerca de|sitio web|tienda|publicaciones|articulos|precios|misiones|puedes|puedo|hablar|hacer|preguntar|respuestas|ejemplos|ejemplo|que hay)\b/.test(value)) return "es";
+  if (/\b(?:oi|ola|bom dia|boa noite|voce|vc|vcs|qual|quais|quanto|onde|como|nao|sobre|loja|postagem|artigo|materia|projetos|visitantes|portfolio|preco|contato|falar|fala|responder|responde|pode|consegue|ajuda|oq|oque|oqe|exemplos|exemplo|detalhes|tambem|isso|diga|mostre|materias|outras|outro|outra|anterior)\b/.test(value)) return "pt";
+  return preferred === "pt" || preferred === "es" ? preferred : "en";
 }
 
-export function exclusiveSiteReply(text: string): string {
-  const language = skyletLanguage(text);
+export function exclusiveSiteReply(text: string, preferred?: string): string {
+  const language = skyletLanguage(text, preferred);
   if (language === "pt") {
     return "A Skylet responde exclusivamente sobre Patrick, o site PkLavc, seus projetos, blog, publicações e loja. Para outros assuntos, utilize outro assistente.";
   }
@@ -116,8 +139,8 @@ export function exclusiveSiteReply(text: string): string {
   return "Skylet answers only questions about Patrick, the PkLavc website, its projects, blog, posts and store. For other subjects, please use another assistant.";
 }
 
-export function skyletDailyLimitReply(text: string): string {
-  const language = skyletLanguage(text);
+export function skyletDailyLimitReply(text: string, preferred?: string): string {
+  const language = skyletLanguage(text, preferred);
   if (language === "pt") return "A consulta dinâmica da Skylet atingiu o limite diário de proteção. As páginas do site, blog e loja continuam disponíveis. Tente novamente amanhã.";
   if (language === "es") return "La consulta dinámica de Skylet alcanzó el límite diario de protección. El sitio, blog y tienda siguen disponibles. Inténtalo mañana.";
   return "Skylet has reached its daily dynamic-answer safety limit. The website, blog and store remain available. Try again tomorrow.";
@@ -223,19 +246,47 @@ export function isSkyletSiteQuestion(text: string): boolean {
 export function isSkyletShortFollowup(text: string): boolean {
   const value = String(text || "").trim().toLowerCase();
   if (value.length > 100 || GENERIC_OTHER.test(value)) return false;
+  const words = intentTokens(value);
+  if (words.length <= 6 && hasIntentWord(words, ["exemplos", "exemplo", "examples", "example", "ejemplos", "ejemplo"])) return true;
   // A new generic question beginning "como" or "what" is not a
   // follow-up. Only explicitly referential or short context-dependent
   // continuations may inherit the immediately previous site question.
   return /^(?:e\b|mas\b|isso\b|esse\b|essa\b|aquilo\b|ent[aã]o\b|mais\b|and\b|what about\b|but\b|also\b|how about\b|y\b|pero\b|e quanto custa\b|quanto custa\??$|how much\??$|onde fica\??$|como funciona\??$|where is it\??$|cu[aá]nto cuesta\??$)/i.test(value);
 }
 
-export function skyletQuickAnswer(text: string): QuickAnswer | null {
+/** Context-specific example suggestions cost no model calls and no D1/KV operations. */
+export function skyletContextQuickAnswer(
+  text: string, history: SkyletConversationMessage[], preferred?: string,
+): QuickAnswer | null {
+  const words = intentTokens(text);
+  if (words.length > 6 || !hasIntentWord(words, ["exemplos", "exemplo", "examples", "example", "ejemplos", "ejemplo"])
+    || !skyletContextFollowup(text, history)) return null;
+  const lastSite = [...history].reverse().find(item => item.role === "user" && isSkyletSiteQuestion(item.content));
+  const topic = normalizedSkyletText(lastSite?.content || "");
+  const lang = skyletContextLanguage(text, history, preferred);
+  const examples = hasCanonical(topic, "store") ? {
+    pt: "Exemplos: Quais produtos estão disponíveis na loja? Como funcionam os links de afiliados? Onde encontro os produtos de Games?",
+    en: "Examples: Which products are available in the store? How do affiliate links work? Where are the gaming products?",
+    es: "Ejemplos: ¿Qué productos hay en la tienda? ¿Cómo funcionan los enlaces de afiliados? ¿Dónde están los productos de videojuegos?",
+  } : hasCanonical(topic, "blog") ? {
+    pt: "Exemplos: Qual é a matéria mais recente de GTA 6? Onde encontro notícias de tecnologia? Pode resumir um artigo do blog?",
+    en: "Examples: What is the latest GTA 6 article? Where are the technology articles? Can you summarize a blog post?",
+    es: "Ejemplos: ¿Cuál es el artículo más reciente de GTA 6? ¿Dónde están las noticias de tecnología? ¿Puedes resumir un artículo del blog?",
+  } : {
+    pt: "Exemplos: Quais projetos Patrick desenvolveu? Qual é a experiência profissional dele? Quais são as últimas notícias de Games no blog? Como funciona a loja do PkLavc?",
+    en: "Examples: Which projects has Patrick built? What is his professional experience? What are the latest Games articles? How does the PkLavc store work?",
+    es: "Ejemplos: ¿Qué proyectos desarrolló Patrick? ¿Cuál es su experiencia profesional? ¿Cuáles son las últimas noticias de videojuegos? ¿Cómo funciona la tienda PkLavc?",
+  };
+  return { reply: examples[lang], reason: "faq:skylet_context_examples" };
+}
+
+export function skyletQuickAnswer(text: string, preferred?: string): QuickAnswer | null {
   const q = normalizedSkyletText(text);
   if (isSkyletCapabilitiesQuestion(text)) {
-    return { reply: skyletCapabilitiesReply(text), reason: "faq:skylet_capabilities" };
+    return { reply: skyletCapabilitiesReply(text, preferred), reason: "faq:skylet_capabilities" };
   }
   if (!q || !isSkyletSiteQuestion(q)) return null;
-  const lang = skyletLanguage(text);
+  const lang = skyletLanguage(text, preferred);
   // Only stable navigation/overview replies are preprogrammed. Topic-specific
   // details, prices, posts and products are passed to the Cloudflare-first AI.
   const navigation = /^(?:blog|store|shop|loja|tienda|contato|contact|projetos|projects|visitantes|visitors)$/.test(q)
