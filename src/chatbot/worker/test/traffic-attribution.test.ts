@@ -24,7 +24,9 @@ function mockDb() {
   return { DB: DB as never, calls };
 }
 
-const env = (DB: never) => ({ DB, ALLOWED_ORIGINS: "https://pklavc.com" }) as never;
+const env = (DB: never) => ({
+  DB, CACHE: {}, SESSIONS: {}, ALLOWED_ORIGINS: "https://pklavc.com",
+}) as never;
 const ctx = {} as never;
 function visitRequest(pathname: string, source: string, origin = "https://pklavc.com") {
   const request = new Request("https://api.pklavc.com/analytics/visit", {
