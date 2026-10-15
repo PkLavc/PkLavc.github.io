@@ -42,6 +42,47 @@ describe("Skylet's strictly website-only scope", () => {
     expect(exclusiveSiteReply("¿Qué hora es?")).toContain("exclusivamente");
     expect(skyletDailyLimitReply("Quais artigos?")).toContain("limite diário");
   });
+  it("recognizes misspelled article, store and project words algorithmically", () => {
+    for (const question of [
+      "Onde fica a lojja?",
+      "Onde encontro os progetos?",
+      "Onde ler as notcias?",
+      "Onde encontro o artgo?",
+      "Where is the stroe?",
+      "Where is the bloog?",
+      "Dónde está la tiendaa?",
+    ]) expect(isSkyletSiteQuestion(question), question).toBe(true);
+    expect(skyletQuickAnswer("Onde fica a lojja?")?.reply).toContain("/store/");
+    expect(skyletQuickAnswer("Where is the stroe?")?.reply).toContain("/store/");
+    expect(skyletQuickAnswer("Onde encontro os progetos?")?.reply).toContain("https://pklavc.com/");
+    expect(skyletQuickAnswer("Onde encontro o artgo?")?.reply).toContain("/blog/");
+    expect(skyletQuickAnswer("Dónde está la tiendaa?")?.reply).toContain("/store/");
+    expect(skyletLanguage("Ondee fica a lojja?")).toBe("pt");
+    expect(skyletLanguage("Dónde está la tiendaa?")).toBe("es");
+  });
+  it("keeps recent news and product prices dynamic, not static FAQs", () => {
+    for (const question of [
+      "Quais produtos tem na lojja?",
+      "Qual o preço da lojja?",
+      "Qual a última notícia do bloog?",
+      "Sobre a matéria do GTA 6",
+      "What is the latest blog article?",
+    ]) {
+      expect(isSkyletSiteQuestion(question), question).toBe(true);
+      expect(skyletQuickAnswer(question), question).toBeNull();
+    }
+  });
+  it("does not accept general requests just because one word resembles a site topic", () => {
+    for (const question of [
+      "What is the capital of France?",
+      "How do I build a website?",
+      "Como criar um blgo com inteligência artificial?",
+      "How do I create an online stroe?",
+      "Qual a história do GTA 6?",
+      "Como fazer bolo de cenoura?",
+      "Como criar um canal do YouTube?",
+    ]) expect(isSkyletSiteQuestion(question), question).toBe(false);
+  });
   it("allows a short follow-up only when the caller establishes site context", () => {
     expect(isSkyletShortFollowup("E quanto custa?")).toBe(true);
     expect(isSkyletShortFollowup("What about the price?")).toBe(true);
