@@ -316,7 +316,9 @@ export default {
             const raw = await request.text();
             const visit = raw.length <= 700 ? JSON.parse(raw || "{}") : {};
             const { channel, section, pageKey } = dimensionsOfVisit(visit);
-            await env.DB.prepare(
+            // Avoid doubling D1 writes for all ordinary direct and unknown
+            // visitors. Retain the original geographic count unchanged.
+            if (channel !== "direct" && channel !== "other") await env.DB.prepare(
               `INSERT INTO traffic_source_daily
                 (visit_date, channel, section, page_key, visits, updated_at)
                 VALUES (?, ?, ?, ?, 1, ?)
