@@ -91,11 +91,26 @@ function trackAggregatedGeoVisit() {
     return Promise.resolve({ tracked: false, reason: 'session_storage_unavailable' });
   }
 
+  // Send only first-party path, explicit campaign source and referrer *origin*.
+  // Never transmit full referrer URLs, cookies, visitor identifiers or IP data.
+  var source = '';
+  var referrerOrigin = '';
+  try {
+    source = new URLSearchParams(window.location.search).get('utm_source') || '';
+    if (document.referrer) referrerOrigin = new URL(document.referrer).origin;
+  } catch (error) { /* Malformed or empty referrer is treated as direct. */ }
+
   return window.fetch('https://api.pklavc.com/analytics/visit', {
     method: 'POST',
     mode: 'cors',
     credentials: 'omit',
-    keepalive: true
+    keepalive: true,
+    headers: { 'Content-Type': 'text/plain;charset=UTF-8' },
+    body: JSON.stringify({
+      pathname: window.location.pathname || '/',
+      source: source.slice(0, 48),
+      referrer: referrerOrigin.slice(0, 120)
+    })
   }).then(function(response) {
     if (!response.ok) {
       throw new Error('geo_visit_request_failed');
