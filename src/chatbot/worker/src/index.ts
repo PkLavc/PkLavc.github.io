@@ -1,4 +1,5 @@
 import { MANUAL_RAG_CONTEXT, MANUAL_RAG_SECTIONS } from "./manual-rag";
+import { exclusiveSiteReply, isSkyletShortFollowup, isSkyletSiteQuestion, skyletDailyLimitReply, skyletQuickAnswer } from "./skylet-scope";
 import { handleDiscordInteraction } from "./discord-interactions";
 import { closeDiscordConversation, drainDiscordMessageQueue, enqueueDiscordMessage, getConversationControl } from "./discord-conversations";
 import { decryptInstagramRecipient, deriveInstagramIdentity, encryptInstagramRecipient, sendInstagramMessage } from "./instagram-messaging";
@@ -101,8 +102,8 @@ const isTikTokWebOrigin = (origin: string | null): boolean =>
 const MAX_MEMORY_ITEMS = 8;
 const SITE_RAG_CACHE_KEY = "site_rag_cache:v2";
 const SITE_RAG_META_KEY = "site_rag_cache_meta:v2";
-const SITE_RAG_CACHE_TTL_SECONDS = 3600;
-const SITE_RAG_SOURCE_PATHS = ["/", "/about/", "/pt/sobre/", "/es/sobre/", "/projects/", "/projects/lavc-systems/", "/projects/raw-api-ingestion-pipeline/", "/projects/zoho-integration-worker/", "/stacks/zoho-deluge-developer/", "/blog/", "/blog/raw-api-ingestion-supabase-sql/"];
+const SITE_RAG_CACHE_TTL_SECONDS = 4 * 3600;
+const SITE_RAG_SOURCE_PATHS = ["/", "/about/", "/pt/sobre/", "/es/sobre/", "/projects/", "/projects/lavc-systems/", "/projects/raw-api-ingestion-pipeline/", "/projects/zoho-integration-worker/", "/stacks/zoho-deluge-developer/", "/blog/", "/blog/en/games/", "/blog/en/tech/", "/store/", "/blog/raw-api-ingestion-supabase-sql/"];
 const AGENT_NAME = "Skylet";
 const AGENT_PROFILE = "Skylet is a female AI assistant.";
 const INTERNAL_PORTFOLIO_CONTEXT = [
@@ -315,7 +316,9 @@ export default {
             const raw = await request.text();
             const visit = raw.length <= 700 ? JSON.parse(raw || "{}") : {};
             const { channel, section, pageKey } = dimensionsOfVisit(visit);
-            await env.DB.prepare(
+            // Avoid doubling D1 writes for all ordinary direct and unknown
+            // visitors. Retain the original geographic count unchanged.
+            if (channel !== "direct" && channel !== "other") await env.DB.prepare(
               `INSERT INTO traffic_source_daily
                 (visit_date, channel, section, page_key, visits, updated_at)
                 VALUES (?, ?, ?, ?, 1, ?)
@@ -574,19 +577,24 @@ export default {
       }
 
       if (url.pathname === "/chat" && request.method === "POST") {
-        const rate = await rateLimitChat(request, env, traceId);
-        if (!rate.ok) {
-          return withCors(json({ error: "rate_limited" }, 429), env, origin);
-        }
-
         let payload: ChatPayload;
         try {
           payload = await request.json<ChatPayload>();
         } catch {
           return withCors(json({ error: "invalid_json" }, 400), env, origin);
         }
-        const user = await resolveChatUser(request, env, payload.conversation_id);
         const input = (payload.message || "").trim();
+        const quick = skyletQuickAnswer(input);
+        if (quick || (!isSkyletSiteQuestion(input) && !isGreetingOnly(input)
+                    && !(payload.conversation_id && isSkyletShortFollowup(input)))) {
+          return withCors(json({
+            ok: true, conversation_id: payload.conversation_id || null,
+            reply: quick?.reply || exclusiveSiteReply(input),
+            provider: "local", fallback_used: false,
+            local_reason: quick?.reason || "outside_site_scope",
+          }), env, origin);
+        }
+        const user = await resolveChatUser(request, env, payload.conversation_id);
         const conversationId = payload.conversation_id;
         if (conversationId) {
           const control = await getConversationControl(env, conversationId, user.id);
@@ -623,16 +631,22 @@ export default {
       }
 
       if (url.pathname === "/chat/stream" && request.method === "POST") {
-        const rate = await rateLimitChat(request, env, traceId);
-        if (!rate.ok) {
-          return withCors(json({ error: "rate_limited" }, 429), env, origin);
-        }
-
         let payload: ChatPayload;
         try {
           payload = await request.json<ChatPayload>();
         } catch {
           return withCors(json({ error: "invalid_json" }, 400), env, origin);
+        }
+        const question = String(payload.message || "").trim();
+        const quick = skyletQuickAnswer(question);
+        if (quick || (!isSkyletSiteQuestion(question) && !isGreetingOnly(question)
+                    && !(payload.conversation_id && isSkyletShortFollowup(question)))) {
+          const reply = quick?.reply || exclusiveSiteReply(question);
+          const body = 'data: ' + JSON.stringify({ token: reply }) + '\n\n'
+            + 'data: ' + JSON.stringify({ done: true, conversation_id: payload.conversation_id || null }) + '\n\n';
+          return withCors(new Response(body, {
+            headers: { "Content-Type": "text/event-stream", "Cache-Control": "no-cache" },
+          }), env, origin);
         }
         const user = await resolveChatUser(request, env, payload.conversation_id);
         if (payload.conversation_id) {
@@ -775,8 +789,16 @@ async function handleChat(payload: ChatPayload, user: AuthUser, env: Env, traceI
     return { ok: false, blocked: true, reason: guardrail.reason, trace_id: traceId };
   }
 
-  const task = payload.task || "chat";
-
+  const task = "chat";
+  if (!isSkyletSiteQuestion(sanitized) && !isGreetingOnly(sanitized)) {
+    const history = payload.conversation_id ? await fetchMemory(env, payload.conversation_id, 5) : [];
+    const prior = [...history].reverse().find(row => row.role === "user")?.content || "";
+    if (!isSkyletShortFollowup(sanitized) || !isSkyletSiteQuestion(prior)) {
+      return { ok: true, conversation_id: payload.conversation_id || null,
+        reply: exclusiveSiteReply(sanitized), provider: "local", fallback_used: false,
+        local_reason: "outside_site_scope", trace_id: traceId };
+    }
+  }
   const localDecision = resolveLocalReply(sanitized, task);
   if (localDecision) {
     const conversationId = await ensureConversation(env, user.id, payload.conversation_id);
@@ -819,6 +841,11 @@ async function handleChat(payload: ChatPayload, user: AuthUser, env: Env, traceI
     }
   }
 
+  if (!await reserveSkyletDailyAi(env)) {
+    return { ok: true, conversation_id: payload.conversation_id || null,
+      reply: skyletDailyLimitReply(sanitized), provider: "local", fallback_used: true,
+      local_reason: "daily_ai_budget_protection", trace_id: traceId };
+  }
   const conversationId = await ensureConversation(env, user.id, payload.conversation_id);
   await storeMessage(env, conversationId, "user", sanitized);
   await onVisitorMessage?.(conversationId, sanitized);
@@ -908,13 +935,24 @@ async function handleChatStream(payload: ChatPayload, user: AuthUser, env: Env, 
     return json({ ok: false, blocked: true, reason: guardrail.reason, trace_id: traceId }, 400);
   }
 
-  const conversationId = await ensureConversation(env, user.id, payload.conversation_id);
-  await storeMessage(env, conversationId, "user", sanitized);
-  await onVisitorMessage?.(conversationId, sanitized);
-
-  const task = payload.task || "chat";
+  const task = "chat";
+  if (!isSkyletSiteQuestion(sanitized) && !isGreetingOnly(sanitized)) {
+    const history = payload.conversation_id ? await fetchMemory(env, payload.conversation_id, 5) : [];
+    const prior = [...history].reverse().find(row => row.role === "user")?.content || "";
+    if (!isSkyletShortFollowup(sanitized) || !isSkyletSiteQuestion(prior)) {
+      const reply = exclusiveSiteReply(sanitized);
+      const body = 'data: ' + JSON.stringify({ token: reply }) + '\n\n'
+        + 'data: ' + JSON.stringify({ done: true, conversation_id: payload.conversation_id || null }) + '\n\n';
+      return new Response(body, {
+        headers: { "Content-Type": "text/event-stream", "Cache-Control": "no-cache" },
+      });
+    }
+  }
   const localDecision = resolveLocalReply(sanitized, task);
   if (localDecision) {
+    const conversationId = await ensureConversation(env, user.id, payload.conversation_id);
+    await storeMessage(env, conversationId, "user", sanitized);
+    await onVisitorMessage?.(conversationId, sanitized);
     await storeMessage(env, conversationId, "assistant", localDecision.reply);
 
     await logEvent(env, user.id, "chat_local", {
@@ -941,6 +979,17 @@ async function handleChatStream(payload: ChatPayload, user: AuthUser, env: Env, 
     });
   }
 
+  if (!await reserveSkyletDailyAi(env)) {
+    const reply = skyletDailyLimitReply(sanitized);
+    const body = 'data: ' + JSON.stringify({ token: reply }) + '\n\n'
+      + 'data: ' + JSON.stringify({ done: true, conversation_id: payload.conversation_id || null }) + '\n\n';
+    return new Response(body, {
+      headers: { "Content-Type": "text/event-stream", "Cache-Control": "no-cache" },
+    });
+  }
+  const conversationId = await ensureConversation(env, user.id, payload.conversation_id);
+  await storeMessage(env, conversationId, "user", sanitized);
+  await onVisitorMessage?.(conversationId, sanitized);
   const memory = pruneMemory(await fetchMemory(env, conversationId, MAX_MEMORY_ITEMS), Number(env.MAX_CONTEXT_CHARS || "4000"));
   const conversationSignals = analyzeConversationSignals(memory, sanitized);
   const usePortfolioRag = shouldUsePortfolioRag(sanitized, memory, conversationSignals);
@@ -1421,7 +1470,7 @@ function inferTopic(text: string): string | null {
 }
 
 function isPortfolioIntent(text: string): boolean {
-  return /\b(patrick|pklavc|portfolio|portfólio|about|sobre|projects|projetos|blog|stacks|collections|github\.com\/pklavc|linkedin\.com\/in\/pklavc|contact@pklavc\.com|google auth worker|zoho|hablla|zenvia|sige|omie|codepulse|cipher gate|aegis sentinel|cloud deployment showcase|multi-tenant saas platform|loja do sapo|icaiu|wr auto pecas|empresa|empresas|company|companies|trabalhou|trabalha|onde trabalha|experience|experiência|career)\b/.test(text);
+  return /\b(patrick|pklavc|portfolio|portfólio|about|sobre|projects|projetos|blog|loja|store|tienda|shop|visitors|visitantes|artigos|articles|postagens|posts|games|gta|rockstar|technology|tecnologia|stacks|collections|github\.com\/pklavc|linkedin\.com\/in\/pklavc|contact@pklavc\.com|google auth worker|zoho|hablla|zenvia|sige|omie|codepulse|cipher gate|aegis sentinel|cloud deployment showcase|multi-tenant saas platform|loja do sapo|icaiu|wr auto pecas|empresa|empresas|company|companies|trabalhou|trabalha|onde trabalha|experience|experiência|career)\b/.test(text);
 }
 
 function isLikelyMathPi(text: string): boolean {
@@ -1474,8 +1523,8 @@ async function buildPrompt(
   const dynamicRules = [
     "Priority rule: the latest user message has highest priority.",
     "Priority rule: if the user corrects topic, immediately switch topic and discard previous assumptions.",
-    "Do not force Patrick/profile context unless the user explicitly asks about Patrick or portfolio topics.",
-    "If user asks a non-portfolio topic (e.g., mathematical pi), answer that topic directly and briefly.",
+    "STRICT WEBSITE SCOPE: Skylet exclusively answers questions about Patrick Araujo, pklavc.com, its blog, publications, projects, store, site operations and technologies used on this site.",
+    "NEVER answer unrelated general-knowledge, programming tutorials, weather, gaming walkthroughs, maths or unrelated personal questions. Instead briefly state that Skylet is exclusive to Patrick and PkLavc site information, in the user's language.",
     "Formatting rule: never use markdown tables, pipe tables, or columnar table formatting.",
     "Formatting rule: respond in plain text paragraphs; when listing items, use simple lines without table syntax.",
     "Source rule: do not mention raw source labels like 'extraido do linkedin' or 'extracted from LinkedIn' unless user explicitly asks for the source.",
@@ -1493,7 +1542,7 @@ async function buildPrompt(
     dynamicRules.push("User correction detected: prioritize correction over previous context.");
   }
   if (signals.offTopicRequest) {
-    dynamicRules.push("Current request appears outside portfolio scope: do not inject portfolio bio unless user asks for it.");
+    dynamicRules.push("Reject unrelated requests with the concise site-exclusivity notice, regardless of earlier conversation topics.");
   }
 
   return [
@@ -1677,6 +1726,28 @@ async function retrieveRagContext(env: Env, userId: number, question: string, li
   return scored.slice(0, limit).map((item) => item.chunk);
 }
 
+/** Hard daily budget in D1, not a frequently written KV counter.
+ * If the D1 budget is unavailable, refuse the model request (fail closed).
+ */
+async function reserveSkyletDailyAi(env: Env): Promise<boolean> {
+  const max = 24;
+  const date = new Date().toISOString().slice(0, 10);
+  try {
+    const row = await env.DB.prepare(
+      `INSERT INTO skylet_ai_daily_budget (usage_date, requests, updated_at)
+       VALUES (?, 1, ?)
+       ON CONFLICT(usage_date) DO UPDATE SET
+         requests = requests + 1, updated_at = excluded.updated_at
+       WHERE requests < ?
+       RETURNING requests`,
+    ).bind(date, new Date().toISOString(), max).first<{ requests: number }>();
+    return Boolean(row && row.requests <= max);
+  } catch {
+    // No permission, migration, available D1 quota, or database: no AI call.
+    return false;
+  }
+}
+
 export async function runProviderChat(
   prompt: string,
   env: Env,
@@ -1684,13 +1755,15 @@ export async function runProviderChat(
   task: string,
   fallbackText?: string,
 ): Promise<{ text: string; provider: string; fallback: boolean; promptVersion: string; stream?: ReadableStream<Uint8Array> }> {
+  // Keep the existing Cloudflare Workers AI-first routing. Cheap local FAQ
+  // and a hard daily budget in the chat routes protect the shared quota.
   const providerList = ["cloudflare", "groq", "openrouter"] as const;
   let lastError = "";
   const modelChoice = pickModelForTask(env, task);
 
   for (let i = 0; i < providerList.length; i += 1) {
     const provider = providerList[i];
-    for (let attempt = 1; attempt <= 2; attempt += 1) {
+    for (let attempt = 1; attempt <= 1; attempt += 1) {
       try {
         if (provider === "groq") {
           const result = await callGroq(prompt, env, stream, modelChoice.groq, task);
@@ -1739,6 +1812,7 @@ async function callGroq(prompt: string, env: Env, stream: boolean, model: string
       model,
       messages: [{ role: "user", content: prompt }],
       stream,
+      max_tokens: 400,
       temperature: task === "classification" || task === "lead_scoring" ? 0.1 : 0.3,
       response_format: { type: "text" },
     }),
@@ -1837,44 +1911,9 @@ function cleanCloudflareResponse(text: string): string {
   return cleaned.slice(0, 4000).trim();
 }
 
-async function getEmbedding(text: string, env: Env): Promise<number[]> {
-  const cleaned = sanitizeInput(text).slice(0, 2500);
-  const key = await cacheHash(`emb:${cleaned}`);
-  const cached = await env.SESSIONS.get(`embedding:${key}`);
-  if (cached) {
-    return JSON.parse(cached) as number[];
-  }
-
-  if (env.OPENROUTER_API_KEY) {
-    const model = env.OPENROUTER_EMBED_MODEL || env.DEFAULT_EMBED_MODEL || "text-embedding-3-small";
-    const response = await fetch("https://openrouter.ai/api/v1/embeddings", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${env.OPENROUTER_API_KEY}`,
-        "HTTP-Referer": "https://pklavc.com",
-        "X-Title": "PKLAVC Chat Worker",
-      },
-      body: JSON.stringify({ model, input: cleaned }),
-    });
-
-    if (response.ok) {
-      const data = await response.json<any>();
-      const vector = data?.data?.[0]?.embedding;
-      if (Array.isArray(vector) && vector.length > 0) {
-        await env.SESSIONS.put(`embedding:${key}`, JSON.stringify(vector), {
-          expirationTtl: Number(env.EMBEDDING_CACHE_TTL || "86400"),
-        });
-        return vector;
-      }
-    }
-  }
-
-  const fallback = deterministicEmbedding(cleaned, 128);
-  await env.SESSIONS.put(`embedding:${key}`, JSON.stringify(fallback), {
-    expirationTtl: Number(env.EMBEDDING_CACHE_TTL || "86400"),
-  });
-  return fallback;
+async function getEmbedding(text: string, _env: Env): Promise<number[]> {
+  // Deterministic local embedding: zero shared OpenRouter calls or KV writes.
+  return deterministicEmbedding(sanitizeInput(text).slice(0, 2500), 128);
 }
 
 function deterministicEmbedding(text: string, size: number): number[] {
@@ -2119,74 +2158,6 @@ function validateJsonResponse(text: string, requiredKeys: string[], schema: Reco
     return { valid: true };
   } catch {
     return { valid: false, reason: "invalid_json" };
-  }
-}
-
-async function rateLimitChat(request: Request, env: Env, traceId: string) {
-  const rawIp = request.headers.get("CF-Connecting-IP") || "unknown";
-  const ipHash = await cacheHash(rawIp);
-  const date = new Date().toISOString().slice(0, 10);
-  const ttlSeconds = 86400;
-
-  const perIpDailyLimit = 300;
-  const uniqueIpDailySoftLimit = 200;
-  const softPerIpDailyLimit = 120;
-
-  const ipKey = `rate:${date}:${ipHash}`;
-  const uniqueCounterKey = `rate:${date}:__unique_count`;
-  const modeKey = `rate:${date}:mode:${ipHash}`;
-
-  try {
-    const currentRaw = await env.CACHE.get(ipKey);
-    const current = Number(currentRaw || "0");
-    const mode = await env.CACHE.get(modeKey);
-    const inSoftMode = mode === "soft";
-    const effectivePerIpLimit = inSoftMode ? softPerIpDailyLimit : perIpDailyLimit;
-
-    if (!currentRaw) {
-      const uniqueRaw = await env.CACHE.get(uniqueCounterKey);
-      const uniqueCount = Number(uniqueRaw || "0");
-
-      if (uniqueCount >= uniqueIpDailySoftLimit) {
-        await env.CACHE.put(modeKey, "soft", { expirationTtl: ttlSeconds });
-        await env.CACHE.put(ipKey, "1", { expirationTtl: ttlSeconds });
-        console.log(JSON.stringify({
-          level: "warn",
-          event: "chat_rate_limit_soft_mode_new_ip",
-          ip_hash: ipHash,
-          date,
-          unique_count: uniqueCount,
-          unique_soft_limit: uniqueIpDailySoftLimit,
-          trace_id: traceId,
-        }));
-        return { ok: true };
-      }
-
-      await env.CACHE.put(uniqueCounterKey, String(uniqueCount + 1), { expirationTtl: ttlSeconds });
-      await env.CACHE.put(ipKey, "1", { expirationTtl: ttlSeconds });
-      return { ok: true };
-    }
-
-    if (current >= effectivePerIpLimit) {
-      console.log(JSON.stringify({
-        level: "warn",
-        event: "chat_rate_limit_per_ip",
-        ip_hash: ipHash,
-        date,
-        current,
-        per_ip_limit: effectivePerIpLimit,
-        soft_mode: inSoftMode,
-        trace_id: traceId,
-      }));
-      return { ok: false };
-    }
-
-    await env.CACHE.put(ipKey, String(current + 1), { expirationTtl: ttlSeconds });
-    return { ok: true };
-  } catch (error) {
-    const message = error instanceof Error ? error.message : "cache_rate_limit_error";
-    console.error(JSON.stringify({ level: "warn", event: "chat_rate_limit_fail_open", message, trace_id: traceId }));
-    return { ok: true };
   }
 }
 
