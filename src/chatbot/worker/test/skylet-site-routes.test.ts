@@ -16,12 +16,12 @@ function noDatabaseEnv() {
   return { env, calls: () => touched };
 }
 
-async function query(path: string, message: string) {
+async function query(path: string, message: string, extra: Record<string, unknown> = {}) {
   const { env, calls } = noDatabaseEnv();
   const request = new Request("https://api.pklavc.com" + path, {
     method: "POST",
     headers: { Origin: "https://pklavc.com", "Content-Type": "application/json" },
-    body: JSON.stringify({ message }),
+    body: JSON.stringify({ message, ...extra }),
   });
   const response = await worker.fetch(request, env, { waitUntil() {} } as never);
   return { response, calls: calls() };
@@ -38,6 +38,39 @@ describe("Skylet real HTTP and streaming paths", () => {
     expect(data.reply).toContain("PkLavc");
     expect(calls).toBe(0);
   });
+  it("remembers local capabilities and replies to De exemplos in Portuguese without D1 or AI", async () => {
+    const first = await query("/chat", "oque pode falar?");
+    const initial = await first.response.json() as { reply: string; conversation_id: string | null };
+    expect(initial.conversation_id).toBeNull(); // no D1 records for FAQs
+    const recent_messages = [
+      { role: "user", content: "oque pode falar?" },
+      { role: "assistant", content: initial.reply },
+    ];
+    const next = await query("/chat", "De exemplos", { recent_messages, locale: "en" });
+    const answer = await next.response.json() as { reply: string; local_reason: string };
+    expect(answer.local_reason).toBe("faq:skylet_context_examples");
+    expect(answer.reply).toContain("Exemplos:");
+    expect(next.calls).toBe(0);
+    const streaming = await query("/chat/stream", "De exemplos", { recent_messages, locale: "en" });
+    expect(await streaming.response.text()).toContain("Exemplos:");
+    expect(streaming.calls).toBe(0);
+  });
+
+  it("refuses examples without a site history, in the current language, for free", async () => {
+    const standalone = await query("/chat", "De exemplos", { locale: "en" });
+    const result = await standalone.response.json() as { reply: string; local_reason: string };
+    expect(result.local_reason).toBe("outside_site_scope");
+    expect(result.reply).toContain("exclusivamente");
+    expect(standalone.calls).toBe(0);
+    const wrongContext = await query("/chat", "Dê exemplos", {
+      recent_messages: [{ role: "user", content: "Qual a previsão do tempo?" }],
+      locale: "pt",
+    });
+    expect((await wrongContext.response.json() as { local_reason: string }).local_reason)
+      .toBe("outside_site_scope");
+    expect(wrongContext.calls).toBe(0);
+  });
+
   it("answers abbreviated and mistyped chat via SSE without consuming Cloudflare quota", async () => {
     const { response, calls } = await query("/chat/stream", "oq vc podi fala");
     expect(response.status).toBe(200);

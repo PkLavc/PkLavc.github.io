@@ -28,6 +28,14 @@
   const consoleElement = document.querySelector('.s800-console');
   const sessionKey = 'aboutChatWidgetSession';
   let conversationId = (() => { try { return JSON.parse(localStorage.getItem(sessionKey) || '{}').conversationId || null; } catch (_) { return null; } })();
+  let recentMessages = (() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem(sessionKey) || '{}').recentMessages;
+      return Array.isArray(saved) ? saved.filter(item => item
+        && (item.role === 'user' || item.role === 'assistant')
+        && typeof item.content === 'string').slice(-20) : [];
+    } catch (_) { return []; }
+  })();
   let voiceOutput = false;
   let characterSpeech = false;
   let restoringConversation = false;
@@ -61,12 +69,25 @@
   function saveConversationReference() {
     try {
       const current = JSON.parse(localStorage.getItem(sessionKey) || '{}');
-      localStorage.setItem(sessionKey, JSON.stringify({ ...current, conversationId }));
+      localStorage.setItem(sessionKey, JSON.stringify({ ...current, conversationId, recentMessages }));
     } catch (_) { /* The conversation remains usable for the current page session. */ }
+  }
+
+  function rememberExchange(question, answer) {
+    recentMessages = recentMessages.concat([
+      { role: 'user', content: question.slice(0, 700) },
+      { role: 'assistant', content: answer.slice(0, 700) }
+    ]).slice(-20);
+    saveConversationReference();
   }
 
   async function restoreConversation() {
     if (!conversationId) return;
+    // Server-side history omits zero-D1 FAQs; the local transcript contains both.
+    if (recentMessages.length) {
+      if (!humanReplyTimer) humanReplyTimer = window.setInterval(pollHumanReplies, 3000);
+      return;
+    }
     const restoringId = conversationId;
     const restoreGeneration = ++conversationRestoreGeneration;
     restoringConversation = true;
@@ -96,6 +117,7 @@
     restoringConversation = false;
     const oldConversationId = conversationId;
     conversationId = null;
+    recentMessages = [];
     humanReplyCursor = 0;
     saveConversationReference();
     log.replaceChildren();
@@ -157,7 +179,7 @@
 
     const waiting = appendMessage('assistant', '...', true);
     try {
-      const chatPayload = { message, conversation_id: conversationId, voice_reply: voiceOutput };
+      const chatPayload = { message, conversation_id: conversationId, recent_messages: recentMessages.slice(-8), locale, voice_reply: voiceOutput };
       let response = await skyletFetch(`${apiBase}/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -179,7 +201,8 @@
       }
       if (!response.ok) throw new Error(data.error || `chat_http_${response.status}`);
       conversationId = data.conversation_id || conversationId;
-      saveConversationReference();
+      if (data.reply && !data.human_takeover) rememberExchange(message, data.reply);
+      else saveConversationReference();
       if (!humanReplyTimer && conversationId) humanReplyTimer = window.setInterval(pollHumanReplies, 3000);
       const reply = data.reply || copy.unavailable;
       waiting.classList.remove('is-pending');
@@ -245,6 +268,9 @@
   input.placeholder = copy.placeholder;
   setVoiceState();
   autoResize();
+  if (recentMessages.length) {
+    recentMessages.forEach(item => appendMessage(item.role, item.content));
+  }
   restoreConversation();
   syncConsoleSpace();
   if ('ResizeObserver' in window) new ResizeObserver(syncConsoleSpace).observe(consoleElement);

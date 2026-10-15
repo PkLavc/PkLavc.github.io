@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   exclusiveSiteReply, isSkyletShortFollowup, isSkyletSiteQuestion,
   skyletDailyLimitReply, skyletQuickAnswer, skyletLanguage, isSkyletCapabilitiesQuestion, normalizedSkyletText,
+  skyletClientHistory, skyletContextFollowup, skyletContextQuickAnswer, skyletContextLanguage,
 } from "../src/skylet-scope";
 
 describe("Skylet's strictly website-only scope", () => {
@@ -150,6 +151,47 @@ describe("Skylet's strictly website-only scope", () => {
       expect(isSkyletCapabilitiesQuestion(question), question).toBe(false);
     }
     expect(skyletQuickAnswer("Qual o preço de um produto na loja?")).toBeNull();
+  });
+
+  it("keeps short examples in the preceding site topic and its language", () => {
+    const history = skyletClientHistory([
+      { role: "user", content: "oque pode falar?" },
+      { role: "assistant", content: skyletQuickAnswer("oque pode falar?")?.reply },
+    ]);
+    expect(skyletContextFollowup("De exemplos", history)).toBe(true);
+    const answer = skyletContextQuickAnswer("De exemplos", history, "en");
+    expect(answer?.reason).toBe("faq:skylet_context_examples");
+    expect(answer?.reply).toContain("Exemplos:");
+    expect(skyletContextQuickAnswer("De exmplos", history)?.reply).toContain("Exemplos:");
+    expect(skyletContextLanguage("E quanto custa?", history, "en")).toBe("pt");
+    expect(skyletContextQuickAnswer("De exemplos", [])).toBeNull();
+    expect(skyletLanguage("De exemplos", "en")).toBe("pt");
+  });
+
+  it("provides relevant site examples in English and Spanish", () => {
+    const blogHistory = skyletClientHistory([
+      { role: "user", content: "Where are the blog articles?" },
+      { role: "assistant", content: "They are on the PkLavc blog." },
+    ]);
+    expect(skyletContextQuickAnswer("Give examples", blogHistory, "en")?.reply).toContain("GTA 6");
+    const spanishHistory = skyletClientHistory([
+      { role: "user", content: "¿Qué puedes hablar?" },
+      { role: "assistant", content: "Sobre PkLavc" },
+    ]);
+    expect(skyletContextQuickAnswer("Dame ejemplos", spanishHistory, "es")?.reply).toContain("Ejemplos:");
+  });
+
+  it("does not enable offsite requests or unbounded conversation input", () => {
+    const history = skyletClientHistory([
+      { role: "user", content: "Qual a previsão do tempo?" },
+      { role: "assistant", content: "Fora do escopo" },
+    ]);
+    expect(skyletContextFollowup("De exemplos", history)).toBe(false);
+    expect(skyletContextFollowup("Tell me a joke", history)).toBe(false);
+    const oversized = skyletClientHistory(Array.from({ length: 30 }, () =>
+      ({ role: "user", content: "x".repeat(1400) })));
+    expect(oversized).toHaveLength(8);
+    expect(oversized[0].content).toHaveLength(700);
   });
 
 });
