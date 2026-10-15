@@ -1,17 +1,8 @@
 name: Process private blog social on public runner
-# Social backlog retry marker: legacy artwork fallback enabled
-# Smoke tests include separated blog-vs-video image-policy checks.
-# Direct-upload launch marker (2026-10-13): test queue loaded.
-# Run Instagram/YouTube publication smoke checks after token rotation permissions test.
-# Facebook Login audio token extended and validated on 2026-10-14; live queue retry requested.
-# Requested one-time production publish to preview the upgraded animated PkLavc video layout (2026-10-15).
-# One-time editorial render showcase: queue contains an explicitly requested follow-up video; keep regular cadence intact.
 
 on:
   schedule:
-    # Every hour at :47, about 30 minutes after hourly article generation at :17.
     - cron: "47 * * * *"
-    # Store twice weekly to prioritize GTA Shorts.
     - cron: "0 12 * * 2,5"
   workflow_dispatch:
     inputs:
@@ -89,57 +80,21 @@ jobs:
           python -m pip install -r scripts/blog_automation/requirements.txt
           python -m pip install 'requests>=2.32,<3'
 
-      # Includes GitHub Release upload/cleanup and Meta audio-pagination tests.
       - name: Validate private social code without publishing
         working-directory: private-blog
-        run: |
-          python -m compileall -q scripts/social_video
-          python -m unittest scripts.social_video.test_motion scripts.social_video.test_direct_upload scripts.social_video.test_render scripts.social_video.test_products scripts.social_video.test_limits scripts.social_video.test_analytics scripts.social_video.test_instagram_analytics scripts.blog_automation.test_game_lane scripts.blog_automation.test_json_safe
-
+        run: bash scripts/private_runner/runner.sh smoke-social && python -m unittest scripts.private_runner.test_tasks
       - name: Validate relevant Instagram MUSIC is available without publishing
         working-directory: private-blog
         env:
           INSTAGRAM_AUDIO_ACCESS_TOKEN: ${{ secrets.INSTAGRAM_AUDIO_ACCESS_TOKEN }}
           INSTAGRAM_BUSINESS_ACCOUNT_ID: ${{ secrets.INSTAGRAM_BUSINESS_ACCOUNT_ID }}
-        run: |
-          python - <<'PY'
-          import os
-          from scripts.social_video.publishers import _trending_instagram_audio
-          account = os.environ["INSTAGRAM_BUSINESS_ACCOUNT_ID"]
-          import requests
-          token = os.environ["INSTAGRAM_AUDIO_ACCESS_TOKEN"]
-          for media_id in ("18114075305135475", "18125358295933855"):
-              response = requests.get(
-                  f"https://graph.facebook.com/v26.0/{media_id}",
-                  params={"fields": "media_audio_type", "access_token": token},
-                  timeout=20,
-              )
-              if response.ok:
-                  print("Previously published Reel music verification:", media_id,
-                        response.json().get("media_audio_type", "UNKNOWN"))
-              else:
-                  print("Meta media audio-type inspection unavailable:", media_id, response.status_code)
-          for category in ("games", "tech"):
-              try:
-                  audio = _trending_instagram_audio(account, category)
-                  assert audio["audio_type"] == "music"
-                  print(f"Relevant catalog MUSIC found for {category}; nothing published.")
-              except RuntimeError:
-                  print(f"Music catalog has no matching tracks for {category}; video publication must remain paused.")
-          PY
-
-      - name: Checkout current public repo for transient media-host test
-        if: github.event_name == 'push' && (contains(github.event.head_commit.message, '[release-media-smoke]') || contains(github.event.head_commit.message, '[inspect-ig-music]'))
-        uses: actions/checkout@v4
-        with:
-          path: public-site
-
+        run: python -m scripts.private_runner.tasks social_smoke
       - name: Inspect past verified MUSIC choices without publishing
         if: github.event_name == 'push' && contains(github.event.head_commit.message, '[inspect-ig-music]')
-        working-directory: public-site
+        working-directory: private-blog
         env:
           INSTAGRAM_AUDIO_ACCESS_TOKEN: ${{ secrets.INSTAGRAM_AUDIO_ACCESS_TOKEN }}
-        run: python .github/scripts/test_instagram_github_release_media.py --inspect-music
+        run: python -m scripts.private_runner.media_host_check --inspect-music
 
       - name: Install FFmpeg for temporary host test
         if: github.event_name == 'push' && contains(github.event.head_commit.message, '[release-media-smoke]')
@@ -147,12 +102,12 @@ jobs:
 
       - name: Verify Instagram can fetch a transient GitHub Release MP4 (do not publish)
         if: github.event_name == 'push' && contains(github.event.head_commit.message, '[release-media-smoke]')
-        working-directory: public-site
+        working-directory: private-blog
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           INSTAGRAM_AUDIO_ACCESS_TOKEN: ${{ secrets.INSTAGRAM_AUDIO_ACCESS_TOKEN }}
           INSTAGRAM_BUSINESS_ACCOUNT_ID: ${{ secrets.INSTAGRAM_BUSINESS_ACCOUNT_ID }}
-        run: python .github/scripts/test_instagram_github_release_media.py
+        run: python -m scripts.private_runner.media_host_check
 
   publish:
     permissions:
@@ -161,19 +116,13 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 90
     env:
-      # Only the explicit live-cover test publishes one article; regular cadence stays unchanged.
       SOCIAL_MAX_ITEMS_PER_RUN: ${{ contains(github.event.head_commit.message, '[social-publish-now]') && '1' || vars.SOCIAL_MAX_ITEMS_PER_RUN || '2' }}
-      # Use only temporary GitHub Release assets; no R2 or direct Instagram upload.
-      # Production verification of the GitHub-hosted Instagram MUSIC pipeline.
       SOCIAL_IG_UPLOAD_MODE: github-release
-      # Reels use authorized trending catalog audio, not the MP4 narration.
       INSTAGRAM_TREND_AUDIO_VOLUME: "100"
       INSTAGRAM_VIDEO_AUDIO_VOLUME: "0"
       SOCIAL_MAX_VIDEO_MB: ${{ vars.SOCIAL_MAX_VIDEO_MB || '25' }}
       SOCIAL_TTS: kokoro
-      # Warm American female narration for YouTube; Instagram remains catalog MUSIC only.
       SOCIAL_KOKORO_VOICE: af_bella
-      # If both high-quality female voices fail, leave the item queued for retry.
       SOCIAL_ALLOW_ESPEAK_FALLBACK: "false"
       INSTAGRAM_GRAPH_VERSION: ${{ vars.INSTAGRAM_GRAPH_VERSION || 'v26.0' }}
 
@@ -210,58 +159,7 @@ jobs:
           EVENT_SCHEDULE: ${{ github.event.schedule }}
           DISPATCH_MODE: ${{ inputs.mode }}
           COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
-        run: |
-          python - <<'PY'
-          import json, os
-          from datetime import datetime, timedelta, timezone
-          from pathlib import Path
-          from zoneinfo import ZoneInfo
-          from scripts.social_video.limits import DAILY_LIMITS, category_of, published_counts
-          from scripts.blog_automation.games_topic import is_games_title
-          root = Path("social-state")
-          def load(name, key):
-              path = root / name
-              return json.loads(path.read_text(encoding="utf-8")).get(key, []) if path.exists() else []
-          today = datetime.now(ZoneInfo("America/Sao_Paulo")).date().isoformat()
-          videos = any(
-              item.get("status", "pending") == "pending" and
-              (category_of(item) != "games" or is_games_title(str(item.get("title") or "") + " " + str(item.get("description") or ""))) and
-              published_counts(load(f"{platform}-published.json", "items"), today)[category_of(item)] < DAILY_LIMITS[category_of(item)]
-              for platform in ("instagram", "youtube")
-              for item in load(f"{platform}-queue.json", "items")
-          )
-          schedule_run = os.environ.get("EVENT_NAME") == "schedule" and os.environ.get("EVENT_SCHEDULE") == "0 12 * * 2,5"
-          dispatch_mode = os.environ.get("DISPATCH_MODE", "")
-          has_store = schedule_run or dispatch_mode in {"store-products-preview", "store-products-publish"}
-          store_dry_run = dispatch_mode == "store-products-preview"
-          publish_queue = ((os.environ.get("EVENT_NAME") == "schedule" and not schedule_run)
-                           or dispatch_mode == "publish"
-                           or (os.environ.get("EVENT_NAME") == "push" and "[social-publish-now]" in os.environ.get("COMMIT_MESSAGE", "")))
-          now = datetime.now(timezone.utc)
-          due = False
-          for record in load("youtube-analytics.json", "videos"):
-              try:
-                  published = datetime.fromisoformat(record["publishedAt"].replace("Z", "+00:00"))
-              except (KeyError, ValueError):
-                  continue
-              for snapshot in record.get("snapshots", []):
-                  if snapshot.get("status") != "pending":
-                      continue
-                  try:
-                      hours = int(snapshot["scheduledAt"].removesuffix("h"))
-                  except (KeyError, ValueError):
-                      continue
-                  if now >= published + timedelta(hours=hours):
-                      due = True
-          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as output:
-              output.write(f"has_video={'true' if videos else 'false'}\n")
-              output.write(f"has_analytics={'true' if due else 'false'}\n")
-              output.write(f"has_store_products={'true' if has_store else 'false'}\n")
-              output.write(f"store_products_dry_run={'true' if store_dry_run else 'false'}\n")
-              output.write(f"publish_video_queue={'true' if publish_queue else 'false'}\n")
-          print(f"Pending social publication: {videos}; due Analytics snapshot: {due}; Store product run: {has_store} (dry-run={store_dry_run}); process article queue: {publish_queue}.")
-          PY
-
+        run: python -m scripts.private_runner.tasks social_gate
       - name: Cache Kokoro model files
         if: (steps.pending.outputs.has_video == 'true' && steps.pending.outputs.publish_video_queue == 'true') || steps.pending.outputs.has_store_products == 'true'
         uses: actions/cache@v4
@@ -298,6 +196,7 @@ jobs:
         continue-on-error: true
         working-directory: private-blog
         env:
+          STORE_PREVIEW: ${{ steps.pending.outputs.store_products_dry_run }}
           INSTAGRAM_ACCESS_TOKEN: ${{ secrets.INSTAGRAM_ACCESS_TOKEN }}
           INSTAGRAM_AUDIO_ACCESS_TOKEN: ${{ secrets.INSTAGRAM_AUDIO_ACCESS_TOKEN }}
           INSTAGRAM_BUSINESS_ACCOUNT_ID: ${{ secrets.INSTAGRAM_BUSINESS_ACCOUNT_ID }}
@@ -305,13 +204,7 @@ jobs:
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
-        run: |
-          if [ "${{ steps.pending.outputs.store_products_dry_run }}" = "true" ]; then
-            python -m scripts.social_video.products --dry-run --preview-dir social-preview/store-products
-          else
-            python -m scripts.social_video.products
-          fi
-
+        run: bash scripts/private_runner/runner.sh publish-store
       - name: Upload Store product video preview (not published)
         if: steps.pending.outputs.store_products_dry_run == 'true' && steps.store_products.outcome == 'success'
         uses: actions/upload-artifact@v4
@@ -334,18 +227,7 @@ jobs:
       - name: Persist queue and publication state
         if: always() && (steps.social.outcome != 'skipped' || steps.store_products.outcome != 'skipped')
         working-directory: private-blog
-        run: |
-          if [[ -n "$(git status --porcelain -- social-state/)" ]]; then
-            git config user.name "github-actions[bot]"
-            git config user.email "github-actions[bot]@users.noreply.github.com"
-            git add social-state/
-            git commit -m "social: persist publication queue state"
-            git pull --rebase origin main
-            git push origin HEAD:main
-          else
-            echo "No social state changes to persist."
-          fi
-
+        run: python -m scripts.private_runner.tasks persist_state
       - name: Collect Instagram Reel and Store Insights (never blocks publication)
         id: instagram_analytics
         if: always() && (github.event_name == 'schedule' || inputs.mode == 'publish')
@@ -376,19 +258,7 @@ jobs:
       - name: Persist Analytics and rolling 18-day editorial feedback
         if: always() && (steps.analytics.outcome != 'skipped' || steps.instagram_analytics.outcome != 'skipped')
         working-directory: private-blog
-        run: |
-          python -m scripts.social_video.growth_strategy
-          if [[ -n "$(git status --porcelain -- social-state/)" ]]; then
-            git config user.name "github-actions[bot]"
-            git config user.email "github-actions[bot]@users.noreply.github.com"
-            git add social-state/
-            git commit -m "social: update measured Analytics and 18-day editorial feedback"
-            git pull --rebase origin main
-            git push origin HEAD:main
-          else
-            echo "No Analytics state changes to persist."
-          fi
-
+        run: python -m scripts.private_runner.tasks persist_analytics
       - name: Fail after persisting partial results
         if: always()
         run: |
