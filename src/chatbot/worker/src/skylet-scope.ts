@@ -107,8 +107,10 @@ export function skyletLanguage(text: string): SkyletLanguage {
   // Normalize accented letters before matching word boundaries; plain JS
   // \b considers é/á outside a word and mislabels Spanish/Portuguese replies.
   const value = String(text || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-  if (/\b(?:hola|gracias|quien|donde|cual|cuanto|que hora|acerca de|sitio web|tienda|publicaciones|articulos|precios|misiones|puedes|puedo|hablar|hacer|preguntar|respuestas)\b/.test(value)) return "es";
-  if (/\b(?:oi|ola|bom dia|boa noite|voce|vc|vcs|qual|quais|quanto|onde|como|nao|sobre|loja|postagem|artigo|materia|projetos|visitantes|portfolio|preco|contato|falar|fala|responder|responde|pode|consegue|ajuda|oq|oque|oqe)\b/.test(value)) return "pt";
+  if (/\b(?:hola|gracias|quien|donde|cual|cuanto|que hora|acerca de|sitio web|tienda|publicaciones|articulos|precios|misiones|puedes|puedo|hablar|hacer|preguntar|respuestas)\b/.test(value)
+      || hasIntentWord(intentTokens(value), ["donde", "tienda", "gracias", "articulos", "puedes"])) return "es";
+  if (/\b(?:oi|ola|bom dia|boa noite|voce|vc|vcs|qual|quais|quanto|onde|como|nao|sobre|loja|postagem|artigo|materia|projetos|visitantes|portfolio|preco|contato|falar|fala|responder|responde|pode|consegue|ajuda|oq|oque|oqe)\b/.test(value)
+      || hasIntentWord(intentTokens(value), ["onde", "loja", "projetos", "noticias", "artigos", "visitas"])) return "pt";
   return "en";
 }
 
