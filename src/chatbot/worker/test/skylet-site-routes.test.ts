@@ -28,6 +28,25 @@ async function query(path: string, message: string) {
 }
 
 describe("Skylet real HTTP and streaming paths", () => {
+  it("answers misspelled Portuguese capability question locally on HTTP", async () => {
+    const { response, calls } = await query("/chat", "oque pode falar?");
+    expect(response.status).toBe(200);
+    const data = await response.json() as { provider: string; reply: string; local_reason: string };
+    expect(data.provider).toBe("local");
+    expect(data.local_reason).toBe("faq:skylet_capabilities");
+    expect(data.reply).toContain("Posso ajudar com informações");
+    expect(data.reply).toContain("PkLavc");
+    expect(calls).toBe(0);
+  });
+  it("answers abbreviated and mistyped chat via SSE without consuming Cloudflare quota", async () => {
+    const { response, calls } = await query("/chat/stream", "oq vc podi fala");
+    expect(response.status).toBe(200);
+    expect(response.headers.get("Content-Type")).toContain("text/event-stream");
+    const data = await response.text();
+    expect(data).toContain("Posso ajudar com informações");
+    expect(data).toContain('"done":true');
+    expect(calls).toBe(0);
+  });
   it("answers a known shop-navigation FAQ with no AI, KV or D1", async () => {
     const { response, calls } = await query("/chat", "Onde fica a loja?");
     expect(response.status).toBe(200);

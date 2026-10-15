@@ -6,12 +6,102 @@
 type SkyletLanguage = "pt" | "en" | "es";
 type QuickAnswer = { reply: string; reason: string };
 
+/** Local, limited fuzzy intent recognition for short Skylet-help questions.
+ * Normalization handles accents, punctuation, common chat abbreviations and
+ * single-character spelling errors. No exact user utterances are required.
+ * High confidence only: longer ambiguous questions keep the site scope policy.
+ */
+function intentTokens(text: string): string[] {
+  const normalized = String(text || "")
+    .toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]+/g, " ").trim();
+  const abbreviations: Record<string, string[]> = {
+    oq: ["o", "que"], oque: ["o", "que"], oqe: ["o", "que"],
+    q: ["que"], vc: ["voce"], vcs: ["voce"], c: ["voce"],
+    pq: ["porque"], tb: ["tambem"], qt: ["quanto"],
+  };
+  return normalized.split(/\s+/).filter(Boolean).flatMap(token => abbreviations[token] || [token]).slice(0, 35);
+}
+
+function tokenDistance(a: string, b: string, limit: number): number {
+  if (Math.abs(a.length - b.length) > limit) return limit + 1;
+  let previous = Array.from({ length: b.length + 1 }, (_, i) => i);
+  for (let i = 1; i <= a.length; i++) {
+    const next = [i];
+    let smallest = next[0];
+    for (let j = 1; j <= b.length; j++) {
+      const value = Math.min(next[j - 1] + 1, previous[j] + 1,
+        previous[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+      next.push(value);
+      smallest = Math.min(smallest, value);
+    }
+    if (smallest > limit) return limit + 1;
+    previous = next;
+  }
+  return previous[b.length];
+}
+
+function hasIntentWord(tokens: string[], dictionary: string[]): boolean {
+  return tokens.some(token => dictionary.some(word => {
+    if (token === word) return true;
+    // One typo for short semantic words, two for longer words. Do not
+    // approximate particles or 1-3 letter words to prevent false matches.
+    const limit = word.length >= 8 && token.length >= 7 ? 2
+      : word.length >= 4 && token.length >= 3 ? 1 : 0;
+    return limit > 0 && tokenDistance(token, word, limit) <= limit;
+  }));
+}
+
+export function isSkyletCapabilitiesQuestion(text: string): boolean {
+  const tokens = intentTokens(text);
+  if (!tokens.length || tokens.length > 14 || String(text).length > 110) return false;
+  const has = (dictionary: string[]) => hasIntentWord(tokens, dictionary);
+  // These refer to a real page/product/post, not a general capability query.
+  if (has(["gta", "rockstar", "python", "receita", "bolo", "clima", "tempo",
+    "matematica", "poema", "historia", "codigo", "musica", "produto", "produtos", "artigo", "artigos",
+    "noticia", "noticias", "postagem", "postagens", "preco", "patrick",
+    "projeto", "projetos", "loja", "site", "blog"])) return false;
+  const ptAbility = has(["pode", "consegue", "sabe", "posso", "capaz"]);
+  const ptAction = has(["falar", "fala", "responder", "responde", "ajudar",
+    "ajuda", "fazer", "faz", "perguntar", "pergunto", "conversar"]);
+  const enAbility = has(["can", "could", "able"]);
+  const enAction = has(["talk", "speak", "answer", "help", "ask", "do"]);
+  const esAbility = has(["puedes", "puede", "sabes", "puedo"]);
+  const esAction = has(["hablar", "responder", "hacer", "ayudar", "preguntar"]);
+  const questions = has(["que", "quais", "qual", "what", "which", "como",
+    "how", "sobre", "about", "assuntos", "assunto", "topics", "temas", "ayuda"]);
+  const addressed = has(["voce", "skylet", "you", "tu", "usted"]);
+  const scopeNouns = has(["assunto", "assuntos", "temas", "topics", "questions",
+    "perguntas", "duvidas", "capacidades", "abilities", "capabilities",
+    "funcao", "funcoes", "function", "funciones", "funcion"]);
+  return (
+    (ptAbility && ptAction && (questions || addressed))
+    || (enAbility && enAction && (questions || addressed))
+    || (esAbility && esAction && (questions || addressed))
+    || (addressed && questions && tokens.length <= 6
+      && (ptAction || enAction || esAction || scopeNouns))
+    || (scopeNouns && questions && (has(["responde", "falar", "talk", "answer",
+        "perguntar", "ask", "preguntar", "hablar"]) || addressed))
+  );
+}
+
+export function skyletCapabilitiesReply(text: string): string {
+  const language = skyletLanguage(text);
+  if (language === "pt") {
+    return "Posso ajudar com informações sobre Patrick Araujo e o PkLavc: projetos, experiência profissional, blog de Games e Tech, matérias publicadas, loja de afiliados e formas de contato. Pode perguntar sobre um produto, uma notícia ou um projeto específico. Para outros assuntos, não ofereço respostas.";
+  }
+  if (language === "es") {
+    return "Puedo ayudarte con información sobre Patrick Araujo y PkLavc: proyectos, experiencia profesional, blog de Games y Tech, artículos publicados, tienda de afiliados y contacto. Puedes preguntar por un producto, noticia o proyecto específico. No respondo a temas ajenos al sitio.";
+  }
+  return "I can help with Patrick Araujo and PkLavc: projects, professional experience, Games and Tech articles, affiliate products and contact information. Ask me about a specific product, article or project. I don't answer unrelated questions.";
+}
+
 export function skyletLanguage(text: string): SkyletLanguage {
   // Normalize accented letters before matching word boundaries; plain JS
   // \b considers é/á outside a word and mislabels Spanish/Portuguese replies.
   const value = String(text || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-  if (/\b(?:hola|gracias|quien|donde|cual|cuanto|que hora|acerca de|sitio web|tienda|publicaciones|articulos|precios|misiones)\b/.test(value)) return "es";
-  if (/\b(?:oi|ola|bom dia|boa noite|voce|vc|qual|quais|quanto|onde|como|nao|sobre|loja|postagem|artigo|materia|projetos|visitantes|portfolio|preco|contato)\b/.test(value)) return "pt";
+  if (/\b(?:hola|gracias|quien|donde|cual|cuanto|que hora|acerca de|sitio web|tienda|publicaciones|articulos|precios|misiones|puedes|puedo|hablar|hacer|preguntar|respuestas)\b/.test(value)) return "es";
+  if (/\b(?:oi|ola|bom dia|boa noite|voce|vc|vcs|qual|quais|quanto|onde|como|nao|sobre|loja|postagem|artigo|materia|projetos|visitantes|portfolio|preco|contato|falar|fala|responder|responde|pode|consegue|ajuda|oq|oque|oqe)\b/.test(value)) return "pt";
   return "en";
 }
 
@@ -43,6 +133,7 @@ const GENERIC_OTHER = /\b(?:previs[aã]o do tempo|weather forecast|loteria|lotte
 export function isSkyletSiteQuestion(text: string): boolean {
   const value = String(text || "").trim();
   if (!value) return false;
+  if (isSkyletCapabilitiesQuestion(value)) return true;
   if (OWNED.test(value)) return true;
   if (GENERIC_OTHER.test(value) || GENERIC_SITE_BUILD.test(value) || GENERIC_TECH.test(value)) return false;
   if (SITE_CONTEXT.test(value)) return true;
@@ -62,6 +153,9 @@ export function isSkyletShortFollowup(text: string): boolean {
 
 export function skyletQuickAnswer(text: string): QuickAnswer | null {
   const q = String(text || "").toLowerCase().trim();
+  if (isSkyletCapabilitiesQuestion(q)) {
+    return { reply: skyletCapabilitiesReply(text), reason: "faq:skylet_capabilities" };
+  }
   if (!q || !isSkyletSiteQuestion(q)) return null;
   const lang = skyletLanguage(text);
   // Static replies handle navigation/overview only. Questions about a

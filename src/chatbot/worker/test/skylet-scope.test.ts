@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   exclusiveSiteReply, isSkyletShortFollowup, isSkyletSiteQuestion,
-  skyletDailyLimitReply, skyletQuickAnswer,
+  skyletDailyLimitReply, skyletQuickAnswer, skyletLanguage, isSkyletCapabilitiesQuestion,
 } from "../src/skylet-scope";
 
 describe("Skylet's strictly website-only scope", () => {
@@ -48,4 +48,63 @@ describe("Skylet's strictly website-only scope", () => {
     expect(isSkyletShortFollowup("Qual a previsão do tempo?")).toBe(false);
     expect(isSkyletShortFollowup("Tell me a full story about ancient history")).toBe(false);
   });
+  it("understands misspelled and abbreviated Skylet capability requests without exact phrase scripts", () => {
+    const questions = [
+      "oque pode falar?",
+      "oq vc podi fala",
+      "O QUE VOCE PODE FALAR???",
+      "o que você pode falar",
+      "o qui vc podi flar",
+      "oq vc consegue responder?",
+      "quais assuntos posso perguntar?",
+      "o que voce faz?",
+      "no que voce pode me ajudar?",
+      "qué puedes hablar?",
+      "de que puedes hablar",
+      "what can you do?",
+      "what topics can you answer?",
+    ];
+    for (const question of questions) {
+      expect(isSkyletCapabilitiesQuestion(question), question).toBe(true);
+      expect(isSkyletSiteQuestion(question), question).toBe(true);
+      const answer = skyletQuickAnswer(question);
+      expect(answer?.reason, question).toBe("faq:skylet_capabilities");
+      expect(answer?.reply, question).toContain("PkLavc");
+    }
+  });
+  it("handles generated one-letter typing mistakes with the same local recognizer", () => {
+    const seed = "oq vc pode falar";
+    const terms = ["pode", "falar"];
+    for (const term of terms) {
+      for (let i = 0; i < term.length; i++) {
+        const misspelled = term.slice(0, i) + term.slice(i + 1);
+        const sentence = seed.replace(term, misspelled);
+        expect(isSkyletCapabilitiesQuestion(sentence), sentence).toBe(true);
+      }
+    }
+  });
+  it("answers the user language, not English by default", () => {
+    for (const question of ["oque pode falar?", "oq vc podi fala", "o que você pode falar?"]) {
+      expect(skyletLanguage(question)).toBe("pt");
+      expect(skyletQuickAnswer(question)?.reply).toContain("Posso ajudar com informações");
+    }
+    expect(skyletLanguage("de que puedes hablar")).toBe("es");
+    expect(skyletQuickAnswer("de que puedes hablar")?.reply).toContain("Puedo ayudarte");
+    expect(skyletQuickAnswer("what can you do")?.reply).toContain("I can help");
+  });
+  it("does not treat generic subjects as capability questions or spend a model call", () => {
+    for (const question of [
+      "Qual a história do GTA 6?",
+      "Como fazer um bolo?",
+      "Qual o valor de pi?",
+      "Como posso programar um site?",
+      "what is quantum mechanics?",
+      "Como você faz bolo?",
+      "O que pode falar sobre Python?",
+    ]) {
+      expect(isSkyletCapabilitiesQuestion(question), question).toBe(false);
+    }
+    expect(skyletQuickAnswer("Qual o preço de um produto na loja?")).toBeNull();
+  });
+
 });
