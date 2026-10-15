@@ -1689,6 +1689,28 @@ async function retrieveRagContext(env: Env, userId: number, question: string, li
   return scored.slice(0, limit).map((item) => item.chunk);
 }
 
+/** Hard daily budget in D1, not a frequently written KV counter.
+ * If the D1 budget is unavailable, refuse the model request (fail closed).
+ */
+async function reserveSkyletDailyAi(env: Env): Promise<boolean> {
+  const max = 24;
+  const date = new Date().toISOString().slice(0, 10);
+  try {
+    const row = await env.DB.prepare(
+      `INSERT INTO skylet_ai_daily_budget (usage_date, requests, updated_at)
+       VALUES (?, 1, ?)
+       ON CONFLICT(usage_date) DO UPDATE SET
+         requests = requests + 1, updated_at = excluded.updated_at
+       WHERE requests < ?
+       RETURNING requests`,
+    ).bind(date, new Date().toISOString(), max).first<{ requests: number }>();
+    return Boolean(row && row.requests <= max);
+  } catch {
+    // No permission, migration, available D1 quota, or database: no AI call.
+    return false;
+  }
+}
+
 export async function runProviderChat(
   prompt: string,
   env: Env,
