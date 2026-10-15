@@ -933,13 +933,24 @@ async function handleChatStream(payload: ChatPayload, user: AuthUser, env: Env, 
     return json({ ok: false, blocked: true, reason: guardrail.reason, trace_id: traceId }, 400);
   }
 
-  const conversationId = await ensureConversation(env, user.id, payload.conversation_id);
-  await storeMessage(env, conversationId, "user", sanitized);
-  await onVisitorMessage?.(conversationId, sanitized);
-
-  const task = payload.task || "chat";
+  const task = "chat";
+  if (!isSkyletSiteQuestion(sanitized) && !isGreetingOnly(sanitized)) {
+    const history = payload.conversation_id ? await fetchMemory(env, payload.conversation_id, 5) : [];
+    const prior = [...history].reverse().find(row => row.role === "user")?.content || "";
+    if (!isSkyletShortFollowup(sanitized) || !isSkyletSiteQuestion(prior)) {
+      const reply = exclusiveSiteReply(sanitized);
+      const body = 'data: ' + JSON.stringify({ token: reply }) + '\n\n'
+        + 'data: ' + JSON.stringify({ done: true, conversation_id: payload.conversation_id || null }) + '\n\n';
+      return new Response(body, {
+        headers: { "Content-Type": "text/event-stream", "Cache-Control": "no-cache" },
+      });
+    }
+  }
   const localDecision = resolveLocalReply(sanitized, task);
   if (localDecision) {
+    const conversationId = await ensureConversation(env, user.id, payload.conversation_id);
+    await storeMessage(env, conversationId, "user", sanitized);
+    await onVisitorMessage?.(conversationId, sanitized);
     await storeMessage(env, conversationId, "assistant", localDecision.reply);
 
     await logEvent(env, user.id, "chat_local", {
@@ -966,6 +977,17 @@ async function handleChatStream(payload: ChatPayload, user: AuthUser, env: Env, 
     });
   }
 
+  if (!await reserveSkyletDailyAi(env)) {
+    const reply = skyletDailyLimitReply(sanitized);
+    const body = 'data: ' + JSON.stringify({ token: reply }) + '\n\n'
+      + 'data: ' + JSON.stringify({ done: true, conversation_id: payload.conversation_id || null }) + '\n\n';
+    return new Response(body, {
+      headers: { "Content-Type": "text/event-stream", "Cache-Control": "no-cache" },
+    });
+  }
+  const conversationId = await ensureConversation(env, user.id, payload.conversation_id);
+  await storeMessage(env, conversationId, "user", sanitized);
+  await onVisitorMessage?.(conversationId, sanitized);
   const memory = pruneMemory(await fetchMemory(env, conversationId, MAX_MEMORY_ITEMS), Number(env.MAX_CONTEXT_CHARS || "4000"));
   const conversationSignals = analyzeConversationSignals(memory, sanitized);
   const usePortfolioRag = shouldUsePortfolioRag(sanitized, memory, conversationSignals);
