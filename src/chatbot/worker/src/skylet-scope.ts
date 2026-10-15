@@ -57,7 +57,8 @@ export function isSkyletCapabilitiesQuestion(text: string): boolean {
   if (!tokens.length || tokens.length > 14 || String(text).length > 110) return false;
   const has = (dictionary: string[]) => hasIntentWord(tokens, dictionary);
   // These refer to a real page/product/post, not a general capability query.
-  if (has(["gta", "rockstar", "python", "produto", "produtos", "artigo", "artigos",
+  if (has(["gta", "rockstar", "python", "receita", "bolo", "clima", "tempo",
+    "matematica", "poema", "historia", "codigo", "musica", "produto", "produtos", "artigo", "artigos",
     "noticia", "noticias", "postagem", "postagens", "preco", "patrick",
     "projeto", "projetos", "loja", "site", "blog"])) return false;
   const ptAbility = has(["pode", "consegue", "sabe", "posso", "capaz"]);
@@ -71,11 +72,14 @@ export function isSkyletCapabilitiesQuestion(text: string): boolean {
     "how", "sobre", "about", "assuntos", "assunto", "topics", "temas", "ayuda"]);
   const addressed = has(["voce", "skylet", "you", "tu", "usted"]);
   const scopeNouns = has(["assunto", "assuntos", "temas", "topics", "questions",
-    "perguntas", "duvidas", "capacidades", "abilities", "capabilities"]);
+    "perguntas", "duvidas", "capacidades", "abilities", "capabilities",
+    "funcao", "funcoes", "function", "funciones", "funcion"]);
   return (
     (ptAbility && ptAction && (questions || addressed))
     || (enAbility && enAction && (questions || addressed))
     || (esAbility && esAction && (questions || addressed))
+    || (addressed && questions && tokens.length <= 6
+      && (ptAction || enAction || esAction || scopeNouns))
     || (scopeNouns && questions && (has(["responde", "falar", "talk", "answer",
         "perguntar", "ask", "preguntar", "hablar"]) || addressed))
   );
@@ -96,7 +100,7 @@ export function skyletLanguage(text: string): SkyletLanguage {
   // Normalize accented letters before matching word boundaries; plain JS
   // \b considers é/á outside a word and mislabels Spanish/Portuguese replies.
   const value = String(text || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-  if (/\b(?:hola|gracias|quien|donde|cual|cuanto|que hora|acerca de|sitio web|tienda|publicaciones|articulos|precios|misiones)\b/.test(value)) return "es";
+  if (/\b(?:hola|gracias|quien|donde|cual|cuanto|que hora|acerca de|sitio web|tienda|publicaciones|articulos|precios|misiones|puedes|puedo|hablar|hacer|preguntar|respuestas)\b/.test(value)) return "es";
   if (/\b(?:oi|ola|bom dia|boa noite|voce|vc|vcs|qual|quais|quanto|onde|como|nao|sobre|loja|postagem|artigo|materia|projetos|visitantes|portfolio|preco|contato|falar|fala|responder|responde|pode|consegue|ajuda|oq|oque|oqe)\b/.test(value)) return "pt";
   return "en";
 }
