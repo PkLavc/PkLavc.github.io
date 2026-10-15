@@ -7,9 +7,11 @@ type SkyletLanguage = "pt" | "en" | "es";
 type QuickAnswer = { reply: string; reason: string };
 
 export function skyletLanguage(text: string): SkyletLanguage {
-  const value = String(text || "").toLowerCase();
-  if (/\b(?:hola|gracias|quién|qué|dónde|cuál|cuánto|acerca de|sitio web|tienda|publicaciones|artículos|precios|misiones)\b/.test(value)) return "es";
-  if (/\b(?:oi|olá|bom dia|boa noite|você|vc|qual|quais|quanto|onde|como|não|sobre|loja|postagem|artigo|matéria|projetos|visitantes|portfólio|preço|contato)\b/.test(value)) return "pt";
+  // Normalize accented letters before matching word boundaries; plain JS
+  // \b considers é/á outside a word and mislabels Spanish/Portuguese replies.
+  const value = String(text || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  if (/\b(?:hola|gracias|quien|donde|cual|cuanto|que hora|acerca de|sitio web|tienda|publicaciones|articulos|precios|misiones)\b/.test(value)) return "es";
+  if (/\b(?:oi|ola|bom dia|boa noite|voce|vc|qual|quais|quanto|onde|como|nao|sobre|loja|postagem|artigo|materia|projetos|visitantes|portfolio|preco|contato)\b/.test(value)) return "pt";
   return "en";
 }
 
