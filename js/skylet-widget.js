@@ -2,6 +2,7 @@
   var state = {
     apiBase: "https://api.pklavc.com",
     conversationId: "",
+    recentMessages: [],
     voiceEnabled: false,
   };
 
@@ -486,6 +487,7 @@
   function saveSession() {
     localStorage.setItem("aboutChatWidgetSession", JSON.stringify({
       conversationId: state.conversationId,
+      recentMessages: state.recentMessages.slice(-20),
       voiceEnabled: state.voiceEnabled,
     }));
   }
@@ -499,10 +501,22 @@
     try {
       var parsed = JSON.parse(raw);
       state.conversationId = parsed.conversationId || "";
+      state.recentMessages = Array.isArray(parsed.recentMessages)
+        ? parsed.recentMessages.filter(function (item) {
+            return item && (item.role === "user" || item.role === "assistant") && typeof item.content === "string";
+          }).slice(-20) : [];
       state.voiceEnabled = !!parsed.voiceEnabled;
     } catch (err) {
       console.warn("Invalid about chat session cache", err);
     }
+  }
+
+  function rememberExchange(question, answer) {
+    state.recentMessages = state.recentMessages.concat([
+      { role: "user", content: question.slice(0, 700) },
+      { role: "assistant", content: answer.slice(0, 700) },
+    ]).slice(-20);
+    saveSession();
   }
 
   function ensureClearButton() {
@@ -858,6 +872,11 @@
 
   async function restoreConversationHistory() {
     if (!state.conversationId) return;
+    // The local transcript also includes no-D1 FAQs, which server history omits.
+    if (state.recentMessages.length) {
+      if (!humanReplyTimer) humanReplyTimer = window.setInterval(pollHumanReplies, 3000);
+      return;
+    }
     var restoringId = state.conversationId;
     var restoreGeneration = ++conversationRestoreGeneration;
     restoringConversation = true;
@@ -888,6 +907,7 @@
     restoringConversation = false;
     var oldConversationId = state.conversationId;
     state.conversationId = "";
+    state.recentMessages = [];
     humanReplyCursor = 0;
     saveSession();
     if (els.log) els.log.querySelectorAll(".about-chat-message").forEach(function (node) { node.remove(); });
@@ -921,6 +941,8 @@
       var chatPayload = {
         message: text,
         conversation_id: state.conversationId || null,
+        recent_messages: state.recentMessages.slice(-8),
+        locale: getLocale(),
         voice_reply: state.voiceEnabled,
       };
       var res = await skyletFetch(state.apiBase + "/chat", {
@@ -948,7 +970,8 @@
       }
 
       state.conversationId = data.conversation_id || state.conversationId;
-      saveSession();
+      if (data.reply && !data.human_takeover) rememberExchange(text, data.reply);
+      else saveSession();
       if (!humanReplyTimer && state.conversationId) humanReplyTimer = window.setInterval(pollHumanReplies, 3000);
       if (thinking) {
         if (data.human_takeover) thinking.remove();
@@ -1047,7 +1070,13 @@
     autoResizeInput();
 
     if (els.log && !els.log.querySelector(".about-chat-message")) {
-      appendMessage("assistant", getCopy().intro);
+      if (state.recentMessages.length) {
+        state.recentMessages.forEach(function (item) {
+          appendMessage(item.role, item.content, true);
+        });
+      } else {
+        appendMessage("assistant", getCopy().intro);
+      }
     }
     restoreConversationHistory();
 
