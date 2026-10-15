@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   exclusiveSiteReply, isSkyletShortFollowup, isSkyletSiteQuestion,
-  skyletDailyLimitReply, skyletQuickAnswer,
+  skyletDailyLimitReply, skyletQuickAnswer, normalizedSkyletText,
 } from "../src/skylet-scope";
 
 describe("Skylet's strictly website-only scope", () => {
@@ -41,6 +41,51 @@ describe("Skylet's strictly website-only scope", () => {
     expect(exclusiveSiteReply("Tell me a joke")).toContain("only questions");
     expect(exclusiveSiteReply("¿Qué hora es?")).toContain("exclusivamente");
     expect(skyletDailyLimitReply("Quais artigos?")).toContain("limite diário");
+  });
+  it("handles accents, missing letters, extra letters and switched characters algorithmically", () => {
+    for (const q of [
+      "Onde fica a lojja?",
+      "Onde está a loja?",
+      "Onde encontro os progetos?",
+      "Onde encontro as notcias do blog?",
+      "Onde ler o artgo?",
+      "Onde estão os visitantess?",
+      "Where is the stroe?",
+      "Where do I find the bloog?",
+      "Dónde está la tiendaa?",
+      "Qué hay en el blgo de PkLavc?",
+    ]) expect(isSkyletSiteQuestion(q), q).toBe(true);
+    expect(skyletQuickAnswer("Onde fica a lojja?")?.reply).toContain("/store/");
+    expect(skyletQuickAnswer("Where is the stroe?")?.reply).toContain("/store/");
+    expect(skyletQuickAnswer("Onde encontro os progetos?")?.reply).toContain("https://pklavc.com/");
+    expect(skyletQuickAnswer("Dónde está la tiendaa?")?.reply).toContain("/store/");
+    expect(skyletQuickAnswer("Onde ler o artgo?")?.reply).toContain("/blog/");
+    expect(normalizedSkyletText("NÓTÍCIAS -- do BLOG!")).toBe("noticias do blog");
+  });
+  it("does not confuse unsupported/general knowledge with site questions", () => {
+    for (const q of [
+      "Onde fica Paris?",
+      "How to create a YouTube channel?",
+      "Como programar em Python?",
+      "Qual é a história do GTA 6?",
+      "What is JavaScript?",
+      "Como faço bolo de cenoura?",
+      "Quem ganhou a Copa?",
+      "¿Cómo hacer una tarta?",
+      "Tell me about climate change.",
+    ]) expect(isSkyletSiteQuestion(q), q).toBe(false);
+  });
+  it("never turns specific pricing, product or fresh news questions into static FAQs", () => {
+    for (const q of [
+      "Quais produtos tem na lojja?",
+      "Qual o preço na stroe?",
+      "Qual a última matéria do blog?",
+      "What is the latest blog article?",
+      "Existe bug na postagem de GTA 6?",
+    ]) {
+      expect(isSkyletSiteQuestion(q), q).toBe(true);
+      expect(skyletQuickAnswer(q), q).toBeNull();
+    }
   });
   it("allows a short follow-up only when the caller establishes site context", () => {
     expect(isSkyletShortFollowup("E quanto custa?")).toBe(true);
