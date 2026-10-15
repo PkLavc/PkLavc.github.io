@@ -1470,7 +1470,7 @@ function inferTopic(text: string): string | null {
 }
 
 function isPortfolioIntent(text: string): boolean {
-  return /\b(patrick|pklavc|portfolio|portfólio|about|sobre|projects|projetos|blog|stacks|collections|github\.com\/pklavc|linkedin\.com\/in\/pklavc|contact@pklavc\.com|google auth worker|zoho|hablla|zenvia|sige|omie|codepulse|cipher gate|aegis sentinel|cloud deployment showcase|multi-tenant saas platform|loja do sapo|icaiu|wr auto pecas|empresa|empresas|company|companies|trabalhou|trabalha|onde trabalha|experience|experiência|career)\b/.test(text);
+  return /\b(patrick|pklavc|portfolio|portfólio|about|sobre|projects|projetos|blog|loja|store|tienda|shop|visitors|visitantes|artigos|articles|postagens|posts|games|gta|rockstar|technology|tecnologia|stacks|collections|github\.com\/pklavc|linkedin\.com\/in\/pklavc|contact@pklavc\.com|google auth worker|zoho|hablla|zenvia|sige|omie|codepulse|cipher gate|aegis sentinel|cloud deployment showcase|multi-tenant saas platform|loja do sapo|icaiu|wr auto pecas|empresa|empresas|company|companies|trabalhou|trabalha|onde trabalha|experience|experiência|career)\b/.test(text);
 }
 
 function isLikelyMathPi(text: string): boolean {
@@ -1523,8 +1523,8 @@ async function buildPrompt(
   const dynamicRules = [
     "Priority rule: the latest user message has highest priority.",
     "Priority rule: if the user corrects topic, immediately switch topic and discard previous assumptions.",
-    "Do not force Patrick/profile context unless the user explicitly asks about Patrick or portfolio topics.",
-    "If user asks a non-portfolio topic (e.g., mathematical pi), answer that topic directly and briefly.",
+    "STRICT WEBSITE SCOPE: Skylet exclusively answers questions about Patrick Araujo, pklavc.com, its blog, publications, projects, store, site operations and technologies used on this site.",
+    "NEVER answer unrelated general-knowledge, programming tutorials, weather, gaming walkthroughs, maths or unrelated personal questions. Instead briefly state that Skylet is exclusive to Patrick and PkLavc site information, in the user's language.",
     "Formatting rule: never use markdown tables, pipe tables, or columnar table formatting.",
     "Formatting rule: respond in plain text paragraphs; when listing items, use simple lines without table syntax.",
     "Source rule: do not mention raw source labels like 'extraido do linkedin' or 'extracted from LinkedIn' unless user explicitly asks for the source.",
@@ -1542,7 +1542,7 @@ async function buildPrompt(
     dynamicRules.push("User correction detected: prioritize correction over previous context.");
   }
   if (signals.offTopicRequest) {
-    dynamicRules.push("Current request appears outside portfolio scope: do not inject portfolio bio unless user asks for it.");
+    dynamicRules.push("Reject unrelated requests with the concise site-exclusivity notice, regardless of earlier conversation topics.");
   }
 
   return [
