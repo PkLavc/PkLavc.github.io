@@ -20,6 +20,11 @@ export function skyletSiteScope(input: string, previousUserMessage = ""): boolea
   if (!text) return false;
   if (GREETING.test(text)) return true;
   if (INVALID_GENERAL.test(text)) return false;
+  // Mentioning a social platform in a general how-to must not turn Skylet
+  // into an Instagram/YouTube/TikTok support or general-purpose assistant.
+  if (/\b(?:como|how|cómo)\s+(?:usar|use|criar|create|abrir|open|configurar|configure|build|make|fazer)\b/i.test(text)
+      && /\b(?:instagram|youtube|tiktok|pinterest|loja|store|tienda)\b/i.test(text)
+      && !/\b(?:pklavc|patrick|skylet|meu|meus|minha|site|website|do blog|my|our|nuestro)\b/i.test(text)) return false;
   if (SITE_TERMS.test(text)) return true;
   // Short natural follow-ups may inherit an earlier on-site question. A new
   // unrelated standalone question must never inherit unlimited LLM access.
