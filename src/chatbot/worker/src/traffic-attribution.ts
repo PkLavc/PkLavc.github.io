@@ -59,10 +59,11 @@ export function pageDimensions(pathname: unknown): Pick<VisitDimensions, "sectio
     ? pathname.split("?")[0].split("#")[0].toLowerCase() : "/";
   const article = /^\/blog\/(?:en|pt|es)\/(games|tech)\/([a-z0-9-]{1,90})\/?(?:index\.html)?$/.exec(path);
   if (article) return { section: article[1], pageKey: article[1] + "/" + article[2] };
-  if (/^\/blog\/(?:en|pt|es)\/(games|tech)\/?$/.test(path)) {
-    return { section: path.includes("/games/") ? "games" : "tech", pageKey: "listing" };
+  const categoryListing = /^\/blog\/(?:en|pt|es)\/(games|tech)\/?$/.exec(path);
+  if (categoryListing) return { section: categoryListing[1], pageKey: "listing" };
+  if (/^\/blog\/(?:en|pt|es)\/?$/.test(path) || path === "/blog/" || path === "/blog") {
+    return { section: "blog", pageKey: "listing" };
   }
-  if (path === "/blog/" || path === "/blog") return { section: "blog", pageKey: "listing" };
   if (/^\/store(?:\/|$)/.test(path)) return { section: "store", pageKey: "store" };
   if (path === "/" || path === "/pt/" || path === "/es/") return { section: "portfolio", pageKey: "home" };
   // Unrecognized paths cannot inject arbitrary article IDs, paths or private data.
