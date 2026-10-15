@@ -793,6 +793,44 @@ export default {
   },
 };
 
+async function previousSiteMessage(env: Env, userId: number, conversationId: string | undefined, input: string): Promise<string> {
+  if (!conversationId || input.length > 75) return "";
+  try {
+    const last = await env.DB.prepare(
+      "SELECT m.content AS content FROM messages m JOIN conversations c ON c.id = m.conversation_id WHERE c.id = ? AND c.user_id = ? AND m.role = 'user' ORDER BY m.id DESC LIMIT 1",
+    ).bind(conversationId, userId).first<{ content: string }>();
+    return last?.content || "";
+  } catch { return ""; }
+}
+
+// Local replies preserve the existing SSE response protocol.
+function localSiteStream(reply: string, conversationId: string): Response {
+  const stream = new ReadableStream({
+    start(controller) {
+      controller.enqueue(encoder.encode(`data: ${JSON.stringify({ token: reply })}\n\n`));
+      controller.enqueue(encoder.encode(`data: ${JSON.stringify({ done: true, conversation_id: conversationId })}\n\n`));
+      controller.close();
+    },
+  });
+  return new Response(stream, { headers: {
+    "Content-Type": "text/event-stream", "Cache-Control": "no-store", Connection: "keep-alive",
+  } });
+}
+
+// Atomic chat-only AI budget. Cloudflare Workers AI remains available as the
+// first provider; the blog, videos and post generators never use this counter.
+async function reserveSkyletAiBudget(env: Env): Promise<boolean> {
+  try {
+    const row = await env.DB.prepare(
+      `INSERT INTO skylet_ai_daily_budget (visit_date, requests) VALUES (?, 1)
+       ON CONFLICT(visit_date) DO UPDATE SET requests = requests + 1
+       WHERE requests < ? RETURNING requests`,
+    ).bind(new Date().toISOString().slice(0, 10), SKYLET_DAILY_AI_LIMIT)
+      .first<{ requests: number }>();
+    return Boolean(row && Number(row.requests) <= SKYLET_DAILY_AI_LIMIT);
+  } catch { return false; }
+}
+
 async function handleChat(payload: ChatPayload, user: AuthUser, env: Env, traceId: string, isStreaming: boolean, traceparent: string, onVisitorMessage?: (conversationId: string, content: string) => Promise<void>, skipResponseCache = false) {
   const startedAt = Date.now();
   const sanitized = sanitizeInput(maskPii(payload.message || "", env));
@@ -802,6 +840,11 @@ async function handleChat(payload: ChatPayload, user: AuthUser, env: Env, traceI
   }
 
   const task = payload.task || "chat";
+  const previous = await previousSiteMessage(env, user.id, payload.conversation_id, sanitized);
+  if (!skyletSiteScope(sanitized, previous)) {
+    return { ok: true, conversation_id: payload.conversation_id || "", reply: offSiteReply(sanitized),
+      provider: "local", fallback_used: false, local_reason: "site_scope_only", trace_id: traceId };
+  }
 
   const localDecision = resolveLocalReply(sanitized, task);
   if (localDecision) {
@@ -849,14 +892,22 @@ async function handleChat(payload: ChatPayload, user: AuthUser, env: Env, traceI
   await storeMessage(env, conversationId, "user", sanitized);
   await onVisitorMessage?.(conversationId, sanitized);
 
+  if (!(await reserveSkyletAiBudget(env))) {
+    const reply = siteBudgetReply(sanitized);
+    await storeMessage(env, conversationId, "assistant", reply);
+    return { ok: true, conversation_id: conversationId, reply, provider: "local",
+      fallback_used: false, local_reason: "daily_model_budget", trace_id: traceId };
+  }
+
   const memory = pruneMemory(await fetchMemory(env, conversationId, MAX_MEMORY_ITEMS), Number(env.MAX_CONTEXT_CHARS || "4000"));
   const conversationSignals = analyzeConversationSignals(memory, sanitized);
   const usePortfolioRag = shouldUsePortfolioRag(sanitized, memory, conversationSignals);
   let rag: string[] = [];
   if (usePortfolioRag) {
     const externalRag = await getCachedSiteRagContext(env, traceId);
-    const semanticRag = await retrieveRagContext(env, user.id, sanitized, 3);
-    rag = [externalRag, ...semanticRag];
+    // Cached first-party site context is sufficient for public questions;
+    // avoid embedding API calls and scanning uploaded document chunks.
+    rag = [externalRag];
   }
   const basePrompt = await buildPrompt(env, memory, rag, sanitized, task, conversationSignals);
   const prompt = payload.expect_json
@@ -973,8 +1024,9 @@ async function handleChatStream(payload: ChatPayload, user: AuthUser, env: Env, 
   let rag: string[] = [];
   if (usePortfolioRag) {
     const externalRag = await getCachedSiteRagContext(env, traceId);
-    const semanticRag = await retrieveRagContext(env, user.id, sanitized, 3);
-    rag = [externalRag, ...semanticRag];
+    // Cached first-party site context is sufficient for public questions;
+    // avoid embedding API calls and scanning uploaded document chunks.
+    rag = [externalRag];
   }
   const basePrompt = await buildPrompt(env, memory, rag, sanitized, task, conversationSignals);
   const prompt = payload.expect_json
