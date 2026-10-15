@@ -984,6 +984,10 @@ async function handleChatStream(payload: ChatPayload, user: AuthUser, env: Env, 
   if (!guardrail.ok) {
     return json({ ok: false, blocked: true, reason: guardrail.reason, trace_id: traceId }, 400);
   }
+  const previous = await previousSiteMessage(env, user.id, payload.conversation_id, sanitized);
+  if (!skyletSiteScope(sanitized, previous)) {
+    return localSiteStream(offSiteReply(sanitized), payload.conversation_id || "");
+  }
 
   const conversationId = await ensureConversation(env, user.id, payload.conversation_id);
   await storeMessage(env, conversationId, "user", sanitized);
@@ -1018,6 +1022,11 @@ async function handleChatStream(payload: ChatPayload, user: AuthUser, env: Env, 
     });
   }
 
+  if (!(await reserveSkyletAiBudget(env))) {
+    const reply = siteBudgetReply(sanitized);
+    await storeMessage(env, conversationId, "assistant", reply);
+    return localSiteStream(reply, conversationId);
+  }
   const memory = pruneMemory(await fetchMemory(env, conversationId, MAX_MEMORY_ITEMS), Number(env.MAX_CONTEXT_CHARS || "4000"));
   const conversationSignals = analyzeConversationSignals(memory, sanitized);
   const usePortfolioRag = shouldUsePortfolioRag(sanitized, memory, conversationSignals);
@@ -1553,7 +1562,7 @@ async function buildPrompt(
     "Priority rule: the latest user message has highest priority.",
     "Priority rule: if the user corrects topic, immediately switch topic and discard previous assumptions.",
     "Do not force Patrick/profile context unless the user explicitly asks about Patrick or portfolio topics.",
-    "If user asks a non-portfolio topic (e.g., mathematical pi), answer that topic directly and briefly.",
+    "Skylet answers ONLY questions about Patrick Araujo or the content, store, posts, projects or services on pklavc.com.",
     "Formatting rule: never use markdown tables, pipe tables, or columnar table formatting.",
     "Formatting rule: respond in plain text paragraphs; when listing items, use simple lines without table syntax.",
     "Source rule: do not mention raw source labels like 'extraido do linkedin' or 'extracted from LinkedIn' unless user explicitly asks for the source.",
@@ -1768,7 +1777,8 @@ export async function runProviderChat(
 
   for (let i = 0; i < providerList.length; i += 1) {
     const provider = providerList[i];
-    for (let attempt = 1; attempt <= 2; attempt += 1) {
+    // One provider attempt for public chat; preserve Cloudflare-first fallback.
+    for (let attempt = 1; attempt <= (task === "chat" ? 1 : 2); attempt += 1) {
       try {
         if (provider === "groq") {
           const result = await callGroq(prompt, env, stream, modelChoice.groq, task);
@@ -2063,6 +2073,8 @@ function resolveLocalReply(text: string, task: string): { reply: string; reason:
       reason: "greeting",
     };
   }
+  const frequentlyAsked = siteFaq(text);
+  if (frequentlyAsked) return { reply: frequentlyAsked, reason: "site_faq" };
 
   // If the query names a specific project, integration worker, or blog topic,
   // skip deterministic local reply and let the LLM answer with full RAG context.
