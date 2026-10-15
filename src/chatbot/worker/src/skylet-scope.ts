@@ -52,7 +52,10 @@ export function isSkyletSiteQuestion(text: string): boolean {
 export function isSkyletShortFollowup(text: string): boolean {
   const value = String(text || "").trim().toLowerCase();
   if (value.length > 100 || GENERIC_OTHER.test(value)) return false;
-  return /^(?:e\b|mas\b|isso\b|esse\b|essa\b|aquilo\b|ent[aã]o\b|qual\b|quais\b|quanto\b|onde\b|como\b|tem\b|mais\b|sobre\b|and\b|what about\b|but\b|also\b|how about\b|where\b|how much\b|is there\b|y\b|pero\b|cu[aá]l\b|c[oó]mo\b)/i.test(value);
+  // A new generic question beginning "como" or "what" is not a
+  // follow-up. Only explicitly referential or short context-dependent
+  // continuations may inherit the immediately previous site question.
+  return /^(?:e\b|mas\b|isso\b|esse\b|essa\b|aquilo\b|ent[aã]o\b|mais\b|and\b|what about\b|but\b|also\b|how about\b|y\b|pero\b|e quanto custa\b|quanto custa\??$|how much\??$|onde fica\??$|como funciona\??$|where is it\??$|cu[aá]nto cuesta\??$)/i.test(value);
 }
 
 export function skyletQuickAnswer(text: string): QuickAnswer | null {
