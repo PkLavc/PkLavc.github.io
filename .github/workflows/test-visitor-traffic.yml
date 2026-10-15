@@ -1,0 +1,53 @@
+name: Validate anonymous visitor attribution
+
+on:
+  pull_request:
+    paths:
+      - "src/chatbot/worker/src/traffic-attribution.ts"
+      - "src/chatbot/worker/src/index.ts"
+      - "src/chatbot/worker/test/traffic-attribution.test.ts"
+      - "src/chatbot/worker/migrations/0009_traffic_source_daily.sql"
+      - "js/index.js"
+      - "js/visitor-map.js"
+      - "visitors/index.html"
+      - "pt/visitantes/index.html"
+      - "es/visitantes/index.html"
+      - "css/visitor-map.css"
+      - ".github/workflows/test-visitor-traffic.yml"
+  push:
+    branches: [main]
+    paths:
+      - "src/chatbot/worker/src/traffic-attribution.ts"
+      - "src/chatbot/worker/test/traffic-attribution.test.ts"
+      - ".github/workflows/test-visitor-traffic.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate existing JS map and visitor beacon syntax
+        run: |
+          node --check js/index.js
+          node --check js/visitor-map.js
+          for file in visitors/index.html pt/visitantes/index.html es/visitantes/index.html; do
+            grep -q 'visitor-traffic-sources' "$file"
+            grep -q 'visitor-traffic-pages' "$file"
+          done
+      - name: Install existing Worker dependencies
+        working-directory: src/chatbot/worker
+        run: npm install --no-audit --no-fund
+      - name: Validate Worker and all regressions
+        working-directory: src/chatbot/worker
+        run: |
+          npm run lint
+          npm run typecheck
+          npm run test
+          npm run validate:json
