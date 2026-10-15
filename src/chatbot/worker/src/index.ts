@@ -103,6 +103,9 @@ const MAX_MEMORY_ITEMS = 8;
 const SITE_RAG_CACHE_KEY = "site_rag_cache:v2";
 const SITE_RAG_META_KEY = "site_rag_cache_meta:v2";
 const SITE_RAG_CACHE_TTL_SECONDS = 4 * 3600;
+const OPTIONAL_VISIT_DAILY_LIMIT = 600;   // per PkLavc/Macca site
+const OPTIONAL_CHAT_DAILY_LIMIT = 60;    // in-scope, non-FAQ chat requests
+
 const SITE_RAG_SOURCE_PATHS = ["/", "/about/", "/pt/sobre/", "/es/sobre/", "/projects/", "/projects/lavc-systems/", "/projects/raw-api-ingestion-pipeline/", "/projects/zoho-integration-worker/", "/stacks/zoho-deluge-developer/", "/blog/", "/blog/en/games/", "/blog/en/tech/", "/store/", "/blog/raw-api-ingestion-supabase-sql/"];
 const AGENT_NAME = "Skylet";
 const AGENT_PROFILE = "Skylet is a female AI assistant.";
@@ -116,6 +119,24 @@ const INTERNAL_PORTFOLIO_CONTEXT = [
   "Communication preference: concise, technical, implementation-oriented responses with practical tradeoffs.",
   ...MANUAL_RAG_CONTEXT,
 ];
+
+// Protect shared Cloudflare D1 quota against unbounded optional features.
+// An atomic conditional upsert is the only database operation once capped.
+export async function reserveOptionalUsage(
+  env: Env, kind: "visit_pklavc" | "visit_macca" | "skylet_request", cap: number,
+): Promise<boolean> {
+  try {
+    const row = await env.DB.prepare(
+      `INSERT INTO optional_daily_usage (usage_date, kind, requests) VALUES (?, ?, 1)
+       ON CONFLICT(usage_date, kind) DO UPDATE SET requests = requests + 1
+       WHERE requests < ? RETURNING requests`,
+    ).bind(new Date().toISOString().slice(0, 10), kind, cap).first<{ requests: number }>();
+    return Boolean(row && Number(row.requests) <= cap);
+  } catch {
+    // Optional analytics/chat safely stop; essential workers remain independent.
+    return false;
+  }
+}
 
 export default {
   async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
@@ -286,6 +307,13 @@ export default {
         const regionName = normalizeGeoValue(cf?.region, 80);
         const visitDate = new Date().toISOString().slice(0, 10);
         const updatedAt = new Date().toISOString();
+
+        // This is optional traffic telemetry. Preserve the blog, chat, TikTok
+        // APIs and essential workers by stopping its writes at a hard ceiling.
+        const analyticsKind = analyticsSite === "macca" ? "visit_macca" : "visit_pklavc";
+        if (!await reserveOptionalUsage(env, analyticsKind, OPTIONAL_VISIT_DAILY_LIMIT)) {
+          return withCors(new Response(null, { status: 204 }), env, origin);
+        }
 
         await env.DB.prepare(
           `INSERT INTO ${tableName} (
@@ -594,6 +622,13 @@ export default {
             local_reason: quick?.reason || "outside_site_scope",
           }), env, origin);
         }
+        // Prebuilt FAQs and unrelated questions have already returned above.
+        // Cap D1 guest/session writes before opening a dynamic conversation.
+        if (!await reserveOptionalUsage(env, "skylet_request", OPTIONAL_CHAT_DAILY_LIMIT)) {
+          return withCors(json({ ok: true, conversation_id: payload.conversation_id || null,
+            reply: skyletDailyLimitReply(input), provider: "local", fallback_used: true,
+            local_reason: "daily_chat_request_budget" }), env, origin);
+        }
         const user = await resolveChatUser(request, env, payload.conversation_id);
         const conversationId = payload.conversation_id;
         if (conversationId) {
@@ -647,6 +682,14 @@ export default {
           return withCors(new Response(body, {
             headers: { "Content-Type": "text/event-stream", "Cache-Control": "no-cache" },
           }), env, origin);
+        }
+        if (!await reserveOptionalUsage(env, "skylet_request", OPTIONAL_CHAT_DAILY_LIMIT)) {
+          const reply = skyletDailyLimitReply(question);
+          return withCors(new Response(
+            'data: ' + JSON.stringify({ token: reply }) + '\n\n'
+            + 'data: ' + JSON.stringify({ done: true, conversation_id: payload.conversation_id || null }) + '\n\n',
+            { headers: { "Content-Type": "text/event-stream", "Cache-Control": "no-store" } },
+          ), env, origin);
         }
         const user = await resolveChatUser(request, env, payload.conversation_id);
         if (payload.conversation_id) {
