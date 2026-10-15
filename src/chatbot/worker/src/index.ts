@@ -5,6 +5,7 @@ import { decryptInstagramRecipient, deriveInstagramIdentity, encryptInstagramRec
 import { parseInstagramWebhook } from "./instagram-webhook";
 import { handleTikTokOAuthExchange, handleTikTokOAuthStart, handleTikTokLogout, hasTikTokReviewSession, publicTikTokConfig } from "./tiktok-oauth";
 import { verifyGithubActionsOidc } from "./github-oidc";
+import { dimensionsOfVisit } from "./traffic-attribution";
 import { handleTikTokCreatorInfo, handleTikTokDirectFilePost, handleTikTokDirectPost, handleTikTokDraftFileUpload, handleTikTokMediaProxy, handleTikTokPostStatus, handleTikTokUserInfo } from "./tiktok-publish";
 
 export interface Env {
@@ -306,7 +307,66 @@ export default {
           .bind(visitDate, countryCode, regionCode, regionName, updatedAt)
           .run();
 
+        // Keep existing geographic totals untouched. Only aggregate a coarse,
+        // allowlisted traffic channel and blog article for PkLavc, never
+        // individual identities or full URLs/referrers. One row per dimension/day.
+        if (analyticsSite === "pklavc" && isTikTokWebOrigin(origin)) {
+          try {
+            const raw = await request.text();
+            const visit = raw.length <= 700 ? JSON.parse(raw || "{}") : {};
+            const { channel, section, pageKey } = dimensionsOfVisit(visit);
+            await env.DB.prepare(
+              `INSERT INTO traffic_source_daily
+                (visit_date, channel, section, page_key, visits, updated_at)
+                VALUES (?, ?, ?, ?, 1, ?)
+                ON CONFLICT(visit_date, channel, section, page_key)
+                DO UPDATE SET visits = visits + 1, updated_at = excluded.updated_at`,
+            ).bind(visitDate, channel, section, pageKey, updatedAt).run();
+          } catch {
+            // An unavailable attribution table must never break the geo map
+            // counter or visitor experience; deployment migrations run first.
+            console.warn("visit_attribution_unavailable");
+          }
+        }
         return withCors(new Response(null, { status: 204 }), env, origin);
+      }
+
+      if (url.pathname === "/analytics/traffic" && request.method === "GET") {
+        const period = parseGeoAnalyticsPeriod(url.searchParams.get("days"));
+        const dateClause = period.days === null ? "" : "WHERE visit_date >= date('now', ?)";
+        const since = period.days === null ? null : `-${Math.max(period.days - 1, 0)} days`;
+        const channelsQuery = env.DB.prepare(
+          `SELECT channel, SUM(visits) AS visits FROM traffic_source_daily
+             ${dateClause} GROUP BY channel ORDER BY visits DESC, channel ASC LIMIT 20`,
+        );
+        const pagesQuery = env.DB.prepare(
+          `SELECT section, page_key, SUM(visits) AS visits FROM traffic_source_daily
+             ${dateClause} GROUP BY section, page_key ORDER BY visits DESC, page_key ASC LIMIT 20`,
+        );
+        const [sources, pages] = await Promise.all([
+          period.days === null
+            ? channelsQuery.all<{ channel: string; visits: number }>()
+            : channelsQuery.bind(since).all<{ channel: string; visits: number }>(),
+          period.days === null
+            ? pagesQuery.all<{ section: string; page_key: string; visits: number }>()
+            : pagesQuery.bind(since).all<{ section: string; page_key: string; visits: number }>(),
+        ]);
+        const channels = (sources.results || []).map(row => ({
+          channel: row.channel, visits: Number(row.visits || 0),
+        }));
+        const response = json({
+          ok: true,
+          generated_at: new Date().toISOString(),
+          period: { key: period.key, days: period.days },
+          summary: { attributed_visits: channels.reduce((sum, row) => sum + row.visits, 0) },
+          channels,
+          pages: (pages.results || []).map(row => ({
+            section: row.section, page_key: row.page_key, visits: Number(row.visits || 0),
+          })),
+          note: "Anonymous counted sessions since source tracking was enabled; not unique people, clicks or conversions.",
+        });
+        response.headers.set("Cache-Control", "public, max-age=60, s-maxage=300");
+        return withCors(response, env, origin);
       }
 
       if (url.pathname === "/analytics/map" && request.method === "GET") {

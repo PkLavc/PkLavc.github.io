@@ -2,6 +2,7 @@
   'use strict';
 
   var API_URL = 'https://api.pklavc.com/analytics/map';
+  var TRAFFIC_URL = 'https://api.pklavc.com/analytics/traffic';
   var WORLD_URL = 'https://cdn.jsdelivr.net/npm/world-atlas@2.0.2/countries-110m.json';
   var COUNTRY_CODES_URL = 'https://cdn.jsdelivr.net/npm/world-countries@5.1.0/countries.json';
   var locale = document.documentElement.lang === 'pt'
@@ -28,7 +29,10 @@
       unavailable: 'Unavailable',
       endpointUnavailable: 'Waiting for the Cloudflare analytics endpoint',
       librariesUnavailable: 'Map libraries could not be loaded',
-      assetsUnavailable: 'World map assets could not be loaded'
+      assetsUnavailable: 'World map assets could not be loaded',
+      noSources: 'No measured referrals yet',
+      sourceUnavailable: 'Traffic source data is not available yet',
+      trackingNote: 'Counts start after this upgrade. Anonymous sessions only; not unique people or conversions.'
     },
     pt: {
       locale: 'pt-BR',
@@ -48,7 +52,10 @@
       unavailable: 'Indisponível',
       endpointUnavailable: 'Aguardando a publicação do endpoint de análise no Cloudflare',
       librariesUnavailable: 'Não foi possível carregar as bibliotecas do mapa',
-      assetsUnavailable: 'Não foi possível carregar os dados do mapa-múndi'
+      assetsUnavailable: 'Não foi possível carregar os dados do mapa-múndi',
+      noSources: 'Ainda não há origens medidas',
+      sourceUnavailable: 'Os dados da origem do tráfego ainda estão indisponíveis',
+      trackingNote: 'A contagem começa após esta atualização. Apenas sessões anônimas; não pessoas únicas ou conversões.'
     },
     es: {
       locale: 'es',
@@ -68,7 +75,10 @@
       unavailable: 'No disponible',
       endpointUnavailable: 'Esperando la publicación del endpoint de analítica en Cloudflare',
       librariesUnavailable: 'No se pudieron cargar las bibliotecas del mapa',
-      assetsUnavailable: 'No se pudieron cargar los datos del mapa mundial'
+      assetsUnavailable: 'No se pudieron cargar los datos del mapa mundial',
+      noSources: 'Aún no hay orígenes medidos',
+      sourceUnavailable: 'Los datos de fuentes de tráfico aún no están disponibles',
+      trackingNote: 'El recuento empieza después de esta actualización. Solo sesiones anónimas; no usuarios únicos ni conversiones.'
     }
   };
   var copy = COPY[locale];
@@ -102,7 +112,11 @@
     countryTitle: document.getElementById('visitor-country-title'),
     countryTotal: document.getElementById('visitor-country-total'),
     regionList: document.getElementById('visitor-region-list'),
-    reset: document.getElementById('visitor-map-reset')
+    reset: document.getElementById('visitor-map-reset'),
+    trafficTotal: document.getElementById('visitor-traffic-total'),
+    trafficSources: document.getElementById('visitor-traffic-sources'),
+    trafficPages: document.getElementById('visitor-traffic-pages'),
+    trafficStatus: document.getElementById('visitor-traffic-status')
   };
 
   function emptyPayload(period) {
@@ -527,8 +541,54 @@
     renderCountryDetail(state.selectedCode);
   }
 
+  function renderTraffic(data) {
+    if (!elements.trafficTotal || !elements.trafficSources || !elements.trafficPages) {
+      return;
+    }
+    var channels = Array.isArray(data.channels) ? data.channels : [];
+    var pages = Array.isArray(data.pages) ? data.pages : [];
+    elements.trafficTotal.textContent = formatNumber(
+      data.summary && data.summary.attributed_visits || 0
+    );
+    var friendly = { direct: 'Direct', instagram: 'Instagram', youtube: 'YouTube',
+      google: 'Google', pinterest: 'Pinterest', tiktok: 'TikTok',
+      linkedin: 'LinkedIn', threads: 'Threads', bluesky: 'Bluesky',
+      mastodon: 'Mastodon', x: 'X', facebook: 'Facebook',
+      email: 'Email', newsletter: 'Newsletter', bing: 'Bing', other: 'Other' };
+    function row(label, visits) {
+      return '<li><span>' + escapeHtml(label) + '</span><strong>' +
+        formatNumber(visits) + '</strong></li>';
+    }
+    elements.trafficSources.innerHTML = channels.length
+      ? channels.slice(0, 8).map(function(channel) {
+          return row(friendly[channel.channel] || channel.channel, channel.visits);
+        }).join('') : '<li>' + escapeHtml(copy.noSources) + '</li>';
+    elements.trafficPages.innerHTML = pages.length
+      ? pages.slice(0, 8).map(function(page) {
+          var label = String(page.page_key || '').replace(/-/g, ' ').replace(/\//g, ' / ');
+          return row(label, page.visits);
+        }).join('') : '<li>' + escapeHtml(copy.noSources) + '</li>';
+    if (elements.trafficStatus) elements.trafficStatus.textContent = copy.trackingNote;
+  }
+
+  function loadTraffic(period) {
+    if (!elements.trafficSources) return;
+    fetchJson(TRAFFIC_URL + '?days=' + encodeURIComponent(period))
+      .then(function(payload) {
+        if (state.period !== period || !payload || !payload.ok) return;
+        renderTraffic(payload);
+      })
+      .catch(function() {
+        if (state.period !== period) return;
+        elements.trafficTotal.textContent = '—';
+        elements.trafficSources.innerHTML = '<li>' + escapeHtml(copy.sourceUnavailable) + '</li>';
+        elements.trafficPages.innerHTML = '<li>' + escapeHtml(copy.sourceUnavailable) + '</li>';
+      });
+  }
+
   function loadAnalytics(period) {
     state.period = period;
+    loadTraffic(period);
     setStatus(copy.syncing, copy.syncingDetail, false);
 
     return Promise.resolve(window.PkLavcGeoVisitReady)
