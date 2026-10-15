@@ -19,8 +19,12 @@ export function skyletClientHistory(raw: unknown): SkyletConversationMessage[] {
 
 export function skyletContextFollowup(text: string, history: SkyletConversationMessage[]): boolean {
   if (!isSkyletShortFollowup(text)) return false;
-  return history.filter(item => item.role === "user").slice(-3)
-    .some(item => isSkyletSiteQuestion(item.content));
+  let inScope = false;
+  for (const item of history.filter(row => row.role === "user").slice(-4)) {
+    if (isSkyletSiteQuestion(item.content)) inScope = true;
+    else if (!isSkyletShortFollowup(item.content)) inScope = false;
+  }
+  return inScope;
 }
 
 export function skyletContextLanguage(text: string, history: SkyletConversationMessage[], locale?: string): SkyletLanguage {
