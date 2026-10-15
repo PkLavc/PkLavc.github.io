@@ -1,5 +1,5 @@
 import { MANUAL_RAG_CONTEXT, MANUAL_RAG_SECTIONS } from "./manual-rag";
-import { exclusiveSiteReply, isSkyletShortFollowup, isSkyletSiteQuestion, skyletDailyLimitReply, skyletQuickAnswer } from "./skylet-scope";
+import { exclusiveSiteReply, isSkyletShortFollowup, isSkyletSiteQuestion, skyletDailyLimitReply, skyletQuickAnswer, skyletClientHistory, skyletContextLanguage, skyletContextFollowup, skyletContextQuickAnswer } from "./skylet-scope";
 import { handleDiscordInteraction } from "./discord-interactions";
 import { closeDiscordConversation, drainDiscordMessageQueue, enqueueDiscordMessage, getConversationControl } from "./discord-conversations";
 import { decryptInstagramRecipient, deriveInstagramIdentity, encryptInstagramRecipient, sendInstagramMessage } from "./instagram-messaging";
@@ -60,6 +60,8 @@ export interface Env {
 type ChatPayload = {
   message: string;
   conversation_id?: string;
+  recent_messages?: unknown;
+  locale?: string;
   voice_reply?: boolean;
   task?: "chat" | "summary" | "classification" | "lead_scoring" | "admin_insights";
   expect_json?: boolean;
@@ -612,12 +614,15 @@ export default {
           return withCors(json({ error: "invalid_json" }, 400), env, origin);
         }
         const input = (payload.message || "").trim();
-        const quick = skyletQuickAnswer(input);
+        const recent = skyletClientHistory(payload.recent_messages);
+        const language = skyletContextLanguage(input, recent, payload.locale);
+        const quick = skyletQuickAnswer(input, language) || skyletContextQuickAnswer(input, recent, language);
         if (quick || (!isSkyletSiteQuestion(input) && !isGreetingOnly(input)
+                    && !skyletContextFollowup(input, recent)
                     && !(payload.conversation_id && isSkyletShortFollowup(input)))) {
           return withCors(json({
             ok: true, conversation_id: payload.conversation_id || null,
-            reply: quick?.reply || exclusiveSiteReply(input),
+            reply: quick?.reply || exclusiveSiteReply(input, language),
             provider: "local", fallback_used: false,
             local_reason: quick?.reason || "outside_site_scope",
           }), env, origin);
@@ -626,7 +631,7 @@ export default {
         // Cap D1 guest/session writes before opening a dynamic conversation.
         if (!await reserveOptionalUsage(env, "skylet_request", OPTIONAL_CHAT_DAILY_LIMIT)) {
           return withCors(json({ ok: true, conversation_id: payload.conversation_id || null,
-            reply: skyletDailyLimitReply(input), provider: "local", fallback_used: true,
+            reply: skyletDailyLimitReply(input, language), provider: "local", fallback_used: true,
             local_reason: "daily_chat_request_budget" }), env, origin);
         }
         const user = await resolveChatUser(request, env, payload.conversation_id);
@@ -673,10 +678,13 @@ export default {
           return withCors(json({ error: "invalid_json" }, 400), env, origin);
         }
         const question = String(payload.message || "").trim();
-        const quick = skyletQuickAnswer(question);
+        const recent = skyletClientHistory(payload.recent_messages);
+        const language = skyletContextLanguage(question, recent, payload.locale);
+        const quick = skyletQuickAnswer(question, language) || skyletContextQuickAnswer(question, recent, language);
         if (quick || (!isSkyletSiteQuestion(question) && !isGreetingOnly(question)
+                    && !skyletContextFollowup(question, recent)
                     && !(payload.conversation_id && isSkyletShortFollowup(question)))) {
-          const reply = quick?.reply || exclusiveSiteReply(question);
+          const reply = quick?.reply || exclusiveSiteReply(question, language);
           const body = 'data: ' + JSON.stringify({ token: reply }) + '\n\n'
             + 'data: ' + JSON.stringify({ done: true, conversation_id: payload.conversation_id || null }) + '\n\n';
           return withCors(new Response(body, {
@@ -684,7 +692,7 @@ export default {
           }), env, origin);
         }
         if (!await reserveOptionalUsage(env, "skylet_request", OPTIONAL_CHAT_DAILY_LIMIT)) {
-          const reply = skyletDailyLimitReply(question);
+          const reply = skyletDailyLimitReply(question, language);
           return withCors(new Response(
             'data: ' + JSON.stringify({ token: reply }) + '\n\n'
             + 'data: ' + JSON.stringify({ done: true, conversation_id: payload.conversation_id || null }) + '\n\n',
@@ -836,9 +844,10 @@ async function handleChat(payload: ChatPayload, user: AuthUser, env: Env, traceI
   if (!isSkyletSiteQuestion(sanitized) && !isGreetingOnly(sanitized)) {
     const history = payload.conversation_id ? await fetchMemory(env, payload.conversation_id, 5) : [];
     const prior = [...history].reverse().find(row => row.role === "user")?.content || "";
-    if (!isSkyletShortFollowup(sanitized) || !isSkyletSiteQuestion(prior)) {
+    if (!skyletContextFollowup(sanitized, skyletClientHistory(payload.recent_messages))
+        && (!isSkyletShortFollowup(sanitized) || !isSkyletSiteQuestion(prior))) {
       return { ok: true, conversation_id: payload.conversation_id || null,
-        reply: exclusiveSiteReply(sanitized), provider: "local", fallback_used: false,
+        reply: exclusiveSiteReply(sanitized, skyletContextLanguage(sanitized, skyletClientHistory(payload.recent_messages), payload.locale)), provider: "local", fallback_used: false,
         local_reason: "outside_site_scope", trace_id: traceId };
     }
   }
@@ -871,8 +880,11 @@ async function handleChat(payload: ChatPayload, user: AuthUser, env: Env, traceI
     return responsePayload;
   }
 
+  // A cached answer must never leak across different dialogue contexts.
+  const useResponseCache = !skipResponseCache && !payload.conversation_id
+    && !skyletClientHistory(payload.recent_messages).length;
   const cacheKey = await cacheHash(`u:${user.id}|task:${task}|msg:${sanitized}`);
-  if (!skipResponseCache) {
+  if (useResponseCache) {
     const cached = await env.SESSIONS.get(`response:${cacheKey}`);
     if (cached) {
       const parsed = JSON.parse(cached) as Record<string, unknown>;
@@ -893,7 +905,10 @@ async function handleChat(payload: ChatPayload, user: AuthUser, env: Env, traceI
   await storeMessage(env, conversationId, "user", sanitized);
   await onVisitorMessage?.(conversationId, sanitized);
 
-  const memory = pruneMemory(await fetchMemory(env, conversationId, MAX_MEMORY_ITEMS), Number(env.MAX_CONTEXT_CHARS || "4000"));
+  const memory = pruneMemory([
+    ...skyletClientHistory(payload.recent_messages),
+    ...await fetchMemory(env, conversationId, MAX_MEMORY_ITEMS),
+  ], Number(env.MAX_CONTEXT_CHARS || "4000"));
   const conversationSignals = analyzeConversationSignals(memory, sanitized);
   const usePortfolioRag = shouldUsePortfolioRag(sanitized, memory, conversationSignals);
   let rag: string[] = [];
@@ -903,9 +918,10 @@ async function handleChat(payload: ChatPayload, user: AuthUser, env: Env, traceI
     rag = [externalRag, ...semanticRag];
   }
   const basePrompt = await buildPrompt(env, memory, rag, sanitized, task, conversationSignals);
-  const prompt = payload.expect_json
+  const responseLanguage = skyletContextLanguage(sanitized, skyletClientHistory(payload.recent_messages), payload.locale);
+  const prompt = (payload.expect_json
     ? `${basePrompt}\n\nReturn strict JSON only. No markdown, no prose.`
-    : basePrompt;
+    : basePrompt) + `\nReply in ${responseLanguage} (current user language, with prior dialogue used only when ambiguous).`;
 
   const llm = await runProviderChat(prompt, env, false, task, buildProviderFallbackReply(sanitized, task));
   const filteredOutput = sanitizeOutput(maskPii(llm.text, env));
@@ -961,7 +977,7 @@ async function handleChat(payload: ChatPayload, user: AuthUser, env: Env, traceI
     trace_id: traceId,
   };
 
-  if (!skipResponseCache) {
+  if (useResponseCache) {
     await env.SESSIONS.put(`response:${cacheKey}`, JSON.stringify(responsePayload), {
       expirationTtl: Number(env.RESPONSE_CACHE_TTL || "180"),
     });
@@ -982,8 +998,9 @@ async function handleChatStream(payload: ChatPayload, user: AuthUser, env: Env, 
   if (!isSkyletSiteQuestion(sanitized) && !isGreetingOnly(sanitized)) {
     const history = payload.conversation_id ? await fetchMemory(env, payload.conversation_id, 5) : [];
     const prior = [...history].reverse().find(row => row.role === "user")?.content || "";
-    if (!isSkyletShortFollowup(sanitized) || !isSkyletSiteQuestion(prior)) {
-      const reply = exclusiveSiteReply(sanitized);
+    if (!skyletContextFollowup(sanitized, skyletClientHistory(payload.recent_messages))
+        && (!isSkyletShortFollowup(sanitized) || !isSkyletSiteQuestion(prior))) {
+      const reply = exclusiveSiteReply(sanitized, skyletContextLanguage(sanitized, skyletClientHistory(payload.recent_messages), payload.locale));
       const body = 'data: ' + JSON.stringify({ token: reply }) + '\n\n'
         + 'data: ' + JSON.stringify({ done: true, conversation_id: payload.conversation_id || null }) + '\n\n';
       return new Response(body, {
@@ -1033,7 +1050,10 @@ async function handleChatStream(payload: ChatPayload, user: AuthUser, env: Env, 
   const conversationId = await ensureConversation(env, user.id, payload.conversation_id);
   await storeMessage(env, conversationId, "user", sanitized);
   await onVisitorMessage?.(conversationId, sanitized);
-  const memory = pruneMemory(await fetchMemory(env, conversationId, MAX_MEMORY_ITEMS), Number(env.MAX_CONTEXT_CHARS || "4000"));
+  const memory = pruneMemory([
+    ...skyletClientHistory(payload.recent_messages),
+    ...await fetchMemory(env, conversationId, MAX_MEMORY_ITEMS),
+  ], Number(env.MAX_CONTEXT_CHARS || "4000"));
   const conversationSignals = analyzeConversationSignals(memory, sanitized);
   const usePortfolioRag = shouldUsePortfolioRag(sanitized, memory, conversationSignals);
   let rag: string[] = [];
@@ -1043,9 +1063,10 @@ async function handleChatStream(payload: ChatPayload, user: AuthUser, env: Env, 
     rag = [externalRag, ...semanticRag];
   }
   const basePrompt = await buildPrompt(env, memory, rag, sanitized, task, conversationSignals);
-  const prompt = payload.expect_json
+  const responseLanguage = skyletContextLanguage(sanitized, skyletClientHistory(payload.recent_messages), payload.locale);
+  const prompt = (payload.expect_json
     ? `${basePrompt}\n\nReturn strict JSON only. No markdown, no prose.`
-    : basePrompt;
+    : basePrompt) + `\nReply in ${responseLanguage} (current user language, with prior dialogue used only when ambiguous).`;
 
   const providerResponse = await runProviderChat(prompt, env, true, task, buildProviderFallbackReply(sanitized, task));
 
