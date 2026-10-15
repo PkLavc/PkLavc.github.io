@@ -171,7 +171,10 @@ jobs:
       INSTAGRAM_VIDEO_AUDIO_VOLUME: "0"
       SOCIAL_MAX_VIDEO_MB: ${{ vars.SOCIAL_MAX_VIDEO_MB || '25' }}
       SOCIAL_TTS: kokoro
-      SOCIAL_ALLOW_ESPEAK_FALLBACK: "true"
+      # Warm American female narration for YouTube; Instagram remains catalog MUSIC only.
+      SOCIAL_KOKORO_VOICE: af_bella
+      # If both high-quality female voices fail, leave the item queued for retry.
+      SOCIAL_ALLOW_ESPEAK_FALLBACK: "false"
       INSTAGRAM_GRAPH_VERSION: ${{ vars.INSTAGRAM_GRAPH_VERSION || 'v26.0' }}
 
     steps:
