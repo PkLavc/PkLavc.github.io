@@ -66,5 +66,39 @@ export function siteFaq(input: string): string | null {
       : lang === "es" ? "Los canales de contacto están en https://pklavc.com/ ."
       : "Contact details are available at https://pklavc.com/ .";
   }
+  // Stable, multilingual answers avoid paid/free model quota. Never cache
+  // mutable facts such as prices, hours, fresh news or product inventory here.
+  if (/\b(?:visitantes|visitas|visitor|visitors|traffic|tr[aá]fego|visiteur|estad[ií]sticas|statistics|statistics|mapa|map)\b/i.test(text) &&
+      /\b(?:site|pklavc|portfolio|portf[oó]lio|visitas|visitantes|visitor|visitors|tr[aá]fego|traffic|mapa|map)\b/i.test(text)) {
+    return lang === "pt" ? "O mapa de visitas anônimas do site está em https://pklavc.com/pt/visitantes/ ."
+      : lang === "es" ? "El mapa de visitas anónimas está en https://pklavc.com/es/visitantes/ ."
+      : "The anonymous visitor map is at https://pklavc.com/visitors/ .";
+  }
+  if (/\b(?:onde|where|d[oó]nde|encontrar|find|visit|visitar|ver|see|abrir|open|link)\b/i.test(text)
+      && /\b(?:projetos|projects|proyectos)\b/i.test(text)
+      && !/\b(?:qual|which|what|como|how|sobre|about|descrever|describe)\b/i.test(text)) {
+    return lang === "pt" ? "Os projetos estão disponíveis em https://pklavc.com/projects/ ."
+      : lang === "es" ? "Los proyectos están en https://pklavc.com/projects/ ."
+      : "The projects are listed at https://pklavc.com/projects/ .";
+  }
+  if (/\b(?:loja|store|tienda)\b/i.test(text) &&
+      /\b(?:compra|comprar|buy|compras|adquirir|shopping|affiliate|afiliad)\w*/i.test(text) &&
+      !/\b(?:pre[çc]o|price|valor|cost|devolu|return|garantia|warranty)\w*/i.test(text)) {
+    return lang === "pt" ? "A loja do PkLavc reúne links de afiliado. Ao escolher um produto, a compra é feita na plataforma de destino: https://pklavc.com/store/ ."
+      : lang === "es" ? "La tienda de PkLavc reúne enlaces de afiliados. La compra se realiza en la plataforma de destino: https://pklavc.com/store/ ."
+      : "The PkLavc store lists affiliate offers. Purchases are completed on the merchant's website: https://pklavc.com/store/ .";
+  }
+  if (/\b(?:blog|games|gaming|tech|tecnologia|technology)\b/i.test(text)
+      && /\b(?:onde|where|d[oó]nde|acess|access|link|encontrar|find|visit|visitar|entrar|open|abrir|ler|read|vejo|ver|see)\w*/i.test(text)) {
+    return lang === "pt" ? "Você encontra Games e Tech no blog: https://pklavc.com/blog/ ."
+      : lang === "es" ? "Encuentra Games y Tech en el blog: https://pklavc.com/blog/ ."
+      : "Find Games and Tech on the blog: https://pklavc.com/blog/ .";
+  }
+  if (/\b(?:instagram|youtube|pinterest|tiktok|redes sociais|social media|social networks|redes sociales)\b/i.test(text)
+      && /\b(?:onde|where|d[oó]nde|encontrar|find|link|seguir|follow|perfil|profile|acessar|visit|visitar|ver)\b/i.test(text)) {
+    return lang === "pt" ? "Os canais e links oficiais do PkLavc estão no site https://pklavc.com/ ."
+      : lang === "es" ? "Los canales oficiales de PkLavc están en https://pklavc.com/ ."
+      : "Find the official PkLavc social channels at https://pklavc.com/ .";
+  }
   return null;
 }
