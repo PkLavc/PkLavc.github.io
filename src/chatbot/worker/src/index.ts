@@ -1718,13 +1718,15 @@ export async function runProviderChat(
   task: string,
   fallbackText?: string,
 ): Promise<{ text: string; provider: string; fallback: boolean; promptVersion: string; stream?: ReadableStream<Uint8Array> }> {
-  const providerList = ["cloudflare", "groq", "openrouter"] as const;
+  // Skylet uses only the separate free Groq allowance. Never invoke
+  // Workers AI or OpenRouter here: both are reserved for article generation.
+  const providerList: Array<"groq" | "openrouter" | "cloudflare"> = ["groq"];
   let lastError = "";
   const modelChoice = pickModelForTask(env, task);
 
   for (let i = 0; i < providerList.length; i += 1) {
     const provider = providerList[i];
-    for (let attempt = 1; attempt <= 2; attempt += 1) {
+    for (let attempt = 1; attempt <= 1; attempt += 1) {
       try {
         if (provider === "groq") {
           const result = await callGroq(prompt, env, stream, modelChoice.groq, task);
@@ -1773,6 +1775,7 @@ async function callGroq(prompt: string, env: Env, stream: boolean, model: string
       model,
       messages: [{ role: "user", content: prompt }],
       stream,
+      max_tokens: 400,
       temperature: task === "classification" || task === "lead_scoring" ? 0.1 : 0.3,
       response_format: { type: "text" },
     }),
