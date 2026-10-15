@@ -8,7 +8,7 @@ type QuickAnswer = { reply: string; reason: string };
 
 export function skyletLanguage(text: string): SkyletLanguage {
   const value = String(text || "").toLowerCase();
-  if (/\b(?:hola|gracias|quién|dónde|cuál|acerca de|sitio web|tienda|publicaciones|artículos|precios|misiones)\b/.test(value)) return "es";
+  if (/\b(?:hola|gracias|quién|qué|dónde|cuál|cuánto|acerca de|sitio web|tienda|publicaciones|artículos|precios|misiones)\b/.test(value)) return "es";
   if (/\b(?:oi|olá|bom dia|boa noite|você|vc|qual|quais|quanto|onde|como|não|sobre|loja|postagem|artigo|matéria|projetos|visitantes|portfólio|preço|contato)\b/.test(value)) return "pt";
   return "en";
 }
