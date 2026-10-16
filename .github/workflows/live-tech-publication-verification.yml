@@ -1,0 +1,135 @@
+name: Live article and platform publication verification
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/live-tech-publication-verification.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    outputs:
+      slug: ${{ steps.commit.outputs.slug }}
+      url: ${{ steps.commit.outputs.url }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: PkLavc/blog
+          ref: main
+          token: ${{ secrets.PRIVATE_BLOG_REPO_TOKEN }}
+          path: private-blog
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Install source validation dependencies
+        working-directory: private-blog
+        run: python -m pip install -r scripts/blog_automation/requirements.txt "requests>=2.32,<3"
+      - name: Generate a verified, nonduplicate new Tech article
+        working-directory: private-blog
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_MODEL: ${{ vars.GEMINI_MODEL || 'gemini-2.5-flash' }}
+          MAX_GEMINI_HTTP_REQUESTS_PER_RUN: ${{ vars.MAX_GEMINI_HTTP_REQUESTS_PER_RUN || '6' }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          OPENROUTER_MODEL: ${{ vars.OPENROUTER_MODEL || 'openrouter/free' }}
+          MAX_OPENROUTER_HTTP_REQUESTS_PER_RUN: ${{ vars.MAX_OPENROUTER_HTTP_REQUESTS_PER_RUN || '3' }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_AI_MODEL: ${{ vars.CLOUDFLARE_AI_MODEL || '@cf/openai/gpt-oss-120b' }}
+          CLOUDFLARE_TRANSLATION_MODEL: ${{ vars.CLOUDFLARE_TRANSLATION_MODEL || '@cf/meta/llama-3.1-8b-instruct-fp8' }}
+          MAX_CLOUDFLARE_AI_HTTP_REQUESTS_PER_RUN: ${{ vars.MAX_CLOUDFLARE_AI_HTTP_REQUESTS_PER_RUN || '3' }}
+        run: python -m scripts.private_runner.live_verification generate
+      - name: Translate article using existing no-cost local pipeline
+        working-directory: private-blog
+        timeout-minutes: 18
+        continue-on-error: true
+        env:
+          ARGOS_DEVICE_TYPE: cpu
+        run: bash scripts/private_runner/runner.sh translate
+      - name: Publish new article to private source and trigger Pages sync
+        id: commit
+        working-directory: private-blog
+        run: python -m scripts.private_runner.live_verification commit
+
+  distribute:
+    needs: [generate]
+    if: needs.generate.result == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 65
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix:
+        platform: [threads, bluesky, mastodon, pinterest, linkedin, devto, videos]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: PkLavc/blog
+          ref: main
+          token: ${{ secrets.PRIVATE_BLOG_REPO_TOKEN }}
+          path: private-blog
+          fetch-depth: 0
+      - uses: actions/checkout@v4
+        with:
+          repository: PkLavc/PkLavc.github.io
+          ref: main
+          path: public-site
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install free publisher dependencies
+        run: python -m pip install "Pillow>=10,<13" "requests>=2.32,<3"
+      - name: Install narrator and video processing
+        if: matrix.platform == 'videos'
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg espeak-ng fonts-dejavu-core
+          python -m pip install -r private-blog/scripts/social_video/requirements.txt google-api-python-client google-auth requests
+      - name: Verify a real post to the selected network
+        working-directory: private-blog
+        timeout-minutes: 45
+        env:
+          BLUESKY_HANDLE: ${{ secrets.BLUESKY_HANDLE }}
+          BLUESKY_APP_PASSWORD: ${{ secrets.BLUESKY_APP_PASSWORD }}
+          THREADS_ACCESS_TOKEN: ${{ secrets.THREADS_ACCESS_TOKEN }}
+          MASTODON_ACCESS_TOKEN: ${{ secrets.MASTODON_ACCESS_TOKEN }}
+          PINTEREST_ACCESS_TOKEN: ${{ secrets.PINTEREST_ACCESS_TOKEN }}
+          PINTEREST_API_TIER: standard
+          PINTEREST_PUBLIC_ENABLED: "true"
+          LINKEDIN_CLIENT_ID: ${{ secrets.LINKEDIN_CLIENT_ID }}
+          LINKEDIN_CLIENT_SECRET: ${{ secrets.LINKEDIN_CLIENT_SECRET }}
+          LINKEDIN_REFRESH_TOKEN: ${{ secrets.LINKEDIN_REFRESH_TOKEN }}
+          LINKEDIN_ACCESS_TOKEN: ${{ secrets.LINKEDIN_ACCESS_TOKEN }}
+          LINKEDIN_ORGANIZATION_ID: ${{ secrets.LINKEDIN_ORGANIZATION_ID }}
+          LINKEDIN_API_VERSION: "202609"
+          DEVTO_API_KEY: ${{ secrets.DEVTO_API_KEY }}
+          INSTAGRAM_ACCESS_TOKEN: ${{ secrets.INSTAGRAM_ACCESS_TOKEN }}
+          INSTAGRAM_AUDIO_ACCESS_TOKEN: ${{ secrets.INSTAGRAM_AUDIO_ACCESS_TOKEN }}
+          INSTAGRAM_BUSINESS_ACCOUNT_ID: ${{ secrets.INSTAGRAM_BUSINESS_ACCOUNT_ID }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+          SOCIAL_MAX_VIDEO_MB: "25"
+          SOCIAL_MAX_ITEMS_PER_RUN: "1"
+          SOCIAL_IG_UPLOAD_MODE: github-release
+          INSTAGRAM_TREND_AUDIO_VOLUME: "100"
+          INSTAGRAM_VIDEO_AUDIO_VOLUME: "0"
+          SOCIAL_TTS: kokoro
+          SOCIAL_KOKORO_VOICE: af_bella
+          SOCIAL_ALLOW_ESPEAK_FALLBACK: "false"
+        run: >
+          python -m scripts.private_runner.live_verification distribute
+          --platform "${{ matrix.platform }}"
+          --slug "${{ needs.generate.outputs.slug }}"
+          --url "${{ needs.generate.outputs.url }}"
