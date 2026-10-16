@@ -1,0 +1,71 @@
+name: One-time Macca shared-renderer integration test
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/test-macca-shared-engine-once.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: PkLavc/blog
+          ref: main
+          token: ${{ secrets.PRIVATE_BLOG_REPO_TOKEN }}
+          path: engine
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          repository: Macca-the-Gator/lab
+          ref: main
+          path: macca
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install local TTS and FFmpeg without paid APIs
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg espeak-ng fonts-dejavu-core
+          python -m pip install --quiet torch --index-url https://download.pytorch.org/whl/cpu
+          python -m pip install --quiet -r engine/scripts/social_video/requirements.txt
+      - name: Validate brand separation and structure offline
+        working-directory: engine
+        run: |
+          python -m unittest -v scripts.private_runner.test_macca_video scripts.private_runner.test_macca_articles
+          python -m compileall -q scripts/private_runner
+      - name: Render one real Macca article without uploading or publishing
+        working-directory: engine
+        timeout-minutes: 18
+        env:
+          PYTHONDONTWRITEBYTECODE: "1"
+          HF_HUB_DISABLE_TELEMETRY: "1"
+          SOCIAL_KOKORO_VOICE: af_bella
+          SOCIAL_ALLOW_ESPEAK_FALLBACK: "false"
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from scripts.private_runner.macca_video import make_video
+          articles = json.loads(Path("../macca/blog/posts.json").read_text())
+          chosen = next(p for p in articles if p.get("thumbnail") and p.get("inlineImages") and p.get("sections"))
+          print("Original Macca article:", chosen.get("title", "")[:130])
+          Path("/tmp/macca-real-render").mkdir(exist_ok=True)
+          result = make_video(chosen, Path("/tmp/macca-real-render/short.mp4"), Path("/tmp/macca-real-render/work"))
+          assert result["engine"] == "pklavc-private-macca-branded", result
+          assert Path("/tmp/macca-real-render/short.mp4").stat().st_size > 100_000
+          assert Path("/tmp/macca-real-render/short-instagram-music.mp4").stat().st_size > 100_000
+          print("Shared private Macca video integration passed", result)
+          PY
+          ffprobe -v error -show_entries stream=codec_name,width,height,r_frame_rate -show_entries format=duration -of default=nw=1 /tmp/macca-real-render/short.mp4
+      - name: Delete generated test videos and private checkout
+        if: always()
+        run: |
+          rm -rf /tmp/macca-real-render engine macca
