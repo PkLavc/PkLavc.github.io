@@ -120,7 +120,8 @@ jobs:
     env:
       SOCIAL_MAX_ITEMS_PER_RUN: '1'  # Never publish multiple regular news Shorts in one hourly slot
       SOCIAL_URGENT_ONLY: ${{ github.event.schedule == '7,37 * * * *' && 'true' || 'false' }}
-      SOCIAL_PLATFORMS: ${{ github.event.schedule == '7,37 * * * *' && 'youtube' || 'instagram,youtube' }}
+      SOCIAL_PLATFORMS: ${{ (github.event.schedule == '7,37 * * * *' || contains(github.event.head_commit.message, '[youtube-game-test]')) && 'youtube' || 'instagram,youtube' }}
+      SOCIAL_TARGET_SLUG: ${{ contains(github.event.head_commit.message, '[youtube-game-test]') && 'macca-curated-gta-6-pc-port-could-arrive-within-three-months-of-console-launch' || '' }}
       SOCIAL_IG_UPLOAD_MODE: github-release
       INSTAGRAM_TREND_AUDIO_VOLUME: "100"
       INSTAGRAM_VIDEO_AUDIO_VOLUME: "0"
