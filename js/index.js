@@ -1128,7 +1128,8 @@ function ensureLottiePlayerAssets() {
 }
 
 function loadSkyletWidgetAssets() {
-  if (isSkyletAssistantPage()) {
+  // Never inject Skylet on /blog or any descendant path.
+  if (/^\/blog(?:\/|$)/i.test(window.location.pathname || '/') || isSkyletAssistantPage()) {
     return;
   }
 
