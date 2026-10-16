@@ -9,6 +9,7 @@ on:
       - "src/chatbot/worker/migrations/0009_traffic_source_daily.sql"
       - "js/index.js"
       - "js/visitor-map.js"
+      - "js/visitor-map.test.mjs"
       - "visitors/index.html"
       - "pt/visitantes/index.html"
       - "es/visitantes/index.html"
@@ -37,6 +38,7 @@ jobs:
         run: |
           node --check js/index.js
           node --check js/visitor-map.js
+          node --test js/visitor-map.test.mjs
           for file in visitors/index.html pt/visitantes/index.html es/visitantes/index.html; do
             grep -q 'visitor-traffic-sources' "$file"
             grep -q 'visitor-traffic-pages' "$file"

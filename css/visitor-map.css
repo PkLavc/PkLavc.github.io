@@ -888,6 +888,18 @@ body.visitor-map-layout {
 .visitor-traffic-list li { display: flex; justify-content: space-between; gap: 14px; padding: 10px 0; border-bottom: 1px solid rgba(136, 214, 255, 0.1); color: #afc0d8; font: 400 .88rem/1.5 Inter, sans-serif; }
 .visitor-traffic-list li strong { color: #e7f9ff; font-variant-numeric: tabular-nums; }
 .visitor-traffic-list li span { overflow-wrap: anywhere; }
+.visitor-traffic-list .visitor-traffic-channel { display: inline-flex; align-items: center; gap: 5px; min-width: 0; }
+.visitor-traffic-list .visitor-traffic-channel-name { min-width: 0; }
+.visitor-traffic-profile-link {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 34px; height: 34px; flex: 0 0 34px; border-radius: 9px;
+  color: #9bb9d4; text-decoration: none; background: transparent;
+  -webkit-tap-highlight-color: transparent;
+}
+.visitor-traffic-profile-link svg { width: 17px; height: 17px; display: block; flex: none; }
+.visitor-traffic-profile-link:hover { color: #e7f9ff; background: rgba(136, 214, 255, .1); }
+.visitor-traffic-profile-link:focus-visible { outline: 2px solid #a5dcff; outline-offset: 2px; }
+.visitor-traffic-list li strong { flex: 0 0 auto; align-self: center; }
 .visitor-traffic-note { margin: 16px 0 0; color: #8397b1; font: 400 .77rem/1.6 Inter, sans-serif; }
 @media (max-width: 680px) {
   .visitor-traffic-dashboard { padding: 18px; }
