@@ -900,10 +900,20 @@ body.visitor-map-layout {
 .visitor-traffic-profile-link:hover { color: #e7f9ff; background: rgba(136, 214, 255, .1); }
 .visitor-traffic-profile-link:focus-visible { outline: 2px solid #a5dcff; outline-offset: 2px; }
 .visitor-traffic-list li strong { flex: 0 0 auto; align-self: center; }
-.visitor-traffic-note { margin: 16px 0 0; color: #8397b1; font: 400 .77rem/1.6 Inter, sans-serif; }
 @media (max-width: 680px) {
   .visitor-traffic-dashboard { padding: 18px; }
   .visitor-traffic-columns { grid-template-columns: minmax(0, 1fr); gap: 20px; }
-  .visitor-traffic-heading { grid-template-columns: minmax(0, 1fr) auto; gap: 10px; }
-  .visitor-traffic-count strong { font-size: 1.65rem; }
+  /* Give the localized headline the entire row instead of squeezing it
+     beside the sessions label and count on narrow phones. */
+  .visitor-traffic-heading { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+  .visitor-traffic-heading h2 { max-width: 100%; font-size: clamp(1.35rem, 5.8vw, 1.7rem); line-height: 1.25; }
+  .visitor-traffic-count {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 14px; padding-top: 12px; border-top: 1px solid rgba(136, 214, 255, .1);
+    text-align: left; min-width: 0;
+  }
+  .visitor-traffic-count .visitor-stat-label { flex: 1 1 auto; min-width: 0; }
+  .visitor-traffic-count strong {
+    flex: 0 0 auto; margin-top: 0; font-size: 1.65rem; white-space: nowrap;
+  }
 }
