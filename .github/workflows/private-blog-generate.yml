@@ -151,6 +151,7 @@ jobs:
           EVENT_NAME: ${{ github.event_name }}
           SCHEDULE_TRIGGER: ${{ github.event.schedule }}
           REQUESTED_CATEGORY: ${{ inputs.category }}
+          COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
         run: python -m scripts.private_runner.tasks choose_lane
       - name: Collect, select, generate and validate
         if: github.event_name == 'schedule' || inputs.mode == 'generate' || (github.event_name == 'push' && contains(github.event.head_commit.message, '[blog-generate-now]'))
