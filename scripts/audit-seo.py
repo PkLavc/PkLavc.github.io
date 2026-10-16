@@ -491,7 +491,7 @@ class Audit:
             self.counts["visual_html_compared"] += 1
             if before != after:
                 first = next((i for i, pair in enumerate(zip(before, after)) if pair[0] != pair[1]), min(len(before), len(after)))
-                self.report("visual-contract", f"{relative}: visible DOM/assets changed at token {first}; source={str(before[first:first+1])[:170]}; artifact={str(after[first:first+1])[:170]}")
+                self.report("visual-contract", f"{relative}: visible DOM/assets changed at token {first}; source={str(before[first:first+1])[:1300]}; artifact={str(after[first:first+1])[:1300]}")
         for path in sorted(self.root.rglob("*.css")):
             relative = path.relative_to(self.root)
             original = self.comparison_source_file(source, relative)
