@@ -1,0 +1,57 @@
+name: PkLavc weekly Tech and GTA recap
+
+on:
+  schedule:
+    # Sunday 15:27 Sao Paulo; separate from the hourly Shorts worker.
+    - cron: "27 18 * * 0"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pklavc-weekly-video
+  cancel-in-progress: false
+
+jobs:
+  weekly-recap:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - name: Check out the original private PkLavc blog
+        uses: actions/checkout@v4
+        with:
+          repository: PkLavc/blog
+          ref: main
+          token: ${{ secrets.PRIVATE_BLOG_REPO_TOKEN }}
+          path: private-blog
+          persist-credentials: true
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install narration and video dependencies
+        working-directory: private-blog
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg fonts-dejavu-core
+          python -m pip install -r scripts/social_video/requirements.txt google-api-python-client google-auth
+
+      - name: Validate weekly selection and publication caps offline
+        working-directory: private-blog
+        run: python -m unittest scripts.social_video.test_weekly_recap -v
+
+      - name: Publish weekly horizontal recap to PkLavc YouTube
+        working-directory: private-blog
+        env:
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+          SOCIAL_KOKORO_VOICE: af_bella
+        run: python -m scripts.social_video.weekly_recap
+
+      - name: Save weekly recap ID to prevent duplicate uploads
+        working-directory: private-blog
+        run: python -m scripts.private_runner.tasks persist_state
