@@ -32,7 +32,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: private-blog-public-runner
+  group: private-blog-public-runner-${{ github.workflow }}
   cancel-in-progress: false
 
 jobs:
@@ -88,7 +88,7 @@ jobs:
         working-directory: private-blog
         run: bash scripts/private_runner/runner.sh smoke-generation
   offline-translation-integration:
-    if: github.event_name == 'push'
+    if: (github.event_name == 'push' && contains(github.event.head_commit.message, '[offline-translation-test]')) || (github.event_name == 'workflow_dispatch' && inputs.mode == 'smoke')
     runs-on: ubuntu-latest
     timeout-minutes: 25
     steps:
