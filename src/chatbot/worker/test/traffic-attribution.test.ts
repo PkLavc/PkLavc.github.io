@@ -46,6 +46,8 @@ describe("anonymous attribution dimensions", () => {
   it("normalizes known platforms and never preserves custom campaign strings", () => {
     expect(visitChannel("INSTAGRAM", "")).toBe("instagram");
     expect(visitChannel("youtube", "")).toBe("youtube");
+    expect(visitChannel("DEVTO", "")).toBe("devto");
+    expect(visitChannel("", "https://dev.to/pklavc/article")).toBe("devto");
     expect(visitChannel("unknown-token-value", "")).toBe("other");
     expect(visitChannel("", "https://l.instagram.com/abc?private=secret")).toBe("instagram");
     expect(visitChannel("", "https://pklavc.com/blog/en/tech/")).toBe("direct");
