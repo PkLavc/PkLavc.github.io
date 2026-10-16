@@ -1,5 +1,4 @@
 name: Generate private blog on public runner
-# Smoke tests cover Tech and Games EN/PT/ES translation, photos and summaries.
 
 on:
   schedule:
@@ -87,13 +86,7 @@ jobs:
 
       - name: Validate private generation pipeline without API calls or publishing
         working-directory: private-blog
-        run: |
-          python -m unittest scripts.blog_automation.test_translate_pending scripts.blog_automation.test_publish_paths scripts.blog_automation.test_game_lane scripts.blog_automation.test_performance scripts.test_newsletter_assembly scripts.social_video.test_render
-          node --test scripts/test-blog-discovery.mjs scripts/test-newsletter-content.mjs
-          (cd newsletter-worker && npm test)
-          python -m scripts.blog_automation.run --root . --offline-fixture --dry-run
-          python -m scripts.blog_automation.run --root . --offline-fixture --dry-run --blog-category games
-
+        run: bash scripts/private_runner/runner.sh smoke-generation
   offline-translation-integration:
     if: github.event_name == 'push'
     runs-on: ubuntu-latest
@@ -114,24 +107,10 @@ jobs:
         env:
           ARGOS_DEVICE_TYPE: cpu
         run: |
-          python -m pip install "argostranslate>=1.10,<2"
+          python -m pip install 'argostranslate>=1.10,<2'
           python -m scripts.blog_automation.install_offline_translations
           python -m unittest scripts.blog_automation.test_offline_translation_integration
-          python - <<'PY'
-          from scripts.blog_automation.translate_pending import _translation_map
-          content = (
-              "<html><title>GTA 6 news update</title><main>"
-              "<h1>Rockstar Games confirms a new update</h1>"
-              "<p>The new release includes more details about the game and its soundtrack.</p>"
-              "</main></html>"
-          )
-          for locale in ("pt", "es"):
-              translated = _translation_map(content, locale)
-              assert len(translated) == 3, (locale, translated)
-              assert "Rockstar Games" in translated["Rockstar Games confirms a new update"]
-              assert translated["The new release includes more details about the game and its soundtrack."] != "The new release includes more details about the game and its soundtrack."
-              print(f"Offline {locale.upper()} article translation: PASS")
-          PY
+          python -m scripts.private_runner.tasks translation_check
   generate:
     if: github.event_name == 'schedule' || (github.event_name == 'push' && (contains(github.event.head_commit.message, '[blog-translate-backfill]') || contains(github.event.head_commit.message, '[blog-generate-now]'))) || (github.event_name == 'workflow_dispatch' && (inputs.mode == 'generate' || inputs.mode == 'translate'))
     runs-on: ubuntu-latest
@@ -163,10 +142,7 @@ jobs:
 
       - name: Test generated article source and public paths
         working-directory: private-blog
-        run: |
-          python -m unittest scripts.blog_automation.test_translate_pending scripts.blog_automation.test_publish_paths scripts.blog_automation.test_game_lane scripts.social_video.test_render
-          node --test scripts/test-blog-discovery.mjs
-
+        run: bash scripts/private_runner/runner.sh validate-generation
       - name: Choose hourly editorial lane
         id: lane
         if: github.event_name == 'schedule' || inputs.mode == 'generate' || (github.event_name == 'push' && contains(github.event.head_commit.message, '[blog-generate-now]'))
@@ -175,29 +151,7 @@ jobs:
           EVENT_NAME: ${{ github.event_name }}
           SCHEDULE_TRIGGER: ${{ github.event.schedule }}
           REQUESTED_CATEGORY: ${{ inputs.category }}
-        run: |
-          focus=all
-          if [[ "$EVENT_NAME" == "schedule" ]]; then
-            if [[ "$SCHEDULE_TRIGGER" == "43 15 * * 3" ]]; then
-              category=tech
-              focus=microsoft
-            else
-              slot=$(( ($(date -u +%s) / 3600) % 5 ))
-              if [[ "$slot" -eq 0 ]]; then category=tech; else category=games; fi
-            fi
-          else
-            # An explicit one-off recovery push always uses the Games lane.
-            # Regular scheduled runs and manual dispatch keep their prior behavior.
-            if [[ "$EVENT_NAME" == "push" ]]; then
-              category=games
-            else
-              category="${REQUESTED_CATEGORY:-tech}"
-            fi
-          fi
-          echo "category=$category" >> "$GITHUB_OUTPUT"
-          echo "focus=$focus" >> "$GITHUB_OUTPUT"
-          echo "Editorial lane: $category; Tech focus: $focus"
-
+        run: python -m scripts.private_runner.tasks choose_lane
       - name: Collect, select, generate and validate
         if: github.event_name == 'schedule' || inputs.mode == 'generate' || (github.event_name == 'push' && contains(github.event.head_commit.message, '[blog-generate-now]'))
         working-directory: private-blog
@@ -232,68 +186,25 @@ jobs:
         working-directory: private-blog
         id: blog_translation
         env:
-          # Deliberately no GEMINI, OPENROUTER or CLOUDFLARE keys in this stage.
+          TRANSLATE_BACKFILL: ${{ contains(github.event.head_commit.message, '[blog-translate-backfill]') }}
           ARGOS_DEVICE_TYPE: cpu
-        run: |
-          # Include the brand-new English article in the translation catalog now.
-          node scripts/generate-rss.mjs
-          if python -m pip install "argostranslate>=1.10,<2" &&
-             python -m scripts.blog_automation.install_offline_translations; then
-            if [[ "$GITHUB_EVENT_NAME" == "push" && "${{ contains(github.event.head_commit.message, '[blog-translate-backfill]') }}" == "true" ]]; then
-              # One-time catch-up for older Tech articles missing PT/ES.
-              python -m scripts.blog_automation.translate_pending --root . --category tech --max-posts 6 ||
-                echo "::warning::Tech translation backlog remains pending; no paid fallback."
-            else
-              # Generate first, then translate the newest Tech/Games articles
-              # and additional backlog during the same scheduled run.
-              python -m scripts.blog_automation.translate_pending --root . --max-posts 3 ||
-                echo "::warning::Offline translation failed; English article will still publish, and translation remains pending."
-            fi
-          else
-            echo "::warning::Offline Argos setup unavailable; English article will still publish without spending AI credits."
-          fi
-          if git diff --quiet -- en games; then
-            echo "changed=false" >> "$GITHUB_OUTPUT"
-          else
-            echo "changed=true" >> "$GITHUB_OUTPUT"
-          fi
-
+        run: bash scripts/private_runner/runner.sh translate
       - name: Refresh AI discovery directory
         working-directory: private-blog
         run: node scripts/generate-blog-discovery.mjs
 
       - name: Validate newsletter and assembled publication before commit
         working-directory: private-blog
-        run: |
-          node --test scripts/test-newsletter-content.mjs
-          python -m unittest scripts.test_newsletter_assembly
-          (cd newsletter-worker && npm test)
-          node scripts/generate-rss.mjs
-          python scripts/assemble_pages.py --root . --output _site
-          rm -rf _site
-
+        run: bash scripts/private_runner/runner.sh validate-publication
       - name: Detect publication changes
         id: changes
         working-directory: private-blog
         shell: bash
-        run: |
-          if [[ -z "$(git status --porcelain)" ]]; then
-            echo "changed=false" >> "$GITHUB_OUTPUT"
-          else
-            echo "changed=true" >> "$GITHUB_OUTPUT"
-          fi
-
+        run: python -m scripts.private_runner.tasks detect_changes
       - name: Commit validated article and indexes to private repository
         if: steps.changes.outputs.changed == 'true'
         working-directory: private-blog
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add -A
-          git commit -m "blog: publish scheduled Tech/Games story"
-          git pull --rebase origin main
-          git push origin HEAD:main
-
+        run: python -m scripts.private_runner.tasks commit_publication
       - name: Report publication result
         run: |
           echo "Private blog changed: ${{ steps.changes.outputs.changed }}"
@@ -323,15 +234,4 @@ jobs:
 
       - name: Sync generated pages
         shell: bash
-        run: |
-          rsync -a private-blog/_site/ blog/
-          git add blog
-          if git diff --cached --quiet; then
-            echo "Public blog output is already synchronized."
-            exit 0
-          fi
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git commit -m "Sync localized blog corrections"
-          git pull --rebase origin main
-          git push origin HEAD:main
+        run: bash private-blog/scripts/private_runner/sync.sh
