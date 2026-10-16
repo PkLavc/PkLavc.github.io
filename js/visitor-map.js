@@ -552,7 +552,7 @@
     );
     var friendly = { direct: 'Direct', instagram: 'Instagram', youtube: 'YouTube',
       google: 'Google', pinterest: 'Pinterest', tiktok: 'TikTok',
-      linkedin: 'LinkedIn', threads: 'Threads', bluesky: 'Bluesky',
+      linkedin: 'LinkedIn', devto: 'DEV.to', threads: 'Threads', bluesky: 'Bluesky',
       mastodon: 'Mastodon', x: 'X', facebook: 'Facebook',
       email: 'Email', newsletter: 'Newsletter', bing: 'Bing', other: 'Other' };
     function row(label, visits) {
