@@ -34,42 +34,12 @@ jobs:
         working-directory: blog
         env:
           SOCIAL_TTS: espeak-ng-fallback
-        run: |
-          python -m unittest scripts.social_video.test_motion scripts.social_video.test_direct_upload scripts.social_video.test_render
-          python - <<'PY'
-          from pathlib import Path
-          from shutil import copy2
-          from tempfile import TemporaryDirectory
-          from PIL import Image
-          from scripts.social_video.render import load_article, render
-          slug = "gta-6-album-new-singles-release"
-          assert load_article(Path.cwd(), slug)["category"] == "games"
-          with TemporaryDirectory() as directory:
-              for branded in (True, False):
-                  out = Path(directory) / ("branded" if branded else "neutral")
-                  result = render(Path.cwd(), slug, out, branded=branded)
-                  assert result["cardCount"] <= 4
-                  assert result["estimatedVisualCuts"] >= 2
-                  assert result["renderMode"] == "multi-shot-editorial-montage-zoom-transitions-subtitles"
-                  assert 20 <= result["durationSeconds"] <= 34.1
-                  assert result["video"] == {"codec": "h264", "width": 1080, "height": 1920, "fps": "30/1"}
-                  assert result["audio"]["codec"] == "aac"
-                  assert Path(result["videoPath"]).stat().st_size > 100000
-                  with Image.open(out / "card-01.png") as frame:
-                      assert frame.size == (1080, 1920)
-                  if branded:
-                      preview = Path.cwd() / "social-preview"
-                      preview.mkdir(exist_ok=True)
-                      copy2(result["videoPath"], preview / "pklavc-short.mp4")
-                      copy2(out / "preview-manifest.json", preview / "manifest.json")
-                  print(("PKLAVC SHORT/REEL" if branded else "NEUTRAL TIKTOK"), result["durationSeconds"], "seconds: PASS")
-          PY
+        run: python -m unittest scripts.social_video.test_motion scripts.social_video.test_direct_upload scripts.social_video.test_render && python -m scripts.private_runner.tasks video_smoke
       - name: Save one-day MP4 preview for review
         uses: actions/upload-artifact@v4
         with:
           name: pklavc-motion-short-preview
           path: |
             blog/social-preview/pklavc-short.mp4
-            blog/social-preview/manifest.json
           retention-days: 1
           if-no-files-found: error

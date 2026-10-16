@@ -80,22 +80,7 @@ jobs:
         working-directory: private-blog
         env:
           REQUESTED_SLUG: ${{ inputs.slug }}
-        run: |
-          python - <<'PY'
-          import json, os
-          from pathlib import Path
-          requested = os.environ.get("REQUESTED_SLUG", "").strip()
-          posts = json.loads(Path("en/posts.json").read_text(encoding="utf-8"))
-          existing = [p for p in posts if (Path("en") / p["url"].rstrip("/").split("/")[-1] / "index.html").is_file()]
-          article = next((p for p in existing if p["url"].rstrip("/").split("/")[-1] == requested), None) if requested else (existing[0] if existing else None)
-          if not article:
-              raise SystemExit("No existing English post matches the requested slug.")
-          slug = article["url"].rstrip("/").split("/")[-1]
-          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as out:
-              out.write(f"slug={slug}\n")
-          print(f"Preview article: {slug}")
-          PY
-
+        run: python -m scripts.private_runner.tasks preview_select
       - name: Validate renderer source
         working-directory: private-blog
         run: python -m unittest scripts.social_video.test_render scripts.blog_automation.test_json_safe
@@ -104,27 +89,13 @@ jobs:
         working-directory: private-blog
         env:
           SOCIAL_TTS: kokoro
-          SOCIAL_ALLOW_ESPEAK_FALLBACK: "true"
+          SOCIAL_ALLOW_ESPEAK_FALLBACK: "false"
         run: python -m scripts.social_video.preview --repo . --slug "${{ steps.article.outputs.slug }}" --out social-preview
 
       - name: Write preview summary
         if: always()
         working-directory: private-blog
-        run: |
-          python - <<'PY'
-          import json, os
-          from pathlib import Path
-          summary = Path(os.environ["GITHUB_STEP_SUMMARY"])
-          manifest_path = Path("social-preview/preview-manifest.json")
-          if manifest_path.exists():
-              m = json.loads(manifest_path.read_text())
-              lines = ["## Social video preview (not published)", "", f"- Article: \`{m['slug']}\`", f"- Cards: {m['cardCount']}", f"- Duration: {m['durationSeconds']} s", f"- Video: {m['video']['codec']} {m['video']['width']}x{m['video']['height']} @ {m['video']['fps']} FPS", f"- Audio: {m['audio']['codec']}, {m['audio']['sampleRate']} Hz, {m['audio']['channels']} channels", f"- TTS: {m['tts']}; voice: \`{m['voice']}\`; fallback: {m['fallbackUsed']}", f"- Kokoro model load: {m['modelLoadSeconds']} s", f"- Synthesis: {m['synthesisSeconds']} s"]
-              summary.write_text("\n".join(lines) + "\n")
-          else:
-              summary.write_text("## Social video preview failed before producing an MP4.\n")
-          PY
-          echo "- Total job elapsed: $(( $(date +%s) - JOB_STARTED )) s" >> "$GITHUB_STEP_SUMMARY"
-
+        run: python -m scripts.private_runner.tasks preview_summary
       - uses: actions/upload-artifact@v4
         if: success()
         with:
