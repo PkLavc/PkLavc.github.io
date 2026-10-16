@@ -186,7 +186,7 @@ class VisualSnapshot(HTMLParser):
             for key, value in attrs:
                 if key in {"itemscope", "itemtype", "itemid", "itemprop", "itemref"}:
                     continue
-                if value and key in {"href", "src", "poster"}:
+                if value and key in {"href", "src", "poster", "data-fallback-src"}:
                     value = unversion(value)
                 filtered.append((key, value))
             self.tokens.append(("start", tag, tuple(sorted(filtered))))
