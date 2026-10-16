@@ -1128,8 +1128,9 @@ function ensureLottiePlayerAssets() {
 }
 
 function loadSkyletWidgetAssets() {
-  // Never inject Skylet on /blog or any descendant path.
-  if (/^\/blog(?:\/|$)/i.test(window.location.pathname || '/') || isSkyletAssistantPage()) {
+  // Never inject Skylet on blog or store pages, including nested and translated routes.
+  var path = window.location.pathname || '/';
+  if (/^\/(?:blog|store)(?:\/|$)/i.test(path) || /^\/(?:pt|es)\/store(?:\/|$)/i.test(path) || isSkyletAssistantPage()) {
     return;
   }
 
