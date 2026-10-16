@@ -14,6 +14,7 @@ const KNOWN_CHANNELS: Record<string, string> = {
   tiktok: "tiktok", "tiktok.com": "tiktok",
   pin: "pinterest", pinterest: "pinterest",
   linkedin: "linkedin", "lnkd.in": "linkedin",
+  devto: "devto", "dev.to": "devto",
   threads: "threads", "threads.net": "threads",
   bluesky: "bluesky", bsky: "bluesky",
   mastodon: "mastodon", "mastodon.social": "mastodon",
@@ -40,6 +41,7 @@ export function visitChannel(source: unknown, referrer: unknown): string {
     if (host === "tiktok.com" || host.endsWith(".tiktok.com")) return "tiktok";
     if (host === "pinterest.com" || host.endsWith(".pinterest.com")) return "pinterest";
     if (host === "linkedin.com" || host.endsWith(".linkedin.com") || host === "lnkd.in") return "linkedin";
+    if (host === "dev.to") return "devto";
     if (host === "threads.net" || host.endsWith(".threads.net")) return "threads";
     if (host === "bsky.app") return "bluesky";
     if (host === "mastodon.social" || host.endsWith(".mastodon.social")) return "mastodon";
