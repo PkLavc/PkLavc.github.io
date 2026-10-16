@@ -46,6 +46,12 @@ jobs:
               doc = yaml.safe_load(source)
               assert doc.get("jobs"), name
               assert "python - <<'PY'" not in source
+              for job in doc["jobs"].values():
+                  for step in job.get("steps", []):
+                      command = step.get("run", "")
+                      if ("python -m scripts.private_runner." in command
+                          or "bash scripts/private_runner/" in command):
+                          assert step.get("working-directory") in {"private-blog", "blog"}, (name, step.get("name"))
               print("Workflow validated:", name)
           PY
           cd private-blog
