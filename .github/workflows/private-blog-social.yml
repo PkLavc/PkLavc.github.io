@@ -3,7 +3,8 @@ name: Process private blog social on public runner
 on:
   schedule:
     - cron: "47 * * * *"
-    - cron: "0 12 * * 2,5"
+    - cron: "0 12 * * 5"  # Store Reel on Fridays at 09:00 Sao Paulo
+    - cron: "0 12 1 * *"  # Store Short on the first day of each month at 09:00 Sao Paulo
   workflow_dispatch:
     inputs:
       mode:
@@ -197,6 +198,7 @@ jobs:
         working-directory: private-blog
         env:
           STORE_PREVIEW: ${{ steps.pending.outputs.store_products_dry_run }}
+          STORE_PLATFORMS: ${{ steps.pending.outputs.store_product_platforms }}
           INSTAGRAM_ACCESS_TOKEN: ${{ secrets.INSTAGRAM_ACCESS_TOKEN }}
           INSTAGRAM_AUDIO_ACCESS_TOKEN: ${{ secrets.INSTAGRAM_AUDIO_ACCESS_TOKEN }}
           INSTAGRAM_BUSINESS_ACCOUNT_ID: ${{ secrets.INSTAGRAM_BUSINESS_ACCOUNT_ID }}
