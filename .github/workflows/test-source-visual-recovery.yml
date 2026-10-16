@@ -1,0 +1,32 @@
+name: Verify official article source image
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/test-source-visual-recovery.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  source-image:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: PkLavc/blog
+          ref: main
+          token: ${{ secrets.PRIVATE_BLOG_REPO_TOKEN }}
+          path: private-blog
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Validate genuine official source image for existing article
+        working-directory: private-blog
+        run: |
+          python -m pip install "Pillow>=10,<13"
+          python -m unittest scripts.private_runner.test_source_visual -v
+          python -m scripts.private_runner.attach_source_visual
