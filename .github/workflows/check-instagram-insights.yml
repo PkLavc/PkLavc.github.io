@@ -6,7 +6,6 @@ on:
       - .github/workflows/check-instagram-insights.yml
   workflow_dispatch:
   schedule:
-    # Once daily; never publishes social posts.
     - cron: '13 11 * * *'
 
 permissions:
@@ -37,33 +36,7 @@ jobs:
           INSTAGRAM_AUDIO_ACCESS_TOKEN: ${{ secrets.INSTAGRAM_AUDIO_ACCESS_TOKEN }}
           INSTAGRAM_INSIGHTS_FORCE_CHECK: "true"
           INSTAGRAM_GRAPH_VERSION: ${{ vars.INSTAGRAM_GRAPH_VERSION || 'v26.0' }}
-        run: |
-          python - <<'PY'
-          import json, os
-          from pathlib import Path
-          from scripts.social_video.instagram_analytics import _insights, InsightsError
-          videos = json.loads(Path("social-state/instagram-published.json").read_text())["items"]
-          eligible = next((item for item in videos if item.get("instagramMediaId")), None)
-          if eligible:
-              candidates = [
-                  ("analytics", os.getenv("INSTAGRAM_ANALYTICS_ACCESS_TOKEN")),
-                  ("music", os.getenv("INSTAGRAM_AUDIO_ACCESS_TOKEN")),
-                  ("posting", os.getenv("INSTAGRAM_ACCESS_TOKEN")),
-              ]
-              checked = set()
-              for label, token in candidates:
-                  if not token or token in checked:
-                      continue
-                  checked.add(token)
-                  try:
-                      stats = _insights(eligible["instagramMediaId"], token, "views")
-                      print("Instagram Insights: AUTHORIZED by " + label + " credential, metric_available=" + str(bool(stats)))
-                      break
-                  except InsightsError as exc:
-                      print("Instagram Insights: " + label + " credential code=" + str(exc.code) + ", category=" + exc.message)
-              else:
-                  print("Instagram Insights permission remains unavailable; Meta permission must be granted.")
-          PY
+        run: python -m scripts.private_runner.tasks insights_probe
       - name: Test Instagram Insights and store snapshots without publishing
         working-directory: private-blog
         env:
@@ -75,12 +48,4 @@ jobs:
         run: python -m scripts.social_video.instagram_analytics
       - name: Save insights authorization result and any statistics
         working-directory: private-blog
-        run: |
-          if [[ -n "$(git status --porcelain -- social-state/instagram-analytics.json)" ]]; then
-            git config user.name "github-actions[bot]"
-            git config user.email "github-actions[bot]@users.noreply.github.com"
-            git add social-state/instagram-analytics.json
-            git commit -m "instagram: verify Insights access and save snapshots"
-            git pull --rebase origin main
-            git push origin HEAD:main
-          fi
+        run: python -m scripts.private_runner.tasks persist_insights
