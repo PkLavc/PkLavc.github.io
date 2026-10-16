@@ -2,7 +2,8 @@ name: Process private blog social on public runner
 
 on:
   schedule:
-    - cron: "47 * * * *"
+    - cron: "47 * * * *"  # One regular Short opportunity per hour
+    - cron: "7,37 * * * *"  # Fast breaking-news checks; YouTube only
     - cron: "0 12 * * 5"  # Store Reel on Fridays at 09:00 Sao Paulo
     - cron: "0 12 1 * *"  # Store Short on the first day of each month at 09:00 Sao Paulo
   workflow_dispatch:
@@ -117,7 +118,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 90
     env:
-      SOCIAL_MAX_ITEMS_PER_RUN: ${{ contains(github.event.head_commit.message, '[social-publish-now]') && '1' || vars.SOCIAL_MAX_ITEMS_PER_RUN || '2' }}
+      SOCIAL_MAX_ITEMS_PER_RUN: '1'  # Never publish multiple regular news Shorts in one hourly slot
+      SOCIAL_URGENT_ONLY: ${{ github.event.schedule == '7,37 * * * *' && 'true' || 'false' }}
+      SOCIAL_PLATFORMS: ${{ github.event.schedule == '7,37 * * * *' && 'youtube' || 'instagram,youtube' }}
       SOCIAL_IG_UPLOAD_MODE: github-release
       INSTAGRAM_TREND_AUDIO_VOLUME: "100"
       INSTAGRAM_VIDEO_AUDIO_VOLUME: "0"
@@ -148,8 +151,12 @@ jobs:
       - name: Refill article social queues from existing blog posts
         working-directory: private-blog
         env:
-          SOCIAL_DAILY_TARGET: ${{ vars.SOCIAL_DAILY_TARGET || '8' }}
+          SOCIAL_DAILY_TARGET: '24'  # YouTube uncapped news queue; Instagram keeps its existing per-category caps
         run: python -m scripts.social_video.backfill --daily-target "$SOCIAL_DAILY_TARGET"
+
+      - name: Curate fresh Macca GTA news for PkLavc YouTube without repeating PkLavc stories
+        working-directory: private-blog
+        run: python -m scripts.social_video.macca_bridge
 
       - name: Check pending publications and due Analytics snapshots
         id: pending
