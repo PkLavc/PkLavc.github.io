@@ -25,7 +25,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: private-blog-public-runner
+  group: private-blog-public-runner-${{ github.workflow }}
   cancel-in-progress: false
 
 jobs:
