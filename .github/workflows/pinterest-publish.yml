@@ -1,10 +1,9 @@
-name: Pinterest PkLavc organic Tech Games and Store Pins
+name: Pinterest PkLavc Store product Pins
 
 on:
   schedule:
-    # Slots for US audience: 3 Games, 2 Tech, 2 curated Store Pins per day.
-    # Standard access was approved by the app owner on 2026-10-15; public OAuth validated.
-    - cron: "15 12,13,14,15,17,19,21 * * *"
+    # Curated product Pins only, twice a day; blog topics remain on other networks.
+    - cron: "15 15,21 * * *"
   workflow_dispatch:
     inputs:
       mode:
@@ -17,8 +16,8 @@ on:
         description: "Post category"
         type: choice
         required: true
-        default: games
-        options: [games, tech, store]
+        default: store
+        options: [store]
   push:
     branches: [main]
     paths:
@@ -66,12 +65,9 @@ jobs:
           python -m pip install --disable-pip-version-check Pillow
           python -m unittest scripts.social_video.test_pinterest_publisher -v
 
-      - name: Preview actual English Games and Tech stories plus live store inventory
+      - name: Preview curated Store inventory
         working-directory: private-blog
-        run: |
-          python -m scripts.social_video.pinterest_publisher --root . --public-site ../public-site --mode preview --category games
-          python -m scripts.social_video.pinterest_publisher --root . --public-site ../public-site --mode preview --category tech
-          python -m scripts.social_video.pinterest_publisher --root . --public-site ../public-site --mode preview --category store
+        run: python -m scripts.social_video.pinterest_publisher --root . --public-site ../public-site --mode preview --category store
 
       - name: Verify account or publish a Pin only after explicit permission
         working-directory: private-blog
@@ -89,8 +85,6 @@ jobs:
           if [[ "$EVENT_NAME" == "schedule" ]]; then
             mode=publish
             case "$(date -u +%H)" in
-              12|14|17) category=games ;;
-              13|19) category=tech ;;
               15|21) category=store ;;
               *) echo "No Pinterest slot matched"; exit 0 ;;
             esac
@@ -98,7 +92,7 @@ jobs:
             # Only the explicit activation commit publishes an initial public Pin.
             # Normal source changes only verify OAuth, avoiding unexpected Pins.
             mode=check
-            category=games
+            category=store
             if [[ "$PINTEREST_FIRST_PUBLIC_PIN" == "true" ]]; then
               mode=publish
             fi
