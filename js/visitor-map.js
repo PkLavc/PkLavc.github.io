@@ -555,14 +555,47 @@
       linkedin: 'LinkedIn', devto: 'DEV.to', threads: 'Threads', bluesky: 'Bluesky',
       mastodon: 'Mastodon', x: 'X', facebook: 'Facebook',
       email: 'Email', newsletter: 'Newsletter', bing: 'Bing', other: 'Other' };
+    // Only profiles that belong to PkLavc and have an established account URL.
+    // Search engines, email, unknown sources and unverified accounts stay plain text.
+    var channelProfiles = {
+      youtube: 'https://www.youtube.com/@PkLavc',
+      threads: 'https://www.threads.com/@pklavc',
+      instagram: 'https://www.instagram.com/pklavc/',
+      mastodon: 'https://mastodon.social/@PkLavc',
+      bluesky: 'https://bsky.app/profile/did:plc:ga7prbakfu23cnmjuto6v6m3',
+      pinterest: 'https://www.pinterest.com/pklavc/',
+      linkedin: 'https://www.linkedin.com/in/pklavc/',
+      devto: 'https://dev.to/pklavc',
+      tiktok: 'https://www.tiktok.com/@pklavc'
+    };
     function row(label, visits) {
       return '<li><span>' + escapeHtml(label) + '</span><strong>' +
         formatNumber(visits) + '</strong></li>';
     }
+    function sourceRow(channel) {
+      var key = String(channel.channel || '').toLowerCase();
+      var label = friendly[key] || key;
+      var profile = Object.prototype.hasOwnProperty.call(channelProfiles, key)
+        ? channelProfiles[key] : '';
+      var link = '';
+      if (profile) {
+        var action = locale === 'pt' ? 'Abrir perfil de ' :
+          locale === 'es' ? 'Abrir perfil de ' : 'Open profile of ';
+        // Real vector icon rather than a text arrow (which can render as emoji on mobile).
+        link = '<a class="visitor-traffic-profile-link" href="' + escapeHtml(profile) +
+          '" target="_blank" rel="noopener noreferrer" aria-label="' +
+          escapeHtml(action + label) + '" title="' + escapeHtml(action + label) + '">' +
+          '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
+          '<path d="M7 17 17 7M8 7h9v9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>' +
+          '</svg></a>';
+      }
+      return '<li><span class="visitor-traffic-channel"><span class="visitor-traffic-channel-name">' +
+        escapeHtml(label) + '</span>' + link + '</span><strong>' +
+        formatNumber(channel.visits) + '</strong></li>';
+    }
     elements.trafficSources.innerHTML = channels.length
-      ? channels.slice(0, 8).map(function(channel) {
-          return row(friendly[channel.channel] || channel.channel, channel.visits);
-        }).join('') : '<li>' + escapeHtml(copy.noSources) + '</li>';
+      ? channels.slice(0, 8).map(sourceRow).join('')
+      : '<li>' + escapeHtml(copy.noSources) + '</li>';
     elements.trafficPages.innerHTML = pages.length
       ? pages.slice(0, 8).map(function(page) {
           var label = String(page.page_key || '').replace(/-/g, ' ').replace(/\//g, ' / ');
