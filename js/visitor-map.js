@@ -31,8 +31,7 @@
       librariesUnavailable: 'Map libraries could not be loaded',
       assetsUnavailable: 'World map assets could not be loaded',
       noSources: 'No measured referrals yet',
-      sourceUnavailable: 'Traffic source data is not available yet',
-      trackingNote: 'Counts start after this upgrade. Anonymous sessions only; not unique people or conversions.'
+      sourceUnavailable: 'Traffic source data is not available yet'
     },
     pt: {
       locale: 'pt-BR',
@@ -54,8 +53,7 @@
       librariesUnavailable: 'Não foi possível carregar as bibliotecas do mapa',
       assetsUnavailable: 'Não foi possível carregar os dados do mapa-múndi',
       noSources: 'Ainda não há origens medidas',
-      sourceUnavailable: 'Os dados da origem do tráfego ainda estão indisponíveis',
-      trackingNote: 'A contagem começa após esta atualização. Apenas sessões anônimas; não pessoas únicas ou conversões.'
+      sourceUnavailable: 'Os dados da origem do tráfego ainda estão indisponíveis'
     },
     es: {
       locale: 'es',
@@ -77,8 +75,7 @@
       librariesUnavailable: 'No se pudieron cargar las bibliotecas del mapa',
       assetsUnavailable: 'No se pudieron cargar los datos del mapa mundial',
       noSources: 'Aún no hay orígenes medidos',
-      sourceUnavailable: 'Los datos de fuentes de tráfico aún no están disponibles',
-      trackingNote: 'El recuento empieza después de esta actualización. Solo sesiones anónimas; no usuarios únicos ni conversiones.'
+      sourceUnavailable: 'Los datos de fuentes de tráfico aún no están disponibles'
     }
   };
   var copy = COPY[locale];
@@ -115,8 +112,7 @@
     reset: document.getElementById('visitor-map-reset'),
     trafficTotal: document.getElementById('visitor-traffic-total'),
     trafficSources: document.getElementById('visitor-traffic-sources'),
-    trafficPages: document.getElementById('visitor-traffic-pages'),
-    trafficStatus: document.getElementById('visitor-traffic-status')
+    trafficPages: document.getElementById('visitor-traffic-pages')
   };
 
   function emptyPayload(period) {
@@ -601,7 +597,6 @@
           var label = String(page.page_key || '').replace(/-/g, ' ').replace(/\//g, ' / ');
           return row(label, page.visits);
         }).join('') : '<li>' + escapeHtml(copy.noSources) + '</li>';
-    if (elements.trafficStatus) elements.trafficStatus.textContent = copy.trackingNote;
   }
 
   function loadTraffic(period) {
