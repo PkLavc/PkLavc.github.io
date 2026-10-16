@@ -1,0 +1,53 @@
+name: Check public runner boundary
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/private-blog-*.yml"
+      - ".github/workflows/test-pklavc-social-video.yml"
+      - ".github/workflows/check-instagram-insights.yml"
+      - ".github/workflows/check-private-runner-boundary.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: public-site
+      - uses: actions/checkout@v4
+        with:
+          repository: PkLavc/blog
+          ref: main
+          token: ${{ secrets.PRIVATE_BLOG_REPO_TOKEN }}
+          path: private-blog
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Validate YAML and shell without publishing
+        run: |
+          python -m pip install --quiet PyYAML 'Pillow>=10,<13' 'requests>=2.32,<3'
+          bash -n private-blog/scripts/private_runner/runner.sh
+          bash -n private-blog/scripts/private_runner/sync.sh
+          python - <<'PY'
+          import pathlib, yaml
+          root = pathlib.Path("public-site/.github/workflows")
+          names = (
+              "private-blog-social.yml", "private-blog-generate.yml",
+              "private-blog-preview.yml", "test-pklavc-social-video.yml",
+              "check-instagram-insights.yml",
+          )
+          for name in names:
+              source = (root / name).read_text()
+              doc = yaml.safe_load(source)
+              assert doc.get("jobs"), name
+              assert "python - <<'PY'" not in source
+              print("Workflow validated:", name)
+          PY
+          cd private-blog
+          python -m compileall -q scripts/private_runner
+          python -m unittest -v scripts.private_runner.test_tasks
