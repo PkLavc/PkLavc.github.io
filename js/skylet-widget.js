@@ -1,4 +1,8 @@
 (function () {
+  // Blog pages (including all languages, categories and articles) do not use Skylet.
+  if (/^\/blog(?:\/|$)/i.test(window.location.pathname || '/')) {
+    return;
+  }
   var state = {
     apiBase: "https://api.pklavc.com",
     conversationId: "",
