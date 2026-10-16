@@ -79,7 +79,33 @@ test('mobile maintains a vector icon and keyboard focus affordance', () => {
     '../es/visitantes/index.html',
   ]) {
     const html = readFileSync(new URL(path, import.meta.url), 'utf8');
-    assert.match(html, /\/js\/visitor-map\.js\?v=20261016profilelinks1/);
-    assert.match(html, /\/css\/visitor-map\.css\?v=20261016profilelinks1/);
+    assert.match(html, /\/js\/visitor-map\.js\?v=20261016mobileheader1/);
+    assert.match(html, /\/css\/visitor-map\.css\?v=20261016mobileheader1/);
+  }
+});
+
+test('mobile heading uses full width and session count sits on its own row', () => {
+  const mobile = css.split('@media (max-width: 680px) {').at(-1);
+  assert.ok(mobile, 'mobile breakpoint exists');
+  assert.match(mobile, /\.visitor-traffic-heading\s*\{\s*grid-template-columns:\s*minmax\(0,\s*1fr\)/);
+  assert.match(mobile, /\.visitor-traffic-count\s*\{[^}]*display:\s*flex/);
+  assert.match(mobile, /\.visitor-traffic-count\s*\{[^}]*justify-content:\s*space-between/);
+  assert.match(mobile, /\.visitor-traffic-heading h2\s*\{[^}]*max-width:\s*100%/);
+  assert.ok(!mobile.includes('grid-template-columns: minmax(0, 1fr) auto'),
+    'mobile heading must not share its row with the large counter');
+});
+
+test('obsolete tracking note is absent from all three language pages and JavaScript', () => {
+  assert.ok(!script.includes('trackingNote'));
+  assert.ok(!script.includes('trafficStatus'));
+  assert.ok(!css.includes('.visitor-traffic-note'));
+  for (const path of [
+    '../visitors/index.html',
+    '../pt/visitantes/index.html',
+    '../es/visitantes/index.html',
+  ]) {
+    const html = readFileSync(new URL(path, import.meta.url), 'utf8');
+    assert.ok(!html.includes('visitor-traffic-note'), path);
+    assert.ok(!html.includes('visitor-traffic-status'), path);
   }
 });
