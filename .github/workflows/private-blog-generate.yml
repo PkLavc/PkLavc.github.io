@@ -103,7 +103,7 @@ jobs:
                   print(f"::warning::Could not inspect primary run; "
                         f"attempting recovery: {type(exc).__name__}")
           with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as output:
-              output.write(f"should_generate={str(should_generate).lower()}\\n")
+              output.write(f"should_generate={str(should_generate).lower()}\n")
           PY
 
   smoke:
