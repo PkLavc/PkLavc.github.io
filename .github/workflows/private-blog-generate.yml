@@ -2,7 +2,8 @@ name: Generate private blog on public runner
 
 on:
   schedule:
-    - cron: "17 * * * *" # Hourly; one in five UTC hour slots is Tech, four are GTA 6
+    - cron: "17 * * * *" # Primary hourly slot; one in five UTC hour slots is Tech
+    - cron: "47 * * * *" # Recovery slot if the primary was missed or failed
     - cron: "43 15 * * 3" # Weekly Microsoft-only Tech spotlight, 15:43 UTC on Wednesday
   workflow_dispatch:
     inputs:
@@ -36,6 +37,75 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  schedule-recovery-gate:
+    name: Skip redundant hourly recovery
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+    outputs:
+      should_generate: ${{ steps.check.outputs.should_generate }}
+    steps:
+      - name: Determine whether backup should generate
+        id: check
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPOSITORY: ${{ github.repository }}
+          GH_RUN_ID: ${{ github.run_id }}
+          EVENT_SCHEDULE: ${{ github.event.schedule }}
+        run: |
+          python - <<'PY'
+          import datetime
+          import json
+          import os
+          import urllib.request
+
+          should_generate = True
+          if os.getenv("EVENT_SCHEDULE") == "47 * * * *":
+              now = datetime.datetime.now(datetime.timezone.utc)
+              window_start = now.replace(minute=17, second=0, microsecond=0)
+              if now < window_start:
+                  window_start -= datetime.timedelta(hours=1)
+              url = (
+                  f"https://api.github.com/repos/{os.environ['GH_REPOSITORY']}"
+                  "/actions/runs?event=schedule&per_page=100"
+              )
+              try:
+                  request = urllib.request.Request(
+                      url,
+                      headers={
+                          "Accept": "application/vnd.github+json",
+                          "Authorization": f"Bearer {os.environ['GH_TOKEN']}",
+                          "X-GitHub-Api-Version": "2022-11-28",
+                      },
+                  )
+                  with urllib.request.urlopen(request, timeout=20) as response:
+                      runs = json.load(response).get("workflow_runs", [])
+                  prior = [
+                      run for run in runs
+                      if str(run["id"]) != os.environ["GH_RUN_ID"]
+                      and run.get("path", "").endswith("/private-blog-generate.yml")
+                      and datetime.datetime.fromisoformat(
+                          run["created_at"].replace("Z", "+00:00")
+                      ) >= window_start
+                  ]
+                  # A successful, running, or queued primary already owns this slot.
+                  # On failure, the :47 attempt retries with the latest private code.
+                  should_generate = not any(
+                      run.get("status") != "completed"
+                      or run.get("conclusion") == "success"
+                      for run in prior
+                  )
+                  print(f"Hourly recovery: {len(prior)} previous runs; "
+                        f"retry needed: {should_generate}")
+              except (OSError, ValueError, KeyError, json.JSONDecodeError) as exc:
+                  # Fail open: don't silently lose a slot because GitHub API is down.
+                  print(f"::warning::Could not inspect primary run; "
+                        f"attempting recovery: {type(exc).__name__}")
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as output:
+              output.write(f"should_generate={str(should_generate).lower()}\\n")
+          PY
+
   smoke:
     if: github.event_name == 'push' || inputs.mode == 'smoke'
     runs-on: ubuntu-latest
@@ -112,7 +182,8 @@ jobs:
           python -m unittest scripts.blog_automation.test_offline_translation_integration
           python -m scripts.private_runner.tasks translation_check
   generate:
-    if: github.event_name == 'schedule' || (github.event_name == 'push' && (contains(github.event.head_commit.message, '[blog-translate-backfill]') || contains(github.event.head_commit.message, '[blog-generate-now]'))) || (github.event_name == 'workflow_dispatch' && (inputs.mode == 'generate' || inputs.mode == 'translate'))
+    needs: schedule-recovery-gate
+    if: needs.schedule-recovery-gate.outputs.should_generate == 'true' && (github.event_name == 'schedule' || (github.event_name == 'push' && (contains(github.event.head_commit.message, '[blog-translate-backfill]') || contains(github.event.head_commit.message, '[blog-generate-now]'))) || (github.event_name == 'workflow_dispatch' && (inputs.mode == 'generate' || inputs.mode == 'translate')))
     runs-on: ubuntu-latest
     timeout-minutes: 35
     outputs:
