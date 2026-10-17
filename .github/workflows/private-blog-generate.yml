@@ -2,7 +2,8 @@ name: Generate private blog on public runner
 
 on:
   schedule:
-    - cron: "17 * * * *" # Hourly; one in five UTC hour slots is Tech, four are GTA 6
+    - cron: "17 * * * *" # Primary hourly slot; one in five UTC hour slots is Tech
+    - cron: "47 * * * *" # Recovery slot if the primary was missed or failed
     - cron: "43 15 * * 3" # Weekly Microsoft-only Tech spotlight, 15:43 UTC on Wednesday
   workflow_dispatch:
     inputs:
@@ -36,6 +37,41 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  schedule-recovery-gate:
+    name: Skip redundant hourly recovery
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+    outputs:
+      should_generate: ${{ steps.check.outputs.should_generate }}
+    steps:
+      - name: Determine whether backup should generate
+        id: check
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPOSITORY: ${{ github.repository }}
+          GH_RUN_ID: ${{ github.run_id }}
+          EVENT_SCHEDULE: ${{ github.event.schedule }}
+        run: |
+          should_generate=true
+          if [[ "$EVENT_SCHEDULE" == "47 * * * *" ]]; then
+            window_start="$(date -u +'%Y-%m-%dT%H:17:00Z')"
+            if response="$(gh api -H 'Accept: application/vnd.github+json' "/repos/$GH_REPOSITORY/actions/workflows/private-blog-generate.yml/runs?event=schedule&per_page=100")"; then
+              prior_owners="$(jq -r --argjson current "$GH_RUN_ID" --arg start "$window_start" '
+                [.workflow_runs[] | select(.id != $current and .created_at >= $start
+                  and (.status != "completed" or .conclusion == "success"))] | length
+              ' <<<"$response")"
+              if [[ "$prior_owners" -gt 0 ]]; then
+                should_generate=false
+              fi
+              echo "Active/successful hourly primary runs: $prior_owners; recover: $should_generate"
+            else
+              echo "::warning::Unable to inspect primary run; attempt recovery."
+            fi
+          fi
+          echo "should_generate=$should_generate" >> "$GITHUB_OUTPUT"
+
   smoke:
     if: github.event_name == 'push' || inputs.mode == 'smoke'
     runs-on: ubuntu-latest
@@ -112,7 +148,8 @@ jobs:
           python -m unittest scripts.blog_automation.test_offline_translation_integration
           python -m scripts.private_runner.tasks translation_check
   generate:
-    if: github.event_name == 'schedule' || (github.event_name == 'push' && (contains(github.event.head_commit.message, '[blog-translate-backfill]') || contains(github.event.head_commit.message, '[blog-generate-now]'))) || (github.event_name == 'workflow_dispatch' && (inputs.mode == 'generate' || inputs.mode == 'translate'))
+    needs: schedule-recovery-gate
+    if: needs.schedule-recovery-gate.outputs.should_generate == 'true' && (github.event_name == 'schedule' || (github.event_name == 'push' && (contains(github.event.head_commit.message, '[blog-translate-backfill]') || contains(github.event.head_commit.message, '[blog-generate-now]'))) || (github.event_name == 'workflow_dispatch' && (inputs.mode == 'generate' || inputs.mode == 'translate')))
     runs-on: ubuntu-latest
     timeout-minutes: 35
     outputs:
