@@ -2,7 +2,7 @@ name: Generate private blog on public runner
 
 on:
   schedule:
-    - cron: "17 * * * *" # Primary hourly slot; one in five UTC hour slots is Tech
+    - cron: "17 * * * *" # Primary hourly slot; the private runner chooses Tech every fifth UTC hour
     - cron: "47 * * * *" # Recovery slot if the primary was missed or failed
     - cron: "43 15 * * 3" # Weekly Microsoft-only Tech spotlight, 15:43 UTC on Wednesday
   workflow_dispatch:
