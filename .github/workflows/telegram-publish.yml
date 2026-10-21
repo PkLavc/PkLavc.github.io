@@ -1,4 +1,4 @@
-name: Publish PkLavc news to Telegram channels
+name: Publish PkLavc news to Telegram and Discord
 
 on:
   schedule:
@@ -7,13 +7,13 @@ on:
   workflow_dispatch:
     inputs:
       mode:
-        description: "Check bot, preview, send a test message, or publish new articles"
+        description: "Check channels, preview, send a test message, or publish new articles"
         required: true
         type: choice
         default: check
         options: [check, preview, test, publish]
       category:
-        description: "Telegram channel(s) for this manual action"
+        description: "Tech/Games channel(s) for this manual action"
         required: true
         type: choice
         default: all
@@ -27,7 +27,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: pklavc-telegram-news-channels
+  group: pklavc-telegram-discord-news-channels
   cancel-in-progress: false
 
 jobs:
@@ -52,13 +52,15 @@ jobs:
       - name: Install free thumbnail dependency
         run: python -m pip install --disable-pip-version-check "Pillow>=10,<13"
 
-      - name: Run Telegram publisher offline tests
+      - name: Run Telegram and Discord publisher offline tests
         working-directory: private-blog
-        run: python -m unittest scripts.social_video.test_telegram_publisher -v
+        run: python -m unittest scripts.social_video.test_telegram_publisher scripts.social_video.test_discord_publisher -v
 
       - name: Preview candidate Tech and Games articles (no posts)
         working-directory: private-blog
-        run: python -m scripts.social_video.telegram_publisher --root . --mode preview --category all
+        run: |
+          python -m scripts.social_video.telegram_publisher --root . --mode preview --category all
+          python -m scripts.social_video.discord_publisher --root . --mode preview --category all
 
       - name: Verify or publish via official Telegram Bot API
         working-directory: private-blog
@@ -70,9 +72,13 @@ jobs:
           EVENT_NAME: ${{ github.event_name }}
           REQUESTED_MODE: ${{ inputs.mode }}
           REQUESTED_CATEGORY: ${{ inputs.category }}
+          COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
         run: |
           mode="${REQUESTED_MODE:-publish}"
           category="${REQUESTED_CATEGORY:-all}"
+          if [[ "$EVENT_NAME" == "push" && "$COMMIT_MESSAGE" == *"[channel-test]"* ]]; then
+            mode="test"
+          fi
           if [[ -z "$TELEGRAM_BOT_TOKEN" || ( -z "$TELEGRAM_CHAT_TECH" && -z "$TELEGRAM_CHAT_GAMES" ) ]]; then
             if [[ "$EVENT_NAME" == "schedule" || "$EVENT_NAME" == "push" ]]; then
               echo "::notice::Telegram is not configured yet. Add TELEGRAM_BOT_TOKEN secret and Telegram channel variables in this public repository."
@@ -82,3 +88,29 @@ jobs:
             exit 1
           fi
           python -m scripts.social_video.telegram_publisher --root . --mode "$mode" --category "$category"
+
+      - name: Verify or publish via official Discord webhooks
+        working-directory: private-blog
+        shell: bash
+        env:
+          DISCORD_TECH_WEBHOOK: ${{ secrets.DISCORD_TECH_WEBHOOK }}
+          DISCORD_GAMES_WEBHOOK: ${{ secrets.DISCORD_GAMES_WEBHOOK }}
+          EVENT_NAME: ${{ github.event_name }}
+          REQUESTED_MODE: ${{ inputs.mode }}
+          REQUESTED_CATEGORY: ${{ inputs.category }}
+          COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
+        run: |
+          mode="${REQUESTED_MODE:-publish}"
+          category="${REQUESTED_CATEGORY:-all}"
+          if [[ "$EVENT_NAME" == "push" && "$COMMIT_MESSAGE" == *"[channel-test]"* ]]; then
+            mode="test"
+          fi
+          if [[ -z "$DISCORD_TECH_WEBHOOK" && -z "$DISCORD_GAMES_WEBHOOK" ]]; then
+            if [[ "$EVENT_NAME" == "schedule" || "$EVENT_NAME" == "push" ]]; then
+              echo "::notice::Discord is not configured in this public repo. Add DISCORD_TECH_WEBHOOK and/or DISCORD_GAMES_WEBHOOK as Actions secrets."
+              exit 0
+            fi
+            echo "::error::At least one Discord webhook secret is required."
+            exit 1
+          fi
+          python -m scripts.social_video.discord_publisher --root . --mode "$mode" --category "$category"
