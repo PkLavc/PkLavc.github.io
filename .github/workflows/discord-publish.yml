@@ -1,0 +1,74 @@
+name: Publish PkLavc news to Discord channels
+
+on:
+  schedule:
+    # Check for original articles after each hourly generation/recovery window.
+    - cron: "9,39 * * * *"
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "Check webhooks, preview, send test messages or publish news"
+        required: true
+        type: choice
+        default: check
+        options: [check, preview, test, publish]
+      category:
+        description: "Category to inspect or publish"
+        required: true
+        type: choice
+        default: all
+        options: [all, games, tech]
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/discord-publish.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pklavc-discord-english-tech-games
+  cancel-in-progress: false
+
+jobs:
+  syndicate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout original Tech and Games articles and Discord state
+        uses: actions/checkout@v4
+        with:
+          repository: PkLavc/blog
+          ref: main
+          path: private-blog
+          token: ${{ secrets.PRIVATE_BLOG_REPO_TOKEN }}
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Run offline Discord publishing tests
+        working-directory: private-blog
+        run: python -m unittest scripts.social_video.test_discord_publisher -v
+      - name: Preview Tech and Games without posting
+        working-directory: private-blog
+        run: python -m scripts.social_video.discord_publisher --root . --mode preview --category all
+      - name: Verify and publish via official Discord webhooks
+        working-directory: private-blog
+        shell: bash
+        env:
+          DISCORD_TECH_WEBHOOK: ${{ secrets.DISCORD_TECH_WEBHOOK }}
+          DISCORD_GAMES_WEBHOOK: ${{ secrets.DISCORD_GAMES_WEBHOOK }}
+          EVENT_NAME: ${{ github.event_name }}
+          REQUESTED_MODE: ${{ inputs.mode }}
+          REQUESTED_CATEGORY: ${{ inputs.category }}
+        run: |
+          if [[ -z "$DISCORD_TECH_WEBHOOK" && -z "$DISCORD_GAMES_WEBHOOK" ]]; then
+            if [[ "$EVENT_NAME" == "schedule" || "$EVENT_NAME" == "push" ]]; then
+              echo "::notice::Discord not configured; add DISCORD_TECH_WEBHOOK and/or DISCORD_GAMES_WEBHOOK in Actions secrets."
+              exit 0
+            fi
+            echo "::error::Discord webhook secret required for manual live action."
+            exit 1
+          fi
+          python -m scripts.social_video.discord_publisher --root . --mode "${REQUESTED_MODE:-publish}" --category "${REQUESTED_CATEGORY:-all}"
