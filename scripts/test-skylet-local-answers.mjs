@@ -87,7 +87,7 @@ const project = index.pages.find(p => p.l === "en" && /^\/projects\/[a-z0-9-]+\/
 const post = index.posts.find(p => /gta|rockstar/i.test([p.t, ...(p.tags || [])].join(" ")));
 const product = index.products.find(p => p.n?.split(/\s+/).length >= 3 && p.a !== false);
 const employer = index.work?.find(p => p.n && p.roles?.length);
-if (project) add("projeto específico", "Me explique o projeto " + project.t.split(/[|—–]/)[0].trim(), "local", [project.u]);
+if (project) add("projeto específico", "Me explique o projeto " + project.t.split(/[|—–]/)[0].trim(), "local", [project.u.split("/").filter(Boolean).pop()]);
 if (post) add("artigo específico", "O blog publicou notícia sobre " + (post.tags?.[0] || "GTA") + "?", "local");
 if (product) add("produto específico", "Qual o preço de " + product.n + " na loja?", "local", [product.n]);
 if (employer) add("cargo específico", "Que cargo Patrick teve na " + employer.n + "?", "local", [employer.n]);
