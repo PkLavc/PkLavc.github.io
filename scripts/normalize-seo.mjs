@@ -65,7 +65,7 @@ function setMeta(head, key, content, attribute = "name") {
 }
 
 function removeMeta(head, key) {
-  return head.replace(/<meta\\b[^>]*>/gi, (original) => {
+  return head.replace(/<meta\b[^>]*>/gi, (original) => {
     const attrs = attributes(original);
     return (attrs.name || attrs.property || "").toLowerCase() === key ? "" : original;
   });
@@ -205,7 +205,7 @@ export function normalizeSeoHtml(original, { directory = process.cwd(), filename
   const noindex = PRIVATE_PATH.test(pathname) || /\bnoindex\b/i.test(robots);
   // Product-specific cards are supplied by channel publishers directly from
   // /store/products.json. Never expose a generic portrait as a product preview.
-  const isStoreCatalog = /^\\/store\\/(?:pt\\/|es\\/)?$/.test(pathname);
+  const isStoreCatalog = /^\/store\/(?:pt\/|es\/)?$/.test(pathname);
   const imageUrl = isStoreCatalog ? "" : getMeta(html, "og:image") || DEFAULT_IMAGE;
   html = html.replace(/(<head\b[^>]*>)([\s\S]*?)(<\/head>)/i, (_, start, head, end) => {
     const directives = PRIVATE_PATH.test(pathname) ? "noindex, follow" : noindex ? robots : "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1";
