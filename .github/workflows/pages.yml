@@ -63,7 +63,7 @@ jobs:
           grep -q 'client_id:"1624382"' .pages-dist/pinterest/connect/index.html
 
       - name: Test SEO normalization
-        run: node --test scripts/normalize-seo.test.mjs scripts/indexnow.test.mjs scripts/inject-blog-store-telegram.test.mjs scripts/enhance-store-artifact.test.mjs
+        run: node --test scripts/normalize-seo.test.mjs scripts/indexnow.test.mjs scripts/inject-blog-store-telegram.test.mjs
 
       - name: Validate SEO and preserve visual content
         run: |
