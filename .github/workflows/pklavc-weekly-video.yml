@@ -50,6 +50,7 @@ jobs:
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
           SOCIAL_KOKORO_VOICE: af_bella
+          TELEGRAM_CHAT_STORE: ${{ vars.TELEGRAM_CHAT_STORE }}
         run: python -m scripts.social_video.weekly_recap
 
       - name: Save weekly recap ID to prevent duplicate uploads

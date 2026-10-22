@@ -50,6 +50,13 @@ jobs:
           token: ${{ secrets.PRIVATE_BLOG_REPO_TOKEN }}
           fetch-depth: 0
           persist-credentials: true
+      - name: Checkout authoritative public Store catalog
+        uses: actions/checkout@v4
+        with:
+          repository: PkLavc/PkLavc.github.io
+          ref: main
+          path: public-site
+          persist-credentials: false
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
@@ -79,6 +86,21 @@ jobs:
           fi
           python -m scripts.social_video.discord_publisher --root . --mode "${REQUESTED_MODE:-publish}" --category "${REQUESTED_CATEGORY:-all}"
 
+      - name: Publish changed Store products via Discord Store webhook
+        working-directory: private-blog
+        shell: bash
+        env:
+          DISCORD_STORE_WEBHOOK: ${{ secrets.DISCORD_STORE_WEBHOOK }}
+          TELEGRAM_CHAT_STORE: ${{ vars.TELEGRAM_CHAT_STORE }}
+          REQUESTED_MODE: ${{ inputs.mode }}
+        run: |
+          if [[ -z "$DISCORD_STORE_WEBHOOK" ]]; then
+            echo "::notice::DISCORD_STORE_WEBHOOK is not configured in PkLavc.github.io Actions Secrets."
+            exit 0
+          fi
+          python -m scripts.social_video.store_channels --root . --catalog ../public-site/store/products.json --platform discord --mode "${REQUESTED_MODE:-publish}"
+
+
   notify-telegram:
     # Telegram's secret lives in the private blog repo. Signal it only after
     # the public Pages deployment has succeeded so links are available.
@@ -90,6 +112,7 @@ jobs:
         shell: bash
         env:
           PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_BLOG_REPO_TOKEN }}
+          TELEGRAM_CHAT_STORE: ${{ vars.TELEGRAM_CHAT_STORE }}
         run: |
           if [[ -z "$PRIVATE_REPO_TOKEN" ]]; then
             echo "::error::PRIVATE_BLOG_REPO_TOKEN is required to dispatch Telegram."
@@ -102,7 +125,7 @@ jobs:
             --header 'Accept: application/vnd.github+json' \
             --header 'X-GitHub-Api-Version: 2022-11-28' \
             --header 'Content-Type: application/json' \
-            --data '{"event_type":"pklavc_pages_deployed"}')"
+            --data "$(jq -nc --arg store \"$TELEGRAM_CHAT_STORE\" '{event_type:\"pklavc_pages_deployed\",client_payload:{telegram_store_handle:$store}}')")"
           if [[ "$code" != "204" ]]; then
             echo "::error::Private Telegram deployment event was not accepted (HTTP $code)."
             exit 1
