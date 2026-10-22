@@ -306,6 +306,13 @@ export default {
         }
 
         const regionCode = normalizeGeoValue(cf?.regionCode, 24).toUpperCase();
+        // Share the coarse Cloudflare geolocation with ads and Store in the
+        // existing visit response. Never include an IP, user ID or coordinates.
+        const geoVisitResponse = () => {
+          const response = json({ country: countryCode, region: regionCode });
+          response.headers.set("Cache-Control", "private, no-store");
+          return withCors(response, env, origin);
+        };
         const regionName = normalizeGeoValue(cf?.region, 80);
         const visitDate = new Date().toISOString().slice(0, 10);
         const updatedAt = new Date().toISOString();
@@ -314,7 +321,9 @@ export default {
         // APIs and essential workers by stopping its writes at a hard ceiling.
         const analyticsKind = analyticsSite === "macca" ? "visit_macca" : "visit_pklavc";
         if (!await reserveOptionalUsage(env, analyticsKind, OPTIONAL_VISIT_DAILY_LIMIT)) {
-          return withCors(new Response(null, { status: 204 }), env, origin);
+          // Even when the D1 visit budget is exhausted, return the country
+          // from this same request so the browser does not need /ads/geo.
+          return geoVisitResponse();
         }
 
         await env.DB.prepare(
@@ -361,7 +370,7 @@ export default {
             console.warn("visit_attribution_unavailable");
           }
         }
-        return withCors(new Response(null, { status: 204 }), env, origin);
+        return geoVisitResponse();
       }
 
       if (url.pathname === "/analytics/traffic" && request.method === "GET") {
