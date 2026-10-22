@@ -24,6 +24,16 @@ a:focus-visible,button:focus-visible{outline:3px solid var(--accent);outline-off
 .mini-social a:hover{background:#17333e;transform:translateY(-2px);color:var(--accent)}
 .connect-lottie{display:block;width:48px;height:48px;pointer-events:none}
 .connect-lottie-mini{width:36px;height:36px}
+
+/* On iOS Connect shows real, self-contained SVG logos instead of masked Lotties.
+   No canvas element or external font is needed, and links remain clickable. */
+.icon > svg.connect-ios-icon{display:block;width:34px;height:34px;fill:currentColor;stroke:none;overflow:visible;transform-origin:center;animation:connect-ios-icon-breathe 3.6s ease-in-out infinite}
+.icon > svg.connect-ios-icon:not([stroke="none"]){fill:none;stroke:currentColor}
+.mini-social svg.connect-ios-icon{display:block;width:28px;height:28px;fill:currentColor;stroke:none;overflow:visible;transform-origin:center;animation:connect-ios-icon-breathe 3.6s ease-in-out infinite}
+.mini-social svg.connect-ios-icon:not([stroke="none"]){fill:none;stroke:currentColor}
+@keyframes connect-ios-icon-breathe{0%,62%,100%{transform:scale(1)}35%{transform:scale(1.07)}}
+@media(prefers-reduced-motion:reduce){.icon > svg.connect-ios-icon,.mini-social svg.connect-ios-icon{animation:none}}
+
 .connect-profile-icon{display:block;width:44px;height:44px;border-radius:10px;object-fit:cover}
 .group{margin:0 0 28px}
 .group-label{font-size:11px;text-transform:uppercase;letter-spacing:.18em;font-weight:800;color:#8bcedb;text-align:center;margin:0 0 15px}
