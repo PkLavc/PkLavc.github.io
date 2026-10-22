@@ -83,6 +83,18 @@ jobs:
         with:
           path: .pages-dist
 
+      # Older queued/manual reruns must never overwrite a newer main commit.
+      # This prevented the previously fixed iOS Lotties from being rolled back
+      # when an earlier Canvas-version run finished last.
+      - name: Reject stale GitHub Pages builds
+        run: |
+          git fetch origin main --quiet
+          LATEST_MAIN="$(git rev-parse refs/remotes/origin/main)"
+          if [ "$LATEST_MAIN" != "$GITHUB_SHA" ]; then
+            echo "::error::Refusing stale Pages deployment: build $GITHUB_SHA vs main $LATEST_MAIN"
+            exit 1
+          fi
+
       - name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v4
         with:
