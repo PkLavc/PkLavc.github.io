@@ -1193,6 +1193,57 @@ function isStoreRoute() {
   return /^\/(?:pt\/|es\/)?store(?:\/|$)/i.test(path) || /^\/store(?:\/(?:pt|es))?(?:\/|$)/i.test(path);
 }
 
+function formatAboutContactLabels() {
+  var path = String(window.location.pathname || '/');
+  var isAbout = path === '/about/' || path === '/about/index.html' ||
+    path === '/pt/sobre/' || path === '/pt/sobre/index.html' ||
+    path === '/es/sobre/' || path === '/es/sobre/index.html';
+  if (!isAbout) {
+    return;
+  }
+
+  var locale = path.indexOf('/pt/') === 0 ? 'pt' : (path.indexOf('/es/') === 0 ? 'es' : 'en');
+  var labels = {
+    'https://discord.gg/zder5EZRK': ['Discord | PkLavc Community', 'Discord | Comunidade PkLavc', 'Discord | Comunidad PkLavc'],
+    'https://t.me/PkLavcTech': ['Telegram Tech | @PkLavcTech', 'Telegram Tech | @PkLavcTech', 'Telegram Tech | @PkLavcTech'],
+    'https://t.me/PkLavcGames': ['Telegram Games | @PkLavcGames', 'Telegram Games | @PkLavcGames', 'Telegram Games | @PkLavcGames'],
+    'https://t.me/PkLavcStore': ['Telegram Store | @PkLavcStore', 'Telegram Store | @PkLavcStore', 'Telegram Store | @PkLavcStore'],
+    'https://www.youtube.com/@PkLavc': ['YouTube | @PkLavc', 'YouTube | @PkLavc', 'YouTube | @PkLavc'],
+    'https://www.instagram.com/pklavc/': ['Instagram | @pklavc', 'Instagram | @pklavc', 'Instagram | @pklavc'],
+    'https://www.tiktok.com/@pklavc': ['TikTok | @pklavc', 'TikTok | @pklavc', 'TikTok | @pklavc'],
+    'https://www.threads.com/@pklavc': ['Threads | @pklavc', 'Threads | @pklavc', 'Threads | @pklavc'],
+    'https://bsky.app/profile/did:plc:ga7prbakfu23cnmjuto6v6m3': ['Bluesky | PkLavc', 'Bluesky | PkLavc', 'Bluesky | PkLavc'],
+    'https://mastodon.social/@PkLavc': ['Mastodon | @PkLavc', 'Mastodon | @PkLavc', 'Mastodon | @PkLavc'],
+    'https://www.pinterest.com/pklavc/': ['Pinterest | @pklavc', 'Pinterest | @pklavc', 'Pinterest | @pklavc'],
+    'https://dev.to/pklavc': ['DEV Community | @pklavc', 'DEV Community | @pklavc', 'DEV Community | @pklavc'],
+    'https://github.com/PkLavc': ['GitHub | PkLavc', 'GitHub | PkLavc', 'GitHub | PkLavc'],
+    'https://www.linkedin.com/company/pklavc/': ['LinkedIn · PkLavc | PkLavc', 'LinkedIn · PkLavc | PkLavc', 'LinkedIn · PkLavc | PkLavc'],
+    'https://www.linkedin.com/in/pklavc/': ['LinkedIn · Personal | PkLavc', 'LinkedIn · Pessoal | PkLavc', 'LinkedIn · Personal | PkLavc'],
+    'mailto:contact@pklavc.com': ['Email | contact@pklavc.com', 'E-mail | contact@pklavc.com', 'Correo electrónico | contact@pklavc.com']
+  };
+  var localeIndex = locale === 'pt' ? 1 : (locale === 'es' ? 2 : 0);
+
+  Object.keys(labels).forEach(function(href) {
+    var value = document.querySelector('.contact-inquiries-section .contact-value[data-href="' + href + '"]');
+    if (!value) {
+      return;
+    }
+
+    var label = labels[href][localeIndex];
+    value.textContent = label;
+    var item = value.closest('.contact-item');
+    var button = item && item.querySelector('.copy-btn');
+    if (button) {
+      button.setAttribute('aria-label', button.getAttribute('aria-label').split(':')[0] + ': ' + label);
+    }
+  });
+
+  var sponsorLabel = document.querySelector('.contact-inquiries-section .about-sponsor-link span');
+  if (sponsorLabel) {
+    sponsorLabel.textContent = 'GitHub Sponsors | PkLavc';
+  }
+}
+
 function ensureAboutSocialContacts() {
   var path = String(window.location.pathname || '/');
   var isAbout = path === '/about/' || path === '/about/index.html' ||
@@ -1381,7 +1432,7 @@ function initIndexFooterAwareSocialLinks() {
 }
 
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', ensureAboutSocialContacts, { once: true });
+  document.addEventListener('DOMContentLoaded', formatAboutContactLabels, { once: true });
   document.addEventListener('DOMContentLoaded', normalizeUnifiedFooter, { once: true });
   document.addEventListener('DOMContentLoaded', initSpaceReveals, { once: true });
   document.addEventListener('DOMContentLoaded', ensureLottiePlayerAssets, { once: true });
@@ -1389,7 +1440,7 @@ if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', loadSpotlightNavigationAssets, { once: true });
   document.addEventListener('DOMContentLoaded', initIndexFooterAwareSocialLinks, { once: true });
 } else {
-  ensureAboutSocialContacts();
+  formatAboutContactLabels();
   normalizeUnifiedFooter();
   initSpaceReveals();
   ensureLottiePlayerAssets();
