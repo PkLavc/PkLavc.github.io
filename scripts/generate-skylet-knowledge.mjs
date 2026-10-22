@@ -34,7 +34,11 @@ function indexPages(root) {
     // article; article metadata is indexed separately and more accurately.
     const allowed = /^(?:\/(?:pt|es))?\/(?:about|sobre|acerca-de|projects|projetos|proyectos|connect|links|resume|curriculo|certifications|certificacoes|certificaciones|uses|now|stacks|collections|colecoes|colecciones|media-kit|blog)(?:\/|$)/.test(pathname)
       || pathname === "/" || pathname === "/pt/" || pathname === "/es/";
-    if (!allowed || pathname.split("/").length > 8) continue;
+    // Article details come from blog/posts.json; retaining each here would
+    // flood the page index and evict project pages before they are indexed.
+    const parts = pathname.split("/").filter(Boolean);
+    const isArticlePage = parts.includes("blog") && parts.length > (parts[0] === "pt" || parts[0] === "es" ? 4 : 3);
+    if (!allowed || isArticlePage || parts.length > 8) continue;
     const afterLanguage = block.split(/^Language:.*$/m).slice(1).join("\n").trim();
     const description = clip(afterLanguage.split(/\n\s*\n|^### /m)[0], 420);
     if (!title || !description) continue;
