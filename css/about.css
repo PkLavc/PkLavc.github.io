@@ -1863,6 +1863,22 @@ body {
     opacity: 0.8;
 }
 
+@media (max-width: 768px) {
+    .contact-inquiries-section .contact-identity,
+    .contact-inquiries-section .contact-separator {
+        display: none;
+    }
+
+    .contact-inquiries-section .contact-value[data-href="mailto:contact@pklavc.com"] .contact-platform {
+        font-size: 0;
+    }
+
+    .contact-inquiries-section .contact-value[data-href="mailto:contact@pklavc.com"] .contact-platform::after {
+        content: "contact@pklavc.com";
+        font-size: 1rem;
+    }
+}
+
 .about-sponsor-row {
     width: min(100%, 640px);
     margin: 0 auto 0 0;

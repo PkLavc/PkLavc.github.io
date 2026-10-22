@@ -1230,7 +1230,20 @@ function formatAboutContactLabels() {
     }
 
     var label = labels[href][localeIndex];
-    value.textContent = label;
+    var parts = label.split(' | ');
+    value.textContent = '';
+    var platform = document.createElement('span');
+    platform.className = 'contact-platform';
+    platform.textContent = parts[0];
+    var identity = document.createElement('span');
+    identity.className = 'contact-identity';
+    identity.textContent = parts[1] || '';
+    var separator = document.createElement('span');
+    separator.className = 'contact-separator';
+    separator.textContent = ' | ';
+    value.appendChild(platform);
+    value.appendChild(separator);
+    value.appendChild(identity);
     var item = value.closest('.contact-item');
     var button = item && item.querySelector('.copy-btn');
     if (button) {
@@ -1240,7 +1253,19 @@ function formatAboutContactLabels() {
 
   var sponsorLabel = document.querySelector('.contact-inquiries-section .about-sponsor-link span');
   if (sponsorLabel) {
-    sponsorLabel.textContent = 'GitHub Sponsors | PkLavc';
+    sponsorLabel.textContent = '';
+    var sponsorPlatform = document.createElement('span');
+    sponsorPlatform.className = 'contact-platform';
+    sponsorPlatform.textContent = 'GitHub Sponsors';
+    var sponsorIdentity = document.createElement('span');
+    sponsorIdentity.className = 'contact-identity';
+    sponsorIdentity.textContent = 'PkLavc';
+    var sponsorSeparator = document.createElement('span');
+    sponsorSeparator.className = 'contact-separator';
+    sponsorSeparator.textContent = ' | ';
+    sponsorLabel.appendChild(sponsorPlatform);
+    sponsorLabel.appendChild(sponsorSeparator);
+    sponsorLabel.appendChild(sponsorIdentity);
   }
 }
 
