@@ -525,30 +525,31 @@
   }
 
   async function detectCountry() {
-    var cacheKey = 'pklavc.store.geo.v1';
-    try {
-      var cached = JSON.parse(sessionStorage.getItem(cacheKey) || 'null');
-      if (cached && cached.country && Date.now() - cached.at < 30 * 60 * 1000) return cached.country;
-    } catch (error) {}
-
-    var controller = typeof AbortController === 'function' ? new AbortController() : null;
-    var timer = controller ? setTimeout(function () { controller.abort(); }, 2000) : null;
-    try {
-      var response = await fetch('https://api.pklavc.com/ads/geo', {
-        mode: 'cors', credentials: 'omit', cache: 'no-store',
-        signal: controller ? controller.signal : undefined
-      });
-      if (!response.ok) throw new Error('geolocation_unavailable');
-      var data = await response.json();
-      var country = String(data && data.country || '').toUpperCase();
-      if (!/^[A-Z]{2}$/.test(country)) throw new Error('geolocation_invalid');
-      try { sessionStorage.setItem(cacheKey, JSON.stringify({ country: country, at: Date.now() })); } catch (error) {}
-      return country;
-    } catch (error) {
+    // The analytics visit request already resolves Cloudflare geolocation.
+    // Store shares that result with ads, without a second /ads/geo request.
+    function sharedCountry() {
+      try {
+        var cached = JSON.parse(sessionStorage.getItem('pklavc.visitorGeo.v1') || 'null');
+        if (cached && cached.at && Date.now() - Number(cached.at) < 24 * 60 * 60 * 1000) {
+          var country = String(cached.country || '').toUpperCase();
+          if (/^[A-Z]{2}$/.test(country)) return country;
+        }
+      } catch (_) {}
       return '';
-    } finally {
-      if (timer) clearTimeout(timer);
     }
+
+    var country = sharedCountry();
+    if (country) return country;
+    var visit = window.PkLavcGeoVisitReady;
+    if (visit && typeof visit.then === 'function') {
+      try {
+        var result = await visit;
+        country = sharedCountry() || String(result && result.country || '').toUpperCase();
+        if (/^[A-Z]{2}$/.test(country)) return country;
+      } catch (_) {}
+    }
+    // The existing language-based currency/shipping fallback still applies.
+    return '';
   }
 
   function readCachedRates() {
