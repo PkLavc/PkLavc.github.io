@@ -108,7 +108,7 @@ const SITE_RAG_META_KEY = "site_rag_cache_meta:v2";
 const SITE_RAG_CACHE_TTL_SECONDS = 4 * 3600;
 const LEGACY_MACCA_VISIT_DAILY_LIMIT = 600; // Compatibility only; Macca is hosted separately.
 const PKLAVC_VISIT_DAILY_LIMIT = 85_000; // One D1 write/visit; reserve the rest for essential services.
-const OPTIONAL_CHAT_DAILY_LIMIT = 60;    // in-scope, non-FAQ chat requests
+const OPTIONAL_CHAT_DAILY_LIMIT = 200;   // Dynamic conversations; AI has a separate shared hard cap.
 
 const SITE_RAG_SOURCE_PATHS = ["/", "/about/", "/pt/sobre/", "/es/sobre/", "/projects/", "/projects/lavc-systems/", "/projects/raw-api-ingestion-pipeline/", "/projects/zoho-integration-worker/", "/stacks/zoho-deluge-developer/", "/blog/", "/blog/en/games/", "/blog/en/tech/", "/store/", "/blog/raw-api-ingestion-supabase-sql/"];
 const AGENT_NAME = "Skylet";
@@ -1785,15 +1785,15 @@ async function retrieveRagContext(env: Env, userId: number, question: string, li
   return scored.slice(0, limit).map((item) => item.chunk);
 }
 
-/** Skylet has one hard shared limit of 24 model attempts/day.
- * Of these, at most 12 can be short scope-check requests.
+/** Skylet has one hard shared limit of 200 model attempts/day.
+ * Of these, at most 100 can be short scope-check requests.
  * A failed model call still consumes a reservation, conservatively.
  * Fail closed if D1/bindings are unavailable; never fall back to paid APIs
  * merely to classify whether a visitor question relates to PkLavc.
  */
 async function reserveSkyletDailyAi(env: Env, purpose: "answer" | "scope" = "answer"): Promise<boolean> {
-  const max = 24;
-  const scopeMax = 12;
+  const max = 200;
+  const scopeMax = 100;
   const date = new Date().toISOString().slice(0, 10);
   const now = new Date().toISOString();
   try {
