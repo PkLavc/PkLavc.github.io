@@ -101,23 +101,22 @@ jobs:
           timeout: 1800000
           reporting_interval: 15000
 
-      - name: Purge Cloudflare cache after publication
-        continue-on-error: true
+
+      - name: Purge relevant Cloudflare cache after publication
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         run: |
           node <<'NODE'
+          import fs from "node:fs";
           const token = process.env.CLOUDFLARE_API_TOKEN?.trim();
           if (!token) {
-            console.log("Cloudflare purge skipped: CLOUDFLARE_API_TOKEN is not configured.");
-            process.exit(0);
+            console.error("::error::CLOUDFLARE_API_TOKEN is missing; cannot guarantee fresh site assets.");
+            process.exit(1);
           }
-
           const headers = {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           };
-
           const zonesResponse = await fetch(
             "https://api.cloudflare.com/client/v4/zones?name=pklavc.com&status=active",
             { headers }
@@ -125,23 +124,30 @@ jobs:
           const zonesPayload = await zonesResponse.json();
           const zoneId = zonesPayload?.result?.[0]?.id;
           if (!zonesResponse.ok || !zonesPayload?.success || !zoneId) {
-            throw new Error("Unable to resolve the Cloudflare zone for pklavc.com.");
+            const issues = (zonesPayload?.errors || []).map(e => `${e.code}: ${e.message}`).join("; ");
+            throw new Error(`Cloudflare zone lookup failed (HTTP ${zonesResponse.status}): ${issues}`);
           }
-
+          // Purge just changed HTML and shared JS/CSS, not the whole CDN.
+          const paths = [
+            "/", "/pt/", "/es/", "/connect/", "/pt/connect/", "/es/connect/",
+            "/connect/connect.js", "/connect/style.css", "/js/lottie-playback.js",
+            "/js/index.js", "/blog/", "/blog/en/", "/blog/pt/", "/blog/es/"
+          ];
+          const compiledConnect = fs.readFileSync(".pages-dist/connect/index.html", "utf8");
+          for (const m of compiledConnect.matchAll(/(?:src|href)="(\/(?:connect\/(?:connect\.js|style\.css)|js\/lottie-playback\.js)\?v=[^"]+)"/g)) {
+            paths.push(m[1]);
+          }
+          const urls = [...new Set(paths)].map(p => `https://pklavc.com${p}`);
           const purgeResponse = await fetch(
             `https://api.cloudflare.com/client/v4/zones/${zoneId}/purge_cache`,
-            {
-              method: "POST",
-              headers,
-              body: JSON.stringify({ purge_everything: true }),
-            }
+            { method: "POST", headers, body: JSON.stringify({ files: urls }) }
           );
           const purgePayload = await purgeResponse.json();
           if (!purgeResponse.ok || !purgePayload?.success) {
-            throw new Error("Cloudflare cache purge failed.");
+            const issues = (purgePayload?.errors || []).map(e => `${e.code}: ${e.message}`).join("; ");
+            throw new Error(`Cloudflare targeted cache purge failed (HTTP ${purgeResponse.status}): ${issues || "Unknown error"}`);
           }
-
-          console.log("Cloudflare cache purged successfully.");
+          console.log(`Cloudflare cache purge succeeded for ${urls.length} HTML/JS/CSS URLs.`);
           NODE
 
       - name: Notify participating search engines after publication
