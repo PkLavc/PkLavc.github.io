@@ -6,7 +6,7 @@ const ORIGIN = "https://pklavc.com";
 const PERSON_ID = `${ORIGIN}/#person`;
 const WEBSITE_ID = `${ORIGIN}/#website`;
 const PROFILE_URL = `${ORIGIN}/about/`;
-const DEFAULT_IMAGE = `${ORIGIN}/images/og/og-default.png`;
+const PROFILE_IMAGE = `${ORIGIN}/images/brand/profile.png`;
 const JSON_LD = /<script\b[^>]*\btype\s*=\s*["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script\s*>/gi;
 const PRIVATE_PATH = /^\/(?:search|status|visitors|(?:pt|es)\/(?:search|busca|buscar|pesquisa|status|estado|visitantes))\/$/;
 const PAGE_TYPES = new Set(["WebPage", "AboutPage", "ProfilePage", "CollectionPage"]);
@@ -93,6 +93,7 @@ function ownPerson(value = {}) {
     alternateName: "PkLavc",
     url: PROFILE_URL,
     jobTitle: "Backend Software Engineer",
+    image: PROFILE_IMAGE,
     sameAs: ["https://github.com/PkLavc", "https://www.linkedin.com/in/pklavc/"],
   };
   // Email is contact information, not another identity page. areaServed is not a Person property.
@@ -203,10 +204,16 @@ export function normalizeSeoHtml(original, { directory = process.cwd(), filename
   const description = getMeta(html, "description");
   const robots = getMeta(html, "robots");
   const noindex = PRIVATE_PATH.test(pathname) || /\bnoindex\b/i.test(robots);
-  // Product-specific cards are supplied by channel publishers directly from
-  // /store/products.json. Never expose a generic portrait as a product preview.
+  // Product-specific cards use the shared /store/?product=... document;
+  // a static crawler cannot derive a specific product preview from its query.
   const isStoreCatalog = /^\/store\/(?:pt\/|es\/)?$/.test(pathname);
-  const imageUrl = isStoreCatalog ? "" : getMeta(html, "og:image") || DEFAULT_IMAGE;
+  // Keep each individual article's own thumbnail (including future blog categories).
+  // All other site/collection pages, including blog landing pages, share the profile portrait.
+  const isBlogArticle = /^\/blog\/(?:en|pt|es)\/[^/]+\/[^/]+\/$/.test(pathname)
+    || (pathname.startsWith("/blog/") && getMeta(html, "og:type").toLowerCase() === "article");
+  const imageUrl = isStoreCatalog ? "" : isBlogArticle
+    ? (getMeta(html, "og:image") || getMeta(html, "twitter:image"))
+    : PROFILE_IMAGE;
   html = html.replace(/(<head\b[^>]*>)([\s\S]*?)(<\/head>)/i, (_, start, head, end) => {
     const directives = PRIVATE_PATH.test(pathname) ? "noindex, follow" : noindex ? robots : "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1";
     head = setMeta(head, "robots", directives);
@@ -214,19 +221,23 @@ export function normalizeSeoHtml(original, { directory = process.cwd(), filename
     head = setMeta(head, "og:url", url, "property");
     head = setMeta(head, "og:site_name", isStoreCatalog ? "PkLavc Store" : "Patrick Araujo", "property");
     head = setMeta(head, "og:locale", language === "pt-BR" ? "pt_BR" : language === "es" ? "es_ES" : "en_US", "property");
-    if (isStoreCatalog) {
-      // The shared /store/?product=... HTML cannot identify which item a bot
-      // selected. Show no image rather than a misleading generic or random one.
-      for (const key of ["og:image", "og:image:secure_url", "og:image:alt",
-                         "og:image:width", "og:image:height", "twitter:image",
-                         "twitter:image:alt"]) head = removeMeta(head, key);
+    if (isStoreCatalog || !imageUrl) {
+      // No fabricated product/article thumbnail when the exact image is unknown.
+      for (const key of ["og:image", "og:image:secure_url", "og:image:type",
+                         "og:image:alt", "og:image:width", "og:image:height",
+                         "twitter:image", "twitter:image:alt"]) head = removeMeta(head, key);
       head = setMeta(head, "twitter:card", "summary");
     } else {
       head = setMeta(head, "og:image", imageUrl, "property");
-      head = setMeta(head, "twitter:image", getMeta(head, "twitter:image") || imageUrl);
-      head = setMeta(head, "og:image:alt", getMeta(head, "og:image:alt") || "Patrick Araujo — PkLavc", "property");
-      head = setMeta(head, "twitter:image:alt", getMeta(head, "twitter:image:alt") || getMeta(head, "og:image:alt"));
-      head = setMeta(head, "twitter:card", getMeta(head, "twitter:card") || "summary_large_image");
+      head = setMeta(head, "twitter:image", isBlogArticle ? (getMeta(head, "twitter:image") || imageUrl) : imageUrl);
+      if (!isBlogArticle) {
+        head = setMeta(head, "og:image:secure_url", imageUrl, "property");
+        head = setMeta(head, "og:image:type", "image/png", "property");
+      }
+      const imageAlt = isBlogArticle ? (getMeta(head, "og:image:alt") || "Article illustration") : "Portrait of Patrick Araujo";
+      head = setMeta(head, "og:image:alt", imageAlt, "property");
+      head = setMeta(head, "twitter:image:alt", isBlogArticle ? (getMeta(head, "twitter:image:alt") || imageAlt) : imageAlt);
+      head = setMeta(head, "twitter:card", isBlogArticle ? (getMeta(head, "twitter:card") || "summary_large_image") : "summary_large_image");
       const dimensions = imageDimensions(directory, imageUrl);
       if (dimensions) {
         head = setMeta(head, "og:image:width", dimensions[0], "property");
