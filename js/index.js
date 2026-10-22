@@ -1228,7 +1228,7 @@ function ensureAboutSocialContacts() {
       '</a>' +
       '<span class="contact-value" data-href="' + href + '">' + label + '</span>' +
       '<button class="copy-btn" type="button" data-copy="' + href + '" title="' + copy.title + '" aria-label="' + aria + '">' +
-        '<lottie-player src="/images/lottie/copy.json?v=a7cf92b17b" background="transparent" speed="0.55" class="copy-btn-icon" loop autoplay aria-hidden="true"></lottie-player>' +
+        '<lottie-player src="/images/lottie/copy.json?v=20261022-copy-refresh" background="transparent" speed="0.55" class="copy-btn-icon" loop autoplay aria-hidden="true"></lottie-player>' +
         '<span>' + copy.button + '</span>' +
       '</button>';
 
