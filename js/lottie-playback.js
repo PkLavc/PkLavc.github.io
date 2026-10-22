@@ -7,11 +7,15 @@
     'instagram', 'link', 'linkedin', 'mastodon', 'model', 'pinterest',
     'sponsor', 'stack', 'store', 'telegram', 'threads', 'tiktok', 'youtube'
   ]);
-  // These animated logo files use nested track mattes/masks. WebKit on iOS
-  // can paint the outer circle while losing the masked logo glyph in SVG.
-  // Canvas uses a separate compositor, and only changes the renderer on iOS.
+  // Complex masked icons can lose interior strokes in SVG across browsers.
+  // Use canvas for these icons on desktop as well, preserving SVG for simpler
+  // desktop assets to avoid unnecessary rendering overhead.
+  const canvasAssets = new Set(['youtube', 'github', 'telegram', 'pinterest', 'sponsor']);
   const iosWebKit = /iPad|iPhone|iPod/.test(navigator.userAgent)
     || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  function shouldUseCanvas(name) {
+    return iosWebKit || canvasAssets.has(name);
+  }
   const timers = new WeakMap();
   const states = new WeakMap();
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -61,9 +65,9 @@
     }
   }
 
-  function prepareIOSRenderer(player) {
-    if (!iosWebKit || player.dataset.iosCanvas === 'ready') return;
-    player.dataset.iosCanvas = 'ready';
+  function prepareCanvasRenderer(player, name) {
+    if (!shouldUseCanvas(name) || player.dataset.canvasRenderer === 'ready') return;
+    player.dataset.canvasRenderer = 'ready';
     player.setAttribute('renderer', 'canvas');
     player.renderer = 'canvas';
 
@@ -73,9 +77,9 @@
     Promise.resolve(player.getLottie()).then((animation) => {
       if (!player.isConnected) return;
       enableCanvasFrameClearing(animation);
-      if (player.dataset.iosCanvasReloaded) return;
+      if (player.dataset.canvasRendererReloaded) return;
       if (animation?.renderer?.rendererType === 'svg' && typeof player.load === 'function') {
-        player.dataset.iosCanvasReloaded = 'true';
+        player.dataset.canvasRendererReloaded = 'true';
         player.load(player.getAttribute('src'));
       }
     }).catch(() => { /* A later ready event can still initialize the player. */ });
@@ -122,7 +126,7 @@
     if (!supportedAssets.has(name) || states.has(player)) return;
     const state = { name, ready: false, started: false, completed: false, visible: !observer };
     states.set(player, state);
-    prepareIOSRenderer(player);
+    prepareCanvasRenderer(player, name);
     applyPlaybackSettings(player);
 
     player.addEventListener('complete', () => {
@@ -142,7 +146,7 @@
       state.completed = false;
       clearPlayerTimer(player);
       applyPlaybackSettings(player);
-      if (iosWebKit) {
+      if (shouldUseCanvas(name)) {
         enableCanvasFrameClearing(player._lottie);
         if (typeof player.getLottie === 'function') {
           Promise.resolve(player.getLottie()).then(enableCanvasFrameClearing).catch(() => {});
