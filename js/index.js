@@ -116,13 +116,24 @@ function trackAggregatedGeoVisit() {
       throw new Error('geo_visit_request_failed');
     }
 
-    try {
-      window.sessionStorage.setItem(sessionKey, '1');
-    } catch (error) {
-      // The write already succeeded; the next page may retry if storage changed.
-    }
-
-    return { tracked: true };
+    // The analytics endpoint now returns the same coarse country/region it
+    // already reads from Cloudflare; Store and ads reuse this session value.
+    return (response.status === 204 ? Promise.resolve(null) : response.json().catch(function() { return null; }))
+      .then(function(geo) {
+        try {
+          window.sessionStorage.setItem(sessionKey, '1');
+          var country = String(geo && geo.country || '').toUpperCase();
+          var region = String(geo && geo.region || '').toUpperCase();
+          if (/^[A-Z]{2}$/.test(country) && (!region || /^[A-Z0-9-]{1,24}$/.test(region))) {
+            window.sessionStorage.setItem('pklavc.visitorGeo.v1', JSON.stringify({
+              country: country, region: region, at: Date.now()
+            }));
+          }
+        } catch (error) {
+          // Tracking and ad fallback still work if browser storage is blocked.
+        }
+        return { tracked: true, country: geo && geo.country || '', region: geo && geo.region || '' };
+      });
   }).catch(function() {
     return { tracked: false, reason: 'request_failed' };
   });
