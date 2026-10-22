@@ -50,6 +50,13 @@ jobs:
           token: ${{ secrets.PRIVATE_BLOG_REPO_TOKEN }}
           fetch-depth: 0
           persist-credentials: true
+      - name: Checkout authoritative public Store catalog
+        uses: actions/checkout@v4
+        with:
+          repository: PkLavc/PkLavc.github.io
+          ref: main
+          path: public-site
+          persist-credentials: false
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
@@ -78,6 +85,20 @@ jobs:
             exit 1
           fi
           python -m scripts.social_video.discord_publisher --root . --mode "${REQUESTED_MODE:-publish}" --category "${REQUESTED_CATEGORY:-all}"
+
+      - name: Publish changed Store products via Discord Store webhook
+        working-directory: private-blog
+        shell: bash
+        env:
+          DISCORD_STORE_WEBHOOK: ${{ secrets.DISCORD_STORE_WEBHOOK }}
+          REQUESTED_MODE: ${{ inputs.mode }}
+        run: |
+          if [[ -z "$DISCORD_STORE_WEBHOOK" ]]; then
+            echo "::notice::DISCORD_STORE_WEBHOOK is not configured in PkLavc.github.io Actions Secrets."
+            exit 0
+          fi
+          python -m scripts.social_video.store_channels --root . --catalog ../public-site/store/products.json --platform discord --mode "${REQUESTED_MODE:-publish}"
+
 
   notify-telegram:
     # Telegram's secret lives in the private blog repo. Signal it only after
