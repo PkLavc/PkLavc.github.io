@@ -54,6 +54,7 @@ const publicEntries = [
   "assets",
   "blog",
   "collections",
+  "connect",
   "css",
   "es",
   "images",
