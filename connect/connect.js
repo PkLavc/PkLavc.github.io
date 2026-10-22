@@ -25,6 +25,7 @@
   const LOTTIE_DIRECTORY = '/images/lottie/';
   const useMobileCanvas = /iPad|iPhone|iPod/.test(navigator.userAgent)
     || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  const canvasAssets = new Set(['youtube', 'github', 'telegram', 'pinterest', 'sponsor']);
 
   function iconNameFor(anchor) {
     const rawHref = anchor.getAttribute('href');
@@ -60,7 +61,7 @@
   function createLottieIcon(name, compact) {
     const player = document.createElement('lottie-player');
     player.setAttribute('src', `${LOTTIE_DIRECTORY}${name}.json?v=20261022-social-refresh`);
-    if (useMobileCanvas) player.setAttribute('renderer', 'canvas');
+    if (useMobileCanvas || canvasAssets.has(name)) player.setAttribute('renderer', 'canvas');
     player.setAttribute('background', 'transparent');
     player.setAttribute('speed', '0.7');
     player.setAttribute('autoplay', '');
