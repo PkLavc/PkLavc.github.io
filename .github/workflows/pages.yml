@@ -36,6 +36,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
+          # Always build the latest main, not the event's stale commit. Several
+          # push events may queue out of order and otherwise deploy old files.
+          ref: main
           fetch-depth: 0
 
       - name: Checkout Autotrader dashboard
