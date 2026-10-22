@@ -1,0 +1,96 @@
+name: Import profile image from Drive
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/import-profile-image.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  import-profile-image:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download verified profile photo
+        run: |
+          python3 - <<'PY'
+          import hashlib
+          import pathlib
+          import urllib.request
+
+          file_id = "1j9KfOsd0su_kBfgx02QCdINZIeyWogVg"
+          expected_sha256 = "141b45787f6e9e2271e04deef2879cac8109420fe57d53ebc39b6c406b543d2a"
+          urls = [
+              f"https://drive.usercontent.google.com/download?id={file_id}&export=download&confirm=t",
+              f"https://drive.google.com/uc?export=download&id={file_id}",
+          ]
+          image = None
+          for url in urls:
+              try:
+                  req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+                  with urllib.request.urlopen(req, timeout=45) as response:
+                      data = response.read(6 * 1024 * 1024 + 1)
+                  if data.startswith(b"\x89PNG\r\n\x1a\n") and hashlib.sha256(data).hexdigest() == expected_sha256:
+                      image = data
+                      break
+              except Exception as exc:
+                  print(f"Image source unavailable: {type(exc).__name__}")
+          if image is None:
+              raise SystemExit("Could not download the verified PNG from Drive.")
+          destination = pathlib.Path("images/brand/profile.png")
+          destination.parent.mkdir(parents=True, exist_ok=True)
+          destination.write_bytes(image)
+          print(f"Verified and imported {len(image)} bytes to {destination}")
+          PY
+
+      - name: Set portrait as website sharing preview
+        run: |
+          python3 - <<'PY'
+          import pathlib
+          import re
+
+          old = "https://pklavc.com/images/brand/lavc.webp?v=5e84850f26"
+          new = "https://pklavc.com/images/brand/profile.png?v=20261022"
+          pages = [
+              "index.html", "pt/index.html", "es/index.html",
+              "about/index.html", "pt/sobre/index.html", "es/sobre/index.html",
+          ]
+          for filename in pages:
+              file = pathlib.Path(filename)
+              original = file.read_text(encoding="utf-8")
+              head, separator, tail = original.partition("</head>")
+              if not separator:
+                  raise SystemExit(f"Missing HTML head: {filename}")
+              if old not in head and new not in head:
+                  raise SystemExit(f"Unexpected image metadata in {filename}")
+              head = head.replace(old, new)
+              head = head.replace('<meta property="og:image:width" content="1200">', '<meta property="og:image:width" content="1122">')
+              head = head.replace('<meta property="og:image:height" content="630">', '<meta property="og:image:height" content="1402">')
+              head = re.sub(
+                  r'(<meta\s+(?:property="og:image:alt"|name="twitter:image:alt")\s+content=")[^"]*(">)',
+                  r'\g<1>Portrait of Patrick Araujo\g<2>',
+                  head,
+              )
+              result = head + separator + tail
+              if result != original:
+                  file.write_text(result, encoding="utf-8")
+              print(f"Checked {filename}")
+          PY
+
+      - name: Commit imported photo and preview metadata
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add images/brand/profile.png index.html pt/index.html es/index.html about/index.html pt/sobre/index.html es/sobre/index.html
+          if git diff --cached --quiet; then
+            echo "No changes"
+          else
+            git commit -m "fix: use Patrick's portrait for site sharing previews"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
