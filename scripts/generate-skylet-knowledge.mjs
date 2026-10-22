@@ -79,6 +79,29 @@ function indexProducts(root) {
   }));
 }
 
+function stripHtml(value) {
+  return clip(String(value || "").replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, " ")
+    .replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, " ")
+    .replace(/<[^>]*>/g, " ")
+    .replace(/&(?:nbsp|amp|quot|apos);/gi, " "), 350);
+}
+
+function indexWork(root) {
+  const html = read(path.join(root, "about", "index.html"));
+  const companies = [...html.matchAll(/<article class="experience-company"[^>]*>([\s\S]*?)<\/article>/gi)];
+  const work = [];
+  for (const [, block] of companies) {
+    const header = block.match(/experience-company-header[\s\S]*?<h3[^>]*>([\s\S]*?)<\/h3>/i);
+    const company = header ? stripHtml(header[1]) : "";
+    if (!company) continue;
+    const overview = block.match(/experience-company-header[\s\S]*?<h3[^>]*>[\s\S]*?<\/h3>\s*<p[^>]*>([\s\S]*?)<\/p>/i);
+    const roles = [...block.matchAll(/experience-role-heading[^>]*>[\s\S]*?<b[^>]*>([\s\S]*?)<\/b>\s*<small[^>]*>([\s\S]*?)<\/small>/gi)]
+      .map(([, title, period]) => [stripHtml(title), stripHtml(period)]).slice(0, 8);
+    work.push({ n: company, d: stripHtml(overview?.[1] || ""), roles, u: "/about/" });
+  }
+  return work.slice(0, 18);
+}
+
 function indexChannels(root) {
   const html = read(path.join(root, "connect", "index.html"));
   const urls = [...html.matchAll(/href\s*=\s*["'](https:\/\/[^"'\s]+)["']/gi)].map(m => m[1].replace(/&amp;/g, "&"));
@@ -119,13 +142,14 @@ export function generateSkyletKnowledge(root) {
     pages: indexPages(root),
     posts: indexPosts(root),
     products: indexProducts(root),
+    work: indexWork(root),
     channels: indexChannels(root),
   };
   fs.mkdirSync(path.dirname(output), { recursive: true });
   fs.writeFileSync(output, JSON.stringify(data));
   return {
     output, pages: data.pages.length, posts: data.posts.length,
-    products: data.products.length, channels: data.channels.length,
+    products: data.products.length, work: data.work.length, channels: data.channels.length,
     bytes: fs.statSync(output).size,
   };
 }
