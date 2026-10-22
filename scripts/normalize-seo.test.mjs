@@ -13,6 +13,17 @@ function normalize(html) { return normalizeSeoHtml(html, { directory: ROOT }); }
 function graph(html) { return [...html.matchAll(JSON_LD)].flatMap((match) => { const node = JSON.parse(match[1]); return node["@graph"] || [node]; }); }
 function byType(html, type) { return graph(html).filter((node) => [node["@type"]].flat().includes(type)); }
 
+test("Store links provide no misleading generic preview in EN/PT/ES", () => {
+  for (const filename of ["store/index.html", "store/pt/index.html", "store/es/index.html"]) {
+    const output = normalize(read(filename));
+    assert.match(output, /property="og:site_name" content="PkLavc Store"/, filename);
+    assert.match(output, /name="twitter:card" content="summary"/, filename);
+    assert.doesNotMatch(output, /(?:property="og:image"|name="twitter:image")/, filename);
+    assert.doesNotMatch(output, /og-default\\.png/, filename);
+    assert.equal(normalize(output), output, `Store SEO idempotence: ${filename}`);
+  }
+});
+
 test("profile pages resolve to the same Patrick identity", () => {
   for (const file of ["index.html", "about/index.html", "pt/sobre/index.html", "es/sobre/index.html", "resume/index.html"]) {
     const html = normalize(read(file));
