@@ -27,7 +27,7 @@ function indexPages(root) {
   for (const block of blocks) {
     const title = clip(block.split("\n", 1)[0], 120);
     const source = block.match(/^Source:\s*(\S+)/m)?.[1] || "";
-    const locale = block.match(/^Language:\s*(en|pt|es)\s*$/m)?.[1] || "en";
+    const locale = (block.match(/^Language:\s*(en|pt(?:-BR)?|es)\s*$/m)?.[1] || "en").slice(0, 2);
     const pathname = siteUrl(source);
     if (!pathname || seen.has(pathname)) continue;
     // Include first-party portfolio/projects/work/channel pages, not every
