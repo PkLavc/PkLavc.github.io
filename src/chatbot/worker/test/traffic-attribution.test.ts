@@ -71,7 +71,9 @@ describe("existing Worker visit and dashboard routes", () => {
   it("retains the existing geo count and adds one compact daily source write", async () => {
     const { DB, calls } = mockDb();
     const response = await worker.fetch(visitRequest("/blog/en/games/gta-6-secret/", "instagram"), env(DB), ctx);
-    expect(response.status).toBe(204);
+    expect(response.status).toBe(200);
+    expect(await response.json()).toEqual({ country: "BR", region: "MG" });
+    expect(response.headers.get("Cache-Control")).toBe("private, no-store");
     expect(calls).toHaveLength(3);
     expect(calls[0].sql).toContain("optional_daily_usage");
     expect(calls[0].args.slice(1, 3)).toEqual(["visit_pklavc", 600]);
@@ -94,7 +96,8 @@ describe("existing Worker visit and dashboard routes", () => {
     });
     Object.defineProperty(requestForMacca, "cf", { value: { country: "BR", regionCode: "SP" } });
     const response = await worker.fetch(requestForMacca, env(DB), ctx);
-    expect(response.status).toBe(204);
+    expect(response.status).toBe(200);
+    expect(await response.json()).toEqual({ country: "BR", region: "SP" });
     expect(calls).toHaveLength(2);
     expect(calls[0].args[1]).toEqual("visit_macca");
     expect(calls[1].sql).toContain("macca_geo_visit_daily");
@@ -102,7 +105,8 @@ describe("existing Worker visit and dashboard routes", () => {
   it("stops analytics writes once the atomic daily allowance is reached", async () => {
     const { DB, calls } = mockDb(true);
     const response = await worker.fetch(visitRequest("/blog/en/games/gta-6-secret/", "instagram"), env(DB), ctx);
-    expect(response.status).toBe(204);
+    expect(response.status).toBe(200);
+    expect(await response.json()).toEqual({ country: "BR", region: "MG" });
     expect(calls).toHaveLength(1);
     expect(calls[0].sql).toContain("optional_daily_usage");
     expect(calls[0].kind).toBe("first");
