@@ -50,6 +50,79 @@ function prerenderCard(product, locale) {
   </article>`;
 }
 
+
+/**
+ * Social crawlers do not execute Store JS or read the ?product= selection.
+ * Give each catalog item a real static HTML URL whose server-delivered head
+ * contains the current product image/title. Humans continue to the Store.
+ */
+function renderProductSharePage(product, locale) {
+  const id = String(product.id);
+  const prefix = locale === "en" ? "/store/" : `/store/${locale}/`;
+  const shareUrl = `https://pklavc.com${prefix}product/${encodeURIComponent(id)}/`;
+  const storeUrl = `https://pklavc.com${prefix}?product=${encodeURIComponent(id)}`;
+  const title = String(product.name).replace(/\\s+/g, " ").trim().slice(0, 160);
+  const description = [formatMoney(product, locale), String(product.description || "").replace(/\\s+/g, " ").trim().slice(0, 190)]
+    .filter(Boolean).join(" — ") || copy[locale].description;
+  const imageUrl = new URL(product.picture).href;
+  const lang = locale === "pt" ? "pt-BR" : locale;
+  const redirect = JSON.stringify(storeUrl).replace(/</g, "\\u003c");
+
+  return `<!DOCTYPE html>
+<html lang="${lang}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex, follow">
+  <title>${esc(title)} | PkLavc Store</title>
+  <meta name="description" content="${esc(description)}">
+  <link rel="canonical" href="${esc(shareUrl)}">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="PkLavc Store">
+  <meta property="og:url" content="${esc(shareUrl)}">
+  <meta property="og:title" content="${esc(title)} | PkLavc Store">
+  <meta property="og:description" content="${esc(description)}">
+  <meta property="og:image" content="${esc(imageUrl)}">
+  <meta property="og:image:secure_url" content="${esc(imageUrl)}">
+  <meta property="og:image:alt" content="${esc(title)}">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="${esc(title)} | PkLavc Store">
+  <meta name="twitter:description" content="${esc(description)}">
+  <meta name="twitter:image" content="${esc(imageUrl)}">
+</head>
+<body>
+  <main>
+    <h1>${esc(title)}</h1>
+    <p>${esc(description)}</p>
+    <p><a href="${esc(storeUrl)}">View this product on PkLavc Store</a></p>
+    <img src="${esc(imageUrl)}" alt="${esc(title)}" width="480" loading="lazy" referrerpolicy="no-referrer">
+  </main>
+  <script>window.location.replace(${redirect});</script>
+</body>
+</html>
+`;
+}
+
+export function generateProductSharePages(root, products) {
+  let generated = 0;
+  const validId = /^[A-Za-z0-9_-]{3,80}$/;
+  for (const product of products) {
+    const id = String(product.id || "");
+    if (!validId.test(id) || !product.name || !product.picture) continue;
+    try {
+      if (new URL(product.picture).protocol !== "https:") continue;
+    } catch { continue; }
+    for (const locale of ["en", "pt", "es"]) {
+      const prefix = locale === "en" ? path.join("store", "product") : path.join("store", locale, "product");
+      const directory = path.join(root, prefix, id);
+      fs.mkdirSync(directory, { recursive: true });
+      fs.writeFileSync(path.join(directory, "index.html"), renderProductSharePage(product, locale));
+      generated += 1;
+    }
+  }
+  return generated;
+}
+
 export function enhanceStoreArtifact(root) {
   const catalogPath = path.join(root, "store", "products.json");
   if (!fs.existsSync(catalogPath)) return { pages: 0, products: 0 };
@@ -102,7 +175,8 @@ export function enhanceStoreArtifact(root) {
     fs.writeFileSync(file, html);
     pages += 1;
   }
-  return { pages, products: products.length };
+  const sharePages = generateProductSharePages(root, products);
+  return { pages, products: products.length, sharePages };
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === path.resolve(new URL(import.meta.url).pathname)) {
