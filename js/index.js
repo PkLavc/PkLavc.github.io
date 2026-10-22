@@ -1396,8 +1396,8 @@ function normalizeUnifiedFooter() {
     var link = document.createElement('a');
     link.className = 'footer-all-links';
     link.href = copy.connectHref;
-    link.textContent = '| ' + copy.allLinks;
-    copyright.appendChild(document.createTextNode(' '));
+    link.textContent = copy.allLinks;
+    copyright.appendChild(document.createTextNode(' | '));
     copyright.appendChild(link);
   }
 
@@ -1416,7 +1416,7 @@ function normalizeUnifiedFooter() {
   footer.innerHTML =
     '<div class="footer-container">' +
       '<div class="footer-split-left">' +
-        '<span class="footer-copyright-line">&copy; <span data-current-year></span> Patrick Araujo <a class="footer-all-links" href="' + copy.connectHref + '">| ' + copy.allLinks + '</a></span>' +
+        '<span class="footer-copyright-line">&copy; <span data-current-year></span> Patrick Araujo | <a class="footer-all-links" href="' + copy.connectHref + '">' + copy.allLinks + '</a></span>' +
         '<span class="footer-legal-inline" aria-label="Legal links">' +
           '<a class="footer-legal-link" href="' + copy.privacyHref + '">' + copy.privacy + '</a><span aria-hidden="true">/</span>' +
           '<a class="footer-legal-link" href="' + copy.termsHref + '">' + copy.terms + '</a><span aria-hidden="true">/</span>' +
