@@ -1,0 +1,105 @@
+name: PkLavc Store rotation across Discord and Telegram
+
+on:
+  schedule:
+    # 24 hourly slots plus one at 12:43 UTC = 25 x 2 = 50/day.
+    # Slots are spread over the entire day, not sent as one burst.
+    - cron: "13 * * * *"
+    - cron: "43 12 * * *"
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "Preview, check, test or rotate products"
+        type: choice
+        required: true
+        default: check
+        options: [check, preview, publish, test]
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/store-community-rotation.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pklavc-store-community-rotation
+  cancel-in-progress: false
+
+jobs:
+  discord-store:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout first-party public Store catalog
+        uses: actions/checkout@v4
+        with:
+          repository: PkLavc/PkLavc.github.io
+          ref: main
+          path: public-site
+          persist-credentials: false
+      - name: Checkout private Store publisher and its independent message state
+        uses: actions/checkout@v4
+        with:
+          repository: PkLavc/blog
+          ref: main
+          path: private-blog
+          token: ${{ secrets.PRIVATE_BLOG_REPO_TOKEN }}
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Post at most two curated Store product links
+        working-directory: private-blog
+        shell: bash
+        env:
+          DISCORD_STORE_WEBHOOK: ${{ secrets.DISCORD_STORE_WEBHOOK }}
+          TELEGRAM_CHAT_STORE: ${{ vars.TELEGRAM_CHAT_STORE || secrets.TELEGRAM_CHAT_STORE }}
+          REQUESTED_MODE: ${{ inputs.mode }}
+          EVENT_NAME: ${{ github.event_name }}
+        run: |
+          if [[ -z "$DISCORD_STORE_WEBHOOK" ]]; then
+            echo "::error::DISCORD_STORE_WEBHOOK is missing."
+            exit 1
+          fi
+          mode="${REQUESTED_MODE:-publish}"
+          if [[ "$EVENT_NAME" == "push" ]]; then mode="check"; fi
+          python -m scripts.social_video.store_channels \
+            --root . \
+            --catalog ../public-site/store/products.json \
+            --platform discord --mode "$mode"
+
+  trigger-telegram-store:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Ask private bot to post the same rotation
+        shell: bash
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_BLOG_REPO_TOKEN }}
+          TELEGRAM_CHAT_STORE: ${{ vars.TELEGRAM_CHAT_STORE || secrets.TELEGRAM_CHAT_STORE }}
+          REQUESTED_MODE: ${{ inputs.mode }}
+          EVENT_NAME: ${{ github.event_name }}
+        run: |
+          if [[ -z "$PRIVATE_REPO_TOKEN" || -z "$TELEGRAM_CHAT_STORE" ]]; then
+            echo "::error::Telegram dispatch requires the private repo token and channel handle."
+            exit 1
+          fi
+          mode="${REQUESTED_MODE:-publish}"
+          if [[ "$EVENT_NAME" == "push" ]]; then mode="check"; fi
+          payload="$(jq -nc --arg store "$TELEGRAM_CHAT_STORE" --arg mode "$mode" \
+            '{event_type:"pklavc_store_rotation",client_payload:{telegram_store_handle:$store,mode:$mode}}')"
+          code="$(curl --silent --show-error --output /dev/null --write-out '%{http_code}' \
+            --request POST \
+            --url 'https://api.github.com/repos/PkLavc/blog/dispatches' \
+            --header "Authorization: Bearer $PRIVATE_REPO_TOKEN" \
+            --header 'Accept: application/vnd.github+json' \
+            --header 'X-GitHub-Api-Version: 2022-11-28' \
+            --header 'Content-Type: application/json' \
+            --data "$payload")"
+          if [[ "$code" != "204" ]]; then
+            echo "::error::Telegram Store publisher trigger rejected (HTTP $code)."
+            exit 1
+          fi
+          echo "Telegram Store publisher dispatched; daily cap enforced by its stored history."
