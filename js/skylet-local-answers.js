@@ -24,7 +24,7 @@
     projects: /\b(projetos?|projects?|proyectos?|portfolio|portafolio|portf[oó]lio|aplicacoes?|sistemas?\s+(?:criados?|feitos?))\b/i,
     blogs: /\b(blogs?|artigos?|articles?|materias?|mat[eé]rias?|postagens?|posts?|not[ií]cias?|publicou|publicadas?|publicou|publications?|publicaciones?|news)\b/i,
     stores: /\b(loja|store|shop|tienda|produtos?|products?|art[ií]culos?|productos?|itens?|items?|ofertas?|pre[cç]os?|prices?|comprar|buy|dispon[ií]veis?|availability|stock|cat[aá]logo|catalogo)\b/i,
-    work: /\b(trabalh[oa]|empregos?|trabalho|carreira|experi[eê]ncia|cargos?|empresas?|funcao|fun[cç][aã]o|role|roles|jobs?|worked|work|career|employment|experience|empresa|trabajo|trabaj[oa]|empleos?|profissional|profesional)\b/i,
+    work: /\b(trabalh[a-z]*|empregos?|trabalho|carreira|experi[eê]ncia|cargos?|empresas?|funcao|fun[cç][aã]o|role|roles|jobs?|worked|work|career|employment|experience|empresa|trabajo|trabaj[oa]|empleos?|profissional|profesional)\b/i,
     channels: /\b(discord|telegram|youtube|instagram|tiktok|linkedin|github|whatsapp|threads|bluesky|pinterest|mastodon|canal|canais|channel|channels|redes?|social|seguir|follow|community|comunidade|perfil|profiles?|conectar|connect|videos?|v[ií]deos?|shorts?|reels?)\b/i,
     profile: /\b(quem [eé]|who is|sobre o patrick|sobre patrick|about patrick|bio|biografia|perfil|profile|skills?|habilidades?|linguagens?|stacks?|tecnologias?|formacao|forma[cç][aã]o|certifica[cç][oõ]es?)\b/i,
   };
@@ -230,8 +230,11 @@
       actualQuestion = prior.content.slice(0, 150) + ' ' + question;
     }
     var nameQuestion = norm(actualQuestion);
+    var namesKnownEmployer = Array.isArray(index.work) && index.work.some(function (entry) {
+      return norm(entry.n).length > 3 && nameQuestion.includes(norm(entry.n));
+    });
+    if (namesKnownEmployer || groupWords.work.test(nameQuestion)) return resolveWork(actualQuestion, index, lang);
     if (groupWords.channels.test(nameQuestion)) return resolveChannel(actualQuestion, index, lang);
-    if (groupWords.work.test(nameQuestion)) return resolveWork(actualQuestion, index, lang);
     if (groupWords.stores.test(nameQuestion)) return resolveStore(actualQuestion, index, lang);
     if (groupWords.blogs.test(nameQuestion)) return resolveBlog(actualQuestion, index, lang);
     if (groupWords.projects.test(nameQuestion)) return resolveProjects(actualQuestion, index, lang);
