@@ -1335,7 +1335,7 @@ function normalizeUnifiedFooter() {
   }
 
   var path = String(window.location.pathname || '/');
-  var locale = path.indexOf('/pt/') === 0 ? 'pt' : (path.indexOf('/es/') === 0 ? 'es' : 'en');
+  var locale = path.indexOf('/pt/') === 0 || path.indexOf('/blog/pt/') === 0 ? 'pt' : (path.indexOf('/es/') === 0 || path.indexOf('/blog/es/') === 0 ? 'es' : 'en');
   var copy = {
     en: {
       nav: 'Social and contact links',
@@ -1347,7 +1347,8 @@ function normalizeUnifiedFooter() {
       privacyHref: '/privacy-policy/',
       termsHref: '/terms-of-use/',
       editorialHref: '/editorial-policy/',
-      creditsHref: '/credits/'
+      creditsHref: '/credits/',
+      connectHref: '/connect/'
     },
     pt: {
       nav: 'Links sociais e de contato',
@@ -1359,7 +1360,8 @@ function normalizeUnifiedFooter() {
       privacyHref: '/pt/politica-de-privacidade/',
       termsHref: '/pt/termos-de-uso/',
       editorialHref: '/pt/politica-editorial/',
-      creditsHref: '/pt/creditos/'
+      creditsHref: '/pt/creditos/',
+      connectHref: '/pt/connect/'
     },
     es: {
       nav: 'Enlaces sociales y de contacto',
@@ -1371,7 +1373,8 @@ function normalizeUnifiedFooter() {
       privacyHref: '/es/politica-de-privacidad/',
       termsHref: '/es/terminos-de-uso/',
       editorialHref: '/es/politica-editorial/',
-      creditsHref: '/es/creditos/'
+      creditsHref: '/es/creditos/',
+      connectHref: '/es/connect/'
     }
   }[locale];
 
@@ -1381,9 +1384,24 @@ function normalizeUnifiedFooter() {
     document.body.appendChild(footer);
   }
 
+  function ensureFooterAllLinks(targetFooter) {
+    var copyright = targetFooter.querySelector('.footer-copyright-line');
+    if (!copyright || copyright.querySelector('.footer-all-links')) {
+      return;
+    }
+
+    var link = document.createElement('a');
+    link.className = 'footer-all-links';
+    link.href = copy.connectHref;
+    link.textContent = '| All My Links';
+    copyright.appendChild(document.createTextNode(' '));
+    copyright.appendChild(link);
+  }
+
   // Home pages already ship the final footer in the HTML. Do not replace it
   // after DOMContentLoaded; replacing it caused the legacy footer flash.
   if (footer.getAttribute('data-unified-footer') === 'true') {
+    ensureFooterAllLinks(footer);
     footer.querySelectorAll('[data-current-year]').forEach(function(node) {
       node.textContent = String(new Date().getFullYear());
     });
@@ -1395,7 +1413,7 @@ function normalizeUnifiedFooter() {
   footer.innerHTML =
     '<div class="footer-container">' +
       '<div class="footer-split-left">' +
-        '<span class="footer-copyright-line">&copy; <span data-current-year></span> Patrick Araujo</span>' +
+        '<span class="footer-copyright-line">&copy; <span data-current-year></span> Patrick Araujo <a class="footer-all-links" href="' + copy.connectHref + '">| All My Links</a></span>' +
         '<span class="footer-legal-inline" aria-label="Legal links">' +
           '<a class="footer-legal-link" href="' + copy.privacyHref + '">' + copy.privacy + '</a><span aria-hidden="true">/</span>' +
           '<a class="footer-legal-link" href="' + copy.termsHref + '">' + copy.terms + '</a><span aria-hidden="true">/</span>' +
