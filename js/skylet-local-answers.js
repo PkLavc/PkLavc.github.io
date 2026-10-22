@@ -146,10 +146,11 @@
     });
     var named = entries.find(function (p) {
       var name = norm(String(p.t).split(/[|—–]/)[0]);
-      return name.length >= 7 && q.includes(name);
+      var slug = p.u.split('/').filter(Boolean).pop().replace(/-/g, ' ');
+      return (name.length >= 7 && q.includes(name)) || (slug.length >= 7 && q.includes(slug));
     });
     if (!groupWords.projects.test(q) && !named) return null;
-    var chosen = named ? [named] : top(entries, query, ['t','d'], 4, 3);
+    var chosen = named ? [named] : top(entries, query, ['t','d','u'], 4, 3);
     if (!chosen.length && listing(query)) chosen = entries.slice(0, 6);
     if (!chosen.length) return null;
     var intro = named ? '' : localized(locale,'Projetos relacionados:','Related projects:','Proyectos relacionados:') + '\n';
