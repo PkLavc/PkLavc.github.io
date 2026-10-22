@@ -7,11 +7,6 @@
     'instagram', 'link', 'linkedin', 'mastodon', 'model', 'pinterest',
     'sponsor', 'stack', 'store', 'telegram', 'threads', 'tiktok', 'youtube'
   ]);
-  // These animated logo files use nested track mattes/masks. WebKit on iOS
-  // can paint the outer circle while losing the masked logo glyph in SVG.
-  // Canvas uses a separate compositor, and only changes the renderer on iOS.
-  const iosWebKit = /iPad|iPhone|iPod/.test(navigator.userAgent)
-    || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
   const timers = new WeakMap();
   const states = new WeakMap();
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -53,40 +48,12 @@
     player.setSpeed?.(SPEED);
   }
 
-  function enableCanvasFrameClearing(animation) {
-    // Lottie Player 2.x passes clearCanvas:false even for its canvas renderer.
-    // Keep it enabled so old frames never accumulate over the logo.
-    if (animation?.renderer?.rendererType === 'canvas' && animation.renderer.renderConfig) {
-      animation.renderer.renderConfig.clearCanvas = true;
-    }
-  }
-
-  function prepareIOSRenderer(player) {
-    if (!iosWebKit || player.dataset.iosCanvas === 'ready') return;
-    player.dataset.iosCanvas = 'ready';
-    player.setAttribute('renderer', 'canvas');
-    player.renderer = 'canvas';
-
-    // Pages that load the Lottie custom element before this script may have
-    // instantiated an SVG renderer already. Re-load just once in that case.
-    if (typeof player.getLottie !== 'function') return;
-    Promise.resolve(player.getLottie()).then((animation) => {
-      if (!player.isConnected) return;
-      enableCanvasFrameClearing(animation);
-      if (player.dataset.iosCanvasReloaded) return;
-      if (animation?.renderer?.rendererType === 'svg' && typeof player.load === 'function') {
-        player.dataset.iosCanvasReloaded = 'true';
-        player.load(player.getAttribute('src'));
-      }
-    }).catch(() => { /* A later ready event can still initialize the player. */ });
-  }
-
   function pauseAtStart(player, state) {
     clearPlayerTimer(player);
     player.pause?.();
     player.seek?.(0);
     if (reduceMotion.matches || !state.visible) return;
-    const delay = state.name === 'youtube' && !iosWebKit ? YOUTUBE_START_HOLD_MS : 0;
+    const delay = state.name === 'youtube' ? YOUTUBE_START_HOLD_MS : 0;
     if (!delay) {
       player.play?.();
       return;
@@ -122,7 +89,6 @@
     if (!supportedAssets.has(name) || states.has(player)) return;
     const state = { name, ready: false, started: false, completed: false, visible: !observer };
     states.set(player, state);
-    prepareIOSRenderer(player);
     applyPlaybackSettings(player);
 
     player.addEventListener('complete', () => {
@@ -142,16 +108,10 @@
       state.completed = false;
       clearPlayerTimer(player);
       applyPlaybackSettings(player);
-      if (iosWebKit) {
-        enableCanvasFrameClearing(player._lottie);
-        if (typeof player.getLottie === 'function') {
-          Promise.resolve(player.getLottie()).then(enableCanvasFrameClearing).catch(() => {});
-        }
-      }
       if (state.visible) startVisible(player, state);
       else player.pause?.();
     };
-    // Not "once": Lottie may reinitialize when switching SVG -> canvas.
+    // SVG renderer stays in place; do not reload animations on mobile.
     player.addEventListener('ready', onReady);
     observer?.observe(player);
 
