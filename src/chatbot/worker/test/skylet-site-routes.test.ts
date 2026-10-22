@@ -186,7 +186,7 @@ describe("budgeted AI scope verification", () => {
     const request = new Request("https://api.pklavc.com" + path, {
       method: "POST",
       headers: { Origin: "https://pklavc.com", "Content-Type": "application/json" },
-      body: JSON.stringify({ message: "Pode explicar o material de integração do site?" }),
+      body: JSON.stringify({ message: "Qual a previsão do tempo em BH?" }),
     });
     const response = await worker.fetch(request, env, { waitUntil() {} } as never);
     return { response, sqlStatements, aiInputs };
