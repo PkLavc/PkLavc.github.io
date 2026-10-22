@@ -78,6 +78,44 @@
     var cached = cachedGeo();
     if (cached.country) return Promise.resolve(cached);
 
+    // Some legacy article templates don't load /js/index.js. On those pages,
+    // perform the normal *visit* request here, not a separate geolocation
+    // request. Its result is shared across the page and cached for the session.
+    if (!window.PkLavcGeoVisitReady && typeof fetch === 'function' &&
+        navigator.globalPrivacyControl !== true &&
+        (location.hostname === 'pklavc.com' || location.hostname === 'www.pklavc.com')) {
+      try {
+        if (window.sessionStorage && !sessionStorage.getItem('pklavc.geoVisitTracked')) {
+          var source = new URLSearchParams(location.search).get('utm_source') || '';
+          var referer = '';
+          try { if (document.referrer) referer = new URL(document.referrer).origin; }
+          catch (_) {}
+          window.PkLavcGeoVisitReady = fetch('https://api.pklavc.com/analytics/visit', {
+            method: 'POST', mode: 'cors', credentials: 'omit', keepalive: true,
+            headers: { 'Content-Type': 'text/plain;charset=UTF-8' },
+            body: JSON.stringify({
+              pathname: location.pathname || '/',
+              source: source.slice(0, 48),
+              referrer: referer.slice(0, 120)
+            })
+          }).then(function(response) {
+            if (!response.ok) throw new Error('geo_visit_request_failed');
+            return response.status === 204 ? null : response.json();
+          }).then(function(geo) {
+            sessionStorage.setItem('pklavc.geoVisitTracked', '1');
+            var country = String(geo && geo.country || '').toUpperCase();
+            var region = String(geo && geo.region || '').toUpperCase();
+            if (/^[A-Z]{2}$/.test(country) && (!region || /^[A-Z0-9-]{1,24}$/.test(region))) {
+              sessionStorage.setItem('pklavc.visitorGeo.v1', JSON.stringify({
+                country: country, region: region, at: Date.now()
+              }));
+            }
+            return geo;
+          }).catch(function() { return null; });
+        }
+      } catch (_) { /* Default ad targeting remains available. */ }
+    }
+
     var visit = window.PkLavcGeoVisitReady;
     if (visit && typeof visit.then === 'function') {
       return visit.then(function(result) {
