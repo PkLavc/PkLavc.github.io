@@ -107,7 +107,7 @@ const SITE_RAG_CACHE_KEY = "site_rag_cache:v2";
 const SITE_RAG_META_KEY = "site_rag_cache_meta:v2";
 const SITE_RAG_CACHE_TTL_SECONDS = 4 * 3600;
 const LEGACY_MACCA_VISIT_DAILY_LIMIT = 600; // Compatibility only; Macca is hosted separately.
-const PKLAVC_VISIT_DAILY_LIMIT = 50_000; // One D1 write/visit; reserve the rest for essential services.
+const PKLAVC_VISIT_DAILY_LIMIT = 85_000; // One D1 write/visit; reserve the rest for essential services.
 const OPTIONAL_CHAT_DAILY_LIMIT = 60;    // in-scope, non-FAQ chat requests
 
 const SITE_RAG_SOURCE_PATHS = ["/", "/about/", "/pt/sobre/", "/es/sobre/", "/projects/", "/projects/lavc-systems/", "/projects/raw-api-ingestion-pipeline/", "/projects/zoho-integration-worker/", "/stacks/zoho-deluge-developer/", "/blog/", "/blog/en/games/", "/blog/en/tech/", "/store/", "/blog/raw-api-ingestion-supabase-sql/"];
