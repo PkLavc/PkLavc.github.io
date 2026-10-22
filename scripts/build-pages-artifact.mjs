@@ -4,6 +4,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { normalizeSeoDirectory } from "./normalize-seo.mjs";
 import { generateDiscovery } from "./generate-discovery.mjs";
+import { generateSkyletKnowledge } from "./generate-skylet-knowledge.mjs";
 import { enhanceStoreArtifact } from "./enhance-store-artifact.mjs";
 import { injectStoreTelegramInBlog } from "./inject-blog-store-telegram.mjs";
 
@@ -251,6 +252,8 @@ function main() {
   // Rebuild from the cleaned HTML so the sitemap and page alternates match.
   execFileSync(process.execPath, [path.join(root, "scripts", "generate-sitemaps.mjs"), "--root", outDir], { cwd: root, stdio: "inherit" });
   generateDiscovery(outDir);
+  const skylet = generateSkyletKnowledge(outDir);
+  console.log(`Skylet static knowledge: ${skylet.pages} pages, ${skylet.posts} posts, ${skylet.products} products, ${skylet.channels} public links (${Math.round(skylet.bytes / 1024)} KB).`);
   const commit = execFileSync("git", ["rev-parse", "HEAD"], { cwd: root, encoding: "utf8" }).trim();
   fs.mkdirSync(path.join(outDir, ".well-known"), { recursive: true });
   fs.writeFileSync(path.join(outDir, ".well-known", "site-deployment.json"), JSON.stringify({ commit }) + "\n");
