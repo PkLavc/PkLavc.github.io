@@ -18,8 +18,8 @@
   }
 
   window.PKLAVC_BLOG_ADS = {
-    geoEndpoint: 'https://api.pklavc.com/ads/geo',
-    geoTimeoutMs: 1500,
+    // Geo comes from the already submitted /analytics/visit response.
+    // Intentionally no separate geolocation endpoint.
     placements: {
       // Blog: Prime Video is fixed in-article and always appears first in the desktop sidebar.
       sidebar: rotatingPlacement({
