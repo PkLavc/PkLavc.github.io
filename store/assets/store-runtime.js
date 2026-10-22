@@ -404,6 +404,38 @@
     cards.forEach(function (card) { grid.appendChild(card); });
   }
 
+  function showProductLanding(product) {
+    var existing = document.querySelector('[data-featured-product-landing]');
+    if (existing) existing.remove();
+    if (!product) return null;
+    var section = document.createElement('section');
+    section.className = 'store-product-landing';
+    section.setAttribute('data-featured-product-landing', '');
+    section.setAttribute('aria-label', product.name || 'Store product');
+    var original = Number(product.price);
+    var shown = convertedPrice(original, product.currency);
+    var formatted = priceLabel(shown == null ? original : shown,
+      shown == null ? product.currency : displayCurrency) || labels.checkPrice;
+    section.innerHTML =
+      '<div class="store-product-landing-media"><img src="' + esc(product.picture) +
+      '" alt="' + esc(product.name) + '" loading="eager" referrerpolicy="no-referrer"></div>' +
+      '<div class="store-product-landing-details">' +
+      '<span class="store-product-landing-eyebrow">PKLAVC STORE</span>' +
+      '<h1>' + esc(product.name) + '</h1>' +
+      '<p class="store-product-landing-price">' + esc(formatted) + '</p>' +
+      (product.description ? '<p class="store-product-landing-description">' +
+        esc(String(product.description).slice(0, 850)) + '</p>' : '') +
+      '<a class="store-product-landing-cta" href="' + esc(product.url) +
+      '" target="_blank" rel="sponsored noopener noreferrer">' +
+      esc(labels.view) + ' ↗</a>' +
+      '<p class="store-product-landing-disclaimer">' +
+      'Prices, availability and purchases are confirmed by the partner store.' +
+      '</p></div>';
+    var insertion = document.querySelector('.results-toolbar') || grid;
+    insertion.parentNode.insertBefore(section, insertion);
+    return section;
+  }
+
   function renderProducts() {
     grid.replaceChildren();
     cards = products.map(productCard);
@@ -421,15 +453,14 @@
     renderFilters();
     currencyBounds();
     applyFilters();
-    if (requestedProductId) {
-      var pinnedCard = cards.find(function (card) {
-        return card.dataset.productId === requestedProductId;
+    var landingProduct = requestedProductId && products.find(function (product) {
+      return String(product.id) === requestedProductId;
+    });
+    var landing = showProductLanding(landingProduct);
+    if (landing) {
+      requestAnimationFrame(function () {
+        landing.scrollIntoView({ block: 'start', behavior: 'instant' });
       });
-      if (pinnedCard && !pinnedCard.hidden) {
-        requestAnimationFrame(function () {
-          pinnedCard.scrollIntoView({ block: 'center', behavior: 'instant' });
-        });
-      }
     }
   }
 

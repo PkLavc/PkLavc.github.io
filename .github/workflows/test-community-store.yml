@@ -1,0 +1,47 @@
+name: Validate Store rotations and community links
+
+on:
+  pull_request:
+    paths:
+      - "scripts/build-pages-artifact.mjs"
+      - "scripts/inject-blog-store-telegram.mjs"
+      - "scripts/inject-blog-store-telegram.test.mjs"
+      - "store/assets/store-runtime.js"
+      - "store/assets/store.css"
+      - ".github/workflows/store-community-rotation.yml"
+      - ".github/workflows/test-community-store.yml"
+  push:
+    branches: [main]
+    paths:
+      - "scripts/inject-blog-store-telegram.mjs"
+      - "scripts/inject-blog-store-telegram.test.mjs"
+      - "store/assets/store-runtime.js"
+      - ".github/workflows/test-community-store.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  offline:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - name: Verify community links in every language
+        run: node --test scripts/inject-blog-store-telegram.test.mjs
+      - name: Check product landing JS and static CTA flow
+        run: |
+          node --check store/assets/store-runtime.js
+          node --check scripts/build-pages-artifact.mjs
+          node --check scripts/inject-blog-store-telegram.mjs
+          grep -q "data-featured-product-landing" store/assets/store-runtime.js
+          grep -q 'new URLSearchParams(location.search)' store/assets/store-runtime.js
+          grep -q 'rel="sponsored noopener noreferrer"' store/assets/store-runtime.js
+      - name: Check independent Store schedule has 25 daily slots
+        run: |
+          grep -Fq '13 * * * *' .github/workflows/store-community-rotation.yml
+          grep -Fq '43 12 * * *' .github/workflows/store-community-rotation.yml

@@ -5,6 +5,7 @@ import path from "node:path";
 import { normalizeSeoDirectory } from "./normalize-seo.mjs";
 import { generateDiscovery } from "./generate-discovery.mjs";
 import { enhanceStoreArtifact } from "./enhance-store-artifact.mjs";
+import { injectStoreTelegramInBlog } from "./inject-blog-store-telegram.mjs";
 
 const root = process.cwd();
 const outDir = path.join(root, ".pages-dist");
@@ -232,6 +233,9 @@ function main() {
   if (!fs.existsSync(path.join(outDir, "blog", "index.html"))) {
     console.warn("Blog output is not synced yet; keeping the rest of the website deployable.");
   }
+
+  const injected = injectStoreTelegramInBlog(outDir, process.env.TELEGRAM_CHAT_STORE || "");
+  console.log(`Blog Store community links inserted into ${injected} article(s).`);
 
   publishAutotraderDashboard();
 
