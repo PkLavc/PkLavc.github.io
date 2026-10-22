@@ -8,6 +8,13 @@ on:
       - .github/workflows/deploy-cloudflare-worker.yml
   workflow_dispatch:
 
+# Only the newest main commit may deploy the production Worker.
+# Frequent site updates previously allowed older concurrent deploys
+# to overwrite newer analytics migrations/code.
+concurrency:
+  group: cloudflare-worker-production
+  cancel-in-progress: true
+
 jobs:
   validate:
     runs-on: ubuntu-latest
