@@ -82,7 +82,7 @@ describe("existing Worker visit and dashboard routes", () => {
     expect(calls[0].args[2]).toBe("BR|MG");
     expect(calls[0].args[3]).toBe("Minas Gerais");
     expect(calls[0].args[4]).toBe('{"instagram|games|games/gta-6-secret":1}');
-    expect(calls[0].args.at(-1)).toBe(50000);
+    expect(calls[0].args.at(-1)).toBe(85000);
     expect(calls[0].args.join("|")).not.toContain("private=");
   });
   it("rejects origin spoofed by a different website", async () => {
