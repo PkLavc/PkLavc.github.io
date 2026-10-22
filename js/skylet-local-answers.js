@@ -217,6 +217,11 @@
   function answerFrom(index, question, history, locale) {
     var q = norm(question);
     if (!q || q.length > 600) return null;
+    // General tutorials must not be misread as questions about PkLavc's
+    // projects/channels/store merely because a shared noun appears.
+    var siteAnchored = /\b(patrick|pklavc|skylet|meu|meus|minha|minhas|seu|sua|deste|dessa|this site|your site|lavc systems|codepulse)\b/.test(q);
+    if (!siteAnchored && /^(como|how|ensine|teach|me explique|explique|explain)\b/.test(q) &&
+        /\b(criar|create|build|fazer|montar|construir|programar|aprender|learn|instalar|install)\b/.test(q)) return null;
     // Never hijack clearly unrelated conversations. In such cases, Skylet's
     // server still applies its own safety, website-scope and budget policies.
     if (/\b(previsao do tempo|weather|loteria|lottery|piada|joke|receita|bolo|cake|horoscopo)\b/.test(q)) return null;
@@ -230,6 +235,12 @@
       actualQuestion = prior.content.slice(0, 150) + ' ' + question;
     }
     var nameQuestion = norm(actualQuestion);
+    // Conflicting, unrelated domains require interpretation from Skylet AI.
+    // A single local template should not assert that an article, employer
+    // and product mentioned in the same question are equivalent.
+    var domainHits = [groupWords.blogs, groupWords.stores, groupWords.work, groupWords.projects]
+      .filter(function (pattern) { return pattern.test(nameQuestion); }).length;
+    if (domainHits > 1 && !/\b(lavc systems|codepulse|loja do sapo|icaiu|skylet assistant)\b/.test(nameQuestion)) return null;
     var namesKnownEmployer = Array.isArray(index.work) && index.work.some(function (entry) {
       return norm(entry.n).length > 3 && nameQuestion.includes(norm(entry.n));
     });
