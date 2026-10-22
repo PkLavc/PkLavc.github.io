@@ -61,8 +61,8 @@ function renderProductSharePage(product, locale) {
   const prefix = locale === "en" ? "/store/" : `/store/${locale}/`;
   const shareUrl = `https://pklavc.com${prefix}product/${encodeURIComponent(id)}/`;
   const storeUrl = `https://pklavc.com${prefix}?product=${encodeURIComponent(id)}`;
-  const title = String(product.name).replace(/\\s+/g, " ").trim().slice(0, 160);
-  const description = [formatMoney(product, locale), String(product.description || "").replace(/\\s+/g, " ").trim().slice(0, 190)]
+  const title = String(product.name).replace(/\s+/g, " ").trim().slice(0, 160);
+  const description = [formatMoney(product, locale), String(product.description || "").replace(/\s+/g, " ").trim().slice(0, 190)]
     .filter(Boolean).join(" — ") || copy[locale].description;
   const imageUrl = new URL(product.picture).href;
   const lang = locale === "pt" ? "pt-BR" : locale;
