@@ -7,6 +7,7 @@ import { parseInstagramWebhook } from "./instagram-webhook";
 import { handleTikTokOAuthExchange, handleTikTokOAuthStart, handleTikTokLogout, hasTikTokReviewSession, publicTikTokConfig } from "./tiktok-oauth";
 import { verifyGithubActionsOidc } from "./github-oidc";
 import { dimensionsOfVisit } from "./traffic-attribution";
+import { combineGeoVisits, combineTrafficVisits, type VisitorRollupRow } from "./visitor-rollup";
 import { handleTikTokCreatorInfo, handleTikTokDirectFilePost, handleTikTokDirectPost, handleTikTokDraftFileUpload, handleTikTokMediaProxy, handleTikTokPostStatus, handleTikTokUserInfo } from "./tiktok-publish";
 
 export interface Env {
@@ -105,7 +106,8 @@ const MAX_MEMORY_ITEMS = 8;
 const SITE_RAG_CACHE_KEY = "site_rag_cache:v2";
 const SITE_RAG_META_KEY = "site_rag_cache_meta:v2";
 const SITE_RAG_CACHE_TTL_SECONDS = 4 * 3600;
-const OPTIONAL_VISIT_DAILY_LIMIT = 600;   // per PkLavc/Macca site
+const LEGACY_MACCA_VISIT_DAILY_LIMIT = 600; // Compatibility only; Macca is hosted separately.
+const PKLAVC_VISIT_DAILY_LIMIT = 50_000; // One D1 write/visit; reserve the rest for essential services.
 const OPTIONAL_CHAT_DAILY_LIMIT = 60;    // in-scope, non-FAQ chat requests
 
 const SITE_RAG_SOURCE_PATHS = ["/", "/about/", "/pt/sobre/", "/es/sobre/", "/projects/", "/projects/lavc-systems/", "/projects/raw-api-ingestion-pipeline/", "/projects/zoho-integration-worker/", "/stacks/zoho-deluge-developer/", "/blog/", "/blog/en/games/", "/blog/en/tech/", "/store/", "/blog/raw-api-ingestion-supabase-sql/"];
@@ -317,59 +319,68 @@ export default {
         const visitDate = new Date().toISOString().slice(0, 10);
         const updatedAt = new Date().toISOString();
 
-        // This is optional traffic telemetry. Preserve the blog, chat, TikTok
-        // APIs and essential workers by stopping its writes at a hard ceiling.
-        const analyticsKind = analyticsSite === "macca" ? "visit_macca" : "visit_pklavc";
-        if (!await reserveOptionalUsage(env, analyticsKind, OPTIONAL_VISIT_DAILY_LIMIT)) {
-          // Even when the D1 visit budget is exhausted, return the country
-          // from this same request so the browser does not need /ads/geo.
+        if (analyticsSite === "macca") {
+          // Backward compatibility for an older client, not PKLAVC's budget.
+          if (!await reserveOptionalUsage(env, "visit_macca", LEGACY_MACCA_VISIT_DAILY_LIMIT)) {
+            return geoVisitResponse();
+          }
+          await env.DB.prepare(
+            `INSERT INTO macca_geo_visit_daily
+              (visit_date, country_code, region_code, region_name, visits, updated_at)
+             VALUES (?, ?, ?, ?, 1, ?)
+             ON CONFLICT(visit_date, country_code, region_code)
+             DO UPDATE SET visits = visits + 1,
+               region_name = CASE WHEN excluded.region_name <> ''
+                 THEN excluded.region_name ELSE macca_geo_visit_daily.region_name END,
+               updated_at = excluded.updated_at`,
+          ).bind(visitDate, countryCode, regionCode, regionName, updatedAt).run();
           return geoVisitResponse();
         }
 
-        await env.DB.prepare(
-          `INSERT INTO ${tableName} (
-            visit_date,
-            country_code,
-            region_code,
-            region_name,
-            visits,
-            updated_at
-          ) VALUES (?, ?, ?, ?, 1, ?)
-          ON CONFLICT(visit_date, country_code, region_code)
-          DO UPDATE SET
-            visits = visits + 1,
-            region_name = CASE
-              WHEN excluded.region_name <> '' THEN excluded.region_name
-              ELSE ${tableName}.region_name
-            END,
-            updated_at = excluded.updated_at`,
-        )
-          .bind(visitDate, countryCode, regionCode, regionName, updatedAt)
-          .run();
-
-        // Keep existing geographic totals untouched. Only aggregate a coarse,
-        // allowlisted traffic channel and blog article for PkLavc, never
-        // individual identities or full URLs/referrers. One row per dimension/day.
-        if (analyticsSite === "pklavc" && isTikTokWebOrigin(origin)) {
+        // Single atomic D1 write for visit budget + geography + attribution.
+        // One row per UTC day (no secondary indexes); no D1 write for a
+        // separate daily counter, geo table or traffic-source table.
+        let dimensions = { channel: "direct", section: "portfolio", pageKey: "other" };
+        if (isTikTokWebOrigin(origin)) {
           try {
             const raw = await request.text();
-            const visit = raw.length <= 700 ? JSON.parse(raw || "{}") : {};
-            const { channel, section, pageKey } = dimensionsOfVisit(visit);
-            // Avoid doubling D1 writes for all ordinary direct and unknown
-            // visitors. Retain the original geographic count unchanged.
-            if (channel !== "direct" && channel !== "other") await env.DB.prepare(
-              `INSERT INTO traffic_source_daily
-                (visit_date, channel, section, page_key, visits, updated_at)
-                VALUES (?, ?, ?, ?, 1, ?)
-                ON CONFLICT(visit_date, channel, section, page_key)
-                DO UPDATE SET visits = visits + 1, updated_at = excluded.updated_at`,
-            ).bind(visitDate, channel, section, pageKey, updatedAt).run();
+            dimensions = dimensionsOfVisit(raw.length <= 700 ? JSON.parse(raw || "{}") : {});
           } catch {
-            // An unavailable attribution table must never break the geo map
-            // counter or visitor experience; deployment migrations run first.
-            console.warn("visit_attribution_unavailable");
+            // Malformed optional attribution only drops the source label.
           }
         }
+        const geoKey = countryCode + "|" + regionCode;
+        const geoPath = '$."' + geoKey + '"';
+        const attributable = dimensions.channel !== "direct" && dimensions.channel !== "other";
+        const sourceKey = attributable
+          ? [dimensions.channel, dimensions.section, dimensions.pageKey].join("|") : "";
+        const sourcePath = '$."' + sourceKey + '"';
+        // RETURNING is null at the ceiling: 0 writes, but the same response
+        // still supplies geolocation to Store and ads.
+        await env.DB.prepare(
+          `INSERT INTO pklavc_visit_rollup_daily
+            (visit_date, visits, geo_counts, region_names, source_counts, updated_at)
+           VALUES (?, 1, json_object(?, 1), json_object(?, ?), ?, ?)
+           ON CONFLICT(visit_date) DO UPDATE SET
+             visits = visits + 1,
+             geo_counts = json_set(geo_counts, ?,
+               COALESCE(json_extract(geo_counts, ?), 0) + 1),
+             region_names = CASE WHEN ? <> '' THEN
+               json_set(region_names, ?, ?) ELSE region_names END,
+             source_counts = CASE WHEN ? = 1 THEN
+               json_set(source_counts, ?,
+                 COALESCE(json_extract(source_counts, ?), 0) + 1)
+               ELSE source_counts END,
+             updated_at = excluded.updated_at
+           WHERE visits < ?
+           RETURNING visits`,
+        ).bind(
+          visitDate, geoKey, geoKey, regionName,
+          attributable ? JSON.stringify({ [sourceKey]: 1 }) : "{}", updatedAt,
+          geoPath, geoPath, regionName, geoPath, regionName,
+          attributable ? 1 : 0, sourcePath, sourcePath,
+          PKLAVC_VISIT_DAILY_LIMIT,
+        ).first<{ visits: number }>();
         return geoVisitResponse();
       }
 
@@ -385,26 +396,30 @@ export default {
           `SELECT section, page_key, SUM(visits) AS visits FROM traffic_source_daily
              ${dateClause} GROUP BY section, page_key ORDER BY visits DESC, page_key ASC LIMIT 20`,
         );
-        const [sources, pages] = await Promise.all([
+        const rollupQuery = env.DB.prepare(
+          `SELECT geo_counts, region_names, source_counts
+             FROM pklavc_visit_rollup_daily ${dateClause}
+             ORDER BY visit_date DESC`,
+        );
+        const [sources, pages, rollups] = await Promise.all([
           period.days === null
             ? channelsQuery.all<{ channel: string; visits: number }>()
             : channelsQuery.bind(since).all<{ channel: string; visits: number }>(),
           period.days === null
             ? pagesQuery.all<{ section: string; page_key: string; visits: number }>()
             : pagesQuery.bind(since).all<{ section: string; page_key: string; visits: number }>(),
+          period.days === null
+            ? rollupQuery.all<VisitorRollupRow>()
+            : rollupQuery.bind(since).all<VisitorRollupRow>(),
         ]);
-        const channels = (sources.results || []).map(row => ({
-          channel: row.channel, visits: Number(row.visits || 0),
-        }));
+        const traffic = combineTrafficVisits(sources.results || [], pages.results || [], rollups.results || []);
         const response = json({
           ok: true,
           generated_at: new Date().toISOString(),
           period: { key: period.key, days: period.days },
-          summary: { attributed_visits: channels.reduce((sum, row) => sum + row.visits, 0) },
-          channels,
-          pages: (pages.results || []).map(row => ({
-            section: row.section, page_key: row.page_key, visits: Number(row.visits || 0),
-          })),
+          summary: { attributed_visits: traffic.attributed_visits },
+          channels: traffic.channels,
+          pages: traffic.pages,
           note: "Anonymous counted sessions since source tracking was enabled; not unique people, clicks or conversions.",
         });
         response.headers.set("Cache-Control", "public, max-age=60, s-maxage=300");
@@ -441,57 +456,20 @@ export default {
           ? await regionStatement.all<GeoRegionRow>()
           : await regionStatement.bind(since).all<GeoRegionRow>();
 
-        const regionsByCountry = new Map<string, Array<{
-          code: string;
-          name: string;
-          visits: number;
-        }>>();
-
-        for (const row of regionResult.results || []) {
-          const code = normalizeCountryCode(row.country_code);
-          if (!code) {
-            continue;
-          }
-
-          const regions = regionsByCountry.get(code) || [];
-          regions.push({
-            code: normalizeGeoValue(row.region_code, 24),
-            name: normalizeGeoValue(row.region_name, 80) || normalizeGeoValue(row.region_code, 24) || "Unknown region",
-            visits: Number(row.visits || 0),
-          });
-          regionsByCountry.set(code, regions);
-        }
-
-        const countries = (countryResult.results || [])
-          .map((row) => {
-            const code = normalizeCountryCode(row.country_code);
-            return code
-              ? {
-                  code,
-                  visits: Number(row.visits || 0),
-                  regions: regionsByCountry.get(code) || [],
-                }
-              : null;
-          })
-          .filter((country): country is {
-            code: string;
-            visits: number;
-            regions: Array<{ code: string; name: string; visits: number }>;
-          } => country !== null);
-
+        const rollupRows = analyticsSite === "pklavc"
+          ? await (period.days === null
+              ? env.DB.prepare("SELECT geo_counts, region_names, source_counts FROM pklavc_visit_rollup_daily").all<VisitorRollupRow>()
+              : env.DB.prepare(`SELECT geo_counts, region_names, source_counts
+                  FROM pklavc_visit_rollup_daily WHERE visit_date >= date('now', ?)`)
+                .bind(since).all<VisitorRollupRow>())
+          : { results: [] as VisitorRollupRow[] };
+        const merged = combineGeoVisits(countryResult.results || [], regionResult.results || [], rollupRows.results || []);
         const response = json({
           ok: true,
           generated_at: new Date().toISOString(),
-          period: {
-            key: period.key,
-            days: period.days,
-          },
-          summary: {
-            visits: countries.reduce((total, country) => total + country.visits, 0),
-            countries: countries.length,
-            regions: (regionResult.results || []).length,
-          },
-          countries,
+          period: { key: period.key, days: period.days },
+          summary: merged.summary,
+          countries: merged.countries,
         });
         response.headers.set("Cache-Control", "public, max-age=60, s-maxage=300, stale-while-revalidate=600");
 
