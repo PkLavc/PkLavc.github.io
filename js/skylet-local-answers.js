@@ -193,8 +193,21 @@
         '\nhttps://pklavc.com/store/';
     }
     var chosen = top(products.filter(function (p) { return p.a !== false; }), query, ['n','c','b','d','s'], 5, 3);
-    if (!chosen.length && recent(query) && words(query).length === 0) chosen = products.slice(0, 4);
-    if (!chosen.length) return null;
+    var terms = words(query);
+    var catalogWide = terms.length === 0 || terms.every(function (term) {
+      return /^(price|prices|preco|precos|valor|valores|cost|custo|custos)$/.test(term);
+    });
+    if (!chosen.length && catalogWide && (recent(query) || listing(query) ||
+        /\b(precos?|prices?|valores?|costs?)\b/.test(q))) {
+      chosen = products.filter(function (p) { return p.a !== false; }).slice(0, 5);
+    }
+    if (!chosen.length) {
+      if (!(listing(query) || /\b(precos?|prices?|valores?|costs?|disponiv|available)\b/.test(q))) return null;
+      return localized(locale,
+        'Não encontrei itens correspondentes no catálogo atual. Confira as opções em https://pklavc.com/store/',
+        'I could not find matching items in the current catalog. Browse https://pklavc.com/store/',
+        'No encontré artículos que coincidan en el catálogo actual. Consulta https://pklavc.com/store/');
+    }
     return localized(locale,'Produtos encontrados no catálogo:','Products found in the catalog:','Productos encontrados en el catálogo:') +
       '\n' + chosen.map(function (p) {
         var money = p.pr && p.cur ? ' — ' + p.pr.toLocaleString(locale === 'pt' ? 'pt-BR' : locale === 'es' ? 'es-ES' : 'en-US', { style:'currency', currency:p.cur }) : '';
@@ -205,7 +218,7 @@
   }
   function resolveProfile(query, index, locale) {
     var q = norm(query);
-    if (!groupWords.profile.test(q) && !/\bpatrick(?: araujo)?\b/.test(q)) return null;
+    if (!groupWords.profile.test(q) && !/\b(patrick(?: araujo)?|pklavc)\b/.test(q)) return null;
     if (groupWords.work.test(q)) return null;
     var path = locale === 'pt' ? '/pt/sobre/' : locale === 'es' ? '/es/sobre/' : '/about/';
     var page = index.pages.find(function (p) { return p.u === path; }) ||
@@ -261,7 +274,7 @@
       // Generic chit-chat continues through Skylet's existing route.
       var q = norm(question);
       var relevant = Object.keys(groupWords).some(function (kind) { return groupWords[kind].test(q); }) ||
-        /\b(patrick|pklavc|lavc systems|skylet|loja do sapo|icaiu|codepulse|aegis|cipher gate)\b/.test(q);
+        /\b(patrick|pklavc|lavc systems|skylet|loja do sapo|icaiu|wr auto pecas|federico nacucchio|raw api|ingestion|pipeline|codepulse|aegis|cipher gate)\b/.test(q);
       if (!relevant) return Promise.resolve(null);
       return load().then(function (data) { return data ? answerFrom(data, question, history, locale) : null; });
     }
