@@ -41,7 +41,7 @@
   }
 
   function browserKnowledgeCandidate(question) {
-    return /\b(patrick|pklavc|projet|project|portfolio|portf[oó]lio|blog|artigo|article|post|not[ií]cia|news|loja|store|shop|produto|product|oferta|pre[cç]o|price|compra|buy|canal|channel|video|v[ií]deo|youtube|instagram|discord|telegram|linkedin|github|tiktok|skylet|codepulse|lavc|cargos?|empresas?|work|career|trabalh|empreg|experi[eê]ncia|skills?|tecnologia|tech|games)\b/i.test(question);
+    return /\b(patrick|pklavc|projet|project|portfolio|portf[oó]lio|blog|artigo|article|post|not[ií]cia|news|public|novidade|update|gta|rockstar|loja|store|shop|produto|product|oferta|pre[cç]o|price|compra|buy|canal|channel|video|v[ií]deo|youtube|instagram|discord|telegram|linkedin|github|tiktok|skylet|codepulse|lavc|cargos?|empresas?|work|career|trabalh|empreg|experi[eê]ncia|skills?|tecnologia|tech|games)\b/i.test(question);
   }
 
   async function answerFromBrowser(question) {
