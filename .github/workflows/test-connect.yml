@@ -1,0 +1,37 @@
+name: Validate multilingual Connect link-in-bio pages
+on:
+  pull_request:
+    paths:
+      - "connect/**"
+      - "pt/connect/**"
+      - "es/connect/**"
+      - "scripts/build-pages-artifact.mjs"
+      - "scripts/test-connect.mjs"
+      - ".github/workflows/test-connect.yml"
+  push:
+    branches: [main]
+    paths:
+      - "connect/**"
+      - "pt/connect/**"
+      - "es/connect/**"
+      - "scripts/build-pages-artifact.mjs"
+      - "scripts/test-connect.mjs"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - name: Verify all three Connect locales, links and canonical paths
+        run: |
+          node --test scripts/test-connect.mjs
+          node --check connect/connect.js
+          node --check scripts/build-pages-artifact.mjs
