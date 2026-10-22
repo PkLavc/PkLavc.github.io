@@ -8,24 +8,7 @@
     'sponsor', 'stack', 'store', 'telegram', 'threads', 'tiktok', 'youtube'
   ]);
   const timers = new WeakMap();
-  const states = new WeakMap();
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-  const observer = 'IntersectionObserver' in window
-    ? new IntersectionObserver((entries) => {
-        for (const entry of entries) {
-          const state = states.get(entry.target);
-          if (!state) continue;
-          state.visible = entry.isIntersecting;
-          if (!state.ready) continue;
-          if (state.visible) {
-            startVisible(entry.target, state);
-          } else {
-            clearPlayerTimer(entry.target);
-            entry.target.pause?.();
-          }
-        }
-      }, { rootMargin: '90px 0px', threshold: 0 })
-    : null;
 
   function assetName(player) {
     const source = player.getAttribute('src') || '';
@@ -35,91 +18,69 @@
 
   function clearPlayerTimer(player) {
     const timer = timers.get(player);
-    if (timer !== undefined) window.clearTimeout(timer);
+    if (timer) window.clearTimeout(timer);
     timers.delete(player);
   }
 
   function applyPlaybackSettings(player) {
     player.removeAttribute('loop');
-    player.loop = false;
-    player.autoplay = false;
     player.setAttribute('speed', String(SPEED));
-    player.setLooping?.(false);
-    player.setSpeed?.(SPEED);
+    player.loop = false;
+    if (typeof player.setLooping === 'function') player.setLooping(false);
+    if (typeof player.setSpeed === 'function') player.setSpeed(SPEED);
   }
 
-  function pauseAtStart(player, state) {
+  function pauseAtStart(player, delay) {
     clearPlayerTimer(player);
-    player.pause?.();
-    player.seek?.(0);
-    if (reduceMotion.matches || !state.visible) return;
-    const delay = state.name === 'youtube' ? YOUTUBE_START_HOLD_MS : 0;
-    if (!delay) {
-      player.play?.();
-      return;
-    }
-    timers.set(player, window.setTimeout(() => {
+    if (typeof player.pause === 'function') player.pause();
+    if (typeof player.seek === 'function') player.seek(0);
+
+    if (reduceMotion.matches) return;
+    const timer = window.setTimeout(() => {
       timers.delete(player);
-      if (state.visible && !reduceMotion.matches) player.play?.();
-    }, delay));
+      applyPlaybackSettings(player);
+      if (typeof player.play === 'function') player.play();
+    }, delay);
+    timers.set(player, timer);
   }
 
-  function startVisible(player, state) {
-    if (!state.ready || !state.visible) return;
-    // Preserve the final-frame hold, even if IntersectionObserver fires again.
-    if (state.completed && timers.has(player)) return;
-    if (reduceMotion.matches) {
-      clearPlayerTimer(player);
-      player.pause?.();
-      // Frame zero of many social assets only contains an empty outline.
-      player.seek?.('70%');
-      return;
-    }
-    if (!state.started || state.completed) {
-      state.started = true;
-      state.completed = false;
-      pauseAtStart(player, state);
-    } else if (!timers.has(player)) {
-      player.play?.();
-    }
+  function restartAfterHold(player, name) {
+    clearPlayerTimer(player);
+    if (typeof player.pause === 'function') player.pause();
+
+    const timer = window.setTimeout(() => {
+      timers.delete(player);
+      if (name === 'youtube') {
+        pauseAtStart(player, YOUTUBE_START_HOLD_MS);
+        return;
+      }
+      if (reduceMotion.matches) {
+        if (typeof player.seek === 'function') player.seek(0);
+        return;
+      }
+      applyPlaybackSettings(player);
+      if (typeof player.seek === 'function') player.seek(0);
+      if (typeof player.play === 'function') player.play();
+    }, END_HOLD_MS);
+    timers.set(player, timer);
   }
 
   function configurePlayer(player) {
     const name = assetName(player);
-    if (!supportedAssets.has(name) || states.has(player)) return;
-    const state = { name, ready: false, started: false, completed: false, visible: !observer };
-    states.set(player, state);
-    applyPlaybackSettings(player);
+    if (!supportedAssets.has(name) || player.dataset.lottiePlayback === 'slow-hold') return;
 
-    player.addEventListener('complete', () => {
-      if (!state.visible || reduceMotion.matches) return;
-      state.completed = true;
-      clearPlayerTimer(player);
-      player.pause?.();
-      timers.set(player, window.setTimeout(() => {
-        timers.delete(player);
-        if (state.visible && !reduceMotion.matches) startVisible(player, state);
-      }, END_HOLD_MS));
-    });
+    player.dataset.lottiePlayback = 'slow-hold';
+    applyPlaybackSettings(player);
+    player.addEventListener('complete', () => restartAfterHold(player, name));
 
     const onReady = () => {
-      state.ready = true;
-      state.started = false;
-      state.completed = false;
-      clearPlayerTimer(player);
       applyPlaybackSettings(player);
-      if (state.visible) startVisible(player, state);
-      else player.pause?.();
+      if (name === 'youtube') pauseAtStart(player, YOUTUBE_START_HOLD_MS);
+      else if (reduceMotion.matches && typeof player.pause === 'function') player.pause();
     };
-    // SVG renderer stays in place; do not reload animations on mobile.
-    player.addEventListener('ready', onReady);
-    observer?.observe(player);
 
-    if (typeof player.getLottie === 'function') {
-      Promise.resolve(player.getLottie()).then((animation) => {
-        if (animation && !state.ready && player.isConnected) onReady();
-      }).catch(() => {});
-    }
+    player.addEventListener('ready', onReady, { once: true });
+    if (typeof player.getLottie === 'function' && player.getLottie()) onReady();
   }
 
   function configureAll(root = document) {
@@ -130,17 +91,10 @@
   function initialize() {
     configureAll();
     new MutationObserver((mutations) => {
-      for (const mutation of mutations) {
-        for (const node of mutation.addedNodes) {
-          if (node.nodeType === Node.ELEMENT_NODE) configureAll(node);
-        }
-      }
+      mutations.forEach((mutation) => mutation.addedNodes.forEach((node) => {
+        if (node.nodeType === Node.ELEMENT_NODE) configureAll(node);
+      }));
     }).observe(document.documentElement, { childList: true, subtree: true });
-
-    // Safari may suspend requestAnimationFrame after a tab is backgrounded.
-    document.addEventListener('visibilitychange', () => {
-      if (!document.hidden) configureAll();
-    });
   }
 
   if (document.readyState === 'loading') {
