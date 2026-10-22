@@ -242,15 +242,15 @@ body {
 }
 
 .skill-icon-python {
-    --skill-icon-url: url("/images/techstack/python-icon.svg?v=7e7266b29c");
+    --skill-icon-url: url("/images/techstack/python-icon.svg?v=95facd8537");
 }
 
 .skill-icon-js {
-    --skill-icon-url: url("/images/techstack/js-icon.svg?v=fb8c820909");
+    --skill-icon-url: url("/images/techstack/js-icon.svg?v=e95bbae48e");
 }
 
 .skill-icon-aws {
-    --skill-icon-url: url("/images/techstack/aws-icon.svg?v=86c4203d82");
+    --skill-icon-url: url("/images/techstack/aws-icon.svg?v=3b4bac8811");
 }
 
 .skill-icon-html5 {
@@ -262,23 +262,23 @@ body {
 }
 
 .skill-icon-docker {
-    --skill-icon-url: url("/images/techstack/docker-icon.svg?v=fe4ce38462");
+    --skill-icon-url: url("/images/techstack/docker-icon.svg?v=b7bcc44a91");
 }
 
 .skill-icon-sql {
-    --skill-icon-url: url("/images/techstack/mysql-icon.svg?v=ef168c99f5");
+    --skill-icon-url: url("/images/techstack/mysql-icon.svg?v=4cb9db2172");
 }
 
 .skill-icon-rest {
-    --skill-icon-url: url("/images/techstack/restapi-icon.svg?v=18e66675ff");
+    --skill-icon-url: url("/images/techstack/restapi-icon.svg?v=dd9cef94b6");
 }
 
 .skill-icon-github {
-    --skill-icon-url: url("/images/techstack/github-icon.svg?v=7b8e3a8d79");
+    --skill-icon-url: url("/images/techstack/github-icon.svg?v=d6684c42e4");
 }
 
 .skill-icon-java {
-    --skill-icon-url: url("/images/techstack/java-icon.svg?v=3f7d9ff23e");
+    --skill-icon-url: url("/images/techstack/java-icon.svg?v=d69bb9c714");
 }
 
 .skill-icon-php {
@@ -286,7 +286,7 @@ body {
 }
 
 .skill-icon-react {
-    --skill-icon-url: url("/images/techstack/react-icon.svg?v=ef70909a97");
+    --skill-icon-url: url("/images/techstack/react-icon.svg?v=008fd1e447");
 }
 
 .skill-icon-c {
@@ -294,11 +294,11 @@ body {
 }
 
 .skill-icon-cpp {
-    --skill-icon-url: url("/images/techstack/cpp-icon.svg?v=0c10b6a4d2");
+    --skill-icon-url: url("/images/techstack/cpp-icon.svg?v=42d3baf5a3");
 }
 
 .skill-icon-csharp {
-    --skill-icon-url: url("/images/techstack/csharp-icon.svg?v=3e8102b629");
+    --skill-icon-url: url("/images/techstack/csharp-icon.svg?v=7b90f66a0d");
 }
 .about-profile-img {
     flex: 0 0 280px;
@@ -1494,105 +1494,27 @@ body {
 }
 
 .professional-experience-section .experience-content {
-    display: flex;
+    display: grid;
     gap: 18px;
     margin-top: 14px;
-    align-items: flex-start;
-    overflow-x: auto;
-    overflow-y: hidden;
-    padding: 12px 42px 0;
-    scroll-snap-type: x mandatory;
-    scroll-padding-inline: 42px;
-    scrollbar-width: none;
-    -webkit-overflow-scrolling: touch;
-    cursor: grab;
-    min-height: var(--experience-track-height, auto);
+    align-items: stretch;
+    overflow: visible;
+    padding: 0;
 }
 
 .professional-experience-section {
     position: relative;
 }
 
-.professional-experience-section.is-experience-end {
-    padding-bottom: 30px;
-}
-
-.professional-experience-section .experience-content::-webkit-scrollbar {
-    display: none;
-}
-
-.professional-experience-section.is-experience-dragging .experience-content {
-    cursor: grabbing;
-    scroll-snap-type: none;
-}
-
-.professional-experience-section.is-experience-dragging .experience-company {
-    user-select: none;
-}
-
 .experience-company {
-    flex: 0 0 clamp(320px, 38vw, 430px);
-    scroll-snap-align: center;
+    width: 100%;
     min-width: 0;
     margin: 0;
-    padding: 18px;
-    border: 1px solid rgba(0, 209, 255, 0.14);
-    border-radius: 8px;
-    background:
-        linear-gradient(180deg, rgba(0, 209, 255, 0.045), rgba(255, 255, 255, 0.018)),
-        rgba(12, 12, 12, 0.72);
-}
-
-.experience-carousel-return {
-    position: absolute;
-    top: var(--experience-return-top, 100%);
-    left: var(--experience-return-left, 0);
-    width: max-content;
-    display: grid;
-    justify-items: center;
-    gap: 0;
-    margin: 0;
-    padding: 0;
-    border: 0 !important;
-    background: transparent !important;
-    box-shadow: none !important;
-    color: var(--clr-primary) !important;
-    -webkit-text-fill-color: var(--clr-primary) !important;
-    cursor: pointer;
-    font: 700 0.78rem/0.82 'Inter', sans-serif;
-    letter-spacing: 0.02em;
-    transition: opacity 0.2s ease, transform 0.2s ease;
-    z-index: 2;
-}
-
-.experience-carousel-return[hidden] {
-    display: none;
-}
-
-.experience-carousel-return span:last-child {
-    display: inline-block;
-    width: auto;
-    margin-top: -2px;
-    font-size: 1.05rem;
-    line-height: 0.72;
-    text-align: center;
-    transform: scaleX(2.85);
-    transform-origin: center;
-}
-
-.experience-carousel-return span {
-    display: block;
-    width: 100%;
-    text-align: center;
-    color: var(--clr-primary) !important;
-    -webkit-text-fill-color: var(--clr-primary) !important;
-}
-
-.experience-carousel-return:hover,
-.experience-carousel-return:focus-visible {
-    opacity: 0.78;
-    outline: none;
-    transform: translateX(-2px);
+    padding: 18px 0;
+    border: 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0;
+    background: transparent;
 }
 
 .experience-company-header {
@@ -1644,10 +1566,11 @@ body {
 }
 
 .experience-role {
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 6px;
-    background: rgba(255, 255, 255, 0.025);
-    overflow: hidden;
+    border: 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 0;
+    background: transparent;
+    overflow: visible;
 }
 
 .experience-role-toggle {
@@ -1677,7 +1600,7 @@ body {
 
 .experience-role-toggle:hover,
 .experience-role-toggle:focus-visible {
-    background: rgba(0, 209, 255, 0.07) !important;
+    background: transparent !important;
     outline: none;
 }
 
@@ -1766,20 +1689,8 @@ body {
         margin-left: 0;
     }
 
-    .professional-experience-section .experience-content {
-        gap: 14px;
-        margin-inline: -12px;
-        padding: 12px 34px 0;
-        scroll-padding-inline: 34px;
-    }
-
-    .experience-carousel-return {
-        margin: 0;
-    }
-
     .experience-company {
-        flex: 0 0 min(72vw, 340px);
-        padding: 12px;
+        padding: 14px 0;
     }
 
     .experience-company-header {
