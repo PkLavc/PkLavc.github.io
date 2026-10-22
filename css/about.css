@@ -2047,6 +2047,31 @@ body {
     .about-profile-singularity.black-hole-ready:focus-within .img-border { transform: scale(.1); filter: none; opacity: .15; }
 }
 
+/* Compact the mobile About intro: the page-specific legacy styles use 60px padding. */
+@media (max-width: 768px) {
+    #about .about-container {
+        padding: 24px 20px 34px;
+        gap: 8px;
+    }
+
+    #about .about-side-title {
+        margin-bottom: 0;
+    }
+
+    #about .about-side-title h1,
+    #about .about-side-title h2 {
+        margin-bottom: 0;
+    }
+
+    #about .about-profile-img {
+        margin-bottom: 0;
+    }
+
+    #about .about-content-wrapper {
+        gap: 10px;
+    }
+}
+
 
 /* About-page logo rails: soft edge fade + horizontal tech stack */
 .professional-experience-section .brands-section .slider {
