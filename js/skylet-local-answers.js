@@ -134,13 +134,15 @@
   }
   function resolveProjects(query, index, locale) {
     var q = norm(query);
+    // Search titles in all three languages. The visitor may use a project's
+    // original English product name while asking in Portuguese or Spanish.
     var entries = index.pages.filter(function (p) {
-      return p.l === (locale === 'en' ? 'en' : locale) &&
-        /^\/(?:projects|pt\/projetos|es\/proyectos)\//.test(p.u) &&
+      return /^\/(?:projects|pt\/projetos|es\/proyectos)\//.test(p.u) &&
         p.u.split('/').filter(Boolean).length > 1;
-    });
-    if (!entries.length) entries = index.pages.filter(function (p) {
-      return p.l === 'en' && p.u.startsWith('/projects/') && p.u !== '/projects/';
+    }).sort(function (a, b) {
+      var aLang = a.l === locale ? 1 : 0;
+      var bLang = b.l === locale ? 1 : 0;
+      return bLang - aLang;
     });
     var named = entries.find(function (p) {
       var name = norm(String(p.t).split(/[|—–]/)[0]);
