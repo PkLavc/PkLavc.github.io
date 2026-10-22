@@ -25,6 +25,38 @@
     } catch (_) { return null; }
   }
 
+  var localAnswerEnginePromise = null;
+  function loadLocalAnswerEngine() {
+    if (window.PkLavcSkyletLocal) return Promise.resolve(window.PkLavcSkyletLocal);
+    if (localAnswerEnginePromise) return localAnswerEnginePromise;
+    localAnswerEnginePromise = new Promise(function (resolve) {
+      var script = document.createElement('script');
+      script.src = '/js/skylet-local-answers.js';
+      script.async = true;
+      script.onload = function () { resolve(window.PkLavcSkyletLocal || null); };
+      script.onerror = function () { resolve(null); };
+      document.head.appendChild(script);
+    });
+    return localAnswerEnginePromise;
+  }
+
+  function browserKnowledgeCandidate(question) {
+    return /\b(patrick|pklavc|projet|project|portfolio|portf[oó]lio|blog|artigo|article|post|not[ií]cia|news|loja|store|shop|produto|product|oferta|pre[cç]o|price|compra|buy|canal|channel|video|v[ií]deo|youtube|instagram|discord|telegram|linkedin|github|tiktok|skylet|codepulse|lavc|cargos?|empresas?|work|career|trabalh|empreg|experi[eê]ncia|skills?|tecnologia|tech|games)\b/i.test(question);
+  }
+
+  async function answerFromBrowser(question) {
+    // Active server conversations can include Discord human takeover.
+    // Never bypass the server for a human-supported conversation.
+    if (state.conversationId || !browserKnowledgeCandidate(question)) return null;
+    var local = await loadLocalAnswerEngine();
+    if (!local || typeof local.answer !== 'function') return null;
+    try {
+      return await local.answer(question, state.recentMessages.slice(-8), getLocale());
+    } catch (_) {
+      return null;
+    }
+  }
+
   function skyletFetch(url, options) {
     var requestOptions = options || {};
     var headers = new Headers(requestOptions.headers || {});
@@ -943,6 +975,17 @@
     var thinking = appendMessage("assistant", getCopy().thinking, true);
 
     try {
+      // Dynamic static-site retrieval runs in the visitor's browser and
+      // requires no Cloudflare Worker, D1, or AI model invocation.
+      var browserAnswer = await answerFromBrowser(text);
+      if (browserAnswer) {
+        rememberExchange(text, browserAnswer);
+        if (thinking) thinking.innerHTML = renderMessageContent(browserAnswer);
+        setStatus("");
+        speakIfEnabled(browserAnswer);
+        return;
+      }
+
       var chatPayload = {
         message: text,
         conversation_id: state.conversationId || null,
