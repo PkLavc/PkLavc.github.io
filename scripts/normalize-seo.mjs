@@ -202,7 +202,7 @@ export function normalizeSeoHtml(original, { directory = process.cwd(), filename
     head = setMeta(head, "robots", directives);
     head = setMeta(head, "author", "Patrick Araujo");
     head = setMeta(head, "og:url", url, "property");
-    head = setMeta(head, "og:site_name", pathname.startsWith("/store/") ? "PkLavc Store" : "Patrick Araujo", "property");
+    head = setMeta(head, "og:site_name", "Patrick Araujo", "property");
     head = setMeta(head, "og:locale", language === "pt-BR" ? "pt_BR" : language === "es" ? "es_ES" : "en_US", "property");
     head = setMeta(head, "og:image", imageUrl, "property");
     head = setMeta(head, "twitter:image", getMeta(head, "twitter:image") || imageUrl);
