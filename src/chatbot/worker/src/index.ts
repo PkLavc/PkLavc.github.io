@@ -604,9 +604,14 @@ export default {
         const recent = skyletClientHistory(payload.recent_messages);
         const language = skyletContextLanguage(input, recent, payload.locale);
         const quick = skyletQuickAnswer(input, language) || skyletContextQuickAnswer(input, recent, language);
-        if (quick || (!isSkyletSiteQuestion(input) && !isGreetingOnly(input)
-                    && !skyletContextFollowup(input, recent)
-                    && !(payload.conversation_id && isSkyletShortFollowup(input)))) {
+        const suspectedOutside = !isSkyletSiteQuestion(input) && !isGreetingOnly(input)
+          && !skyletContextFollowup(input, recent)
+          && !(payload.conversation_id && isSkyletShortFollowup(input));
+        // Static FAQs remain free. AI checks only ambiguous/out-of-scope
+        // questions, subject to its own share of the daily model-call cap.
+        const scopeVerified = !quick && suspectedOutside
+          ? await verifySkyletSiteScope(input, recent, env) : false;
+        if (quick || (suspectedOutside && !scopeVerified)) {
           return withCors(json({
             ok: true, conversation_id: payload.conversation_id || null,
             reply: quick?.reply || exclusiveSiteReply(input, language),
@@ -642,7 +647,7 @@ export default {
             console.log(JSON.stringify({ level: "warn", event: "discord_queue_insert_failed", author: "visitor" }));
           }
         };
-        const response = await handleChat(payload, user, env, traceId, false, traceparent, onVisitorMessage);
+        const response = await handleChat(payload, user, env, traceId, false, traceparent, onVisitorMessage, false, scopeVerified);
         if ("conversation_id" in response && response.conversation_id) {
           if (!visitorQueued) await onVisitorMessage(response.conversation_id, sanitizeInput(maskPii(input, env)));
           if (visitorQueued && response.reply) ctx.waitUntil(enqueueAndDrainDiscordQueue(env, response.conversation_id, "Skylet", String(response.reply)));
@@ -668,9 +673,12 @@ export default {
         const recent = skyletClientHistory(payload.recent_messages);
         const language = skyletContextLanguage(question, recent, payload.locale);
         const quick = skyletQuickAnswer(question, language) || skyletContextQuickAnswer(question, recent, language);
-        if (quick || (!isSkyletSiteQuestion(question) && !isGreetingOnly(question)
-                    && !skyletContextFollowup(question, recent)
-                    && !(payload.conversation_id && isSkyletShortFollowup(question)))) {
+        const suspectedOutside = !isSkyletSiteQuestion(question) && !isGreetingOnly(question)
+          && !skyletContextFollowup(question, recent)
+          && !(payload.conversation_id && isSkyletShortFollowup(question));
+        const scopeVerified = !quick && suspectedOutside
+          ? await verifySkyletSiteScope(question, recent, env) : false;
+        if (quick || (suspectedOutside && !scopeVerified)) {
           const reply = quick?.reply || exclusiveSiteReply(question, language);
           const body = 'data: ' + JSON.stringify({ token: reply }) + '\n\n'
             + 'data: ' + JSON.stringify({ done: true, conversation_id: payload.conversation_id || null }) + '\n\n';
@@ -707,7 +715,7 @@ export default {
             console.log(JSON.stringify({ level: "warn", event: "discord_queue_insert_failed", author: "visitor" }));
           }
         };
-        const streamResponse = await handleChatStream(payload, user, env, traceId, traceparent, onVisitorMessage);
+        const streamResponse = await handleChatStream(payload, user, env, traceId, traceparent, onVisitorMessage, scopeVerified);
         if (payload.message) ctx.waitUntil(mirrorStreamCompletion(streamResponse, env, payload, visitorQueued));
         ctx.waitUntil(logSpan(env, {
           trace_id: traceId,
@@ -819,7 +827,7 @@ export default {
   },
 };
 
-async function handleChat(payload: ChatPayload, user: AuthUser, env: Env, traceId: string, isStreaming: boolean, traceparent: string, onVisitorMessage?: (conversationId: string, content: string) => Promise<void>, skipResponseCache = false) {
+async function handleChat(payload: ChatPayload, user: AuthUser, env: Env, traceId: string, isStreaming: boolean, traceparent: string, onVisitorMessage?: (conversationId: string, content: string) => Promise<void>, skipResponseCache = false, scopeVerified = false) {
   const startedAt = Date.now();
   const sanitized = sanitizeInput(maskPii(payload.message || "", env));
   const guardrail = runGuardrails(sanitized);
@@ -828,7 +836,7 @@ async function handleChat(payload: ChatPayload, user: AuthUser, env: Env, traceI
   }
 
   const task = "chat";
-  if (!isSkyletSiteQuestion(sanitized) && !isGreetingOnly(sanitized)) {
+  if (!scopeVerified && !isSkyletSiteQuestion(sanitized) && !isGreetingOnly(sanitized)) {
     const history = payload.conversation_id ? await fetchMemory(env, payload.conversation_id, 5) : [];
     const prior = [...history].reverse().find(row => row.role === "user")?.content || "";
     if (!skyletContextFollowup(sanitized, skyletClientHistory(payload.recent_messages))
@@ -973,7 +981,7 @@ async function handleChat(payload: ChatPayload, user: AuthUser, env: Env, traceI
   return responsePayload;
 }
 
-async function handleChatStream(payload: ChatPayload, user: AuthUser, env: Env, traceId: string, traceparent: string, onVisitorMessage?: (conversationId: string, content: string) => Promise<void>): Promise<Response> {
+async function handleChatStream(payload: ChatPayload, user: AuthUser, env: Env, traceId: string, traceparent: string, onVisitorMessage?: (conversationId: string, content: string) => Promise<void>, scopeVerified = false): Promise<Response> {
   const startedAt = Date.now();
   const sanitized = sanitizeInput(maskPii(payload.message || "", env));
   const guardrail = runGuardrails(sanitized);
@@ -982,7 +990,7 @@ async function handleChatStream(payload: ChatPayload, user: AuthUser, env: Env, 
   }
 
   const task = "chat";
-  if (!isSkyletSiteQuestion(sanitized) && !isGreetingOnly(sanitized)) {
+  if (!scopeVerified && !isSkyletSiteQuestion(sanitized) && !isGreetingOnly(sanitized)) {
     const history = payload.conversation_id ? await fetchMemory(env, payload.conversation_id, 5) : [];
     const prior = [...history].reverse().find(row => row.role === "user")?.content || "";
     if (!skyletContextFollowup(sanitized, skyletClientHistory(payload.recent_messages))
