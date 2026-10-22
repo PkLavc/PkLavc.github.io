@@ -299,7 +299,6 @@ export default {
         }
 
         const analyticsSite = url.searchParams.get("site") === "macca" ? "macca" : "pklavc";
-        const tableName = analyticsSite === "macca" ? "macca_geo_visit_daily" : "geo_visit_daily";
         const cf = (request as Request & { cf?: GeoCfProperties }).cf;
         const countryCode = normalizeCountryCode(cf?.country);
 
@@ -307,7 +306,8 @@ export default {
           return withCors(new Response(null, { status: 204 }), env, origin);
         }
 
-        const regionCode = normalizeGeoValue(cf?.regionCode, 24).toUpperCase();
+        const requestedRegion = normalizeGeoValue(cf?.regionCode, 24).toUpperCase();
+        const regionCode = /^[A-Z0-9-]{1,24}$/.test(requestedRegion) ? requestedRegion : "";
         // Share the coarse Cloudflare geolocation with ads and Store in the
         // existing visit response. Never include an IP, user ID or coordinates.
         const geoVisitResponse = () => {
