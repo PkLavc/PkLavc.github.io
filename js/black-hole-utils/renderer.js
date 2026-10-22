@@ -1,5 +1,5 @@
 const SHADER_ROOT = '/js/black-hole-utils/shaders/';
-const ASSET_VERSION = '20260922b';
+const ASSET_VERSION = '20261022-cyan-black-hole';
 const CLEAR = { r: 0, g: 0, b: 0, a: 1 };
 const BLURS = [
   { direction: [1, 0], radius: 1 },

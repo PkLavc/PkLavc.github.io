@@ -55,7 +55,7 @@ fn starField(direction: vec3f) -> vec3f {
   let point = smoothstep(radius, 0.0, length(local)) * step(0.986, seed);
   let glow = smoothstep(radius * 4.0, 0.0, length(local)) * step(0.997, seed) * 0.35;
   let temperature = hash21(cell + vec2f(17.0, 29.0));
-  let tint = mix(vec3f(0.48, 0.65, 1.0), vec3f(1.0, 0.72, 0.42), temperature);
+  let tint = vec3f(0.0, 0.82, 1.0);
   return tint * (point * (1.5 + seed * 3.0) + glow);
 }
 
@@ -85,8 +85,8 @@ fn volumeSample(point: vec3f, rayVelocity: vec3f) -> vec4f {
   let density = vertical * innerFade * outerFade * radialFalloff * clumps;
 
   let heat = pow(radial, 1.35);
-  var thermal = mix(vec3f(0.55, 0.14, 0.03), vec3f(1.0, 0.55, 0.16), smoothstep(0.05, 0.55, heat));
-  thermal = mix(thermal, vec3f(1.0, 0.94, 0.82), pow(heat, 2.4));
+  var thermal = mix(vec3f(0.0, 0.18, 0.28), vec3f(0.0, 0.82, 1.0), smoothstep(0.05, 0.55, heat));
+  thermal = mix(thermal, vec3f(0.72, 0.96, 1.0), pow(heat, 2.4));
 
   let tangent = normalize(vec3f(-point.z, 0.0, point.x));
   let orbitalSpeed = min(0.64, 0.94 / sqrt(max(radius - HORIZON, 0.25)));

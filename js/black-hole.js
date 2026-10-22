@@ -1,4 +1,4 @@
-import { createRenderer } from '/js/black-hole-utils/renderer.js?v=20260922b';
+import { createRenderer } from '/js/black-hole-utils/renderer.js?v=20261022-cyan-black-hole';
 
 const renderers = [];
 
@@ -9,7 +9,7 @@ function smoothstep(edge0, edge1, value) {
 
 async function drawLocalFallback(canvas) {
   const image = new Image();
-  image.src = '/images/effects/black-hole-fallback.png';
+  image.src = '/images/effects/black-hole-fallback.png?v=20261022-cyan-black-hole';
   await image.decode();
   const width = Math.max(1, Math.round(canvas.clientWidth * Math.min(window.devicePixelRatio || 1, 1.6)));
   const height = Math.max(1, Math.round(canvas.clientHeight * Math.min(window.devicePixelRatio || 1, 1.6)));
