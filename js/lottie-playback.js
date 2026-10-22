@@ -53,6 +53,14 @@
     player.setSpeed?.(SPEED);
   }
 
+  function enableCanvasFrameClearing(animation) {
+    // Lottie Player 2.x passes clearCanvas:false even for its canvas renderer.
+    // Keep it enabled so old frames never accumulate over the logo.
+    if (animation?.renderer?.rendererType === 'canvas' && animation.renderer.renderConfig) {
+      animation.renderer.renderConfig.clearCanvas = true;
+    }
+  }
+
   function prepareIOSRenderer(player) {
     if (!iosWebKit || player.dataset.iosCanvas === 'ready') return;
     player.dataset.iosCanvas = 'ready';
@@ -63,7 +71,9 @@
     // instantiated an SVG renderer already. Re-load just once in that case.
     if (typeof player.getLottie !== 'function') return;
     Promise.resolve(player.getLottie()).then((animation) => {
-      if (!player.isConnected || player.dataset.iosCanvasReloaded) return;
+      if (!player.isConnected) return;
+      enableCanvasFrameClearing(animation);
+      if (player.dataset.iosCanvasReloaded) return;
       if (animation?.renderer?.rendererType === 'svg' && typeof player.load === 'function') {
         player.dataset.iosCanvasReloaded = 'true';
         player.load(player.getAttribute('src'));
@@ -89,6 +99,8 @@
 
   function startVisible(player, state) {
     if (!state.ready || !state.visible) return;
+    // Preserve the final-frame hold, even if IntersectionObserver fires again.
+    if (state.completed && timers.has(player)) return;
     if (reduceMotion.matches) {
       clearPlayerTimer(player);
       player.pause?.();
@@ -130,6 +142,12 @@
       state.completed = false;
       clearPlayerTimer(player);
       applyPlaybackSettings(player);
+      if (iosWebKit) {
+        enableCanvasFrameClearing(player._lottie);
+        if (typeof player.getLottie === 'function') {
+          Promise.resolve(player.getLottie()).then(enableCanvasFrameClearing).catch(() => {});
+        }
+      }
       if (state.visible) startVisible(player, state);
       else player.pause?.();
     };
