@@ -63,31 +63,36 @@
   }
 
   function getGeo() {
-    var cacheKey = 'pklavc.blogAds.geo';
-    try {
-      var cached = JSON.parse(sessionStorage.getItem(cacheKey) || 'null');
-      if (cached && Date.now() - cached.at < 30 * 60 * 1000) return Promise.resolve(normalizeGeo(cached));
-    } catch (_) { /* Storage is optional. */ }
-
-    if (!config.geoEndpoint || typeof fetch !== 'function') return Promise.resolve(normalizeGeo(null));
-    var controller = typeof AbortController === 'function' ? new AbortController() : null;
-    var timer = controller && setTimeout(function () { controller.abort(); }, config.geoTimeoutMs || 1500);
-    return fetch(config.geoEndpoint, {
-      mode: 'cors', credentials: 'omit', cache: 'no-store',
-      signal: controller ? controller.signal : undefined
-    }).then(function (response) {
-      if (!response.ok) throw new Error('geo_unavailable');
-      return response.json();
-    }).then(function (payload) {
-      var geo = normalizeGeo(payload);
-      try { sessionStorage.setItem(cacheKey, JSON.stringify({ country: geo.country, region: geo.region, at: Date.now() })); }
-      catch (_) { /* Storage is optional. */ }
-      return geo;
-    }).catch(function () {
+    // One Cloudflare request per session: /analytics/visit already returns
+    // country and region. Do not call the separate /ads/geo Worker endpoint.
+    function cachedGeo() {
+      try {
+        var cached = JSON.parse(sessionStorage.getItem('pklavc.visitorGeo.v1') || 'null');
+        if (cached && cached.at && Date.now() - Number(cached.at) < 24 * 60 * 60 * 1000) {
+          return normalizeGeo(cached);
+        }
+      } catch (_) { /* Optional session storage. */ }
       return normalizeGeo(null);
-    }).finally(function () {
-      if (timer) clearTimeout(timer);
-    });
+    }
+
+    var cached = cachedGeo();
+    if (cached.country) return Promise.resolve(cached);
+
+    var visit = window.PkLavcGeoVisitReady;
+    if (visit && typeof visit.then === 'function') {
+      return visit.then(function(result) {
+        var shared = cachedGeo();
+        // Storage may be disabled; the pending visit response also provides
+        // coarse geo directly. This does not trigger any additional request.
+        return shared.country ? shared : normalizeGeo(result);
+      }).catch(function() {
+        return normalizeGeo(null);
+      });
+    }
+
+    // On pages without the visitor tracker, use the existing default rules.
+    // Do not spend a second Worker request to target a single ad impression.
+    return Promise.resolve(normalizeGeo(null));
   }
 
   function own(object, key) {
