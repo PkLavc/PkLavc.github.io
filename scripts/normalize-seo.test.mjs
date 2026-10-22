@@ -24,6 +24,39 @@ test("Store links provide no misleading generic preview in EN/PT/ES", () => {
   }
 });
 
+test("every non-article page uses the same portrait preview", () => {
+  const expected = "https://pklavc.com/images/brand/profile.png";
+  const pages = [
+    "index.html", "pt/index.html", "es/index.html",
+    "about/index.html", "pt/sobre/index.html", "es/sobre/index.html",
+    "connect/index.html", "pt/connect/index.html", "es/connect/index.html",
+    "blog/index.html", "blog/en/index.html", "blog/pt/index.html", "blog/es/index.html",
+    "blog/en/games/index.html", "projects/index.html", "media-kit/index.html",
+  ];
+  for (const file of pages) {
+    const output = normalize(read(file));
+    assert.ok(output.includes(`property="og:image" content="${expected}"`), `OG image: ${file}`);
+    assert.ok(output.includes(`name="twitter:image" content="${expected}"`), `Twitter image: ${file}`);
+    assert.ok(!output.includes('property="og:image" content="https://pklavc.com/images/brand/lavc.webp'), `Old logo: ${file}`);
+    assert.equal(normalize(output), output, `Idempotence: ${file}`);
+  }
+});
+
+test("individual blog posts keep their own specific preview images", () => {
+  const posts = [
+    "blog/en/tech/qualcomm-arm-trial-verdict-win/index.html",
+    "blog/pt/games/gta-6-album-new-singles-release/index.html",
+  ];
+  for (const file of posts) {
+    const original = read(file);
+    const expected = original.match(/<meta property="og:image" content="([^"]+)"/)?.[1];
+    assert.ok(expected?.includes("/images/og/blog/"), `Post-specific OG source: ${file}`);
+    const output = normalize(original);
+    assert.ok(output.includes(`property="og:image" content="${expected}"`), `Post image: ${file}`);
+    assert.ok(!output.includes('property="og:image" content="https://pklavc.com/images/brand/profile.png'), `Incorrect portrait: ${file}`);
+  }
+});
+
 test("profile pages resolve to the same Patrick identity", () => {
   for (const file of ["index.html", "about/index.html", "pt/sobre/index.html", "es/sobre/index.html", "resume/index.html"]) {
     const html = normalize(read(file));
@@ -73,7 +106,8 @@ test("repository and language markup uses project evidence and preserves coautho
 });
 
 test("preview dimensions match the existing image and intentional noindex survives", () => {
-  assert.match(normalize(read("about/index.html")), /property="og:image:width" content="1024"/);
+  assert.match(normalize(read("about/index.html")), /property="og:image:width" content="1122"/);
+  assert.match(normalize(read("about/index.html")), /property="og:image:height" content="1402"/);
   assert.match(normalize(read("about/index.html")), /max-image-preview:large/);
   for (const file of ["search/index.html", "status/index.html", "visitors/index.html", "pt/visitantes/index.html", "es/visitantes/index.html", "projects/skylet-assistant/demo/index.html"]) {
     assert.match(normalize(read(file)), /name="robots" content="noindex, follow"/, file);
