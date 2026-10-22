@@ -41,7 +41,11 @@
   }
 
   function browserKnowledgeCandidate(question) {
-    return /\b(patrick|pklavc|projet|project|portfolio|portf[oó]lio|blog|artigo|article|post|not[ií]cia|news|public|novidade|update|gta|rockstar|loja|store|shop|produto|product|oferta|pre[cç]o|price|compra|buy|canal|channel|video|v[ií]deo|youtube|instagram|discord|telegram|linkedin|github|tiktok|skylet|codepulse|lavc|cargos?|empresas?|work|career|trabalh|empreg|experi[eê]ncia|skills?|tecnologia|tech|games)\b/i.test(question);
+    var q = String(question || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    // Broad site vocabulary to avoid wrongly skipping local lookup when
+    // visitors use plurals, inflections or specific project/employer names.
+    // The local engine remains authoritative about answer confidence.
+    return /\b(?:patrick|pklavc|skylet|lavc|codepulse|aegis|cipher|raw api|ingestion|pipeline|wr auto|loja do sapo|icaiu|federico|zoho|projetos?|projects?|proyectos?|portfolio|portafolio|perfil|profile|biografia|bio|blogs?|artigos?|articles?|materias?|posts?|postagens?|noticias?|news|public\w*|novidades?|updates?|lojas?|stores?|shops?|tiendas?|produtos?|products?|productos?|itens?|items?|ofertas?|precos?|prices?|comprar|buy|canais?|canales?|channels?|videos?|youtube|instagram|discord|telegram|linkedin|github|tiktok|shorts?|reels?|whatsapp|social|sociais|comunidade|community|conectar|connect|cargos?|empresas?|career|trabaj\w*|trabalh\w*|empreg\w*|experienc\w*|experienci\w*|historico|profissional|profesional|skills?|tecnologias?|certifica\w*|tech|games)\b/.test(q);
   }
 
   async function answerFromBrowser(question) {
