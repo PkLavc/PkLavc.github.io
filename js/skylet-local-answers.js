@@ -22,7 +22,7 @@
   var STATIC_PATH = '/assets/skylet/knowledge.json';
   var groupWords = {
     projects: /\b(projetos?|projects?|proyectos?|portfolio|portafolio|portf[oó]lio|aplicacoes?|sistemas?\s+(?:criados?|feitos?))\b/i,
-    blogs: /\b(blogs?|artigos?|articles?|materias?|mat[eé]rias?|postagens?|posts?|not[ií]cias?|publicou|publicadas?|publicou|publications?|publicaciones?|news)\b/i,
+    blogs: /\b(blogs?|artigos?|articles?|materias?|mat[eé]rias?|postagens?|posts?|not[ií]cias?|public[a-z]*|publications?|publicaciones?|news|novidades?|updates?)\b/i,
     stores: /\b(loja|store|shop|tienda|produtos?|products?|art[ií]culos?|productos?|itens?|items?|ofertas?|pre[cç]os?|prices?|comprar|buy|dispon[ií]veis?|availability|stock|cat[aá]logo|catalogo)\b/i,
     work: /\b(trabalh[a-z]*|empregos?|trabalho|carreira|experi[eê]ncia|cargos?|empresas?|funcao|fun[cç][aã]o|role|roles|jobs?|worked|work|career|employment|experience|empresa|trabajo|trabaj[oa]|empleos?|profissional|profesional)\b/i,
     channels: /\b(discord|telegram|youtube|instagram|tiktok|linkedin|github|whatsapp|threads|bluesky|pinterest|mastodon|canal|canais|channel|channels|redes?|social|seguir|follow|community|comunidade|perfil|profiles?|conectar|connect|videos?|v[ií]deos?|shorts?|reels?)\b/i,
