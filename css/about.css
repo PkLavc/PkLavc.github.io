@@ -2033,27 +2033,29 @@ body {
 }
 
 .copy-btn {
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: 4px;
-    padding: 6px 10px;
+    border: 1px solid rgba(0, 209, 255, 0.34);
+    border-radius: 999px;
+    min-height: 42px;
+    padding: 0 16px;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 4px;
-    transition: all 0.3s ease;
-    color: #031018 !important;
-    -webkit-text-fill-color: #031018 !important;
-    font-size: 0.85rem;
-    font-weight: 500;
+    gap: 7px;
+    transition: border-color 0.2s ease, background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    color: #dffaff !important;
+    -webkit-text-fill-color: #dffaff !important;
+    background: rgba(0, 209, 255, 0.075);
+    font-size: 0.86rem;
+    font-weight: 650;
     font-family: 'Inter', sans-serif;
-    min-width: 76px;
+    min-width: 0;
 }
 
 .copy-btn,
 .copy-btn span {
-    color: #031018 !important;
-    -webkit-text-fill-color: #031018 !important;
+    color: #dffaff !important;
+    -webkit-text-fill-color: #dffaff !important;
 }
 
 .copy-btn .copy-btn-icon {
@@ -2063,7 +2065,10 @@ body {
 }
 
 .copy-btn:hover {
-    border-color: rgba(255, 255, 255, 0.5);
+    border-color: rgba(0, 209, 255, 0.72);
+    background: rgba(0, 209, 255, 0.13);
+    box-shadow: 0 0 22px rgba(0, 209, 255, 0.12);
+    transform: translateY(-1px);
 }
 
 .copy-btn:focus-visible {
@@ -2072,16 +2077,16 @@ body {
 }
 
 .copy-btn.copied {
-    background: var(--clr-primary) !important;
-    border-color: rgba(0, 209, 255, 0.95);
-    color: #031018 !important;
-    -webkit-text-fill-color: #031018 !important;
+    background: rgba(0, 209, 255, 0.16) !important;
+    border-color: rgba(0, 209, 255, 0.72);
+    color: #dffaff !important;
+    -webkit-text-fill-color: #dffaff !important;
     box-shadow: 0 0 18px rgba(0, 209, 255, 0.24);
 }
 
 .copy-btn.copied span {
-    color: #031018 !important;
-    -webkit-text-fill-color: #031018 !important;
+    color: #dffaff !important;
+    -webkit-text-fill-color: #dffaff !important;
     font-weight: 600;
 }
 

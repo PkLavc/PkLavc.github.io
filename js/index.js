@@ -1118,6 +1118,13 @@ function loadLottiePlayerAssets(forceReload) {
 }
 
 function ensureLottiePlayerAssets() {
+  if (!document.querySelector('script[src*="/js/lottie-playback.js"]')) {
+    var playbackScript = document.createElement('script');
+    playbackScript.src = '/js/lottie-playback.js?v=20261022-slow-hold2';
+    playbackScript.defer = true;
+    document.head.appendChild(playbackScript);
+  }
+
   loadLottiePlayerAssets(false);
 
   window.setTimeout(function() {
@@ -1228,8 +1235,8 @@ function ensureAboutSocialContacts() {
     grid.appendChild(item);
   }
 
-  appendContact('instagram', 'https://www.instagram.com/pklavc/', '@pklavc', '/images/lottie/instagram-pklavc-blue-20261002.json', copy.ig);
-  appendContact('youtube', 'https://www.youtube.com/@PkLavc', '@PkLavc', '/images/lottie/youtube-pklavc-blue-20261002.json', copy.yt);
+  appendContact('instagram', 'https://www.instagram.com/pklavc/', '@pklavc', '/images/lottie/instagram.json?v=20261022-social-refresh', copy.ig);
+  appendContact('youtube', 'https://www.youtube.com/@PkLavc', '@PkLavc', '/images/lottie/youtube.json?v=20261022-social-refresh', copy.yt);
 
   [
     'https://github.com/PkLavc',
@@ -1323,12 +1330,12 @@ function normalizeUnifiedFooter() {
       '<span class="footer-split-spacer" aria-hidden="true"></span>' +
       '<div class="footer-split-right">' +
         '<nav class="footer-social-icons" aria-label="' + copy.nav + '">' +
-          '<a class="footer-social-icon-link" href="https://github.com/PkLavc" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><lottie-player src="/images/lottie/github.json?v=50cdc84fd8" background="transparent" speed="1" loop autoplay class="footer-social-lottie" aria-hidden="true"></lottie-player></a>' +
-          '<a class="footer-social-icon-link" href="https://www.linkedin.com/in/pklavc/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><lottie-player src="/images/lottie/linkedin.json?v=86d0c9e071" background="transparent" speed="1" loop autoplay class="footer-social-lottie" aria-hidden="true"></lottie-player></a>' +
-          '<a class="footer-social-icon-link" href="https://www.instagram.com/pklavc/" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><lottie-player src="/images/lottie/instagram-pklavc-blue-20261002.json" background="transparent" speed="1" loop autoplay class="footer-social-lottie" aria-hidden="true"></lottie-player></a>' +
-          '<a class="footer-social-icon-link" href="https://www.youtube.com/@PkLavc" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><lottie-player src="/images/lottie/youtube-pklavc-blue-20261002.json" background="transparent" speed="1" loop autoplay class="footer-social-lottie" aria-hidden="true"></lottie-player></a>' +
-          '<a class="footer-social-icon-link" href="mailto:contact@pklavc.com" aria-label="Email"><lottie-player src="/images/lottie/mail.json?v=895f6ab30e" background="transparent" speed="1" loop autoplay class="footer-social-lottie" aria-hidden="true"></lottie-player></a>' +
-          '<a class="footer-social-icon-link" href="https://github.com/sponsors/PkLavc" target="_blank" rel="noopener noreferrer" aria-label="' + copy.sponsor + '"><lottie-player src="/images/lottie/sponsor-pklavc-blue-20261002.json" background="transparent" speed="1" loop autoplay class="footer-social-lottie" aria-hidden="true"></lottie-player></a>' +
+          '<a class="footer-social-icon-link" href="https://github.com/PkLavc" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><lottie-player src="/images/lottie/github.json?v=20261022-social-refresh" background="transparent" speed="0.7" autoplay class="footer-social-lottie" aria-hidden="true"></lottie-player></a>' +
+          '<a class="footer-social-icon-link" href="https://www.linkedin.com/in/pklavc/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><lottie-player src="/images/lottie/linkedin.json?v=20261022-social-refresh" background="transparent" speed="0.7" autoplay class="footer-social-lottie" aria-hidden="true"></lottie-player></a>' +
+          '<a class="footer-social-icon-link" href="https://www.instagram.com/pklavc/" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><lottie-player src="/images/lottie/instagram.json?v=20261022-social-refresh" background="transparent" speed="0.7" autoplay class="footer-social-lottie" aria-hidden="true"></lottie-player></a>' +
+          '<a class="footer-social-icon-link" href="https://www.youtube.com/@PkLavc" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><lottie-player src="/images/lottie/youtube.json?v=20261022-social-refresh" background="transparent" speed="0.7" autoplay class="footer-social-lottie" aria-hidden="true"></lottie-player></a>' +
+          '<a class="footer-social-icon-link" href="mailto:contact@pklavc.com" aria-label="Email"><lottie-player src="/images/lottie/email.json?v=20261022-social-refresh" background="transparent" speed="0.7" autoplay class="footer-social-lottie" aria-hidden="true"></lottie-player></a>' +
+          '<a class="footer-social-icon-link" href="https://github.com/sponsors/PkLavc" target="_blank" rel="noopener noreferrer" aria-label="' + copy.sponsor + '"><lottie-player src="/images/lottie/sponsor.json?v=20261022-slow-hold2" background="transparent" speed="0.7" autoplay class="footer-social-lottie" aria-hidden="true"></lottie-player></a>' +
         '</nav>' +
       '</div>' +
     '</div>';
