@@ -64,6 +64,13 @@ function setMeta(head, key, content, attribute = "name") {
   return found ? result : `${result}\n    ${tag}`;
 }
 
+function removeMeta(head, key) {
+  return head.replace(/<meta\b[^>]*>/gi, (original) => {
+    const attrs = attributes(original);
+    return (attrs.name || attrs.property || "").toLowerCase() === key ? "" : original;
+  });
+}
+
 function canonicalUrl(html) {
   for (const match of html.matchAll(/<link\b[^>]*>/gi)) {
     const attrs = attributes(match[0]);
@@ -196,23 +203,35 @@ export function normalizeSeoHtml(original, { directory = process.cwd(), filename
   const description = getMeta(html, "description");
   const robots = getMeta(html, "robots");
   const noindex = PRIVATE_PATH.test(pathname) || /\bnoindex\b/i.test(robots);
-  const imageUrl = getMeta(html, "og:image") || DEFAULT_IMAGE;
+  // Product-specific cards are supplied by channel publishers directly from
+  // /store/products.json. Never expose a generic portrait as a product preview.
+  const isStoreCatalog = /^\/store\/(?:pt\/|es\/)?$/.test(pathname);
+  const imageUrl = isStoreCatalog ? "" : getMeta(html, "og:image") || DEFAULT_IMAGE;
   html = html.replace(/(<head\b[^>]*>)([\s\S]*?)(<\/head>)/i, (_, start, head, end) => {
     const directives = PRIVATE_PATH.test(pathname) ? "noindex, follow" : noindex ? robots : "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1";
     head = setMeta(head, "robots", directives);
     head = setMeta(head, "author", "Patrick Araujo");
     head = setMeta(head, "og:url", url, "property");
-    head = setMeta(head, "og:site_name", "Patrick Araujo", "property");
+    head = setMeta(head, "og:site_name", isStoreCatalog ? "PkLavc Store" : "Patrick Araujo", "property");
     head = setMeta(head, "og:locale", language === "pt-BR" ? "pt_BR" : language === "es" ? "es_ES" : "en_US", "property");
-    head = setMeta(head, "og:image", imageUrl, "property");
-    head = setMeta(head, "twitter:image", getMeta(head, "twitter:image") || imageUrl);
-    head = setMeta(head, "og:image:alt", getMeta(head, "og:image:alt") || "Patrick Araujo — PkLavc", "property");
-    head = setMeta(head, "twitter:image:alt", getMeta(head, "twitter:image:alt") || getMeta(head, "og:image:alt"));
-    head = setMeta(head, "twitter:card", getMeta(head, "twitter:card") || "summary_large_image");
-    const dimensions = imageDimensions(directory, imageUrl);
-    if (dimensions) {
-      head = setMeta(head, "og:image:width", dimensions[0], "property");
-      head = setMeta(head, "og:image:height", dimensions[1], "property");
+    if (isStoreCatalog) {
+      // The shared /store/?product=... HTML cannot identify which item a bot
+      // selected. Show no image rather than a misleading generic or random one.
+      for (const key of ["og:image", "og:image:secure_url", "og:image:alt",
+                         "og:image:width", "og:image:height", "twitter:image",
+                         "twitter:image:alt"]) head = removeMeta(head, key);
+      head = setMeta(head, "twitter:card", "summary");
+    } else {
+      head = setMeta(head, "og:image", imageUrl, "property");
+      head = setMeta(head, "twitter:image", getMeta(head, "twitter:image") || imageUrl);
+      head = setMeta(head, "og:image:alt", getMeta(head, "og:image:alt") || "Patrick Araujo — PkLavc", "property");
+      head = setMeta(head, "twitter:image:alt", getMeta(head, "twitter:image:alt") || getMeta(head, "og:image:alt"));
+      head = setMeta(head, "twitter:card", getMeta(head, "twitter:card") || "summary_large_image");
+      const dimensions = imageDimensions(directory, imageUrl);
+      if (dimensions) {
+        head = setMeta(head, "og:image:width", dimensions[0], "property");
+        head = setMeta(head, "og:image:height", dimensions[1], "property");
+      }
     }
     if (/^\/blog\/(?:en|pt|es)\/(?:tech|games)\/[^/]+\/$/.test(pathname)) head = setMeta(head, "article:author", PROFILE_URL, "property");
     return `${start}${head}${end}`;
