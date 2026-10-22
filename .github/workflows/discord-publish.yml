@@ -112,6 +112,7 @@ jobs:
         shell: bash
         env:
           PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_BLOG_REPO_TOKEN }}
+          TELEGRAM_CHAT_STORE: ${{ vars.TELEGRAM_CHAT_STORE }}
         run: |
           if [[ -z "$PRIVATE_REPO_TOKEN" ]]; then
             echo "::error::PRIVATE_BLOG_REPO_TOKEN is required to dispatch Telegram."
@@ -124,7 +125,7 @@ jobs:
             --header 'Accept: application/vnd.github+json' \
             --header 'X-GitHub-Api-Version: 2022-11-28' \
             --header 'Content-Type: application/json' \
-            --data '{"event_type":"pklavc_pages_deployed"}')"
+            --data "$(jq -nc --arg store \"$TELEGRAM_CHAT_STORE\" '{event_type:\"pklavc_pages_deployed\",client_payload:{telegram_store_handle:$store}}')")"
           if [[ "$code" != "204" ]]; then
             echo "::error::Private Telegram deployment event was not accepted (HTTP $code)."
             exit 1
