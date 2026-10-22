@@ -1528,7 +1528,7 @@ body {
 
 .experience-company-header {
     display: grid;
-    grid-template-columns: 42px minmax(0, 1fr) auto;
+    grid-template-columns: 42px minmax(0, 1fr);
     align-items: center;
     gap: 14px;
     margin-bottom: 14px;
@@ -1552,21 +1552,6 @@ body {
     color: #9fa9ad;
     font-size: 0.9rem;
     line-height: 1.4;
-}
-
-.experience-company.freelance-work .experience-company-header {
-    grid-template-columns: minmax(0, 1fr) auto;
-}
-
-.experience-company-count {
-    align-self: start;
-    padding: 4px 8px;
-    border: 1px solid rgba(0, 209, 255, 0.2);
-    border-radius: 999px;
-    color: var(--clr-primary);
-    font-size: 0.75rem;
-    font-weight: 700;
-    white-space: nowrap;
 }
 
 .experience-role-list {
@@ -1718,15 +1703,6 @@ body {
 
     .experience-company-header p {
         font-size: 0.8rem;
-    }
-
-    .experience-company-count {
-        grid-column: 1 / -1;
-        justify-self: start;
-    }
-
-    .experience-company.freelance-work .experience-company-header {
-        grid-template-columns: 1fr;
     }
 
     .experience-role-toggle {
