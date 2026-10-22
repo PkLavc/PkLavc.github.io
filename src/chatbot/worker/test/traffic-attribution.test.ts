@@ -68,19 +68,22 @@ describe("anonymous attribution dimensions", () => {
 });
 
 describe("existing Worker visit and dashboard routes", () => {
-  it("retains the existing geo count and adds one compact daily source write", async () => {
+  it("writes country, region, source, page and daily ceiling in one D1 statement", async () => {
     const { DB, calls } = mockDb();
     const response = await worker.fetch(visitRequest("/blog/en/games/gta-6-secret/", "instagram"), env(DB), ctx);
     expect(response.status).toBe(200);
     expect(await response.json()).toEqual({ country: "BR", region: "MG" });
     expect(response.headers.get("Cache-Control")).toBe("private, no-store");
-    expect(calls).toHaveLength(3);
-    expect(calls[0].sql).toContain("optional_daily_usage");
-    expect(calls[0].args.slice(1, 3)).toEqual(["visit_pklavc", 600]);
-    expect(calls[1].sql).toContain("geo_visit_daily");
-    expect(calls[2].sql).toContain("traffic_source_daily");
-    expect(calls[2].args.slice(1, 4)).toEqual(["instagram", "games", "games/gta-6-secret"]);
-    expect(calls[2].args.join("|")).not.toContain("private=");
+    expect(calls).toHaveLength(1);
+    expect(calls[0].kind).toBe("first");
+    expect(calls[0].sql).toContain("INSERT INTO pklavc_visit_rollup_daily");
+    expect(calls[0].sql).toContain("WHERE visits < ?");
+    expect(calls[0].args[1]).toBe("BR|MG");
+    expect(calls[0].args[2]).toBe("BR|MG");
+    expect(calls[0].args[3]).toBe("Minas Gerais");
+    expect(calls[0].args[4]).toBe('{"instagram|games|games/gta-6-secret":1}');
+    expect(calls[0].args.at(-1)).toBe(50000);
+    expect(calls[0].args.join("|")).not.toContain("private=");
   });
   it("rejects origin spoofed by a different website", async () => {
     const { DB, calls } = mockDb();
@@ -102,13 +105,13 @@ describe("existing Worker visit and dashboard routes", () => {
     expect(calls[0].args[1]).toEqual("visit_macca");
     expect(calls[1].sql).toContain("macca_geo_visit_daily");
   });
-  it("stops analytics writes once the atomic daily allowance is reached", async () => {
+  it("keeps geo response even when the one-statement daily cap is reached", async () => {
     const { DB, calls } = mockDb(true);
     const response = await worker.fetch(visitRequest("/blog/en/games/gta-6-secret/", "instagram"), env(DB), ctx);
     expect(response.status).toBe(200);
     expect(await response.json()).toEqual({ country: "BR", region: "MG" });
     expect(calls).toHaveLength(1);
-    expect(calls[0].sql).toContain("optional_daily_usage");
+    expect(calls[0].sql).toContain("WHERE visits < ?");
     expect(calls[0].kind).toBe("first");
   });
   it("fails closed on missing D1 table without affecting essential routes", async () => {
@@ -132,8 +135,9 @@ describe("existing Worker visit and dashboard routes", () => {
     expect(result.channels[0].channel).toBe("instagram");
     expect(result.pages[0].page_key).toBe("games/gta-6-secret");
     expect(result.note).toContain("since source tracking was enabled");
-    expect(calls).toHaveLength(2);
+    expect(calls).toHaveLength(3);
     expect(calls[0].args).toEqual(["-29 days"]);
+    expect(calls[2].sql).toContain("pklavc_visit_rollup_daily");
     expect(response.headers.get("Cache-Control")).toContain("max-age=60");
   });
 });
