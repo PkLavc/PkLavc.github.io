@@ -36,7 +36,7 @@
   }
   function words(value) {
     return Array.from(new Set(norm(value).split(' ').filter(function (word) {
-      return word.length > 1 && !STOP.has(word);
+      return (word.length > 1 || /^[0-9]$/.test(word)) && !STOP.has(word);
     }))).slice(0, 15);
   }
   function localized(locale, pt, en, es) {
@@ -143,7 +143,7 @@
       return p.l === 'en' && p.u.startsWith('/projects/') && p.u !== '/projects/';
     });
     var named = entries.find(function (p) {
-      var name = norm(p.t).split(' patrick')[0].split(' | ')[0];
+      var name = norm(String(p.t).split(/[|—–]/)[0]);
       return name.length >= 7 && q.includes(name);
     });
     if (!groupWords.projects.test(q) && !named) return null;
@@ -192,7 +192,7 @@
         '\n' + ordered.map(function (c) { return '- ' + c + ' (' + counts[c] + ')'; }).join('\n') +
         '\nhttps://pklavc.com/store/';
     }
-    var chosen = top(products, query, ['n','c','b','d','s'], 5, 3);
+    var chosen = top(products.filter(function (p) { return p.a !== false; }), query, ['n','c','b','d','s'], 5, 3);
     if (!chosen.length && recent(query) && words(query).length === 0) chosen = products.slice(0, 4);
     if (!chosen.length) return null;
     return localized(locale,'Produtos encontrados no catálogo:','Products found in the catalog:','Productos encontrados en el catálogo:') +
