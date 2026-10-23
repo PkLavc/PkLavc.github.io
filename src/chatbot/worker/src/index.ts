@@ -12,6 +12,7 @@ export interface Env {
   SESSIONS: KVNamespace;
   CACHE: KVNamespace;
   AI?: Ai;
+  UPLOADS?: R2Bucket;
   APP_NAME: string;
   ALLOWED_ORIGINS: string;
   FRONTEND_URL?: string;
@@ -254,7 +255,7 @@ export default {
         // One row per UTC day (no secondary indexes); no D1 write for a
         // separate daily counter, geo table or traffic-source table.
         let dimensions = { channel: "direct", section: "portfolio", pageKey: "other" };
-        if (isTikTokWebOrigin(origin)) {
+        if (origin === "https://pklavc.com" || origin === "https://www.pklavc.com") {
           try {
             const raw = await request.text();
             dimensions = dimensionsOfVisit(raw.length <= 700 ? JSON.parse(raw || "{}") : {});
