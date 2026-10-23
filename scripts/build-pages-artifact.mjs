@@ -35,6 +35,7 @@ const publicEntries = [
   "index.html",
   "maintenance",
   "manifest.webmanifest",
+  "push-sw.js",
   "media-kit",
   "now",
   "opensearch.xml",
@@ -222,6 +223,22 @@ function updateCacheBusting() {
   return { updatedFiles, updatedRefs, assets: hashCache.size };
 }
 
+
+function injectWebPushControls() {
+  let modified = 0;
+  for (const section of ["blog", "store"]) {
+    for (const file of walkFiles(path.join(outDir, section))) {
+      if (path.extname(file).toLowerCase() !== ".html") continue;
+      const original = fs.readFileSync(file, "utf8");
+      if (!/<\/body>/i.test(original) || original.includes('src="/js/pklavc-push.js"')) continue;
+      const next = original.replace(/<\/body>/i,
+        '  <script id="pklavc-push-preferences" src="/js/pklavc-push.js" defer></script>\n</body>');
+      if (next !== original) { fs.writeFileSync(file, next); modified++; }
+    }
+  }
+  return modified;
+}
+
 function main() {
   removeDirectory(outDir);
   fs.mkdirSync(outDir, { recursive: true });
@@ -243,6 +260,9 @@ function main() {
 
   const storeStats = enhanceStoreArtifact(outDir);
   console.log(`Store prerender: ${storeStats.pages} page(s), ${storeStats.products} product(s).`);
+
+  const pushPages = injectWebPushControls();
+  console.log(`Web Push opt-in: ${pushPages} blog/store page(s).`);
 
   // Generate discovery from the exact HTML that will be deployed on every build.
   const seoStats = normalizeSeoDirectory(outDir);
