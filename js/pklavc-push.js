@@ -25,7 +25,8 @@
     '#pklavc-push-dialog button{background:#20354c;color:#fff;border:1px solid #506377;border-radius:8px;padding:9px 12px;cursor:pointer}' +
     '#pklavc-push-dialog button.primary{background:#007995;border-color:#32d6ee}' +
     '#pklavc-push-dialog .push-status{min-height:1.5em;margin:14px 0 0;color:#9de7ef}' +
-    '@media(max-width:480px){#pklavc-push-button{right:12px;bottom:12px}}';
+    '#pklavc-push-button[hidden]{display:none!important}' +
+    '@media (max-width:767px), (hover:none) and (pointer:coarse){#pklavc-push-button,#pklavc-push-dialog{display:none!important}}';
   document.head.appendChild(style);
   const button = document.createElement("button");
   button.id = "pklavc-push-button";
@@ -128,4 +129,12 @@
     finally { setBusy(false); }
   });
   document.body.append(button,dialog);
+  // Do not obstruct footer notices or legal links while they are visible.
+  const footer = document.querySelector("footer.store-footer, footer[data-unified-footer], footer");
+  if (footer && "IntersectionObserver" in window) {
+    const footerObserver = new IntersectionObserver(entries => {
+      button.hidden = entries.some(entry => entry.isIntersecting);
+    });
+    footerObserver.observe(footer);
+  }
 })();
