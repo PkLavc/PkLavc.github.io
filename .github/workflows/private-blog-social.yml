@@ -37,7 +37,7 @@ jobs:
     permissions:
       contents: write  # Only to create and delete the transient test release.
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 90  # Non-publishing extended preview can render a full 75s video
     env:
       PRIVATE_BLOG_REPO_TOKEN: ${{ secrets.PRIVATE_BLOG_REPO_TOKEN }}
       BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
@@ -91,6 +91,33 @@ jobs:
       - name: Validate private social code without publishing
         working-directory: private-blog
         run: bash scripts/private_runner/runner.sh smoke-social && python -m unittest scripts.private_runner.test_tasks
+      - name: Render one unpublished long TikTok/YouTube preview
+        if: github.event_name == 'push' && contains(github.event.head_commit.message, '[render-extended-preview]')
+        working-directory: private-blog
+        env:
+          SOCIAL_TTS: kokoro
+          SOCIAL_KOKORO_VOICE: af_bella
+          SOCIAL_ALLOW_ESPEAK_FALLBACK: "false"
+          SOCIAL_MAX_VIDEO_MB: "25"
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg espeak-ng fonts-dejavu-core
+          python -m pip install -r scripts/social_video/requirements.txt
+          python -m scripts.social_video.preview --slug 2-more-gta-6-screenshots-released --profile extended --out social-preview/extended-qa
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          manifest = json.loads(Path('social-preview/extended-qa/preview-manifest.json').read_text())
+          assert manifest['profile'] == 'extended', 'Preview fell back to short; inspect source richness'
+          assert 65 <= manifest['durationSeconds'] <= 90, manifest['durationSeconds']
+          assert manifest['cardCount'] >= 9, manifest['cardCount']
+          media = Path(manifest['videoPath'])
+          assert media.is_file()
+          assert media.stat().st_size <= 25 * 1024 * 1024
+          assert manifest['instagramVideoPath'] == ''
+          print(f"Extended non-publishing QA passed: {manifest['durationSeconds']}s, {manifest['cardCount']} scenes, {media.stat().st_size / 1048576:.1f} MiB")
+          PY
+
       - name: Validate relevant Instagram MUSIC is available without publishing
         working-directory: private-blog
         env:
