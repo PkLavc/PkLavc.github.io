@@ -1,6 +1,13 @@
 name: PKLAVC Web Push (Blog and Store)
 
 on:
+  pull_request:
+    paths:
+      - "js/pklavc-push.js"
+      - "push-sw.js"
+      - "scripts/push-notifications.cjs"
+      - "scripts/build-pages-artifact.mjs"
+      - ".github/workflows/pklavc-web-push.yml"
   push:
     branches: [main]
     paths:
@@ -26,7 +33,26 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Validate all new browser and dispatch scripts
+        run: |
+          node --check scripts/push-notifications.cjs
+          node --check js/pklavc-push.js
+          node --check push-sw.js
+          node --check scripts/build-pages-artifact.mjs
+      - name: Test Web Push dependency resolution
+        run: |
+          npm install --no-save --ignore-scripts --prefix scripts web-push@3.6.7
+          node -e "require('./scripts/node_modules/web-push'); console.log('Web Push ready')"
   send:
+    needs: validate
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     timeout-minutes: 50
     steps:
