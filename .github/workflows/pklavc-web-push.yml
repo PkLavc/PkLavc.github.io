@@ -1,0 +1,51 @@
+name: PKLAVC Web Push (Blog and Store)
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "blog/posts.json"
+      - "store/products.json"
+      - ".github/workflows/pklavc-web-push.yml"
+  schedule:
+    - cron: "23 * * * *" # Recover missed publication events; campaigns are deduplicated in D1.
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "Preview without requests, or send pending campaigns"
+        type: choice
+        required: true
+        default: dry-run
+        options: [dry-run, send]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pklavc-web-push-dispatch
+  cancel-in-progress: false
+
+jobs:
+  send:
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    steps:
+      - name: Checkout latest public blog and store catalog
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: false
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Install minimal Web Push sender
+        run: npm install --no-save --ignore-scripts --prefix scripts web-push@3.6.7
+      - name: Verify sender syntax
+        run: node --check scripts/push-notifications.cjs
+      - name: Send with provider backpressure and D1 campaign deduplication
+        env:
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          PUSH_MAX_RECIPIENTS_PER_RUN: ${{ vars.PUSH_MAX_RECIPIENTS_PER_RUN || '30000' }}
+          PUSH_DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.mode == 'dry-run' }}
+        run: node scripts/push-notifications.cjs
