@@ -4,16 +4,16 @@ on:
   schedule:
     # 10:30/11:30 AM and 4:30/5:30 PM US Eastern, depending on DST.
     - cron: "30 14,20 * * *"
-  workflow_dispatch:
-    inputs:
-      mode:
-        type: choice
-        description: "Preview generated LinkedIn posts or publish with approved LinkedIn token"
-        required: true
-        default: preview
-        options:
-          - preview
-          - publish
+  # workflow_dispatch:
+    # inputs:
+      # mode:
+        # type: choice
+        # description: "Preview generated LinkedIn posts or publish with approved LinkedIn token"
+        # required: true
+        # default: preview
+        # options:
+          # - preview
+          # - publish
   push:
     branches: [main]
     paths:
