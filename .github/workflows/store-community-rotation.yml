@@ -6,14 +6,14 @@ on:
     # Slots are spread over the entire day, not sent as one burst.
     - cron: "13 * * * *"
     - cron: "43 12 * * *"
-  workflow_dispatch:
-    inputs:
-      mode:
-        description: "Preview, check, test or rotate products"
-        type: choice
-        required: true
-        default: check
-        options: [check, preview, publish, test]
+  # workflow_dispatch:
+    # inputs:
+      # mode:
+        # description: "Preview, check, test or rotate products"
+        # type: choice
+        # required: true
+        # default: check
+        # options: [check, preview, publish, test]
   push:
     branches: [main]
     paths:

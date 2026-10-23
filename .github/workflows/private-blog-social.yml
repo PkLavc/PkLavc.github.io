@@ -6,19 +6,19 @@ on:
     - cron: "7,37 * * * *"  # Fast breaking-news checks; YouTube only
     - cron: "0 12 * * 5"  # Store Reel on Fridays at 09:00 Sao Paulo
     - cron: "0 12 1 * *"  # Store Short on the first day of each month at 09:00 Sao Paulo
-  workflow_dispatch:
-    inputs:
-      mode:
-        description: "Publish queued items, run checks, or preview/publish Store products"
-        required: true
-        type: choice
-        default: smoke
-        options:
-          - smoke
-          - publish
-          - tiktok-publish
-          - store-products-preview
-          - store-products-publish
+  # workflow_dispatch:
+    # inputs:
+      # mode:
+        # description: "Publish queued items, run checks, or preview/publish Store products"
+        # required: true
+        # type: choice
+        # default: smoke
+        # options:
+          # - smoke
+          # - publish
+          # - tiktok-publish
+          # - store-products-preview
+          # - store-products-publish
   push:
     branches: [main]
     paths:

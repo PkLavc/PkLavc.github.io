@@ -5,25 +5,25 @@ on:
     - cron: "17 * * * *" # Primary hourly slot; the private runner chooses Tech every fifth UTC hour
     - cron: "47 * * * *" # Recovery slot if the primary was missed or failed
     - cron: "43 15 * * 3" # Weekly Microsoft-only Tech spotlight, 15:43 UTC on Wednesday
-  workflow_dispatch:
-    inputs:
-      category:
-        description: "Editorial category for manual generation"
-        required: true
-        type: choice
-        default: tech
-        options:
-          - tech
-          - games
-      mode:
-        description: "Generate an article, translate pending content, or run a smoke test"
-        required: true
-        type: choice
-        default: smoke
-        options:
-          - smoke
-          - generate
-          - translate
+  # workflow_dispatch:
+    # inputs:
+      # category:
+        # description: "Editorial category for manual generation"
+        # required: true
+        # type: choice
+        # default: tech
+        # options:
+          # - tech
+          # - games
+      # mode:
+        # description: "Generate an article, translate pending content, or run a smoke test"
+        # required: true
+        # type: choice
+        # default: smoke
+        # options:
+          # - smoke
+          # - generate
+          # - translate
   push:
     branches: [main]
     paths:

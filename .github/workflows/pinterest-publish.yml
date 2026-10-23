@@ -4,20 +4,20 @@ on:
   schedule:
     # Curated product Pins only, twice a day; blog topics remain on other networks.
     - cron: "15 15,21 * * *"
-  workflow_dispatch:
-    inputs:
-      mode:
-        description: "Preview, check OAuth, Trial-only test, or publish Standard"
-        type: choice
-        required: true
-        default: preview
-        options: [preview, check, trial-publish, publish]
-      category:
-        description: "Post category"
-        type: choice
-        required: true
-        default: store
-        options: [store]
+  # workflow_dispatch:
+    # inputs:
+      # mode:
+        # description: "Preview, check OAuth, Trial-only test, or publish Standard"
+        # type: choice
+        # required: true
+        # default: preview
+        # options: [preview, check, trial-publish, publish]
+      # category:
+        # description: "Post category"
+        # type: choice
+        # required: true
+        # default: store
+        # options: [store]
   push:
     branches: [main]
     paths:

@@ -5,14 +5,14 @@ on:
     # Continuous refresh tokens on new Pinterest apps: access 30d, refresh 60d.
     # Check/refresh every 15 days after approval and initial OAuth bootstrap.
     - cron: "27 7 1,16 * *"
-  workflow_dispatch:
-    inputs:
-      mode:
-        description: "Validate GitHub/App access, exchange one-time code or renew tokens"
-        type: choice
-        required: true
-        default: preflight
-        options: [preflight, bootstrap, refresh]
+  # workflow_dispatch:
+    # inputs:
+      # mode:
+        # description: "Validate GitHub/App access, exchange one-time code or renew tokens"
+        # type: choice
+        # required: true
+        # default: preflight
+        # options: [preflight, bootstrap, refresh]
   push:
     branches: [main]
     paths:

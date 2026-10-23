@@ -1,13 +1,13 @@
 name: Render private blog social preview on public runner
 
 on:
-  workflow_dispatch:
-    inputs:
-      slug:
-        description: "Existing English article slug; blank selects the newest existing post"
-        required: false
-        default: ""
-        type: string
+  # workflow_dispatch:
+    # inputs:
+      # slug:
+        # description: "Existing English article slug; blank selects the newest existing post"
+        # required: false
+        # default: ""
+        # type: string
   push:
     branches: [main]
     paths:
@@ -96,10 +96,11 @@ jobs:
         if: always()
         working-directory: private-blog
         run: python -m scripts.private_runner.tasks preview_summary
-      - uses: actions/upload-artifact@v4
-        if: success()
-        with:
-          name: pklavc-social-video-preview-${{ steps.article.outputs.slug }}
-          path: private-blog/social-preview/pklavc-short.mp4
-          if-no-files-found: error
-          retention-days: 7
+      # Public preview artifacts disabled; keep rendered private outputs off the public repository.
+      # - uses: actions/upload-artifact@v4
+        # if: success()
+        # with:
+          # name: pklavc-social-video-preview-${{ steps.article.outputs.slug }}
+          # path: private-blog/social-preview/pklavc-short.mp4
+          # if-no-files-found: error
+          # retention-days: 7
