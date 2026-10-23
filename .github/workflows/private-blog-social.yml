@@ -39,6 +39,7 @@ jobs:
     timeout-minutes: 20
     env:
       PRIVATE_BLOG_REPO_TOKEN: ${{ secrets.PRIVATE_BLOG_REPO_TOKEN }}
+      BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
       INSTAGRAM_ACCESS_TOKEN: ${{ secrets.INSTAGRAM_ACCESS_TOKEN }}
       INSTAGRAM_AUDIO_ACCESS_TOKEN: ${{ secrets.INSTAGRAM_AUDIO_ACCESS_TOKEN }}
       INSTAGRAM_BUSINESS_ACCOUNT_ID: ${{ secrets.INSTAGRAM_BUSINESS_ACCOUNT_ID }}
@@ -51,7 +52,7 @@ jobs:
         shell: bash
         run: |
           missing=0
-          for name in PRIVATE_BLOG_REPO_TOKEN INSTAGRAM_ACCESS_TOKEN INSTAGRAM_BUSINESS_ACCOUNT_ID YOUTUBE_CLIENT_ID YOUTUBE_CLIENT_SECRET YOUTUBE_REFRESH_TOKEN YOUTUBE_ANALYTICS_REFRESH_TOKEN; do
+          for name in BUFFER_API_KEY PRIVATE_BLOG_REPO_TOKEN INSTAGRAM_ACCESS_TOKEN INSTAGRAM_BUSINESS_ACCOUNT_ID YOUTUBE_CLIENT_ID YOUTUBE_CLIENT_SECRET YOUTUBE_REFRESH_TOKEN YOUTUBE_ANALYTICS_REFRESH_TOKEN; do
             if [[ -z "${!name}" ]]; then
               echo "::error::Missing required secret: $name"
               missing=1
@@ -81,6 +82,10 @@ jobs:
         run: |
           python -m pip install -r scripts/blog_automation/requirements.txt
           python -m pip install 'requests>=2.32,<3'
+
+      - name: Verify Buffer API key and @pklavc channel (no post)
+        working-directory: private-blog
+        run: python -m scripts.social_video.buffer_tiktok
 
       - name: Validate private social code without publishing
         working-directory: private-blog
@@ -120,7 +125,7 @@ jobs:
     env:
       SOCIAL_MAX_ITEMS_PER_RUN: '1'  # Never publish multiple regular news Shorts in one hourly slot
       SOCIAL_URGENT_ONLY: ${{ github.event.schedule == '7,37 * * * *' && 'true' || 'false' }}
-      SOCIAL_PLATFORMS: ${{ (github.event.schedule == '7,37 * * * *' || contains(github.event.head_commit.message, '[youtube-game-test]')) && 'youtube' || 'instagram,youtube' }}
+      SOCIAL_PLATFORMS: ${{ (github.event.schedule == '7,37 * * * *' || contains(github.event.head_commit.message, '[youtube-game-test]')) && 'youtube' || 'instagram,youtube,tiktok' }}
       SOCIAL_TARGET_SLUG: ${{ contains(github.event.head_commit.message, '[youtube-game-test]') && 'macca-curated-gta-6-pc-port-could-arrive-within-three-months-of-console-launch' || '' }}
       SOCIAL_IG_UPLOAD_MODE: github-release
       INSTAGRAM_TREND_AUDIO_VOLUME: "100"
@@ -194,6 +199,7 @@ jobs:
           INSTAGRAM_AUDIO_ACCESS_TOKEN: ${{ secrets.INSTAGRAM_AUDIO_ACCESS_TOKEN }}
           INSTAGRAM_BUSINESS_ACCOUNT_ID: ${{ secrets.INSTAGRAM_BUSINESS_ACCOUNT_ID }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}

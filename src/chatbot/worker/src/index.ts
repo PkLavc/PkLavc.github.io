@@ -4,18 +4,14 @@ import { handleDiscordInteraction } from "./discord-interactions";
 import { closeDiscordConversation, drainDiscordMessageQueue, enqueueDiscordMessage, getConversationControl } from "./discord-conversations";
 import { decryptInstagramRecipient, deriveInstagramIdentity, encryptInstagramRecipient, sendInstagramMessage } from "./instagram-messaging";
 import { parseInstagramWebhook } from "./instagram-webhook";
-import { handleTikTokOAuthExchange, handleTikTokOAuthStart, handleTikTokLogout, hasTikTokReviewSession, publicTikTokConfig } from "./tiktok-oauth";
-import { verifyGithubActionsOidc } from "./github-oidc";
 import { dimensionsOfVisit } from "./traffic-attribution";
 import { combineGeoVisits, combineTrafficVisits, type VisitorRollupRow } from "./visitor-rollup";
-import { handleTikTokCreatorInfo, handleTikTokDirectFilePost, handleTikTokDirectPost, handleTikTokDraftFileUpload, handleTikTokMediaProxy, handleTikTokPostStatus, handleTikTokUserInfo } from "./tiktok-publish";
 
 export interface Env {
   DB: D1Database;
   SESSIONS: KVNamespace;
   CACHE: KVNamespace;
   AI?: Ai;
-  UPLOADS?: R2Bucket;
   APP_NAME: string;
   ALLOWED_ORIGINS: string;
   FRONTEND_URL?: string;
@@ -51,11 +47,6 @@ export interface Env {
   INSTAGRAM_WEBHOOK_VERIFY_TOKEN?: string;
   INSTAGRAM_API_MODE?: string;
   INSTAGRAM_GRAPH_API_VERSION?: string;
-  TIKTOK_SANDBOX_CLIENT_KEY?: string;
-  TIKTOK_SANDBOX_CLIENT_SECRET?: string;
-  TIKTOK_CLIENT_KEY?: string;
-  TIKTOK_CLIENT_SECRET?: string;
-  CLOUDFLARE_R2_PUBLIC_BASE_URL?: string;
 }
 
 type ChatPayload = {
@@ -99,9 +90,6 @@ type GeoRegionRow = {
 };
 
 const encoder = new TextEncoder();
-// Only the public PkLavc site can access browser TikTok OAuth, session cookies, and uploads.
-const isTikTokWebOrigin = (origin: string | null): boolean =>
-  origin === "https://pklavc.com" || origin === "https://www.pklavc.com";
 const MAX_MEMORY_ITEMS = 8;
 const SITE_RAG_CACHE_KEY = "site_rag_cache:v2";
 const SITE_RAG_META_KEY = "site_rag_cache_meta:v2";
@@ -148,10 +136,6 @@ export default {
     const origin = request.headers.get("Origin");
     const traceId = request.headers.get("cf-ray") || crypto.randomUUID();
     const traceparent = request.headers.get("traceparent") || `00-${traceId.replace(/[^a-fA-F0-9]/g, "").slice(0, 32).padEnd(32, "0")}-0000000000000001-01`;
-
-    if (url.pathname.startsWith("/tiktok/media/")) {
-      return handleTikTokMediaProxy(request, env);
-    }
 
     if (url.pathname === "/discord/interactions" && request.method === "POST") {
       return handleDiscordInteraction(request, env, ctx);
@@ -200,77 +184,6 @@ export default {
 
     try {
       const spanStart = Date.now();
-
-      if (url.pathname === "/tiktok/config" && request.method === "GET") {
-        if (!isTikTokWebOrigin(origin)) return withCors(json({ error: "origin_not_allowed" }, 403), env, origin);
-        const config = publicTikTokConfig(env);
-        return withCors(json(config.client_key ? { ok: true, ...config } : { error: "tiktok_not_configured" },
-          config.client_key ? 200 : 503), env, origin);
-      }
-
-      if (url.pathname === "/tiktok/oauth/start" && request.method === "GET") {
-        if (!isTikTokWebOrigin(origin)) return withCors(json({ error: "origin_not_allowed" }, 403), env, origin);
-        return withCors(handleTikTokOAuthStart(env), env, origin);
-      }
-
-      if (url.pathname === "/tiktok/oauth/exchange" && request.method === "POST") {
-        if (!isTikTokWebOrigin(origin)) return withCors(json({ error: "origin_not_allowed" }, 403), env, origin);
-        return withCors(await handleTikTokOAuthExchange(request, env), env, origin);
-      }
-
-      if (url.pathname === "/tiktok/oauth/logout" && request.method === "POST") {
-        if (!isTikTokWebOrigin(origin)) return withCors(json({ error: "origin_not_allowed" }, 403), env, origin);
-        return withCors(await handleTikTokLogout(request, env), env, origin);
-      }
-
-      if (
-        request.method === "POST" &&
-        (
-          url.pathname === "/tiktok/creator-info" ||
-          url.pathname === "/tiktok/user-info" ||
-          url.pathname === "/tiktok/publish/video" ||
-          url.pathname === "/tiktok/publish/file" ||
-          url.pathname === "/tiktok/upload/draft" ||
-          url.pathname === "/tiktok/publish/status"
-        )
-      ) {
-        const webSession = isTikTokWebOrigin(origin) && await hasTikTokReviewSession(request, env);
-        let authorizedService = false;
-        if (!webSession &&
-            (url.pathname === "/tiktok/publish/video" || url.pathname === "/tiktok/publish/status")) {
-          try {
-            await verifyGithubActionsOidc(request);
-            authorizedService = true;
-          } catch {
-            // No GitHub service token or no valid creator session.
-          }
-        }
-        if (!webSession && !authorizedService) {
-          return withCors(json({ error: "unauthorized" }, 401), env, origin);
-        }
-        // Only service-owned GitHub Actions may publish server-stored media, privately.
-        // Browser FILE_UPLOAD and draft posts MUST use the creator's own login session.
-        if (url.pathname === "/tiktok/publish/video" && !authorizedService) {
-          return withCors(json({ error: "server_post_requires_service_authorization" }, 403), env, origin);
-        }
-        const creatorRequest = webSession ? request : undefined;
-        if (url.pathname === "/tiktok/creator-info") {
-          return withCors(await handleTikTokCreatorInfo(env, creatorRequest), env, origin);
-        }
-        if (url.pathname === "/tiktok/user-info") {
-          return withCors(await handleTikTokUserInfo(env, creatorRequest), env, origin);
-        }
-        if (url.pathname === "/tiktok/publish/video") {
-          return withCors(await handleTikTokDirectPost(request, env), env, origin);
-        }
-        if (url.pathname === "/tiktok/publish/file") {
-          return withCors(await handleTikTokDirectFilePost(request, env), env, origin);
-        }
-        if (url.pathname === "/tiktok/upload/draft") {
-          return withCors(await handleTikTokDraftFileUpload(request, env), env, origin);
-        }
-        return withCors(await handleTikTokPostStatus(request, env, creatorRequest), env, origin);
-      }
 
       if (url.pathname === "/health" && request.method === "GET") {
         const siteRagStatus = await getSiteRagCacheStatus(env);
