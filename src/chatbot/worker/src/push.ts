@@ -26,7 +26,7 @@ function validEndpoint(endpoint: unknown): endpoint is string {
   try {
     const u = new URL(endpoint);
     return u.protocol === "https:" && !u.username && !u.password && !u.hash && !u.port &&
-      !["localhost", "127.0.0.1"].includes(u.hostname) && !/\\s/.test(endpoint);
+      !["localhost", "127.0.0.1"].includes(u.hostname) && !/\s/.test(endpoint);
   } catch { return false; }
 }
 function normalizedFlags(value: unknown): Record<Topic, number> | null {
@@ -133,7 +133,7 @@ export async function handlePush(request: Request, env: PushEnv): Promise<Respon
   if (path === "/push/admin/campaign/start" && request.method === "POST") {
     const data = await body(request);
     if (!isTopic(data?.topic) || !validCursor(data?.id) ||
-        typeof data?.url !== "string" || !/^\\/(blog|store)\\//.test(data.url) ||
+        typeof data?.url !== "string" || !/^\/(blog|store)\//.test(data.url) ||
         data.url.length > 500) return reply({ error: "invalid_campaign" }, 400);
     const existing = await env.DB.prepare("SELECT status FROM push_campaigns WHERE id = ?")
       .bind(data.id).first<{ status: string }>();
