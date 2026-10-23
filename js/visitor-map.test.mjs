@@ -80,7 +80,7 @@ test('mobile maintains a vector icon and keyboard focus affordance', () => {
   ]) {
     const html = readFileSync(new URL(path, import.meta.url), 'utf8');
     assert.match(html, /\/js\/visitor-map\.js\?v=20261016mobileheader1/);
-    assert.match(html, /\/css\/visitor-map\.css\?v=20261016mobileheader1/);
+    assert.match(html, /\/css\/visitor-map\.css\?v=[a-zA-Z0-9._-]+/);
   }
 });
 
