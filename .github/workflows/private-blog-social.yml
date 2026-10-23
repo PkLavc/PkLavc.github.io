@@ -151,9 +151,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 90
     env:
-      SOCIAL_MAX_ITEMS_PER_RUN: '1'  # Never publish multiple regular news Shorts in one hourly slot
+      SOCIAL_MAX_ITEMS_PER_RUN: ${{ (github.event_name == 'push' && contains(github.event.head_commit.message, '[tiktok-featured-20261023]')) && '4' || '1' }}  # Normal cadence unchanged
       SOCIAL_URGENT_ONLY: ${{ github.event.schedule == '7,37 * * * *' && 'true' || 'false' }}
       SOCIAL_PLATFORMS: ${{ (inputs.mode == 'tiktok-publish' || contains(github.event.head_commit.message, '[buffer-publish-now]')) && 'tiktok' || ((github.event.schedule == '7,37 * * * *' || contains(github.event.head_commit.message, '[youtube-game-test]')) && 'youtube' || 'instagram,youtube,tiktok') }}
+      SOCIAL_FEATURED_SLUGS: ${{ (github.event_name == 'push' && contains(github.event.head_commit.message, '[tiktok-featured-20261023]')) && 'gta-6-create-vice-city-boarding-pass-free,not-even-rockstar-heads-know-everything-that-s-in-gta-6-because,after-18-years-gta-6-might-finally-fix-a-graphical-bug-that-s-pl,report-real-life-gta-6-vehicles-are-driving-around-miami-as-part' || '' }}
       SOCIAL_TARGET_SLUG: ${{ contains(github.event.head_commit.message, '[youtube-game-test]') && 'macca-curated-gta-6-pc-port-could-arrive-within-three-months-of-console-launch' || '' }}
       SOCIAL_IG_UPLOAD_MODE: github-release
       INSTAGRAM_TREND_AUDIO_VOLUME: "100"
@@ -193,6 +194,14 @@ jobs:
       - name: Curate fresh Macca GTA news for PkLavc YouTube without repeating PkLavc stories
         working-directory: private-blog
         run: python -m scripts.social_video.macca_bridge
+
+      - name: Prepare proven GTA VI TikTok campaign only on explicit release push
+        if: github.event_name == 'push' && contains(github.event.head_commit.message, '[tiktok-featured-20261023]')
+        working-directory: private-blog
+        run: |
+          python -m compileall -q scripts/social_video
+          python -m unittest scripts.social_video.test_buffer_tiktok scripts.social_video.test_render -q
+          python -m scripts.social_video.tiktok_featured_campaign
 
       - name: Check pending publications and due Analytics snapshots
         id: pending
