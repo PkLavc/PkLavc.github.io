@@ -4,25 +4,25 @@ on:
   schedule:
     # Eight opportunities/day during US Eastern daytime (6 Games, 2 Tech).
     - cron: "45 12,13,14,15,16,17,19,21 * * *"
-  workflow_dispatch:
-    inputs:
-      mode:
-        description: "Check token, preview content or publish one real article"
-        type: choice
-        required: true
-        default: check
-        options:
-          - check
-          - preview
-          - publish
-      category:
-        description: "Which category to prioritize when posting"
-        type: choice
-        required: true
-        default: games
-        options:
-          - games
-          - tech
+  # workflow_dispatch:
+    # inputs:
+      # mode:
+        # description: "Check token, preview content or publish one real article"
+        # type: choice
+        # required: true
+        # default: check
+        # options:
+          # - check
+          # - preview
+          # - publish
+      # category:
+        # description: "Which category to prioritize when posting"
+        # type: choice
+        # required: true
+        # default: games
+        # options:
+          # - games
+          # - tech
   push:
     branches: [main]
     paths:
