@@ -16,14 +16,14 @@ on:
       - ".github/workflows/pklavc-web-push.yml"
   schedule:
     - cron: "23 * * * *" # Recover missed publication events; campaigns are deduplicated in D1.
-  workflow_dispatch:
-    inputs:
-      mode:
-        description: "Preview without requests, or send pending campaigns"
-        type: choice
-        required: true
-        default: dry-run
-        options: [dry-run, send]
+  # workflow_dispatch:
+    # inputs:
+      # mode:
+        # description: "Preview without requests, or send pending campaigns"
+        # type: choice
+        # required: true
+        # default: dry-run
+        # options: [dry-run, send]
 
 permissions:
   contents: read
