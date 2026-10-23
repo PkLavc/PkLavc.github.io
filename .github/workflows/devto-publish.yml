@@ -4,16 +4,16 @@ on:
   schedule:
     # 11:30 AM Miami during US daylight saving time; 10:30 AM in winter.
     - cron: "30 15 * * *"
-  workflow_dispatch:
-    inputs:
-      mode:
-        type: choice
-        required: true
-        default: preview
-        description: "Preview only or publish one new English Tech article"
-        options:
-          - preview
-          - publish
+  # workflow_dispatch:
+    # inputs:
+      # mode:
+        # type: choice
+        # required: true
+        # default: preview
+        # description: "Preview only or publish one new English Tech article"
+        # options:
+          # - preview
+          # - publish
   push:
     branches: [main]
     paths:
