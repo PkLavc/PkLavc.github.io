@@ -1,0 +1,82 @@
+name: PKLAVC Web Push (Blog and Store)
+
+on:
+  pull_request:
+    paths:
+      - "js/pklavc-push.js"
+      - "push-sw.js"
+      - "scripts/push-notifications.cjs"
+      - "scripts/build-pages-artifact.mjs"
+      - ".github/workflows/pklavc-web-push.yml"
+  push:
+    branches: [main]
+    paths:
+      - "blog/posts.json"
+      - "store/products.json"
+      - ".github/workflows/pklavc-web-push.yml"
+  schedule:
+    - cron: "23 * * * *" # Recover missed publication events; campaigns are deduplicated in D1.
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "Preview without requests, or send pending campaigns"
+        type: choice
+        required: true
+        default: dry-run
+        options: [dry-run, send]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pklavc-web-push-dispatch
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Validate all new browser and dispatch scripts
+        run: |
+          node --check scripts/push-notifications.cjs
+          node --check js/pklavc-push.js
+          node --check push-sw.js
+          node --check scripts/build-pages-artifact.mjs
+      - name: Test Web Push dependency resolution
+        run: |
+          npm install --no-save --ignore-scripts --prefix scripts web-push@3.6.7
+          node -e "require('./scripts/node_modules/web-push'); console.log('Web Push ready')"
+      - name: Dry-run against published Blog and Store indexes without Cloudflare API calls
+        env:
+          JWT_SECRET: "ci-dry-run-safety-secret-long-enough"
+          PUSH_DRY_RUN: "true"
+        run: node scripts/push-notifications.cjs
+  send:
+    needs: validate
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    steps:
+      - name: Checkout latest public blog and store catalog
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: false
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Install minimal Web Push sender
+        run: npm install --no-save --ignore-scripts --prefix scripts web-push@3.6.7
+      - name: Verify sender syntax
+        run: node --check scripts/push-notifications.cjs
+      - name: Send with provider backpressure and D1 campaign deduplication
+        env:
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          PUSH_MAX_RECIPIENTS_PER_RUN: ${{ vars.PUSH_MAX_RECIPIENTS_PER_RUN || '30000' }}
+          PUSH_DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.mode == 'dry-run' }}
+        run: node scripts/push-notifications.cjs

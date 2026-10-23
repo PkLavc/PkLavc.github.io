@@ -1,4 +1,5 @@
 import { MANUAL_RAG_CONTEXT, MANUAL_RAG_SECTIONS } from "./manual-rag";
+import { handlePush } from "./push";
 import { exclusiveSiteReply, isSkyletShortFollowup, isSkyletSiteQuestion, skyletDailyLimitReply, skyletQuickAnswer, skyletClientHistory, skyletContextLanguage, skyletContextFollowup, skyletContextQuickAnswer } from "./skylet-scope";
 import { handleDiscordInteraction } from "./discord-interactions";
 import { closeDiscordConversation, drainDiscordMessageQueue, enqueueDiscordMessage, getConversationControl } from "./discord-conversations";
@@ -185,6 +186,10 @@ export default {
 
     try {
       const spanStart = Date.now();
+
+      if (url.pathname.startsWith("/push/")) {
+        return withCors(await handlePush(request, env), env, origin);
+      }
 
       if (url.pathname === "/health" && request.method === "GET") {
         const siteRagStatus = await getSiteRagCacheStatus(env);
