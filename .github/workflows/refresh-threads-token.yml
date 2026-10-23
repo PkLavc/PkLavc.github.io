@@ -5,13 +5,13 @@ on:
     # Threads refresh requires token age >=24 hours; first run Oct 17 after initial creation.
     # Long-lived tokens last ~60 days; renew twice monthly.
     - cron: "36 6 3,17 * *"
-  workflow_dispatch:
-    inputs:
-      mode:
-        type: choice
-        required: true
-        default: preflight
-        options: [preflight, renew]
+  # workflow_dispatch:
+    # inputs:
+      # mode:
+        # type: choice
+        # required: true
+        # default: preflight
+        # options: [preflight, renew]
   push:
     branches: [main]
     paths:
