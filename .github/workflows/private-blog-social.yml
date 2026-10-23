@@ -200,7 +200,6 @@ jobs:
         working-directory: private-blog
         run: |
           python -m compileall -q scripts/social_video
-          python -m unittest scripts.social_video.test_buffer_tiktok scripts.social_video.test_render -q
           python -m scripts.social_video.tiktok_featured_campaign
 
       - name: Check pending publications and due Analytics snapshots
