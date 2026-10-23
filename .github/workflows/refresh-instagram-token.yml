@@ -4,16 +4,16 @@ on:
   schedule:
     # Instagram Login long-lived tokens last ~60 days. Rotate twice monthly (UTC) for extra failure margin.
     - cron: "23 6 1,15 * *"
-  workflow_dispatch:
-    inputs:
-      mode:
-        type: choice
-        description: "Preflight permissions without refreshing or renew live token"
-        required: true
-        default: preflight
-        options:
-          - preflight
-          - renew
+  # workflow_dispatch:
+    # inputs:
+      # mode:
+        # type: choice
+        # description: "Preflight permissions without refreshing or renew live token"
+        # required: true
+        # default: preflight
+        # options:
+          # - preflight
+          # - renew
   push:
     branches: [main]
     paths:
