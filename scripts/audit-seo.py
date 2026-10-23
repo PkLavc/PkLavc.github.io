@@ -147,6 +147,7 @@ class VisualSnapshot(HTMLParser):
         self.store_prerender_depth = 0
         self.head_script = None
         self.ad_scripts_ignored = 0
+        self.push_script_ignored = False
         def drop_self_refresh(match):
             target = re.search(r'\bcontent=[\"\'][^\"\']*?\burl=([^\"\']+)', match.group(), re.I)
             return "" if target and urljoin(page_url, unescape(target[1]).strip()) == page_url else match.group()
@@ -166,6 +167,15 @@ class VisualSnapshot(HTMLParser):
             self.in_head = True
         if tag == "body":
             self.body = True
+        # The Pages builder intentionally injects only this local opt-in push script.
+        # It adds a control at runtime but does not rewrite existing page markup.
+        if (tag == "script" and self.allow_ad_injection
+                and values.get("id") == "pklavc-push-preferences"
+                and values.get("defer") is None
+                and len(attrs) == 3
+                and re.fullmatch(r"/js/pklavc-push\\.js(?:\\?v=[A-Za-z0-9._-]+)?", values.get("src") or "")):
+            self.push_script_ignored = True
+            return
         if tag == "script" and (values.get("type") or "").lower() == "application/ld+json":
             self.json_script = True
             return
@@ -197,6 +207,8 @@ class VisualSnapshot(HTMLParser):
             self.handle_endtag(tag)
 
     def handle_data(self, data):
+        if self.push_script_ignored:
+            return
         if self.store_prerender_depth:
             return
         if self.json_script:
@@ -209,6 +221,9 @@ class VisualSnapshot(HTMLParser):
                 self.tokens.append(("text", value))
 
     def handle_endtag(self, tag):
+        if tag == "script" and self.push_script_ignored:
+            self.push_script_ignored = False
+            return
         if self.store_prerender_depth:
             self.store_prerender_depth -= 1
             return
