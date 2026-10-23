@@ -25,8 +25,14 @@ function validEndpoint(endpoint: unknown): endpoint is string {
   if (typeof endpoint !== "string" || endpoint.length > 1800 || endpoint.length < 25) return false;
   try {
     const u = new URL(endpoint);
-    return u.protocol === "https:" && !u.username && !u.password && !u.hash && !u.port &&
-      !["localhost", "127.0.0.1"].includes(u.hostname) && !/\s/.test(endpoint);
+    // Prevent the GitHub sender from making requests to attacker-controlled/SSRF URLs.
+    const host = u.hostname.toLowerCase();
+    const trusted = host === "fcm.googleapis.com" ||
+      host === "updates.push.services.mozilla.com" ||
+      host === "web.push.apple.com" || host.endsWith(".push.apple.com") ||
+      host.endsWith(".notify.windows.com");
+    return trusted && u.protocol === "https:" && !u.username && !u.password &&
+      !u.hash && !u.port && !/\s/.test(endpoint);
   } catch { return false; }
 }
 function normalizedFlags(value: unknown): Record<Topic, number> | null {
