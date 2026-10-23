@@ -9,20 +9,20 @@ on:
   schedule:
     # Recovery only, if an event-driven publication was missed.
     - cron: "39 * * * *"
-  workflow_dispatch:
-    inputs:
-      mode:
-        description: "Check webhooks, preview, send test messages or publish news"
-        required: true
-        type: choice
-        default: check
-        options: [check, preview, test, publish]
-      category:
-        description: "Category to inspect or publish"
-        required: true
-        type: choice
-        default: all
-        options: [all, games, tech]
+  # workflow_dispatch:
+    # inputs:
+      # mode:
+        # description: "Check webhooks, preview, send test messages or publish news"
+        # required: true
+        # type: choice
+        # default: check
+        # options: [check, preview, test, publish]
+      # category:
+        # description: "Category to inspect or publish"
+        # required: true
+        # type: choice
+        # default: all
+        # options: [all, games, tech]
   push:
     branches: [main]
     paths:
