@@ -4,20 +4,20 @@ on:
   schedule:
     # Eight US Eastern daytime slots; 6 Games and 2 Tech preferred.
     - cron: "25 12,13,14,15,16,17,19,21 * * *"
-  workflow_dispatch:
-    inputs:
-      mode:
-        description: "Check account token, preview articles or publish one"
-        required: true
-        type: choice
-        default: check
-        options: [check, preview, publish]
-      category:
-        description: "Preferred category for manual publication"
-        required: true
-        type: choice
-        default: games
-        options: [games, tech]
+  # workflow_dispatch:
+    # inputs:
+      # mode:
+        # description: "Check account token, preview articles or publish one"
+        # required: true
+        # type: choice
+        # default: check
+        # options: [check, preview, publish]
+      # category:
+        # description: "Preferred category for manual publication"
+        # required: true
+        # type: choice
+        # default: games
+        # options: [games, tech]
   push:
     branches: [main]
     paths:
