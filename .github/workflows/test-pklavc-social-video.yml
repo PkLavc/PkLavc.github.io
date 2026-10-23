@@ -35,11 +35,12 @@ jobs:
         env:
           SOCIAL_TTS: espeak-ng-fallback
         run: python -m unittest scripts.social_video.test_motion scripts.social_video.test_direct_upload scripts.social_video.test_render && python -m scripts.private_runner.tasks video_smoke
-      - name: Save one-day MP4 preview for review
-        uses: actions/upload-artifact@v4
-        with:
-          name: pklavc-motion-short-preview
-          path: |
-            blog/social-preview/pklavc-short.mp4
-          retention-days: 1
-          if-no-files-found: error
+      # Public preview artifacts disabled; keep rendered private outputs off the public repository.
+      # - name: Save one-day MP4 preview for review
+        # uses: actions/upload-artifact@v4
+        # with:
+          # name: pklavc-motion-short-preview
+          # path: |
+            # blog/social-preview/pklavc-short.mp4
+          # retention-days: 1
+          # if-no-files-found: error
