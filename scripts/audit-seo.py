@@ -171,9 +171,9 @@ class VisualSnapshot(HTMLParser):
         # It adds a control at runtime but does not rewrite existing page markup.
         if (tag == "script" and self.allow_ad_injection
                 and values.get("id") == "pklavc-push-preferences"
-                and values.get("defer") is None
+                and "defer" in values and values.get("defer") is None
                 and len(attrs) == 3
-                and re.fullmatch(r"/js/pklavc-push\\.js(?:\\?v=[A-Za-z0-9._-]+)?", values.get("src") or "")):
+                and re.fullmatch(r"/js/pklavc-push\.js(?:\?v=[A-Za-z0-9._-]+)?", values.get("src") or "")):
             self.push_script_ignored = True
             return
         if tag == "script" and (values.get("type") or "").lower() == "application/ld+json":
