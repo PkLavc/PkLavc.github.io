@@ -131,6 +131,8 @@ jobs:
       SOCIAL_IG_UPLOAD_MODE: github-release
       INSTAGRAM_TREND_AUDIO_VOLUME: "100"
       INSTAGRAM_VIDEO_AUDIO_VOLUME: "0"
+      # Source-grounded 65-90s TikTok/YouTube exports share one capped MP4;
+      # Instagram retains its existing short music-only Reel and cover.
       SOCIAL_MAX_VIDEO_MB: ${{ vars.SOCIAL_MAX_VIDEO_MB || '25' }}
       SOCIAL_TTS: kokoro
       SOCIAL_KOKORO_VOICE: af_bella
