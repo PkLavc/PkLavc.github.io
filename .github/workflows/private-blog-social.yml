@@ -305,14 +305,16 @@ jobs:
           INSTAGRAM_AUDIO_ACCESS_TOKEN: ${{ secrets.INSTAGRAM_AUDIO_ACCESS_TOKEN }}
         run: python -m scripts.social_video.instagram_analytics
 
-      - name: Collect age-matched TikTok metrics through existing Buffer connection
+      - name: Collect daily, read-only Buffer insights for TikTok and Instagram
         id: tiktok_analytics
-        if: always() && (github.event.schedule == '47 * * * *' || inputs.mode == 'publish')
+        # Run after all publishing, and never spend the Buffer key on posting to Instagram.
+        # The collector's persisted 24-hour guard ensures one API batch per day.
+        if: always() && github.event.schedule == '47 * * * *'
         continue-on-error: true
         working-directory: private-blog
         env:
           BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
-        run: python -m scripts.social_video.tiktok_analytics
+        run: python -m scripts.social_video.buffer_insights_daily
 
       - name: Install Analytics client without video renderer
         if: steps.pending.outputs.has_analytics == 'true' && (steps.pending.outputs.has_video != 'true' || steps.pending.outputs.publish_video_queue != 'true')
