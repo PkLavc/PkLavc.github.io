@@ -300,17 +300,6 @@ jobs:
         if: always() && (steps.social.outcome != 'skipped' || steps.store_products.outcome != 'skipped' || steps.buffer_status.outcome == 'success')
         working-directory: private-blog
         run: python -m scripts.private_runner.tasks persist_state
-      - name: Collect Instagram Reel and Store Insights (never blocks publication)
-        id: instagram_analytics
-        if: always() && (github.event_name == 'schedule' || inputs.mode == 'publish')
-        continue-on-error: true
-        working-directory: private-blog
-        env:
-          INSTAGRAM_ACCESS_TOKEN: ${{ secrets.INSTAGRAM_ACCESS_TOKEN }}
-          INSTAGRAM_ANALYTICS_ACCESS_TOKEN: ${{ secrets.INSTAGRAM_ANALYTICS_ACCESS_TOKEN }}
-          INSTAGRAM_AUDIO_ACCESS_TOKEN: ${{ secrets.INSTAGRAM_AUDIO_ACCESS_TOKEN }}
-        run: python -m scripts.social_video.instagram_analytics
-
       - name: Collect daily, read-only Buffer insights for TikTok and Instagram
         id: tiktok_analytics
         # Run after all publishing, and never spend the Buffer key on posting to Instagram.
@@ -339,7 +328,7 @@ jobs:
         run: python -m scripts.social_video.analytics
 
       - name: Persist Analytics and rolling 18-day editorial feedback
-        if: always() && (steps.analytics.outcome != 'skipped' || steps.instagram_analytics.outcome != 'skipped' || steps.tiktok_analytics.outcome != 'skipped')
+        if: always() && (steps.analytics.outcome != 'skipped' || steps.tiktok_analytics.outcome != 'skipped')
         working-directory: private-blog
         run: python -m scripts.private_runner.tasks persist_analytics
       - name: Fail after persisting partial results
