@@ -88,6 +88,10 @@ jobs:
         working-directory: private-blog
         run: python -m scripts.social_video.buffer_tiktok
 
+      - name: Verify TikTok and Instagram connected for read-only Buffer analytics
+        working-directory: private-blog
+        run: python -m scripts.social_video.buffer_insights_daily --check-connections
+
       - name: Validate private social code without publishing
         working-directory: private-blog
         run: bash scripts/private_runner/runner.sh smoke-social && python -m unittest scripts.private_runner.test_tasks
