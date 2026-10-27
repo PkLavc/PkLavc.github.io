@@ -1,0 +1,31 @@
+name: Verify read-only Buffer insights for Meta-published Reels
+
+on:
+  push:
+    paths:
+      - ".github/workflows/verify-buffer-native-instagram.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout private analytics code and published Reel IDs
+        uses: actions/checkout@v4
+        with:
+          repository: PkLavc/blog
+          ref: main
+          token: ${{ secrets.PRIVATE_BLOG_REPO_TOKEN }}
+          path: private-blog
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Compare Buffer Instagram posts against real Meta Reel URLs (no writes)
+        working-directory: private-blog
+        env:
+          BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
+        run: python -m scripts.social_video.buffer_insights_daily --check-metrics
