@@ -84,11 +84,10 @@ jobs:
         shell: bash
         run: |
           if [[ "$EVENT_NAME" == "schedule" ]]; then
+            # GitHub Actions schedules can start hours late. Trust the schedule event
+            # instead of the runner's current UTC hour; publication state enforces caps.
             mode=publish
-            case "$(date -u +%H)" in
-              15|21) category=store ;;
-              *) echo "No Pinterest slot matched"; exit 0 ;;
-            esac
+            category=store
           elif [[ "$EVENT_NAME" == "push" ]]; then
             # Only the explicit activation commit publishes an initial public Pin.
             # Normal source changes only verify OAuth, avoiding unexpected Pins.
@@ -103,6 +102,10 @@ jobs:
           fi
           output="$(python -m scripts.social_video.pinterest_publisher --root . --public-site ../public-site --mode "$mode" --category "$category")"
           printf '%s\n' "$output"
+          if [[ "$mode" == "publish" && "$output" == *"PENDING:"* ]]; then
+            echo "::error::Pinterest publication blocked; see PENDING diagnostic above."
+            exit 1
+          fi
           if [[ "$EVENT_NAME" == "push" && "$mode" == "check" && "$output" != *"AUTHENTICATED Pinterest @pklavc"* ]]; then
             echo "::error::Production Pinterest OAuth is not validated."
             exit 1
