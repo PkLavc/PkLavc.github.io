@@ -4,7 +4,7 @@
   // Shared advertising configuration for blog articles and Store.
   // Rules can still be overridden by language, country or region.
   var rotationSeconds = 24;
-  var campaigns = ['aliexpress', 'pklavc_blog', 'macca_blog', 'pklavc_store', 'pklavc_projects'];
+  var campaigns = ['aliexpress', 'pklavc_blog', 'pklavc_store', 'pklavc_projects'];
 
   function rotatingPlacement(extra) {
     return Object.assign({
@@ -23,7 +23,7 @@
     placements: {
       // Blog: Prime Video is fixed in-article and always appears first in the desktop sidebar.
       sidebar: rotatingPlacement({
-        default: ['amazon_prime_video', 'shopee', 'aliexpress', 'pklavc_blog', 'macca_blog', 'pklavc_store', 'pklavc_projects']
+        default: ['amazon_prime_video', 'shopee', 'aliexpress', 'pklavc_blog', 'pklavc_store', 'pklavc_projects']
       }),
       inline: rotatingPlacement({
         default: 'amazon_prime_video',
@@ -32,7 +32,7 @@
       // Article-to-article transition ads use a separate rotation so they can
       // keep their campaign order independently from in-article placements.
       continuous: rotatingPlacement({
-        default: ['amazon_prime_video', 'shopee', 'aliexpress', 'pklavc_store', 'pklavc_projects', 'macca_blog'],
+        default: ['amazon_prime_video', 'shopee', 'aliexpress', 'pklavc_store', 'pklavc_projects'],
         rotateEverySeconds: 0
       }),
       // Blog home: a dedicated card is inserted between editorial cards.
@@ -45,7 +45,7 @@
 
       // Store: Prime Video is fixed between product rows and in the final ad slot.
       'store-sidebar': rotatingPlacement({
-        default: ['amazon_prime_video', 'pklavc_blog', 'macca_blog', 'pklavc_store', 'pklavc_projects']
+        default: ['amazon_prime_video', 'pklavc_blog', 'pklavc_store', 'pklavc_projects']
       }),
       'store-rows': rotatingPlacement({
         default: 'amazon_prime_video',
@@ -178,37 +178,6 @@
             inline: { title: 'Más contenido de ingeniería', body: 'Continúa con artículos técnicos sobre sistemas prácticos y lanzamientos confirmados.', cta: 'Leer el blog', href: '/blog/es/' },
             bottom: { title: 'Sigue leyendo PKLAVC', body: 'Explora los artículos más recientes y análisis técnicos.', cta: 'Abrir blog', href: '/blog/es/' },
             mobile: { title: 'Blog PKLAVC', body: 'Ingeniería, backend, IA y automatización.', cta: 'Leer', href: '/blog/es/' }
-          }
-        }
-      },
-
-      macca_blog: {
-        type: 'image',
-        style: 'macca',
-        locales: {
-          en: {
-            image: 'https://macca-lab.onrender.com/ads/partner.webp?v=32b22c8aaa',
-            imageAlt: 'Macca the Gator partner artwork',
-            sidebar: { title: 'Visit the Macca Blog', body: 'GTA and Rockstar coverage from Macca the Gator.', cta: 'Open Macca Blog', href: 'https://macca-lab.onrender.com/blog/' },
-            inline: { title: 'More GTA and Rockstar coverage', body: 'Continue on the Macca Blog for GTA, Rockstar and community stories.', cta: 'Visit Macca', href: 'https://macca-lab.onrender.com/blog/' },
-            bottom: { title: 'Macca the Gator', body: 'Explore the Macca Blog for GTA and Rockstar coverage.', cta: 'Open blog', href: 'https://macca-lab.onrender.com/blog/' },
-            mobile: { title: 'Macca Blog', body: 'GTA and Rockstar coverage.', cta: 'Visit', href: 'https://macca-lab.onrender.com/blog/' }
-          },
-          pt: {
-            image: 'https://macca-lab.onrender.com/ads/partner.webp?v=32b22c8aaa',
-            imageAlt: 'Arte de parceria do Macca the Gator',
-            sidebar: { title: 'Visite o Macca Blog', body: 'Cobertura de GTA e Rockstar com o Macca the Gator.', cta: 'Abrir Macca Blog', href: 'https://macca-lab.onrender.com/blog/' },
-            inline: { title: 'Mais sobre GTA e Rockstar', body: 'Continue no Macca Blog com conteúdo sobre GTA, Rockstar e comunidade.', cta: 'Visitar Macca', href: 'https://macca-lab.onrender.com/blog/' },
-            bottom: { title: 'Macca the Gator', body: 'Explore o Macca Blog para acompanhar GTA e Rockstar.', cta: 'Abrir blog', href: 'https://macca-lab.onrender.com/blog/' },
-            mobile: { title: 'Macca Blog', body: 'Conteúdo sobre GTA e Rockstar.', cta: 'Visitar', href: 'https://macca-lab.onrender.com/blog/' }
-          },
-          es: {
-            image: 'https://macca-lab.onrender.com/ads/partner.webp?v=32b22c8aaa',
-            imageAlt: 'Arte de colaboración de Macca the Gator',
-            sidebar: { title: 'Visita el Macca Blog', body: 'Cobertura de GTA y Rockstar con Macca the Gator.', cta: 'Abrir Macca Blog', href: 'https://macca-lab.onrender.com/blog/' },
-            inline: { title: 'Más sobre GTA y Rockstar', body: 'Continúa en Macca Blog con contenido sobre GTA, Rockstar y la comunidad.', cta: 'Visitar Macca', href: 'https://macca-lab.onrender.com/blog/' },
-            bottom: { title: 'Macca the Gator', body: 'Explora Macca Blog para seguir GTA y Rockstar.', cta: 'Abrir blog', href: 'https://macca-lab.onrender.com/blog/' },
-            mobile: { title: 'Macca Blog', body: 'Contenido sobre GTA y Rockstar.', cta: 'Visitar', href: 'https://macca-lab.onrender.com/blog/' }
           }
         }
       },
