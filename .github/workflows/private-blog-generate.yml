@@ -5,6 +5,8 @@ on:
     - cron: "17 * * * *" # Primary hourly slot; the private runner chooses Tech every fifth UTC hour
     - cron: "47 * * * *" # Recovery slot if the primary was missed or failed
     - cron: "43 15 * * 3" # Weekly Microsoft-only Tech spotlight, 15:43 UTC on Wednesday
+    - cron: "31 12 * * *" # Extra free Tech-resource discovery (09:31 BRT)
+    - cron: "31 16 * * *" # Extra free Rockstar-resource discovery (13:31 BRT)
   # workflow_dispatch:
     # inputs:
       # category:
@@ -209,6 +211,7 @@ jobs:
           DRY_RUN: "false"
           BLOG_CATEGORY: ${{ steps.lane.outputs.category }}
           TECH_FOCUS: ${{ steps.lane.outputs.focus }}
+          CONTENT_MODE: ${{ steps.lane.outputs.content_mode }}
         run: python -m scripts.blog_automation.run --root .
 
       - name: Cache free offline translation models
