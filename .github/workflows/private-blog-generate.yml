@@ -215,7 +215,7 @@ jobs:
           DRY_RUN: "false"
           BLOG_CATEGORY: ${{ steps.lane.outputs.category }}
           TECH_FOCUS: ${{ steps.lane.outputs.focus }}
-          CONTENT_MODE: ${{ steps.lane.outputs.content_mode }}
+          CONTENT_MODE: ${{ steps.lane.outputs.content_mode || 'news' }}
         run: python -m scripts.blog_automation.run --root .
 
       - name: Cache free offline translation models
