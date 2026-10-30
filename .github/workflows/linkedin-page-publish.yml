@@ -4,16 +4,16 @@ on:
   schedule:
     # 10:30/11:30 AM and 4:30/5:30 PM US Eastern, depending on DST.
     - cron: "30 14,20 * * *"
-  # workflow_dispatch:
-    # inputs:
-      # mode:
-        # type: choice
-        # description: "Preview generated LinkedIn posts or publish with approved LinkedIn token"
-        # required: true
-        # default: preview
-        # options:
-          # - preview
-          # - publish
+  workflow_dispatch:
+    inputs:
+      mode:
+        type: choice
+        description: "Preview without posting or publish one eligible Tech article"
+        required: true
+        default: preview
+        options:
+          - preview
+          - publish
   push:
     branches: [main]
     paths:
@@ -52,6 +52,37 @@ jobs:
         working-directory: private-blog
         run: |
           python -m unittest scripts.social_video.test_linkedin_oauth scripts.social_video.test_linkedin_page scripts.social_video.test_post_images -v
+
+      - name: Require valid configuration for manual live publishing
+        if: github.event_name == 'workflow_dispatch' && inputs.mode == 'publish'
+        working-directory: private-blog
+        env:
+          LINKEDIN_CLIENT_ID: ${{ secrets.LINKEDIN_CLIENT_ID }}
+          LINKEDIN_CLIENT_SECRET: ${{ secrets.LINKEDIN_CLIENT_SECRET }}
+          LINKEDIN_REFRESH_TOKEN: ${{ secrets.LINKEDIN_REFRESH_TOKEN }}
+          LINKEDIN_ACCESS_TOKEN: ${{ secrets.LINKEDIN_ACCESS_TOKEN }}
+          LINKEDIN_ORGANIZATION_ID: ${{ secrets.LINKEDIN_ORGANIZATION_ID }}
+        run: |
+          python - <<'PY'
+          import os
+          import re
+          from scripts.social_video.linkedin_oauth import configured
+          values = os.environ
+          has_refresh = all(configured(values.get(x)) for x in (
+              "LINKEDIN_REFRESH_TOKEN", "LINKEDIN_CLIENT_ID", "LINKEDIN_CLIENT_SECRET"))
+          has_access = configured(values.get("LINKEDIN_ACCESS_TOKEN"))
+          has_org = bool(re.fullmatch(r"[1-9]\d{3,19}", values.get("LINKEDIN_ORGANIZATION_ID", "")))
+          missing = []
+          if not (has_refresh or has_access):
+              missing.append("LINKEDIN_ACCESS_TOKEN (or refresh token + client credentials)")
+          if not has_org:
+              missing.append("LINKEDIN_ORGANIZATION_ID (numeric LinkedIn Company Page ID)")
+          if missing:
+              for name in missing:
+                  print("::error::Missing LinkedIn configuration: " + name)
+              raise SystemExit(1)
+          print("LinkedIn authorization configuration is present; proceeding to live publishing.")
+          PY
 
       - name: Preview posts without sending to LinkedIn
         if: github.event_name == 'push' || inputs.mode == 'preview'
