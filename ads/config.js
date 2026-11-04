@@ -100,35 +100,51 @@
         type: 'image',
         style: 'amazon-music',
         // Genuine licensed music photography; no artificial album art or invented offer.
-        photo: 'https://images.unsplash.com/photo-1642177398844-06d28a8f973a?auto=format&fit=crop&w=980&q=82',
+        photo: '/ads/banners/amazon-music-woman.jpg',
+        logo: 'https://d5fx445wy2wpk.cloudfront.net/static/logo.svg',
         detailPhoto: 'https://images.pexels.com/photos/3379274/pexels-photo-3379274.jpeg?auto=compress&cs=tinysrgb&w=720',
         locales: {
           en: {
+            headline: "Music without limits.",
+            offer: "Free for 30 days",
+            ctaLabel: "Try 30 days free",
+            features: ["100 million songs","Ad-free","HD & Spatial Audio"],
+            disclaimer: "For eligible new subscribers. Cancel anytime. Subscription automatically renews after the trial unless canceled.",
             image: 'https://images.unsplash.com/photo-1642177398844-06d28a8f973a?auto=format&fit=crop&w=980&q=82',
             imageAlt: 'Real photograph of headphones in colorful studio lighting',
-            sidebar: { title: 'Your music, your moment.', body: 'Explore 100 million songs, playlists and podcasts with Amazon Music Unlimited.', cta: 'Explore Amazon Music', href: 'https://naiawork.com/g/gxah2cfyka2fa9b296a48a5be32810/' },
-            inline: { title: 'A soundtrack for every moment.', body: 'Discover millions of songs, ad-free listening and HD audio with Amazon Music Unlimited.', cta: 'Listen with Amazon Music', href: 'https://naiawork.com/g/gxah2cfyka2fa9b296a48a5be32810/' },
-            feed: { title: 'Feel every beat.', body: '100 million songs and a world of sound with Amazon Music Unlimited.', cta: 'Discover the music', href: 'https://naiawork.com/g/gxah2cfyka2fa9b296a48a5be32810/' },
-            bottom: { title: 'Press play on something new.', body: 'Discover your next favorite songs with Amazon Music Unlimited.', cta: 'Explore Amazon Music', href: 'https://naiawork.com/g/gxah2cfyka2fa9b296a48a5be32810/' },
-            mobile: { title: 'Your next favorite song starts here.', body: 'Discover Amazon Music Unlimited.', cta: 'Explore Amazon Music', href: 'https://naiawork.com/g/gxah2cfyka2fa9b296a48a5be32810/' }
+            sidebar: { title: 'Music without limits.', body: 'Free for 30 days', cta: 'Try 30 days free', href: 'https://naiawork.com/g/gxah2cfyka2fa9b296a48a5be32810/' },
+            inline: { title: 'Music without limits.', body: 'Free for 30 days', cta: 'Try 30 days free', href: 'https://naiawork.com/g/gxah2cfyka2fa9b296a48a5be32810/' },
+            feed: { title: 'Music without limits.', body: 'Free for 30 days', cta: 'Try 30 days free', href: 'https://naiawork.com/g/gxah2cfyka2fa9b296a48a5be32810/' },
+            bottom: { title: 'Music without limits.', body: 'Free for 30 days', cta: 'Try 30 days free', href: 'https://naiawork.com/g/gxah2cfyka2fa9b296a48a5be32810/' },
+            mobile: { title: 'Music without limits.', body: 'Free for 30 days', cta: 'Try 30 days free', href: 'https://naiawork.com/g/gxah2cfyka2fa9b296a48a5be32810/' }
           },
           pt: {
+            headline: "Música sem limites.",
+            offer: "Grátis por 30 dias",
+            ctaLabel: "Experimente 30 dias grátis",
+            features: ["100 milhões de músicas","Sem anúncios","Áudio HD e espacial"],
+            disclaimer: "Para novos assinantes elegíveis. Cancele a qualquer momento. Após o teste, a assinatura é renovada automaticamente até o cancelamento.",
             image: 'https://images.unsplash.com/photo-1642177398844-06d28a8f973a?auto=format&fit=crop&w=980&q=82',
             imageAlt: 'Foto real de fones de ouvido com iluminação colorida',
-            sidebar: { title: 'A trilha sonora do seu momento.', body: 'Explore 100 milhões de músicas, playlists e podcasts no Amazon Music Unlimited.', cta: 'Conhecer Amazon Music', href: 'https://naiawork.com/g/gxah2cfyka2fa9b296a48a5be32810/' },
-            inline: { title: 'Sua música, do seu jeito.', body: 'Descubra milhões de músicas sem anúncios e com áudio HD no Amazon Music Unlimited.', cta: 'Ouvir no Amazon Music', href: 'https://naiawork.com/g/gxah2cfyka2fa9b296a48a5be32810/' },
-            feed: { title: 'Sinta cada batida.', body: '100 milhões de músicas e um universo de sons no Amazon Music Unlimited.', cta: 'Descobrir músicas', href: 'https://naiawork.com/g/gxah2cfyka2fa9b296a48a5be32810/' },
-            bottom: { title: 'Dê o play em algo novo.', body: 'Descubra suas próximas músicas favoritas com Amazon Music Unlimited.', cta: 'Conhecer Amazon Music', href: 'https://naiawork.com/g/gxah2cfyka2fa9b296a48a5be32810/' },
-            mobile: { title: 'Sua próxima música favorita começa aqui.', body: 'Descubra o Amazon Music Unlimited.', cta: 'Conhecer Amazon Music', href: 'https://naiawork.com/g/gxah2cfyka2fa9b296a48a5be32810/' }
+            sidebar: { title: 'Música sem limites.', body: 'Grátis por 30 dias', cta: 'Experimente 30 dias grátis', href: 'https://naiawork.com/g/gxah2cfyka2fa9b296a48a5be32810/' },
+            inline: { title: 'Música sem limites.', body: 'Grátis por 30 dias', cta: 'Experimente 30 dias grátis', href: 'https://naiawork.com/g/gxah2cfyka2fa9b296a48a5be32810/' },
+            feed: { title: 'Música sem limites.', body: 'Grátis por 30 dias', cta: 'Experimente 30 dias grátis', href: 'https://naiawork.com/g/gxah2cfyka2fa9b296a48a5be32810/' },
+            bottom: { title: 'Música sem limites.', body: 'Grátis por 30 dias', cta: 'Experimente 30 dias grátis', href: 'https://naiawork.com/g/gxah2cfyka2fa9b296a48a5be32810/' },
+            mobile: { title: 'Música sem limites.', body: 'Grátis por 30 dias', cta: 'Experimente 30 dias grátis', href: 'https://naiawork.com/g/gxah2cfyka2fa9b296a48a5be32810/' }
           },
           es: {
+            headline: "Música sin límites.",
+            offer: "Gratis por 30 días",
+            ctaLabel: "Prueba 30 días gratis",
+            features: ["100 millones de canciones","Sin anuncios","Audio HD y espacial"],
+            disclaimer: "Para nuevos suscriptores elegibles. Cancela cuando quieras. Tras la prueba, la suscripción se renueva automáticamente hasta cancelarla.",
             image: 'https://images.unsplash.com/photo-1642177398844-06d28a8f973a?auto=format&fit=crop&w=980&q=82',
             imageAlt: 'Fotografía real de auriculares con luces de estudio de colores',
-            sidebar: { title: 'La música para cada momento.', body: 'Explora 100 millones de canciones, playlists y pódcasts con Amazon Music Unlimited.', cta: 'Descubrir Amazon Music', href: 'https://naiawork.com/g/gxah2cfyka2fa9b296a48a5be32810/' },
-            inline: { title: 'Tu música, a tu manera.', body: 'Descubre millones de canciones sin anuncios y audio HD con Amazon Music Unlimited.', cta: 'Escuchar en Amazon Music', href: 'https://naiawork.com/g/gxah2cfyka2fa9b296a48a5be32810/' },
-            feed: { title: 'Siente cada ritmo.', body: '100 millones de canciones y un mundo de sonido con Amazon Music Unlimited.', cta: 'Descubrir música', href: 'https://naiawork.com/g/gxah2cfyka2fa9b296a48a5be32810/' },
-            bottom: { title: 'Dale play a algo nuevo.', body: 'Descubre tu próxima canción favorita con Amazon Music Unlimited.', cta: 'Descubrir Amazon Music', href: 'https://naiawork.com/g/gxah2cfyka2fa9b296a48a5be32810/' },
-            mobile: { title: 'Tu próxima canción favorita empieza aquí.', body: 'Descubre Amazon Music Unlimited.', cta: 'Descubrir Amazon Music', href: 'https://naiawork.com/g/gxah2cfyka2fa9b296a48a5be32810/' }
+            sidebar: { title: 'Música sin límites.', body: 'Gratis por 30 días', cta: 'Prueba 30 días gratis', href: 'https://naiawork.com/g/gxah2cfyka2fa9b296a48a5be32810/' },
+            inline: { title: 'Música sin límites.', body: 'Gratis por 30 días', cta: 'Prueba 30 días gratis', href: 'https://naiawork.com/g/gxah2cfyka2fa9b296a48a5be32810/' },
+            feed: { title: 'Música sin límites.', body: 'Gratis por 30 días', cta: 'Prueba 30 días gratis', href: 'https://naiawork.com/g/gxah2cfyka2fa9b296a48a5be32810/' },
+            bottom: { title: 'Música sin límites.', body: 'Gratis por 30 días', cta: 'Prueba 30 días gratis', href: 'https://naiawork.com/g/gxah2cfyka2fa9b296a48a5be32810/' },
+            mobile: { title: 'Música sin límites.', body: 'Gratis por 30 días', cta: 'Prueba 30 días gratis', href: 'https://naiawork.com/g/gxah2cfyka2fa9b296a48a5be32810/' }
           }
         }
       },
