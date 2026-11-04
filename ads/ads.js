@@ -396,6 +396,9 @@
     var offer = document.createElement('strong');
     offer.className = 'pklavc-music__offer';
     offer.textContent = creative.offer;
+    var eligible = document.createElement('span');
+    eligible.className = 'pklavc-music__eligible';
+    eligible.textContent = creative.eligible || '';
     var features = document.createElement('span');
     features.className = 'pklavc-music__features';
     (creative.features || []).forEach(function (value, index) {
@@ -416,7 +419,7 @@
     var disclaimer = document.createElement('span');
     disclaimer.className = 'pklavc-music__disclaimer';
     disclaimer.textContent = creative.disclaimer;
-    info.append(logo, unlimited, headline, offer, features, cta, disclaimer);
+    info.append(logo, unlimited, headline, offer, eligible, features, cta, disclaimer);
 
     var visual = document.createElement('span');
     visual.className = 'pklavc-music__visual';
