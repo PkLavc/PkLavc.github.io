@@ -10,7 +10,7 @@
     var style = document.createElement('link');
     style.id = 'pklavc-ads-style';
     style.rel = 'stylesheet';
-    style.href = '/ads/ads.css?v=20261104musicfix2';
+    style.href = '/ads/ads.css?v=20261104musiclayout3';
     document.head.appendChild(style);
   }
 
@@ -18,7 +18,7 @@
     if (document.getElementById('pklavc-ads-runtime')) return;
     var runtime = document.createElement('script');
     runtime.id = 'pklavc-ads-runtime';
-    runtime.src = '/ads/ads.js?v=20261104musicfix2';
+    runtime.src = '/ads/ads.js?v=20261104musiclayout3';
     runtime.async = true;
     document.head.appendChild(runtime);
   }
@@ -34,7 +34,7 @@
   }
   config = document.createElement('script');
   config.id = 'pklavc-ads-config';
-  config.src = '/ads/config.js?v=20261104musicfix2';
+  config.src = '/ads/config.js?v=20261104musiclayout3';
   config.async = true;
   config.addEventListener('load', loadAds, { once: true });
   document.head.appendChild(config);
