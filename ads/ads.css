@@ -2023,10 +2023,24 @@
   mask-image:linear-gradient(90deg,transparent 0%,#000 27%);
 }
 .pklavc-music__photo {
-  position:absolute; display:block; right:1%; bottom:-12%;
+  position:absolute; display:block; right:1%; bottom:-24%;
   height:135%; width:auto; max-width:none; object-fit:contain;
   -webkit-mask-image:none; mask-image:none;
 }
+/* Text-based fallback when an external music logo is blocked by browser filters. */
+.pklavc-music__logo-fallback {
+  position:relative; display:none; max-width:100%; padding-bottom:5px;
+  white-space:nowrap; color:#fff; letter-spacing:-.05em;
+  font:750 clamp(1.45rem,2.45vw,2rem)/1.1 Inter,system-ui,sans-serif;
+}
+.pklavc-music__logo-fallback::after {
+  content:""; position:absolute; left:6px; bottom:1px;
+  width:46%; height:9px; border-bottom:2px solid #fff;
+  border-radius:0 0 75% 80%; transform:rotate(2deg);
+}
+.pklavc-ad--sidebar .pklavc-music__logo-fallback,
+.pklavc-ad--store-sidebar .pklavc-music__logo-fallback { font-size:1.38rem; }
+.blog-carousel-ad-slot .pklavc-music__logo-fallback { font-size:1.1rem; }
 /* No separate gradient on the photo panel: it caused the dark vertical seam. */
 .pklavc-music__visual::after { display:none; }
 

@@ -61,9 +61,9 @@
       amazon_prime_video: {
         type: 'image',
         style: 'prime-video',
-        brandLogo: '/ads/assets/creative-01.png',
+        brandLogo: '/images/brand/mark-light.png',
         brandLogoAlt: 'Amazon',
-        lineupImage: '/ads/banners/prime-video-lineup.jpg',
+        lineupImage: '/images/brand/scene-blue.jpg',
         locales: {
           en: {
             image: '/ads/banners/prime-video-en-v2.svg',
@@ -100,7 +100,7 @@
         type: 'image',
         style: 'amazon-music',
         // Genuine licensed music photography; no artificial album art or invented offer.
-        photo: '/ads/banners/amazon-music-woman.png',
+        photo: '/images/brand/portrait-lilac.png',
         logo: 'https://d5fx445wy2wpk.cloudfront.net/static/logo.svg',
         detailPhoto: 'https://images.pexels.com/photos/3379274/pexels-photo-3379274.jpeg?auto=compress&cs=tinysrgb&w=720',
         locales: {

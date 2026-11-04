@@ -387,6 +387,14 @@
     logo.alt = 'Amazon Music';
     logo.loading = 'lazy';
     logo.decoding = 'async';
+    var logoFallback = document.createElement('span');
+    logoFallback.className = 'pklavc-music__logo-fallback';
+    logoFallback.textContent = 'amazon music';
+    logoFallback.setAttribute('aria-hidden', 'true');
+    logo.addEventListener('error', function () {
+      logo.style.display = 'none';
+      logoFallback.style.display = 'inline-block';
+    });
     var unlimited = document.createElement('span');
     unlimited.className = 'pklavc-music__unlimited';
     unlimited.textContent = 'UNLIMITED';
@@ -419,7 +427,7 @@
     var disclaimer = document.createElement('span');
     disclaimer.className = 'pklavc-music__disclaimer';
     disclaimer.textContent = creative.disclaimer;
-    info.append(logo, unlimited, headline, offer, eligible, features, cta, disclaimer);
+    info.append(logo, logoFallback, unlimited, headline, offer, eligible, features, cta, disclaimer);
 
     var visual = document.createElement('span');
     visual.className = 'pklavc-music__visual';

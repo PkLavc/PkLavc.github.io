@@ -1522,7 +1522,7 @@ if (document.readyState === 'loading') {
     var style = document.createElement('link');
     style.id = 'pklavc-ads-style';
     style.rel = 'stylesheet';
-    style.href = '/ads/ads.css?v=20261104musiclayout3';
+    style.href = '/ads/ads.css?v=20261104portraitassets4';
     document.head.appendChild(style);
   }
 
@@ -1530,7 +1530,7 @@ if (document.readyState === 'loading') {
     if (document.getElementById('pklavc-ads-runtime')) return;
     var runtime = document.createElement('script');
     runtime.id = 'pklavc-ads-runtime';
-    runtime.src = '/ads/ads.js?v=20261104musiclayout3';
+    runtime.src = '/ads/ads.js?v=20261104portraitassets4';
     runtime.async = true;
     document.head.appendChild(runtime);
   }
@@ -1548,7 +1548,7 @@ if (document.readyState === 'loading') {
 
   var config = document.createElement('script');
   config.id = 'pklavc-ads-config';
-  config.src = '/ads/config.js?v=20261104musiclayout3';
+  config.src = '/ads/config.js?v=20261104portraitassets4';
   config.async = true;
   config.addEventListener('load', loadRuntime, { once: true });
   document.head.appendChild(config);
