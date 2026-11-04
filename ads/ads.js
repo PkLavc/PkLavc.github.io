@@ -367,6 +367,86 @@
     return shell;
   }
 
+
+  function amazonMusicAd(campaign, placement, creative, copy, destination) {
+    var shell = createShell(placement, campaign);
+    var link = document.createElement('a');
+    link.className = 'pklavc-ad__link pklavc-music';
+    link.href = destination;
+    link.target = '_blank';
+    link.rel = 'sponsored noopener noreferrer';
+
+    var root = document.createElement('span');
+    root.className = 'pklavc-music__creative';
+    var copyBox = document.createElement('span');
+    copyBox.className = 'pklavc-music__copy';
+
+    var brand = document.createElement('span');
+    brand.className = 'pklavc-music__brand';
+    brand.textContent = 'amazon music';
+    var eyebrow = document.createElement('span');
+    eyebrow.className = 'pklavc-music__eyebrow';
+    eyebrow.textContent = ({ en: 'UNLIMITED MUSIC', pt: 'MÚSICA SEM LIMITES', es: 'MÚSICA SIN LÍMITES' })[locale] || 'UNLIMITED MUSIC';
+    var title = document.createElement('strong');
+    title.className = 'pklavc-music__headline';
+    title.textContent = copy.title;
+    var body = document.createElement('span');
+    body.className = 'pklavc-music__body';
+    body.textContent = copy.body;
+    var benefits = document.createElement('span');
+    benefits.className = 'pklavc-music__benefits';
+    var featureNames = ({
+      en: ['100M songs', 'Ad-free', 'HD audio'],
+      pt: ['100 mi de músicas', 'Sem anúncios', 'Áudio HD'],
+      es: ['100 M de canciones', 'Sin anuncios', 'Audio HD']
+    })[locale] || ['100M songs', 'Ad-free', 'HD audio'];
+    featureNames.forEach(function (name) {
+      var tag = document.createElement('span');
+      tag.textContent = name;
+      benefits.appendChild(tag);
+    });
+    var cta = document.createElement('span');
+    cta.className = 'pklavc-music__cta';
+    cta.textContent = copy.cta + '  →';
+    var note = document.createElement('small');
+    note.className = 'pklavc-music__note';
+    note.textContent = ({
+      en: 'Plans and conditions on the destination page.',
+      pt: 'Planos e condições na página de destino.',
+      es: 'Planes y condiciones en la página de destino.'
+    })[locale];
+    copyBox.append(brand, eyebrow, title, body, benefits, cta, note);
+
+    var visual = document.createElement('span');
+    visual.className = 'pklavc-music__visual';
+    var photo = document.createElement('img');
+    photo.className = 'pklavc-music__photo';
+    photo.src = safeUrl(campaign.photo);
+    photo.alt = creative.imageAlt || '';
+    photo.loading = 'lazy';
+    photo.decoding = 'async';
+    photo.width = 980;
+    photo.height = 760;
+    var secondPhoto = document.createElement('img');
+    secondPhoto.className = 'pklavc-music__photo-secondary';
+    secondPhoto.src = safeUrl(campaign.detailPhoto);
+    secondPhoto.alt = '';
+    secondPhoto.loading = 'lazy';
+    secondPhoto.decoding = 'async';
+    secondPhoto.width = 360;
+    secondPhoto.height = 360;
+    secondPhoto.onerror = function () { secondPhoto.remove(); };
+    var equalizer = document.createElement('span');
+    equalizer.className = 'pklavc-music__eq';
+    equalizer.setAttribute('aria-hidden', 'true');
+    for (var i = 0; i < 12; i += 1) equalizer.appendChild(document.createElement('i'));
+    visual.append(photo, secondPhoto, equalizer);
+    root.append(copyBox, visual);
+    link.appendChild(root);
+    shell.appendChild(link);
+    return shell;
+  }
+
   function pklavcShowcaseAd(campaign, placement, creative, copy, destination) {
     var style = campaign.style;
     var shell = createShell(placement, campaign);
@@ -420,6 +500,9 @@
 
     if (campaign.style === 'prime-video') {
       return primeVideoAd(campaign, placement, creative, copy, destination);
+    }
+    if (campaign.style === 'amazon-music') {
+      return amazonMusicAd(campaign, placement, creative, copy, destination);
     }
     if (campaign.style === 'shopee') {
       return shopeeAd(campaign, placement, creative, copy, destination);
@@ -652,12 +735,14 @@
     var paragraphs = article.querySelectorAll(':scope > p, :scope > section > p');
     var inline = placementAd('inline', geo, 0);
     var bottom = placementAd('bottom', geo, 1);
+    var musicInline = paragraphs.length >= 10 ? createAd('amazon_music', 'inline', geo) : null;
     var mobile = placementAd('mobile', geo, 2);
 
     if (inline) {
       if (paragraphs.length) paragraphs[Math.min(4, paragraphs.length - 1)].insertAdjacentElement('afterend', inline.ad);
       else article.appendChild(inline.ad);
     }
+    if (musicInline) paragraphs[Math.min(9, paragraphs.length - 1)].insertAdjacentElement('afterend', musicInline);
     if (mobile) {
       if (paragraphs.length) paragraphs[Math.min(1, paragraphs.length - 1)].insertAdjacentElement('afterend', mobile.ad);
       else article.prepend(mobile.ad);
