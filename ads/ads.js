@@ -378,70 +378,58 @@
 
     var root = document.createElement('span');
     root.className = 'pklavc-music__creative';
-    var copyBox = document.createElement('span');
-    copyBox.className = 'pklavc-music__copy';
+    var info = document.createElement('span');
+    info.className = 'pklavc-music__copy';
 
-    var brand = document.createElement('span');
-    brand.className = 'pklavc-music__brand';
-    brand.textContent = 'amazon music';
-    var eyebrow = document.createElement('span');
-    eyebrow.className = 'pklavc-music__eyebrow';
-    eyebrow.textContent = ({ en: 'UNLIMITED MUSIC', pt: 'MÚSICA SEM LIMITES', es: 'MÚSICA SIN LÍMITES' })[locale] || 'UNLIMITED MUSIC';
-    var title = document.createElement('strong');
-    title.className = 'pklavc-music__headline';
-    title.textContent = copy.title;
-    var body = document.createElement('span');
-    body.className = 'pklavc-music__body';
-    body.textContent = copy.body;
-    var benefits = document.createElement('span');
-    benefits.className = 'pklavc-music__benefits';
-    var featureNames = ({
-      en: ['100M songs', 'Ad-free', 'HD audio'],
-      pt: ['100 mi de músicas', 'Sem anúncios', 'Áudio HD'],
-      es: ['100 M de canciones', 'Sin anuncios', 'Audio HD']
-    })[locale] || ['100M songs', 'Ad-free', 'HD audio'];
-    featureNames.forEach(function (name) {
-      var tag = document.createElement('span');
-      tag.textContent = name;
-      benefits.appendChild(tag);
+    var logo = document.createElement('img');
+    logo.className = 'pklavc-music__logo';
+    logo.src = safeUrl(campaign.logo);
+    logo.alt = 'Amazon Music';
+    logo.loading = 'lazy';
+    logo.decoding = 'async';
+    var unlimited = document.createElement('span');
+    unlimited.className = 'pklavc-music__unlimited';
+    unlimited.textContent = 'UNLIMITED';
+    var headline = document.createElement('strong');
+    headline.className = 'pklavc-music__headline';
+    headline.textContent = creative.headline;
+    var offer = document.createElement('strong');
+    offer.className = 'pklavc-music__offer';
+    offer.textContent = creative.offer;
+    var features = document.createElement('span');
+    features.className = 'pklavc-music__features';
+    (creative.features || []).forEach(function (value, index) {
+      var feature = document.createElement('span');
+      feature.className = 'pklavc-music__feature';
+      var icon = document.createElement('span');
+      icon.className = 'pklavc-music__feature-icon';
+      icon.textContent = ['♫', '⊘', '▮▏▮'][index] || '♫';
+      icon.setAttribute('aria-hidden', 'true');
+      var label = document.createElement('span');
+      label.textContent = value;
+      feature.append(icon, label);
+      features.appendChild(feature);
     });
     var cta = document.createElement('span');
     cta.className = 'pklavc-music__cta';
-    cta.textContent = copy.cta + '  →';
-    var note = document.createElement('small');
-    note.className = 'pklavc-music__note';
-    note.textContent = ({
-      en: 'Plans and conditions on the destination page.',
-      pt: 'Planos e condições na página de destino.',
-      es: 'Planes y condiciones en la página de destino.'
-    })[locale];
-    copyBox.append(brand, eyebrow, title, body, benefits, cta, note);
+    cta.textContent = creative.ctaLabel;
+    var disclaimer = document.createElement('span');
+    disclaimer.className = 'pklavc-music__disclaimer';
+    disclaimer.textContent = creative.disclaimer;
+    info.append(logo, unlimited, headline, offer, features, cta, disclaimer);
 
     var visual = document.createElement('span');
     visual.className = 'pklavc-music__visual';
     var photo = document.createElement('img');
     photo.className = 'pklavc-music__photo';
     photo.src = safeUrl(campaign.photo);
-    photo.alt = creative.imageAlt || '';
+    photo.alt = ({pt: 'Mulher sorrindo enquanto escuta música com fones roxos', en: 'Smiling woman enjoying music with purple headphones', es: 'Mujer sonriendo mientras escucha música con auriculares morados'})[locale] || '';
     photo.loading = 'lazy';
     photo.decoding = 'async';
-    photo.width = 980;
-    photo.height = 760;
-    var secondPhoto = document.createElement('img');
-    secondPhoto.className = 'pklavc-music__photo-secondary';
-    secondPhoto.src = safeUrl(campaign.detailPhoto);
-    secondPhoto.alt = '';
-    secondPhoto.loading = 'lazy';
-    secondPhoto.decoding = 'async';
-    secondPhoto.width = 360;
-    secondPhoto.height = 360;
-    secondPhoto.onerror = function () { secondPhoto.remove(); };
-    var equalizer = document.createElement('span');
-    equalizer.className = 'pklavc-music__eq';
-    equalizer.setAttribute('aria-hidden', 'true');
-    for (var i = 0; i < 12; i += 1) equalizer.appendChild(document.createElement('i'));
-    visual.append(photo, secondPhoto, equalizer);
-    root.append(copyBox, visual);
+    photo.width = 340;
+    photo.height = 580;
+    visual.appendChild(photo);
+    root.append(info, visual);
     link.appendChild(root);
     shell.appendChild(link);
     return shell;
