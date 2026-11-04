@@ -1943,300 +1943,159 @@
 }
 
 
-/* Amazon Music: real photographic creative, distinct from Prime Video. */
-.pklavc-ad--style-amazon-music {
-  border-color: rgba(132, 79, 232, .46);
-  background: #100c1c;
+/* Final Amazon Music art direction — scaled for article, sidebar, feed and Store.
+   Keep the source portrait transparent PNG; CSS provides the smooth edges. */
+.pklavc-ad--style-prime-video .pklavc-prime__brand-logo {
+  filter: grayscale(1) brightness(0) invert(1);
+  opacity: 1;
+  drop-shadow: none;
 }
+.pklavc-ad--style-amazon-music { background:#16042c; border-color:#7445b6; }
 .pklavc-ad--style-amazon-music .pklavc-ad__link.pklavc-music {
-  display: block;
-  min-height: 0;
-  padding: 0;
-  border: 1px solid rgba(174, 126, 255, .52);
-  border-radius: 12px;
-  overflow: hidden;
-  background: #1b0c34;
+  display:block; min-height:0; background:#220039; color:#fff!important;
+  border:1px solid rgba(179,112,250,.56); border-radius:12px; overflow:hidden;
 }
-.pklavc-ad--style-amazon-music .pklavc-ad__link:hover,
-.pklavc-ad--style-amazon-music .pklavc-ad__link:focus-visible {
-  border-color: #e1a6ff;
+.pklavc-music__creative { position:relative; isolation:isolate; display:grid;
+  grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);
+  min-height:292px; overflow:hidden; color:#fff;
+  background:radial-gradient(ellipse at 70% 20%,#8910a7 0%,transparent 57%),
+             linear-gradient(120deg,#220038,#39045b 60%,#260142);
 }
-.pklavc-music__creative {
-  position: relative;
-  isolation: isolate;
-  display: grid;
-  grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr);
-  width: 100%;
-  min-height: 264px;
-  overflow: hidden;
-  background:
-    radial-gradient(circle at 54% 8%, rgba(235, 68, 214, .3), transparent 45%),
-    linear-gradient(118deg, #1e0c35 0%, #34115d 58%, #0b0922 100%);
-  color: #fff;
+.pklavc-music__creative::before { position:absolute; z-index:0; inset:0;
+  pointer-events:none; content:""; opacity:.37;
+  background:radial-gradient(ellipse at 66% 75%,#dd31e6 0%,transparent 57%);
 }
-.pklavc-music__copy {
-  z-index: 2;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: flex-start;
-  gap: 10px;
-  padding: clamp(20px, 3vw, 34px);
-  min-width: 0;
+.pklavc-music__copy { position:relative; z-index:2; display:flex;
+  flex-direction:column; justify-content:center; align-items:flex-start;
+  box-sizing:border-box; min-width:0; gap:5px; padding:19px 13px 19px 25px;
 }
-.pklavc-music__brand {
-  display: inline-block;
-  font: 800 clamp(1.2rem, 2.1vw, 1.65rem)/1.1 Inter, system-ui, sans-serif;
-  letter-spacing: -.055em;
-  text-transform: lowercase;
-  color: #fff;
-  white-space: nowrap;
+.pklavc-music__logo { display:block; width:clamp(130px,15vw,198px);
+  max-width:90%; max-height:46px; object-fit:contain; object-position:left center;
+  height:auto; }
+.pklavc-music__unlimited { color:#37f5fc; font:800 .59rem/1.1 Inter,system-ui,sans-serif;
+  letter-spacing:.26em; margin:0 0 6px; }
+.pklavc-music__headline { display:block; color:#fff!important; font:800 clamp(1.05rem,1.7vw,1.48rem)/1.08 Inter,system-ui,sans-serif;
+  letter-spacing:-.025em; text-wrap:balance; }
+.pklavc-music__offer { display:block; color:#0cf4ef; font:950 clamp(1.7rem,2.85vw,2.85rem)/1.0 Inter,system-ui,sans-serif;
+  letter-spacing:-.04em; text-wrap:balance; }
+.pklavc-music__eligible { color:#eadcf1; font:500 .71rem/1.25 Inter,system-ui,sans-serif; }
+.pklavc-music__features { display:flex; flex-wrap:wrap; gap:5px; margin-top:8px; }
+.pklavc-music__feature { display:inline-flex; align-items:center; gap:5px;
+  padding:5px 8px; min-height:0; border:1px solid #9b55c3; border-radius:9px;
+  background:rgba(30,0,51,.37); color:#fff;
+  font:700 .66rem/1.2 Inter,system-ui,sans-serif; }
+.pklavc-music__feature-icon { font:900 .93rem/1 Inter,system-ui,sans-serif; color:#17f3f2; }
+.pklavc-music__cta { display:inline-flex; justify-content:center; align-items:center;
+  min-height:43px; box-sizing:border-box; max-width:100%; margin-top:6px;
+  padding:10px 17px; text-align:center; border:2px solid #98ffff;
+  border-radius:999px; background:linear-gradient(105deg,#11fff0,#58cfff);
+  color:#16042c; font:900 clamp(.75rem,1.1vw,.92rem)/1.2 Inter,system-ui,sans-serif;
+  box-shadow:0 0 20px rgba(30,242,238,.32),0 8px 21px #16002f8c;
+  transition:transform .2s ease,box-shadow .2s ease;
 }
-.pklavc-music__brand::after {
-  display: block;
-  width: 47%;
-  height: 3px;
-  margin: 3px 0 0 4px;
-  border-radius: 100%;
-  transform: rotate(-6deg);
-  background: #26dded;
-  content: '';
+.pklavc-music:hover .pklavc-music__cta,
+.pklavc-music:focus-visible .pklavc-music__cta {
+  transform:scale(1.04);
+  box-shadow:0 0 31px rgba(45,255,250,.65),0 8px 22px #16002f8c;
 }
-.pklavc-music__eyebrow { color: #84ebff; font: 800 .59rem/1.3 Inter,system-ui,sans-serif; letter-spacing: .2em; }
-.pklavc-music__headline {
-  max-width: 24ch;
-  color: #fff;
-  font: 850 clamp(1.35rem, 2.5vw, 2.38rem)/1.06 Inter,system-ui,sans-serif;
-  letter-spacing: -.035em;
-  text-wrap: balance;
-}
-.pklavc-music__body { color: #e8d9f8; font: 500 clamp(.76rem, 1.1vw, .94rem)/1.45 Inter,system-ui,sans-serif; max-width: 36ch; }
-.pklavc-music__benefits { display: flex; flex-wrap: wrap; gap: 6px; }
-.pklavc-music__benefits span {
-  padding: 6px 8px;
-  border: 1px solid rgba(203,179,255,.3);
-  border-radius: 999px;
-  color: #f4eaff;
-  background: rgba(255,255,255,.09);
-  font: 650 .64rem/1.15 Inter,system-ui,sans-serif;
-  white-space: nowrap;
-}
-.pklavc-music__cta {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 40px;
-  margin-top: 3px;
-  padding: 10px 15px;
-  border-radius: 999px;
-  color: #19112e;
-  background: linear-gradient(105deg, #54eef3, #abdeff);
-  box-shadow: 0 9px 21px rgba(0,0,0,.23);
-  font: 800 .77rem/1.2 Inter,system-ui,sans-serif;
-  text-align: center;
-}
-.pklavc-music__note { color: #cfc3e6; font: 500 .62rem/1.35 Inter,system-ui,sans-serif; }
-.pklavc-music__visual { position: relative; display: block; min-width: 0; min-height: 264px; overflow: hidden; }
-.pklavc-music__photo {
-  display: block;
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center;
-}
-.pklavc-music__visual::after {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  content: '';
-  background: linear-gradient(90deg, #34115d 0%, transparent 37%), linear-gradient(0deg, rgba(13,5,33,.57), transparent 42%);
-}
-.pklavc-music__photo-secondary {
-  position: absolute;
-  z-index: 1;
-  right: 7%;
-  bottom: 10%;
-  width: min(31%, 120px);
-  aspect-ratio: 1;
-  object-fit: cover;
-  border: 3px solid rgba(255,255,255,.9);
-  border-radius: 14px;
-  box-shadow: 0 12px 28px rgba(0,0,0,.42);
-  transform: rotate(9deg);
-}
-.pklavc-music__eq { position: absolute; z-index: 2; display: flex; align-items: center; gap: 4px; left: 11%; bottom: 12%; height: 38px; }
-.pklavc-music__eq i { display: block; width: 4px; height: 45%; border-radius: 8px; background: #63f5f4; box-shadow: 0 0 10px rgba(99,245,244,.38); }
-.pklavc-music__eq i:nth-child(3n+1) { height: 78%; }
-.pklavc-music__eq i:nth-child(4n+2) { height: 30%; }
-.pklavc-music__eq i:nth-child(5n+3) { height: 100%; }
+.pklavc-music__disclaimer { color:#baabc9; font:500 .6rem/1.2 Inter,system-ui,sans-serif; }
+.pklavc-music__visual { position:relative; display:block; min-width:0; min-height:292px;
+  height:auto; pointer-events:none; overflow:hidden; z-index:1; }
+.pklavc-music__photo { position:absolute; display:block; inset:auto -7% 0 auto;
+  width:111%; max-width:none; height:109%; object-fit:contain; object-position:right bottom;
+  -webkit-mask-image:linear-gradient(90deg,transparent 0%,#000 21%);
+  mask-image:linear-gradient(90deg,transparent 0%,#000 21%); }
+.pklavc-music__visual::after { content:""; display:block; position:absolute;
+  inset:0; pointer-events:none;
+  background:linear-gradient(90deg,#370450 0%,transparent 26%); }
 
-/* Narrow sidebar ads retain real imagery without overwhelming the title. */
-.pklavc-ad--sidebar .pklavc-music__creative,
-.pklavc-ad--store-sidebar .pklavc-music__creative { grid-template-columns: 1fr; min-height: 0; }
-.pklavc-ad--sidebar .pklavc-music__copy,
-.pklavc-ad--store-sidebar .pklavc-music__copy { gap: 7px; padding: 18px; }
-.pklavc-ad--sidebar .pklavc-music__headline,
-.pklavc-ad--store-sidebar .pklavc-music__headline { font-size: 1.35rem; }
-.pklavc-ad--sidebar .pklavc-music__body,
-.pklavc-ad--store-sidebar .pklavc-music__body { font-size: .75rem; }
-.pklavc-ad--sidebar .pklavc-music__visual,
-.pklavc-ad--store-sidebar .pklavc-music__visual { min-height: 145px; max-height: 145px; }
-.pklavc-ad--sidebar .pklavc-music__note,
-.pklavc-ad--store-sidebar .pklavc-music__note { font-size: .58rem; }
-.pklavc-ad--store-sidebar .pklavc-music__visual { min-height: 112px; max-height: 112px; }
-.pklavc-ad--store-rows .pklavc-music__creative { min-height: 316px; }
-
-/* Blog home coverflow: treat Amazon Music as an editorial-size full-bleed card. */
-.blog-carousel-ad-slot .pklavc-music__creative {
-  min-height: 0;
-  height: 100%;
-  grid-template-columns: 1fr;
-}
-.blog-carousel-ad-slot .pklavc-music__copy {
-  position: relative;
-  z-index: 3;
-  justify-content: flex-start;
-  gap: 6px;
-  padding: 38px 18px 10px;
-}
-.blog-carousel-ad-slot .pklavc-music__brand { font-size: 1.3rem; }
-.blog-carousel-ad-slot .pklavc-music__headline { font-size: clamp(1.33rem, 2.2vw, 1.76rem); }
-.blog-carousel-ad-slot .pklavc-music__body { font-size: .72rem; }
-.blog-carousel-ad-slot .pklavc-music__benefits { gap: 4px; }
-.blog-carousel-ad-slot .pklavc-music__benefits span { font-size: .57rem; padding: 4px 6px; }
-.blog-carousel-ad-slot .pklavc-music__cta { min-height: 32px; padding: 8px 11px; font-size: .67rem; }
-.blog-carousel-ad-slot .pklavc-music__note { font-size: .55rem; }
-.blog-carousel-ad-slot .pklavc-music__visual {
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  width: 100%;
-  height: 42%;
-  min-height: 0;
-  opacity: .8;
-}
-.blog-carousel-ad-slot .pklavc-music__visual::after { background: linear-gradient(#34115d 0%, transparent 60%); }
-.blog-carousel-ad-slot .pklavc-music__photo-secondary { width: 24%; }
-@media (max-width: 760px) {
-  .pklavc-music__creative { grid-template-columns: 1fr; }
-  .pklavc-music__copy { padding: 22px 18px; }
-  .pklavc-music__visual { min-height: 190px; }
-  .pklavc-music__headline { font-size: clamp(1.38rem, 6vw, 2rem); }
-  .pklavc-ad--store-rows .pklavc-music__creative { min-height: 0; }
-  .blog-carousel-ad-slot .pklavc-music__visual { min-height: 0; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .pklavc-ad--style-amazon-music .pklavc-ad__link { transition: none; }
-}
-
-
-/* Amazon Music Unlimited — 30-day free-trial creative, responsive across placements.
-   Official Amazon Music wordmark. Real artwork from the previously approved campaign. */
-.pklavc-ad--style-amazon-music { border-color:#7a34c9; background:#1d043f; }
-.pklavc-ad--style-amazon-music .pklavc-ad__link.pklavc-music {
-  display:block; min-height:0; border:1px solid #9f3dff; border-radius:14px;
-  overflow:hidden; background:#270353; color:#fff !important;
-}
-.pklavc-music__creative { isolation:isolate; position:relative; display:grid;
-  grid-template-columns:minmax(0,1.32fr) minmax(0,.68fr); min-height:355px;
-  width:100%; overflow:hidden; color:#fff;
-  background:radial-gradient(ellipse at 67% 33%,#9f12cc 0,transparent 48%),
-    linear-gradient(125deg,#230039,#4c066e 66%,#28034f 100%);
-}
-.pklavc-music__copy { z-index:2; position:relative; display:flex; flex-direction:column;
-  align-items:flex-start; justify-content:center; gap:9px; min-width:0;
-  padding:clamp(18px,3vw,34px); }
-.pklavc-music__logo { display:block; width:clamp(150px,21vw,252px); max-width:94%;
-  height:auto; max-height:66px; object-fit:contain; object-position:left center; }
-.pklavc-music__unlimited { color:#1bf2f7; letter-spacing:.38em;
-  font:800 clamp(.58rem,.95vw,.77rem)/1.2 Inter,system-ui,sans-serif; }
-.pklavc-music__headline { display:block; font:800 clamp(1.15rem,2.6vw,2.25rem)/1.07 Inter,system-ui,sans-serif;
-  letter-spacing:-.035em; color:white; text-wrap:balance; }
-.pklavc-music__offer { display:block; font:950 clamp(1.75rem,4vw,3.8rem)/1.02 Inter,system-ui,sans-serif;
-  letter-spacing:-.05em; color:#19f5f6; text-shadow:0 1px 22px rgba(10,235,248,.14); text-wrap:balance; }
-.pklavc-music__features { display:flex; gap:6px; flex-wrap:wrap; margin-top:7px; max-width:100%; }
-.pklavc-music__feature { display:inline-flex; align-items:center; gap:7px; padding:9px 10px;
-  min-height:36px; border-radius:12px; border:1px solid rgba(208,125,255,.8);
-  background:rgba(42,0,80,.54); font:700 clamp(.63rem,.9vw,.83rem)/1.23 Inter,system-ui,sans-serif; }
-.pklavc-music__feature-icon { color:#16f6f8; font-size:1.1rem; font-weight:900; }
-.pklavc-music__cta { display:flex; justify-content:center; align-items:center; box-sizing:border-box;
-  max-width:100%; min-height:54px; margin-top:10px; padding:13px clamp(16px,2.3vw,30px);
-  border:2px solid #aaffff; border-radius:999px; text-align:center;
-  background:linear-gradient(105deg,#0dffec,#63eafb);
-  box-shadow:0 0 0 3px rgba(78,251,249,.11),0 0 25px rgba(4,245,246,.43),0 12px 30px rgba(0,0,0,.36);
-  color:#18002f; font:900 clamp(.85rem,1.6vw,1.18rem)/1.18 Inter,system-ui,sans-serif;
-  transition:transform .18s ease,box-shadow .18s ease,background .18s ease;
-}
-.pklavc-music:hover .pklavc-music__cta, .pklavc-music:focus-visible .pklavc-music__cta {
-  transform:scale(1.035); background:#ccfffb;
-  box-shadow:0 0 0 4px rgba(85,254,250,.26),0 0 42px rgba(30,255,249,.65);
-}
-.pklavc-music__disclaimer { display:block; color:#e6ccf8; max-width:55ch;
-  font:500 clamp(.62rem,.83vw,.75rem)/1.35 Inter,system-ui,sans-serif; }
-.pklavc-music__visual { display:block; position:relative; min-height:355px; overflow:hidden; }
-.pklavc-music__photo { position:absolute; width:100%; height:100%; inset:0; object-fit:cover; object-position:center top; }
-.pklavc-music__visual::before { z-index:1; position:absolute; inset:0; pointer-events:none;
-  background:linear-gradient(90deg,#590777 0,rgba(76,6,110,.15) 30%,transparent 65%); content:''; }
-
-/* Article transitions, store rows, bottom ad: wide offer creative. */
-.pklavc-ad--store-rows .pklavc-music__creative { min-height:352px; }
-.pklavc-ad--bottom .pklavc-music__creative,
-.pklavc-ad--store-bottom .pklavc-music__creative { min-height:330px; }
-/* Sidebar has a vertical magazine-style version, with the same model and CTA. */
+/* Side rails need a small, editorial-sized vertical card. */
 .pklavc-ad--sidebar .pklavc-music__creative,
 .pklavc-ad--store-sidebar .pklavc-music__creative {
-  grid-template-columns:1fr; min-height:0;
+  display:flex; flex-direction:column; min-height:0;
 }
 .pklavc-ad--sidebar .pklavc-music__copy,
-.pklavc-ad--store-sidebar .pklavc-music__copy { padding:17px; gap:7px; }
-.pklavc-ad--sidebar .pklavc-music__logo,
-.pklavc-ad--store-sidebar .pklavc-music__logo { width:162px; max-height:41px; }
-.pklavc-ad--sidebar .pklavc-music__headline,
-.pklavc-ad--store-sidebar .pklavc-music__headline { font-size:1.13rem; }
-.pklavc-ad--sidebar .pklavc-music__offer,
-.pklavc-ad--store-sidebar .pklavc-music__offer { font-size:clamp(1.5rem,2.3vw,2rem); }
-.pklavc-ad--sidebar .pklavc-music__feature,
-.pklavc-ad--store-sidebar .pklavc-music__feature { font-size:.65rem; padding:6px 8px; min-height:26px; }
-.pklavc-ad--sidebar .pklavc-music__cta,
-.pklavc-ad--store-sidebar .pklavc-music__cta { width:100%; font-size:.86rem; min-height:49px; }
-.pklavc-ad--sidebar .pklavc-music__disclaimer,
-.pklavc-ad--store-sidebar .pklavc-music__disclaimer { font-size:.61rem; }
-.pklavc-ad--sidebar .pklavc-music__visual { height:168px; min-height:168px; }
-.pklavc-ad--store-sidebar .pklavc-music__visual { height:148px; min-height:148px; }
-.pklavc-ad--sidebar .pklavc-music__photo,
-.pklavc-ad--store-sidebar .pklavc-music__photo { object-position:center 25%; }
-.pklavc-ad--sidebar .pklavc-music__visual::before,
-.pklavc-ad--store-sidebar .pklavc-music__visual::before { background:linear-gradient(#38045a,transparent 65%); }
-/* A coverflow card is narrow and tall: prevent overlapping its photo and copy. */
-.blog-carousel-ad-slot .pklavc-music__creative { display:flex; height:100%; min-height:0; flex-direction:column; }
-.blog-carousel-ad-slot .pklavc-music__copy { padding:37px 14px 11px; gap:5px; z-index:2; flex:0 0 auto; }
-.blog-carousel-ad-slot .pklavc-music__logo { width:135px; max-height:35px; }
-.blog-carousel-ad-slot .pklavc-music__unlimited { font-size:.51rem; }
-.blog-carousel-ad-slot .pklavc-music__headline { font-size:1.16rem; }
-.blog-carousel-ad-slot .pklavc-music__offer { font-size:clamp(1.55rem,2.1vw,2rem); }
-.blog-carousel-ad-slot .pklavc-music__features { margin-top:2px; gap:4px; }
-.blog-carousel-ad-slot .pklavc-music__feature { font-size:.57rem; padding:4px 5px; min-height:23px; }
-.blog-carousel-ad-slot .pklavc-music__feature-icon { font-size:.72rem; }
-.blog-carousel-ad-slot .pklavc-music__cta { min-height:39px; width:100%; margin-top:5px; font-size:.72rem; padding:7px 11px; }
-.blog-carousel-ad-slot .pklavc-music__disclaimer { font-size:.51rem; max-width:none; }
-.blog-carousel-ad-slot .pklavc-music__visual { position:relative; height:auto; min-height:90px; flex:1 1 auto; width:100%; opacity:1; }
-.blog-carousel-ad-slot .pklavc-music__photo { object-position:center 22%; }
-.blog-carousel-ad-slot .pklavc-music__visual::before { background:linear-gradient(#450565,transparent 62%); }
-@media(max-width:760px){
-  .pklavc-music__creative { grid-template-columns:1fr; }
-  .pklavc-music__copy { padding:20px 16px; gap:8px; }
-  .pklavc-music__logo { width:170px; max-height:46px; }
-  .pklavc-music__headline { font-size:1.35rem; }
-  .pklavc-music__offer { font-size:clamp(1.95rem,7vw,2.6rem); }
-  .pklavc-music__feature { font-size:.64rem; padding:7px 9px; }
-  .pklavc-music__cta { width:100%; font-size:.92rem; }
-  .pklavc-music__visual { min-height:204px; max-height:240px; }
-  .pklavc-music__visual::before { background:linear-gradient(#430768,transparent 55%); }
-  .pklavc-ad--store-rows .pklavc-music__creative { min-height:0; }
-  .blog-carousel-ad-slot .pklavc-music__visual { min-height:65px; max-height:none; }
+.pklavc-ad--store-sidebar .pklavc-music__copy {
+  padding:15px 15px 8px; gap:4px; justify-content:flex-start;
 }
-@media(prefers-reduced-motion:reduce){
-  .pklavc-music__cta { transition:none; }
+.pklavc-ad--sidebar .pklavc-music__logo,
+.pklavc-ad--store-sidebar .pklavc-music__logo { width:145px; max-height:34px; }
+.pklavc-ad--sidebar .pklavc-music__unlimited,
+.pklavc-ad--store-sidebar .pklavc-music__unlimited { font-size:.55rem; margin-bottom:3px; }
+.pklavc-ad--sidebar .pklavc-music__headline,
+.pklavc-ad--store-sidebar .pklavc-music__headline { font-size:1.02rem; }
+.pklavc-ad--sidebar .pklavc-music__offer,
+.pklavc-ad--store-sidebar .pklavc-music__offer { font-size:clamp(1.55rem,2.4vw,2.06rem); }
+.pklavc-ad--sidebar .pklavc-music__eligible,
+.pklavc-ad--store-sidebar .pklavc-music__eligible { font-size:.63rem; }
+.pklavc-ad--sidebar .pklavc-music__features,
+.pklavc-ad--store-sidebar .pklavc-music__features { margin-top:5px; gap:4px; }
+.pklavc-ad--sidebar .pklavc-music__feature,
+.pklavc-ad--store-sidebar .pklavc-music__feature { padding:4px 6px; font-size:.59rem; }
+.pklavc-ad--sidebar .pklavc-music__cta,
+.pklavc-ad--store-sidebar .pklavc-music__cta { width:100%; min-height:40px; margin-top:7px;
+ font-size:.76rem; padding:8px 10px; }
+.pklavc-ad--sidebar .pklavc-music__disclaimer,
+.pklavc-ad--store-sidebar .pklavc-music__disclaimer { font-size:.59rem; }
+.pklavc-ad--sidebar .pklavc-music__visual,
+.pklavc-ad--store-sidebar .pklavc-music__visual {
+  position:relative; min-height:118px; height:118px; max-height:118px;
+  width:100%; overflow:hidden; opacity:1;
+}
+.pklavc-ad--sidebar .pklavc-music__photo,
+.pklavc-ad--store-sidebar .pklavc-music__photo {
+  inset:auto 0 -88px auto; width:70%; height:255px; object-fit:contain;
+  -webkit-mask-image:linear-gradient(90deg,transparent,#000 35%);
+  mask-image:linear-gradient(90deg,transparent,#000 35%);
+}
+.pklavc-ad--sidebar .pklavc-music__visual::after,
+.pklavc-ad--store-sidebar .pklavc-music__visual::after {
+  background:linear-gradient(180deg,#36044d 0%,transparent 70%);
+}
+
+/* Blog coverflow is taller but narrower than a standard banner. */
+.blog-carousel-ad-slot .pklavc-music__creative { display:flex; flex-direction:column;
+  height:100%; min-height:0; }
+.blog-carousel-ad-slot .pklavc-music__copy { padding:34px 12px 6px;
+  gap:4px; justify-content:flex-start; }
+.blog-carousel-ad-slot .pklavc-music__logo { width:119px; max-height:29px; }
+.blog-carousel-ad-slot .pklavc-music__unlimited { font-size:.47rem; margin-bottom:3px; }
+.blog-carousel-ad-slot .pklavc-music__headline { font-size:.98rem; }
+.blog-carousel-ad-slot .pklavc-music__offer { font-size:1.63rem; }
+.blog-carousel-ad-slot .pklavc-music__eligible { font-size:.58rem; }
+.blog-carousel-ad-slot .pklavc-music__features { margin-top:3px; gap:3px; }
+.blog-carousel-ad-slot .pklavc-music__feature { padding:3px 5px; font-size:.52rem; }
+.blog-carousel-ad-slot .pklavc-music__feature-icon { font-size:.7rem; }
+.blog-carousel-ad-slot .pklavc-music__cta { width:100%; min-height:37px;
+  font-size:.68rem; padding:6px 8px; }
+.blog-carousel-ad-slot .pklavc-music__disclaimer { font-size:.54rem; }
+.blog-carousel-ad-slot .pklavc-music__visual {
+  position:relative; width:100%; min-height:72px; flex:1 1 auto; opacity:1;
+}
+.blog-carousel-ad-slot .pklavc-music__photo { inset:auto 0 -22% auto; width:84%; height:160%; }
+.blog-carousel-ad-slot .pklavc-music__visual::after {
+  background:linear-gradient(180deg,#350249 0%,transparent 53%);
+}
+/* Store rows and wide article-footer share landscape artwork. */
+.pklavc-ad--store-rows .pklavc-music__creative,
+.pklavc-ad--store-bottom .pklavc-music__creative,
+.pklavc-ad--bottom .pklavc-music__creative { min-height:292px; }
+
+/* Phones get copy first and a short portrait, without tall empty space. */
+@media (max-width:760px) {
+ .pklavc-music__creative { display:flex; flex-direction:column; min-height:0; }
+ .pklavc-music__copy { padding:16px; gap:5px; }
+ .pklavc-music__logo { width:140px; max-height:35px; }
+ .pklavc-music__headline { font-size:1.16rem; }
+ .pklavc-music__offer { font-size:clamp(1.7rem,6vw,2.4rem); }
+ .pklavc-music__features { margin-top:4px; }
+ .pklavc-music__cta { width:100%; min-height:43px; font-size:.85rem; }
+ .pklavc-music__visual { width:100%; min-height:142px; height:142px; max-height:142px; }
+ .pklavc-music__photo { width:80%; height:310px; inset:auto 0 -130px auto; }
+ .pklavc-music__visual::after { background:linear-gradient(180deg,#350448,transparent 55%); }
+ .pklavc-ad--sidebar .pklavc-music__visual { min-height:118px; height:118px; }
+ .blog-carousel-ad-slot .pklavc-music__visual { min-height:64px; max-height:none; height:auto; }
+}
+@media (prefers-reduced-motion:reduce) {
+ .pklavc-music__cta { transition:none; }
 }
