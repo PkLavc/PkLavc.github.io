@@ -4,7 +4,7 @@
   // Shared advertising configuration for blog articles and Store.
   // Rules can still be overridden by language, country or region.
   var rotationSeconds = 24;
-  var campaigns = ['aliexpress', 'pklavc_blog', 'pklavc_store', 'pklavc_projects'];
+  var campaigns = ['aliexpress', 'amazon_music', 'pklavc_blog', 'pklavc_store', 'pklavc_projects'];
 
   function rotatingPlacement(extra) {
     return Object.assign({
@@ -21,9 +21,9 @@
     // Geo comes from the already submitted /analytics/visit response.
     // Intentionally no separate geolocation endpoint.
     placements: {
-      // Blog: Prime Video is fixed in-article and always appears first in the desktop sidebar.
+      // Blog: Prime Video stays first; Amazon Music is a separate sponsored campaign.
       sidebar: rotatingPlacement({
-        default: ['amazon_prime_video', 'shopee', 'aliexpress', 'pklavc_blog', 'pklavc_store', 'pklavc_projects']
+        default: ['amazon_prime_video', 'amazon_music', 'shopee', 'aliexpress', 'pklavc_blog', 'pklavc_store', 'pklavc_projects']
       }),
       inline: rotatingPlacement({
         default: 'amazon_prime_video',
@@ -32,23 +32,23 @@
       // Article-to-article transition ads use a separate rotation so they can
       // keep their campaign order independently from in-article placements.
       continuous: rotatingPlacement({
-        default: ['amazon_prime_video', 'shopee', 'aliexpress', 'pklavc_store', 'pklavc_projects'],
+        default: ['amazon_prime_video', 'amazon_music', 'shopee', 'aliexpress', 'pklavc_store', 'pklavc_projects'],
         rotateEverySeconds: 0
       }),
       // Blog home: a dedicated card is inserted between editorial cards.
       feed: rotatingPlacement({
-        default: ['shopee', 'amazon_prime_video', 'aliexpress'],
+        default: ['amazon_music', 'amazon_prime_video', 'shopee', 'aliexpress'],
         rotateEverySeconds: 0
       }),
-      bottom: rotatingPlacement(),
-      mobile: rotatingPlacement(),
+      bottom: rotatingPlacement({ default: ['aliexpress', 'amazon_music', 'pklavc_store', 'pklavc_projects'] }),
+      mobile: rotatingPlacement({ default: ['aliexpress', 'pklavc_projects', 'amazon_music', 'pklavc_store'] }),
 
-      // Store: Prime Video is fixed between product rows and in the final ad slot.
+      // Store: alternate Prime Video / Amazon Music between product rows; keep Prime Video at the end.
       'store-sidebar': rotatingPlacement({
-        default: ['amazon_prime_video', 'pklavc_blog', 'pklavc_store', 'pklavc_projects']
+        default: ['amazon_prime_video', 'amazon_music', 'pklavc_blog', 'pklavc_store', 'pklavc_projects']
       }),
       'store-rows': rotatingPlacement({
-        default: 'amazon_prime_video',
+        default: ['amazon_prime_video', 'amazon_music'],
         everyRows: 10,
         rotateEverySeconds: 0
       }),
@@ -91,6 +91,44 @@
             feed: { title: 'Prueba Prime Video gratis durante 30 días', body: 'Para nuevos suscriptores elegibles. Se aplican términos.', cta: 'Probar gratis', href: 'https://kdbov.com/g/6osk6x1ky42fa9b296a4ce4f0d0bb0/' },
             bottom: { title: '30 días gratis de Prime Video', body: 'Para nuevos suscriptores elegibles. Se aplican términos.', cta: 'Probar gratis', href: 'https://kdbov.com/g/6osk6x1ky42fa9b296a4ce4f0d0bb0/' },
             mobile: { title: 'Prime Video — 30 días gratis', body: 'Nuevos suscriptores elegibles. Se aplican términos.', cta: 'Probar gratis', href: 'https://kdbov.com/g/6osk6x1ky42fa9b296a4ce4f0d0bb0/' }
+          }
+        }
+      },
+
+
+      amazon_music: {
+        type: 'image',
+        style: 'amazon-music',
+        // Genuine licensed music photography; no artificial album art or invented offer.
+        photo: 'https://images.unsplash.com/photo-1642177398844-06d28a8f973a?auto=format&fit=crop&w=980&q=82',
+        detailPhoto: 'https://images.pexels.com/photos/3379274/pexels-photo-3379274.jpeg?auto=compress&cs=tinysrgb&w=720',
+        locales: {
+          en: {
+            image: 'https://images.unsplash.com/photo-1642177398844-06d28a8f973a?auto=format&fit=crop&w=980&q=82',
+            imageAlt: 'Real photograph of headphones in colorful studio lighting',
+            sidebar: { title: 'Your music, your moment.', body: 'Explore 100 million songs, playlists and podcasts with Amazon Music Unlimited.', cta: 'Explore Amazon Music', href: 'https://naiawork.com/g/gxah2cfyka2fa9b296a48a5be32810/' },
+            inline: { title: 'A soundtrack for every moment.', body: 'Discover millions of songs, ad-free listening and HD audio with Amazon Music Unlimited.', cta: 'Listen with Amazon Music', href: 'https://naiawork.com/g/gxah2cfyka2fa9b296a48a5be32810/' },
+            feed: { title: 'Feel every beat.', body: '100 million songs and a world of sound with Amazon Music Unlimited.', cta: 'Discover the music', href: 'https://naiawork.com/g/gxah2cfyka2fa9b296a48a5be32810/' },
+            bottom: { title: 'Press play on something new.', body: 'Discover your next favorite songs with Amazon Music Unlimited.', cta: 'Explore Amazon Music', href: 'https://naiawork.com/g/gxah2cfyka2fa9b296a48a5be32810/' },
+            mobile: { title: 'Your next favorite song starts here.', body: 'Discover Amazon Music Unlimited.', cta: 'Explore Amazon Music', href: 'https://naiawork.com/g/gxah2cfyka2fa9b296a48a5be32810/' }
+          },
+          pt: {
+            image: 'https://images.unsplash.com/photo-1642177398844-06d28a8f973a?auto=format&fit=crop&w=980&q=82',
+            imageAlt: 'Foto real de fones de ouvido com iluminação colorida',
+            sidebar: { title: 'A trilha sonora do seu momento.', body: 'Explore 100 milhões de músicas, playlists e podcasts no Amazon Music Unlimited.', cta: 'Conhecer Amazon Music', href: 'https://naiawork.com/g/gxah2cfyka2fa9b296a48a5be32810/' },
+            inline: { title: 'Sua música, do seu jeito.', body: 'Descubra milhões de músicas sem anúncios e com áudio HD no Amazon Music Unlimited.', cta: 'Ouvir no Amazon Music', href: 'https://naiawork.com/g/gxah2cfyka2fa9b296a48a5be32810/' },
+            feed: { title: 'Sinta cada batida.', body: '100 milhões de músicas e um universo de sons no Amazon Music Unlimited.', cta: 'Descobrir músicas', href: 'https://naiawork.com/g/gxah2cfyka2fa9b296a48a5be32810/' },
+            bottom: { title: 'Dê o play em algo novo.', body: 'Descubra suas próximas músicas favoritas com Amazon Music Unlimited.', cta: 'Conhecer Amazon Music', href: 'https://naiawork.com/g/gxah2cfyka2fa9b296a48a5be32810/' },
+            mobile: { title: 'Sua próxima música favorita começa aqui.', body: 'Descubra o Amazon Music Unlimited.', cta: 'Conhecer Amazon Music', href: 'https://naiawork.com/g/gxah2cfyka2fa9b296a48a5be32810/' }
+          },
+          es: {
+            image: 'https://images.unsplash.com/photo-1642177398844-06d28a8f973a?auto=format&fit=crop&w=980&q=82',
+            imageAlt: 'Fotografía real de auriculares con luces de estudio de colores',
+            sidebar: { title: 'La música para cada momento.', body: 'Explora 100 millones de canciones, playlists y pódcasts con Amazon Music Unlimited.', cta: 'Descubrir Amazon Music', href: 'https://naiawork.com/g/gxah2cfyka2fa9b296a48a5be32810/' },
+            inline: { title: 'Tu música, a tu manera.', body: 'Descubre millones de canciones sin anuncios y audio HD con Amazon Music Unlimited.', cta: 'Escuchar en Amazon Music', href: 'https://naiawork.com/g/gxah2cfyka2fa9b296a48a5be32810/' },
+            feed: { title: 'Siente cada ritmo.', body: '100 millones de canciones y un mundo de sonido con Amazon Music Unlimited.', cta: 'Descubrir música', href: 'https://naiawork.com/g/gxah2cfyka2fa9b296a48a5be32810/' },
+            bottom: { title: 'Dale play a algo nuevo.', body: 'Descubre tu próxima canción favorita con Amazon Music Unlimited.', cta: 'Descubrir Amazon Music', href: 'https://naiawork.com/g/gxah2cfyka2fa9b296a48a5be32810/' },
+            mobile: { title: 'Tu próxima canción favorita empieza aquí.', body: 'Descubre Amazon Music Unlimited.', cta: 'Descubrir Amazon Music', href: 'https://naiawork.com/g/gxah2cfyka2fa9b296a48a5be32810/' }
           }
         }
       },
