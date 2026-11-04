@@ -221,15 +221,15 @@
       });
 
       var fragment = document.createDocumentFragment();
-      var adCampaigns = ['shopee', 'amazon_prime_video', 'aliexpress'];
+      var adCampaigns = ['amazon_music', 'amazon_prime_video', 'shopee', 'aliexpress'];
       var adCount = category === 'tech' ? Math.min(adCampaigns.length, Math.floor(uniqueCards.length / 4)) : 0;
       var cardIndex = 0;
       var articleGroups = adCount ? Math.floor(uniqueCards.length / adCount) : uniqueCards.length;
       var extraArticles = adCount ? uniqueCards.length % adCount : 0;
       var adLabels = {
-        en: { shopee: 'Advertisement: Shopee', amazon_prime_video: 'Advertisement: Amazon Prime Video', aliexpress: 'Advertisement: AliExpress' },
-        pt: { shopee: 'Publicidade: Shopee', amazon_prime_video: 'Publicidade: Amazon Prime Video', aliexpress: 'Publicidade: AliExpress' },
-        es: { shopee: 'Publicidad: Shopee', amazon_prime_video: 'Publicidad: Amazon Prime Video', aliexpress: 'Publicidad: AliExpress' }
+        en: { amazon_music: 'Advertisement: Amazon Music', shopee: 'Advertisement: Shopee', amazon_prime_video: 'Advertisement: Amazon Prime Video', aliexpress: 'Advertisement: AliExpress' },
+        pt: { amazon_music: 'Publicidade: Amazon Music', shopee: 'Publicidade: Shopee', amazon_prime_video: 'Publicidade: Amazon Prime Video', aliexpress: 'Publicidade: AliExpress' },
+        es: { amazon_music: 'Publicidad: Amazon Music', shopee: 'Publicidad: Shopee', amazon_prime_video: 'Publicidad: Amazon Prime Video', aliexpress: 'Publicidad: AliExpress' }
       }[locale] || {};
 
       if (!adCount) uniqueCards.forEach(function (card) { fragment.appendChild(card); });
