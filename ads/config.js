@@ -100,7 +100,7 @@
         type: 'image',
         style: 'amazon-music',
         // Genuine licensed music photography; no artificial album art or invented offer.
-        photo: '/ads/banners/amazon-music-woman.jpg',
+        photo: '/ads/banners/amazon-music-woman.webp',
         logo: 'https://d5fx445wy2wpk.cloudfront.net/static/logo.svg',
         detailPhoto: 'https://images.pexels.com/photos/3379274/pexels-photo-3379274.jpeg?auto=compress&cs=tinysrgb&w=720',
         locales: {
