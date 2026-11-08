@@ -254,11 +254,11 @@ jobs:
       - name: Report publication result
         run: |
           echo "Private blog changed: ${{ steps.changes.outputs.changed }}"
-          echo "The private repository push triggers the static blog sync to GitHub Pages."
+          echo "The public sync job publishes the current private blog after generation."
 
   sync-private-blog:
     needs: generate
-    if: needs.generate.result == 'success' && needs.generate.outputs.translated == 'true' && needs.generate.outputs.changed == 'false'
+    if: needs.generate.result == 'success'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout public website
@@ -272,6 +272,7 @@ jobs:
         with:
           repository: PkLavc/blog
           ref: main
+          token: ${{ secrets.PRIVATE_BLOG_REPO_TOKEN }}
           path: private-blog
           fetch-depth: 1
 
@@ -280,4 +281,54 @@ jobs:
 
       - name: Sync generated pages
         shell: bash
-        run: bash private-blog/scripts/private_runner/sync.sh
+        run: |
+          set -euo pipefail
+          rsync -a --delete --exclude='.git/' private-blog/_site/ blog/
+          install -D -m 0644 private-blog/assets/css/blog.css css/blog.css
+          install -D -m 0644 private-blog/assets/css/newsletter.css css/newsletter.css
+          install -D -m 0644 private-blog/assets/css/reader-recirculation.css css/reader-recirculation.css
+          install -D -m 0644 private-blog/assets/js/blog-related-posts.js js/blog-related-posts.js
+          install -D -m 0644 private-blog/assets/js/blog-ads-loader.js js/blog-ads-loader.js
+          install -D -m 0644 private-blog/assets/js/blog-horizon-loader.js js/blog-horizon-loader.js
+          install -D -m 0644 private-blog/assets/js/blog-horizon.js js/blog-horizon.js
+          install -D -m 0644 private-blog/assets/js/newsletter.js js/newsletter.js
+          install -D -m 0644 private-blog/assets/js/reader-recirculation.js js/reader-recirculation.js
+          mkdir -p images/og/blog
+          rsync -a --delete private-blog/assets/images/og/blog/ images/og/blog/
+          test -s blog/index.html
+          test -s blog/en/index.html
+          test -s blog/pt/index.html
+          test -s blog/es/index.html
+          test -s blog/posts.json
+          test ! -e blog/en/tech/index.html
+          test ! -e blog/pt/tech/index.html
+          test ! -e blog/es/tech/index.html
+          test -s css/blog.css
+          test -s js/blog-related-posts.js
+          for obsolete in assets css js images 404.html browserconfig.xml favicon.ico favicon.svg manifest.webmanifest .nojekyll; do
+            if [ -e "blog/$obsolete" ]; then
+              echo "::error::Obsolete standalone blog artifact remains: blog/$obsolete"
+              exit 1
+            fi
+          done
+          if grep -R -E '/blog/(assets|css|js|images)/' blog --include='*.html' --include='*.css' --include='*.js'; then
+            echo "::error::Compiled blog still references a duplicated blog asset path."
+            exit 1
+          fi
+          git add -A -- blog/ css/blog.css css/newsletter.css css/reader-recirculation.css js/blog-related-posts.js js/blog-ads-loader.js js/blog-horizon-loader.js js/blog-horizon.js js/newsletter.js js/reader-recirculation.js images/og/blog/
+          if git diff --cached --quiet; then
+            echo "Public blog is already current."
+          else
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git commit -m "Sync private blog on public runner"
+            for attempt in 1 2 3; do
+              if git push origin HEAD:main; then
+                exit 0
+              fi
+              git fetch origin main
+              git rebase origin/main
+            done
+            echo "::error::Could not publish after three non-force retries."
+            exit 1
+          fi
