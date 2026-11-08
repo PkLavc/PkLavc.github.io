@@ -1850,6 +1850,7 @@ async function callGroq(prompt: string, env: Env, stream: boolean, model: string
 
   const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
     method: "POST",
+    signal: AbortSignal.timeout(45_000),
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${env.GROQ_API_KEY}`,
@@ -1884,6 +1885,7 @@ async function callOpenRouter(prompt: string, env: Env, stream: boolean, model: 
 
   const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
     method: "POST",
+    signal: AbortSignal.timeout(45_000),
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${env.OPENROUTER_API_KEY}`,
@@ -2309,6 +2311,7 @@ async function sendLangfuseTrace(
   try {
     await fetch(`${env.LANGFUSE_BASE_URL}/api/public/ingestion`, {
       method: "POST",
+      signal: AbortSignal.timeout(5_000),
       headers: {
         "Content-Type": "application/json",
         Authorization: `Basic ${basic}`,
