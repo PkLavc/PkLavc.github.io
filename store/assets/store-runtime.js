@@ -160,7 +160,7 @@
 
     article.innerHTML =
       '<a class="store-image-wrap" href="' + esc(product.url) + '" target="_blank" rel="sponsored noopener noreferrer" aria-label="' + esc(product.name) + '">' +
-        '<img class="store-image" src="' + esc(product.picture) + '" alt="' + esc(product.name) + '" loading="lazy" referrerpolicy="no-referrer">' +
+        '<img class="store-image" src="' + esc(product.picture) + '" alt="' + esc(product.name) + '" loading="lazy" decoding="async" referrerpolicy="no-referrer">' +
         (product.badge ? '<span class="store-badge">' + esc(product.badge) + '</span>' : '') +
         (discount ? '<span class="store-discount">-' + discount + '%</span>' : '') +
       '</a>' +
@@ -353,16 +353,20 @@
     var low = minInput.value === '' ? -Infinity : Number(minInput.value);
     var high = maxInput.value === '' ? Infinity : Number(maxInput.value);
     var visible = 0;
+    // Read selected attribute filters once per update, not for every product.
+    var attributeFilters = Array.prototype.slice.call(
+      document.querySelectorAll('[data-filter-key="attribute"]:checked')
+    );
 
     cards.forEach(function (card) {
-      var attrs = {};
-      try { attrs = JSON.parse(card.dataset.attributes || '{}'); } catch (error) {}
-      var attrMatch = Array.prototype.every.call(
-        document.querySelectorAll('[data-filter-key="attribute"]:checked'),
-        function (input) {
+      var attrMatch = true;
+      if (attributeFilters.length) {
+        var attrs = {};
+        try { attrs = JSON.parse(card.dataset.attributes || '{}'); } catch (error) {}
+        attrMatch = attributeFilters.every(function (input) {
           return input.dataset.attributeKey && String(attrs[input.dataset.attributeKey] || '') === input.value;
-        }
-      );
+        });
+      }
       var price = Number(card.dataset.price);
       var priceMatch = card.dataset.displayCurrency !== displayCurrency || card.dataset.price === '' || (price >= low && price <= high);
       var show =
@@ -399,9 +403,11 @@
       if (mode === 'price-asc') return pa - pb;
       if (mode === 'price-desc') return pb - pa;
       if (mode === 'name') return a.querySelector('h2').textContent.localeCompare(b.querySelector('h2').textContent, numberLocale);
-      return defaultOrder.indexOf(a) - defaultOrder.indexOf(b);
+      return Number(a.dataset.defaultIndex) - Number(b.dataset.defaultIndex);
     });
-    cards.forEach(function (card) { grid.appendChild(card); });
+    var sortedFragment = document.createDocumentFragment();
+    cards.forEach(function (card) { sortedFragment.appendChild(card); });
+    grid.appendChild(sortedFragment);
   }
 
   function showProductLanding(product) {
@@ -440,7 +446,12 @@
     grid.replaceChildren();
     cards = products.map(productCard);
     defaultOrder = cards.slice();
-    cards.forEach(function (card) { grid.appendChild(card); });
+    var fragment = document.createDocumentFragment();
+    cards.forEach(function (card, index) {
+      card.dataset.defaultIndex = String(index);
+      fragment.appendChild(card);
+    });
+    grid.appendChild(fragment);
     // Affiliate Pinterest pins deep-link to an actual product in our own store.
     // This affects only links with ?product= and preserves normal store sorting.
     var requestedProductId = new URLSearchParams(location.search).get('product');
@@ -465,7 +476,11 @@
   }
 
   function bindControls() {
-    search.addEventListener('input', applyFilters);
+    var searchTimer = null;
+    search.addEventListener('input', function () {
+      clearTimeout(searchTimer);
+      searchTimer = setTimeout(applyFilters, 120);
+    });
     currency.addEventListener('change', function () {
       if (currency.value === 'auto') {
         try { localStorage.removeItem(manualCurrencyKey); } catch (error) {}
@@ -623,7 +638,7 @@
     if (loading) loading.hidden = false;
     try {
       var response = await fetch('/store/products.json', {
-        cache: 'no-store',
+        cache: 'default',
         headers: { 'Accept': 'application/json' }
       });
       if (!response.ok) throw new Error('HTTP ' + response.status);
