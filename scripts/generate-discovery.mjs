@@ -60,7 +60,7 @@ export function generateDiscovery(directory = process.cwd()) {
   const byRoute = new Map(pages.map((page) => [page.route, page]));
   const home = byRoute.get("/");
   if (!home) throw new Error("Discovery requires an indexable homepage.");
-  const primary = ["/", "/about/", "/projects/", "/blog/", "/resume/", "/media-kit/", "/certifications/", "/editorial-policy/"]
+  const primary = ["/", "/about/", "/projects/", "/blog/en/", "/resume/", "/media-kit/", "/certifications/", "/editorial-policy/"]
     .map((route) => byRoute.get(route)).filter(Boolean);
   const projects = pages.filter((page) => /^\/projects\/[^/]+\/$/.test(page.route));
   const collections = pages.filter((page) => /^\/(?:collections|stacks)\//.test(page.route));
