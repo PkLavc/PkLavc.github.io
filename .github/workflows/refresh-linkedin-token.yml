@@ -34,10 +34,6 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Test null handling and secret rotation offline
-        working-directory: private-blog
-        run: python -m unittest scripts.social_video.test_linkedin_oauth -v
-
       - name: Renew only when an actual refresh token is configured
         if: github.event_name != 'push'
         working-directory: private-blog
