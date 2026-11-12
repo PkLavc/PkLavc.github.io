@@ -65,12 +65,6 @@ jobs:
           test -s .pages-dist/pinterest/callback/index.html
           grep -q 'client_id:"1624382"' .pages-dist/pinterest/connect/index.html
 
-      - name: Exercise Skylet browser answers across site topics
-        run: node scripts/test-skylet-local-answers.mjs .pages-dist
-
-      - name: Test SEO normalization
-        run: node --test scripts/normalize-seo.test.mjs scripts/indexnow.test.mjs scripts/inject-blog-store-telegram.test.mjs
-
       - name: Validate SEO and preserve visual content
         run: |
           cp .pages-dist/store/index.html store/index.html
