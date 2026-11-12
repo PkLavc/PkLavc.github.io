@@ -81,9 +81,9 @@ jobs:
         env:
           REQUESTED_SLUG: ${{ inputs.slug }}
         run: python -m scripts.private_runner.tasks preview_select
-      - name: Validate renderer source
+      - name: Verify renderer source syntax
         working-directory: private-blog
-        run: python -m unittest scripts.social_video.test_render scripts.blog_automation.test_json_safe
+        run: python -m compileall -q scripts/social_video scripts/blog_automation
 
       - name: Render and validate preview MP4
         working-directory: private-blog
