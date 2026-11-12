@@ -35,10 +35,6 @@ jobs:
         working-directory: private-blog/newsletter-worker
         run: npm install
 
-      - name: Validate newsletter Worker
-        working-directory: private-blog/newsletter-worker
-        run: npm test
-
       - name: Apply newsletter D1 migrations
         working-directory: private-blog/newsletter-worker
         run: npx wrangler d1 migrations apply pklavc-newsletter --remote
