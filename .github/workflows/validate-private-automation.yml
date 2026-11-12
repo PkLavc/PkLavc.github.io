@@ -3,8 +3,6 @@ name: Validate private PkLavc and Macca automation
 # The private implementation remains in PkLavc/blog. The public runner
 # checks it without exposing source code, credentials, outputs, or test traces.
 on:
-  schedule:
-    - cron: "23 */4 * * *"
   workflow_dispatch:
   push:
     branches: [main]
