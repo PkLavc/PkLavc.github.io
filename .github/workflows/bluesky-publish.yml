@@ -83,6 +83,7 @@ jobs:
         env:
           BLUESKY_HANDLE: ${{ secrets.BLUESKY_HANDLE }}
           BLUESKY_APP_PASSWORD: ${{ secrets.BLUESKY_APP_PASSWORD }}
+          STATE_GITHUB_TOKEN: ${{ secrets.PRIVATE_BLOG_REPO_TOKEN }}
           EVENT_NAME: ${{ github.event_name }}
           PREFERRED_MANUAL_CATEGORY: ${{ inputs.category }}
         shell: bash

@@ -81,6 +81,7 @@ jobs:
         working-directory: private-blog
         env:
           MASTODON_ACCESS_TOKEN: ${{ secrets.MASTODON_ACCESS_TOKEN }}
+          STATE_GITHUB_TOKEN: ${{ secrets.PRIVATE_BLOG_REPO_TOKEN }}
           EVENT_NAME: ${{ github.event_name }}
           MANUAL_CATEGORY: ${{ inputs.category }}
         shell: bash
