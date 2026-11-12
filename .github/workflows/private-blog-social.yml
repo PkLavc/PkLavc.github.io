@@ -6,19 +6,18 @@ on:
     - cron: "7,37 * * * *"  # Fast breaking-news checks; YouTube only
     - cron: "0 12 * * 5"  # Store Reel on Fridays at 09:00 Sao Paulo
     - cron: "0 12 1 * *"  # Store Short on the first day of each month at 09:00 Sao Paulo
-  # workflow_dispatch:
-    # inputs:
-      # mode:
-        # description: "Publish queued items, run checks, or preview/publish Store products"
-        # required: true
-        # type: choice
-        # default: smoke
-        # options:
-          # - smoke
-          # - publish
-          # - tiktok-publish
-          # - store-products-preview
-          # - store-products-publish
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "Run production publisher or prepare Store preview"
+        required: true
+        type: choice
+        default: publish
+        options:
+          - publish
+          - tiktok-publish
+          - store-products-preview
+          - store-products-publish
   push:
     branches: [main]
     paths:
@@ -133,7 +132,7 @@ jobs:
 
       - name: Reconcile previously accepted Buffer TikTok posts
         id: buffer_status
-        if: always() && (github.event_name == 'schedule' || inputs.mode == 'publish' || inputs.mode == 'tiktok-publish')
+        if: always() && (github.event_name == 'schedule' || inputs.mode == 'publish' || inputs.mode == 'tiktok-publish' || (github.event_name == 'push' && (contains(github.event.head_commit.message, '[social-publish-now]') || contains(github.event.head_commit.message, '[buffer-publish-now]'))))
         continue-on-error: true
         working-directory: private-blog
         env:
@@ -216,7 +215,7 @@ jobs:
       - name: Fail after persisting partial results
         if: always()
         run: |
-          if [[ "${{ steps.social.outcome }}" == "failure" || "${{ steps.store_products.outcome }}" == "failure" || "${{ steps.analytics.outcome }}" == "failure" ]]; then
+          if [[ "${{ steps.social.outcome }}" == "failure" || "${{ steps.store_products.outcome }}" == "failure" || "${{ steps.analytics.outcome }}" == "failure" || "${{ steps.buffer_status.outcome }}" == "failure" ]]; then
             echo "A social publication or Analytics operation failed; completed state changes were persisted first."
             exit 1
           fi
