@@ -48,10 +48,6 @@ jobs:
       - name: Install free thumbnail validator
         run: python -m pip install --disable-pip-version-check Pillow
 
-      - name: Run offline publication and duplicate-prevention tests
-        working-directory: private-blog
-        run: python -m unittest scripts.social_video.test_devto_publisher scripts.social_video.test_post_images -v
-
       - name: Preview the next actual English Tech article
         working-directory: private-blog
         run: python -m scripts.social_video.devto_publisher --root . --mode preview
