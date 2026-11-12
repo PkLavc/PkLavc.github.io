@@ -71,6 +71,7 @@ jobs:
         working-directory: private-blog
         env:
           PINTEREST_ACCESS_TOKEN: ${{ secrets.PINTEREST_ACCESS_TOKEN }}
+          STATE_GITHUB_TOKEN: ${{ secrets.PRIVATE_BLOG_REPO_TOKEN }}
           TELEGRAM_CHAT_STORE: ${{ vars.TELEGRAM_CHAT_STORE || secrets.TELEGRAM_CHAT_STORE }}
           PINTEREST_SANDBOX_ACCESS_TOKEN: ${{ secrets.PINTEREST_SANDBOX_ACCESS_TOKEN }}
           PINTEREST_API_TIER: ${{ inputs.mode == 'trial-publish' && 'trial' || 'standard' }}
