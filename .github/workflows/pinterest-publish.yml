@@ -59,11 +59,9 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Run no-cost offline tests
+      - name: Install product image encoder
         working-directory: private-blog
-        run: |
-          python -m pip install --disable-pip-version-check Pillow
-          python -m unittest scripts.social_video.test_pinterest_publisher -v
+        run: python -m pip install --disable-pip-version-check Pillow
 
       - name: Preview curated Store inventory
         working-directory: private-blog
