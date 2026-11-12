@@ -96,7 +96,7 @@ jobs:
 
       - name: Validate private social code without publishing
         working-directory: private-blog
-        run: bash scripts/private_runner/runner.sh smoke-social && python -m unittest scripts.private_runner.test_tasks
+        run: bash scripts/private_runner/runner.sh smoke-social && python -m unittest tests.private_runner.test_tasks
       - name: Render one unpublished long TikTok/YouTube preview
         if: github.event_name == 'push' && contains(github.event.head_commit.message, '[render-extended-preview]')
         working-directory: private-blog
