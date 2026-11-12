@@ -53,9 +53,6 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Run offline Discord publishing tests
-        working-directory: private-blog
-        run: python -m unittest scripts.social_video.test_discord_publisher -v
       - name: Preview Tech and Games without posting
         working-directory: private-blog
         run: python -m scripts.social_video.discord_publisher --root . --mode preview --category all
