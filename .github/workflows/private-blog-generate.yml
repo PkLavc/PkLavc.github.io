@@ -104,7 +104,7 @@ jobs:
         working-directory: private-blog
         run: python -m pip install -r scripts/blog_automation/requirements.txt 'requests>=2.32,<3'
 
-      - name: Test generated article source and public paths
+      - name: Verify production source syntax
         working-directory: private-blog
         run: bash scripts/private_runner/runner.sh validate-generation
       - name: Choose hourly editorial lane
@@ -160,7 +160,7 @@ jobs:
         working-directory: private-blog
         run: node scripts/generate-blog-discovery.mjs
 
-      - name: Validate newsletter and assembled publication before commit
+      - name: Build and verify production pages before commit
         working-directory: private-blog
         run: bash scripts/private_runner/runner.sh validate-publication
       - name: Detect publication changes
