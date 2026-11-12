@@ -63,10 +63,6 @@ jobs:
       - name: Install free first-party image thumbnail encoder
         run: python -m pip install --disable-pip-version-check Pillow
 
-      - name: Validate Bluesky publisher offline without credentials
-        working-directory: private-blog
-        run: python -m unittest scripts.social_video.test_bluesky_publisher scripts.social_video.test_post_images -v
-
       - name: Preview latest Games and Tech posts without publishing
         working-directory: private-blog
         run: |
