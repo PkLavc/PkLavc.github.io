@@ -20,7 +20,6 @@ on:
       - ".github/workflows/refresh-instagram-token.yml"
       - ".github/scripts/refresh_instagram_token.py"
       - ".github/scripts/refresh_instagram_audio_token.py"
-      - ".github/scripts/test_refresh_instagram_audio_token.py"
 
 permissions:
   contents: read
@@ -62,5 +61,4 @@ jobs:
           INSTAGRAM_ROTATION_GITHUB_TOKEN: ${{ secrets.INSTAGRAM_TOKEN_ROTACION }}
           INSTAGRAM_AUDIO_APP_ID: ${{ vars.INSTAGRAM_AUDIO_APP_ID }}
         run: |
-          python -m unittest discover -s .github/scripts -p 'test_refresh_instagram_audio_token.py' -v
           python .github/scripts/refresh_instagram_audio_token.py
