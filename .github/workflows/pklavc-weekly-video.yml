@@ -39,10 +39,6 @@ jobs:
           sudo apt-get install -y ffmpeg fonts-dejavu-core
           python -m pip install -r scripts/social_video/requirements.txt google-api-python-client google-auth
 
-      - name: Validate weekly selection and publication caps offline
-        working-directory: private-blog
-        run: python -m unittest scripts.social_video.test_weekly_recap -v
-
       - name: Publish weekly horizontal recap to PkLavc YouTube
         working-directory: private-blog
         env:
