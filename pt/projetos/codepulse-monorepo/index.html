@@ -166,6 +166,7 @@
     <link rel="search" type="application/opensearchdescription+xml" title="PkLavc" href="/opensearch.xml">
 </head>
 <body>
+<div role="status" style="position:relative;z-index:10;background:#182c40;color:#fff;padding:16px 24px;text-align:center;font:600 15px/1.5 system-ui,sans-serif">O CodePulse agora é um projeto de código aberto para execução local. Execute o backend Node.js na sua máquina e configure sua própria chave OpenAI, Anthropic Claude ou Gemini. A demonstração pública e os serviços hospedados foram desativados.</div>
     <div id="breaker"></div>
     <div id="breaker-two"></div>
     <div id="all">
@@ -243,17 +244,17 @@
 </tr>
 <tr>
 <td align="left"><strong>Nativo da nuvem</strong></td>
-<td align="left">Cloudflare Workers + IA de workers</td>
+<td>Self-hosted Node.js backend and bring-your-own-key AI</td>
 <td align="left">Apresenta computação moderna sem servidor e integração de IA</td>
 </tr>
 </tbody></table>
 <h2>Implantação e Integração</h2>
 <h3>Configuração de implantação</h3>
-<h4>Backend (Cloudflare Workers)</h4>
+<h4>Local Node.js backend</h4>
 <ul>
 <li>Implantação automática via GitHub Actions</li>
 <li>JavaScript execução nativamente no Edge via Workers</li>
-<li>Simulação determinística de IA para Python, Java, C++ via Cloudflare Workers AI com temperatura zero</li>
+<li><strong>Deployment:</strong> Local Node.js backend, with user-provided AI provider credentials; no hosted demo.</li>
 <li>Arquitetura de ponta para latência mínima</li>
 </ul>
 <h4>Front-end (GitHub páginas)</h4>
