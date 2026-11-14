@@ -204,6 +204,7 @@
     <link rel="search" type="application/opensearchdescription+xml" title="PkLavc" href="/opensearch.xml">
 </head>
 <body>
+<div role="status" style="position:relative;z-index:10;background:#182c40;color:#fff;padding:16px 24px;text-align:center;font:600 15px/1.5 system-ui,sans-serif">CodePulse is now a source-only, self-hosted project. Run the Node.js backend locally and configure your own OpenAI, Anthropic Claude, or Gemini API key. The public demo and hosted Cloudflare services have been discontinued.</div>
     <div id="breaker"></div>
     <div id="breaker-two"></div>
     <div id="all">
@@ -281,17 +282,17 @@
 </tr>
 <tr>
 <td align="left"><strong>Cloud Native</strong></td>
-<td align="left">Cloudflare Workers + Workers AI</td>
+<td>Self-hosted Node.js backend and bring-your-own-key AI</td>
 <td align="left">Showcases modern serverless edge computing and AI integration</td>
 </tr>
 </tbody></table>
 <h2>Deployment &amp; Integration</h2>
 <h3>Deployment Configuration</h3>
-<h4>Backend (Cloudflare Workers)</h4>
+<h4>Local Node.js backend</h4>
 <ul>
 <li>Automatic deployment via GitHub Actions</li>
 <li>JavaScript execution natively at the Edge via Workers</li>
-<li>Deterministic AI simulation for Python, Java, C++ via Cloudflare Workers AI with zero temperature</li>
+<li><strong>Deployment:</strong> Local Node.js backend, with user-provided AI provider credentials; no hosted demo.</li>
 <li>Edge-first architecture for minimal latency</li>
 </ul>
 <h4>Frontend (GitHub Pages)</h4>
