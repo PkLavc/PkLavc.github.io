@@ -23,7 +23,7 @@
     placements: {
       // Blog: Prime Video stays first; Amazon Music is a separate sponsored campaign.
       sidebar: rotatingPlacement({
-        default: ['amazon_prime_video', 'doglife', 'amazon_music', 'shopee', 'aliexpress', 'pklavc_blog', 'pklavc_store', 'pklavc_projects']
+        default: ['amazon_prime_video', 'amazon_music', 'shopee', 'aliexpress', 'pklavc_blog', 'pklavc_store', 'pklavc_projects', 'doglife']
       }),
       inline: rotatingPlacement({
         default: 'amazon_prime_video',
@@ -41,7 +41,7 @@
         rotateEverySeconds: 0
       }),
       bottom: rotatingPlacement({ default: ['aliexpress', 'amazon_music', 'pklavc_store', 'pklavc_projects', 'doglife'] }),
-      mobile: rotatingPlacement({ default: ['aliexpress', 'pklavc_projects', 'doglife', 'amazon_music', 'pklavc_store'] }),
+      mobile: rotatingPlacement({ default: ['aliexpress', 'pklavc_projects', 'amazon_music', 'pklavc_store', 'doglife'] }),
 
       // Store: alternate Prime Video / Amazon Music between product rows; keep Prime Video at the end.
       'store-sidebar': rotatingPlacement({

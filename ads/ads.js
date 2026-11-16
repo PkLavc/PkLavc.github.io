@@ -851,12 +851,12 @@
   function placeBlogIndexAds(geo) {
     if (geo.country === 'BR') {
       var carouselStack = document.querySelector('.blog-carousel-stack');
-      if (carouselStack && !document.querySelector('[data-blog-doglife-feature]')) {
-        var doglifeFeature = createAd('doglife', 'feed', geo);
-        if (doglifeFeature) {
-          doglifeFeature.classList.add('pklavc-ad--blog-doglife-feature');
-          doglifeFeature.dataset.blogDoglifeFeature = 'true';
-          carouselStack.insertAdjacentElement('beforebegin', doglifeFeature);
+      if (carouselStack && !document.querySelector('[data-blog-doglife-partner]')) {
+        var doglifeAd = createAd('doglife', 'feed', geo);
+        if (doglifeAd) {
+          doglifeAd.classList.add('pklavc-ad--blog-doglife-partner');
+          doglifeAd.dataset.blogDoglifePartner = 'true';
+          carouselStack.insertAdjacentElement('afterend', doglifeAd);
         }
       }
     }
