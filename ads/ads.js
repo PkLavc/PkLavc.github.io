@@ -156,6 +156,7 @@
       if (typeof id !== 'string' || !id.length || list.indexOf(id) !== index) return false;
       if ((pageContext.type === 'blog' || pageContext.type === 'blog-index') && id === 'pklavc_blog') return false;
       if (id === 'shopee' && locale !== 'pt' && geo.country !== 'BR') return false;
+      if (id === 'doglife' && geo.country !== 'BR') return false;
       if (pageContext.type === 'store' && id === 'pklavc_store' && !pageContext.testPreview) return false;
       return true;
     });
@@ -629,7 +630,7 @@
 
   function createAd(id, placement, geo) {
     var campaign = config.campaigns[id];
-    if (!campaign) return null;
+    if (!campaign || (id === 'doglife' && geo.country !== 'BR' && !pageContext.testPreview)) return null;
     var ad = null;
     if (campaign.type === 'image') ad = imageAd(campaign, placement);
     if (campaign.type === 'adsense') ad = adsenseAd(campaign, placement);

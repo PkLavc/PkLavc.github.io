@@ -23,7 +23,7 @@
     placements: {
       // Blog: Prime Video stays first; Amazon Music is a separate sponsored campaign.
       sidebar: rotatingPlacement({
-        default: ['amazon_prime_video', 'amazon_music', 'shopee', 'aliexpress', 'pklavc_blog', 'pklavc_store', 'pklavc_projects']
+        default: ['amazon_prime_video', 'amazon_music', 'shopee', 'aliexpress', 'pklavc_blog', 'pklavc_store', 'pklavc_projects', 'doglife']
       }),
       inline: rotatingPlacement({
         default: 'amazon_prime_video',
@@ -37,18 +37,18 @@
       }),
       // Blog home: a dedicated card is inserted between editorial cards.
       feed: rotatingPlacement({
-        default: ['amazon_music', 'amazon_prime_video', 'shopee', 'aliexpress'],
+        default: ['amazon_music', 'amazon_prime_video', 'shopee', 'aliexpress', 'doglife'],
         rotateEverySeconds: 0
       }),
-      bottom: rotatingPlacement({ default: ['aliexpress', 'amazon_music', 'pklavc_store', 'pklavc_projects'] }),
-      mobile: rotatingPlacement({ default: ['aliexpress', 'pklavc_projects', 'amazon_music', 'pklavc_store'] }),
+      bottom: rotatingPlacement({ default: ['aliexpress', 'amazon_music', 'pklavc_store', 'pklavc_projects', 'doglife'] }),
+      mobile: rotatingPlacement({ default: ['aliexpress', 'pklavc_projects', 'amazon_music', 'pklavc_store', 'doglife'] }),
 
       // Store: alternate Prime Video / Amazon Music between product rows; keep Prime Video at the end.
       'store-sidebar': rotatingPlacement({
-        default: ['amazon_prime_video', 'amazon_music', 'pklavc_blog', 'pklavc_store', 'pklavc_projects']
+        default: ['amazon_prime_video', 'amazon_music', 'pklavc_blog', 'doglife', 'pklavc_store', 'pklavc_projects']
       }),
       'store-rows': rotatingPlacement({
-        default: ['amazon_prime_video', 'amazon_music'],
+        default: ['amazon_prime_video', 'amazon_music', 'doglife'],
         everyRows: 10,
         rotateEverySeconds: 0
       }),
@@ -204,6 +204,40 @@
             bottom: { title: 'Hallazgos para descubrir', body: 'Explora ofertas de tecnología, hogar y más.', cta: 'Descubrir ofertas', href: 'https://rzekl.com/c/1e8d1144942fa9b296a416525dc3e8/' },
             mobile: { title: 'Ofertas para cada día', body: 'Encuentra tecnología, hogar y mucho más.', cta: 'Explorar', href: 'https://rzekl.com/c/1e8d1144942fa9b296a416525dc3e8/' },
             feed: { title: 'Nuevos hallazgos. Mejores precios.', body: 'Descubre ofertas en tecnología, hogar y más.', cta: 'Ver AliExpress', href: 'https://rzekl.com/c/1e8d1144942fa9b296a416525dc3e8/' }
+          }
+        }
+      },
+
+      doglife: {
+        type: 'image',
+        style: 'doglife',
+        locales: {
+          pt: {
+            image: '/ads/banners/doglife.svg',
+            imageAlt: "Dog Life: 15% de desconto nas três primeiras mensalidades do plano de saúde pet",
+            sidebar: { title: "Dog Life: 15% OFF para seu pet", body: "15% de desconto nas três primeiras mensalidades pelo link de indicação. Quem indica recebe crédito. Consulte as condições.", cta: "Conhecer os planos", href: 'https://doglife.com.br/indicacao?c=EM-411-BPI' },
+            feed: { title: "Dog Life: 15% OFF para seu pet", body: "15% de desconto nas três primeiras mensalidades pelo link de indicação. Quem indica recebe crédito. Consulte as condições.", cta: "Conhecer os planos", href: 'https://doglife.com.br/indicacao?c=EM-411-BPI' },
+            inline: { title: "Dog Life: 15% OFF para seu pet", body: "15% de desconto nas três primeiras mensalidades pelo link de indicação. Quem indica recebe crédito. Consulte as condições.", cta: "Conhecer os planos", href: 'https://doglife.com.br/indicacao?c=EM-411-BPI' },
+            bottom: { title: "Dog Life: 15% OFF para seu pet", body: "15% de desconto nas três primeiras mensalidades pelo link de indicação. Quem indica recebe crédito. Consulte as condições.", cta: "Conhecer os planos", href: 'https://doglife.com.br/indicacao?c=EM-411-BPI' },
+            mobile: { title: "Dog Life: 15% OFF para seu pet", body: "15% de desconto nas três primeiras mensalidades pelo link de indicação. Quem indica recebe crédito. Consulte as condições.", cta: "Conhecer os planos", href: 'https://doglife.com.br/indicacao?c=EM-411-BPI' }
+          },
+          en: {
+            image: '/ads/banners/doglife.svg',
+            imageAlt: "Dog Life Brazil pet health plans: 15% off the first three monthly payments",
+            sidebar: { title: "Dog Life: 15% off pet health plans", body: "Save 15% on your first three monthly payments through this referral link. The referrer earns credit. Brazil only; terms apply.", cta: "Explore pet plans", href: 'https://doglife.com.br/indicacao?c=EM-411-BPI' },
+            feed: { title: "Dog Life: 15% off pet health plans", body: "Save 15% on your first three monthly payments through this referral link. The referrer earns credit. Brazil only; terms apply.", cta: "Explore pet plans", href: 'https://doglife.com.br/indicacao?c=EM-411-BPI' },
+            inline: { title: "Dog Life: 15% off pet health plans", body: "Save 15% on your first three monthly payments through this referral link. The referrer earns credit. Brazil only; terms apply.", cta: "Explore pet plans", href: 'https://doglife.com.br/indicacao?c=EM-411-BPI' },
+            bottom: { title: "Dog Life: 15% off pet health plans", body: "Save 15% on your first three monthly payments through this referral link. The referrer earns credit. Brazil only; terms apply.", cta: "Explore pet plans", href: 'https://doglife.com.br/indicacao?c=EM-411-BPI' },
+            mobile: { title: "Dog Life: 15% off pet health plans", body: "Save 15% on your first three monthly payments through this referral link. The referrer earns credit. Brazil only; terms apply.", cta: "Explore pet plans", href: 'https://doglife.com.br/indicacao?c=EM-411-BPI' }
+          },
+          es: {
+            image: '/ads/banners/doglife.svg',
+            imageAlt: "Dog Life Brasil: 15% de descuento en las primeras tres mensualidades del plan de salud para mascotas",
+            sidebar: { title: "Dog Life: 15% de descuento para tu mascota", body: "15% de descuento en las tres primeras mensualidades con este enlace de recomendación. Quien recomienda recibe crédito. Solo Brasil. Aplican condiciones.", cta: "Conocer los planes", href: 'https://doglife.com.br/indicacao?c=EM-411-BPI' },
+            feed: { title: "Dog Life: 15% de descuento para tu mascota", body: "15% de descuento en las tres primeras mensualidades con este enlace de recomendación. Quien recomienda recibe crédito. Solo Brasil. Aplican condiciones.", cta: "Conocer los planes", href: 'https://doglife.com.br/indicacao?c=EM-411-BPI' },
+            inline: { title: "Dog Life: 15% de descuento para tu mascota", body: "15% de descuento en las tres primeras mensualidades con este enlace de recomendación. Quien recomienda recibe crédito. Solo Brasil. Aplican condiciones.", cta: "Conocer los planes", href: 'https://doglife.com.br/indicacao?c=EM-411-BPI' },
+            bottom: { title: "Dog Life: 15% de descuento para tu mascota", body: "15% de descuento en las tres primeras mensualidades con este enlace de recomendación. Quien recomienda recibe crédito. Solo Brasil. Aplican condiciones.", cta: "Conocer los planes", href: 'https://doglife.com.br/indicacao?c=EM-411-BPI' },
+            mobile: { title: "Dog Life: 15% de descuento para tu mascota", body: "15% de descuento en las tres primeras mensualidades con este enlace de recomendación. Quien recomienda recibe crédito. Solo Brasil. Aplican condiciones.", cta: "Conocer los planes", href: 'https://doglife.com.br/indicacao?c=EM-411-BPI' }
           }
         }
       },
