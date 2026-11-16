@@ -23,7 +23,7 @@
     placements: {
       // Blog: Prime Video stays first; Amazon Music is a separate sponsored campaign.
       sidebar: rotatingPlacement({
-        default: ['amazon_prime_video', 'amazon_music', 'shopee', 'aliexpress', 'pklavc_blog', 'pklavc_store', 'pklavc_projects', 'doglife']
+        default: ['amazon_prime_video', 'doglife', 'amazon_music', 'shopee', 'aliexpress', 'pklavc_blog', 'pklavc_store', 'pklavc_projects']
       }),
       inline: rotatingPlacement({
         default: 'amazon_prime_video',
@@ -41,7 +41,7 @@
         rotateEverySeconds: 0
       }),
       bottom: rotatingPlacement({ default: ['aliexpress', 'amazon_music', 'pklavc_store', 'pklavc_projects', 'doglife'] }),
-      mobile: rotatingPlacement({ default: ['aliexpress', 'pklavc_projects', 'amazon_music', 'pklavc_store', 'doglife'] }),
+      mobile: rotatingPlacement({ default: ['aliexpress', 'pklavc_projects', 'doglife', 'amazon_music', 'pklavc_store'] }),
 
       // Store: alternate Prime Video / Amazon Music between product rows; keep Prime Video at the end.
       'store-sidebar': rotatingPlacement({
@@ -214,30 +214,30 @@
         locales: {
           pt: {
             image: '/ads/banners/doglife.svg',
-            imageAlt: "Dog Life: 15% de desconto nas três primeiras mensalidades do plano de saúde pet",
-            sidebar: { title: "Dog Life: 15% OFF para seu pet", body: "15% de desconto nas três primeiras mensalidades pelo link de indicação. Quem indica recebe crédito. Consulte as condições.", cta: "Conhecer os planos", href: 'https://doglife.com.br/indicacao?c=EM-411-BPI' },
-            feed: { title: "Dog Life: 15% OFF para seu pet", body: "15% de desconto nas três primeiras mensalidades pelo link de indicação. Quem indica recebe crédito. Consulte as condições.", cta: "Conhecer os planos", href: 'https://doglife.com.br/indicacao?c=EM-411-BPI' },
-            inline: { title: "Dog Life: 15% OFF para seu pet", body: "15% de desconto nas três primeiras mensalidades pelo link de indicação. Quem indica recebe crédito. Consulte as condições.", cta: "Conhecer os planos", href: 'https://doglife.com.br/indicacao?c=EM-411-BPI' },
-            bottom: { title: "Dog Life: 15% OFF para seu pet", body: "15% de desconto nas três primeiras mensalidades pelo link de indicação. Quem indica recebe crédito. Consulte as condições.", cta: "Conhecer os planos", href: 'https://doglife.com.br/indicacao?c=EM-411-BPI' },
-            mobile: { title: "Dog Life: 15% OFF para seu pet", body: "15% de desconto nas três primeiras mensalidades pelo link de indicação. Quem indica recebe crédito. Consulte as condições.", cta: "Conhecer os planos", href: 'https://doglife.com.br/indicacao?c=EM-411-BPI' }
+            imageAlt: "Dog Life: plano de saúde para cães e gatos",
+            sidebar: { title: "Plano de saúde para cães e gatos", body: "Consultas, vacinas e exames. Planos mais completos incluem especialistas, internação e cirurgias.", cta: "Conheça a Dog Life", href: 'https://doglife.com.br/indicacao?c=EM-411-BPI' },
+            feed: { title: "Plano de saúde para cães e gatos", body: "Consultas, vacinas e exames. Planos mais completos incluem especialistas, internação e cirurgias.", cta: "Conheça a Dog Life", href: 'https://doglife.com.br/indicacao?c=EM-411-BPI' },
+            inline: { title: "Plano de saúde para cães e gatos", body: "Consultas, vacinas e exames. Planos mais completos incluem especialistas, internação e cirurgias.", cta: "Conheça a Dog Life", href: 'https://doglife.com.br/indicacao?c=EM-411-BPI' },
+            bottom: { title: "Plano de saúde para cães e gatos", body: "Consultas, vacinas e exames. Planos mais completos incluem especialistas, internação e cirurgias.", cta: "Conheça a Dog Life", href: 'https://doglife.com.br/indicacao?c=EM-411-BPI' },
+            mobile: { title: "Plano de saúde para cães e gatos", body: "Consultas, vacinas e exames. Planos mais completos incluem especialistas, internação e cirurgias.", cta: "Conheça a Dog Life", href: 'https://doglife.com.br/indicacao?c=EM-411-BPI' }
           },
           en: {
             image: '/ads/banners/doglife.svg',
-            imageAlt: "Dog Life Brazil pet health plans: 15% off the first three monthly payments",
-            sidebar: { title: "Dog Life: 15% off pet health plans", body: "Save 15% on your first three monthly payments through this referral link. The referrer earns credit. Brazil only; terms apply.", cta: "Explore pet plans", href: 'https://doglife.com.br/indicacao?c=EM-411-BPI' },
-            feed: { title: "Dog Life: 15% off pet health plans", body: "Save 15% on your first three monthly payments through this referral link. The referrer earns credit. Brazil only; terms apply.", cta: "Explore pet plans", href: 'https://doglife.com.br/indicacao?c=EM-411-BPI' },
-            inline: { title: "Dog Life: 15% off pet health plans", body: "Save 15% on your first three monthly payments through this referral link. The referrer earns credit. Brazil only; terms apply.", cta: "Explore pet plans", href: 'https://doglife.com.br/indicacao?c=EM-411-BPI' },
-            bottom: { title: "Dog Life: 15% off pet health plans", body: "Save 15% on your first three monthly payments through this referral link. The referrer earns credit. Brazil only; terms apply.", cta: "Explore pet plans", href: 'https://doglife.com.br/indicacao?c=EM-411-BPI' },
-            mobile: { title: "Dog Life: 15% off pet health plans", body: "Save 15% on your first three monthly payments through this referral link. The referrer earns credit. Brazil only; terms apply.", cta: "Explore pet plans", href: 'https://doglife.com.br/indicacao?c=EM-411-BPI' }
+            imageAlt: "Dog Life health plans for dogs and cats",
+            sidebar: { title: "Health plans for dogs and cats", body: "Vet visits, vaccines and tests. More complete plans include specialist care, hospitalization and surgery.", cta: "Explore Dog Life", href: 'https://doglife.com.br/indicacao?c=EM-411-BPI' },
+            feed: { title: "Health plans for dogs and cats", body: "Vet visits, vaccines and tests. More complete plans include specialist care, hospitalization and surgery.", cta: "Explore Dog Life", href: 'https://doglife.com.br/indicacao?c=EM-411-BPI' },
+            inline: { title: "Health plans for dogs and cats", body: "Vet visits, vaccines and tests. More complete plans include specialist care, hospitalization and surgery.", cta: "Explore Dog Life", href: 'https://doglife.com.br/indicacao?c=EM-411-BPI' },
+            bottom: { title: "Health plans for dogs and cats", body: "Vet visits, vaccines and tests. More complete plans include specialist care, hospitalization and surgery.", cta: "Explore Dog Life", href: 'https://doglife.com.br/indicacao?c=EM-411-BPI' },
+            mobile: { title: "Health plans for dogs and cats", body: "Vet visits, vaccines and tests. More complete plans include specialist care, hospitalization and surgery.", cta: "Explore Dog Life", href: 'https://doglife.com.br/indicacao?c=EM-411-BPI' }
           },
           es: {
             image: '/ads/banners/doglife.svg',
-            imageAlt: "Dog Life Brasil: 15% de descuento en las primeras tres mensualidades del plan de salud para mascotas",
-            sidebar: { title: "Dog Life: 15% de descuento para tu mascota", body: "15% de descuento en las tres primeras mensualidades con este enlace de recomendación. Quien recomienda recibe crédito. Solo Brasil. Aplican condiciones.", cta: "Conocer los planes", href: 'https://doglife.com.br/indicacao?c=EM-411-BPI' },
-            feed: { title: "Dog Life: 15% de descuento para tu mascota", body: "15% de descuento en las tres primeras mensualidades con este enlace de recomendación. Quien recomienda recibe crédito. Solo Brasil. Aplican condiciones.", cta: "Conocer los planes", href: 'https://doglife.com.br/indicacao?c=EM-411-BPI' },
-            inline: { title: "Dog Life: 15% de descuento para tu mascota", body: "15% de descuento en las tres primeras mensualidades con este enlace de recomendación. Quien recomienda recibe crédito. Solo Brasil. Aplican condiciones.", cta: "Conocer los planes", href: 'https://doglife.com.br/indicacao?c=EM-411-BPI' },
-            bottom: { title: "Dog Life: 15% de descuento para tu mascota", body: "15% de descuento en las tres primeras mensualidades con este enlace de recomendación. Quien recomienda recibe crédito. Solo Brasil. Aplican condiciones.", cta: "Conocer los planes", href: 'https://doglife.com.br/indicacao?c=EM-411-BPI' },
-            mobile: { title: "Dog Life: 15% de descuento para tu mascota", body: "15% de descuento en las tres primeras mensualidades con este enlace de recomendación. Quien recomienda recibe crédito. Solo Brasil. Aplican condiciones.", cta: "Conocer los planes", href: 'https://doglife.com.br/indicacao?c=EM-411-BPI' }
+            imageAlt: "Dog Life: planes de salud para perros y gatos",
+            sidebar: { title: "Planes de salud para perros y gatos", body: "Consultas, vacunas y exámenes. Los planes más completos incluyen especialistas, hospitalización y cirugías.", cta: "Conoce Dog Life", href: 'https://doglife.com.br/indicacao?c=EM-411-BPI' },
+            feed: { title: "Planes de salud para perros y gatos", body: "Consultas, vacunas y exámenes. Los planes más completos incluyen especialistas, hospitalización y cirugías.", cta: "Conoce Dog Life", href: 'https://doglife.com.br/indicacao?c=EM-411-BPI' },
+            inline: { title: "Planes de salud para perros y gatos", body: "Consultas, vacunas y exámenes. Los planes más completos incluyen especialistas, hospitalización y cirugías.", cta: "Conoce Dog Life", href: 'https://doglife.com.br/indicacao?c=EM-411-BPI' },
+            bottom: { title: "Planes de salud para perros y gatos", body: "Consultas, vacunas y exámenes. Los planes más completos incluyen especialistas, hospitalización y cirugías.", cta: "Conoce Dog Life", href: 'https://doglife.com.br/indicacao?c=EM-411-BPI' },
+            mobile: { title: "Planes de salud para perros y gatos", body: "Consultas, vacunas y exámenes. Los planes más completos incluyen especialistas, hospitalización y cirugías.", cta: "Conoce Dog Life", href: 'https://doglife.com.br/indicacao?c=EM-411-BPI' }
           }
         }
       },

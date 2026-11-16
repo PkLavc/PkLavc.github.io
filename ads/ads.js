@@ -849,6 +849,18 @@
   }
 
   function placeBlogIndexAds(geo) {
+    if (geo.country === 'BR') {
+      var carouselStack = document.querySelector('.blog-carousel-stack');
+      if (carouselStack && !document.querySelector('[data-blog-doglife-feature]')) {
+        var doglifeFeature = createAd('doglife', 'feed', geo);
+        if (doglifeFeature) {
+          doglifeFeature.classList.add('pklavc-ad--blog-doglife-feature');
+          doglifeFeature.dataset.blogDoglifeFeature = 'true';
+          carouselStack.insertAdjacentElement('beforebegin', doglifeFeature);
+        }
+      }
+    }
+
     function hydrate() {
       var slots = document.querySelectorAll('[data-blog-feed-ad]');
       slots.forEach(function (slot, index) {
