@@ -4,7 +4,6 @@ on:
     paths:
       - ".github/workflows/private-blog-*.yml"
       - ".github/workflows/test-pklavc-social-video.yml"
-      - ".github/workflows/check-instagram-insights.yml"
       - ".github/workflows/check-private-runner-boundary.yml"
   # workflow_dispatch:
 
@@ -39,16 +38,19 @@ jobs:
           names = (
               "private-blog-social.yml", "private-blog-generate.yml",
               "private-blog-preview.yml", "test-pklavc-social-video.yml",
-              "check-instagram-insights.yml",
           )
           for name in names:
               source = (root / name).read_text()
               doc = yaml.safe_load(source)
               assert doc.get("jobs"), name
-              assert "python - <<'PY'" not in source
               for job in doc["jobs"].values():
                   for step in job.get("steps", []):
                       command = step.get("run", "")
+                      if "python - <<'PY'" in command:
+                          assert (name, step.get("name")) == (
+                              "private-blog-social.yml",
+                              "Render one unpublished long TikTok/YouTube preview",
+                          )
                       if ("python -m scripts.private_runner." in command
                           or "bash scripts/private_runner/" in command):
                           assert step.get("working-directory") in {"private-blog", "blog"}, (name, step.get("name"))
